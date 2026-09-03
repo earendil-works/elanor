@@ -1,0 +1,13 @@
+@layer elanor-host {
+  :where(elnr-button, elnr-badge) {
+    display: inline-block;
+  }
+
+  :where(elnr-box, elnr-heading, elnr-text, elnr-text-field, elnr-text-area, elnr-choice-list, elnr-dialog, elnr-stack) {
+    display: block;
+  }
+
+  elnr-choice {
+    display: none;
+  }
+}
