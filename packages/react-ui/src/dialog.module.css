@@ -1,0 +1,82 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--elanor-dialog-z-index, 1000);
+  min-block-size: 100dvh;
+  background: var(--semantic-color-background-backdrop);
+}
+
+@supports (-webkit-touch-callout: none) {
+  .backdrop {
+    position: absolute;
+  }
+}
+
+.viewport {
+  position: fixed;
+  inset: 0;
+  z-index: var(--elanor-dialog-z-index, 1000);
+  display: grid;
+  place-items: center;
+  overflow: auto;
+  padding: var(--semantic-dimension-space-padding-medium);
+  pointer-events: none;
+}
+
+.popup {
+  box-sizing: border-box;
+  display: grid;
+  gap: var(--semantic-dimension-space-gap-large);
+  inline-size: min(var(--semantic-dimension-breakpoint-small), 100%);
+  max-block-size: calc(100dvh - 2 * var(--semantic-dimension-space-padding-medium));
+  overflow: auto;
+  padding: var(--semantic-dimension-space-padding-large);
+  border: var(--semantic-dimension-border-width-small) solid var(--semantic-color-border-secondary);
+  border-radius: var(--semantic-dimension-radius-large);
+  background: var(--semantic-color-background-surface);
+  color: var(--semantic-color-text-primary);
+  font: var(--semantic-typography-ui-primary);
+  pointer-events: auto;
+}
+
+.title {
+  margin: 0;
+  color: var(--semantic-color-text-primary);
+  font: var(--semantic-typography-heading-app-4);
+  letter-spacing: var(--semantic-typography-heading-app-4-letter-spacing);
+}
+
+.description {
+  margin: 0;
+  color: var(--semantic-color-text-secondary);
+  font: var(--semantic-typography-ui-primary);
+}
+
+.body {
+  min-inline-size: 0;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: var(--semantic-dimension-space-control-gap-medium);
+}
+
+@media (max-width: 38rem) {
+  .popup {
+    font-size: var(--semantic-typography-prose-primary-font-size);
+    line-height: var(--semantic-typography-prose-primary-line-height);
+  }
+}
+
+@media (forced-colors: active) {
+  .backdrop {
+    background: Canvas;
+    opacity: var(--semantic-number-opacity-disabled);
+  }
+
+  .popup {
+    border-color: CanvasText;
+  }
+}

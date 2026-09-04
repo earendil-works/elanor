@@ -1,0 +1,40 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  align-items: stretch;
+  gap: var(--semantic-dimension-space-gap-medium);
+  min-inline-size: 0;
+}
+
+.row {
+  flex-direction: row;
+}
+
+.gapXs {
+  gap: var(--semantic-dimension-space-gap-x-small);
+}
+
+.gapSm {
+  gap: var(--semantic-dimension-space-gap-small);
+}
+
+.gapLg {
+  gap: var(--semantic-dimension-space-gap-large);
+}
+
+.alignStart {
+  align-items: flex-start;
+}
+
+.alignCenter {
+  align-items: center;
+}
+
+.alignEnd {
+  align-items: flex-end;
+}
+
+.wrap {
+  flex-wrap: wrap;
+}

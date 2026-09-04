@@ -1,0 +1,96 @@
+.root {
+  --button-background: var(--semantic-color-background-fill-secondary);
+  --button-background-active: var(--semantic-color-background-fill-secondary-active);
+  --button-background-hover: var(--semantic-color-background-fill-secondary-hover);
+  --button-border: var(--semantic-color-border-primary);
+  --button-border-hover: var(--semantic-color-border-primary-hover);
+  --button-color: var(--semantic-color-text-on-secondary-fill);
+
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--semantic-dimension-space-control-gap-small);
+  min-block-size: var(--semantic-dimension-size-large);
+  padding-block: var(--semantic-dimension-space-control-padding-block-medium);
+  padding-inline: var(--semantic-dimension-space-control-padding-inline-medium);
+  border: var(--semantic-dimension-border-width-small) solid var(--button-border);
+  border-radius: var(--semantic-dimension-radius-default);
+  background: var(--button-background);
+  color: var(--button-color);
+  font: var(--semantic-typography-ui-primary);
+  font-weight: var(--semantic-typography-heading-app-6-font-weight);
+  white-space: nowrap;
+  user-select: none;
+  touch-action: manipulation;
+  cursor: pointer;
+}
+
+@media (hover: hover) {
+  .root:hover:not([data-disabled]) {
+    border-color: var(--button-border-hover);
+    background: var(--button-background-hover);
+  }
+}
+
+.root:active:not([data-disabled]) {
+  background: var(--button-background-active);
+}
+
+.root:focus-visible {
+  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+  outline-offset: var(--semantic-dimension-border-width-medium);
+}
+
+.root[data-disabled] {
+  cursor: not-allowed;
+  opacity: var(--semantic-number-opacity-disabled);
+}
+
+.small {
+  min-block-size: var(--semantic-dimension-size-medium);
+  padding-block: var(--semantic-dimension-space-control-padding-block-small);
+  padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
+}
+
+.primary {
+  --button-background: var(--semantic-color-background-fill-primary);
+  --button-background-active: var(--semantic-color-background-fill-primary-active);
+  --button-background-hover: var(--semantic-color-background-fill-primary-hover);
+  --button-border: var(--semantic-color-background-fill-primary);
+  --button-border-hover: var(--semantic-color-background-fill-primary-hover);
+  --button-color: var(--semantic-color-text-on-primary-fill);
+}
+
+.ghost {
+  --button-background: var(--semantic-color-background-fill-ghost);
+  --button-background-active: var(--semantic-color-background-fill-ghost-active);
+  --button-background-hover: var(--semantic-color-background-fill-ghost-hover);
+  --button-border: var(--semantic-color-background-fill-ghost);
+  --button-border-hover: var(--semantic-color-border-secondary);
+  --button-color: var(--semantic-color-text-primary);
+}
+
+.danger {
+  --button-background: var(--semantic-color-background-fill-secondary-negative);
+  --button-background-active: var(--semantic-color-background-fill-secondary-negative-active);
+  --button-background-hover: var(--semantic-color-background-fill-secondary-negative-hover);
+  --button-border: var(--semantic-color-border-negative);
+  --button-border-hover: var(--semantic-color-border-negative);
+  --button-color: var(--semantic-color-text-on-secondary-fill-negative);
+}
+
+@media (max-width: 38rem) {
+  .root,
+  .small {
+    min-block-size: var(--semantic-dimension-size-x-large);
+    font-size: var(--semantic-typography-prose-primary-font-size);
+    line-height: var(--semantic-typography-prose-primary-line-height);
+  }
+}
+
+@media (forced-colors: active) {
+  .root {
+    border-color: ButtonBorder;
+  }
+}

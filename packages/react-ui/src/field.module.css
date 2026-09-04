@@ -1,0 +1,84 @@
+.field {
+  display: grid;
+  gap: var(--semantic-dimension-space-control-gap-small);
+  min-inline-size: 0;
+  color: var(--semantic-color-text-primary);
+  font: var(--semantic-typography-ui-primary);
+}
+
+.label {
+  color: var(--semantic-color-text-primary);
+  font-weight: var(--semantic-typography-heading-app-6-font-weight);
+}
+
+.control {
+  box-sizing: border-box;
+  inline-size: 100%;
+  min-block-size: var(--semantic-dimension-size-large);
+  padding-block: var(--semantic-dimension-space-control-padding-block-medium);
+  padding-inline: var(--semantic-dimension-space-control-padding-inline-medium);
+  border: var(--semantic-dimension-border-width-small) solid var(--semantic-color-border-primary);
+  border-radius: var(--semantic-dimension-radius-default);
+  background: var(--semantic-color-background-surface);
+  color: var(--semantic-color-text-primary);
+  font: inherit;
+  touch-action: manipulation;
+}
+
+.control::placeholder {
+  color: var(--semantic-color-text-secondary);
+}
+
+@media (hover: hover) {
+  .control:hover:not(:disabled) {
+    border-color: var(--semantic-color-border-primary-hover);
+  }
+}
+
+.control:focus-visible {
+  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+  outline-offset: calc(-1 * var(--semantic-dimension-border-width-small));
+}
+
+.control[data-invalid],
+.control[aria-invalid='true'] {
+  border-color: var(--semantic-color-border-negative);
+}
+
+.control:disabled,
+.control[data-disabled] {
+  cursor: not-allowed;
+  opacity: var(--semantic-number-opacity-disabled);
+}
+
+.textarea {
+  min-block-size: calc(var(--semantic-dimension-size-x-large) * 2);
+  resize: vertical;
+}
+
+.message {
+  margin: 0;
+  color: var(--semantic-color-text-secondary);
+  font: var(--semantic-typography-ui-secondary);
+}
+
+.error {
+  color: var(--semantic-color-text-negative);
+}
+
+@media (max-width: 38rem) {
+  .field {
+    font-size: var(--semantic-typography-prose-primary-font-size);
+    line-height: var(--semantic-typography-prose-primary-line-height);
+  }
+
+  .control {
+    min-block-size: var(--semantic-dimension-size-x-large);
+  }
+}
+
+@media (forced-colors: active) {
+  .control {
+    border-color: ButtonBorder;
+  }
+}

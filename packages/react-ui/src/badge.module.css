@@ -1,0 +1,33 @@
+.root {
+  --badge-background: var(--semantic-color-background-fill-secondary);
+  --badge-color: var(--semantic-color-text-on-secondary-fill);
+
+  display: inline-flex;
+  inline-size: fit-content;
+  padding-block: var(--semantic-dimension-space-control-padding-block-small);
+  padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
+  border-radius: var(--semantic-dimension-radius-full);
+  background: var(--badge-background);
+  color: var(--badge-color);
+  font: var(--semantic-typography-ui-secondary);
+}
+
+.information {
+  --badge-background: var(--semantic-color-background-fill-secondary-information);
+  --badge-color: var(--semantic-color-text-on-secondary-fill-information);
+}
+
+.positive {
+  --badge-background: var(--semantic-color-background-fill-secondary-positive);
+  --badge-color: var(--semantic-color-text-on-secondary-fill-positive);
+}
+
+.warning {
+  --badge-background: var(--semantic-color-background-fill-secondary-warning);
+  --badge-color: var(--semantic-color-text-on-secondary-fill-warning);
+}
+
+.negative {
+  --badge-background: var(--semantic-color-background-fill-secondary-negative);
+  --badge-color: var(--semantic-color-text-on-secondary-fill-negative);
+}
