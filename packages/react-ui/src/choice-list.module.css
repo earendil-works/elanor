@@ -1,91 +1,64 @@
-.fieldset,
-.choiceList {
-  display: grid;
-  gap: var(--semantic-dimension-space-control-gap-medium);
-  min-inline-size: 0;
-  margin: 0;
-  padding: 0;
-  border: 0;
-  color: var(--semantic-color-text-primary);
-  font: var(--semantic-typography-ui-primary);
-}
-
-.legend {
-  margin: 0;
-  padding: 0;
-  color: var(--semantic-color-text-primary);
-  font-weight: var(--semantic-typography-heading-app-6-font-weight);
-}
-
-.options {
-  display: grid;
-  gap: var(--semantic-dimension-space-control-gap-small);
-}
-
-.item {
-  display: grid;
-  gap: var(--semantic-dimension-space-control-gap-small);
-  min-inline-size: 0;
-}
-
-.option {
-  display: flex;
-  align-items: center;
-  gap: var(--semantic-dimension-space-control-gap-medium);
-  min-block-size: var(--semantic-dimension-size-large);
-  padding-block: var(--semantic-dimension-space-control-padding-block-small);
-  padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
-  border-radius: var(--semantic-dimension-radius-default);
-  font-weight: inherit;
-  cursor: pointer;
-}
-
-@media (hover: hover) {
-  .option:hover:not([data-disabled]) {
-    background: var(--semantic-color-background-fill-ghost-hover);
-  }
-}
-
 .radio {
+  position: relative;
+  isolation: isolate;
   box-sizing: border-box;
   display: inline-flex;
   flex: none;
   align-items: center;
   justify-content: center;
-  inline-size: var(--semantic-dimension-size-x-small);
-  block-size: var(--semantic-dimension-size-x-small);
+  inline-size: var(--semantic-dimension-size-small);
+  block-size: var(--semantic-dimension-size-small);
   margin: 0;
   padding: 0;
-  border: var(--semantic-dimension-border-width-small) solid var(--semantic-color-border-primary);
+  border: 0;
   border-radius: var(--semantic-dimension-radius-full);
-  background: var(--semantic-color-background-radio);
+  background: transparent;
   color: var(--semantic-color-icon-radio-indicator);
   touch-action: manipulation;
 }
 
+.radio::before {
+  position: absolute;
+  z-index: var(--semantic-number-layer-background);
+  box-sizing: border-box;
+  inline-size: var(--semantic-dimension-size-x-small);
+  block-size: var(--semantic-dimension-size-x-small);
+  border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-primary);
+  border-radius: var(--semantic-dimension-radius-full);
+  background: var(--semantic-color-background-radio);
+  content: '';
+}
+
+@media (pointer: coarse) {
+  .radio {
+    inline-size: var(--semantic-dimension-size-x-large);
+    block-size: var(--semantic-dimension-size-x-large);
+  }
+}
+
 @media (hover: hover) {
-  .radio:hover:not([data-disabled]) {
+  .radio:hover:not([data-disabled])::before {
     background: var(--semantic-color-background-radio-hover);
   }
 }
 
-.radio:active:not([data-disabled]) {
+.radio:active:not([data-disabled])::before {
   background: var(--semantic-color-background-radio-active);
 }
 
-.radio[data-checked] {
+.radio[data-checked]::before {
   border-color: var(--semantic-color-background-radio-selected);
   background: var(--semantic-color-background-radio-selected);
 }
 
 @media (hover: hover) {
-  .radio[data-checked]:hover:not([data-disabled]) {
+  .radio[data-checked]:hover:not([data-disabled])::before {
     border-color: var(--semantic-color-background-radio-selected-hover);
     background: var(--semantic-color-background-radio-selected-hover);
   }
 }
 
-.radio[data-checked]:active:not([data-disabled]) {
+.radio[data-checked]:active:not([data-disabled])::before {
   border-color: var(--semantic-color-background-radio-selected-active);
   background: var(--semantic-color-background-radio-selected-active);
 }
@@ -97,8 +70,8 @@
 
 .indicator {
   display: inline-flex;
-  inline-size: 40%;
-  block-size: 40%;
+  inline-size: calc(var(--semantic-dimension-size-x-small) * 0.375);
+  block-size: calc(var(--semantic-dimension-size-x-small) * 0.375);
   border-radius: var(--semantic-dimension-radius-full);
   background: currentcolor;
 }
@@ -107,46 +80,21 @@
   display: none;
 }
 
-.option[data-disabled],
-.choiceList[data-disabled] .option {
+.radio[data-disabled] {
   cursor: not-allowed;
   opacity: var(--semantic-number-opacity-disabled);
 }
 
-.radio[data-disabled] {
-  cursor: not-allowed;
-}
-
-.description {
-  margin: 0;
-  color: var(--semantic-color-text-secondary);
-  font: var(--semantic-typography-ui-secondary);
-}
-
-@media (max-width: 38rem) {
-  .fieldset,
-  .choiceList {
-    font-size: var(--semantic-typography-prose-primary-font-size);
-    line-height: var(--semantic-typography-prose-primary-line-height);
-  }
-
-  .option {
-    min-block-size: var(--semantic-dimension-size-x-large);
-  }
-
-  .radio {
-    inline-size: var(--semantic-dimension-size-small);
-    block-size: var(--semantic-dimension-size-small);
-  }
-}
-
 @media (forced-colors: active) {
-  .radio {
+  .radio::before {
     border-color: ButtonBorder;
   }
 
-  .radio[data-checked] {
+  .radio[data-checked]::before {
     background: Highlight;
+  }
+
+  .indicator {
     color: HighlightText;
   }
 }

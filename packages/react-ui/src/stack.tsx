@@ -1,9 +1,9 @@
 import {forwardRef, type HTMLAttributes} from 'react';
 import styles from './stack.module.css';
-import {classes} from './shared.js';
+import {classes} from './shared.ts';
 
 export type StackDirection = 'row' | 'column';
-export type StackGap = 'xs' | 'sm' | 'md' | 'lg';
+export type StackGap = 'xxSmall' | 'xSmall' | 'small' | 'medium' | 'large' | 'xLarge' | 'auto';
 export type StackAlign = 'start' | 'center' | 'end' | 'stretch';
 export type StackWrap = 'wrap' | 'nowrap';
 
@@ -15,10 +15,13 @@ export interface StackProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const gapClasses: Readonly<Record<StackGap, string | undefined>> = {
-  xs: styles.gapXs,
-  sm: styles.gapSm,
-  md: undefined,
-  lg: styles.gapLg,
+  xxSmall: styles.gapXxs,
+  xSmall: styles.gapXs,
+  small: styles.gapSm,
+  medium: undefined,
+  large: styles.gapLg,
+  xLarge: styles.gapXl,
+  auto: styles.gapAuto,
 };
 
 const alignClasses: Readonly<Record<StackAlign, string | undefined>> = {
@@ -31,7 +34,7 @@ const alignClasses: Readonly<Record<StackAlign, string | undefined>> = {
 export const Stack = forwardRef<HTMLDivElement, StackProps>(function Stack(
   {
     direction = 'column',
-    gap = 'md',
+    gap = 'medium',
     align = 'stretch',
     wrap = 'nowrap',
     className,

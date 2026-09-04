@@ -1,0 +1,89 @@
+.root {
+  position: relative;
+  isolation: isolate;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  inline-size: var(--semantic-dimension-size-medium);
+  block-size: var(--semantic-dimension-size-small);
+  flex: none;
+  padding: 0;
+  border: 0;
+  border-radius: var(--semantic-dimension-radius-full);
+  background: transparent;
+  touch-action: manipulation;
+  cursor: pointer;
+}
+
+.root::before {
+  position: absolute;
+  z-index: var(--semantic-number-layer-background);
+  inset-inline-start: calc((100% - var(--semantic-dimension-size-medium)) / 2);
+  inline-size: var(--semantic-dimension-size-medium);
+  block-size: var(--semantic-dimension-size-x-small);
+  border-radius: inherit;
+  background: var(--semantic-color-background-switch);
+  content: '';
+}
+
+.root:hover:not([data-disabled])::before {
+  background: var(--semantic-color-background-switch-hover);
+}
+
+.root:active:not([data-disabled])::before {
+  background: var(--semantic-color-background-switch-active);
+}
+
+.root[data-checked]::before {
+  background: var(--semantic-color-background-switch-selected);
+}
+
+.root[data-checked]:hover:not([data-disabled])::before {
+  background: var(--semantic-color-background-switch-selected-hover);
+}
+
+.root[data-checked]:active:not([data-disabled])::before {
+  background: var(--semantic-color-background-switch-selected-active);
+}
+
+.root:focus-visible {
+  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+  outline-offset: var(--semantic-dimension-border-width-medium);
+}
+
+.root[data-disabled] {
+  cursor: not-allowed;
+  opacity: var(--semantic-number-opacity-disabled);
+}
+
+.thumb {
+  position: absolute;
+  inset-inline-start: calc((100% - var(--semantic-dimension-size-medium)) / 2 + var(--semantic-dimension-space-padding-xx-small));
+  inline-size: calc(var(--semantic-dimension-size-x-small) - 2 * var(--semantic-dimension-space-padding-xx-small));
+  block-size: calc(var(--semantic-dimension-size-x-small) - 2 * var(--semantic-dimension-space-padding-xx-small));
+  border-radius: var(--semantic-dimension-radius-full);
+  background: var(--semantic-color-background-switch-knob);
+}
+
+.root[data-checked] .thumb {
+  inset-inline-start: auto;
+  inset-inline-end: calc((100% - var(--semantic-dimension-size-medium)) / 2 + var(--semantic-dimension-space-padding-xx-small));
+}
+
+@media (pointer: coarse) {
+  .root {
+    inline-size: var(--semantic-dimension-size-x-large);
+    block-size: var(--semantic-dimension-size-x-large);
+  }
+}
+
+@media (forced-colors: active) {
+  .root::before {
+    outline: var(--semantic-dimension-border-width-small) solid ButtonText;
+  }
+
+  .thumb {
+    background: ButtonText;
+    forced-color-adjust: none;
+  }
+}

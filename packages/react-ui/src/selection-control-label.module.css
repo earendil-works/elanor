@@ -1,0 +1,42 @@
+.root {
+  display: inline-flex;
+  align-items: center;
+  min-block-size: var(--semantic-dimension-size-small);
+  gap: var(--semantic-dimension-space-gap-small);
+  min-inline-size: 0;
+  color: var(--semantic-color-text-primary);
+  cursor: pointer;
+}
+
+.control {
+  display: inline-flex;
+  flex: none;
+  min-block-size: var(--semantic-dimension-size-x-small);
+  align-items: center;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  min-inline-size: 0;
+}
+
+.label {
+  font: var(--semantic-typography-ui-primary);
+}
+
+.description {
+  color: var(--semantic-color-text-secondary);
+  font: var(--semantic-typography-ui-secondary);
+}
+
+.root:has([data-disabled]) {
+  cursor: not-allowed;
+  opacity: var(--semantic-number-opacity-disabled);
+}
+
+@media (pointer: coarse) {
+  .root {
+    min-block-size: var(--semantic-dimension-size-x-large);
+  }
+}

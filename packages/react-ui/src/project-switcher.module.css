@@ -1,0 +1,57 @@
+.trigger {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--semantic-dimension-space-control-gap-large);
+  padding-block: var(--semantic-dimension-space-control-padding-block-small);
+  padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
+  border: 0;
+  border-radius: var(--semantic-dimension-radius-small);
+  background: var(--semantic-color-background-fill-ghost-neutral);
+  color: var(--semantic-color-text-primary);
+  font: var(--semantic-typography-ui-primary);
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.outlined {
+  border: var(--semantic-dimension-border-width-small) solid var(--semantic-color-border-secondary);
+}
+
+@media (hover: hover) {
+  .trigger:hover:not([data-disabled]) {
+    background: var(--semantic-color-background-fill-ghost-neutral-hover);
+  }
+}
+
+.trigger:active:not([data-disabled]),
+.trigger[data-popup-open] {
+  background: var(--semantic-color-background-fill-ghost-neutral-active);
+}
+
+.trigger:focus-visible {
+  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+  outline-offset: var(--semantic-dimension-border-width-medium);
+}
+
+.trigger[data-disabled] {
+  cursor: not-allowed;
+  opacity: var(--semantic-number-opacity-disabled);
+}
+
+.label {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.indicator {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--semantic-dimension-size-x-small);
+  block-size: var(--semantic-dimension-size-x-small);
+  color: var(--semantic-color-icon-primary);
+}

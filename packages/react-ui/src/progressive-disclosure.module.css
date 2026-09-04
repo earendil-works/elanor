@@ -1,0 +1,12 @@
+.root {
+  min-inline-size: 0;
+  padding-inline-start: var(--semantic-dimension-space-padding-x-large);
+  border-inline-start: var(--semantic-dimension-border-width-default) solid
+    var(--semantic-color-border-secondary);
+  color: var(--semantic-color-text-primary);
+}
+
+.panel {
+  min-inline-size: 0;
+  padding-block-start: var(--semantic-dimension-space-padding-small);
+}

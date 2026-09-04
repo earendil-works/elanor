@@ -1,0 +1,33 @@
+.root {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--semantic-dimension-space-gap-x-small);
+  min-inline-size: 0;
+  color: var(--semantic-color-text-primary);
+}
+
+.padded {
+  padding: var(--semantic-dimension-space-padding-medium);
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--semantic-dimension-space-gap-small);
+  min-inline-size: 0;
+}
+
+.label {
+  font: var(--semantic-typography-ui-secondary);
+}
+
+.value {
+  font: var(--semantic-typography-heading-app-4);
+  letter-spacing: var(--semantic-typography-heading-app-4-letter-spacing);
+}
+
+.description {
+  color: var(--semantic-color-text-secondary);
+  font: var(--semantic-typography-ui-tertiary);
+}

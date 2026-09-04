@@ -1,0 +1,49 @@
+.root {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--semantic-dimension-space-gap-x-large);
+  min-inline-size: 0;
+  color: var(--semantic-color-text-primary);
+  padding-block-start: var(--semantic-dimension-space-padding-xxx-large);
+  text-align: center;
+}
+
+.illustration {
+  display: grid;
+  place-items: center;
+  max-inline-size: 100%;
+}
+
+.body {
+  display: grid;
+  gap: var(--semantic-dimension-space-gap-medium);
+}
+
+.copy {
+  display: grid;
+  gap: var(--semantic-dimension-space-gap-small);
+  max-inline-size: var(--semantic-dimension-breakpoint-small);
+}
+
+.title,
+.description {
+  margin: 0;
+}
+
+.title {
+  font: var(--semantic-typography-heading-app-4);
+  letter-spacing: var(--semantic-typography-heading-app-4-letter-spacing);
+}
+
+.description {
+  color: var(--semantic-color-text-secondary);
+  font: var(--semantic-typography-prose-primary);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--semantic-dimension-space-control-gap-medium);
+}

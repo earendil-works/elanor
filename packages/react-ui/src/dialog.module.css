@@ -1,7 +1,6 @@
 .backdrop {
   position: fixed;
   inset: 0;
-  z-index: var(--elanor-dialog-z-index, 1000);
   min-block-size: 100dvh;
   background: var(--semantic-color-background-backdrop);
 }
@@ -15,7 +14,6 @@
 .viewport {
   position: fixed;
   inset: 0;
-  z-index: var(--elanor-dialog-z-index, 1000);
   display: grid;
   place-items: center;
   overflow: auto;
@@ -30,10 +28,10 @@
   inline-size: min(var(--semantic-dimension-breakpoint-small), 100%);
   max-block-size: calc(100dvh - 2 * var(--semantic-dimension-space-padding-medium));
   overflow: auto;
-  padding: var(--semantic-dimension-space-padding-large);
-  border: var(--semantic-dimension-border-width-small) solid var(--semantic-color-border-secondary);
-  border-radius: var(--semantic-dimension-radius-large);
-  background: var(--semantic-color-background-surface);
+  padding: var(--semantic-dimension-space-padding-xxx-large);
+  border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-background-canvas);
+  border-radius: var(--semantic-dimension-radius-small);
+  background: var(--semantic-color-background-canvas);
   color: var(--semantic-color-text-primary);
   font: var(--semantic-typography-ui-primary);
   pointer-events: auto;
@@ -61,13 +59,6 @@
   flex-wrap: wrap;
   justify-content: flex-end;
   gap: var(--semantic-dimension-space-control-gap-medium);
-}
-
-@media (max-width: 38rem) {
-  .popup {
-    font-size: var(--semantic-typography-prose-primary-font-size);
-    line-height: var(--semantic-typography-prose-primary-line-height);
-  }
 }
 
 @media (forced-colors: active) {

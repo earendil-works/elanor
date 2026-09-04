@@ -3,73 +3,23 @@
   font: var(--semantic-typography-ui-primary);
 }
 
-.paragraph {
-  min-inline-size: 0;
-  margin: 0;
-}
-
-.textSecondary {
-  color: var(--semantic-color-text-secondary);
-}
-
-.textPositive {
-  color: var(--semantic-color-text-positive);
-}
-
-.textNegative {
-  color: var(--semantic-color-text-negative);
-}
-
-.textSmall {
-  font: var(--semantic-typography-ui-secondary);
-}
-
-.code {
-  font: var(--semantic-typography-code-primary);
-  white-space: pre-wrap;
-}
-
 .heading {
   min-inline-size: 0;
   margin: 0;
   color: var(--semantic-color-text-primary);
-  font: var(--semantic-typography-heading-app-4);
-  letter-spacing: var(--semantic-typography-heading-app-4-letter-spacing);
 }
 
-.headingCompact {
+.heading1 {
+  font: var(--semantic-typography-heading-app-1);
+  letter-spacing: var(--semantic-typography-heading-app-1-letter-spacing);
+}
+
+.heading2 {
+  font: var(--semantic-typography-heading-app-3);
+  letter-spacing: var(--semantic-typography-heading-app-3-letter-spacing);
+}
+
+.heading3 {
   font: var(--semantic-typography-heading-app-6);
   letter-spacing: var(--semantic-typography-heading-app-6-letter-spacing);
-}
-
-.box {
-  min-inline-size: 0;
-  padding: 0;
-  border: 0;
-  border-radius: var(--semantic-dimension-radius-default);
-  background: transparent;
-}
-
-.paddingSm {
-  padding: var(--semantic-dimension-space-padding-small);
-}
-
-.paddingMd {
-  padding: var(--semantic-dimension-space-padding-medium);
-}
-
-.paddingLg {
-  padding: var(--semantic-dimension-space-padding-large);
-}
-
-.surfacePrimary {
-  background: var(--semantic-color-background-surface);
-}
-
-.surfaceSubdued {
-  background: var(--semantic-color-background-fill-secondary);
-}
-
-.bordered {
-  border: var(--semantic-dimension-border-width-small) solid var(--semantic-color-border-secondary);
 }

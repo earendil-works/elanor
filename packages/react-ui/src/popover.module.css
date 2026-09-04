@@ -1,0 +1,32 @@
+.popup {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: var(--semantic-dimension-space-gap-small);
+  min-inline-size: 0;
+  max-inline-size: min(var(--semantic-dimension-breakpoint-x-small), var(--available-width));
+  max-block-size: var(--available-height);
+  overflow: auto;
+  padding: var(--semantic-dimension-space-padding-medium);
+  border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-secondary);
+  border-radius: var(--semantic-dimension-radius-small);
+  outline: 0;
+  background: var(--semantic-color-background-canvas);
+  color: var(--semantic-color-text-primary);
+  font: var(--semantic-typography-ui-primary);
+}
+
+.title,
+.description {
+  margin: 0;
+}
+
+.title {
+  font: var(--semantic-typography-heading-app-6);
+  letter-spacing: var(--semantic-typography-heading-app-6-letter-spacing);
+}
+
+.description {
+  color: var(--semantic-color-text-secondary);
+  font: var(--semantic-typography-ui-secondary);
+}

@@ -1,23 +1,26 @@
-'use client';
-
 import {Button as BaseButton} from '@base-ui/react/button';
 import {forwardRef} from 'react';
 import styles from './button.module.css';
-import {classes, mergeClassName} from './shared.js';
+import {mergeClassName} from './shared.ts';
 
-export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
-export type ButtonSize = 'small' | 'medium';
+export type {ButtonState} from '@base-ui/react/button';
 
-export interface ButtonProps extends Omit<BaseButton.Props, 'nativeButton' | 'render'> {
-  readonly variant?: ButtonVariant;
-  readonly size?: ButtonSize;
+export type ButtonHierarchy = 'primary' | 'secondary' | 'tertiary';
+export type ButtonSemantic = 'neutral' | 'information' | 'negative' | 'positive';
+export type ButtonDensity = 'compact' | 'default';
+
+export interface ButtonProps extends BaseButton.Props {
+  readonly hierarchy?: ButtonHierarchy;
+  readonly semantic?: ButtonSemantic;
+  readonly density?: ButtonDensity;
   readonly pending?: boolean;
 }
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
   {
-    variant = 'secondary',
-    size = 'medium',
+    hierarchy,
+    semantic,
+    density,
     pending = false,
     disabled = false,
     focusableWhenDisabled = false,
@@ -27,12 +30,6 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   },
   ref,
 ) {
-  const componentClassName = classes(
-    styles.root,
-    styles[variant],
-    size === 'small' && styles.small,
-  );
-
   return (
     <BaseButton
       {...props}
@@ -41,7 +38,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       disabled={disabled || pending}
       focusableWhenDisabled={focusableWhenDisabled || pending}
       aria-busy={pending || props['aria-busy']}
-      className={mergeClassName<BaseButton.State>(componentClassName, className)}
+      data-density={density ?? 'default'}
+      data-hierarchy={hierarchy ?? 'primary'}
+      data-semantic={semantic ?? 'neutral'}
+      className={mergeClassName<BaseButton.State>(styles.root, className)}
     />
   );
 });

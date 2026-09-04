@@ -1,0 +1,106 @@
+.list {
+  position: relative;
+  display: flex;
+  gap: var(--semantic-dimension-space-control-gap-x-large);
+  min-inline-size: 0;
+  border-block-end: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-secondary);
+}
+
+.tab {
+  position: relative;
+  box-sizing: border-box;
+  min-inline-size: var(--semantic-dimension-size-small);
+  min-block-size: var(--semantic-dimension-size-small);
+  padding-block: var(--semantic-dimension-space-control-padding-block-large);
+  padding-inline: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--semantic-color-text-primary);
+  font: var(--semantic-typography-ui-primary);
+  cursor: pointer;
+}
+
+.tab:hover:not([data-disabled])::after {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  block-size: var(--semantic-dimension-border-width-default);
+  background: var(--semantic-color-border-primary);
+  content: '';
+}
+
+.tab:focus-visible {
+  border-radius: var(--semantic-dimension-radius-small);
+  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+  outline-offset: var(--semantic-dimension-border-width-medium);
+}
+
+.tab[data-disabled] {
+  cursor: not-allowed;
+  opacity: var(--semantic-number-opacity-disabled);
+}
+
+.indicator {
+  position: absolute;
+  left: var(--active-tab-left);
+  inset-block-end: 0;
+  inline-size: var(--active-tab-width);
+  block-size: var(--semantic-dimension-border-width-default);
+  background: var(--semantic-color-border-primary);
+  pointer-events: none;
+}
+
+.list[data-orientation='vertical'] {
+  flex-direction: column;
+  border-block-end: 0;
+  border-inline-end: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-secondary);
+}
+
+.tab[data-orientation='vertical'] {
+  padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
+  text-align: start;
+}
+
+.tab[data-orientation='vertical']:hover:not([data-disabled])::after {
+  inset-inline-start: auto;
+  inset-block: 0;
+  inline-size: var(--semantic-dimension-border-width-default);
+  block-size: auto;
+}
+
+.indicator[data-orientation='vertical'] {
+  left: auto;
+  top: var(--active-tab-top);
+  inset-inline-end: 0;
+  inset-block-end: auto;
+  inline-size: var(--semantic-dimension-border-width-default);
+  block-size: var(--active-tab-height);
+}
+
+@media (pointer: coarse) {
+  .tab {
+    min-inline-size: var(--semantic-dimension-size-x-large);
+    min-block-size: var(--semantic-dimension-size-x-large);
+  }
+}
+
+@media (forced-colors: active) {
+  .indicator,
+  .tab:hover:not([data-disabled])::after {
+    background: Highlight;
+    forced-color-adjust: none;
+  }
+}
+
+.panel {
+  min-inline-size: 0;
+  padding-block-start: var(--semantic-dimension-space-padding-medium);
+  outline: 0;
+}
+
+.panel:focus-visible {
+  border-radius: var(--semantic-dimension-radius-small);
+  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+  outline-offset: var(--semantic-dimension-border-width-medium);
+}

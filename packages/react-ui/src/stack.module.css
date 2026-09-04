@@ -11,6 +11,10 @@
   flex-direction: row;
 }
 
+.gapXxs {
+  gap: var(--semantic-dimension-space-gap-xx-small);
+}
+
 .gapXs {
   gap: var(--semantic-dimension-space-gap-x-small);
 }
@@ -21,6 +25,15 @@
 
 .gapLg {
   gap: var(--semantic-dimension-space-gap-large);
+}
+
+.gapXl {
+  gap: var(--semantic-dimension-space-gap-x-large);
+}
+
+.gapAuto {
+  justify-content: space-between;
+  gap: 0;
 }
 
 .alignStart {

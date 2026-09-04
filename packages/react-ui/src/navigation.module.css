@@ -1,0 +1,104 @@
+.list {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--semantic-dimension-space-gap-small);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.listItem {
+  position: relative;
+}
+
+.navigationItem {
+  position: relative;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--semantic-dimension-space-control-gap-large);
+  padding-block: var(--semantic-dimension-space-control-padding-block-small);
+  padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
+  border: 0;
+  outline: 0;
+  background: var(--semantic-color-background-fill-ghost-neutral);
+  color: var(--semantic-color-text-primary);
+  font: var(--semantic-typography-ui-primary);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.navigationItem::after {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: 0;
+  block-size: var(--semantic-dimension-border-width-default);
+  background: var(--semantic-color-border-primary);
+  content: '';
+  visibility: hidden;
+}
+
+@media (hover: hover) {
+  .navigationItem:hover::after {
+    visibility: visible;
+  }
+}
+
+.navigationItem[data-active]::after,
+.navigationItem[data-popup-open]::after {
+  visibility: visible;
+}
+
+.navigationItem:focus-visible {
+  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+  outline-offset: var(--semantic-dimension-border-width-medium);
+}
+
+.navigationItem[data-disabled] {
+  cursor: not-allowed;
+  opacity: var(--semantic-number-opacity-disabled);
+}
+
+.label {
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--semantic-dimension-size-x-small);
+  block-size: var(--semantic-dimension-size-x-small);
+  color: var(--semantic-color-icon-primary);
+}
+
+.popup {
+  box-sizing: border-box;
+  max-inline-size: var(--available-width);
+  max-block-size: var(--available-height);
+  overflow: auto;
+  padding: var(--semantic-dimension-space-padding-x-small);
+  border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-secondary);
+  border-radius: var(--semantic-dimension-radius-small);
+  outline: 0;
+  background: var(--semantic-color-background-surface);
+  color: var(--semantic-color-text-primary);
+  font: var(--semantic-typography-ui-primary);
+}
+
+.content {
+  min-inline-size: 0;
+}
+
+@media (forced-colors: active) {
+  .navigationItem::after,
+  .popup {
+    border-color: CanvasText;
+    background: Canvas;
+  }
+}

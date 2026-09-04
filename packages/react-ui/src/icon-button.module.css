@@ -1,0 +1,60 @@
+.root {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--semantic-dimension-size-small);
+  block-size: var(--semantic-dimension-size-small);
+  flex: none;
+  padding: 0;
+  border: 0;
+  border-radius: var(--semantic-dimension-radius-small);
+  background: var(--semantic-color-background-fill-ghost-neutral);
+  color: var(--semantic-color-icon-primary);
+  user-select: none;
+  touch-action: manipulation;
+  cursor: pointer;
+}
+
+.root > svg,
+.root > img {
+  inline-size: var(--semantic-dimension-size-x-small);
+  block-size: var(--semantic-dimension-size-x-small);
+}
+
+@media (pointer: coarse) {
+  .root {
+    inline-size: var(--semantic-dimension-size-x-large);
+    block-size: var(--semantic-dimension-size-x-large);
+  }
+}
+
+@media (hover: hover) {
+  .root:hover:not([data-disabled]) {
+    background: var(--semantic-color-background-fill-ghost-neutral-hover);
+    box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+      var(--semantic-color-background-fill-ghost-neutral-hover);
+  }
+}
+
+.root:active:not([data-disabled]) {
+  background: var(--semantic-color-background-fill-ghost-neutral-active);
+  box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+    var(--semantic-color-background-fill-ghost-neutral-active);
+}
+
+.root:focus-visible {
+  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+  outline-offset: var(--semantic-dimension-border-width-medium);
+}
+
+.root[data-disabled] {
+  cursor: not-allowed;
+  opacity: var(--semantic-number-opacity-disabled);
+}
+
+@media (forced-colors: active) {
+  .root {
+    border: var(--semantic-dimension-border-width-small) solid ButtonBorder;
+  }
+}

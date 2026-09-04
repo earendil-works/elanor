@@ -1,0 +1,106 @@
+.root {
+  position: relative;
+  isolation: isolate;
+  flex: none;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--semantic-dimension-size-small);
+  block-size: var(--semantic-dimension-size-small);
+  padding: 0;
+  border: 0;
+  border-radius: var(--semantic-dimension-radius-small);
+  background: transparent;
+  color: var(--semantic-color-icon-checkbox-indicator);
+  touch-action: manipulation;
+  cursor: pointer;
+}
+
+.root::before {
+  position: absolute;
+  z-index: var(--semantic-number-layer-background);
+  box-sizing: border-box;
+  inline-size: var(--semantic-dimension-size-x-small);
+  block-size: var(--semantic-dimension-size-x-small);
+  border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-primary);
+  border-radius: var(--semantic-dimension-radius-small);
+  background: var(--semantic-color-background-checkbox);
+  content: '';
+}
+
+@media (pointer: coarse) {
+  .root {
+    inline-size: var(--semantic-dimension-size-x-large);
+    block-size: var(--semantic-dimension-size-x-large);
+  }
+}
+
+@media (hover: hover) {
+  .root:hover:not([data-disabled])::before {
+    background: var(--semantic-color-background-checkbox-hover);
+  }
+}
+
+.root:active:not([data-disabled])::before {
+  background: var(--semantic-color-background-checkbox-active);
+}
+
+.root:is([data-checked], [data-indeterminate])::before {
+  border-color: var(--semantic-color-background-checkbox-selected);
+  background: var(--semantic-color-background-checkbox-selected);
+}
+
+.root:focus-visible {
+  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+  outline-offset: var(--semantic-dimension-border-width-medium);
+}
+
+.root[data-disabled] {
+  cursor: not-allowed;
+  opacity: var(--semantic-number-opacity-disabled);
+}
+
+.indicator {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--semantic-dimension-size-x-small);
+  block-size: var(--semantic-dimension-size-x-small);
+}
+
+.indicator:empty::after {
+  box-sizing: border-box;
+  inline-size: 50%;
+  block-size: 37.5%;
+  border-inline-end: var(--semantic-dimension-border-width-medium) solid currentcolor;
+  border-block-end: var(--semantic-dimension-border-width-medium) solid currentcolor;
+  content: '';
+  transform: translateY(calc(-1 * var(--semantic-dimension-space-padding-xxx-small))) rotate(45deg);
+}
+
+.indicator[data-indeterminate]:empty::after {
+  inline-size: 50%;
+  block-size: var(--semantic-dimension-border-width-medium);
+  border: 0;
+  background: currentcolor;
+  transform: none;
+}
+
+.indicator[data-unchecked] {
+  visibility: hidden;
+}
+
+@media (forced-colors: active) {
+  .root::before {
+    border-color: ButtonBorder;
+  }
+
+  .root:is([data-checked], [data-indeterminate])::before {
+    background: Highlight;
+  }
+
+  .indicator {
+    color: HighlightText;
+  }
+}

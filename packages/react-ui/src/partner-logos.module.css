@@ -1,0 +1,23 @@
+.root {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: var(--semantic-dimension-space-gap-large);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--semantic-color-icon-primary);
+}
+
+.item > :is(img, svg) {
+  display: block;
+  max-inline-size: 100%;
+  block-size: var(--semantic-dimension-size-medium);
+}

@@ -1,40 +1,212 @@
 .root {
-  --button-background: var(--semantic-color-background-fill-secondary);
-  --button-background-active: var(--semantic-color-background-fill-secondary-active);
-  --button-background-hover: var(--semantic-color-background-fill-secondary-hover);
-  --button-border: var(--semantic-color-border-primary);
-  --button-border-hover: var(--semantic-color-border-primary-hover);
-  --button-color: var(--semantic-color-text-on-secondary-fill);
-
   box-sizing: border-box;
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--semantic-dimension-space-control-gap-small);
-  min-block-size: var(--semantic-dimension-size-large);
-  padding-block: var(--semantic-dimension-space-control-padding-block-medium);
-  padding-inline: var(--semantic-dimension-space-control-padding-inline-medium);
-  border: var(--semantic-dimension-border-width-small) solid var(--button-border);
-  border-radius: var(--semantic-dimension-radius-default);
-  background: var(--button-background);
-  color: var(--button-color);
+  padding-block: var(--semantic-dimension-space-control-padding-block-small);
+  padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
+  border-width: var(--semantic-dimension-border-width-default);
+  border-style: solid;
+  border-radius: var(--semantic-dimension-radius-small);
   font: var(--semantic-typography-ui-primary);
-  font-weight: var(--semantic-typography-heading-app-6-font-weight);
   white-space: nowrap;
   user-select: none;
   touch-action: manipulation;
   cursor: pointer;
 }
 
+.root[data-density='compact'] {
+  padding-inline: var(--semantic-dimension-space-control-padding-inline-x-small);
+}
+
+.root[data-hierarchy='primary'][data-semantic='neutral'] {
+  border-color: var(--semantic-color-background-fill-primary);
+  background: var(--semantic-color-background-fill-primary);
+  color: var(--semantic-color-text-on-primary-fill);
+}
+
+.root[data-hierarchy='primary'][data-semantic='information'] {
+  border-color: var(--semantic-color-background-fill-primary-information);
+  background: var(--semantic-color-background-fill-primary-information);
+  color: var(--semantic-color-text-on-primary-fill);
+}
+
+.root[data-hierarchy='primary'][data-semantic='negative'] {
+  border-color: var(--semantic-color-background-fill-primary-negative);
+  background: var(--semantic-color-background-fill-primary-negative);
+  color: var(--semantic-color-text-on-primary-fill);
+}
+
+.root[data-hierarchy='primary'][data-semantic='positive'] {
+  border-color: var(--semantic-color-background-fill-primary-positive);
+  background: var(--semantic-color-background-fill-primary-positive);
+  color: var(--semantic-color-text-on-primary-fill);
+}
+
+.root[data-hierarchy='secondary'][data-semantic='neutral'] {
+  border-color: var(--semantic-color-border-primary);
+  background: var(--semantic-color-background-fill-secondary);
+  color: var(--semantic-color-text-on-secondary-fill);
+}
+
+.root[data-hierarchy='secondary'][data-semantic='information'] {
+  border-color: var(--semantic-color-border-information);
+  background: var(--semantic-color-background-fill-secondary-information);
+  color: var(--semantic-color-text-on-secondary-fill-information);
+}
+
+.root[data-hierarchy='secondary'][data-semantic='negative'] {
+  border-color: var(--semantic-color-border-negative);
+  background: var(--semantic-color-background-fill-secondary-negative);
+  color: var(--semantic-color-text-on-secondary-fill-negative);
+}
+
+.root[data-hierarchy='secondary'][data-semantic='positive'] {
+  border-color: var(--semantic-color-border-positive);
+  background: var(--semantic-color-background-fill-secondary-positive);
+  color: var(--semantic-color-text-on-secondary-fill-positive);
+}
+
+.root[data-hierarchy='tertiary'] {
+  color: var(--semantic-color-text-primary);
+}
+
+.root[data-hierarchy='tertiary'][data-semantic='neutral'] {
+  border-color: var(--semantic-color-background-fill-ghost-neutral);
+  background: var(--semantic-color-background-fill-ghost-neutral);
+}
+
+.root[data-hierarchy='tertiary'][data-semantic='information'] {
+  border-color: var(--semantic-color-background-fill-ghost-information);
+  background: var(--semantic-color-background-fill-ghost-information);
+  color: var(--semantic-color-text-information);
+}
+
+.root[data-hierarchy='tertiary'][data-semantic='negative'] {
+  border-color: var(--semantic-color-background-fill-ghost-negative);
+  background: var(--semantic-color-background-fill-ghost-negative);
+  color: var(--semantic-color-text-negative);
+}
+
+.root[data-hierarchy='tertiary'][data-semantic='positive'] {
+  border-color: var(--semantic-color-background-fill-ghost-positive);
+  background: var(--semantic-color-background-fill-ghost-positive);
+  color: var(--semantic-color-text-positive);
+}
+
 @media (hover: hover) {
-  .root:hover:not([data-disabled]) {
-    border-color: var(--button-border-hover);
-    background: var(--button-background-hover);
+  .root[data-hierarchy='primary'][data-semantic='neutral']:hover:not([data-disabled]) {
+    border-color: var(--semantic-color-background-fill-primary-hover);
+    background: var(--semantic-color-background-fill-primary-hover);
+  }
+
+  .root[data-hierarchy='primary'][data-semantic='information']:hover:not([data-disabled]) {
+    border-color: var(--semantic-color-background-fill-primary-information-hover);
+    background: var(--semantic-color-background-fill-primary-information-hover);
+  }
+
+  .root[data-hierarchy='primary'][data-semantic='negative']:hover:not([data-disabled]) {
+    border-color: var(--semantic-color-background-fill-primary-negative-hover);
+    background: var(--semantic-color-background-fill-primary-negative-hover);
+  }
+
+  .root[data-hierarchy='primary'][data-semantic='positive']:hover:not([data-disabled]) {
+    border-color: var(--semantic-color-background-fill-primary-positive-hover);
+    background: var(--semantic-color-background-fill-primary-positive-hover);
+  }
+
+  .root[data-hierarchy='secondary'][data-semantic='neutral']:hover:not([data-disabled]) {
+    background: var(--semantic-color-background-fill-secondary-hover);
+  }
+
+  .root[data-hierarchy='secondary'][data-semantic='information']:hover:not([data-disabled]) {
+    background: var(--semantic-color-background-fill-secondary-information-hover);
+  }
+
+  .root[data-hierarchy='secondary'][data-semantic='negative']:hover:not([data-disabled]) {
+    background: var(--semantic-color-background-fill-secondary-negative-hover);
+  }
+
+  .root[data-hierarchy='secondary'][data-semantic='positive']:hover:not([data-disabled]) {
+    background: var(--semantic-color-background-fill-secondary-positive-hover);
+  }
+
+  .root[data-hierarchy='tertiary'][data-semantic='neutral']:hover:not([data-disabled]) {
+    border-color: var(--semantic-color-background-fill-ghost-neutral-hover);
+    background: var(--semantic-color-background-fill-ghost-neutral-hover);
+  }
+
+  .root[data-hierarchy='tertiary'][data-semantic='information']:hover:not([data-disabled]) {
+    border-color: var(--semantic-color-background-fill-ghost-information-hover);
+    background: var(--semantic-color-background-fill-ghost-information-hover);
+  }
+
+  .root[data-hierarchy='tertiary'][data-semantic='negative']:hover:not([data-disabled]) {
+    border-color: var(--semantic-color-background-fill-ghost-negative-hover);
+    background: var(--semantic-color-background-fill-ghost-negative-hover);
+  }
+
+  .root[data-hierarchy='tertiary'][data-semantic='positive']:hover:not([data-disabled]) {
+    border-color: var(--semantic-color-background-fill-ghost-positive-hover);
+    background: var(--semantic-color-background-fill-ghost-positive-hover);
   }
 }
 
-.root:active:not([data-disabled]) {
-  background: var(--button-background-active);
+.root[data-hierarchy='primary'][data-semantic='neutral']:active:not([data-disabled]) {
+  border-color: var(--semantic-color-background-fill-primary-active);
+  background: var(--semantic-color-background-fill-primary-active);
+}
+
+.root[data-hierarchy='primary'][data-semantic='information']:active:not([data-disabled]) {
+  border-color: var(--semantic-color-background-fill-primary-information-active);
+  background: var(--semantic-color-background-fill-primary-information-active);
+}
+
+.root[data-hierarchy='primary'][data-semantic='negative']:active:not([data-disabled]) {
+  border-color: var(--semantic-color-background-fill-primary-negative-active);
+  background: var(--semantic-color-background-fill-primary-negative-active);
+}
+
+.root[data-hierarchy='primary'][data-semantic='positive']:active:not([data-disabled]) {
+  border-color: var(--semantic-color-background-fill-primary-positive-active);
+  background: var(--semantic-color-background-fill-primary-positive-active);
+}
+
+.root[data-hierarchy='secondary'][data-semantic='neutral']:active:not([data-disabled]) {
+  background: var(--semantic-color-background-fill-secondary-active);
+}
+
+.root[data-hierarchy='secondary'][data-semantic='information']:active:not([data-disabled]) {
+  background: var(--semantic-color-background-fill-secondary-information-active);
+}
+
+.root[data-hierarchy='secondary'][data-semantic='negative']:active:not([data-disabled]) {
+  background: var(--semantic-color-background-fill-secondary-negative-active);
+}
+
+.root[data-hierarchy='secondary'][data-semantic='positive']:active:not([data-disabled]) {
+  background: var(--semantic-color-background-fill-secondary-positive-active);
+}
+
+.root[data-hierarchy='tertiary'][data-semantic='neutral']:active:not([data-disabled]) {
+  border-color: var(--semantic-color-background-fill-ghost-neutral-active);
+  background: var(--semantic-color-background-fill-ghost-neutral-active);
+}
+
+.root[data-hierarchy='tertiary'][data-semantic='information']:active:not([data-disabled]) {
+  border-color: var(--semantic-color-background-fill-ghost-information-active);
+  background: var(--semantic-color-background-fill-ghost-information-active);
+}
+
+.root[data-hierarchy='tertiary'][data-semantic='negative']:active:not([data-disabled]) {
+  border-color: var(--semantic-color-background-fill-ghost-negative-active);
+  background: var(--semantic-color-background-fill-ghost-negative-active);
+}
+
+.root[data-hierarchy='tertiary'][data-semantic='positive']:active:not([data-disabled]) {
+  border-color: var(--semantic-color-background-fill-ghost-positive-active);
+  background: var(--semantic-color-background-fill-ghost-positive-active);
 }
 
 .root:focus-visible {
@@ -45,48 +217,6 @@
 .root[data-disabled] {
   cursor: not-allowed;
   opacity: var(--semantic-number-opacity-disabled);
-}
-
-.small {
-  min-block-size: var(--semantic-dimension-size-medium);
-  padding-block: var(--semantic-dimension-space-control-padding-block-small);
-  padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
-}
-
-.primary {
-  --button-background: var(--semantic-color-background-fill-primary);
-  --button-background-active: var(--semantic-color-background-fill-primary-active);
-  --button-background-hover: var(--semantic-color-background-fill-primary-hover);
-  --button-border: var(--semantic-color-background-fill-primary);
-  --button-border-hover: var(--semantic-color-background-fill-primary-hover);
-  --button-color: var(--semantic-color-text-on-primary-fill);
-}
-
-.ghost {
-  --button-background: var(--semantic-color-background-fill-ghost);
-  --button-background-active: var(--semantic-color-background-fill-ghost-active);
-  --button-background-hover: var(--semantic-color-background-fill-ghost-hover);
-  --button-border: var(--semantic-color-background-fill-ghost);
-  --button-border-hover: var(--semantic-color-border-secondary);
-  --button-color: var(--semantic-color-text-primary);
-}
-
-.danger {
-  --button-background: var(--semantic-color-background-fill-secondary-negative);
-  --button-background-active: var(--semantic-color-background-fill-secondary-negative-active);
-  --button-background-hover: var(--semantic-color-background-fill-secondary-negative-hover);
-  --button-border: var(--semantic-color-border-negative);
-  --button-border-hover: var(--semantic-color-border-negative);
-  --button-color: var(--semantic-color-text-on-secondary-fill-negative);
-}
-
-@media (max-width: 38rem) {
-  .root,
-  .small {
-    min-block-size: var(--semantic-dimension-size-x-large);
-    font-size: var(--semantic-typography-prose-primary-font-size);
-    line-height: var(--semantic-typography-prose-primary-line-height);
-  }
 }
 
 @media (forced-colors: active) {

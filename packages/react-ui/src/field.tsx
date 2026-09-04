@@ -1,80 +1,65 @@
-'use client';
-
 import {Field as BaseField} from '@base-ui/react/field';
 import {Input as BaseInput} from '@base-ui/react/input';
 import {forwardRef, type ComponentPropsWithoutRef} from 'react';
 import styles from './field.module.css';
-import {classes, mergeClassName} from './shared.js';
+import fieldStyles from './control-label.module.css';
+import {classes, mergeClassName} from './shared.ts';
+
+export type {
+  FieldValidityData,
+  FieldRootActions,
+  FieldRootState,
+  FieldRootProps,
+  FieldLabelState,
+  FieldLabelProps,
+  FieldDescriptionState,
+  FieldDescriptionProps,
+  FieldErrorState,
+  FieldErrorProps,
+  FieldControlState,
+  FieldControlProps,
+  FieldControlChangeEventReason,
+  FieldControlChangeEventDetails,
+  FieldValidityState,
+  FieldValidityProps,
+  FieldItemState,
+  FieldItemProps,
+} from '@base-ui/react/field';
+
+export type {
+  InputState,
+  InputChangeEventReason,
+  InputChangeEventDetails,
+} from '@base-ui/react/input';
 
 export const FieldRoot = forwardRef<HTMLDivElement, BaseField.Root.Props>(function FieldRoot(
-  {className, ...props},
-  ref,
+  {className, ...props}, ref,
 ) {
-  return (
-    <BaseField.Root
-      {...props}
-      ref={ref}
-      className={mergeClassName<BaseField.Root.State>(styles.field, className)}
-    />
-  );
+  return <BaseField.Root {...props} ref={ref} className={mergeClassName<BaseField.Root.State>(fieldStyles.root, className)} />;
 });
 
 export const FieldLabel = forwardRef<HTMLElement, BaseField.Label.Props>(function FieldLabel(
-  {className, ...props},
-  ref,
+  {className, ...props}, ref,
 ) {
-  return (
-    <BaseField.Label
-      {...props}
-      ref={ref}
-      className={mergeClassName<BaseField.Label.State>(styles.label, className)}
-    />
-  );
+  return <BaseField.Label {...props} ref={ref} className={mergeClassName<BaseField.Label.State>(fieldStyles.label, className)} />;
+});
+
+export const FieldDescription = forwardRef<HTMLParagraphElement, BaseField.Description.Props>(function FieldDescription(
+  {className, ...props}, ref,
+) {
+  return <BaseField.Description {...props} ref={ref} className={mergeClassName<BaseField.Description.State>(fieldStyles.description, className)} />;
+});
+
+export const FieldError = forwardRef<HTMLDivElement, BaseField.Error.Props>(function FieldError(
+  {className, ...props}, ref,
+) {
+  return <BaseField.Error {...props} ref={ref} className={mergeClassName<BaseField.Error.State>(fieldStyles.error, className)} />;
 });
 
 export const FieldControl = forwardRef<HTMLElement, BaseField.Control.Props>(function FieldControl(
-  {className, ...props},
-  ref,
+  {className, ...props}, ref,
 ) {
-  return (
-    <BaseField.Control
-      {...props}
-      ref={ref}
-      className={mergeClassName<BaseField.Control.State>(styles.control, className)}
-    />
-  );
-});
-
-export const FieldDescription = forwardRef<HTMLParagraphElement, BaseField.Description.Props>(
-  function FieldDescription({className, ...props}, ref) {
-    return (
-      <BaseField.Description
-        {...props}
-        ref={ref}
-        className={mergeClassName<BaseField.Description.State>(styles.message, className)}
-      />
-    );
-  },
-);
-
-export const FieldError = forwardRef<HTMLDivElement, BaseField.Error.Props>(function FieldError(
-  {className, ...props},
-  ref,
-) {
-  return (
-    <BaseField.Error
-      {...props}
-      ref={ref}
-      className={mergeClassName<BaseField.Error.State>(classes(styles.message, styles.error), className)}
-    />
-  );
-});
-
-export const FieldItem = forwardRef<HTMLDivElement, BaseField.Item.Props>(function FieldItem(
-  props,
-  ref,
-) {
-  return <BaseField.Item {...props} ref={ref} />;
+  return <BaseField.Control {...props} ref={ref} className={mergeClassName<BaseField.Control.State>(styles.control, className)} />;
 });
 
 export const Field = {
@@ -83,13 +68,13 @@ export const Field = {
   Control: FieldControl,
   Description: FieldDescription,
   Error: FieldError,
+  Item: BaseField.Item,
   Validity: BaseField.Validity,
-  Item: FieldItem,
 } as const;
 
-export interface TextFieldProps extends Omit<BaseInput.Props, 'render'> {}
+export interface InputProps extends BaseInput.Props {}
 
-export const TextField = forwardRef<HTMLInputElement, TextFieldProps>(function TextField(
+export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   {className, ...props},
   ref,
 ) {
@@ -110,17 +95,29 @@ export interface TextAreaProps
 }
 
 export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(function TextArea(
-  {className, ...props},
+  {
+    className, style, value, defaultValue, onValueChange, id, name, disabled, autoFocus,
+    'aria-describedby': ariaDescribedBy,
+    'aria-invalid': ariaInvalid,
+    ...props
+  },
   ref,
 ) {
-  // Field.Control is intentionally render-polymorphic, but its event props remain input-shaped.
-  // A textarea has the same value and validation contract used by the Base UI field adapter.
-  const controlProps = props as BaseField.Control.Props;
-
   return (
     <BaseField.Control
-      {...controlProps}
-      render={<textarea ref={ref} />}
+      id={id}
+      name={name}
+      disabled={disabled}
+      autoFocus={autoFocus}
+      value={value}
+      defaultValue={defaultValue}
+      onValueChange={onValueChange}
+      style={style}
+      aria-describedby={ariaDescribedBy}
+      aria-invalid={ariaInvalid}
+      // Compose the native element through Base UI's render API: textarea events
+      // and its ref stay typed against the actual element, while Field owns value state.
+      render={<textarea {...props} ref={ref} />}
       className={mergeClassName<BaseField.Control.State>(classes(styles.control, styles.textarea), className)}
     />
   );

@@ -1,6 +1,6 @@
 import {forwardRef, type HTMLAttributes} from 'react';
 import styles from './badge.module.css';
-import {classes} from './shared.js';
+import {classes} from './shared.ts';
 
 export type BadgeTone = 'neutral' | 'information' | 'positive' | 'warning' | 'negative';
 
