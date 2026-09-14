@@ -10,8 +10,8 @@
 }
 
 .heading2 {
-  font: var(--semantic-typography-heading-app-3);
-  letter-spacing: var(--semantic-typography-heading-app-3-letter-spacing);
+  font: var(--semantic-typography-heading-app-4);
+  letter-spacing: var(--semantic-typography-heading-app-4-letter-spacing);
 }
 
 .heading3 {
