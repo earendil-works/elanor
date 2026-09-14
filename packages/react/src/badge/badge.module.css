@@ -1,22 +1,21 @@
 .root {
   display: inline-flex;
   inline-size: fit-content;
-  padding-block: var(--semantic-dimension-space-control-padding-block-small);
-  padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
+  padding-block: var(--semantic-dimension-space-padding-xxx-small);
+  padding-inline: var(--semantic-dimension-space-padding-small);
   border-radius: var(--semantic-dimension-radius-full);
-  background: var(--semantic-color-background-fill-secondary);
-  color: var(--semantic-color-text-on-secondary-fill);
-  font: var(--semantic-typography-ui-secondary);
+  background: var(--semantic-color-background-fill-primary-neutral);
+  color: var(--semantic-color-text-on-primary-fill);
+  font: var(--semantic-typography-ui-tertiary);
+  letter-spacing: var(--semantic-typography-ui-tertiary-letter-spacing);
 }
 
 .information {
-  background: var(--semantic-color-background-fill-secondary-information);
-  color: var(--semantic-color-text-on-secondary-fill-information);
+  background: var(--semantic-color-background-fill-primary-information);
 }
 
 .positive {
-  background: var(--semantic-color-background-fill-secondary-positive);
-  color: var(--semantic-color-text-on-secondary-fill-positive);
+  background: var(--semantic-color-background-fill-primary-positive);
 }
 
 .warning {
@@ -25,6 +24,5 @@
 }
 
 .negative {
-  background: var(--semantic-color-background-fill-secondary-negative);
-  color: var(--semantic-color-text-on-secondary-fill-negative);
+  background: var(--semantic-color-background-fill-primary-negative);
 }
