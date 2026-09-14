@@ -18,14 +18,14 @@ export const Table = forwardRef<HTMLTableElement, TableProps>(function Table(
 });
 
 export const TableHead = forwardRef<HTMLTableSectionElement, HTMLAttributes<HTMLTableSectionElement>>(
-  function TableHead({className, ...props}, ref) {
-    return <thead {...props} ref={ref} className={classes(styles.head, className)} />;
+  function TableHead(props, ref) {
+    return <thead {...props} ref={ref} />;
   },
 );
 
 export const TableBody = forwardRef<HTMLTableSectionElement, HTMLAttributes<HTMLTableSectionElement>>(
-  function TableBody({className, ...props}, ref) {
-    return <tbody {...props} ref={ref} className={classes(styles.body, className)} />;
+  function TableBody(props, ref) {
+    return <tbody {...props} ref={ref} />;
   },
 );
 

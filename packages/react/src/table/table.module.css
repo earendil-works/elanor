@@ -11,6 +11,7 @@
   font: var(--semantic-typography-ui-primary);
 }
 
+thead > .row,
 .row:not(:last-child) {
   border-block-end: var(--semantic-dimension-border-width-small) solid
     var(--semantic-color-border-secondary);
