@@ -1,0 +1,9 @@
+.section {
+  min-inline-size: 0;
+  padding-block-end: var(--semantic-dimension-space-padding-xx-large);
+}
+
+.separated {
+  border-block-end: var(--semantic-dimension-border-width-default) solid
+    var(--semantic-color-border-secondary);
+}

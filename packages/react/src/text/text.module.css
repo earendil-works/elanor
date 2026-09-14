@@ -1,0 +1,4 @@
+.text {
+  color: var(--semantic-color-text-primary);
+  font: var(--semantic-typography-ui-primary);
+}

@@ -1,0 +1,22 @@
+.bar {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  gap: var(--semantic-dimension-space-gap-medium);
+  align-items: center;
+  min-inline-size: 0;
+}
+
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--semantic-dimension-space-control-gap-medium);
+  min-inline-size: 0;
+}
+
+.search {
+  min-inline-size: 0;
+}
+
+.search > * {
+  inline-size: 100%;
+}

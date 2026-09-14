@@ -1,0 +1,45 @@
+.header {
+  display: flex;
+  flex-direction: column;
+  gap: var(--semantic-dimension-space-gap-small);
+  min-inline-size: 0;
+}
+
+.headerRow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--semantic-dimension-space-gap-medium);
+  min-inline-size: 0;
+}
+
+.title,
+.description {
+  margin: 0;
+}
+
+.title {
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+  font: var(--semantic-typography-heading-app-1);
+  letter-spacing: var(--semantic-typography-heading-app-1-letter-spacing);
+}
+
+.description {
+  max-inline-size: var(--semantic-dimension-breakpoint-small);
+  color: var(--semantic-color-text-secondary);
+  font: var(--semantic-typography-ui-primary);
+}
+
+.actions {
+  display: flex;
+  flex: 0 1 auto;
+  flex-wrap: wrap;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  align-items: center;
+  justify-content: flex-end;
+  gap: var(--semantic-dimension-space-control-gap-medium);
+}

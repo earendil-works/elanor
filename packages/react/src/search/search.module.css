@@ -1,0 +1,72 @@
+.root {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--semantic-dimension-space-control-gap-large);
+  block-size: var(--semantic-dimension-size-small);
+  min-inline-size: 0;
+  padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
+  border: var(--semantic-dimension-border-width-default) solid
+    var(--semantic-color-background-fill-secondary);
+  border-radius: var(--semantic-dimension-radius-small);
+  background: var(--semantic-color-background-fill-secondary);
+  color: var(--semantic-color-text-primary);
+}
+
+.root:hover {
+  border-color: var(--semantic-color-background-fill-secondary-hover);
+  background: var(--semantic-color-background-fill-secondary-hover);
+}
+
+.root:focus-within {
+  border-color: var(--semantic-color-focus-ring);
+  background: var(--semantic-color-background-fill-secondary);
+  outline: 0;
+}
+
+.icon,
+.adornment {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--semantic-dimension-size-x-small);
+  block-size: var(--semantic-dimension-size-x-small);
+  color: var(--semantic-color-icon-primary);
+}
+
+.searchGlyph {
+  position: relative;
+  box-sizing: border-box;
+  inline-size: var(--semantic-dimension-space-padding-medium);
+  block-size: var(--semantic-dimension-space-padding-medium);
+  border: var(--semantic-dimension-border-width-small) solid currentcolor;
+  border-radius: var(--semantic-dimension-radius-full);
+}
+
+.searchGlyph::after {
+  position: absolute;
+  inset-inline-end: calc(-1 * var(--semantic-dimension-space-padding-small));
+  inset-block-end: calc(-1 * var(--semantic-dimension-space-padding-xxx-small));
+  inline-size: var(--semantic-dimension-space-padding-small);
+  block-size: var(--semantic-dimension-border-width-small);
+  background: currentcolor;
+  content: '';
+  transform: rotate(45deg);
+  transform-origin: center;
+}
+
+.input {
+  inline-size: 100%;
+  min-inline-size: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: inherit;
+  font: var(--semantic-typography-ui-primary);
+}
+
+.input::placeholder {
+  color: var(--semantic-color-text-secondary);
+}

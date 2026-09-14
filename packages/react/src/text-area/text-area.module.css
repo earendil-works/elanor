@@ -1,0 +1,7 @@
+.textarea {
+  composes: control from '../field/field.module.css';
+  block-size: calc(var(--semantic-dimension-size-small) * 3);
+  min-block-size: calc(var(--semantic-dimension-size-small) * 3);
+  padding-block: var(--semantic-dimension-space-control-padding-block-small);
+  resize: vertical;
+}

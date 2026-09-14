@@ -1,0 +1,3 @@
+.control {
+  composes: control from '../field/field.module.css';
+}

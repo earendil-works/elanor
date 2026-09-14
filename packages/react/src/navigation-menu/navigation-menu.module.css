@@ -1,0 +1,45 @@
+.navigationItem {
+  composes: navigationItem from '../navigation-item/navigation-item.module.css';
+}
+
+.icon {
+  composes: icon from '../navigation-item/navigation-item.module.css';
+}
+
+.list {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--semantic-dimension-space-gap-small);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.listItem {
+  position: relative;
+}
+
+.popup {
+  box-sizing: border-box;
+  max-inline-size: var(--available-width);
+  max-block-size: var(--available-height);
+  overflow: auto;
+  padding: var(--semantic-dimension-space-padding-x-small);
+  border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-secondary);
+  border-radius: var(--semantic-dimension-radius-small);
+  outline: 0;
+  background: var(--semantic-color-background-surface);
+  color: var(--semantic-color-text-primary);
+  font: var(--semantic-typography-ui-primary);
+}
+
+.content {
+  min-inline-size: 0;
+}
+
+@media (forced-colors: active) {
+  .popup {
+    border-color: CanvasText;
+    background: Canvas;
+  }
+}
