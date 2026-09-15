@@ -1,0 +1,11 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@earendil-works/elanor-react": ["../react/src/index.ts"]
+    }
+  },
+  "include": [".astro/types.d.ts", "**/*", "../react/src/**/*.example.tsx"],
+  "exclude": ["dist"]
+}
