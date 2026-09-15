@@ -1,0 +1,79 @@
+---
+import '@earendil-works/design-tokens/radius.css';
+import '../styles/fonts.css';
+import {getCollection} from 'astro:content';
+import {ClientRouter} from 'astro:transitions';
+import {DocsSideNavigation} from '../components/docs-side-navigation.tsx';
+
+interface Props {
+  currentComponent: string;
+}
+
+const {currentComponent} = Astro.props;
+const entries = await getCollection('components');
+const components = entries.map((entry) => entry.id).sort();
+---
+
+<!doctype html>
+<html lang="en" data-color-scheme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{currentComponent}</title>
+    <ClientRouter />
+  </head>
+  <body>
+    <aside>
+      <div data-docs-swap="navigation">
+        <DocsSideNavigation components={components} currentComponent={currentComponent} />
+      </div>
+    </aside>
+    <main data-docs-swap="content">
+      <div class="preview">
+        <slot />
+      </div>
+    </main>
+  </body>
+</html>
+
+<style>
+  :global(*) {
+    box-sizing: border-box;
+  }
+
+  :global(body) {
+    display: grid;
+    grid-template-columns: 16rem minmax(0, 1fr);
+    min-height: 100vh;
+    margin: 0;
+    background: var(--semantic-color-background-canvas);
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-ui-primary);
+  }
+
+  main {
+    padding: 1rem;
+  }
+
+  aside {
+    position: sticky;
+    inset-block-start: 0;
+    block-size: 100vh;
+    min-block-size: 0;
+    overflow-y: auto;
+    padding: 1rem;
+    border-inline-end: 1px solid;
+  }
+
+  .preview {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    inline-size: 100%;
+    max-inline-size: var(--semantic-dimension-breakpoint-small);
+  }
+</style>
+
+<script>
+  import '../scripts/docs-swap.ts';
+</script>

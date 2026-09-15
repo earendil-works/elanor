@@ -7,5 +7,6 @@
     "allowImportingTsExtensions": true,
     "rewriteRelativeImportExtensions": true
   },
-  "include": ["src"]
+  "include": ["src"],
+  "exclude": ["src/**/*.example.tsx"]
 }
