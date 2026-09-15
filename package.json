@@ -9,6 +9,7 @@
     "pnpm": "11.13.1"
   },
   "scripts": {
+    "dev": "pnpm --filter @earendil-works/elanor-docs dev",
     "build": "pnpm -r --workspace-concurrency=1 --if-present run build",
     "check": "pnpm -r --workspace-concurrency=1 --if-present run check",
     "test": "pnpm -r --workspace-concurrency=1 --if-present run test",
