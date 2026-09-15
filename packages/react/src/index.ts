@@ -206,19 +206,18 @@ export type {
 } from './input/input.tsx';
 
 export {
+  KeyValue,
   KeyValueGrid,
-  KeyValueGridKey,
-  KeyValueGridRoot,
-  KeyValueGridValue,
-} from './key-value-grid/key-value-grid.tsx';
+  KeyValueInline,
+  KeyValueKey,
+  KeyValueValue,
+} from './key-value/key-value.tsx';
 export type {
-  KeyValueGridKeyProps,
-  KeyValueGridRootProps,
-  KeyValueGridValueProps,
-} from './key-value-grid/key-value-grid.tsx';
-
-export {KeyValuePair} from './key-value-pair/key-value-pair.tsx';
-export type {KeyValuePairProps} from './key-value-pair/key-value-pair.tsx';
+  KeyValueGridProps,
+  KeyValueInlineProps,
+  KeyValueKeyProps,
+  KeyValueValueProps,
+} from './key-value/key-value.tsx';
 
 export {Link} from './link/link.tsx';
 export type {LinkProps} from './link/link.tsx';
