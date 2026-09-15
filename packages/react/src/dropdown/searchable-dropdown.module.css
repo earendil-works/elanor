@@ -1,0 +1,118 @@
+.trigger {
+  composes: trigger from './dropdown.module.css';
+}
+
+.icon {
+  composes: icon from './dropdown.module.css';
+}
+
+.chevron {
+  composes: chevron from './dropdown.module.css';
+}
+
+.popup {
+  composes: popup from './dropdown.module.css';
+  display: flex;
+  flex-direction: column;
+}
+
+.inputGroup {
+  box-sizing: border-box;
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: var(--semantic-dimension-space-control-gap-large);
+  min-inline-size: 0;
+  padding-block: var(--semantic-dimension-space-control-padding-block-small);
+  padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
+  border-block-end: var(--semantic-dimension-border-width-default) solid
+    var(--semantic-color-border-secondary);
+}
+
+.inputGroup:focus-within {
+  border-block-end-color: var(--semantic-color-focus-ring);
+}
+
+.inputGroup[data-invalid] {
+  border-block-end-color: var(--semantic-color-focus-ring-negative);
+}
+
+.inputGroup[data-disabled] {
+  opacity: var(--semantic-number-opacity-disabled);
+}
+
+.searchIcon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--semantic-dimension-size-x-small);
+  block-size: var(--semantic-dimension-size-x-small);
+  color: var(--semantic-color-icon-secondary);
+}
+
+.searchGlyph {
+  composes: searchGlyph from '../search/search.module.css';
+}
+
+.input {
+  inline-size: 100%;
+  min-inline-size: 0;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: inherit;
+  font: var(--semantic-typography-ui-secondary);
+  letter-spacing: var(--semantic-typography-ui-secondary-letter-spacing);
+}
+
+.input::placeholder {
+  color: var(--semantic-color-text-secondary);
+}
+
+.input:disabled {
+  cursor: not-allowed;
+}
+
+.list {
+  composes: list from './dropdown.module.css';
+  flex: 0 1 auto;
+}
+
+.item {
+  composes: item from './dropdown.module.css';
+  flex: none;
+  min-inline-size: 0;
+}
+
+.itemIndicator {
+  composes: itemIndicator from './dropdown.module.css';
+}
+
+.groupLabel {
+  composes: groupLabel from './dropdown.module.css';
+}
+
+.separator {
+  composes: separator from './dropdown.module.css';
+  flex: none;
+}
+
+.empty {
+  flex: none;
+  color: var(--semantic-color-text-secondary);
+  font: var(--semantic-typography-ui-secondary);
+  overflow-wrap: anywhere;
+}
+
+.empty:not(:empty) {
+  padding: var(--semantic-dimension-space-padding-x-small);
+}
+
+@media (forced-colors: active) {
+  .inputGroup:focus-within {
+    outline: var(--semantic-dimension-border-width-default) solid Highlight;
+    outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
+  }
+}

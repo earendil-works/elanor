@@ -5,7 +5,7 @@
   justify-content: space-between;
   gap: var(--semantic-dimension-space-control-gap-large);
   inline-size: 100%;
-  block-size: var(--semantic-dimension-size-small);
+  min-block-size: var(--semantic-dimension-size-small);
   min-inline-size: 0;
   padding-block: var(--semantic-dimension-space-control-padding-block-small);
   padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
@@ -15,6 +15,8 @@
   background: var(--semantic-color-background-fill-secondary);
   color: var(--semantic-color-text-primary);
   font: var(--semantic-typography-ui-primary);
+  text-align: start;
+  overflow-wrap: anywhere;
   cursor: pointer;
 }
 
@@ -56,8 +58,9 @@
   box-sizing: border-box;
   inline-size: calc(var(--semantic-dimension-size-x-small) * 0.375);
   block-size: calc(var(--semantic-dimension-size-x-small) * 0.375);
-  border-inline-end: var(--semantic-dimension-border-width-small) solid currentcolor;
-  border-block-end: var(--semantic-dimension-border-width-small) solid currentcolor;
+  /* Physical edges keep the chevron pointing down in both LTR and RTL. */
+  border-right: var(--semantic-dimension-border-width-small) solid currentcolor;
+  border-bottom: var(--semantic-dimension-border-width-small) solid currentcolor;
   transform: rotate(45deg) translateY(calc(-1 * var(--semantic-dimension-space-padding-xxx-small)));
 }
 
@@ -86,6 +89,10 @@
   overscroll-behavior: contain;
   padding: var(--semantic-dimension-space-padding-x-small);
   outline: 0;
+}
+
+.list[data-empty] {
+  padding: 0;
 }
 
 .item {
@@ -145,6 +152,16 @@
 }
 
 @media (forced-colors: active) {
+  .trigger {
+    border-color: ButtonBorder;
+  }
+
+  .trigger:focus-visible,
+  .trigger[data-popup-open] {
+    outline: var(--semantic-dimension-border-width-default) solid Highlight;
+    outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
+  }
+
   .item[data-highlighted] {
     outline: var(--semantic-dimension-border-width-default) solid Highlight;
     outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));

@@ -7,6 +7,7 @@ For Base UI changes, consult [the documentation index](https://base-ui.com/llms.
 ## Structure
 
 - Give each independent component its own kebab-case directory: `heading/heading.tsx`, `text/text.tsx`.
+- Related component families may share a directory when they share presentation or implementation.
 - Co-locate CSS Modules. Components without their own styles do not need an empty stylesheet.
 - Keep compound parts together, such as `Modal.Root` and `Modal.Popup` in `modal/`.
 - Put non-component helpers in `utils/` with descriptive filenames, such as `class-names.ts`.
