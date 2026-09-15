@@ -205,6 +205,18 @@ export type {
   InputState,
 } from './input/input.tsx';
 
+export {
+  KeyValueGrid,
+  KeyValueGridKey,
+  KeyValueGridRoot,
+  KeyValueGridValue,
+} from './key-value-grid/key-value-grid.tsx';
+export type {
+  KeyValueGridKeyProps,
+  KeyValueGridRootProps,
+  KeyValueGridValueProps,
+} from './key-value-grid/key-value-grid.tsx';
+
 export {KeyValuePair} from './key-value-pair/key-value-pair.tsx';
 export type {KeyValuePairProps} from './key-value-pair/key-value-pair.tsx';
 

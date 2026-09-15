@@ -1,0 +1,26 @@
+.root {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, auto));
+  align-items: start;
+  justify-items: start;
+  gap: var(--semantic-dimension-space-gap-small);
+  inline-size: fit-content;
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  margin: 0;
+  color: var(--semantic-color-text-primary);
+  font: var(--semantic-typography-ui-primary);
+  letter-spacing: var(--semantic-typography-ui-primary-letter-spacing);
+}
+
+.key,
+.value {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+.key {
+  font-weight: var(--semantic-typography-heading-app-6-font-weight);
+}
