@@ -66,14 +66,6 @@ See [`src/index.ts`](./src/index.ts) for exports and [elanor-ui-samples](https:/
 
 Use named types such as `ButtonProps`, `ModalRootProps`, and `DropdownRootProps`, not component type namespaces. Base UI-backed parts support composition, state-aware styling, events, and refs as defined by their exported types. For buttons rendered as links, use `nativeButton={false}`; see [Base UI composition](https://base-ui.com/react/handbook/composition).
 
-- `Button` has `hierarchy`, `semantic`, and `density` variants.
-- Supply icon and logo artwork. Give `IconButton` an accessible name.
-- `ContextualMenu` is a trigger-opened menu, not a right-click context menu. Menu arrows and backdrops are unstyled.
-- `NavigationItem` renders a link; `NavigationMenu` supports flyouts.
-- `Radio.Root` and `Radio.Group` accept numbers and objects as well as strings.
-- Heading components require a semantic `level` independent of visual size.
-- `AppLayout.Content` renders `<main>`; `Page` renders `<div>`.
-
 ## Interaction notes
 
 - `IconButton`, standalone checkbox/radio/switch controls, `Toast.Close`, and tabs use minimum target sizes of 24px, or 48px for coarse pointers, through shared tokens. `SelectionControlAndLabel` provides a clickable label.
