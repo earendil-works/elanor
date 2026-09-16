@@ -1,4 +1,6 @@
 .root {
+  composes: switchControl from '../brush-border/brush-border.module.css';
+  --brush-color: var(--semantic-color-border-primary);
   position: relative;
   isolation: isolate;
   box-sizing: border-box;
@@ -8,9 +10,9 @@
   block-size: var(--semantic-dimension-size-small);
   flex: none;
   padding: 0;
-  border: 0;
+  border: 0 solid transparent;
   border-radius: var(--semantic-dimension-radius-full);
-  background: transparent;
+  background-color: transparent;
   touch-action: manipulation;
   cursor: pointer;
 }
@@ -22,28 +24,28 @@
   inline-size: var(--semantic-dimension-size-medium);
   block-size: var(--semantic-dimension-size-x-small);
   border-radius: inherit;
-  background: var(--semantic-color-background-switch);
+  background-color: var(--semantic-color-background-switch);
   content: '';
 }
 
 .root:hover:not([data-disabled])::before {
-  background: var(--semantic-color-background-switch-hover);
+  background-color: var(--semantic-color-background-switch-hover);
 }
 
 .root:active:not([data-disabled])::before {
-  background: var(--semantic-color-background-switch-active);
+  background-color: var(--semantic-color-background-switch-active);
 }
 
 .root[data-checked]::before {
-  background: var(--semantic-color-background-switch-selected);
+  background-color: var(--semantic-color-background-switch-selected);
 }
 
 .root[data-checked]:hover:not([data-disabled])::before {
-  background: var(--semantic-color-background-switch-selected-hover);
+  background-color: var(--semantic-color-background-switch-selected-hover);
 }
 
 .root[data-checked]:active:not([data-disabled])::before {
-  background: var(--semantic-color-background-switch-selected-active);
+  background-color: var(--semantic-color-background-switch-selected-active);
 }
 
 .root:focus-visible {
@@ -62,7 +64,7 @@
   inline-size: calc(var(--semantic-dimension-size-x-small) - 2 * var(--semantic-dimension-space-padding-xx-small));
   block-size: calc(var(--semantic-dimension-size-x-small) - 2 * var(--semantic-dimension-space-padding-xx-small));
   border-radius: var(--semantic-dimension-radius-full);
-  background: var(--semantic-color-background-switch-knob);
+  background-color: var(--semantic-color-background-switch-knob);
 }
 
 .root[data-checked] .thumb {
@@ -83,7 +85,7 @@
   }
 
   .thumb {
-    background: ButtonText;
+    background-color: ButtonText;
     forced-color-adjust: none;
   }
 }

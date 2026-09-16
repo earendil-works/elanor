@@ -4,6 +4,7 @@
 }
 
 .separated {
+  composes: bottomLine from '../brush-border/brush-border.module.css';
   border-block-end: var(--semantic-dimension-border-width-default) solid
     var(--semantic-color-border-secondary);
 }

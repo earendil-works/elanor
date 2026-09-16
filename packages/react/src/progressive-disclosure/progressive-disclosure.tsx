@@ -1,6 +1,7 @@
 import {Collapsible as BaseCollapsible} from '@base-ui/react/collapsible';
 import {forwardRef} from 'react';
 import styles from './progressive-disclosure.module.css';
+import {useBrushVariant} from '../brush-border/use-brush-variant.ts';
 import {mergeClassName} from '../utils/class-names.ts';
 
 export type {
@@ -18,6 +19,7 @@ export const ProgressiveDisclosureRoot = forwardRef<HTMLDivElement, BaseCollapsi
   function ProgressiveDisclosureRoot({className, ...props}, ref) {
     return (
       <BaseCollapsible.Root
+        data-brush-variant={useBrushVariant()}
         {...props}
         ref={ref}
         className={mergeClassName<BaseCollapsible.Root.State>(styles.root, className)}

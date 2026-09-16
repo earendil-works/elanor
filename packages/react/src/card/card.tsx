@@ -1,5 +1,6 @@
 import {forwardRef, type HTMLAttributes, type ReactNode} from 'react';
 import styles from './card.module.css';
+import {useBrushVariant} from '../brush-border/use-brush-variant.ts';
 import {classes} from '../utils/class-names.ts';
 
 export interface CardProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
@@ -16,6 +17,7 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
 ) {
   return (
     <div
+      data-brush-variant={useBrushVariant()}
       {...props}
       ref={ref}
       className={classes(styles.root, padded && styles.padded, className)}

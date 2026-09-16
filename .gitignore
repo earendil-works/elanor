@@ -3,6 +3,8 @@
 **/.vite/
 **/.astro/
 **/.stylex/
+**/test-results/
+**/playwright-report/
 .DS_Store
 *.log
 .pi/

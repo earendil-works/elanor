@@ -1,4 +1,5 @@
 .root {
+  composes: outline from '../brush-border/brush-border.module.css';
   box-sizing: border-box;
   display: inline-flex;
   align-items: center;
@@ -6,22 +7,31 @@
   block-size: var(--semantic-dimension-size-small);
   min-inline-size: 0;
   padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
-  border: var(--semantic-dimension-border-width-default) solid
-    var(--semantic-color-background-fill-secondary);
+  border-width: var(--semantic-dimension-border-width-default);
+  border-style: solid;
+  border-color: var(--semantic-color-border-primary);
   border-radius: var(--semantic-dimension-radius-small);
-  background: var(--semantic-color-background-fill-secondary);
+  background-color: var(--semantic-color-background-fill-secondary);
   color: var(--semantic-color-text-primary);
 }
 
-.root:hover {
-  border-color: var(--semantic-color-background-fill-secondary-hover);
-  background: var(--semantic-color-background-fill-secondary-hover);
+.root:hover:not(:has(> .input:disabled, > .input[data-disabled])) {
+  border-color: var(--semantic-color-border-primary);
+  background-color: var(--semantic-color-background-fill-secondary-hover);
 }
 
 .root:focus-within {
   border-color: var(--semantic-color-focus-ring);
-  background: var(--semantic-color-background-fill-secondary);
+  background-color: var(--semantic-color-background-fill-secondary);
   outline: 0;
+}
+
+.root:has(> .input[data-invalid], > .input[aria-invalid='true']) {
+  border-color: var(--semantic-color-focus-ring-negative);
+}
+
+.root:has(> .input:disabled, > .input[data-disabled]) {
+  opacity: var(--semantic-number-opacity-disabled);
 }
 
 .icon,
@@ -50,7 +60,7 @@
   inset-block-end: calc(-1 * var(--semantic-dimension-space-padding-xxx-small));
   inline-size: var(--semantic-dimension-space-padding-small);
   block-size: var(--semantic-dimension-border-width-small);
-  background: currentcolor;
+  background-color: currentcolor;
   content: '';
   transform: rotate(45deg);
   transform-origin: center;
@@ -62,7 +72,7 @@
   padding: 0;
   border: 0;
   outline: 0;
-  background: transparent;
+  background-color: transparent;
   color: inherit;
   font: var(--semantic-typography-ui-primary);
 }

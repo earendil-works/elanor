@@ -12,6 +12,8 @@ export type {AppLayoutProps} from './app-layout/app-layout.tsx';
 export {Badge} from './badge/badge.tsx';
 export type {BadgeProps, BadgeTone} from './badge/badge.tsx';
 
+export type {BrushProps, BrushVariant} from './brush-border/use-brush-variant.ts';
+
 export {Button} from './button/button.tsx';
 export type {
   ButtonDensity,

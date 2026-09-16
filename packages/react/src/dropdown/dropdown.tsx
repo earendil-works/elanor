@@ -1,6 +1,7 @@
 import {Select as BaseSelect} from '@base-ui/react/select';
 import {forwardRef} from 'react';
 import styles from './dropdown.module.css';
+import {useBrushVariant} from '../brush-border/use-brush-variant.ts';
 import {mergeClassName} from '../utils/class-names.ts';
 
 export type {
@@ -50,6 +51,7 @@ export const DropdownTrigger = forwardRef<HTMLButtonElement, BaseSelect.Trigger.
   function DropdownTrigger({className, ...props}, ref) {
     return (
       <BaseSelect.Trigger
+        data-brush-variant={useBrushVariant()}
         {...props}
         ref={ref}
         className={mergeClassName<BaseSelect.Trigger.State>(styles.trigger, className)}
@@ -136,6 +138,7 @@ export const DropdownSeparator = forwardRef<HTMLDivElement, BaseSelect.Separator
   function DropdownSeparator({className, ...props}, ref) {
     return (
       <BaseSelect.Separator
+        data-brush-variant={useBrushVariant()}
         {...props}
         ref={ref}
         className={mergeClassName<BaseSelect.Separator.State>(styles.separator, className)}

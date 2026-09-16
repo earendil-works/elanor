@@ -1,0 +1,16 @@
+.root { width: 100%; max-width: 900px; padding: 24px 16px 80px; }
+.root h1 { margin: 8px 0 16px; font: var(--semantic-typography-heading-app-1); }
+.root h2 { font: var(--semantic-typography-heading-app-4); margin: 0 0 16px; }
+.root p { color: var(--semantic-color-text-secondary); line-height: 1.6; }
+.eyebrow { font-size: 11px; letter-spacing: .16em; }
+.root section { margin-block: 40px; }
+.tools, .row, .variants { display: flex; align-items: center; flex-wrap: wrap; gap: 20px; }
+.tools { margin-block: 32px; padding-block: 20px; }
+.tools label { display: grid; gap: 12px; flex: 1; }
+.variants { gap: 16px; }
+.variants > div { display: grid; gap: 12px; }
+.caption { color: var(--semantic-color-text-secondary); font-size: 11px; }
+.resizable { display: grid; gap: 24px; max-width: 100%; }
+.fields { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 24px; margin-top: 24px; }
+.lines { display: grid; gap: 24px; }
+.verticalLines { height: 96px; display: flex; gap: 32px; margin-top: 32px; }

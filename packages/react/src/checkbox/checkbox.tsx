@@ -1,6 +1,7 @@
 import {Checkbox as BaseCheckbox} from '@base-ui/react/checkbox';
 import {forwardRef} from 'react';
 import styles from './checkbox.module.css';
+import {useBrushVariant} from '../brush-border/use-brush-variant.ts';
 import {mergeClassName} from '../utils/class-names.ts';
 
 export type {
@@ -16,6 +17,7 @@ export const CheckboxRoot = forwardRef<HTMLElement, BaseCheckbox.Root.Props>(
   function CheckboxRoot({className, ...props}, ref) {
     return (
       <BaseCheckbox.Root
+        data-brush-variant={useBrushVariant()}
         {...props}
         ref={ref}
         className={mergeClassName<BaseCheckbox.Root.State>(styles.root, className)}

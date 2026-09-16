@@ -2,6 +2,7 @@ import {Radio as BaseRadio} from '@base-ui/react/radio';
 import {RadioGroup as BaseRadioGroup} from '@base-ui/react/radio-group';
 import {forwardRef, type Ref} from 'react';
 import styles from './radio.module.css';
+import {useBrushVariant} from '../brush-border/use-brush-variant.ts';
 import {mergeClassName} from '../utils/class-names.ts';
 
 export type {
@@ -24,6 +25,7 @@ export const RadioRoot = forwardRef(function RadioRoot<Value>(
 ): React.JSX.Element {
   return (
     <BaseRadio.Root<Value>
+      data-brush-variant={useBrushVariant()}
       {...props}
       ref={ref}
       className={mergeClassName<BaseRadio.Root.State>(styles.radio, className)}

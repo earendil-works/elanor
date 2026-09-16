@@ -1,4 +1,9 @@
 .root {
+  composes: outline from '../brush-border/brush-border.module.css';
+  border-width: var(--semantic-dimension-border-width-default);
+  border-style: solid;
+  border-color: var(--semantic-color-border-secondary);
+  border-radius: var(--semantic-dimension-radius-small);
   box-sizing: border-box;
   display: flex;
   flex-direction: column;

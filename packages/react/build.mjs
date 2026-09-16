@@ -15,16 +15,16 @@ execFileSync(process.execPath, [require.resolve('typescript/bin/tsc'), '-p', 'ts
   stdio: 'inherit',
 });
 
-for await (const source of cssFiles(sourceDirectory)) {
+for await (const source of assetFiles(sourceDirectory)) {
   const output = resolve(outputDirectory, relative(sourceDirectory, source));
   await mkdir(dirname(output), {recursive: true});
   await cp(source, output);
 }
 
-async function* cssFiles(directory) {
+async function* assetFiles(directory) {
   for (const entry of await readdir(directory, {withFileTypes: true})) {
     const path = resolve(directory, entry.name);
-    if (entry.isDirectory()) yield* cssFiles(path);
-    else if (entry.isFile() && entry.name.endsWith('.css')) yield path;
+    if (entry.isDirectory()) yield* assetFiles(path);
+    else if (entry.isFile() && /\.(css|svg)$/.test(entry.name)) yield path;
   }
 }

@@ -1,4 +1,6 @@
 .root {
+  composes: controlOutline from '../brush-border/brush-border.module.css';
+  --brush-color: var(--semantic-color-border-primary);
   position: relative;
   isolation: isolate;
   flex: none;
@@ -9,23 +11,31 @@
   inline-size: var(--semantic-dimension-size-small);
   block-size: var(--semantic-dimension-size-small);
   padding: 0;
-  border: 0;
+  border: 0 solid transparent;
   border-radius: var(--semantic-dimension-radius-small);
-  background: transparent;
+  background-color: transparent;
   color: var(--semantic-color-icon-checkbox-indicator);
   touch-action: manipulation;
   cursor: pointer;
 }
 
+.root:is([data-checked], [data-indeterminate]) {
+  --brush-color: var(--semantic-color-background-checkbox-selected);
+}
+
 .root::before {
+  border-image: linear-gradient(transparent, transparent) 1;
+  background-clip: padding-box;
   position: absolute;
   z-index: var(--semantic-number-layer-background);
   box-sizing: border-box;
   inline-size: var(--semantic-dimension-size-x-small);
   block-size: var(--semantic-dimension-size-x-small);
-  border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-primary);
+  border-width: var(--semantic-dimension-border-width-default);
+  border-style: solid;
+  border-color: var(--semantic-color-border-primary);
   border-radius: var(--semantic-dimension-radius-small);
-  background: var(--semantic-color-background-checkbox);
+  background-color: var(--semantic-color-background-checkbox);
   content: '';
 }
 
@@ -38,17 +48,17 @@
 
 @media (hover: hover) {
   .root:hover:not([data-disabled])::before {
-    background: var(--semantic-color-background-checkbox-hover);
+    background-color: var(--semantic-color-background-checkbox-hover);
   }
 }
 
 .root:active:not([data-disabled])::before {
-  background: var(--semantic-color-background-checkbox-active);
+  background-color: var(--semantic-color-background-checkbox-active);
 }
 
 .root:is([data-checked], [data-indeterminate])::before {
   border-color: var(--semantic-color-background-checkbox-selected);
-  background: var(--semantic-color-background-checkbox-selected);
+  background-color: var(--semantic-color-background-checkbox-selected);
 }
 
 .root:focus-visible {
@@ -83,7 +93,7 @@
   inline-size: 50%;
   block-size: var(--semantic-dimension-border-width-medium);
   border: 0;
-  background: currentcolor;
+  background-color: currentcolor;
   transform: none;
 }
 
@@ -93,11 +103,12 @@
 
 @media (forced-colors: active) {
   .root::before {
+    border-image: none;
     border-color: ButtonBorder;
   }
 
   .root:is([data-checked], [data-indeterminate])::before {
-    background: Highlight;
+    background-color: Highlight;
   }
 
   .indicator {

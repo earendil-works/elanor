@@ -2,6 +2,7 @@ import {Toggle} from '@base-ui/react/toggle';
 import {ToggleGroup as BaseToggleGroup} from '@base-ui/react/toggle-group';
 import {forwardRef, type Ref} from 'react';
 import styles from './segmented-control.module.css';
+import {useBrushVariant} from '../brush-border/use-brush-variant.ts';
 import {mergeClassName} from '../utils/class-names.ts';
 
 export type SegmentedControlProps<Value extends string = string> = BaseToggleGroup.Props<Value>;
@@ -19,6 +20,7 @@ export const SegmentedControl = forwardRef(function SegmentedControl<Value exten
 ): React.JSX.Element {
   return (
     <BaseToggleGroup<Value>
+      data-brush-variant={useBrushVariant()}
       {...props}
       ref={ref}
       className={mergeClassName<BaseToggleGroup.State>(styles.root, className)}
@@ -30,6 +32,7 @@ export const SegmentedControlItem = forwardRef<HTMLButtonElement, Toggle.Props>(
   function SegmentedControlItem({className, type = 'button', ...props}, ref) {
     return (
       <Toggle
+        data-brush-variant={useBrushVariant()}
         {...props}
         ref={ref}
         type={type}

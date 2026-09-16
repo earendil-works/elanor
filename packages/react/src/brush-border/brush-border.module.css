@@ -1,0 +1,176 @@
+/* Geometry is generated once; state colors remain ordinary CSS tokens.
+   Eight mask layers are the perimeter of a classic nine-slice (empty center).
+   Corners never stretch with the component; edges stretch on one axis only. */
+:where(.outline) {
+  --brush-color: initial;
+  position: relative;
+  --brush-inset: calc(-1 * var(--semantic-dimension-border-width-default));
+  --brush-slice: calc(2 * var(--semantic-dimension-radius-small));
+  background-clip: padding-box;
+  /* Hide only the native paint, retaining border-color for state inheritance. */
+  border-image-source: linear-gradient(transparent, transparent);
+  border-image-slice: 1;
+}
+
+:where(.controlOutline) {
+  --brush-slice: calc(2 * var(--semantic-dimension-radius-small));
+}
+
+:where(.outline, .controlOutline)::after {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  box-sizing: border-box;
+  border: var(--brush-slice) solid;
+  /* Keep inherit outside var(): WebKit otherwise caches the initial border
+     color on pseudo-elements across :hover/:active changes. Borderless hosts
+     inherit transparent and use the optional background paint instead. */
+  border-color: inherit;
+  background-color: var(--brush-color, transparent);
+  mask-image: var(--brush-small-images);
+  mask-mode: alpha;
+  mask-repeat: no-repeat;
+  mask-position: left top, center top, right top, left center, right center, left bottom, center bottom, right bottom;
+  mask-size:
+    var(--brush-slice) var(--brush-slice),
+    calc(100% - 2 * var(--brush-slice)) var(--brush-slice),
+    var(--brush-slice) var(--brush-slice),
+    var(--brush-slice) calc(100% - 2 * var(--brush-slice)),
+    var(--brush-slice) calc(100% - 2 * var(--brush-slice)),
+    var(--brush-slice) var(--brush-slice),
+    calc(100% - 2 * var(--brush-slice)) var(--brush-slice),
+    var(--brush-slice) var(--brush-slice);
+}
+
+:where(.outline)::after {
+  inset: var(--brush-inset);
+}
+
+:where(.controlOutline)::after {
+  inline-size: var(--semantic-dimension-size-x-small);
+  block-size: var(--semantic-dimension-size-x-small);
+  inset-inline-start: 50%;
+  inset-block-start: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.controlOutline:dir(rtl)::after {
+  transform: translate(50%, -50%);
+}
+
+.roundControl {
+  composes: controlOutline;
+  --brush-slice: calc(var(--semantic-dimension-size-x-small) / 2);
+}
+
+.roundControl::after {
+  mask-image: var(--brush-circle-image);
+  mask-size: 100% 100%;
+  mask-position: center;
+}
+
+.switchControl {
+  composes: controlOutline;
+  --brush-slice: calc(var(--semantic-dimension-size-x-small) / 2);
+}
+
+.switchControl::after {
+  inline-size: var(--semantic-dimension-size-medium);
+  mask-image: var(--brush-round-images);
+}
+
+/* Native inputs keep their own events, ref, focus ring and validation attributes.
+   The span only supplies a decoration layer; :has reads the actual control state. */
+.fieldFrame {
+  composes: outline;
+  --brush-inset: 0;
+  --brush-color: var(--semantic-color-border-primary);
+  border-color: transparent;
+  display: inline-grid;
+  inline-size: 100%;
+  min-inline-size: 0;
+  vertical-align: bottom;
+  border-radius: var(--semantic-dimension-radius-small);
+}
+
+.fieldFrame:has(> [hidden], > input[type='hidden']) { display: none; }
+
+.fieldFrame:has(> :focus-visible) {
+  --brush-color: var(--semantic-color-focus-ring);
+}
+
+.fieldFrame:has(> [data-invalid], > [aria-invalid='true']) {
+  --brush-color: var(--semantic-color-focus-ring-negative);
+}
+
+.fieldFrame:has(> :disabled, > [data-disabled])::after {
+  opacity: var(--semantic-number-opacity-disabled);
+}
+
+.line {
+  mask-image: var(--brush-line-image);
+  mask-mode: alpha;
+  mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+}
+
+.line[data-orientation='vertical'] {
+  mask-image: var(--brush-line-vertical-image);
+}
+
+.bottomLine,
+.startLine {
+  position: relative;
+  border-image: linear-gradient(transparent, transparent) 1;
+}
+
+.bottomLine::before,
+.startLine::before {
+  content: '';
+  position: absolute;
+  pointer-events: none;
+  background-color: var(--semantic-color-border-secondary);
+  mask-image: var(--brush-line-image);
+  mask-size: 100% 100%;
+  mask-repeat: no-repeat;
+}
+
+.bottomLine::before {
+  inset-inline: 0;
+  inset-block-end: calc(-1 * var(--semantic-dimension-border-width-default));
+  block-size: var(--semantic-dimension-border-width-default);
+}
+
+.startLine::before {
+  inset-block: 0;
+  inset-inline-start: calc(-1 * var(--semantic-dimension-border-width-default));
+  inline-size: var(--semantic-dimension-border-width-default);
+  mask-image: var(--brush-line-vertical-image);
+}
+
+.bottomLine[data-orientation='vertical']::before {
+  inset-inline-start: auto;
+  inset-inline-end: calc(-1 * var(--semantic-dimension-border-width-default));
+  inset-block: 0;
+  inline-size: var(--semantic-dimension-border-width-default);
+  block-size: auto;
+  mask-image: var(--brush-line-vertical-image);
+}
+
+@supports not (mask-image: url('')) {
+  .bottomLine, .startLine { border-image: none; }
+  .bottomLine::before, .startLine::before { display: none; }
+  .outline { border-image: none; }
+  .outline::after, .controlOutline::after { display: none; }
+  .fieldFrame > input, .fieldFrame > textarea { border-image: none; border-color: var(--semantic-color-border-primary); }
+  .controlOutline::before { border-image: none; border-color: var(--brush-color, var(--semantic-color-border-primary)); }
+}
+
+@media (forced-colors: active) {
+  .bottomLine, .startLine { border-image: none; }
+  .bottomLine::before, .startLine::before { display: none; }
+  .outline::after, .controlOutline::after { display: none; }
+  .outline { border-image: none; border-color: ButtonBorder; }
+  .fieldFrame > input, .fieldFrame > textarea { border-color: ButtonBorder; }
+  .line { mask-image: none; }
+}

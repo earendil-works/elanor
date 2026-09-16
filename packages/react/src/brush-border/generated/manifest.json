@@ -1,0 +1,19 @@
+{
+  "source": "noir.svg",
+  "hash": "18b792f14c168dddf898354adf07cf596663139cc27f6d5a38557ae8b34654f2",
+  "variants": 6,
+  "presets": {
+    "small": {
+      "width": 64,
+      "height": 48,
+      "radius": 3,
+      "slice": 6
+    },
+    "round": {
+      "width": 48,
+      "height": 16,
+      "radius": 8,
+      "slice": 8
+    }
+  }
+}

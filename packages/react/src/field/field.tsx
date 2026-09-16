@@ -1,6 +1,8 @@
 import {Field as BaseField} from '@base-ui/react/field';
 import {forwardRef} from 'react';
 import styles from './field.module.css';
+import brushStyles from '../brush-border/brush-border.module.css';
+import {useBrushVariant} from '../brush-border/use-brush-variant.ts';
 import {mergeClassName} from '../utils/class-names.ts';
 
 export type {
@@ -51,7 +53,11 @@ export const FieldError = forwardRef<HTMLDivElement, BaseField.Error.Props>(func
 export const FieldControl = forwardRef<HTMLElement, BaseField.Control.Props>(function FieldControl(
   {className, ...props}, ref,
 ) {
-  return <BaseField.Control {...props} ref={ref} className={mergeClassName<BaseField.Control.State>(styles.control, className)} />;
+  return (
+    <span className={brushStyles.fieldFrame} data-brush-variant={useBrushVariant()}>
+      <BaseField.Control {...props} ref={ref} className={mergeClassName<BaseField.Control.State>(styles.control, className)} />
+    </span>
+  );
 });
 
 export const Field = {

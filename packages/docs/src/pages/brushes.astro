@@ -1,0 +1,7 @@
+---
+import DocsLayout from '../layouts/docs-layout.astro';
+import {BrushPreview} from '../components/brush-preview.tsx';
+---
+<DocsLayout currentComponent="brushes">
+  <BrushPreview client:load />
+</DocsLayout>

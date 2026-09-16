@@ -26,6 +26,9 @@ export function DocsSideNavigation({
     <SideNavigationRoot>
       <SideNavigationGroup>
         <SideNavigationList>
+          <SideNavigationItem>
+            <SideNavigationLink href="/brushes/" active={currentComponent === 'brushes'}>Brush lab</SideNavigationLink>
+          </SideNavigationItem>
           {components.map((component) => (
             <SideNavigationItem key={component}>
               <SideNavigationLink

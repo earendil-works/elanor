@@ -1,6 +1,7 @@
 import {Tabs as BaseTabs} from '@base-ui/react/tabs';
 import {forwardRef} from 'react';
 import styles from './tabs.module.css';
+import {useBrushVariant} from '../brush-border/use-brush-variant.ts';
 import {mergeClassName} from '../utils/class-names.ts';
 
 export type {
@@ -22,6 +23,7 @@ export const TabsList = forwardRef<HTMLDivElement, BaseTabs.List.Props>(
   function TabsList({className, ...props}, ref) {
     return (
       <BaseTabs.List
+        data-brush-variant={useBrushVariant()}
         {...props}
         ref={ref}
         className={mergeClassName<BaseTabs.List.State>(styles.list, className)}
@@ -34,6 +36,7 @@ export const TabsTab = forwardRef<HTMLElement, BaseTabs.Tab.Props>(
   function TabsTab({className, ...props}, ref) {
     return (
       <BaseTabs.Tab
+        data-brush-variant={useBrushVariant()}
         {...props}
         ref={ref}
         className={mergeClassName<BaseTabs.Tab.State>(styles.tab, className)}
@@ -46,6 +49,7 @@ export const TabsIndicator = forwardRef<HTMLSpanElement, BaseTabs.Indicator.Prop
   function TabsIndicator({className, ...props}, ref) {
     return (
       <BaseTabs.Indicator
+        data-brush-variant={useBrushVariant()}
         {...props}
         ref={ref}
         className={mergeClassName<BaseTabs.Indicator.State>(styles.indicator, className)}

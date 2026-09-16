@@ -3,8 +3,13 @@
   "version": "0.1.0",
   "private": false,
   "type": "module",
-  "files": ["dist", "README.md"],
-  "sideEffects": ["**/*.css"],
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
@@ -13,7 +18,11 @@
   },
   "scripts": {
     "build": "node build.mjs",
-    "check": "tsc -p tsconfig.json --noEmit"
+    "check": "tsc -p tsconfig.json --noEmit",
+    "brushes:normalize": "node scripts/normalize-noir.mjs",
+    "brushes:generate": "node scripts/generate-brushes.mjs",
+    "test:brushes": "node --test scripts/brush-geometry.test.mjs",
+    "test:browser": "playwright test"
   },
   "dependencies": {
     "@base-ui/react": "1.8.0"
@@ -23,9 +32,11 @@
     "react-dom": "^17.0.0 || ^18.0.0 || ^19.0.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "svgpath": "^2.6.0"
   }
 }

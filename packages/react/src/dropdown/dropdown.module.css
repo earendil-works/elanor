@@ -1,4 +1,5 @@
 .trigger {
+  composes: outline from '../brush-border/brush-border.module.css';
   box-sizing: border-box;
   display: inline-flex;
   align-items: center;
@@ -9,10 +10,11 @@
   min-inline-size: 0;
   padding-block: var(--semantic-dimension-space-control-padding-block-small);
   padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
-  border: var(--semantic-dimension-border-width-default) solid
-    var(--semantic-color-background-fill-secondary);
+  border-width: var(--semantic-dimension-border-width-default);
+  border-style: solid;
+  border-color: var(--semantic-color-border-primary);
   border-radius: var(--semantic-dimension-radius-small);
-  background: var(--semantic-color-background-fill-secondary);
+  background-color: var(--semantic-color-background-fill-secondary);
   color: var(--semantic-color-text-primary);
   font: var(--semantic-typography-ui-primary);
   text-align: start;
@@ -21,13 +23,13 @@
 }
 
 .trigger:hover:not([data-disabled]) {
-  border-color: var(--semantic-color-background-fill-secondary-hover);
-  background: var(--semantic-color-background-fill-secondary-hover);
+  border-color: var(--semantic-color-border-primary);
+  background-color: var(--semantic-color-background-fill-secondary-hover);
 }
 
 .trigger[data-popup-open] {
   border-color: var(--semantic-color-focus-ring);
-  background: var(--semantic-color-background-fill-secondary);
+  background-color: var(--semantic-color-background-fill-secondary);
 }
 
 .trigger[data-invalid] {
@@ -73,7 +75,7 @@
   border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-background-canvas);
   border-radius: var(--semantic-dimension-radius-small);
   outline: 0;
-  background: var(--semantic-color-background-canvas);
+  background-color: var(--semantic-color-background-canvas);
   color: var(--semantic-color-text-primary);
   font: var(--semantic-typography-ui-primary);
 }
@@ -110,11 +112,11 @@
 }
 
 .item[data-highlighted] {
-  background: var(--semantic-color-background-fill-ghost-neutral-hover);
+  background-color: var(--semantic-color-background-fill-ghost-neutral-hover);
 }
 
 .item[data-selected] {
-  background: var(--semantic-color-background-fill-ghost-neutral-active);
+  background-color: var(--semantic-color-background-fill-ghost-neutral-active);
 }
 
 .item[data-disabled] {
@@ -146,9 +148,10 @@
 }
 
 .separator {
+  composes: line from '../brush-border/brush-border.module.css';
   block-size: var(--semantic-dimension-border-width-small);
   margin-block: var(--semantic-dimension-space-gap-x-small);
-  background: var(--semantic-color-border-secondary);
+  background-color: var(--semantic-color-border-secondary);
 }
 
 @media (forced-colors: active) {

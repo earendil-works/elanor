@@ -1,6 +1,7 @@
 import {Combobox as BaseCombobox} from '@base-ui/react/combobox';
 import {forwardRef} from 'react';
 import styles from './searchable-dropdown.module.css';
+import {useBrushVariant} from '../brush-border/use-brush-variant.ts';
 import {mergeClassName} from '../utils/class-names.ts';
 
 export type {
@@ -63,6 +64,7 @@ export const SearchableDropdownTrigger = forwardRef<HTMLButtonElement, BaseCombo
   function SearchableDropdownTrigger({className, ...props}, ref) {
     return (
       <BaseCombobox.Trigger
+        data-brush-variant={useBrushVariant()}
         {...props}
         ref={ref}
         className={mergeClassName<BaseCombobox.Trigger.State>(styles.trigger, className)}
@@ -180,6 +182,7 @@ export const SearchableDropdownSeparator = forwardRef<HTMLDivElement, BaseCombob
   function SearchableDropdownSeparator({className, ...props}, ref) {
     return (
       <BaseCombobox.Separator
+        data-brush-variant={useBrushVariant()}
         {...props}
         ref={ref}
         className={mergeClassName<BaseCombobox.Separator.State>(styles.separator, className)}

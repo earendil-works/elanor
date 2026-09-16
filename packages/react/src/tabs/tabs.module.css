@@ -1,4 +1,5 @@
 .list {
+  composes: bottomLine from '../brush-border/brush-border.module.css';
   position: relative;
   display: flex;
   gap: var(--semantic-dimension-space-control-gap-x-large);
@@ -22,6 +23,7 @@
 }
 
 .tab:hover:not([data-disabled])::after {
+  mask: var(--brush-line-image) center / 100% 100% no-repeat;
   position: absolute;
   inset-inline: 0;
   inset-block-end: 0;
@@ -42,6 +44,7 @@
 }
 
 .indicator {
+  composes: line from '../brush-border/brush-border.module.css';
   position: absolute;
   left: var(--active-tab-left);
   inset-block-end: 0;
@@ -63,6 +66,7 @@
 }
 
 .tab[data-orientation='vertical']:hover:not([data-disabled])::after {
+  mask-image: var(--brush-line-vertical-image);
   inset-inline-start: auto;
   inset-block: 0;
   inline-size: var(--semantic-dimension-border-width-default);
@@ -89,6 +93,7 @@
   .indicator,
   .tab:hover:not([data-disabled])::after {
     background: Highlight;
+    mask-image: none;
     forced-color-adjust: none;
   }
 }

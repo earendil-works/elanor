@@ -1,0 +1,12 @@
+{
+  "source": "noir.svg",
+  "centerline": 6,
+  "sourceThickness": 10,
+  "variants": 6,
+  "seed": 731,
+  "thickness": 2,
+  "presets": {
+    "small": {"width": 64, "height": 48, "radius": 3, "slice": 6},
+    "round": {"width": 48, "height": 16, "radius": 8, "slice": 8}
+  }
+}

@@ -1,4 +1,6 @@
 .radio {
+  composes: roundControl from '../brush-border/brush-border.module.css';
+  --brush-color: var(--semantic-color-border-primary);
   position: relative;
   isolation: isolate;
   box-sizing: border-box;
@@ -10,22 +12,30 @@
   block-size: var(--semantic-dimension-size-small);
   margin: 0;
   padding: 0;
-  border: 0;
+  border: 0 solid transparent;
   border-radius: var(--semantic-dimension-radius-full);
-  background: transparent;
+  background-color: transparent;
   color: var(--semantic-color-icon-radio-indicator);
   touch-action: manipulation;
 }
 
+.radio[data-checked] { --brush-color: var(--semantic-color-background-radio-selected); }
+.radio[data-checked]:hover:not([data-disabled]) { --brush-color: var(--semantic-color-background-radio-selected-hover); }
+.radio[data-checked]:active:not([data-disabled]) { --brush-color: var(--semantic-color-background-radio-selected-active); }
+
 .radio::before {
+  border-image: linear-gradient(transparent, transparent) 1;
+  background-clip: padding-box;
   position: absolute;
   z-index: var(--semantic-number-layer-background);
   box-sizing: border-box;
   inline-size: var(--semantic-dimension-size-x-small);
   block-size: var(--semantic-dimension-size-x-small);
-  border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-primary);
+  border-width: var(--semantic-dimension-border-width-default);
+  border-style: solid;
+  border-color: var(--semantic-color-border-primary);
   border-radius: var(--semantic-dimension-radius-full);
-  background: var(--semantic-color-background-radio);
+  background-color: var(--semantic-color-background-radio);
   content: '';
 }
 
@@ -38,29 +48,29 @@
 
 @media (hover: hover) {
   .radio:hover:not([data-disabled])::before {
-    background: var(--semantic-color-background-radio-hover);
+    background-color: var(--semantic-color-background-radio-hover);
   }
 }
 
 .radio:active:not([data-disabled])::before {
-  background: var(--semantic-color-background-radio-active);
+  background-color: var(--semantic-color-background-radio-active);
 }
 
 .radio[data-checked]::before {
   border-color: var(--semantic-color-background-radio-selected);
-  background: var(--semantic-color-background-radio-selected);
+  background-color: var(--semantic-color-background-radio-selected);
 }
 
 @media (hover: hover) {
   .radio[data-checked]:hover:not([data-disabled])::before {
     border-color: var(--semantic-color-background-radio-selected-hover);
-    background: var(--semantic-color-background-radio-selected-hover);
+    background-color: var(--semantic-color-background-radio-selected-hover);
   }
 }
 
 .radio[data-checked]:active:not([data-disabled])::before {
   border-color: var(--semantic-color-background-radio-selected-active);
-  background: var(--semantic-color-background-radio-selected-active);
+  background-color: var(--semantic-color-background-radio-selected-active);
 }
 
 .radio:focus-visible {
@@ -73,7 +83,7 @@
   inline-size: calc(var(--semantic-dimension-size-x-small) * 0.375);
   block-size: calc(var(--semantic-dimension-size-x-small) * 0.375);
   border-radius: var(--semantic-dimension-radius-full);
-  background: currentcolor;
+  background-color: currentcolor;
 }
 
 .indicator[data-unchecked] {
@@ -87,11 +97,12 @@
 
 @media (forced-colors: active) {
   .radio::before {
+    border-image: none;
     border-color: ButtonBorder;
   }
 
   .radio[data-checked]::before {
-    background: Highlight;
+    background-color: Highlight;
   }
 
   .indicator {
