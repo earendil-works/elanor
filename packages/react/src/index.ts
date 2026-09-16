@@ -315,9 +315,6 @@ export type {PageProps} from './page/page.tsx';
 export {Pagination, PaginationLink, PaginationSeparator} from './pagination/pagination.tsx';
 export type {PaginationLinkProps, PaginationProps} from './pagination/pagination.tsx';
 
-export {PartnerLogo, PartnerLogos} from './partner-logos/partner-logos.tsx';
-export type {PartnerLogoProps, PartnerLogosProps} from './partner-logos/partner-logos.tsx';
-
 export {Popover, PopoverDescription, PopoverPopup, PopoverTitle} from './popover/popover.tsx';
 export type {
   PopoverArrowProps,
