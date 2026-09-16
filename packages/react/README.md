@@ -68,6 +68,5 @@ Use named types such as `ButtonProps`, `ModalRootProps`, and `DropdownRootProps`
 
 ## Interaction notes
 
-- `IconButton`, standalone checkbox/radio/switch controls, `Toast.Close`, and tabs use minimum target sizes of 24px, or 48px for coarse pointers, through shared tokens. `SelectionControlAndLabel` provides a clickable label.
+- `IconButton`, standalone checkbox/radio/switch controls, and tabs use minimum target sizes of 24px, or 48px for coarse pointers, through shared tokens. `SelectionControlAndLabel` provides a clickable label.
 - Popups use Base UI's available-size variables to constrain overflow. Kept-mounted selection indicators reserve space while hiding inactive marks.
-- The toast viewport scrolls. Swipe dismissal defaults to `swipeDirection={[]}` to preserve scrolling; include `Toast.Close`. Enable swipes only when they will not conflict with scrolling.
