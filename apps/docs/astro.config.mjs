@@ -1,16 +1,22 @@
 import {defineConfig} from 'astro/config';
 import mdx from '@astrojs/mdx';
 import react from '@astrojs/react';
-import {fileURLToPath} from 'node:url';
 
 export default defineConfig({
   integrations: [mdx(), react()],
   vite: {
     resolve: {
-      alias: {
-        '@earendil-works/elanor-react': fileURLToPath(
-          new URL('../../packages/react/src/index.ts', import.meta.url),
-        ),
+      conditions:
+        process.env.NODE_ENV === 'development'
+          ? ['source', 'module', 'browser', 'development']
+          : undefined,
+    },
+    ssr: {
+      resolve: {
+        conditions:
+          process.env.NODE_ENV === 'development'
+            ? ['source', 'module', 'node', 'development']
+            : undefined,
       },
     },
   },
