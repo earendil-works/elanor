@@ -1,0 +1,233 @@
+{
+  "$schema": "https://designtokens.org/schemas/2025.10/format.json",
+  "semantic": {
+    "dimension": {
+      "$type": "dimension",
+      "$description": "Choose dimensions by their intended role instead of consuming primitive scale steps directly.",
+      "borderWidth": {
+        "$description": "Use the default border width unless a component needs a different level of emphasis.",
+        "default": {
+          "$value": "{semantic.dimension.borderWidth.medium}",
+          "$description": "Use as the default 2px border width. Choose a T-shirt size only when the default is not appropriate."
+        },
+        "small": {
+          "$value": "{primitive.dimension.borderWidth.100}",
+          "$description": "Use for subtle 1px borders that need less visual emphasis than the default."
+        },
+        "medium": {
+          "$value": "{primitive.dimension.borderWidth.200}",
+          "$description": "Use for the default 2px border treatment."
+        },
+        "large": {
+          "$value": "{primitive.dimension.borderWidth.300}",
+          "$description": "Use for prominent borders that need the strongest visual emphasis."
+        }
+      },
+      "breakpoint": {
+        "$description": "Use these mobile-first minimum-width thresholds for shared viewport-responsive layout changes; prefer container queries for component-local behavior.",
+        "xSmall": {
+          "$value": "{primitive.dimension.breakpoint.250}",
+          "$description": "Use as the earliest shared minimum-width breakpoint for layout changes beyond the narrowest presentation."
+        },
+        "small": {
+          "$value": "{primitive.dimension.breakpoint.300}",
+          "$description": "Use as the second shared minimum-width breakpoint for layout changes that require more inline space."
+        },
+        "medium": {
+          "$value": "{primitive.dimension.breakpoint.400}",
+          "$description": "Use as the middle shared minimum-width breakpoint for substantial layout restructuring."
+        },
+        "large": {
+          "$value": "{primitive.dimension.breakpoint.500}",
+          "$description": "Use as the shared minimum-width breakpoint for wide-layout changes."
+        },
+        "xLarge": {
+          "$value": "{primitive.dimension.breakpoint.600}",
+          "$description": "Use as the widest shared minimum-width breakpoint for changes intended only for very wide layouts."
+        }
+      },
+      "radius": {
+        "$description": "Use the default radius unless a component has a specific need for another scale size or complete roundness.",
+        "default": {
+          "$value": "{semantic.dimension.radius.medium}",
+          "$description": "Use for borders and container corners by default; choose another radius token only when the component has a specific shape requirement."
+        },
+        "small": {
+          "$value": "{primitive.dimension.radius.100}",
+          "$description": "Use for intentionally subtle corner rounding where the default radius is too pronounced."
+        },
+        "medium": {
+          "$value": "{primitive.dimension.radius.200}",
+          "$description": "Use when a T-shirt-sized radius scale is explicitly required and a medium radius fits the component."
+        },
+        "large": {
+          "$value": "{primitive.dimension.radius.300}",
+          "$description": "Use for intentionally prominent corner rounding where the default radius is not strong enough."
+        },
+        "full": {
+          "$value": "{primitive.dimension.radius.full}",
+          "$description": "Use for pills and circular shapes that require complete roundness regardless of element size."
+        }
+      },
+      "size": {
+        "$description": "Use for bounded element dimensions such as icon boxes, avatars, and other square or fixed-size UI elements.",
+        "xxSmall": {
+          "$value": "{primitive.dimension.200}",
+          "$description": "Use for the smallest bounded elements when extreme compactness is required."
+        },
+        "xSmall": {
+          "$value": "{primitive.dimension.400}",
+          "$description": "Use for very small bounded elements when compactness is more important than prominence."
+        },
+        "small": {
+          "$value": "{primitive.dimension.600}",
+          "$description": "Use for small bounded elements that should remain secondary to surrounding content."
+        },
+        "medium": {
+          "$value": "{primitive.dimension.800}",
+          "$description": "Use as the default size for bounded interface elements."
+        },
+        "large": {
+          "$value": "{primitive.dimension.1000}",
+          "$description": "Use for large bounded elements that need additional prominence or a larger target."
+        },
+        "xLarge": {
+          "$value": "{primitive.dimension.1200}",
+          "$description": "Use for the largest bounded elements in this scale when they should be visually prominent."
+        }
+      },
+      "space": {
+        "$description": "Choose spacing by layout role, relationship, and relative size.",
+        "padding": {
+          "$description": "Use for space between a container edge and its contents in any layout that does not define specialized padding tokens.",
+          "none": {
+            "$value": "{primitive.dimension.0}",
+            "$description": "Use when a container intentionally requires no internal space."
+          },
+          "xxxSmall": {
+            "$value": "{primitive.dimension.25}",
+            "$description": "Use for the smallest nonzero internal space when only hairline separation is needed."
+          },
+          "xxSmall": {
+            "$value": "{primitive.dimension.50}",
+            "$description": "Use for extremely tight internal space around closely fitted content."
+          },
+          "xSmall": {
+            "$value": "{primitive.dimension.100}",
+            "$description": "Use for very compact internal space around closely fitted content."
+          },
+          "small": {
+            "$value": "{primitive.dimension.150}",
+            "$description": "Use for compact internal space around content."
+          },
+          "medium": {
+            "$value": "{primitive.dimension.200}",
+            "$description": "Use as the default internal space around content."
+          },
+          "large": {
+            "$value": "{primitive.dimension.300}",
+            "$description": "Use for generous internal space around content."
+          },
+          "xLarge": {
+            "$value": "{primitive.dimension.400}",
+            "$description": "Use for substantial internal space around prominent content regions."
+          },
+          "xxLarge": {
+            "$value": "{primitive.dimension.600}",
+            "$description": "Use for extra internal space around large content regions."
+          },
+          "xxxLarge": {
+            "$value": "{primitive.dimension.800}",
+            "$description": "Use for expansive internal space around major content regions."
+          },
+          "xxxxLarge": {
+            "$value": "{primitive.dimension.1200}",
+            "$description": "Use for the largest internal space in this scale around major content regions."
+          }
+        },
+        "gap": {
+          "$description": "Use for separation between adjacent elements in any layout that does not define specialized gap tokens.",
+          "xxSmall": {
+            "$value": "{primitive.dimension.50}",
+            "$description": "Use for the tightest separation between elements that remain visually distinct."
+          },
+          "xSmall": {
+            "$value": "{primitive.dimension.100}",
+            "$description": "Use for very compact separation between closely related elements."
+          },
+          "small": {
+            "$value": "{primitive.dimension.200}",
+            "$description": "Use for compact separation between related elements."
+          },
+          "medium": {
+            "$value": "{primitive.dimension.400}",
+            "$description": "Use as the default separation between adjacent elements."
+          },
+          "large": {
+            "$value": "{primitive.dimension.600}",
+            "$description": "Use for strong separation between distinct groups of elements."
+          },
+          "xLarge": {
+            "$value": "{primitive.dimension.800}",
+            "$description": "Use for the strongest separation between major groups of elements."
+          }
+        },
+        "control": {
+          "$description": "Use for spacing inside controls; select one size consistently across block padding, inline padding, and child gap.",
+          "padding": {
+            "block": {
+              "small": {
+                "$value": "{primitive.dimension.100}",
+                "$description": "Use for vertical padding in compact controls."
+              },
+              "medium": {
+                "$value": "{primitive.dimension.150}",
+                "$description": "Use for vertical padding in default-size controls."
+              },
+              "large": {
+                "$value": "{primitive.dimension.200}",
+                "$description": "Use for vertical padding in spacious controls."
+              }
+            },
+            "inline": {
+              "xSmall": {
+                "$value": "{primitive.dimension.100}",
+                "$description": "Use for the tightest horizontal padding in extra-compact controls."
+              },
+              "small": {
+                "$value": "{primitive.dimension.200}",
+                "$description": "Use for horizontal padding in compact controls."
+              },
+              "medium": {
+                "$value": "{primitive.dimension.300}",
+                "$description": "Use for horizontal padding in default-size controls."
+              },
+              "large": {
+                "$value": "{primitive.dimension.400}",
+                "$description": "Use for horizontal padding in spacious controls."
+              }
+            }
+          },
+          "gap": {
+            "small": {
+              "$value": "{primitive.dimension.100}",
+              "$description": "Use between children in compact controls."
+            },
+            "medium": {
+              "$value": "{primitive.dimension.150}",
+              "$description": "Use between children in default-size controls."
+            },
+            "large": {
+              "$value": "{primitive.dimension.200}",
+              "$description": "Use between children in spacious controls."
+            },
+            "xLarge": {
+              "$value": "{primitive.dimension.400}",
+              "$description": "Use between children in wide controls that need greater separation than spacious controls."
+            }
+          }
+        }
+      }
+    }
+  }
+}

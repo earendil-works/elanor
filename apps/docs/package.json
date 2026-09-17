@@ -1,0 +1,32 @@
+{
+  "name": "@earendil-works/elanor-docs",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "check": "pnpm run check:types && pnpm run lint",
+    "check:types": "astro check",
+    "lint:prepare": "pnpm --filter @earendil-works/design-tokens run build:radius && pnpm --filter @earendil-works/stylelint-plugin-design-tokens run build",
+    "lint": "pnpm run lint:prepare && stylelint \"src/**/*.{css,astro}\" --max-warnings 0"
+  },
+  "dependencies": {
+    "@astrojs/mdx": "^4.0.0",
+    "@astrojs/react": "^4.0.0",
+    "@earendil-works/design-tokens": "workspace:*",
+    "@earendil-works/elanor-react": "workspace:*",
+    "astro": "^5.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.0",
+    "@earendil-works/stylelint-plugin-design-tokens": "workspace:*",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "postcss-html": "^1.8.0",
+    "stylelint": "^16.26.1",
+    "typescript": "^5.9.3"
+  }
+}

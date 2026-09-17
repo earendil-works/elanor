@@ -1,0 +1,222 @@
+{
+  "$schema": "https://designtokens.org/schemas/2025.10/format.json",
+  "semantic": {
+    "typography": {
+      "$type": "typography",
+      "$description": "Choose a typography style by content role and hierarchy across marketing pages and applications.",
+      "heading": {
+        "$description": "Choose a heading style by content context and document level; reserve the marketing display style for promotional text outside the document heading hierarchy.",
+        "marketing": {
+          "display": {
+            "$value": {
+              "fontFamily": "{semantic.fontFamily.prose}",
+              "fontSize": "{primitive.dimension.fontSize.1700}",
+              "fontWeight": "{primitive.fontWeight.bold}",
+              "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
+              "lineHeight": "{primitive.number.lineHeight.1700}"
+            },
+            "$description": "Use for oversized promotional text above the standard marketing heading hierarchy. Do not use for document headings."
+          },
+          "1": {
+            "$value": {
+              "fontFamily": "{semantic.fontFamily.prose}",
+              "fontSize": "{primitive.dimension.fontSize.1500}",
+              "fontWeight": "{primitive.fontWeight.bold}",
+              "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
+              "lineHeight": "{primitive.number.lineHeight.1500}"
+            },
+            "$description": "Use for the highest-level document heading in marketing content. Use the display style only for promotional text outside the heading hierarchy."
+          },
+          "2": {
+            "$value": {
+              "fontFamily": "{semantic.fontFamily.prose}",
+              "fontSize": "{primitive.dimension.fontSize.1300}",
+              "fontWeight": "{primitive.fontWeight.bold}",
+              "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
+              "lineHeight": "{primitive.number.lineHeight.1300}"
+            },
+            "$description": "Use for second-level headings in marketing content beneath a level 1 heading."
+          },
+          "3": {
+            "$value": {
+              "fontFamily": "{semantic.fontFamily.prose}",
+              "fontSize": "{primitive.dimension.fontSize.1100}",
+              "fontWeight": "{primitive.fontWeight.bold}",
+              "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
+              "lineHeight": "{primitive.number.lineHeight.1100}"
+            },
+            "$description": "Use for third-level headings in marketing content beneath a level 2 heading."
+          },
+          "4": {
+            "$value": {
+              "fontFamily": "{semantic.fontFamily.prose}",
+              "fontSize": "{primitive.dimension.fontSize.900}",
+              "fontWeight": "{primitive.fontWeight.bold}",
+              "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
+              "lineHeight": "{primitive.number.lineHeight.900}"
+            },
+            "$description": "Use for fourth-level headings in marketing content beneath a level 3 heading."
+          },
+          "5": {
+            "$value": {
+              "fontFamily": "{semantic.fontFamily.prose}",
+              "fontSize": "{primitive.dimension.fontSize.700}",
+              "fontWeight": "{primitive.fontWeight.bold}",
+              "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
+              "lineHeight": "{primitive.number.lineHeight.700}"
+            },
+            "$description": "Use for fifth-level headings in marketing content beneath a level 4 heading."
+          },
+          "6": {
+            "$value": {
+              "fontFamily": "{semantic.fontFamily.prose}",
+              "fontSize": "{primitive.dimension.fontSize.500}",
+              "fontWeight": "{primitive.fontWeight.bold}",
+              "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
+              "lineHeight": "{primitive.number.lineHeight.500}"
+            },
+            "$description": "Use for sixth-level headings in marketing content beneath a level 5 heading; it is the lowest marketing heading level."
+          }
+        },
+        "app": {
+          "1": {
+            "$value": {
+              "fontFamily": "{semantic.fontFamily.ui}",
+              "fontSize": "{primitive.dimension.fontSize.1000}",
+              "fontWeight": "{primitive.fontWeight.semiBold}",
+              "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
+              "lineHeight": "{primitive.number.lineHeight.1000}"
+            },
+            "$description": "Use for the highest-level heading in an application interface, such as a page title."
+          },
+          "2": {
+            "$value": {
+              "fontFamily": "{semantic.fontFamily.ui}",
+              "fontSize": "{primitive.dimension.fontSize.900}",
+              "fontWeight": "{primitive.fontWeight.semiBold}",
+              "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
+              "lineHeight": "{primitive.number.lineHeight.900}"
+            },
+            "$description": "Use for second-level headings in an application interface beneath a level 1 heading."
+          },
+          "3": {
+            "$value": {
+              "fontFamily": "{semantic.fontFamily.ui}",
+              "fontSize": "{primitive.dimension.fontSize.800}",
+              "fontWeight": "{primitive.fontWeight.semiBold}",
+              "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
+              "lineHeight": "{primitive.number.lineHeight.800}"
+            },
+            "$description": "Use for third-level headings in an application interface beneath a level 2 heading."
+          },
+          "4": {
+            "$value": {
+              "fontFamily": "{semantic.fontFamily.ui}",
+              "fontSize": "{primitive.dimension.fontSize.700}",
+              "fontWeight": "{primitive.fontWeight.semiBold}",
+              "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
+              "lineHeight": "{primitive.number.lineHeight.700}"
+            },
+            "$description": "Use for fourth-level headings in an application interface beneath a level 3 heading."
+          },
+          "5": {
+            "$value": {
+              "fontFamily": "{semantic.fontFamily.ui}",
+              "fontSize": "{primitive.dimension.fontSize.600}",
+              "fontWeight": "{primitive.fontWeight.semiBold}",
+              "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
+              "lineHeight": "{primitive.number.lineHeight.600}"
+            },
+            "$description": "Use for fifth-level headings in an application interface beneath a level 4 heading."
+          },
+          "6": {
+            "$value": {
+              "fontFamily": "{semantic.fontFamily.ui}",
+              "fontSize": "{primitive.dimension.fontSize.500}",
+              "fontWeight": "{primitive.fontWeight.semiBold}",
+              "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
+              "lineHeight": "{primitive.number.lineHeight.500}"
+            },
+            "$description": "Use for sixth-level headings in an application interface beneath a level 5 heading; it is the lowest application heading level."
+          }
+        }
+      },
+      "prose": {
+        "primary": {
+          "$value": {
+            "fontFamily": "{semantic.fontFamily.prose}",
+            "fontSize": "{primitive.dimension.fontSize.400}",
+            "fontWeight": "{primitive.fontWeight.normal}",
+            "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
+            "lineHeight": "{primitive.number.lineHeight.400}"
+          },
+          "$description": "Use for default body copy in long-form content."
+        },
+        "secondary": {
+          "$value": {
+            "fontFamily": "{semantic.fontFamily.prose}",
+            "fontSize": "{primitive.dimension.fontSize.300}",
+            "fontWeight": "{primitive.fontWeight.normal}",
+            "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
+            "lineHeight": "{primitive.number.lineHeight.300}"
+          },
+          "$description": "Use for supporting long-form content, such as annotations or ancillary copy. Use the primary prose style for default body copy."
+        }
+      },
+      "ui": {
+        "primary": {
+          "$value": {
+            "fontFamily": "{semantic.fontFamily.ui}",
+            "fontSize": "{primitive.dimension.fontSize.300}",
+            "fontWeight": "{primitive.fontWeight.normal}",
+            "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
+            "lineHeight": "{primitive.number.lineHeight.300}"
+          },
+          "$description": "Use for default text in application interfaces, including controls, labels, and navigation."
+        },
+        "secondary": {
+          "$value": {
+            "fontFamily": "{semantic.fontFamily.ui}",
+            "fontSize": "{primitive.dimension.fontSize.200}",
+            "fontWeight": "{primitive.fontWeight.normal}",
+            "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
+            "lineHeight": "{primitive.number.lineHeight.200}"
+          },
+          "$description": "Use for supporting interface text, such as helper text or secondary labels. Use the primary UI style for default interface copy."
+        },
+        "tertiary": {
+          "$value": {
+            "fontFamily": "{semantic.fontFamily.ui}",
+            "fontSize": "{primitive.dimension.fontSize.100}",
+            "fontWeight": "{primitive.fontWeight.normal}",
+            "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
+            "lineHeight": "{primitive.number.lineHeight.100}"
+          },
+          "$description": "Use for the lowest-priority interface text, such as compact metadata or supplemental labels. Do not use when the primary or secondary UI style provides sufficient hierarchy."
+        }
+      },
+      "code": {
+        "primary": {
+          "$value": {
+            "fontFamily": "{semantic.fontFamily.code}",
+            "fontSize": "{primitive.dimension.fontSize.300}",
+            "fontWeight": "{primitive.fontWeight.normal}",
+            "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
+            "lineHeight": "{primitive.number.lineHeight.300}"
+          },
+          "$description": "Use for primary code content, including source code, commands, and structured machine-readable text."
+        },
+        "secondary": {
+          "$value": {
+            "fontFamily": "{semantic.fontFamily.code}",
+            "fontSize": "{primitive.dimension.fontSize.200}",
+            "fontWeight": "{primitive.fontWeight.normal}",
+            "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
+            "lineHeight": "{primitive.number.lineHeight.200}"
+          },
+          "$description": "Use for supporting code content, such as annotations or ancillary technical metadata. Use the primary code style for the main code content."
+        }
+      }
+    }
+  }
+}

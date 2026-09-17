@@ -1,0 +1,166 @@
+{
+  "$schema": "https://designtokens.org/schemas/2025.10/format.json",
+  "$description": "Contains generated and manually authored tokens. Edit only paths not managed by a generator.",
+  "primitive": {
+    "number": {
+      "$type": "number",
+      "lineHeight": {
+        "100": {
+          "$value": 1.2,
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        },
+        "200": {
+          "$value": 1.333333,
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        },
+        "300": {
+          "$value": 1.142857,
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        },
+        "400": {
+          "$value": 1.25,
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        },
+        "500": {
+          "$value": 1.111111,
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        },
+        "600": {
+          "$value": 1.142857,
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        },
+        "700": {
+          "$value": 1.333333,
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        },
+        "800": {
+          "$value": 1.142857,
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        },
+        "900": {
+          "$value": 1.25,
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        },
+        "1000": {
+          "$value": 1.111111,
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        },
+        "1100": {
+          "$value": 1.142857,
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        },
+        "1200": {
+          "$value": 1.166667,
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        },
+        "1300": {
+          "$value": 1.163636,
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        },
+        "1400": {
+          "$value": 1.142857,
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        },
+        "1500": {
+          "$value": 1.205479,
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        },
+        "1600": {
+          "$value": 1.238095,
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        },
+        "1700": {
+          "$value": 1.166667,
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        }
+      },
+      "opacity": {
+        "150": {
+          "$value": 0.15,
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/opacity.json"
+            }
+          }
+        },
+        "400": {
+          "$value": 0.4,
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/opacity.json"
+            }
+          }
+        },
+        "$description": "Opacity scale where 0 is fully transparent and 1000 is fully opaque."
+      }
+    }
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "$schema": "../../../schemas/breakpoint.recipe.schema.json",
+  "path": ["primitive"],
+  "steps": [250, 300, 400, 500, 600]
+}

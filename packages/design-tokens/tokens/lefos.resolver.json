@@ -1,0 +1,63 @@
+{
+  "$schema": "https://designtokens.org/schemas/2025.10/resolver.json",
+  "name": "Lefos Design Tokens",
+  "version": "2025.10",
+  "description": "Shared design foundations for Lefos.",
+  "sets": {
+    "shared-primitive": {
+      "description": "Shared primitive tokens grouped by DTCG type.",
+      "sources": [
+        { "$ref": "./shared/primitive/color.tokens.json" },
+        { "$ref": "./shared/primitive/dimension.tokens.json" },
+        { "$ref": "./shared/primitive/number.tokens.json" },
+        { "$ref": "./shared/primitive/fontFamily.tokens.json" },
+        { "$ref": "./shared/primitive/fontWeight.tokens.json" }
+      ]
+    },
+    "lefos-primitive": {
+      "description": "Lefos primitive tokens grouped by DTCG type.",
+      "sources": [
+        { "$ref": "./lefos/primitive/color.tokens.json" },
+        { "$ref": "./lefos/primitive/fontFamily.tokens.json" }
+      ]
+    },
+    "shared-semantic": {
+      "description": "Shared mode-independent semantic tokens grouped by DTCG type.",
+      "sources": [
+        { "$ref": "./shared/semantic/dimension.tokens.json" },
+        { "$ref": "./shared/semantic/number.tokens.json" },
+        { "$ref": "./shared/semantic/fontFamily.tokens.json" },
+        { "$ref": "./shared/semantic/typography.tokens.json" }
+      ]
+    },
+    "lefos-semantic": {
+      "description": "Lefos mode-independent semantic tokens grouped by DTCG type.",
+      "sources": [
+        { "$ref": "./lefos/semantic/fontFamily.tokens.json" }
+      ]
+    }
+  },
+  "modifiers": {
+    "colorScheme": {
+      "description": "Selects semantic colors for the active color scheme.",
+      "contexts": {
+        "light": [
+          { "$ref": "./shared/semantic/color/light.tokens.json" },
+          { "$ref": "./lefos/semantic/color/light.tokens.json" }
+        ],
+        "dark": [
+          { "$ref": "./shared/semantic/color/dark.tokens.json" },
+          { "$ref": "./lefos/semantic/color/dark.tokens.json" }
+        ]
+      },
+      "default": "light"
+    }
+  },
+  "resolutionOrder": [
+    { "$ref": "#/sets/shared-primitive" },
+    { "$ref": "#/sets/lefos-primitive" },
+    { "$ref": "#/sets/shared-semantic" },
+    { "$ref": "#/sets/lefos-semantic" },
+    { "$ref": "#/modifiers/colorScheme" }
+  ]
+}

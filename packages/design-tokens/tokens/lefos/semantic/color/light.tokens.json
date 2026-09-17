@@ -1,0 +1,153 @@
+{
+  "$schema": "https://designtokens.org/schemas/2025.10/format.json",
+  "semantic": {
+    "color": {
+      "$type": "color",
+      "background": {
+        "canvas": {
+          "$value": "{primitive.color.moonstone}",
+          "$description": "Use as the foundational background of a page or application."
+        },
+        "surface": {
+          "$value": "{primitive.color.parchment.$root}",
+          "$description": "Use for standard structural containers such as cards, panels, and content sections."
+        },
+        "fill": {
+          "primary": {
+            "$root": {
+              "$value": "{primitive.color.eveningBlue}",
+              "$description": "Use for high-prominence filled elements such as primary buttons, strong badges, or prominent selected states."
+            },
+            "hover": {
+              "$value": "{semantic.color.background.fill.primary.$root}",
+              "$description": "Use when a neutral high-prominence filled interactive element is hovered."
+            },
+            "active": {
+              "$value": "{semantic.color.background.fill.primary.$root}",
+              "$description": "Use while a neutral high-prominence filled interactive element is actively pressed."
+            }
+          },
+          "secondary": {
+            "$root": {
+              "$value": "{primitive.color.warm.100}",
+              "$description": "Use for lower-prominence filled elements such as secondary buttons, neutral chips, or subtle selected states."
+            },
+            "information": {
+              "$root": {
+                "$value": "{primitive.color.tidalBlue.moonstoneMix}",
+                "$description": "Use for lower-prominence filled elements that communicate neutral information or guidance."
+              }
+            },
+            "warning": {
+              "$root": {
+                "$value": "{primitive.color.sunkissed.tint}",
+                "$description": "Use for lower-prominence filled elements that warn about a potential issue requiring attention."
+              }
+            },
+            "negative": {
+              "$root": {
+                "$value": "{primitive.color.terracotta.tint}",
+                "$description": "Use for lower-prominence filled elements that communicate an error, unfavorable outcome, or negative consequence."
+              }
+            },
+            "positive": {
+              "$root": {
+                "$value": "{primitive.color.sage.tint}",
+                "$description": "Use for lower-prominence filled elements that communicate success, a favorable outcome, or positive confirmation."
+              }
+            }
+          }
+        }
+      },
+      "border": {
+        "primary": {
+          "$root": {
+            "$value": "{primitive.color.driftwood.$root}",
+            "$description": "Use for default boundaries and dividers that require clear visual separation."
+          }
+        },
+        "secondary": {
+          "$value": {
+            "colorSpace": {
+              "$ref": "#/primitive/color/driftwood/$root/$value/colorSpace"
+            },
+            "components": [
+              {
+                "$ref": "#/primitive/color/driftwood/$root/$value/components/0"
+              },
+              {
+                "$ref": "#/primitive/color/driftwood/$root/$value/components/1"
+              },
+              {
+                "$ref": "#/primitive/color/driftwood/$root/$value/components/2"
+              }
+            ],
+            "alpha": 0.5,
+            "hex": {
+              "$ref": "#/primitive/color/driftwood/$root/$value/hex"
+            }
+          },
+          "$description": "Use for subtle decorative boundaries and dividers. Do not use when the boundary is the only visual cue identifying a control."
+        },
+        "information": {
+          "$value": "{primitive.color.tidalBlue.$root}",
+          "$description": "Use for boundaries around elements that communicate neutral information or guidance."
+        },
+        "warning": {
+          "$value": "{primitive.color.sunkissed.$root}",
+          "$description": "Use for boundaries around elements that warn about a potential issue requiring attention."
+        },
+        "negative": {
+          "$value": "{primitive.color.terracotta.$root}",
+          "$description": "Use for boundaries around elements that communicate an error, unfavorable outcome, or negative consequence."
+        },
+        "positive": {
+          "$value": "{primitive.color.sage.$root}",
+          "$description": "Use for boundaries around elements that communicate success, a favorable outcome, or positive confirmation."
+        }
+      },
+      "focusRing": {
+        "$root": {
+          "$value": "{primitive.color.warm.600}",
+          "$description": "Use for the default visible keyboard-focus indicator around an interactive element."
+        }
+      },
+      "text": {
+        "primary": {
+          "$value": "{primitive.color.warm.900}",
+          "$description": "Use for default body copy and interface labels requiring the strongest standard text emphasis."
+        },
+        "secondary": {
+          "$value": "{primitive.color.warm.600}",
+          "$description": "Use for supporting text and metadata that should be less prominent than primary text."
+        },
+        "information": {
+          "$value": "{primitive.color.tidalBlue.$root}",
+          "$description": "Use for text that communicates neutral information or guidance."
+        },
+        "warning": {
+          "$value": "{primitive.color.sunkissed.shade}",
+          "$description": "Use for text that warns about a potential issue requiring attention."
+        },
+        "negative": {
+          "$value": "{primitive.color.terracotta.$root}",
+          "$description": "Use for text that communicates an error, unfavorable outcome, or negative consequence."
+        },
+        "positive": {
+          "$value": "{primitive.color.sage.shade}",
+          "$description": "Use for text that communicates success, a favorable outcome, or positive confirmation."
+        },
+        "onPrimaryFill": {
+          "$value": "{primitive.color.moonstone}",
+          "$description": "Use for text placed on primary fills such as prominent filled buttons, chips, or badges."
+        },
+        "onSecondaryFill": {
+          "$root": {
+            "$value": "{primitive.color.eveningBlue}",
+            "$description": "Use for text placed on secondary fills that have lower visual prominence than primary fills."
+          }
+        }
+      }
+    }
+  }
+}

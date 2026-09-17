@@ -1,0 +1,6 @@
+.card {
+  --card-gap: 1rem;
+  color: var(--semantic-color-background-canvas, #fff);
+  margin: calc(1rem + var(--card-gap));
+  box-shadow: 0 2px 8px rgb(0 0 0 / 20%);
+}

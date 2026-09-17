@@ -1,0 +1,5 @@
+{
+  "$schema": "../../../schemas/borderWidth.recipe.schema.json",
+  "path": ["primitive"],
+  "steps": [100, 200, 300]
+}
