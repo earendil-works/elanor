@@ -13,6 +13,7 @@
     "build": "pnpm -r --workspace-concurrency=1 --if-present run build",
     "check": "pnpm -r --workspace-concurrency=1 --if-present run check",
     "test": "pnpm -r --workspace-concurrency=1 --if-present run test",
+    "docs:lint": "pnpm --filter @earendil-works/elanor-docs run lint",
     "react:lint": "pnpm --filter @earendil-works/elanor-react run lint",
     "tokens:clean": "pnpm --filter @earendil-works/design-tokens run clean",
     "tokens:generate": "pnpm --filter @earendil-works/design-tokens run generate",
