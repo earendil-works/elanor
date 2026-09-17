@@ -17,6 +17,8 @@ For Base UI changes, consult [the documentation index](https://base-ui.com/llms.
 - Import implementation files directly, such as `../button/button.tsx`. Never import through the root entry point internally.
 - Keep one public entry point, `src/index.ts`, with explicit value and type exports. No `export *` or per-directory barrels.
 - Keep internal paths out of the package export map.
+- Give implemented public components and parts named props types and use those types in their declarations. Derive Base UI-backed types rather than copying contracts.
+- Export supporting types for retained public APIs; don't mirror upstream internals or export empty state aliases.
 
 ## Composition
 
@@ -26,6 +28,7 @@ For Base UI changes, consult [the documentation index](https://base-ui.com/llms.
 ## Component contracts and accessibility
 
 - Preserve supported refs, event details, and controlled/uncontrolled behavior when wrapping Base UI.
+- Restrict an upstream capability only for a concrete Elanor requirement, with matching types and runtime handling.
 - Use semantic elements and preserve accessible names, label associations, keyboard behavior, and focus management. Don't replace native or Base UI behavior with custom handlers unnecessarily.
 
 ## CSS

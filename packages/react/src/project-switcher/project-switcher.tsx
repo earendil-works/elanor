@@ -1,21 +1,19 @@
 import {Menu as BaseMenu} from '@base-ui/react/menu';
-import {forwardRef, type ReactNode} from 'react';
+import {forwardRef, type ReactNode, type Ref, type RefAttributes} from 'react';
 import {ContextualMenu} from '../contextual-menu/contextual-menu.tsx';
 import styles from './project-switcher.module.css';
 import {classes, mergeClassName} from '../utils/class-names.ts';
 
-export interface ProjectSwitcherTriggerProps extends Omit<BaseMenu.Trigger.Props, 'children'> {
+export interface ProjectSwitcherTriggerProps<Payload = unknown>
+  extends Omit<BaseMenu.Trigger.Props<Payload>, 'children'> {
   readonly children?: ReactNode;
   readonly indicator?: ReactNode;
   readonly outlined?: boolean;
 }
 
-export const ProjectSwitcherTrigger = forwardRef<
-  HTMLButtonElement,
-  ProjectSwitcherTriggerProps
->(function ProjectSwitcherTrigger(
-  {children, indicator, outlined = false, className, ...props},
-  ref,
+export const ProjectSwitcherTrigger = forwardRef(function ProjectSwitcherTrigger<Payload>(
+  {children, indicator, outlined = false, className, ...props}: ProjectSwitcherTriggerProps<Payload>,
+  ref: Ref<HTMLButtonElement>,
 ) {
   return (
     <BaseMenu.Trigger
@@ -30,7 +28,9 @@ export const ProjectSwitcherTrigger = forwardRef<
       {indicator ? <span className={styles.indicator}>{indicator}</span> : null}
     </BaseMenu.Trigger>
   );
-});
+}) as <Payload = unknown>(
+  props: Omit<ProjectSwitcherTriggerProps<Payload>, 'ref'> & RefAttributes<HTMLButtonElement>,
+) => React.JSX.Element;
 
 export const ProjectSwitcher = {
   Root: ContextualMenu.Root,

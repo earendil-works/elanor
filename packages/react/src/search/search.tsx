@@ -3,7 +3,7 @@ import {forwardRef, type ReactNode} from 'react';
 import styles from './search.module.css';
 import {classes, mergeClassName} from '../utils/class-names.ts';
 
-export interface SearchProps extends Omit<BaseInput.Props, 'render'> {
+export interface SearchProps extends BaseInput.Props {
   readonly icon?: ReactNode;
   readonly endAdornment?: ReactNode;
   readonly rootClassName?: string;
