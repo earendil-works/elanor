@@ -1,6 +1,10 @@
 # Elanor
 
-The design system monorepo for Earendil products, containing shared UI components, design tokens, and token tooling.
+The design system monorepo for Earendil products, containing shared UI components, design tokens, token tooling, and documentation.
+
+## Apps
+
+- [`apps/docs`](./apps/docs): Astro documentation site for the React components.
 
 ## Packages
 
@@ -21,6 +25,6 @@ pnpm test
 pnpm build
 ```
 
-- `pnpm check` validates the tokens, type-checks all packages, and lints React component CSS.
+- `pnpm check` validates the tokens, type-checks all packages, and lints React and documentation styles.
 - `pnpm test` runs the Stylelint plugin tests, building their required Radius catalogue first.
 - `pnpm build` builds every package, including all four token brands.

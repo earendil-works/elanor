@@ -43,7 +43,7 @@ const components = entries.map((entry) => entry.id).sort();
 
   :global(body) {
     display: grid;
-    grid-template-columns: 16rem minmax(0, 1fr);
+    grid-template-columns: max-content minmax(0, 1fr);
     min-height: 100vh;
     margin: 0;
     background: var(--semantic-color-background-canvas);
@@ -52,7 +52,7 @@ const components = entries.map((entry) => entry.id).sort();
   }
 
   main {
-    padding: 1rem;
+    padding: var(--semantic-dimension-space-padding-x-large);
   }
 
   aside {
@@ -61,8 +61,8 @@ const components = entries.map((entry) => entry.id).sort();
     block-size: 100vh;
     min-block-size: 0;
     overflow-y: auto;
-    padding: 1rem;
-    border-inline-end: 1px solid;
+    padding: var(--semantic-dimension-space-padding-x-large);
+    border-inline-end: var(--semantic-dimension-border-width-default) solid;
   }
 
   .preview {
