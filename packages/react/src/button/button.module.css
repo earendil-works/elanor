@@ -1,4 +1,5 @@
 .root {
+  position: relative;
   box-sizing: border-box;
   display: inline-flex;
   align-items: center;
@@ -6,8 +7,7 @@
   gap: var(--semantic-dimension-space-control-gap-small);
   padding-block: var(--semantic-dimension-space-control-padding-block-small);
   padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
-  border-width: var(--semantic-dimension-border-width-default);
-  border-style: solid;
+  border: 0;
   border-radius: var(--semantic-dimension-radius-small);
   font: var(--semantic-typography-ui-primary);
   white-space: nowrap;
@@ -17,195 +17,231 @@
 }
 
 .root[data-density='compact'] {
+  padding-block: 0;
   padding-inline: var(--semantic-dimension-space-control-padding-inline-x-small);
 }
 
+.root[data-density='compact']::after {
+  position: absolute;
+  inset-block: calc(-1 * var(--semantic-dimension-space-control-padding-block-small));
+  inset-inline: 0;
+  content: '';
+}
+
 .root[data-hierarchy='primary'][data-semantic='neutral'] {
-  border-color: var(--semantic-color-background-fill-primary);
+  box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+    var(--semantic-color-background-fill-primary);
   background: var(--semantic-color-background-fill-primary);
   color: var(--semantic-color-text-on-primary-fill);
 }
 
 .root[data-hierarchy='primary'][data-semantic='information'] {
-  border-color: var(--semantic-color-background-fill-primary-information);
+  box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+    var(--semantic-color-background-fill-primary-information);
   background: var(--semantic-color-background-fill-primary-information);
   color: var(--semantic-color-text-on-primary-fill);
 }
 
 .root[data-hierarchy='primary'][data-semantic='negative'] {
-  border-color: var(--semantic-color-background-fill-primary-negative);
+  box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+    var(--semantic-color-background-fill-primary-negative);
   background: var(--semantic-color-background-fill-primary-negative);
   color: var(--semantic-color-text-on-primary-fill);
 }
 
 .root[data-hierarchy='primary'][data-semantic='positive'] {
-  border-color: var(--semantic-color-background-fill-primary-positive);
+  box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+    var(--semantic-color-background-fill-primary-positive);
   background: var(--semantic-color-background-fill-primary-positive);
   color: var(--semantic-color-text-on-primary-fill);
 }
 
 .root[data-hierarchy='secondary'][data-semantic='neutral'] {
-  border-color: var(--semantic-color-border-primary);
-  background: var(--semantic-color-background-fill-secondary);
-  color: var(--semantic-color-text-on-secondary-fill);
+  box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+    var(--semantic-color-border-information);
+  background: var(--semantic-color-background-fill-ghost);
+  color: var(--semantic-color-text-information);
 }
 
 .root[data-hierarchy='secondary'][data-semantic='information'] {
-  border-color: var(--semantic-color-border-information);
-  background: var(--semantic-color-background-fill-secondary-information);
-  color: var(--semantic-color-text-on-secondary-fill-information);
+  box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+    var(--semantic-color-border-information);
+  background: var(--semantic-color-background-fill-ghost-information);
+  color: var(--semantic-color-text-information);
 }
 
 .root[data-hierarchy='secondary'][data-semantic='negative'] {
-  border-color: var(--semantic-color-border-negative);
-  background: var(--semantic-color-background-fill-secondary-negative);
-  color: var(--semantic-color-text-on-secondary-fill-negative);
+  box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+    var(--semantic-color-border-negative);
+  background: var(--semantic-color-background-fill-ghost-negative);
+  color: var(--semantic-color-text-negative);
 }
 
 .root[data-hierarchy='secondary'][data-semantic='positive'] {
-  border-color: var(--semantic-color-border-positive);
-  background: var(--semantic-color-background-fill-secondary-positive);
-  color: var(--semantic-color-text-on-secondary-fill-positive);
+  box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+    var(--semantic-color-border-positive);
+  background: var(--semantic-color-background-fill-ghost-positive);
+  color: var(--semantic-color-text-positive);
 }
 
 .root[data-hierarchy='tertiary'] {
-  color: var(--semantic-color-text-primary);
+  color: var(--semantic-color-text-information);
 }
 
 .root[data-hierarchy='tertiary'][data-semantic='neutral'] {
-  border-color: var(--semantic-color-background-fill-ghost-neutral);
-  background: var(--semantic-color-background-fill-ghost-neutral);
+  box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+    var(--semantic-color-background-fill-ghost);
+  background: var(--semantic-color-background-fill-ghost);
 }
 
 .root[data-hierarchy='tertiary'][data-semantic='information'] {
-  border-color: var(--semantic-color-background-fill-ghost-information);
+  box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+    var(--semantic-color-background-fill-ghost-information);
   background: var(--semantic-color-background-fill-ghost-information);
   color: var(--semantic-color-text-information);
 }
 
 .root[data-hierarchy='tertiary'][data-semantic='negative'] {
-  border-color: var(--semantic-color-background-fill-ghost-negative);
+  box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+    var(--semantic-color-background-fill-ghost-negative);
   background: var(--semantic-color-background-fill-ghost-negative);
   color: var(--semantic-color-text-negative);
 }
 
 .root[data-hierarchy='tertiary'][data-semantic='positive'] {
-  border-color: var(--semantic-color-background-fill-ghost-positive);
+  box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+    var(--semantic-color-background-fill-ghost-positive);
   background: var(--semantic-color-background-fill-ghost-positive);
   color: var(--semantic-color-text-positive);
 }
 
 @media (hover: hover) {
   .root[data-hierarchy='primary'][data-semantic='neutral']:hover:not([data-disabled]) {
-    border-color: var(--semantic-color-background-fill-primary-hover);
+    box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+      var(--semantic-color-background-fill-primary-hover);
     background: var(--semantic-color-background-fill-primary-hover);
   }
 
   .root[data-hierarchy='primary'][data-semantic='information']:hover:not([data-disabled]) {
-    border-color: var(--semantic-color-background-fill-primary-information-hover);
+    box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+      var(--semantic-color-background-fill-primary-information-hover);
     background: var(--semantic-color-background-fill-primary-information-hover);
   }
 
   .root[data-hierarchy='primary'][data-semantic='negative']:hover:not([data-disabled]) {
-    border-color: var(--semantic-color-background-fill-primary-negative-hover);
+    box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+      var(--semantic-color-background-fill-primary-negative-hover);
     background: var(--semantic-color-background-fill-primary-negative-hover);
   }
 
   .root[data-hierarchy='primary'][data-semantic='positive']:hover:not([data-disabled]) {
-    border-color: var(--semantic-color-background-fill-primary-positive-hover);
+    box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+      var(--semantic-color-background-fill-primary-positive-hover);
     background: var(--semantic-color-background-fill-primary-positive-hover);
   }
 
   .root[data-hierarchy='secondary'][data-semantic='neutral']:hover:not([data-disabled]) {
-    background: var(--semantic-color-background-fill-secondary-hover);
+    background: var(--semantic-color-background-fill-ghost-hover);
   }
 
   .root[data-hierarchy='secondary'][data-semantic='information']:hover:not([data-disabled]) {
-    background: var(--semantic-color-background-fill-secondary-information-hover);
+    background: var(--semantic-color-background-fill-ghost-information-hover);
   }
 
   .root[data-hierarchy='secondary'][data-semantic='negative']:hover:not([data-disabled]) {
-    background: var(--semantic-color-background-fill-secondary-negative-hover);
+    background: var(--semantic-color-background-fill-ghost-negative-hover);
   }
 
   .root[data-hierarchy='secondary'][data-semantic='positive']:hover:not([data-disabled]) {
-    background: var(--semantic-color-background-fill-secondary-positive-hover);
+    background: var(--semantic-color-background-fill-ghost-positive-hover);
   }
 
   .root[data-hierarchy='tertiary'][data-semantic='neutral']:hover:not([data-disabled]) {
-    border-color: var(--semantic-color-background-fill-ghost-neutral-hover);
-    background: var(--semantic-color-background-fill-ghost-neutral-hover);
+    box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+      var(--semantic-color-background-fill-ghost-hover);
+    background: var(--semantic-color-background-fill-ghost-hover);
   }
 
   .root[data-hierarchy='tertiary'][data-semantic='information']:hover:not([data-disabled]) {
-    border-color: var(--semantic-color-background-fill-ghost-information-hover);
+    box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+      var(--semantic-color-background-fill-ghost-information-hover);
     background: var(--semantic-color-background-fill-ghost-information-hover);
   }
 
   .root[data-hierarchy='tertiary'][data-semantic='negative']:hover:not([data-disabled]) {
-    border-color: var(--semantic-color-background-fill-ghost-negative-hover);
+    box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+      var(--semantic-color-background-fill-ghost-negative-hover);
     background: var(--semantic-color-background-fill-ghost-negative-hover);
   }
 
   .root[data-hierarchy='tertiary'][data-semantic='positive']:hover:not([data-disabled]) {
-    border-color: var(--semantic-color-background-fill-ghost-positive-hover);
+    box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+      var(--semantic-color-background-fill-ghost-positive-hover);
     background: var(--semantic-color-background-fill-ghost-positive-hover);
   }
 }
 
 .root[data-hierarchy='primary'][data-semantic='neutral']:active:not([data-disabled]) {
-  border-color: var(--semantic-color-background-fill-primary-active);
+  box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+    var(--semantic-color-background-fill-primary-active);
   background: var(--semantic-color-background-fill-primary-active);
 }
 
 .root[data-hierarchy='primary'][data-semantic='information']:active:not([data-disabled]) {
-  border-color: var(--semantic-color-background-fill-primary-information-active);
+  box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+    var(--semantic-color-background-fill-primary-information-active);
   background: var(--semantic-color-background-fill-primary-information-active);
 }
 
 .root[data-hierarchy='primary'][data-semantic='negative']:active:not([data-disabled]) {
-  border-color: var(--semantic-color-background-fill-primary-negative-active);
+  box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+    var(--semantic-color-background-fill-primary-negative-active);
   background: var(--semantic-color-background-fill-primary-negative-active);
 }
 
 .root[data-hierarchy='primary'][data-semantic='positive']:active:not([data-disabled]) {
-  border-color: var(--semantic-color-background-fill-primary-positive-active);
+  box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+    var(--semantic-color-background-fill-primary-positive-active);
   background: var(--semantic-color-background-fill-primary-positive-active);
 }
 
 .root[data-hierarchy='secondary'][data-semantic='neutral']:active:not([data-disabled]) {
-  background: var(--semantic-color-background-fill-secondary-active);
+  background: var(--semantic-color-background-fill-ghost-active);
 }
 
 .root[data-hierarchy='secondary'][data-semantic='information']:active:not([data-disabled]) {
-  background: var(--semantic-color-background-fill-secondary-information-active);
+  background: var(--semantic-color-background-fill-ghost-information-active);
 }
 
 .root[data-hierarchy='secondary'][data-semantic='negative']:active:not([data-disabled]) {
-  background: var(--semantic-color-background-fill-secondary-negative-active);
+  background: var(--semantic-color-background-fill-ghost-negative-active);
 }
 
 .root[data-hierarchy='secondary'][data-semantic='positive']:active:not([data-disabled]) {
-  background: var(--semantic-color-background-fill-secondary-positive-active);
+  background: var(--semantic-color-background-fill-ghost-positive-active);
 }
 
 .root[data-hierarchy='tertiary'][data-semantic='neutral']:active:not([data-disabled]) {
-  border-color: var(--semantic-color-background-fill-ghost-neutral-active);
-  background: var(--semantic-color-background-fill-ghost-neutral-active);
+  box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+    var(--semantic-color-background-fill-ghost-active);
+  background: var(--semantic-color-background-fill-ghost-active);
 }
 
 .root[data-hierarchy='tertiary'][data-semantic='information']:active:not([data-disabled]) {
-  border-color: var(--semantic-color-background-fill-ghost-information-active);
+  box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+    var(--semantic-color-background-fill-ghost-information-active);
   background: var(--semantic-color-background-fill-ghost-information-active);
 }
 
 .root[data-hierarchy='tertiary'][data-semantic='negative']:active:not([data-disabled]) {
-  border-color: var(--semantic-color-background-fill-ghost-negative-active);
+  box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+    var(--semantic-color-background-fill-ghost-negative-active);
   background: var(--semantic-color-background-fill-ghost-negative-active);
 }
 
 .root[data-hierarchy='tertiary'][data-semantic='positive']:active:not([data-disabled]) {
-  border-color: var(--semantic-color-background-fill-ghost-positive-active);
+  box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+    var(--semantic-color-background-fill-ghost-positive-active);
   background: var(--semantic-color-background-fill-ghost-positive-active);
 }
 
@@ -221,6 +257,11 @@
 
 @media (forced-colors: active) {
   .root {
-    border-color: ButtonBorder;
+    outline: var(--semantic-dimension-border-width-default) solid ButtonBorder;
+    outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
+  }
+
+  .root:focus-visible {
+    outline-color: Highlight;
   }
 }
