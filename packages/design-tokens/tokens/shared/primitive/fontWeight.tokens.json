@@ -1,0 +1,39 @@
+{
+  "$schema": "https://designtokens.org/schemas/2025.10/format.json",
+  "$description": "Shared primitive font weight scale using standard OpenType weight values.",
+  "primitive": {
+    "fontWeight": {
+      "$type": "fontWeight",
+      "thin": {
+        "$value": 100
+      },
+      "extraLight": {
+        "$value": 200
+      },
+      "light": {
+        "$value": 300
+      },
+      "normal": {
+        "$value": 400
+      },
+      "medium": {
+        "$value": 500
+      },
+      "semiBold": {
+        "$value": 600
+      },
+      "bold": {
+        "$value": 700
+      },
+      "extraBold": {
+        "$value": 800
+      },
+      "black": {
+        "$value": 900
+      },
+      "extraBlack": {
+        "$value": 950
+      }
+    }
+  }
+}

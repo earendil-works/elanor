@@ -1,0 +1,6 @@
+:local(.card) {
+  color: var(--semantic-color-text-primary);
+  background-color: var(--semantic-color-background-surface);
+  padding: var(--semantic-dimension-space-padding-medium);
+  border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-primary);
+}

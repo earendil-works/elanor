@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://earendil.works/schemas/design-token-catalogue/v1.json",
+  "title": "Design token catalogue v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "brand", "tokens"],
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "brand": { "type": "string", "minLength": 1 },
+    "tokens": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["path", "cssVariable", "type", "tier", "description", "deprecated", "modes"],
+        "properties": {
+          "path": { "type": "string", "minLength": 1 },
+          "cssVariable": { "type": "string", "pattern": "^--[A-Za-z0-9_-]+$" },
+          "type": { "type": "string", "minLength": 1 },
+          "tier": { "enum": ["primitive", "semantic", "component"] },
+          "description": { "type": "string" },
+          "deprecated": { "oneOf": [{ "type": "boolean" }, { "type": "string", "minLength": 1 }] },
+          "modes": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["light", "dark"],
+            "properties": {
+              "light": { "type": "string", "minLength": 1 },
+              "dark": { "type": "string", "minLength": 1 }
+            }
+          },
+          "sourceToken": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

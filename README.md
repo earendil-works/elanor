@@ -1,19 +1,26 @@
-# Elanor UI
+# Elanor
 
-Shared UI components for Earendil products.
+The design system monorepo for Earendil products, containing shared UI components, design tokens, and token tooling.
+
+## Packages
 
 - [`packages/react`](./packages/react/README.md): `@earendil-works/elanor-react`, built with Base UI and CSS Modules.
+- [`packages/design-tokens`](./packages/design-tokens/README.md): `@earendil-works/design-tokens`, shared and brand-specific DTCG tokens, generation tooling, and CSS exports.
+- [`packages/stylelint-plugin-design-tokens`](./packages/stylelint-plugin-design-tokens/README.md): `@earendil-works/stylelint-plugin-design-tokens`, rules for consuming the generated token catalogues.
 
-Products provide application state, routing, lifecycle, and brand tokens. Tokens are maintained in the separate `design-tokens` repository.
+Products provide application state, routing, and lifecycle, and select a brand stylesheet from the token package.
 
 ## Development
 
-Use the pnpm version declared in `package.json`:
+Requirements: Node.js 24 or newer and pnpm 11.13.1.
 
 ```sh
 pnpm install --frozen-lockfile
 pnpm check
+pnpm test
 pnpm build
 ```
 
-Build output: `packages/react/dist`.
+- `pnpm check` validates the tokens and type-checks all packages.
+- `pnpm test` runs the Stylelint plugin tests, building their required Radius catalogue first.
+- `pnpm build` builds every package, including all four token brands.
