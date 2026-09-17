@@ -21,6 +21,6 @@ pnpm test
 pnpm build
 ```
 
-- `pnpm check` validates the tokens and type-checks all packages.
+- `pnpm check` validates the tokens, type-checks all packages, and lints React component CSS.
 - `pnpm test` runs the Stylelint plugin tests, building their required Radius catalogue first.
 - `pnpm build` builds every package, including all four token brands.

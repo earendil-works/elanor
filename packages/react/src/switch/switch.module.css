@@ -26,24 +26,8 @@
   content: '';
 }
 
-.root:hover:not([data-disabled])::before {
-  background: var(--semantic-color-background-switch-hover);
-}
-
-.root:active:not([data-disabled])::before {
-  background: var(--semantic-color-background-switch-active);
-}
-
 .root[data-checked]::before {
   background: var(--semantic-color-background-switch-selected);
-}
-
-.root[data-checked]:hover:not([data-disabled])::before {
-  background: var(--semantic-color-background-switch-selected-hover);
-}
-
-.root[data-checked]:active:not([data-disabled])::before {
-  background: var(--semantic-color-background-switch-selected-active);
 }
 
 .root:focus-visible {

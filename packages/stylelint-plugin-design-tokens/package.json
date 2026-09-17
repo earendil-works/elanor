@@ -28,10 +28,11 @@
   },
   "dependencies": {
     "minimatch": "^10.2.4",
-    "postcss": "^8.5.19",
+    "postcss": "^8.5.26",
     "postcss-value-parser": "^4.2.0"
   },
   "devDependencies": {
+    "@earendil-works/design-tokens": "workspace:*",
     "@types/node": "^24.13.3",
     "stylelint": "^16.26.1",
     "typescript": "^5.9.3",
