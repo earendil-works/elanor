@@ -4,7 +4,7 @@ import {glob} from 'astro/loaders';
 const components = defineCollection({
   loader: glob({
     pattern: '*/*.mdx',
-    base: '../react/src',
+    base: '../../packages/react/src',
     generateId: ({entry}) => entry.split('/')[0] ?? entry,
   }),
   schema: z.object({}),
