@@ -10,32 +10,30 @@ export type {
   NavigationMenuRootChangeEventReason,
   NavigationMenuRootChangeEventDetails,
   NavigationMenuTriggerState,
-  NavigationMenuTriggerProps,
-  NavigationMenuPortalState,
   NavigationMenuPortalProps,
   NavigationMenuPositionerState,
   NavigationMenuPositionerProps,
-  NavigationMenuViewportState,
   NavigationMenuViewportProps,
   NavigationMenuListState,
-  NavigationMenuListProps,
-  NavigationMenuItemState,
-  NavigationMenuItemProps,
   NavigationMenuContentState,
-  NavigationMenuContentProps,
   NavigationMenuPopupState,
-  NavigationMenuPopupProps,
   NavigationMenuBackdropState,
   NavigationMenuBackdropProps,
   NavigationMenuArrowState,
   NavigationMenuArrowProps,
   NavigationMenuLinkState,
-  NavigationMenuLinkProps,
   NavigationMenuIconState,
-  NavigationMenuIconProps,
 } from '@base-ui/react/navigation-menu';
 
-export const NavigationMenuList = forwardRef<HTMLUListElement, BaseNavigationMenu.List.Props>(
+export type NavigationMenuListProps = BaseNavigationMenu.List.Props;
+export type NavigationMenuItemProps = BaseNavigationMenu.Item.Props;
+export type NavigationMenuLinkProps = BaseNavigationMenu.Link.Props;
+export type NavigationMenuTriggerProps = BaseNavigationMenu.Trigger.Props;
+export type NavigationMenuIconProps = BaseNavigationMenu.Icon.Props;
+export type NavigationMenuPopupProps = BaseNavigationMenu.Popup.Props;
+export type NavigationMenuContentProps = BaseNavigationMenu.Content.Props;
+
+export const NavigationMenuList = forwardRef<HTMLUListElement, NavigationMenuListProps>(
   function NavigationMenuList({className, ...props}, ref) {
     return (
       <BaseNavigationMenu.List
@@ -47,7 +45,7 @@ export const NavigationMenuList = forwardRef<HTMLUListElement, BaseNavigationMen
   },
 );
 
-export const NavigationMenuItem = forwardRef<HTMLLIElement, BaseNavigationMenu.Item.Props>(
+export const NavigationMenuItem = forwardRef<HTMLLIElement, NavigationMenuItemProps>(
   function NavigationMenuItem({className, ...props}, ref) {
     return (
       <BaseNavigationMenu.Item
@@ -59,7 +57,7 @@ export const NavigationMenuItem = forwardRef<HTMLLIElement, BaseNavigationMenu.I
   },
 );
 
-export const NavigationMenuLink = forwardRef<HTMLAnchorElement, BaseNavigationMenu.Link.Props>(
+export const NavigationMenuLink = forwardRef<HTMLAnchorElement, NavigationMenuLinkProps>(
   function NavigationMenuLink({className, ...props}, ref) {
     return (
       <BaseNavigationMenu.Link
@@ -73,7 +71,7 @@ export const NavigationMenuLink = forwardRef<HTMLAnchorElement, BaseNavigationMe
 
 export const NavigationMenuTrigger = forwardRef<
   HTMLButtonElement,
-  BaseNavigationMenu.Trigger.Props
+  NavigationMenuTriggerProps
 >(function NavigationMenuTrigger({className, ...props}, ref) {
   return (
     <BaseNavigationMenu.Trigger
@@ -87,7 +85,7 @@ export const NavigationMenuTrigger = forwardRef<
   );
 });
 
-export const NavigationMenuIcon = forwardRef<HTMLSpanElement, BaseNavigationMenu.Icon.Props>(
+export const NavigationMenuIcon = forwardRef<HTMLSpanElement, NavigationMenuIconProps>(
   function NavigationMenuIcon({className, ...props}, ref) {
     return (
       <BaseNavigationMenu.Icon
@@ -101,7 +99,7 @@ export const NavigationMenuIcon = forwardRef<HTMLSpanElement, BaseNavigationMenu
 
 export const NavigationMenuPositioner = BaseNavigationMenu.Positioner;
 
-export const NavigationMenuPopup = forwardRef<HTMLElement, BaseNavigationMenu.Popup.Props>(
+export const NavigationMenuPopup = forwardRef<HTMLElement, NavigationMenuPopupProps>(
   function NavigationMenuPopup({className, ...props}, ref) {
     return (
       <BaseNavigationMenu.Popup
@@ -115,7 +113,7 @@ export const NavigationMenuPopup = forwardRef<HTMLElement, BaseNavigationMenu.Po
 
 export const NavigationMenuContent = forwardRef<
   HTMLDivElement,
-  BaseNavigationMenu.Content.Props
+  NavigationMenuContentProps
 >(function NavigationMenuContent({className, ...props}, ref) {
   return (
     <BaseNavigationMenu.Content

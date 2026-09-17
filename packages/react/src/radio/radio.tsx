@@ -1,4 +1,4 @@
-import {Radio as BaseRadio} from '@base-ui/react/radio';
+import {Radio as BaseRadio, type RadioRootProps} from '@base-ui/react/radio';
 import {RadioGroup as BaseRadioGroup} from '@base-ui/react/radio-group';
 import {forwardRef, type Ref} from 'react';
 import styles from './radio.module.css';
@@ -7,7 +7,6 @@ import {mergeClassName} from '../utils/class-names.ts';
 export type {
   RadioRootState,
   RadioRootProps,
-  RadioIndicatorProps,
   RadioIndicatorState,
 } from '@base-ui/react/radio';
 
@@ -18,8 +17,10 @@ export type {
   RadioGroupChangeEventDetails,
 } from '@base-ui/react/radio-group';
 
+export type RadioIndicatorProps = BaseRadio.Indicator.Props;
+
 export const RadioRoot = forwardRef(function RadioRoot<Value>(
-  {className, ...props}: BaseRadio.Root.Props<Value>,
+  {className, ...props}: RadioRootProps<Value>,
   ref: Ref<HTMLSpanElement>,
 ): React.JSX.Element {
   return (
@@ -31,7 +32,7 @@ export const RadioRoot = forwardRef(function RadioRoot<Value>(
   );
 }) as typeof BaseRadio.Root;
 
-export const RadioIndicator = forwardRef<HTMLSpanElement, BaseRadio.Indicator.Props>(
+export const RadioIndicator = forwardRef<HTMLSpanElement, RadioIndicatorProps>(
   function RadioIndicator({className, ...props}, ref) {
     return (
       <BaseRadio.Indicator

@@ -7,31 +7,41 @@ import {
 import styles from './side-navigation.module.css';
 import {classes} from '../utils/class-names.ts';
 
-export const SideNavigationRoot = forwardRef<HTMLElement, HTMLAttributes<HTMLElement>>(
+export interface SideNavigationRootProps extends HTMLAttributes<HTMLElement> {}
+
+export const SideNavigationRoot = forwardRef<HTMLElement, SideNavigationRootProps>(
   function SideNavigationRoot({className, ...props}, ref) {
     return <nav {...props} ref={ref} className={classes(styles.root, className)} />;
   },
 );
 
-export const SideNavigationGroup = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+export interface SideNavigationGroupProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const SideNavigationGroup = forwardRef<HTMLDivElement, SideNavigationGroupProps>(
   function SideNavigationGroup({className, ...props}, ref) {
     return <div {...props} ref={ref} className={classes(styles.group, className)} />;
   },
 );
 
-export const SideNavigationGroupLabel = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+export interface SideNavigationGroupLabelProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const SideNavigationGroupLabel = forwardRef<HTMLDivElement, SideNavigationGroupLabelProps>(
   function SideNavigationGroupLabel({className, ...props}, ref) {
     return <div {...props} ref={ref} className={classes(styles.groupLabel, className)} />;
   },
 );
 
-export const SideNavigationList = forwardRef<HTMLUListElement, HTMLAttributes<HTMLUListElement>>(
+export interface SideNavigationListProps extends HTMLAttributes<HTMLUListElement> {}
+
+export const SideNavigationList = forwardRef<HTMLUListElement, SideNavigationListProps>(
   function SideNavigationList({className, ...props}, ref) {
     return <ul {...props} ref={ref} className={classes(styles.list, className)} />;
   },
 );
 
-export const SideNavigationItem = forwardRef<HTMLLIElement, HTMLAttributes<HTMLLIElement>>(
+export interface SideNavigationItemProps extends HTMLAttributes<HTMLLIElement> {}
+
+export const SideNavigationItem = forwardRef<HTMLLIElement, SideNavigationItemProps>(
   function SideNavigationItem({className, ...props}, ref) {
     return <li {...props} ref={ref} className={classes(styles.item, className)} />;
   },

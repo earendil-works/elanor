@@ -5,14 +5,15 @@ import {mergeClassName} from '../utils/class-names.ts';
 
 export type {
   CheckboxRootState,
-  CheckboxRootProps,
   CheckboxRootChangeEventReason,
   CheckboxRootChangeEventDetails,
   CheckboxIndicatorState,
-  CheckboxIndicatorProps,
 } from '@base-ui/react/checkbox';
 
-export const CheckboxRoot = forwardRef<HTMLElement, BaseCheckbox.Root.Props>(
+export type CheckboxRootProps = BaseCheckbox.Root.Props;
+export type CheckboxIndicatorProps = BaseCheckbox.Indicator.Props;
+
+export const CheckboxRoot = forwardRef<HTMLElement, CheckboxRootProps>(
   function CheckboxRoot({className, ...props}, ref) {
     return (
       <BaseCheckbox.Root
@@ -24,7 +25,7 @@ export const CheckboxRoot = forwardRef<HTMLElement, BaseCheckbox.Root.Props>(
   },
 );
 
-export const CheckboxIndicator = forwardRef<HTMLSpanElement, BaseCheckbox.Indicator.Props>(
+export const CheckboxIndicator = forwardRef<HTMLSpanElement, CheckboxIndicatorProps>(
   function CheckboxIndicator({className, ...props}, ref) {
     return (
       <BaseCheckbox.Indicator

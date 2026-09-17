@@ -5,14 +5,15 @@ import {mergeClassName} from '../utils/class-names.ts';
 
 export type {
   SwitchRootState,
-  SwitchRootProps,
   SwitchRootChangeEventReason,
   SwitchRootChangeEventDetails,
-  SwitchThumbProps,
   SwitchThumbState,
 } from '@base-ui/react/switch';
 
-export const SwitchRoot = forwardRef<HTMLElement, BaseSwitch.Root.Props>(
+export type SwitchRootProps = BaseSwitch.Root.Props;
+export type SwitchThumbProps = BaseSwitch.Thumb.Props;
+
+export const SwitchRoot = forwardRef<HTMLElement, SwitchRootProps>(
   function SwitchRoot({className, ...props}, ref) {
     return (
       <BaseSwitch.Root
@@ -24,7 +25,7 @@ export const SwitchRoot = forwardRef<HTMLElement, BaseSwitch.Root.Props>(
   },
 );
 
-export const SwitchThumb = forwardRef<HTMLSpanElement, BaseSwitch.Thumb.Props>(
+export const SwitchThumb = forwardRef<HTMLSpanElement, SwitchThumbProps>(
   function SwitchThumb({className, ...props}, ref) {
     return (
       <BaseSwitch.Thumb

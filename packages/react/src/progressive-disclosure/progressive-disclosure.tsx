@@ -5,16 +5,17 @@ import {mergeClassName} from '../utils/class-names.ts';
 
 export type {
   CollapsibleRootState as ProgressiveDisclosureRootState,
-  CollapsibleRootProps as ProgressiveDisclosureRootProps,
   CollapsibleRootChangeEventReason as ProgressiveDisclosureRootChangeEventReason,
   CollapsibleRootChangeEventDetails as ProgressiveDisclosureRootChangeEventDetails,
   CollapsibleTriggerState as ProgressiveDisclosureTriggerState,
   CollapsibleTriggerProps as ProgressiveDisclosureTriggerProps,
   CollapsiblePanelState as ProgressiveDisclosurePanelState,
-  CollapsiblePanelProps as ProgressiveDisclosurePanelProps,
 } from '@base-ui/react/collapsible';
 
-export const ProgressiveDisclosureRoot = forwardRef<HTMLDivElement, BaseCollapsible.Root.Props>(
+export type ProgressiveDisclosureRootProps = BaseCollapsible.Root.Props;
+export type ProgressiveDisclosurePanelProps = BaseCollapsible.Panel.Props;
+
+export const ProgressiveDisclosureRoot = forwardRef<HTMLDivElement, ProgressiveDisclosureRootProps>(
   function ProgressiveDisclosureRoot({className, ...props}, ref) {
     return (
       <BaseCollapsible.Root
@@ -26,7 +27,7 @@ export const ProgressiveDisclosureRoot = forwardRef<HTMLDivElement, BaseCollapsi
   },
 );
 
-export const ProgressiveDisclosurePanel = forwardRef<HTMLDivElement, BaseCollapsible.Panel.Props>(
+export const ProgressiveDisclosurePanel = forwardRef<HTMLDivElement, ProgressiveDisclosurePanelProps>(
   function ProgressiveDisclosurePanel({className, ...props}, ref) {
     return (
       <BaseCollapsible.Panel

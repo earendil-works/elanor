@@ -10,21 +10,14 @@ export type {
   PopoverRootChangeEventDetails,
   PopoverTriggerState,
   PopoverTriggerProps,
-  PopoverPortalState,
   PopoverPortalProps,
   PopoverPositionerState,
   PopoverPositionerProps,
   PopoverPopupState,
-  PopoverPopupProps,
   PopoverArrowState,
   PopoverArrowProps,
   PopoverBackdropState,
   PopoverBackdropProps,
-  PopoverTitleState,
-  PopoverTitleProps,
-  PopoverDescriptionState,
-  PopoverDescriptionProps,
-  PopoverCloseState,
   PopoverCloseProps,
   PopoverViewportState,
   PopoverViewportProps,
@@ -32,7 +25,11 @@ export type {
 
 export type PopoverHandle<Payload = unknown> = BasePopover.Handle<Payload>;
 
-export const PopoverPopup = forwardRef<HTMLDivElement, BasePopover.Popup.Props>(
+export type PopoverPopupProps = BasePopover.Popup.Props;
+export type PopoverTitleProps = BasePopover.Title.Props;
+export type PopoverDescriptionProps = BasePopover.Description.Props;
+
+export const PopoverPopup = forwardRef<HTMLDivElement, PopoverPopupProps>(
   function PopoverPopup({className, ...props}, ref) {
     return (
       <BasePopover.Popup
@@ -44,7 +41,7 @@ export const PopoverPopup = forwardRef<HTMLDivElement, BasePopover.Popup.Props>(
   },
 );
 
-export const PopoverTitle = forwardRef<HTMLHeadingElement, BasePopover.Title.Props>(
+export const PopoverTitle = forwardRef<HTMLHeadingElement, PopoverTitleProps>(
   function PopoverTitle({className, ...props}, ref) {
     return (
       <BasePopover.Title
@@ -56,7 +53,7 @@ export const PopoverTitle = forwardRef<HTMLHeadingElement, BasePopover.Title.Pro
   },
 );
 
-export const PopoverDescription = forwardRef<HTMLParagraphElement, BasePopover.Description.Props>(
+export const PopoverDescription = forwardRef<HTMLParagraphElement, PopoverDescriptionProps>(
   function PopoverDescription({className, ...props}, ref) {
     return (
       <BasePopover.Description

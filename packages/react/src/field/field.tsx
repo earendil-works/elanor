@@ -7,15 +7,10 @@ export type {
   FieldValidityData,
   FieldRootActions,
   FieldRootState,
-  FieldRootProps,
   FieldLabelState,
-  FieldLabelProps,
   FieldDescriptionState,
-  FieldDescriptionProps,
   FieldErrorState,
-  FieldErrorProps,
   FieldControlState,
-  FieldControlProps,
   FieldControlChangeEventReason,
   FieldControlChangeEventDetails,
   FieldValidityState,
@@ -24,31 +19,37 @@ export type {
   FieldItemProps,
 } from '@base-ui/react/field';
 
-export const FieldRoot = forwardRef<HTMLDivElement, BaseField.Root.Props>(function FieldRoot(
+export type FieldRootProps = BaseField.Root.Props;
+export type FieldLabelProps = BaseField.Label.Props;
+export type FieldDescriptionProps = BaseField.Description.Props;
+export type FieldErrorProps = BaseField.Error.Props;
+export type FieldControlProps = BaseField.Control.Props;
+
+export const FieldRoot = forwardRef<HTMLDivElement, FieldRootProps>(function FieldRoot(
   {className, ...props}, ref,
 ) {
   return <BaseField.Root {...props} ref={ref} className={mergeClassName<BaseField.Root.State>(styles.root, className)} />;
 });
 
-export const FieldLabel = forwardRef<HTMLElement, BaseField.Label.Props>(function FieldLabel(
+export const FieldLabel = forwardRef<HTMLElement, FieldLabelProps>(function FieldLabel(
   {className, ...props}, ref,
 ) {
   return <BaseField.Label {...props} ref={ref} className={mergeClassName<BaseField.Label.State>(styles.label, className)} />;
 });
 
-export const FieldDescription = forwardRef<HTMLParagraphElement, BaseField.Description.Props>(function FieldDescription(
+export const FieldDescription = forwardRef<HTMLParagraphElement, FieldDescriptionProps>(function FieldDescription(
   {className, ...props}, ref,
 ) {
   return <BaseField.Description {...props} ref={ref} className={mergeClassName<BaseField.Description.State>(styles.description, className)} />;
 });
 
-export const FieldError = forwardRef<HTMLDivElement, BaseField.Error.Props>(function FieldError(
+export const FieldError = forwardRef<HTMLDivElement, FieldErrorProps>(function FieldError(
   {className, ...props}, ref,
 ) {
   return <BaseField.Error {...props} ref={ref} className={mergeClassName<BaseField.Error.State>(styles.error, className)} />;
 });
 
-export const FieldControl = forwardRef<HTMLElement, BaseField.Control.Props>(function FieldControl(
+export const FieldControl = forwardRef<HTMLElement, FieldControlProps>(function FieldControl(
   {className, ...props}, ref,
 ) {
   return <BaseField.Control {...props} ref={ref} className={mergeClassName<BaseField.Control.State>(styles.control, className)} />;

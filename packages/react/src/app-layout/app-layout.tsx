@@ -10,31 +10,41 @@ export const AppLayoutRoot = forwardRef<HTMLDivElement, AppLayoutProps>(function
   return <div {...props} ref={ref} className={classes(styles.root, className)} />;
 });
 
-export const AppLayoutBackground = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+export interface AppLayoutBackgroundProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const AppLayoutBackground = forwardRef<HTMLDivElement, AppLayoutBackgroundProps>(
   function AppLayoutBackground({className, ...props}, ref) {
     return <div aria-hidden="true" {...props} ref={ref} className={classes(styles.background, className)} />;
   },
 );
 
-export const AppLayoutHeader = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+export interface AppLayoutHeaderProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const AppLayoutHeader = forwardRef<HTMLDivElement, AppLayoutHeaderProps>(
   function AppLayoutHeader({className, ...props}, ref) {
     return <div {...props} ref={ref} className={classes(styles.header, className)} />;
   },
 );
 
-export const AppLayoutBody = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+export interface AppLayoutBodyProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const AppLayoutBody = forwardRef<HTMLDivElement, AppLayoutBodyProps>(
   function AppLayoutBody({className, ...props}, ref) {
     return <div {...props} ref={ref} className={classes(styles.body, className)} />;
   },
 );
 
-export const AppLayoutSidebar = forwardRef<HTMLElement, HTMLAttributes<HTMLElement>>(
+export interface AppLayoutSidebarProps extends HTMLAttributes<HTMLElement> {}
+
+export const AppLayoutSidebar = forwardRef<HTMLElement, AppLayoutSidebarProps>(
   function AppLayoutSidebar({className, ...props}, ref) {
     return <aside {...props} ref={ref} className={classes(styles.sidebar, className)} />;
   },
 );
 
-export const AppLayoutContent = forwardRef<HTMLElement, HTMLAttributes<HTMLElement>>(
+export interface AppLayoutContentProps extends HTMLAttributes<HTMLElement> {}
+
+export const AppLayoutContent = forwardRef<HTMLElement, AppLayoutContentProps>(
   function AppLayoutContent({className, ...props}, ref) {
     return <main {...props} ref={ref} className={classes(styles.content, className)} />;
   },

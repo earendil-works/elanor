@@ -2,7 +2,9 @@ import {forwardRef, type HTMLAttributes, type TableHTMLAttributes, type TdHTMLAt
 import styles from './table.module.css';
 import {classes} from '../utils/class-names.ts';
 
-export const TableContainer = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+export interface TableContainerProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const TableContainer = forwardRef<HTMLDivElement, TableContainerProps>(
   function TableContainer({className, ...props}, ref) {
     return <div {...props} ref={ref} className={classes(styles.container, className)} />;
   },
@@ -17,25 +19,33 @@ export const Table = forwardRef<HTMLTableElement, TableProps>(function Table(
   return <table {...props} ref={ref} className={classes(styles.table, className)} />;
 });
 
-export const TableHead = forwardRef<HTMLTableSectionElement, HTMLAttributes<HTMLTableSectionElement>>(
+export interface TableHeadProps extends HTMLAttributes<HTMLTableSectionElement> {}
+
+export const TableHead = forwardRef<HTMLTableSectionElement, TableHeadProps>(
   function TableHead(props, ref) {
     return <thead {...props} ref={ref} />;
   },
 );
 
-export const TableBody = forwardRef<HTMLTableSectionElement, HTMLAttributes<HTMLTableSectionElement>>(
+export interface TableBodyProps extends HTMLAttributes<HTMLTableSectionElement> {}
+
+export const TableBody = forwardRef<HTMLTableSectionElement, TableBodyProps>(
   function TableBody(props, ref) {
     return <tbody {...props} ref={ref} />;
   },
 );
 
-export const TableRow = forwardRef<HTMLTableRowElement, HTMLAttributes<HTMLTableRowElement>>(
+export interface TableRowProps extends HTMLAttributes<HTMLTableRowElement> {}
+
+export const TableRow = forwardRef<HTMLTableRowElement, TableRowProps>(
   function TableRow({className, ...props}, ref) {
     return <tr {...props} ref={ref} className={classes(styles.row, className)} />;
   },
 );
 
-export const TableHeaderCell = forwardRef<HTMLTableCellElement, ThHTMLAttributes<HTMLTableCellElement>>(
+export interface TableHeaderCellProps extends ThHTMLAttributes<HTMLTableCellElement> {}
+
+export const TableHeaderCell = forwardRef<HTMLTableCellElement, TableHeaderCellProps>(
   function TableHeaderCell({className, ...props}, ref) {
     return <th {...props} ref={ref} className={classes(styles.cell, styles.headerCell, className)} />;
   },
@@ -59,13 +69,17 @@ export const TableCell = forwardRef<HTMLTableCellElement, TableCellProps>(functi
   );
 });
 
-export const TableCellPrimary = forwardRef<HTMLSpanElement, HTMLAttributes<HTMLSpanElement>>(
+export interface TableCellPrimaryProps extends HTMLAttributes<HTMLSpanElement> {}
+
+export const TableCellPrimary = forwardRef<HTMLSpanElement, TableCellPrimaryProps>(
   function TableCellPrimary({className, ...props}, ref) {
     return <span {...props} ref={ref} className={classes(styles.primary, className)} />;
   },
 );
 
-export const TableCellSecondary = forwardRef<HTMLSpanElement, HTMLAttributes<HTMLSpanElement>>(
+export interface TableCellSecondaryProps extends HTMLAttributes<HTMLSpanElement> {}
+
+export const TableCellSecondary = forwardRef<HTMLSpanElement, TableCellSecondaryProps>(
   function TableCellSecondary({className, ...props}, ref) {
     return <span {...props} ref={ref} className={classes(styles.secondary, className)} />;
   },

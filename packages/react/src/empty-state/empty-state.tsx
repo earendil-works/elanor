@@ -11,19 +11,25 @@ export const EmptyStateRoot = forwardRef<HTMLDivElement, EmptyStateProps>(
   },
 );
 
-export const EmptyStateIllustration = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+export interface EmptyStateIllustrationProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const EmptyStateIllustration = forwardRef<HTMLDivElement, EmptyStateIllustrationProps>(
   function EmptyStateIllustration({className, ...props}, ref) {
     return <div {...props} ref={ref} className={classes(styles.illustration, className)} />;
   },
 );
 
-export const EmptyStateBody = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+export interface EmptyStateBodyProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const EmptyStateBody = forwardRef<HTMLDivElement, EmptyStateBodyProps>(
   function EmptyStateBody({className, ...props}, ref) {
     return <div {...props} ref={ref} className={classes(styles.body, className)} />;
   },
 );
 
-export const EmptyStateCopy = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+export interface EmptyStateCopyProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const EmptyStateCopy = forwardRef<HTMLDivElement, EmptyStateCopyProps>(
   function EmptyStateCopy({className, ...props}, ref) {
     return <div {...props} ref={ref} className={classes(styles.copy, className)} />;
   },
@@ -39,13 +45,17 @@ export const EmptyStateTitle = forwardRef<HTMLHeadingElement, EmptyStateTitlePro
   },
 );
 
-export const EmptyStateDescription = forwardRef<HTMLParagraphElement, HTMLAttributes<HTMLParagraphElement>>(
+export interface EmptyStateDescriptionProps extends HTMLAttributes<HTMLParagraphElement> {}
+
+export const EmptyStateDescription = forwardRef<HTMLParagraphElement, EmptyStateDescriptionProps>(
   function EmptyStateDescription({className, ...props}, ref) {
     return <p {...props} ref={ref} className={classes(styles.description, className)} />;
   },
 );
 
-export const EmptyStateActions = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+export interface EmptyStateActionsProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const EmptyStateActions = forwardRef<HTMLDivElement, EmptyStateActionsProps>(
   function EmptyStateActions({className, ...props}, ref) {
     return <div {...props} ref={ref} className={classes(styles.actions, className)} />;
   },

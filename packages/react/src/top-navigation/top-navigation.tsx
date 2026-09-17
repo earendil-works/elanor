@@ -16,19 +16,25 @@ export const TopNavigationRoot = forwardRef<HTMLElement, TopNavigationProps>(
   },
 );
 
-export const TopNavigationIdentity = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+export interface TopNavigationIdentityProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const TopNavigationIdentity = forwardRef<HTMLDivElement, TopNavigationIdentityProps>(
   function TopNavigationIdentity({className, ...props}, ref) {
     return <div {...props} ref={ref} className={classes(styles.identity, className)} />;
   },
 );
 
-export const TopNavigationNavigation = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+export interface TopNavigationNavigationProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const TopNavigationNavigation = forwardRef<HTMLDivElement, TopNavigationNavigationProps>(
   function TopNavigationNavigation({className, ...props}, ref) {
     return <div {...props} ref={ref} className={classes(styles.navigation, className)} />;
   },
 );
 
-export const TopNavigationActions = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+export interface TopNavigationActionsProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const TopNavigationActions = forwardRef<HTMLDivElement, TopNavigationActionsProps>(
   function TopNavigationActions({className, ...props}, ref) {
     return <div {...props} ref={ref} className={classes(styles.actions, className)} />;
   },

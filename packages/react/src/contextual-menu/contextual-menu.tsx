@@ -14,20 +14,12 @@ export type {
   MenuBackdropState as ContextualMenuBackdropState,
   MenuBackdropProps as ContextualMenuBackdropProps,
   MenuCheckboxItemState as ContextualMenuCheckboxItemState,
-  MenuCheckboxItemProps as ContextualMenuCheckboxItemProps,
   MenuCheckboxItemChangeEventReason as ContextualMenuCheckboxItemChangeEventReason,
   MenuCheckboxItemChangeEventDetails as ContextualMenuCheckboxItemChangeEventDetails,
-  MenuCheckboxItemIndicatorProps as ContextualMenuCheckboxItemIndicatorProps,
   MenuCheckboxItemIndicatorState as ContextualMenuCheckboxItemIndicatorState,
-  MenuGroupLabelProps as ContextualMenuGroupLabelProps,
-  MenuGroupLabelState as ContextualMenuGroupLabelState,
-  MenuGroupProps as ContextualMenuGroupProps,
-  MenuGroupState as ContextualMenuGroupState,
   MenuItemState as ContextualMenuItemState,
   MenuLinkItemState as ContextualMenuLinkItemState,
-  MenuPopupProps as ContextualMenuPopupProps,
   MenuPopupState as ContextualMenuPopupState,
-  MenuPortalState as ContextualMenuPortalState,
   MenuPortalProps as ContextualMenuPortalProps,
   MenuPositionerState as ContextualMenuPositionerState,
   MenuPositionerProps as ContextualMenuPositionerProps,
@@ -36,8 +28,6 @@ export type {
   MenuRadioGroupChangeEventReason as ContextualMenuRadioGroupChangeEventReason,
   MenuRadioGroupChangeEventDetails as ContextualMenuRadioGroupChangeEventDetails,
   MenuRadioItemState as ContextualMenuRadioItemState,
-  MenuRadioItemProps as ContextualMenuRadioItemProps,
-  MenuRadioItemIndicatorProps as ContextualMenuRadioItemIndicatorProps,
   MenuRadioItemIndicatorState as ContextualMenuRadioItemIndicatorState,
   MenuSubmenuRootProps as ContextualMenuSubmenuRootProps,
   MenuSubmenuRootChangeEventReason as ContextualMenuSubmenuRootChangeEventReason,
@@ -45,16 +35,24 @@ export type {
   MenuTriggerProps as ContextualMenuTriggerProps,
   MenuTriggerState as ContextualMenuTriggerState,
   MenuSubmenuTriggerState as ContextualMenuSubmenuTriggerState,
-  MenuSubmenuTriggerProps as ContextualMenuSubmenuTriggerProps,
   MenuViewportState as ContextualMenuViewportState,
   MenuViewportProps as ContextualMenuViewportProps,
 } from '@base-ui/react/menu';
 
 export type ContextualMenuHandle<Payload = unknown> = BaseMenu.Handle<Payload>;
 
+export type ContextualMenuPopupProps = BaseMenu.Popup.Props;
+export type ContextualMenuGroupProps = BaseMenu.Group.Props;
+export type ContextualMenuGroupLabelProps = BaseMenu.GroupLabel.Props;
+export type ContextualMenuSubmenuTriggerProps = BaseMenu.SubmenuTrigger.Props;
+export type ContextualMenuCheckboxItemProps = BaseMenu.CheckboxItem.Props;
+export type ContextualMenuRadioItemProps = BaseMenu.RadioItem.Props;
+export type ContextualMenuCheckboxItemIndicatorProps = BaseMenu.CheckboxItemIndicator.Props;
+export type ContextualMenuRadioItemIndicatorProps = BaseMenu.RadioItemIndicator.Props;
+
 export const ContextualMenuPositioner = BaseMenu.Positioner;
 
-export const ContextualMenuPopup = forwardRef<HTMLDivElement, BaseMenu.Popup.Props>(function ContextualMenuPopup(
+export const ContextualMenuPopup = forwardRef<HTMLDivElement, ContextualMenuPopupProps>(function ContextualMenuPopup(
   {className, ...props},
   ref,
 ) {
@@ -125,7 +123,7 @@ export const ContextualMenuLinkItem = forwardRef<Element, ContextualMenuLinkItem
   );
 });
 
-export const ContextualMenuGroup = forwardRef<HTMLDivElement, BaseMenu.Group.Props>(function ContextualMenuGroup(
+export const ContextualMenuGroup = forwardRef<HTMLDivElement, ContextualMenuGroupProps>(function ContextualMenuGroup(
   {className, ...props},
   ref,
 ) {
@@ -138,7 +136,7 @@ export const ContextualMenuGroup = forwardRef<HTMLDivElement, BaseMenu.Group.Pro
   );
 });
 
-export const ContextualMenuGroupLabel = forwardRef<HTMLDivElement, BaseMenu.GroupLabel.Props>(
+export const ContextualMenuGroupLabel = forwardRef<HTMLDivElement, ContextualMenuGroupLabelProps>(
   function ContextualMenuGroupLabel({className, ...props}, ref) {
     return (
       <BaseMenu.GroupLabel
@@ -150,7 +148,7 @@ export const ContextualMenuGroupLabel = forwardRef<HTMLDivElement, BaseMenu.Grou
   },
 );
 
-export const ContextualMenuSubmenuTrigger = forwardRef<HTMLElement, BaseMenu.SubmenuTrigger.Props>(
+export const ContextualMenuSubmenuTrigger = forwardRef<HTMLElement, ContextualMenuSubmenuTriggerProps>(
   function ContextualMenuSubmenuTrigger({className, ...props}, ref) {
     return (
       <BaseMenu.SubmenuTrigger
@@ -165,25 +163,25 @@ export const ContextualMenuSubmenuTrigger = forwardRef<HTMLElement, BaseMenu.Sub
   },
 );
 
-export const ContextualMenuCheckboxItem = forwardRef<HTMLElement, BaseMenu.CheckboxItem.Props>(
+export const ContextualMenuCheckboxItem = forwardRef<HTMLElement, ContextualMenuCheckboxItemProps>(
   function ContextualMenuCheckboxItem({className, ...props}, ref) {
     return <BaseMenu.CheckboxItem {...props} ref={ref} className={mergeClassName<BaseMenu.CheckboxItem.State>(styles.item, className)} />;
   },
 );
 
-export const ContextualMenuRadioItem = forwardRef<HTMLElement, BaseMenu.RadioItem.Props>(
+export const ContextualMenuRadioItem = forwardRef<HTMLElement, ContextualMenuRadioItemProps>(
   function ContextualMenuRadioItem({className, ...props}, ref) {
     return <BaseMenu.RadioItem {...props} ref={ref} className={mergeClassName<BaseMenu.RadioItem.State>(styles.item, className)} />;
   },
 );
 
-export const ContextualMenuCheckboxItemIndicator = forwardRef<HTMLSpanElement, BaseMenu.CheckboxItemIndicator.Props>(
+export const ContextualMenuCheckboxItemIndicator = forwardRef<HTMLSpanElement, ContextualMenuCheckboxItemIndicatorProps>(
   function ContextualMenuCheckboxItemIndicator({className, ...props}, ref) {
     return <BaseMenu.CheckboxItemIndicator {...props} ref={ref} className={mergeClassName<BaseMenu.CheckboxItemIndicator.State>(styles.indicator, className)} />;
   },
 );
 
-export const ContextualMenuRadioItemIndicator = forwardRef<HTMLSpanElement, BaseMenu.RadioItemIndicator.Props>(
+export const ContextualMenuRadioItemIndicator = forwardRef<HTMLSpanElement, ContextualMenuRadioItemIndicatorProps>(
   function ContextualMenuRadioItemIndicator({className, ...props}, ref) {
     return <BaseMenu.RadioItemIndicator {...props} ref={ref} className={mergeClassName<BaseMenu.RadioItemIndicator.State>(styles.indicator, className)} />;
   },

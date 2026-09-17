@@ -11,42 +11,36 @@ export type {
   SelectLabelState as DropdownLabelState,
   SelectLabelProps as DropdownLabelProps,
   SelectTriggerState as DropdownTriggerState,
-  SelectTriggerProps as DropdownTriggerProps,
   SelectValueState as DropdownValueState,
   SelectValueProps as DropdownValueProps,
   SelectIconState as DropdownIconState,
-  SelectIconProps as DropdownIconProps,
-  SelectPortalState as DropdownPortalState,
   SelectPortalProps as DropdownPortalProps,
   SelectBackdropState as DropdownBackdropState,
   SelectBackdropProps as DropdownBackdropProps,
   SelectPositionerState as DropdownPositionerState,
   SelectPositionerProps as DropdownPositionerProps,
-  SelectPopupProps as DropdownPopupProps,
   SelectPopupState as DropdownPopupState,
-  SelectListProps as DropdownListProps,
-  SelectListState as DropdownListState,
   SelectItemState as DropdownItemState,
-  SelectItemProps as DropdownItemProps,
   SelectItemIndicatorState as DropdownItemIndicatorState,
-  SelectItemIndicatorProps as DropdownItemIndicatorProps,
-  SelectItemTextState as DropdownItemTextState,
   SelectItemTextProps as DropdownItemTextProps,
   SelectArrowState as DropdownArrowState,
   SelectArrowProps as DropdownArrowProps,
-  SelectScrollDownArrowState as DropdownScrollDownArrowState,
   SelectScrollDownArrowProps as DropdownScrollDownArrowProps,
-  SelectScrollUpArrowState as DropdownScrollUpArrowState,
   SelectScrollUpArrowProps as DropdownScrollUpArrowProps,
-  SelectGroupState as DropdownGroupState,
   SelectGroupProps as DropdownGroupProps,
-  SelectGroupLabelState as DropdownGroupLabelState,
-  SelectGroupLabelProps as DropdownGroupLabelProps,
-  SelectSeparatorProps as DropdownSeparatorProps,
   SelectSeparatorState as DropdownSeparatorState,
 } from '@base-ui/react/select';
 
-export const DropdownTrigger = forwardRef<HTMLButtonElement, BaseSelect.Trigger.Props>(
+export type DropdownTriggerProps = BaseSelect.Trigger.Props;
+export type DropdownIconProps = BaseSelect.Icon.Props;
+export type DropdownPopupProps = BaseSelect.Popup.Props;
+export type DropdownListProps = BaseSelect.List.Props;
+export type DropdownItemProps = BaseSelect.Item.Props;
+export type DropdownItemIndicatorProps = BaseSelect.ItemIndicator.Props;
+export type DropdownGroupLabelProps = BaseSelect.GroupLabel.Props;
+export type DropdownSeparatorProps = BaseSelect.Separator.Props;
+
+export const DropdownTrigger = forwardRef<HTMLButtonElement, DropdownTriggerProps>(
   function DropdownTrigger({className, ...props}, ref) {
     return (
       <BaseSelect.Trigger
@@ -58,7 +52,7 @@ export const DropdownTrigger = forwardRef<HTMLButtonElement, BaseSelect.Trigger.
   },
 );
 
-export const DropdownIcon = forwardRef<HTMLSpanElement, BaseSelect.Icon.Props>(
+export const DropdownIcon = forwardRef<HTMLSpanElement, DropdownIconProps>(
   function DropdownIcon({className, children, ...props}, ref) {
     return (
       <BaseSelect.Icon
@@ -72,7 +66,7 @@ export const DropdownIcon = forwardRef<HTMLSpanElement, BaseSelect.Icon.Props>(
   },
 );
 
-export const DropdownPopup = forwardRef<HTMLDivElement, BaseSelect.Popup.Props>(
+export const DropdownPopup = forwardRef<HTMLDivElement, DropdownPopupProps>(
   function DropdownPopup({className, ...props}, ref) {
     return (
       <BaseSelect.Popup
@@ -84,7 +78,7 @@ export const DropdownPopup = forwardRef<HTMLDivElement, BaseSelect.Popup.Props>(
   },
 );
 
-export const DropdownList = forwardRef<HTMLDivElement, BaseSelect.List.Props>(
+export const DropdownList = forwardRef<HTMLDivElement, DropdownListProps>(
   function DropdownList({className, ...props}, ref) {
     return (
       <BaseSelect.List
@@ -96,7 +90,7 @@ export const DropdownList = forwardRef<HTMLDivElement, BaseSelect.List.Props>(
   },
 );
 
-export const DropdownItem = forwardRef<HTMLElement, BaseSelect.Item.Props>(
+export const DropdownItem = forwardRef<HTMLElement, DropdownItemProps>(
   function DropdownItem({className, ...props}, ref) {
     return (
       <BaseSelect.Item
@@ -108,7 +102,7 @@ export const DropdownItem = forwardRef<HTMLElement, BaseSelect.Item.Props>(
   },
 );
 
-export const DropdownItemIndicator = forwardRef<HTMLSpanElement, BaseSelect.ItemIndicator.Props>(
+export const DropdownItemIndicator = forwardRef<HTMLSpanElement, DropdownItemIndicatorProps>(
   function DropdownItemIndicator({className, ...props}, ref) {
     return (
       <BaseSelect.ItemIndicator
@@ -120,7 +114,7 @@ export const DropdownItemIndicator = forwardRef<HTMLSpanElement, BaseSelect.Item
   },
 );
 
-export const DropdownGroupLabel = forwardRef<HTMLDivElement, BaseSelect.GroupLabel.Props>(
+export const DropdownGroupLabel = forwardRef<HTMLDivElement, DropdownGroupLabelProps>(
   function DropdownGroupLabel({className, ...props}, ref) {
     return (
       <BaseSelect.GroupLabel
@@ -132,7 +126,7 @@ export const DropdownGroupLabel = forwardRef<HTMLDivElement, BaseSelect.GroupLab
   },
 );
 
-export const DropdownSeparator = forwardRef<HTMLDivElement, BaseSelect.Separator.Props>(
+export const DropdownSeparator = forwardRef<HTMLDivElement, DropdownSeparatorProps>(
   function DropdownSeparator({className, ...props}, ref) {
     return (
       <BaseSelect.Separator

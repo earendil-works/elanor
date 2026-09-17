@@ -17,7 +17,9 @@ export const TableOfContents = forwardRef<HTMLElement, TableOfContentsProps>(
   },
 );
 
-export const TableOfContentsItem = forwardRef<HTMLLIElement, HTMLAttributes<HTMLLIElement>>(
+export interface TableOfContentsItemProps extends HTMLAttributes<HTMLLIElement> {}
+
+export const TableOfContentsItem = forwardRef<HTMLLIElement, TableOfContentsItemProps>(
   function TableOfContentsItem({className, ...props}, ref) {
     return <li {...props} ref={ref} className={classes(styles.item, className)} />;
   },

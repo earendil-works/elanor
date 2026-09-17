@@ -11,7 +11,9 @@ export const PageHeaderRoot = forwardRef<HTMLElement, PageHeaderProps>(
   },
 );
 
-export const PageHeaderRow = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+export interface PageHeaderRowProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const PageHeaderRow = forwardRef<HTMLDivElement, PageHeaderRowProps>(
   function PageHeaderRow({className, ...props}, ref) {
     return <div {...props} ref={ref} className={classes(styles.headerRow, className)} />;
   },
@@ -27,13 +29,17 @@ export const PageHeaderTitle = forwardRef<HTMLHeadingElement, PageHeaderTitlePro
   },
 );
 
-export const PageHeaderDescription = forwardRef<HTMLParagraphElement, HTMLAttributes<HTMLParagraphElement>>(
+export interface PageHeaderDescriptionProps extends HTMLAttributes<HTMLParagraphElement> {}
+
+export const PageHeaderDescription = forwardRef<HTMLParagraphElement, PageHeaderDescriptionProps>(
   function PageHeaderDescription({className, ...props}, ref) {
     return <p {...props} ref={ref} className={classes(styles.description, className)} />;
   },
 );
 
-export const PageHeaderActions = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
+export interface PageHeaderActionsProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const PageHeaderActions = forwardRef<HTMLDivElement, PageHeaderActionsProps>(
   function PageHeaderActions({className, ...props}, ref) {
     return <div {...props} ref={ref} className={classes(styles.actions, className)} />;
   },

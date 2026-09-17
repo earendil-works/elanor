@@ -4,34 +4,18 @@ import styles from './searchable-dropdown.module.css';
 import {mergeClassName} from '../utils/class-names.ts';
 
 export type {
-  ComboboxTriggerProps as SearchableDropdownTriggerProps,
   ComboboxTriggerState as SearchableDropdownTriggerState,
-  ComboboxIconProps as SearchableDropdownIconProps,
-  ComboboxIconState as SearchableDropdownIconState,
-  ComboboxPopupProps as SearchableDropdownPopupProps,
   ComboboxPopupState as SearchableDropdownPopupState,
-  ComboboxInputGroupProps as SearchableDropdownInputGroupProps,
   ComboboxInputGroupState as SearchableDropdownInputGroupState,
-  ComboboxInputProps as SearchableDropdownInputProps,
   ComboboxInputState as SearchableDropdownInputState,
-  ComboboxListProps as SearchableDropdownListProps,
   ComboboxListState as SearchableDropdownListState,
-  ComboboxItemProps as SearchableDropdownItemProps,
   ComboboxItemState as SearchableDropdownItemState,
-  ComboboxItemIndicatorProps as SearchableDropdownItemIndicatorProps,
   ComboboxItemIndicatorState as SearchableDropdownItemIndicatorState,
-  ComboboxGroupLabelProps as SearchableDropdownGroupLabelProps,
-  ComboboxGroupLabelState as SearchableDropdownGroupLabelState,
-  ComboboxSeparatorProps as SearchableDropdownSeparatorProps,
   ComboboxSeparatorState as SearchableDropdownSeparatorState,
-  ComboboxEmptyProps as SearchableDropdownEmptyProps,
-  ComboboxEmptyState as SearchableDropdownEmptyState,
   ComboboxLabelProps as SearchableDropdownLabelProps,
   ComboboxLabelState as SearchableDropdownLabelState,
   ComboboxValueProps as SearchableDropdownValueProps,
-  ComboboxValueState as SearchableDropdownValueState,
   ComboboxPortalProps as SearchableDropdownPortalProps,
-  ComboboxPortalState as SearchableDropdownPortalState,
   ComboboxBackdropProps as SearchableDropdownBackdropProps,
   ComboboxBackdropState as SearchableDropdownBackdropState,
   ComboboxPositionerProps as SearchableDropdownPositionerProps,
@@ -39,11 +23,8 @@ export type {
   ComboboxArrowProps as SearchableDropdownArrowProps,
   ComboboxArrowState as SearchableDropdownArrowState,
   ComboboxGroupProps as SearchableDropdownGroupProps,
-  ComboboxGroupState as SearchableDropdownGroupState,
   ComboboxRowProps as SearchableDropdownRowProps,
-  ComboboxRowState as SearchableDropdownRowState,
   ComboboxStatusProps as SearchableDropdownStatusProps,
-  ComboboxStatusState as SearchableDropdownStatusState,
   ComboboxRootProps as SearchableDropdownRootProps,
   ComboboxRootState as SearchableDropdownRootState,
   ComboboxRootActions as SearchableDropdownRootActions,
@@ -59,7 +40,19 @@ export type {
   CreateComboboxItemsOptions as CreateSearchableDropdownItemsOptions,
 } from '@base-ui/react/combobox';
 
-export const SearchableDropdownTrigger = forwardRef<HTMLButtonElement, BaseCombobox.Trigger.Props>(
+export type SearchableDropdownTriggerProps = BaseCombobox.Trigger.Props;
+export type SearchableDropdownIconProps = BaseCombobox.Icon.Props;
+export type SearchableDropdownPopupProps = BaseCombobox.Popup.Props;
+export type SearchableDropdownInputGroupProps = BaseCombobox.InputGroup.Props;
+export type SearchableDropdownInputProps = BaseCombobox.Input.Props;
+export type SearchableDropdownListProps = BaseCombobox.List.Props;
+export type SearchableDropdownItemProps = BaseCombobox.Item.Props;
+export type SearchableDropdownItemIndicatorProps = BaseCombobox.ItemIndicator.Props;
+export type SearchableDropdownGroupLabelProps = BaseCombobox.GroupLabel.Props;
+export type SearchableDropdownSeparatorProps = BaseCombobox.Separator.Props;
+export type SearchableDropdownEmptyProps = BaseCombobox.Empty.Props;
+
+export const SearchableDropdownTrigger = forwardRef<HTMLButtonElement, SearchableDropdownTriggerProps>(
   function SearchableDropdownTrigger({className, ...props}, ref) {
     return (
       <BaseCombobox.Trigger
@@ -71,7 +64,7 @@ export const SearchableDropdownTrigger = forwardRef<HTMLButtonElement, BaseCombo
   },
 );
 
-export const SearchableDropdownIcon = forwardRef<HTMLSpanElement, BaseCombobox.Icon.Props>(
+export const SearchableDropdownIcon = forwardRef<HTMLSpanElement, SearchableDropdownIconProps>(
   function SearchableDropdownIcon({className, children, ...props}, ref) {
     return (
       <BaseCombobox.Icon
@@ -85,7 +78,7 @@ export const SearchableDropdownIcon = forwardRef<HTMLSpanElement, BaseCombobox.I
   },
 );
 
-export const SearchableDropdownPopup = forwardRef<HTMLDivElement, BaseCombobox.Popup.Props>(
+export const SearchableDropdownPopup = forwardRef<HTMLDivElement, SearchableDropdownPopupProps>(
   function SearchableDropdownPopup({className, ...props}, ref) {
     return (
       <BaseCombobox.Popup
@@ -97,7 +90,7 @@ export const SearchableDropdownPopup = forwardRef<HTMLDivElement, BaseCombobox.P
   },
 );
 
-export const SearchableDropdownInputGroup = forwardRef<HTMLDivElement, BaseCombobox.InputGroup.Props>(
+export const SearchableDropdownInputGroup = forwardRef<HTMLDivElement, SearchableDropdownInputGroupProps>(
   function SearchableDropdownInputGroup({className, children, ...props}, ref) {
     return (
       <BaseCombobox.InputGroup
@@ -114,7 +107,7 @@ export const SearchableDropdownInputGroup = forwardRef<HTMLDivElement, BaseCombo
   },
 );
 
-export const SearchableDropdownInput = forwardRef<HTMLInputElement, BaseCombobox.Input.Props>(
+export const SearchableDropdownInput = forwardRef<HTMLInputElement, SearchableDropdownInputProps>(
   function SearchableDropdownInput({className, ...props}, ref) {
     return (
       <BaseCombobox.Input
@@ -126,7 +119,7 @@ export const SearchableDropdownInput = forwardRef<HTMLInputElement, BaseCombobox
   },
 );
 
-export const SearchableDropdownList = forwardRef<HTMLDivElement, BaseCombobox.List.Props>(
+export const SearchableDropdownList = forwardRef<HTMLDivElement, SearchableDropdownListProps>(
   function SearchableDropdownList({className, ...props}, ref) {
     return (
       <BaseCombobox.List
@@ -138,7 +131,7 @@ export const SearchableDropdownList = forwardRef<HTMLDivElement, BaseCombobox.Li
   },
 );
 
-export const SearchableDropdownItem = forwardRef<HTMLDivElement, BaseCombobox.Item.Props>(
+export const SearchableDropdownItem = forwardRef<HTMLDivElement, SearchableDropdownItemProps>(
   function SearchableDropdownItem({className, ...props}, ref) {
     return (
       <BaseCombobox.Item
@@ -150,7 +143,7 @@ export const SearchableDropdownItem = forwardRef<HTMLDivElement, BaseCombobox.It
   },
 );
 
-export const SearchableDropdownItemIndicator = forwardRef<HTMLSpanElement, BaseCombobox.ItemIndicator.Props>(
+export const SearchableDropdownItemIndicator = forwardRef<HTMLSpanElement, SearchableDropdownItemIndicatorProps>(
   function SearchableDropdownItemIndicator({className, children = null, ...props}, ref) {
     return (
       <BaseCombobox.ItemIndicator
@@ -164,7 +157,7 @@ export const SearchableDropdownItemIndicator = forwardRef<HTMLSpanElement, BaseC
   },
 );
 
-export const SearchableDropdownGroupLabel = forwardRef<HTMLDivElement, BaseCombobox.GroupLabel.Props>(
+export const SearchableDropdownGroupLabel = forwardRef<HTMLDivElement, SearchableDropdownGroupLabelProps>(
   function SearchableDropdownGroupLabel({className, ...props}, ref) {
     return (
       <BaseCombobox.GroupLabel
@@ -176,7 +169,7 @@ export const SearchableDropdownGroupLabel = forwardRef<HTMLDivElement, BaseCombo
   },
 );
 
-export const SearchableDropdownSeparator = forwardRef<HTMLDivElement, BaseCombobox.Separator.Props>(
+export const SearchableDropdownSeparator = forwardRef<HTMLDivElement, SearchableDropdownSeparatorProps>(
   function SearchableDropdownSeparator({className, ...props}, ref) {
     return (
       <BaseCombobox.Separator
@@ -188,7 +181,7 @@ export const SearchableDropdownSeparator = forwardRef<HTMLDivElement, BaseCombob
   },
 );
 
-export const SearchableDropdownEmpty = forwardRef<HTMLDivElement, BaseCombobox.Empty.Props>(
+export const SearchableDropdownEmpty = forwardRef<HTMLDivElement, SearchableDropdownEmptyProps>(
   function SearchableDropdownEmpty({className, ...props}, ref) {
     return (
       <BaseCombobox.Empty

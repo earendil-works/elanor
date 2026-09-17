@@ -26,7 +26,7 @@ export const SegmentedControl = forwardRef(function SegmentedControl<Value exten
   );
 }) as typeof BaseToggleGroup;
 
-export const SegmentedControlItem = forwardRef<HTMLButtonElement, Toggle.Props>(
+export const SegmentedControlItem = forwardRef<HTMLButtonElement, SegmentedControlItemProps>(
   function SegmentedControlItem({className, type = 'button', ...props}, ref) {
     return (
       <Toggle

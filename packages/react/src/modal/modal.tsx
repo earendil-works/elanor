@@ -10,25 +10,23 @@ export type {
   DialogRootChangeEventDetails as ModalRootChangeEventDetails,
   DialogTriggerProps as ModalTriggerProps,
   DialogTriggerState as ModalTriggerState,
-  DialogPortalState as ModalPortalState,
   DialogPortalProps as ModalPortalProps,
-  DialogPopupProps as ModalPopupProps,
   DialogPopupState as ModalPopupState,
-  DialogBackdropProps as ModalBackdropProps,
   DialogBackdropState as ModalBackdropState,
-  DialogTitleProps as ModalTitleProps,
-  DialogTitleState as ModalTitleState,
-  DialogDescriptionProps as ModalDescriptionProps,
-  DialogDescriptionState as ModalDescriptionState,
   DialogCloseProps as ModalCloseProps,
   DialogCloseState as ModalCloseState,
   DialogViewportState as ModalViewportState,
-  DialogViewportProps as ModalViewportProps,
 } from '@base-ui/react/dialog';
 
 export type ModalHandle<Payload = unknown> = BaseDialog.Handle<Payload>;
 
-export const ModalBackdrop = forwardRef<HTMLDivElement, BaseDialog.Backdrop.Props>(
+export type ModalBackdropProps = BaseDialog.Backdrop.Props;
+export type ModalViewportProps = BaseDialog.Viewport.Props;
+export type ModalPopupProps = BaseDialog.Popup.Props;
+export type ModalTitleProps = BaseDialog.Title.Props;
+export type ModalDescriptionProps = BaseDialog.Description.Props;
+
+export const ModalBackdrop = forwardRef<HTMLDivElement, ModalBackdropProps>(
   function ModalBackdrop({className, ...props}, ref) {
     return (
       <BaseDialog.Backdrop
@@ -40,7 +38,7 @@ export const ModalBackdrop = forwardRef<HTMLDivElement, BaseDialog.Backdrop.Prop
   },
 );
 
-export const ModalViewport = forwardRef<HTMLDivElement, BaseDialog.Viewport.Props>(
+export const ModalViewport = forwardRef<HTMLDivElement, ModalViewportProps>(
   function ModalViewport({className, ...props}, ref) {
     return (
       <BaseDialog.Viewport
@@ -52,7 +50,7 @@ export const ModalViewport = forwardRef<HTMLDivElement, BaseDialog.Viewport.Prop
   },
 );
 
-export const ModalPopup = forwardRef<HTMLDivElement, BaseDialog.Popup.Props>(function ModalPopup(
+export const ModalPopup = forwardRef<HTMLDivElement, ModalPopupProps>(function ModalPopup(
   {className, ...props},
   ref,
 ) {
@@ -65,7 +63,7 @@ export const ModalPopup = forwardRef<HTMLDivElement, BaseDialog.Popup.Props>(fun
   );
 });
 
-export const ModalTitle = forwardRef<HTMLHeadingElement, BaseDialog.Title.Props>(
+export const ModalTitle = forwardRef<HTMLHeadingElement, ModalTitleProps>(
   function ModalTitle({className, ...props}, ref) {
     return (
       <BaseDialog.Title
@@ -77,7 +75,7 @@ export const ModalTitle = forwardRef<HTMLHeadingElement, BaseDialog.Title.Props>
   },
 );
 
-export const ModalDescription = forwardRef<HTMLParagraphElement, BaseDialog.Description.Props>(
+export const ModalDescription = forwardRef<HTMLParagraphElement, ModalDescriptionProps>(
   function ModalDescription({className, ...props}, ref) {
     return (
       <BaseDialog.Description
@@ -89,14 +87,18 @@ export const ModalDescription = forwardRef<HTMLParagraphElement, BaseDialog.Desc
   },
 );
 
-export const ModalBody = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function ModalBody(
+export interface ModalBodyProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const ModalBody = forwardRef<HTMLDivElement, ModalBodyProps>(function ModalBody(
   {className, ...props},
   ref,
 ) {
   return <div {...props} ref={ref} className={classes(styles.body, className)} />;
 });
 
-export const ModalActions = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(function ModalActions(
+export interface ModalActionsProps extends HTMLAttributes<HTMLDivElement> {}
+
+export const ModalActions = forwardRef<HTMLDivElement, ModalActionsProps>(function ModalActions(
   {className, ...props},
   ref,
 ) {

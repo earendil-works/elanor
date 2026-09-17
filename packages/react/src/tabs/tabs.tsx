@@ -9,16 +9,17 @@ export type {
   TabsRootChangeEventReason,
   TabsRootChangeEventDetails,
   TabsIndicatorState,
-  TabsIndicatorProps,
   TabsTabState,
-  TabsTabProps,
   TabsPanelState,
-  TabsPanelProps,
   TabsListState,
-  TabsListProps,
 } from '@base-ui/react/tabs';
 
-export const TabsList = forwardRef<HTMLDivElement, BaseTabs.List.Props>(
+export type TabsListProps = BaseTabs.List.Props;
+export type TabsTabProps = BaseTabs.Tab.Props;
+export type TabsIndicatorProps = BaseTabs.Indicator.Props;
+export type TabsPanelProps = BaseTabs.Panel.Props;
+
+export const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
   function TabsList({className, ...props}, ref) {
     return (
       <BaseTabs.List
@@ -30,7 +31,7 @@ export const TabsList = forwardRef<HTMLDivElement, BaseTabs.List.Props>(
   },
 );
 
-export const TabsTab = forwardRef<HTMLElement, BaseTabs.Tab.Props>(
+export const TabsTab = forwardRef<HTMLElement, TabsTabProps>(
   function TabsTab({className, ...props}, ref) {
     return (
       <BaseTabs.Tab
@@ -42,7 +43,7 @@ export const TabsTab = forwardRef<HTMLElement, BaseTabs.Tab.Props>(
   },
 );
 
-export const TabsIndicator = forwardRef<HTMLSpanElement, BaseTabs.Indicator.Props>(
+export const TabsIndicator = forwardRef<HTMLSpanElement, TabsIndicatorProps>(
   function TabsIndicator({className, ...props}, ref) {
     return (
       <BaseTabs.Indicator
@@ -54,7 +55,7 @@ export const TabsIndicator = forwardRef<HTMLSpanElement, BaseTabs.Indicator.Prop
   },
 );
 
-export const TabsPanel = forwardRef<HTMLDivElement, BaseTabs.Panel.Props>(
+export const TabsPanel = forwardRef<HTMLDivElement, TabsPanelProps>(
   function TabsPanel({className, ...props}, ref) {
     return (
       <BaseTabs.Panel

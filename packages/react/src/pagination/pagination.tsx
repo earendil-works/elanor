@@ -54,7 +54,9 @@ export const PaginationLink = forwardRef<HTMLAnchorElement, PaginationLinkProps>
   },
 );
 
-export const PaginationSeparator = forwardRef<HTMLSpanElement, HTMLAttributes<HTMLSpanElement>>(
+export interface PaginationSeparatorProps extends HTMLAttributes<HTMLSpanElement> {}
+
+export const PaginationSeparator = forwardRef<HTMLSpanElement, PaginationSeparatorProps>(
   function PaginationSeparator({className, children = '|', ...props}, ref) {
     return (
       <span {...props} ref={ref} aria-hidden="true" className={classes(styles.separator, className)}>
