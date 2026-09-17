@@ -34,7 +34,7 @@ For Base UI changes, consult [the documentation index](https://base-ui.com/llms.
 ## CSS
 
 - Use semantic tokens and preserve focus, disabled, invalid, and forced-colors states.
-- Use CSS Modules composition for shared component styles.
+- Keep every CSS Module self-contained: no `composes` or imports of other stylesheets. Share semantic tokens, not other components' private CSS classes.
 - Prefer logical properties and flexible layouts. Handle narrow containers, RTL, and long content without hiding meaningful content.
 - Keep selectors scoped; avoid global overrides and specificity escalation.
 - When adding motion, respect reduced-motion preferences and list transitioned properties explicitly—no `transition: all`.
