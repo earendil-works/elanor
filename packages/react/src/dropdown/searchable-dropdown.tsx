@@ -1,4 +1,6 @@
 import {Combobox as BaseCombobox} from '@base-ui/react/combobox';
+import {KeyboardArrowDownIcon} from '@earendil-works/elanor-icons/react/keyboard-arrow-down';
+import {SearchIcon} from '@earendil-works/elanor-icons/react/search';
 import {createContext, forwardRef, useContext} from 'react';
 import styles from './searchable-dropdown.module.css';
 import {classes, mergeClassName} from '../utils/class-names.ts';
@@ -105,7 +107,7 @@ export const SearchableDropdownIcon = forwardRef<HTMLSpanElement, SearchableDrop
         ref={ref}
         className={mergeClassName<BaseCombobox.Icon.State>(styles.icon, className)}
       >
-        {children ?? <span className={styles.chevron} />}
+        {children ?? <KeyboardArrowDownIcon />}
       </BaseCombobox.Icon>
     );
   },
@@ -132,7 +134,7 @@ export const SearchableDropdownInputGroup = forwardRef<HTMLDivElement, Searchabl
         className={mergeClassName<BaseCombobox.InputGroup.State>(styles.inputGroup, className)}
       >
         <span className={styles.searchIcon} aria-hidden="true">
-          <span className={styles.searchGlyph} />
+          <SearchIcon />
         </span>
         {children}
       </BaseCombobox.InputGroup>
