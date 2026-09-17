@@ -1,0 +1,11 @@
+Elanor Icons
+
+This product includes Material Symbols Outlined artwork from Google:
+https://github.com/google/material-design-icons
+Copyright Google LLC. Licensed under the Apache License, Version 2.0.
+
+The upstream artwork has been modified by Elanor: outlines are sampled,
+deterministically noise-displaced, geometrically simplified, optimized, renamed,
+and packaged as standalone SVG files and React components. These modifications
+are not an official Google release. See provenance.json for the exact upstream
+revision and selected design axes, and LICENSE for the license text.
