@@ -1,5 +1,6 @@
 ---
 import '@earendil-works/design-tokens/radius.css';
+import '../styles/docs.css';
 import '../styles/fonts.css';
 import {getCollection} from 'astro:content';
 import {ClientRouter} from 'astro:transitions';
@@ -36,43 +37,6 @@ const components = entries.map((entry) => entry.id).sort();
   </body>
 </html>
 
-<style>
-  :global(*) {
-    box-sizing: border-box;
-  }
-
-  :global(body) {
-    display: grid;
-    grid-template-columns: max-content minmax(0, 1fr);
-    min-height: 100vh;
-    margin: 0;
-    background: var(--semantic-color-background-canvas);
-    color: var(--semantic-color-text-primary);
-    font: var(--semantic-typography-ui-primary);
-  }
-
-  main {
-    padding: var(--semantic-dimension-space-padding-x-large);
-  }
-
-  aside {
-    position: sticky;
-    inset-block-start: 0;
-    block-size: 100vh;
-    min-block-size: 0;
-    overflow-y: auto;
-    padding: var(--semantic-dimension-space-padding-x-large);
-    border-inline-end: var(--semantic-dimension-border-width-default) solid;
-  }
-
-  .preview {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    inline-size: 100%;
-    max-inline-size: var(--semantic-dimension-breakpoint-small);
-  }
-</style>
 
 <script>
   import '../scripts/docs-swap.ts';
