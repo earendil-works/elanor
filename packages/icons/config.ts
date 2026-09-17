@@ -24,9 +24,9 @@ export const pipelineConfig = {
   boiling: {
     enabled: true,
     samplingStep: 0.1,
-    displacement: 0.23,
-    noiseFrequency: 1.2,
-    octaves: 2,
+    displacement: 0.5,
+    noiseFrequency: 1,
+    octaves: 1,
     seed: 4,
   },
   simplification: {
