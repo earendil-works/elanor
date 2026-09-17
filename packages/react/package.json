@@ -21,7 +21,8 @@
     "lint": "pnpm run lint:prepare && stylelint \"src/**/*.css\" --max-warnings 0"
   },
   "dependencies": {
-    "@base-ui/react": "1.8.0"
+    "@base-ui/react": "1.8.0",
+    "@earendil-works/elanor-icons": "workspace:*"
   },
   "peerDependencies": {
     "react": "^17.0.0 || ^18.0.0 || ^19.0.0",

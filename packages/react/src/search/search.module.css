@@ -54,27 +54,6 @@
   color: var(--semantic-color-icon-secondary);
 }
 
-.searchGlyph {
-  position: relative;
-  box-sizing: border-box;
-  inline-size: var(--semantic-dimension-space-padding-medium);
-  block-size: var(--semantic-dimension-space-padding-medium);
-  border: var(--semantic-dimension-border-width-small) solid currentcolor;
-  border-radius: var(--semantic-dimension-radius-full);
-}
-
-.searchGlyph::after {
-  position: absolute;
-  inset-inline-end: calc(-1 * var(--semantic-dimension-space-padding-small));
-  inset-block-end: calc(-1 * var(--semantic-dimension-space-padding-xxx-small));
-  inline-size: var(--semantic-dimension-space-padding-small);
-  block-size: var(--semantic-dimension-border-width-small);
-  background: currentcolor;
-  content: '';
-  transform: rotate(45deg);
-  transform-origin: center;
-}
-
 .input {
   box-sizing: border-box;
   inline-size: 100%;
