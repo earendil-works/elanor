@@ -9,7 +9,7 @@ export default defineConfig({
     resolve: {
       alias: {
         '@earendil-works/elanor-react': fileURLToPath(
-          new URL('../react/src/index.ts', import.meta.url),
+          new URL('../../packages/react/src/index.ts', import.meta.url),
         ),
       },
     },
