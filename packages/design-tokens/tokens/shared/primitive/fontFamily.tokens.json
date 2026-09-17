@@ -1,0 +1,35 @@
+{
+  "$schema": "https://designtokens.org/schemas/2025.10/format.json",
+  "$description": "Shared primitive font family fallback stacks.",
+  "primitive": {
+    "fontFamily": {
+      "$type": "fontFamily",
+      "mono": {
+        "$value": [
+          "Commit Mono",
+          "SFMono-Regular",
+          "ui-monospace",
+          "Menlo",
+          "Monaco",
+          "Consolas",
+          "monospace"
+        ]
+      },
+      "serif": {
+        "$value": [
+          "Plantin Now Variable",
+          "Georgia",
+          "serif"
+        ]
+      },
+      "sansSerif": {
+        "$value": [
+          "Inter",
+          "Helvetica Neue",
+          "Arial",
+          "sans-serif"
+        ]
+      }
+    }
+  }
+}

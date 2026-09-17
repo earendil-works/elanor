@@ -1,0 +1,21 @@
+{
+  "$schema": "https://designtokens.org/schemas/2025.10/format.json",
+  "semantic": {
+    "fontFamily": {
+      "$type": "fontFamily",
+      "$description": "Choose a font family by content role: long-form prose, application interface text, or code.",
+      "prose": {
+        "$value": "{primitive.fontFamily.serif}",
+        "$description": "Use for long-form reading content, such as articles and documentation. Do not use for application controls or code."
+      },
+      "ui": {
+        "$value": "{primitive.fontFamily.serif}",
+        "$description": "Use for text in application interfaces, including controls, labels, and navigation. Do not use for long-form reading or code."
+      },
+      "code": {
+        "$value": "{primitive.fontFamily.mono}",
+        "$description": "Use for source code, commands, and other content whose character alignment must be preserved. Do not use for prose or general interface text."
+      }
+    }
+  }
+}

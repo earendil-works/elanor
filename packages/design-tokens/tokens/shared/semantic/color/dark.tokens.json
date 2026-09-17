@@ -1,0 +1,541 @@
+{
+  "$schema": "https://designtokens.org/schemas/2025.10/format.json",
+  "semantic": {
+    "color": {
+      "$type": "color",
+      "background": {
+        "canvas": {
+          "$value": "{primitive.color.cerulianBlue.900}",
+          "$description": "Use as the foundational background of a page or application."
+        },
+        "surface": {
+          "$value": "{primitive.color.cerulianBlue.800}",
+          "$description": "Use for standard structural containers such as cards, panels, and content sections."
+        },
+        "backdrop": {
+          "$value": {
+            "colorSpace": {
+              "$ref": "#/primitive/color/black/$value/colorSpace"
+            },
+            "components": [
+              {
+                "$ref": "#/primitive/color/black/$value/components/0"
+              },
+              {
+                "$ref": "#/primitive/color/black/$value/components/1"
+              },
+              {
+                "$ref": "#/primitive/color/black/$value/components/2"
+              }
+            ],
+            "alpha": {
+              "$ref": "#/primitive/number/opacity/150/$value"
+            }
+          },
+          "$description": "Use behind modal dialogs, drawers, and other blocking overlays to dim underlying content."
+        },
+        "fill": {
+          "$description": "Use these colors for bounded filled elements according to their prominence and meaning.",
+          "primary": {
+            "$root": {
+              "$value": "{primitive.color.cerulianBlue.400}",
+              "$description": "Use for default high-prominence filled elements such as primary buttons, strong badges, or prominent actions."
+            },
+            "hover": {
+              "$value": "{primitive.color.cerulianBlue.360}",
+              "$description": "Use when a default high-prominence filled interactive element is hovered."
+            },
+            "active": {
+              "$value": "{primitive.color.cerulianBlue.320}",
+              "$description": "Use while a default high-prominence filled interactive element is actively pressed."
+            },
+            "neutral": {
+              "$root": {
+                "$value": "{primitive.color.driftwood.400}",
+                "$description": "Use for high-prominence filled elements that require a neutral treatment."
+              },
+              "hover": {
+                "$value": "{primitive.color.driftwood.360}",
+                "$description": "Use when a neutral high-prominence filled interactive element is hovered."
+              },
+              "active": {
+                "$value": "{primitive.color.driftwood.320}",
+                "$description": "Use while a neutral high-prominence filled interactive element is actively pressed."
+              }
+            },
+            "information": {
+              "$root": {
+                "$value": "{primitive.color.cerulianBlue.400}",
+                "$description": "Use for high-prominence filled elements that communicate neutral information or guidance."
+              },
+              "hover": {
+                "$value": "{primitive.color.cerulianBlue.360}",
+                "$description": "Use when an informational high-prominence filled interactive element is hovered."
+              },
+              "active": {
+                "$value": "{primitive.color.cerulianBlue.320}",
+                "$description": "Use while an informational high-prominence filled interactive element is actively pressed."
+              }
+            },
+            "negative": {
+              "$root": {
+                "$value": "{primitive.color.coralRed.400}",
+                "$description": "Use for high-prominence filled elements that trigger or communicate a negative action or outcome."
+              },
+              "hover": {
+                "$value": "{primitive.color.coralRed.360}",
+                "$description": "Use when a negative high-prominence filled interactive element is hovered."
+              },
+              "active": {
+                "$value": "{primitive.color.coralRed.320}",
+                "$description": "Use while a negative high-prominence filled interactive element is actively pressed."
+              }
+            },
+            "positive": {
+              "$root": {
+                "$value": "{primitive.color.turquoiseGreen.400}",
+                "$description": "Use for high-prominence filled elements that trigger or communicate a positive action or outcome."
+              },
+              "hover": {
+                "$value": "{primitive.color.turquoiseGreen.360}",
+                "$description": "Use when a positive high-prominence filled interactive element is hovered."
+              },
+              "active": {
+                "$value": "{primitive.color.turquoiseGreen.320}",
+                "$description": "Use while a positive high-prominence filled interactive element is actively pressed."
+              }
+            }
+          },
+          "secondary": {
+            "$root": {
+              "$value": "{primitive.color.driftwood.800}",
+              "$description": "Use for lower-prominence filled elements such as secondary buttons, neutral chips, or subtle selected states."
+            },
+            "hover": {
+              "$value": "{primitive.color.driftwood.760}",
+              "$description": "Use when a neutral lower-prominence filled interactive element is hovered."
+            },
+            "active": {
+              "$value": "{primitive.color.driftwood.720}",
+              "$description": "Use while a neutral lower-prominence filled interactive element is actively pressed."
+            },
+            "information": {
+              "$root": {
+                "$value": "{primitive.color.cerulianBlue.800}",
+                "$description": "Use for lower-prominence filled elements that communicate neutral information or guidance."
+              },
+              "hover": {
+                "$value": "{primitive.color.cerulianBlue.760}",
+                "$description": "Use when an informational lower-prominence filled interactive element is hovered."
+              },
+              "active": {
+                "$value": "{primitive.color.cerulianBlue.720}",
+                "$description": "Use while an informational lower-prominence filled interactive element is actively pressed."
+              }
+            },
+            "warning": {
+              "$root": {
+                "$value": "{primitive.color.creamYellow.800}",
+                "$description": "Use for lower-prominence filled elements that warn about a potential issue requiring attention."
+              },
+              "hover": {
+                "$value": "{primitive.color.creamYellow.760}",
+                "$description": "Use when a warning lower-prominence filled interactive element is hovered."
+              },
+              "active": {
+                "$value": "{primitive.color.creamYellow.720}",
+                "$description": "Use while a warning lower-prominence filled interactive element is actively pressed."
+              }
+            },
+            "negative": {
+              "$root": {
+                "$value": "{primitive.color.coralRed.800}",
+                "$description": "Use for lower-prominence filled elements that communicate an error, unfavorable outcome, or negative consequence."
+              },
+              "hover": {
+                "$value": "{primitive.color.coralRed.760}",
+                "$description": "Use when a negative lower-prominence filled interactive element is hovered."
+              },
+              "active": {
+                "$value": "{primitive.color.coralRed.720}",
+                "$description": "Use while a negative lower-prominence filled interactive element is actively pressed."
+              }
+            },
+            "positive": {
+              "$root": {
+                "$value": "{primitive.color.turquoiseGreen.800}",
+                "$description": "Use for lower-prominence filled elements that communicate success, a favorable outcome, or positive confirmation."
+              },
+              "hover": {
+                "$value": "{primitive.color.turquoiseGreen.760}",
+                "$description": "Use when a positive lower-prominence filled interactive element is hovered."
+              },
+              "active": {
+                "$value": "{primitive.color.turquoiseGreen.720}",
+                "$description": "Use while a positive lower-prominence filled interactive element is actively pressed."
+              }
+            }
+          },
+          "ghost": {
+            "$root": {
+              "$value": "{primitive.color.transparent}",
+              "$description": "Use when a default bounded element intentionally has no visible fill and should reveal its parent background."
+            },
+            "hover": {
+              "$value": "{primitive.color.cerulianBlue.960}",
+              "$description": "Use when a default ghost filled interactive element is hovered."
+            },
+            "active": {
+              "$value": "{primitive.color.cerulianBlue.920}",
+              "$description": "Use while a default ghost filled interactive element is actively pressed."
+            },
+            "neutral": {
+              "$root": {
+                "$value": "{primitive.color.transparent}",
+                "$description": "Use when a neutral bounded element intentionally has no visible fill and should reveal its parent background."
+              },
+              "hover": {
+                "$value": "{primitive.color.driftwood.960}",
+                "$description": "Use when a neutral ghost filled interactive element is hovered."
+              },
+              "active": {
+                "$value": "{primitive.color.driftwood.920}",
+                "$description": "Use while a neutral ghost filled interactive element is actively pressed."
+              }
+            },
+            "information": {
+              "$root": {
+                "$value": "{primitive.color.transparent}",
+                "$description": "Use when an informational bounded element intentionally has no visible fill and should reveal its parent background."
+              },
+              "hover": {
+                "$value": "{primitive.color.cerulianBlue.960}",
+                "$description": "Use when an informational ghost filled interactive element is hovered."
+              },
+              "active": {
+                "$value": "{primitive.color.cerulianBlue.920}",
+                "$description": "Use while an informational ghost filled interactive element is actively pressed."
+              }
+            },
+            "negative": {
+              "$root": {
+                "$value": "{primitive.color.transparent}",
+                "$description": "Use when a negative bounded element intentionally has no visible fill and should reveal its parent background."
+              },
+              "hover": {
+                "$value": "{primitive.color.coralRed.960}",
+                "$description": "Use when a negative ghost filled interactive element is hovered."
+              },
+              "active": {
+                "$value": "{primitive.color.coralRed.920}",
+                "$description": "Use while a negative ghost filled interactive element is actively pressed."
+              }
+            },
+            "positive": {
+              "$root": {
+                "$value": "{primitive.color.transparent}",
+                "$description": "Use when a positive bounded element intentionally has no visible fill and should reveal its parent background."
+              },
+              "hover": {
+                "$value": "{primitive.color.turquoiseGreen.960}",
+                "$description": "Use when a positive ghost filled interactive element is hovered."
+              },
+              "active": {
+                "$value": "{primitive.color.turquoiseGreen.920}",
+                "$description": "Use while a positive ghost filled interactive element is actively pressed."
+              }
+            }
+          },
+          "selected": {
+            "$root": {
+              "$value": "{primitive.color.cerulianBlue.500}",
+              "$description": "Use for selected controls and progress indicators that require a distinct accent fill."
+            },
+            "hover": {
+              "$value": "{primitive.color.cerulianBlue.460}",
+              "$description": "Use when a selected accent-filled interactive element is hovered."
+            },
+            "active": {
+              "$value": "{primitive.color.cerulianBlue.420}",
+              "$description": "Use while a selected accent-filled interactive element is actively pressed."
+            }
+          }
+        },
+        "slider": {
+          "progress": {
+            "$root": {
+              "$value": "{semantic.color.background.fill.selected.$root}",
+              "$description": "Use for the completed or selected portion of a slider track."
+            },
+            "hover": {
+              "$value": "{semantic.color.background.fill.selected.hover}",
+              "$description": "Use for the completed portion of a slider track when the slider is hovered."
+            },
+            "active": {
+              "$value": "{semantic.color.background.fill.selected.active}",
+              "$description": "Use for the completed portion of a slider track while the slider is actively manipulated."
+            }
+          },
+          "track": {
+            "$root": {
+              "$value": "{semantic.color.background.fill.secondary.$root}",
+              "$description": "Use for the unselected background track of a slider."
+            },
+            "hover": {
+              "$value": "{semantic.color.background.fill.secondary.hover}",
+              "$description": "Use for the unselected slider track when the slider is hovered."
+            },
+            "active": {
+              "$value": "{semantic.color.background.fill.secondary.active}",
+              "$description": "Use for the unselected slider track while the slider is actively manipulated."
+            },
+            "endstop": {
+              "$value": "{semantic.color.border.primary.$root}",
+              "$description": "Use for markers at the ends of a slider track."
+            }
+          }
+        },
+        "checkbox": {
+          "$root": {
+            "$value": "{semantic.color.background.fill.ghost.neutral.$root}",
+            "$description": "Use for the checkbox container when it is not selected."
+          },
+          "hover": {
+            "$value": "{semantic.color.background.fill.ghost.neutral.hover}",
+            "$description": "Use for an unselected checkbox container when it is hovered."
+          },
+          "active": {
+            "$value": "{semantic.color.background.fill.ghost.neutral.active}",
+            "$description": "Use for an unselected checkbox container while it is actively pressed."
+          },
+          "selected": {
+            "$value": "{semantic.color.background.fill.selected.$root}",
+            "$description": "Use for the checkbox container when it is selected."
+          }
+        },
+        "radio": {
+          "$root": {
+            "$value": "{semantic.color.background.fill.ghost.neutral.$root}",
+            "$description": "Use for the radio container when it is not selected."
+          },
+          "hover": {
+            "$value": "{semantic.color.background.fill.ghost.neutral.hover}",
+            "$description": "Use for an unselected radio container when it is hovered."
+          },
+          "active": {
+            "$value": "{semantic.color.background.fill.ghost.neutral.active}",
+            "$description": "Use for an unselected radio container while it is actively pressed."
+          },
+          "selected": {
+            "$root": {
+              "$value": "{semantic.color.background.fill.selected.$root}",
+              "$description": "Use for the radio container when it is selected."
+            },
+            "hover": {
+              "$value": "{semantic.color.background.fill.selected.hover}",
+              "$description": "Use for a selected radio container when it is hovered."
+            },
+            "active": {
+              "$value": "{semantic.color.background.fill.selected.active}",
+              "$description": "Use for a selected radio container while it is actively pressed."
+            }
+          }
+        },
+        "switch": {
+          "$root": {
+            "$value": "{primitive.color.driftwood.400}",
+            "$description": "Use for the switch track when it is off."
+          },
+          "selected": {
+            "$root": {
+              "$value": "{semantic.color.background.fill.selected.$root}",
+              "$description": "Use for the switch track when it is on."
+            }
+          },
+          "knob": {
+            "$value": "{primitive.color.black}",
+            "$description": "Use for the movable knob inside a switch track."
+          }
+        }
+      },
+      "border": {
+        "$description": "Use these colors for boundaries, dividers, and status outlines according to their prominence and meaning.",
+        "primary": {
+          "$root": {
+            "$value": "{primitive.color.driftwood.400}",
+            "$description": "Use for default boundaries and dividers that require clear visual separation."
+          }
+        },
+        "secondary": {
+          "$value": "{primitive.color.driftwood.800}",
+          "$description": "Use for subtle decorative boundaries and dividers. Do not use when the boundary is the only visual cue identifying a control."
+        },
+        "information": {
+          "$value": "{primitive.color.cerulianBlue.400}",
+          "$description": "Use for boundaries around elements that communicate neutral information or guidance."
+        },
+        "warning": {
+          "$value": "{primitive.color.creamYellow.400}",
+          "$description": "Use for boundaries around elements that warn about a potential issue requiring attention."
+        },
+        "negative": {
+          "$value": "{primitive.color.coralRed.400}",
+          "$description": "Use for boundaries around elements that communicate an error, unfavorable outcome, or negative consequence."
+        },
+        "positive": {
+          "$value": "{primitive.color.turquoiseGreen.400}",
+          "$description": "Use for boundaries around elements that communicate success, a favorable outcome, or positive confirmation."
+        }
+      },
+      "focusRing": {
+        "$description": "Use these colors for visible keyboard-focus indicators according to the focused element's status.",
+        "$root": {
+          "$value": "{primitive.color.cerulianBlue.400}",
+          "$description": "Use for the default visible keyboard-focus indicator around an interactive element."
+        },
+        "warning": {
+          "$value": "{primitive.color.creamYellow.400}",
+          "$description": "Use for the visible keyboard-focus indicator around an element in a warning state."
+        },
+        "negative": {
+          "$value": "{primitive.color.coralRed.400}",
+          "$description": "Use for the visible keyboard-focus indicator around an element in a negative or error state."
+        },
+        "positive": {
+          "$value": "{primitive.color.turquoiseGreen.400}",
+          "$description": "Use for the visible keyboard-focus indicator around an element in a positive or success state."
+        }
+      },
+      "text": {
+        "$description": "Use these colors for text according to its emphasis, status, or interaction role.",
+        "primary": {
+          "$value": "{primitive.color.white}",
+          "$description": "Use for default body copy and interface labels requiring the strongest standard text emphasis."
+        },
+        "secondary": {
+          "$value": "{primitive.color.driftwood.300}",
+          "$description": "Use for supporting text and metadata that should be less prominent than primary text."
+        },
+        "information": {
+          "$value": "{primitive.color.cerulianBlue.300}",
+          "$description": "Use for text that communicates neutral information or guidance."
+        },
+        "warning": {
+          "$value": "{primitive.color.creamYellow.300}",
+          "$description": "Use for text that warns about a potential issue requiring attention."
+        },
+        "negative": {
+          "$value": "{primitive.color.coralRed.300}",
+          "$description": "Use for text that communicates an error, unfavorable outcome, or negative consequence."
+        },
+        "positive": {
+          "$value": "{primitive.color.turquoiseGreen.300}",
+          "$description": "Use for text that communicates success, a favorable outcome, or positive confirmation."
+        },
+        "link": {
+          "$value": "{primitive.color.cerulianBlue.300}",
+          "$description": "Use for interactive text links."
+        },
+        "onPrimaryFill": {
+          "$value": "{primitive.color.black}",
+          "$description": "Use for text placed on primary fills such as prominent filled buttons, chips, or badges."
+        },
+        "onSecondaryFill": {
+          "$root": {
+            "$value": "{primitive.color.driftwood.200}",
+            "$description": "Use for text placed on secondary fills that have lower visual prominence than primary fills."
+          },
+          "information": {
+            "$value": "{primitive.color.cerulianBlue.200}",
+            "$description": "Use for text placed on secondary fills that communicate neutral information or guidance."
+          },
+          "warning": {
+            "$value": "{primitive.color.creamYellow.200}",
+            "$description": "Use for text placed on secondary fills that warn about a potential issue requiring attention."
+          },
+          "negative": {
+            "$value": "{primitive.color.coralRed.200}",
+            "$description": "Use for text placed on secondary fills that communicate an error, unfavorable outcome, or negative consequence."
+          },
+          "positive": {
+            "$value": "{primitive.color.turquoiseGreen.200}",
+            "$description": "Use for text placed on secondary fills that communicate success, a favorable outcome, or positive confirmation."
+          }
+        }
+      },
+      "icon": {
+        "$description": "Use these colors for icons according to the same emphasis, status, and interaction roles as text.",
+        "primary": {
+          "$value": "{semantic.color.text.primary}",
+          "$description": "Use for default interface icons requiring the strongest standard icon emphasis."
+        },
+        "secondary": {
+          "$value": "{semantic.color.text.secondary}",
+          "$description": "Use for supporting icons that should be less prominent than primary icons."
+        },
+        "information": {
+          "$value": "{semantic.color.text.information}",
+          "$description": "Use for icons that communicate neutral information or guidance."
+        },
+        "warning": {
+          "$value": "{semantic.color.text.warning}",
+          "$description": "Use for icons that warn about a potential issue requiring attention."
+        },
+        "negative": {
+          "$value": "{semantic.color.text.negative}",
+          "$description": "Use for icons that communicate an error, unfavorable outcome, or negative consequence."
+        },
+        "positive": {
+          "$value": "{semantic.color.text.positive}",
+          "$description": "Use for icons that communicate success, a favorable outcome, or positive confirmation."
+        },
+        "link": {
+          "$value": "{semantic.color.text.link}",
+          "$description": "Use for icons that accompany interactive text links."
+        },
+        "onPrimaryFill": {
+          "$value": "{semantic.color.text.onPrimaryFill}",
+          "$description": "Use for icons placed on primary fills such as prominent filled buttons, chips, or badges."
+        },
+        "onSelectedFill": {
+          "$value": "{primitive.color.black}",
+          "$description": "Use for icons and indicators placed on selected accent fills."
+        },
+        "onSecondaryFill": {
+          "$root": {
+            "$value": "{semantic.color.text.onSecondaryFill.$root}",
+            "$description": "Use for icons placed on secondary fills that have lower visual prominence than primary fills."
+          },
+          "information": {
+            "$value": "{semantic.color.text.onSecondaryFill.information}",
+            "$description": "Use for icons placed on secondary fills that communicate neutral information or guidance."
+          },
+          "warning": {
+            "$value": "{semantic.color.text.onSecondaryFill.warning}",
+            "$description": "Use for icons placed on secondary fills that warn about a potential issue requiring attention."
+          },
+          "negative": {
+            "$value": "{semantic.color.text.onSecondaryFill.negative}",
+            "$description": "Use for icons placed on secondary fills that communicate an error, unfavorable outcome, or negative consequence."
+          },
+          "positive": {
+            "$value": "{semantic.color.text.onSecondaryFill.positive}",
+            "$description": "Use for icons placed on secondary fills that communicate success, a favorable outcome, or positive confirmation."
+          }
+        },
+        "checkbox": {
+          "indicator": {
+            "$value": "{semantic.color.icon.onSelectedFill}",
+            "$description": "Use for the visible indicator inside a selected checkbox."
+          }
+        },
+        "radio": {
+          "indicator": {
+            "$value": "{semantic.color.icon.onSelectedFill}",
+            "$description": "Use for the visible indicator inside a selected radio."
+          }
+        }
+      }
+    }
+  }
+}

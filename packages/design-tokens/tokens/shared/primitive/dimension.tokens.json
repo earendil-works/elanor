@@ -1,0 +1,532 @@
+{
+  "$schema": "https://designtokens.org/schemas/2025.10/format.json",
+  "$description": "Contains generated and manually authored tokens. Edit only paths not managed by a generator.",
+  "primitive": {
+    "dimension": {
+      "0": {
+        "$value": {
+          "value": 0,
+          "unit": "rem"
+        },
+        "$extensions": {
+          "com.earendil-works.generation": {
+            "source": "recipes/shared/primitive/dimension.json"
+          }
+        }
+      },
+      "25": {
+        "$value": {
+          "value": 0.0625,
+          "unit": "rem"
+        },
+        "$extensions": {
+          "com.earendil-works.generation": {
+            "source": "recipes/shared/primitive/dimension.json"
+          }
+        }
+      },
+      "50": {
+        "$value": {
+          "value": 0.125,
+          "unit": "rem"
+        },
+        "$extensions": {
+          "com.earendil-works.generation": {
+            "source": "recipes/shared/primitive/dimension.json"
+          }
+        }
+      },
+      "100": {
+        "$value": {
+          "value": 0.25,
+          "unit": "rem"
+        },
+        "$extensions": {
+          "com.earendil-works.generation": {
+            "source": "recipes/shared/primitive/dimension.json"
+          }
+        }
+      },
+      "150": {
+        "$value": {
+          "value": 0.375,
+          "unit": "rem"
+        },
+        "$extensions": {
+          "com.earendil-works.generation": {
+            "source": "recipes/shared/primitive/dimension.json"
+          }
+        }
+      },
+      "200": {
+        "$value": {
+          "value": 0.5,
+          "unit": "rem"
+        },
+        "$extensions": {
+          "com.earendil-works.generation": {
+            "source": "recipes/shared/primitive/dimension.json"
+          }
+        }
+      },
+      "300": {
+        "$value": {
+          "value": 0.75,
+          "unit": "rem"
+        },
+        "$extensions": {
+          "com.earendil-works.generation": {
+            "source": "recipes/shared/primitive/dimension.json"
+          }
+        }
+      },
+      "400": {
+        "$value": {
+          "value": 1,
+          "unit": "rem"
+        },
+        "$extensions": {
+          "com.earendil-works.generation": {
+            "source": "recipes/shared/primitive/dimension.json"
+          }
+        }
+      },
+      "600": {
+        "$value": {
+          "value": 1.5,
+          "unit": "rem"
+        },
+        "$extensions": {
+          "com.earendil-works.generation": {
+            "source": "recipes/shared/primitive/dimension.json"
+          }
+        }
+      },
+      "800": {
+        "$value": {
+          "value": 2,
+          "unit": "rem"
+        },
+        "$extensions": {
+          "com.earendil-works.generation": {
+            "source": "recipes/shared/primitive/dimension.json"
+          }
+        }
+      },
+      "1000": {
+        "$value": {
+          "value": 2.5,
+          "unit": "rem"
+        },
+        "$extensions": {
+          "com.earendil-works.generation": {
+            "source": "recipes/shared/primitive/dimension.json"
+          }
+        }
+      },
+      "1200": {
+        "$value": {
+          "value": 3,
+          "unit": "rem"
+        },
+        "$extensions": {
+          "com.earendil-works.generation": {
+            "source": "recipes/shared/primitive/dimension.json"
+          }
+        }
+      },
+      "1400": {
+        "$value": {
+          "value": 3.5,
+          "unit": "rem"
+        },
+        "$extensions": {
+          "com.earendil-works.generation": {
+            "source": "recipes/shared/primitive/dimension.json"
+          }
+        }
+      },
+      "1600": {
+        "$value": {
+          "value": 4,
+          "unit": "rem"
+        },
+        "$extensions": {
+          "com.earendil-works.generation": {
+            "source": "recipes/shared/primitive/dimension.json"
+          }
+        }
+      },
+      "2000": {
+        "$value": {
+          "value": 5,
+          "unit": "rem"
+        },
+        "$extensions": {
+          "com.earendil-works.generation": {
+            "source": "recipes/shared/primitive/dimension.json"
+          }
+        }
+      },
+      "2400": {
+        "$value": {
+          "value": 6,
+          "unit": "rem"
+        },
+        "$extensions": {
+          "com.earendil-works.generation": {
+            "source": "recipes/shared/primitive/dimension.json"
+          }
+        }
+      },
+      "3200": {
+        "$value": {
+          "value": 8,
+          "unit": "rem"
+        },
+        "$extensions": {
+          "com.earendil-works.generation": {
+            "source": "recipes/shared/primitive/dimension.json"
+          }
+        }
+      },
+      "$type": "dimension",
+      "borderWidth": {
+        "100": {
+          "$value": {
+            "value": 1,
+            "unit": "px"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/borderWidth.json"
+            }
+          }
+        },
+        "200": {
+          "$value": {
+            "value": 2,
+            "unit": "px"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/borderWidth.json"
+            }
+          }
+        },
+        "300": {
+          "$value": {
+            "value": 4,
+            "unit": "px"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/borderWidth.json"
+            }
+          }
+        }
+      },
+      "letterSpacing": {
+        "normal": {
+          "$value": {
+            "value": 0,
+            "unit": "rem"
+          },
+          "$description": "Uses the font's default letter spacing without additional tracking."
+        }
+      },
+      "fontSize": {
+        "100": {
+          "$value": {
+            "value": 0.625,
+            "unit": "rem"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        },
+        "200": {
+          "$value": {
+            "value": 0.75,
+            "unit": "rem"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        },
+        "300": {
+          "$value": {
+            "value": 0.875,
+            "unit": "rem"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        },
+        "400": {
+          "$value": {
+            "value": 1,
+            "unit": "rem"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        },
+        "500": {
+          "$value": {
+            "value": 1.125,
+            "unit": "rem"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        },
+        "600": {
+          "$value": {
+            "value": 1.3125,
+            "unit": "rem"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        },
+        "700": {
+          "$value": {
+            "value": 1.5,
+            "unit": "rem"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        },
+        "800": {
+          "$value": {
+            "value": 1.75,
+            "unit": "rem"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        },
+        "900": {
+          "$value": {
+            "value": 2,
+            "unit": "rem"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        },
+        "1000": {
+          "$value": {
+            "value": 2.25,
+            "unit": "rem"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        },
+        "1100": {
+          "$value": {
+            "value": 2.625,
+            "unit": "rem"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        },
+        "1200": {
+          "$value": {
+            "value": 3,
+            "unit": "rem"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        },
+        "1300": {
+          "$value": {
+            "value": 3.4375,
+            "unit": "rem"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        },
+        "1400": {
+          "$value": {
+            "value": 3.9375,
+            "unit": "rem"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        },
+        "1500": {
+          "$value": {
+            "value": 4.5625,
+            "unit": "rem"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        },
+        "1600": {
+          "$value": {
+            "value": 5.25,
+            "unit": "rem"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        },
+        "1700": {
+          "$value": {
+            "value": 6,
+            "unit": "rem"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/typography.json"
+            }
+          }
+        }
+      },
+      "radius": {
+        "100": {
+          "$value": {
+            "value": 0.1875,
+            "unit": "rem"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/radius.json"
+            }
+          }
+        },
+        "200": {
+          "$value": {
+            "value": 0.375,
+            "unit": "rem"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/radius.json"
+            }
+          }
+        },
+        "300": {
+          "$value": {
+            "value": 0.75,
+            "unit": "rem"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/radius.json"
+            }
+          }
+        },
+        "full": {
+          "$value": {
+            "value": 100,
+            "unit": "rem"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/radius.json"
+            }
+          }
+        }
+      },
+      "breakpoint": {
+        "250": {
+          "$value": {
+            "value": 40,
+            "unit": "rem"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/breakpoint.json"
+            }
+          }
+        },
+        "300": {
+          "$value": {
+            "value": 48,
+            "unit": "rem"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/breakpoint.json"
+            }
+          }
+        },
+        "400": {
+          "$value": {
+            "value": 64,
+            "unit": "rem"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/breakpoint.json"
+            }
+          }
+        },
+        "500": {
+          "$value": {
+            "value": 80,
+            "unit": "rem"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/breakpoint.json"
+            }
+          }
+        },
+        "600": {
+          "$value": {
+            "value": 96,
+            "unit": "rem"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/breakpoint.json"
+            }
+          }
+        }
+      }
+    }
+  }
+}

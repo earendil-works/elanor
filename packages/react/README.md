@@ -66,6 +66,12 @@ See [`src/index.ts`](./src/index.ts) for exports and [elanor-ui-samples](https:/
 
 Use named types such as `ButtonProps`, `ModalRootProps`, and `DropdownRootProps`, not component type namespaces. Base UI-backed parts support composition, state-aware styling, events, and refs as defined by their exported types. For buttons rendered as links, use `nativeButton={false}`; see [Base UI composition](https://base-ui.com/react/handbook/composition).
 
+## Development
+
+Run `pnpm react:lint` from the repository root to lint component CSS. It builds the Radius token catalogue and Stylelint plugin first. `pnpm check` includes CSS linting alongside TypeScript checks.
+
+The [Stylelint configuration](./stylelint.config.ts) uses the token plugin's strict rules and allows only the documented Base UI runtime geometry variables.
+
 ## Interaction notes
 
 - `IconButton`, standalone checkbox/radio/switch controls, and tabs use minimum target sizes of 24px, or 48px for coarse pointers, through shared tokens. `SelectionControlAndLabel` provides a clickable label.

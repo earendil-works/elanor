@@ -1,0 +1,43 @@
+---
+import '@earendil-works/design-tokens/radius.css';
+import '../styles/docs.css';
+import '../styles/fonts.css';
+import {getCollection} from 'astro:content';
+import {ClientRouter} from 'astro:transitions';
+import {DocsSideNavigation} from '../components/docs-side-navigation.tsx';
+
+interface Props {
+  currentComponent: string;
+}
+
+const {currentComponent} = Astro.props;
+const entries = await getCollection('components');
+const components = entries.map((entry) => entry.id).sort();
+---
+
+<!doctype html>
+<html lang="en" data-color-scheme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>{currentComponent}</title>
+    <ClientRouter />
+  </head>
+  <body>
+    <aside>
+      <div data-docs-swap="navigation">
+        <DocsSideNavigation components={components} currentComponent={currentComponent} />
+      </div>
+    </aside>
+    <main data-docs-swap="content">
+      <div class="preview">
+        <slot />
+      </div>
+    </main>
+  </body>
+</html>
+
+
+<script>
+  import '../scripts/docs-swap.ts';
+</script>

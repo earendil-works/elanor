@@ -31,7 +31,3 @@
   margin: 0;
   overflow-wrap: anywhere;
 }
-
-.key {
-  font-weight: var(--semantic-font-weight-ui-emphasis);
-}

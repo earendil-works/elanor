@@ -1,0 +1,45 @@
+{
+  "name": "@earendil-works/design-tokens",
+  "version": "1.0.0",
+  "private": true,
+  "description": "W3C DTCG design tokens powered by Terrazzo.",
+  "license": "ISC",
+  "type": "commonjs",
+  "files": ["dist"],
+  "sideEffects": ["**/*.css"],
+  "exports": {
+    "./radius.css": "./dist/radius/tokens.css",
+    "./pi.css": "./dist/pi/tokens.css",
+    "./earendil.css": "./dist/earendil/tokens.css",
+    "./lefos.css": "./dist/lefos/tokens.css"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "generate": "tsx generation/src/generate.ts",
+    "generate:check": "tsx generation/src/generate.ts --check",
+    "build": "pnpm run build:all",
+    "build:all": "pnpm run clean && pnpm run build:radius && pnpm run build:pi && pnpm run build:earendil && pnpm run build:lefos",
+    "build:radius": "rm -rf dist/radius && tz build -c terrazzo.radius.config.ts && tsx scripts/validate-catalogue.ts radius",
+    "build:pi": "rm -rf dist/pi && tz build -c terrazzo.pi.config.ts && tsx scripts/validate-catalogue.ts pi",
+    "build:earendil": "rm -rf dist/earendil && tz build -c terrazzo.earendil.config.ts && tsx scripts/validate-catalogue.ts earendil",
+    "build:lefos": "rm -rf dist/lefos && tz build -c terrazzo.lefos.config.ts && tsx scripts/validate-catalogue.ts lefos",
+    "check": "pnpm run check:types && pnpm run generate:check && pnpm run check:schema && pnpm run check:contrast && pnpm run check:terrazzo",
+    "check:types": "tsc",
+    "check:schema": "tsx scripts/validate-tokens.ts",
+    "check:contrast": "tsx scripts/check-color-contrast.ts",
+    "check:terrazzo": "tz check tokens/radius.resolver.json && tz check tokens/pi.resolver.json && tz check tokens/earendil.resolver.json && tz check tokens/lefos.resolver.json",
+    "schemas:update": "tsx scripts/update-dtcg-schemas.ts"
+  },
+  "devDependencies": {
+    "@terrazzo/cli": "^2.7.1",
+    "@terrazzo/parser": "^2.7.1",
+    "@terrazzo/plugin-css": "^2.7.1",
+    "@types/node": "^24.13.3",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
+    "colorjs.io": "^0.7.0",
+    "terrazzo-plugin-figma-json": "^0.3.5",
+    "tsx": "^4.23.1",
+    "typescript": "^5.9.3"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "compilerOptions": {
+    "customConditions": ["source"]
+  },
+  "include": [
+    ".astro/types.d.ts",
+    "**/*",
+    "../../packages/react/src/**/*.example.tsx"
+  ],
+  "exclude": ["dist"]
+}

@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 1,
+  "brand": "other-brand",
+  "tokens": [
+    {
+      "path": "semantic.color.background.canvas",
+      "cssVariable": "--semantic-color-background-canvas",
+      "type": "color",
+      "tier": "semantic",
+      "description": "Fixture token.",
+      "deprecated": false,
+      "modes": { "light": "white", "dark": "black" }
+    }
+  ]
+}
