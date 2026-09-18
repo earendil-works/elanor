@@ -1,7 +1,7 @@
 .root {
   box-sizing: border-box;
   display: inline-flex;
-  gap: var(--semantic-dimension-space-control-gap-x-large);
+  gap: var(--semantic-dimension-space-control-gap-large);
   min-inline-size: 0;
   padding: var(--semantic-dimension-space-padding-xx-small);
   border-radius: var(--semantic-dimension-radius-small);
@@ -15,7 +15,7 @@
   justify-content: center;
   min-block-size: var(--semantic-dimension-size-x-small);
   padding-block: var(--semantic-dimension-space-padding-xx-small);
-  padding-inline: var(--semantic-dimension-space-padding-small);
+  padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
   border: 0;
   border-radius: var(--semantic-dimension-radius-small);
   background: var(--semantic-color-background-fill-secondary);
