@@ -2,9 +2,7 @@
   box-sizing: border-box;
   inline-size: 100%;
   block-size: var(--semantic-dimension-size-small);
-  /* stylelint-disable-next-line design-tokens/token-property-compatibility -- Include the border in the content inset. */
   padding-block: calc(var(--semantic-dimension-space-control-padding-block-small) - var(--semantic-dimension-border-width-default));
-  /* stylelint-disable-next-line design-tokens/token-property-compatibility -- Include the border in the content inset. */
   padding-inline: calc(var(--semantic-dimension-space-control-padding-inline-small) - var(--semantic-dimension-border-width-default));
   border: var(--semantic-dimension-border-width-default) solid
     var(--semantic-color-background-fill-secondary);
