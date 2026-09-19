@@ -328,10 +328,6 @@ export type {
 
 export {Popover, PopoverDescription, PopoverPopup, PopoverTitle} from './popover/popover.tsx';
 export type {
-  PopoverArrowProps,
-  PopoverArrowState,
-  PopoverBackdropProps,
-  PopoverBackdropState,
   PopoverCloseProps,
   PopoverDescriptionProps,
   PopoverHandle,
@@ -347,8 +343,6 @@ export type {
   PopoverTitleProps,
   PopoverTriggerProps,
   PopoverTriggerState,
-  PopoverViewportProps,
-  PopoverViewportState,
 } from './popover/popover.tsx';
 
 export {

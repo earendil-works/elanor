@@ -14,13 +14,7 @@ export type {
   PopoverPositionerState,
   PopoverPositionerProps,
   PopoverPopupState,
-  PopoverArrowState,
-  PopoverArrowProps,
-  PopoverBackdropState,
-  PopoverBackdropProps,
   PopoverCloseProps,
-  PopoverViewportState,
-  PopoverViewportProps,
 } from '@base-ui/react/popover';
 
 export type PopoverHandle<Payload = unknown> = BasePopover.Handle<Payload>;
@@ -71,11 +65,8 @@ export const Popover = {
   Portal: BasePopover.Portal,
   Positioner: BasePopover.Positioner,
   Popup: PopoverPopup,
-  Arrow: BasePopover.Arrow,
-  Backdrop: BasePopover.Backdrop,
   Title: PopoverTitle,
   Description: PopoverDescription,
   Close: BasePopover.Close,
-  Viewport: BasePopover.Viewport,
   createHandle: BasePopover.createHandle,
 } as const;
