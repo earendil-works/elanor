@@ -5,6 +5,5 @@
   gap: var(--semantic-dimension-space-gap-large);
   inline-size: 100%;
   min-inline-size: 0;
-  padding-inline: var(--semantic-dimension-space-padding-medium);
   color: var(--semantic-color-text-primary);
 }
