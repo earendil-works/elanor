@@ -205,6 +205,7 @@ export type {
   InputChangeEventReason,
   InputProps,
   InputState,
+  InputType,
 } from './input/input.tsx';
 
 export {
