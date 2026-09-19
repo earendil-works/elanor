@@ -171,6 +171,42 @@ describe(noHardcodedTokenValuesName, () => {
 });
 
 describe(tokenPropertyCompatibilityName, () => {
+  const padding = "var(--semantic-dimension-space-padding-medium)";
+  const border = "var(--semantic-dimension-border-width-default)";
+  const compensatedPadding = `calc(${padding} - ${border})`;
+
+  it("accepts border compensation for padding and logical control padding", async () => {
+    const result = await stylelint.lint({
+      code: `.a {
+        padding: ${compensatedPadding};
+        padding-inline: calc(var(--semantic-dimension-space-control-padding-inline-small) - ${border});
+        padding-block: calc(var(--semantic-dimension-space-control-padding-block-small) - ${border});
+      }`,
+      config: createStrictConfig({ catalogue }),
+    });
+    expect(result.results[0]?.warnings).toHaveLength(0);
+  });
+
+  it("still rejects direct border padding, reversed subtraction, and wrong roles or types", async () => {
+    const warnings = await lint(`.a {
+      padding: ${border};
+      padding-top: calc(${border} - ${padding});
+      padding-inline: calc(${padding} - var(--semantic-dimension-radius-medium));
+      padding-block: calc(${padding} - var(--semantic-color-text-primary));
+    }`, tokenPropertyCompatibilityName);
+    expect(warnings).toHaveLength(4);
+    expect(warnings.filter((warning) => warning.text.includes("wrong role"))).toHaveLength(3);
+    expect(warnings[3]?.text).toContain("incompatible");
+  });
+
+  it("does not exempt other occurrences of a compensated border token", async () => {
+    const warnings = await lint(`.a {
+      padding: ${compensatedPadding} ${border};
+    }`, tokenPropertyCompatibilityName);
+    expect(warnings).toHaveLength(1);
+    expect(warnings[0]?.text).toContain("wrong role");
+  });
+
   it("accepts compatible types and semantic roles in compound declarations", async () => {
     expect(await lint(`.a {
       color: var(--semantic-color-text-primary);

@@ -63,6 +63,8 @@ Finds tokenizable literals using a PostCSS-compatible value AST. It does not aut
 
 Checks DTCG types and semantic roles. Defaults include text or icon colors for `color` (supporting `currentColor` inheritance), background or border colors for backgrounds (supporting separators and indicators), and border, fill/background, or focus colors for borders. SVG paint uses icon colors, while spacing and radius properties retain their distinct roles. A property's paint mechanism does not require a duplicate token for the same design decision. Extend or override maps with `propertyTypes` and `semanticRoles` when a product needs a different contract.
 
+Padding properties also accept top-level `calc(var(--padding-token) - var(--border-width-token))` expressions for border compensation, with both operands resolved by catalogue role and no `var()` fallbacks.
+
 These allowances do not make roles interchangeable: text colors used for backgrounds, radii used as padding, opacity tokens used as stacking levels, unknown variables, primitive tokens, and type mismatches still fail. `z-index` uses layer roles and `opacity` uses opacity roles. Choose tokens by purpose; the linter cannot infer the meaning of a selector. Use a narrowly scoped, explained disable for a truly exceptional declaration rather than weakening the complete rule.
 
 ### `design-tokens/prefer-semantic-token`

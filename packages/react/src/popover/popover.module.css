@@ -6,7 +6,6 @@
   max-inline-size: min(var(--semantic-dimension-breakpoint-x-small), var(--available-width));
   max-block-size: var(--available-height);
   overflow: auto;
-  /* stylelint-disable-next-line design-tokens/token-property-compatibility -- Include the border in the content inset. */
   padding: calc(var(--semantic-dimension-space-padding-medium) - var(--semantic-dimension-border-width-default));
   border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-secondary);
   border-radius: var(--semantic-dimension-radius-small);
