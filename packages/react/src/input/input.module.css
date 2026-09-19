@@ -2,8 +2,10 @@
   box-sizing: border-box;
   inline-size: 100%;
   block-size: var(--semantic-dimension-size-small);
-  padding-block: var(--semantic-dimension-space-control-padding-block-small);
-  padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
+  /* stylelint-disable-next-line design-tokens/token-property-compatibility -- Include the border in the content inset. */
+  padding-block: calc(var(--semantic-dimension-space-control-padding-block-small) - var(--semantic-dimension-border-width-default));
+  /* stylelint-disable-next-line design-tokens/token-property-compatibility -- Include the border in the content inset. */
+  padding-inline: calc(var(--semantic-dimension-space-control-padding-inline-small) - var(--semantic-dimension-border-width-default));
   border: var(--semantic-dimension-border-width-default) solid
     var(--semantic-color-background-fill-secondary);
   border-radius: var(--semantic-dimension-radius-small);
@@ -18,10 +20,15 @@
 }
 
 @media (hover: hover) {
-  .control:hover:not(:disabled) {
+  .control:where(:hover:not(:disabled, [data-disabled])) {
     border-color: var(--semantic-color-background-fill-secondary-hover);
     background: var(--semantic-color-background-fill-secondary-hover);
   }
+}
+
+.control:where(:focus) {
+  border-color: var(--semantic-color-focus-ring);
+  background: var(--semantic-color-background-fill-secondary);
 }
 
 .control:focus-visible {
@@ -29,8 +36,7 @@
   outline-offset: var(--semantic-dimension-border-width-medium);
 }
 
-.control[data-invalid],
-.control[aria-invalid='true'] {
+.control:where([data-invalid], [aria-invalid='true']) {
   border-color: var(--semantic-color-focus-ring-negative);
 }
 

@@ -9,16 +9,27 @@ export type {
   InputChangeEventDetails,
 } from '@base-ui/react/input';
 
-export interface InputProps extends BaseInput.Props {}
+const inputTypes = ['text', 'email', 'password', 'tel', 'url'] as const;
+
+export type InputType = (typeof inputTypes)[number];
+
+export interface InputProps extends Omit<BaseInput.Props, 'type'> {
+  readonly type?: InputType;
+}
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
-  {className, ...props},
+  {className, type = 'text', ...props},
   ref,
 ) {
+  if (!inputTypes.includes(type)) {
+    throw new TypeError(`Input does not support type="${type}". Use one of: ${inputTypes.join(', ')}.`);
+  }
+
   return (
     <BaseInput
       {...props}
       ref={ref}
+      type={type}
       className={mergeClassName<BaseInput.State>(styles.control, className)}
     />
   );
