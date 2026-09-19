@@ -6,7 +6,7 @@ import {mergeClassName} from '../utils/class-names.ts';
 export type {ButtonState} from '@base-ui/react/button';
 
 export type ButtonHierarchy = 'primary' | 'secondary' | 'tertiary';
-export type ButtonSemantic = 'neutral' | 'information' | 'negative' | 'positive';
+export type ButtonSemantic = 'neutral' | 'negative' | 'positive';
 export type ButtonDensity = 'compact' | 'default';
 
 export interface ButtonProps extends BaseButton.Props {
