@@ -1,10 +1,9 @@
 .textarea {
   box-sizing: border-box;
   inline-size: 100%;
-  block-size: calc(var(--semantic-dimension-size-small) * 3);
   min-block-size: calc(var(--semantic-dimension-size-small) * 3);
-  padding-block: var(--semantic-dimension-space-control-padding-block-small);
-  padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
+  padding-block: calc(var(--semantic-dimension-space-control-padding-block-small) - var(--semantic-dimension-border-width-default));
+  padding-inline: calc(var(--semantic-dimension-space-control-padding-inline-small) - var(--semantic-dimension-border-width-default));
   border: var(--semantic-dimension-border-width-default) solid
     var(--semantic-color-background-fill-secondary);
   border-radius: var(--semantic-dimension-radius-small);
@@ -20,10 +19,15 @@
 }
 
 @media (hover: hover) {
-  .textarea:hover:not(:disabled) {
+  .textarea:where(:hover:not(:disabled, [data-disabled])) {
     border-color: var(--semantic-color-background-fill-secondary-hover);
     background: var(--semantic-color-background-fill-secondary-hover);
   }
+}
+
+.textarea:where(:focus) {
+  border-color: var(--semantic-color-focus-ring);
+  background: var(--semantic-color-background-fill-secondary);
 }
 
 .textarea:focus-visible {
@@ -31,8 +35,7 @@
   outline-offset: var(--semantic-dimension-border-width-medium);
 }
 
-.textarea[data-invalid],
-.textarea[aria-invalid='true'] {
+.textarea:where([data-invalid], [aria-invalid='true']) {
   border-color: var(--semantic-color-focus-ring-negative);
 }
 
