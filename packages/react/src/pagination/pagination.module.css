@@ -22,17 +22,13 @@
 
 .link {
   color: var(--semantic-color-text-link);
-  text-decoration: none;
-}
-
-.link:not([aria-disabled='true']):hover {
   text-decoration: underline;
 }
 
 .link[aria-disabled='true'] {
   color: var(--semantic-color-text-secondary);
+  text-decoration: none;
   cursor: not-allowed;
-  opacity: var(--semantic-number-opacity-disabled);
 }
 
 .link:focus-visible {
