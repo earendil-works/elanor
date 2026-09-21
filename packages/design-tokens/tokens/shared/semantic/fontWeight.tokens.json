@@ -1,0 +1,14 @@
+{
+  "$schema": "https://designtokens.org/schemas/2025.10/format.json",
+  "semantic": {
+    "fontWeight": {
+      "$type": "fontWeight",
+      "ui": {
+        "emphasis": {
+          "$value": "{primitive.fontWeight.bold}",
+          "$description": "Use for emphasized interface text."
+        }
+      }
+    }
+  }
+}

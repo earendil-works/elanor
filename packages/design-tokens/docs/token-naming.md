@@ -70,6 +70,7 @@ Allowed `type` values are layer- and category-specific. When categories repeat, 
 | `semantic` | `dimension` | `borderWidth`, `breakpoint`, `radius`, `size`, `space` |
 | `semantic` | `number` | `opacity`, `layer` |
 | `semantic` | `fontFamily` | `prose`, `ui`, `code` |
+| `semantic` | `fontWeight` | `ui` |
 | `semantic` | `typography` | `code`, `heading`, `prose`, `ui` |
 
 Primitive categories omitted from this table currently have no `type`; continue directly with the next applicable part. Define new controlled values here before introducing them in tokens. Do not create synonyms such as both `background` and `surface` as types.
