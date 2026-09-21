@@ -1,9 +1,9 @@
-import {forwardRef, type AnchorHTMLAttributes, type HTMLAttributes, type ReactNode} from 'react';
+import {forwardRef, type AnchorHTMLAttributes, type HTMLAttributes} from 'react';
 import styles from './pagination.module.css';
 import {classes} from '../utils/class-names.ts';
 
 export interface PaginationProps extends HTMLAttributes<HTMLElement> {
-  readonly summary?: ReactNode;
+  readonly summary?: string;
 }
 
 export const Pagination = forwardRef<HTMLElement, PaginationProps>(function Pagination(
