@@ -2,7 +2,7 @@
   box-sizing: border-box;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
   gap: var(--semantic-dimension-space-control-gap-medium);
   min-block-size: var(--semantic-dimension-size-small);
   min-inline-size: 0;
@@ -27,4 +27,5 @@
   display: inline-flex;
   flex: none;
   align-items: center;
+  margin-inline-start: auto;
 }
