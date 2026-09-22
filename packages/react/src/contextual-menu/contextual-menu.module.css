@@ -20,7 +20,8 @@
   box-sizing: border-box;
   display: flex;
   align-items: center;
-  gap: var(--semantic-dimension-space-control-gap-small);
+  /* Icon-to-text spacing comes from the label padding. */
+  gap: 0;
   inline-size: 100%;
   min-inline-size: 0;
   padding-block: var(--semantic-dimension-space-control-padding-block-small);
@@ -47,8 +48,7 @@
     var(--semantic-color-background-fill-ghost-neutral-hover);
 }
 
-.item:active:not([data-disabled]),
-.item[data-popup-open] {
+.item:active:not([data-disabled]) {
   background: var(--semantic-color-background-fill-ghost-neutral-active);
   box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
     var(--semantic-color-background-fill-ghost-neutral-active);
@@ -57,11 +57,6 @@
 .item[data-disabled] {
   opacity: var(--semantic-number-opacity-disabled);
   cursor: not-allowed;
-}
-
-/* Composed items already get their icon-to-text spacing from the label padding. */
-.composedItem {
-  gap: 0;
 }
 
 .icon {
@@ -100,28 +95,6 @@
   font: var(--semantic-typography-ui-tertiary);
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.submenuTrigger {
-  position: relative;
-}
-
-.indicator {
-  display: inline-flex;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  inline-size: var(--semantic-dimension-size-x-small);
-  block-size: var(--semantic-dimension-size-x-small);
-  color: var(--semantic-color-icon-primary);
-}
-
-.indicator:empty::after {
-  content: '✓';
-}
-
-.indicator[data-unchecked] {
-  visibility: hidden;
 }
 
 @media (forced-colors: active) {
