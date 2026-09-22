@@ -1,18 +1,19 @@
+import {Button} from '../button/button.tsx';
 import {Modal} from './modal.tsx';
 
 export function ModalExample(): React.JSX.Element {
   return (
     <Modal.Root>
-      <Modal.Trigger>Open modal</Modal.Trigger>
+      <Modal.Trigger render={<Button />}>View project details</Modal.Trigger>
       <Modal.Portal>
         <Modal.Backdrop />
         <Modal.Viewport>
           <Modal.Popup>
-            <Modal.Title>Modal title</Modal.Title>
-            <Modal.Description>Modal description</Modal.Description>
-            <Modal.Body>Modal body</Modal.Body>
+            <Modal.Title>Project details</Modal.Title>
+            <Modal.Description>Settings shared by everyone in this workspace.</Modal.Description>
+            <Modal.Body>New members inherit the project’s current access settings.</Modal.Body>
             <Modal.Actions>
-              <Modal.Close>Close</Modal.Close>
+              <Modal.Close render={<Button hierarchy="secondary" />}>Close</Modal.Close>
             </Modal.Actions>
           </Modal.Popup>
         </Modal.Viewport>
