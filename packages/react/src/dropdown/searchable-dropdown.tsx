@@ -12,14 +12,12 @@ export type {
   ComboboxItemState as SearchableDropdownItemState,
   ComboboxItemIndicatorState as SearchableDropdownItemIndicatorState,
   ComboboxSeparatorState as SearchableDropdownSeparatorState,
-  ComboboxLabelProps as SearchableDropdownLabelProps,
   ComboboxLabelState as SearchableDropdownLabelState,
   ComboboxValueProps as SearchableDropdownValueProps,
   ComboboxPortalProps as SearchableDropdownPortalProps,
   ComboboxPositionerProps as SearchableDropdownPositionerProps,
   ComboboxPositionerState as SearchableDropdownPositionerState,
   ComboboxGroupProps as SearchableDropdownGroupProps,
-  ComboboxStatusProps as SearchableDropdownStatusProps,
   ComboboxRootState as SearchableDropdownRootState,
   ComboboxRootActions as SearchableDropdownRootActions,
   ComboboxRootChangeEventReason as SearchableDropdownRootChangeEventReason,
@@ -42,6 +40,8 @@ export type SearchableDropdownRootProps<
   readonly grid?: false;
 };
 
+export type SearchableDropdownLabelProps = BaseCombobox.Label.Props;
+export type SearchableDropdownStatusProps = BaseCombobox.Status.Props;
 export type SearchableDropdownTriggerProps = BaseCombobox.Trigger.Props;
 export type SearchableDropdownIconProps = BaseCombobox.Icon.Props;
 export type SearchableDropdownPopupProps = BaseCombobox.Popup.Props;
@@ -66,6 +66,18 @@ function SearchableDropdownRoot<Value, Multiple extends boolean | undefined = fa
 ): React.JSX.Element {
   return <BaseCombobox.Root<Value, Multiple, Item> {...props} grid={false} />;
 }
+
+export const SearchableDropdownLabel = forwardRef<HTMLDivElement, SearchableDropdownLabelProps>(
+  function SearchableDropdownLabel({className, ...props}, ref) {
+    return (
+      <BaseCombobox.Label
+        {...props}
+        ref={ref}
+        className={mergeClassName<BaseCombobox.Label.State>(styles.label, className)}
+      />
+    );
+  },
+);
 
 export const SearchableDropdownTrigger = forwardRef<HTMLButtonElement, SearchableDropdownTriggerProps>(
   function SearchableDropdownTrigger({className, ...props}, ref) {
@@ -214,9 +226,21 @@ export const SearchableDropdownEmpty = forwardRef<HTMLDivElement, SearchableDrop
   },
 );
 
+export const SearchableDropdownStatus = forwardRef<HTMLDivElement, SearchableDropdownStatusProps>(
+  function SearchableDropdownStatus({className, ...props}, ref) {
+    return (
+      <BaseCombobox.Status
+        {...props}
+        ref={ref}
+        className={mergeClassName<BaseCombobox.Status.State>(styles.status, className)}
+      />
+    );
+  },
+);
+
 export const SearchableDropdown = {
   Root: SearchableDropdownRoot,
-  Label: BaseCombobox.Label,
+  Label: SearchableDropdownLabel,
   Trigger: SearchableDropdownTrigger,
   Value: BaseCombobox.Value,
   Icon: SearchableDropdownIcon,
@@ -233,7 +257,7 @@ export const SearchableDropdown = {
   Separator: SearchableDropdownSeparator,
   Empty: SearchableDropdownEmpty,
   Collection: BaseCombobox.Collection,
-  Status: BaseCombobox.Status,
+  Status: SearchableDropdownStatus,
   useFilter: BaseCombobox.useFilter,
   useFilteredItems: BaseCombobox.useFilteredItems,
   createItems: BaseCombobox.createItems,

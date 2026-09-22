@@ -9,7 +9,6 @@ export type {
   SelectRootChangeEventReason as DropdownRootChangeEventReason,
   SelectRootChangeEventDetails as DropdownRootChangeEventDetails,
   SelectLabelState as DropdownLabelState,
-  SelectLabelProps as DropdownLabelProps,
   SelectTriggerState as DropdownTriggerState,
   SelectValueState as DropdownValueState,
   SelectValueProps as DropdownValueProps,
@@ -25,6 +24,7 @@ export type {
   SelectSeparatorState as DropdownSeparatorState,
 } from '@base-ui/react/select';
 
+export type DropdownLabelProps = BaseSelect.Label.Props;
 export type DropdownTriggerProps = BaseSelect.Trigger.Props;
 export type DropdownIconProps = BaseSelect.Icon.Props;
 export type DropdownPopupProps = BaseSelect.Popup.Props;
@@ -35,6 +35,18 @@ export type DropdownGroupLabelProps = BaseSelect.GroupLabel.Props;
 export interface DropdownSeparatorProps extends Omit<BaseSelect.Separator.Props, 'orientation'> {
   readonly orientation?: 'horizontal';
 }
+
+export const DropdownLabel = forwardRef<HTMLDivElement, DropdownLabelProps>(
+  function DropdownLabel({className, ...props}, ref) {
+    return (
+      <BaseSelect.Label
+        {...props}
+        ref={ref}
+        className={mergeClassName<BaseSelect.Label.State>(styles.label, className)}
+      />
+    );
+  },
+);
 
 export const DropdownTrigger = forwardRef<HTMLButtonElement, DropdownTriggerProps>(
   function DropdownTrigger({className, ...props}, ref) {
@@ -137,7 +149,7 @@ export const DropdownSeparator = forwardRef<HTMLDivElement, DropdownSeparatorPro
 
 export const Dropdown = {
   Root: BaseSelect.Root,
-  Label: BaseSelect.Label,
+  Label: DropdownLabel,
   Trigger: DropdownTrigger,
   Value: BaseSelect.Value,
   Icon: DropdownIcon,
