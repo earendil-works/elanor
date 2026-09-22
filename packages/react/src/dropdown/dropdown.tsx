@@ -32,7 +32,9 @@ export type DropdownListProps = BaseSelect.List.Props;
 export type DropdownItemProps = BaseSelect.Item.Props;
 export type DropdownItemIndicatorProps = BaseSelect.ItemIndicator.Props;
 export type DropdownGroupLabelProps = BaseSelect.GroupLabel.Props;
-export type DropdownSeparatorProps = BaseSelect.Separator.Props;
+export interface DropdownSeparatorProps extends Omit<BaseSelect.Separator.Props, 'orientation'> {
+  readonly orientation?: 'horizontal';
+}
 
 export const DropdownTrigger = forwardRef<HTMLButtonElement, DropdownTriggerProps>(
   function DropdownTrigger({className, ...props}, ref) {
@@ -126,6 +128,7 @@ export const DropdownSeparator = forwardRef<HTMLDivElement, DropdownSeparatorPro
       <BaseSelect.Separator
         {...props}
         ref={ref}
+        orientation="horizontal"
         className={mergeClassName<BaseSelect.Separator.State>(styles.separator, className)}
       />
     );

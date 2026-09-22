@@ -45,7 +45,9 @@ export type SearchableDropdownListProps = BaseCombobox.List.Props;
 export type SearchableDropdownItemProps = BaseCombobox.Item.Props;
 export type SearchableDropdownItemIndicatorProps = BaseCombobox.ItemIndicator.Props;
 export type SearchableDropdownGroupLabelProps = BaseCombobox.GroupLabel.Props;
-export type SearchableDropdownSeparatorProps = BaseCombobox.Separator.Props;
+export interface SearchableDropdownSeparatorProps extends Omit<BaseCombobox.Separator.Props, 'orientation'> {
+  readonly orientation?: 'horizontal';
+}
 export type SearchableDropdownEmptyProps = BaseCombobox.Empty.Props;
 
 export const SearchableDropdownTrigger = forwardRef<HTMLButtonElement, SearchableDropdownTriggerProps>(
@@ -171,6 +173,7 @@ export const SearchableDropdownSeparator = forwardRef<HTMLDivElement, Searchable
       <BaseCombobox.Separator
         {...props}
         ref={ref}
+        orientation="horizontal"
         className={mergeClassName<BaseCombobox.Separator.State>(styles.separator, className)}
       />
     );
