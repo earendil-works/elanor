@@ -417,7 +417,6 @@ export type {
   SearchableDropdownRootHighlightEventReason,
   SearchableDropdownRootProps,
   SearchableDropdownRootState,
-  SearchableDropdownRowProps,
   SearchableDropdownSeparatorProps,
   SearchableDropdownSeparatorState,
   SearchableDropdownStatusProps,
