@@ -1,3 +1,16 @@
 import {ProgressiveDisclosureExample} from './progressive-disclosure.example.tsx';
 
+`Root` manages disclosure state. `Trigger` supplies button behavior and accessibility,
+not a prescribed appearance: compose it with a styled `Button` through `render`,
+as shown below.
+
+`Panel` owns the revealed-content treatment: a plain 2px rule centered in the
+16px leading control lane (7px from the inline-start edge), content inset by 25px,
+and 8px top padding. The rule starts at the top of the panel, above that padding;
+neither the trigger nor the closed disclosure receives this decoration. Inline
+offsets mirror in RTL. Radius-specific rule texture is separate from this shared treatment.
+
+The example uses `keepMounted` to preserve the edited input when closed. By default,
+closed panels unmount and uncontrolled input state resets on reopening.
+
 <ProgressiveDisclosureExample client:load />

@@ -1,12 +1,32 @@
 .root {
   min-inline-size: 0;
-  padding-inline-start: var(--semantic-dimension-space-padding-x-large);
-  border-inline-start: var(--semantic-dimension-border-width-default) solid
-    var(--semantic-color-border-secondary);
   color: var(--semantic-color-text-primary);
 }
 
 .panel {
+  position: relative;
+  box-sizing: border-box;
   min-inline-size: 0;
-  padding-block-start: var(--semantic-dimension-space-padding-small);
+}
+
+.panel:not([hidden]) {
+  padding-block-start: var(--semantic-dimension-space-padding-medium);
+  /* stylelint-disable-next-line design-tokens/token-property-compatibility -- Structural inset: half the 16px lane plus half the 2px rule, then the 16px gap. */
+  padding-inline-start: calc((var(--semantic-dimension-size-x-small) + var(--semantic-dimension-border-width-default)) / 2 + var(--semantic-dimension-space-gap-medium));
+}
+
+.panel:not([hidden])::before {
+  position: absolute;
+  inset-block: 0;
+  inset-inline-start: calc((var(--semantic-dimension-size-x-small) - var(--semantic-dimension-border-width-default)) / 2);
+  border-inline-start: var(--semantic-dimension-border-width-default) solid
+    var(--semantic-color-border-secondary);
+  content: '';
+  pointer-events: none;
+}
+
+@media (forced-colors: active) {
+  .panel::before {
+    border-inline-start-color: CanvasText;
+  }
 }
