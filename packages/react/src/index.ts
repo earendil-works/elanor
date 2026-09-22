@@ -59,10 +59,6 @@ export {
   ContextualMenuSubmenuTrigger,
 } from './contextual-menu/contextual-menu.tsx';
 export type {
-  ContextualMenuArrowProps,
-  ContextualMenuArrowState,
-  ContextualMenuBackdropProps,
-  ContextualMenuBackdropState,
   ContextualMenuCheckboxItemChangeEventDetails,
   ContextualMenuCheckboxItemChangeEventReason,
   ContextualMenuCheckboxItemIndicatorProps,
@@ -119,10 +115,6 @@ export {
   DropdownTrigger,
 } from './dropdown/dropdown.tsx';
 export type {
-  DropdownArrowProps,
-  DropdownArrowState,
-  DropdownBackdropProps,
-  DropdownBackdropState,
   DropdownGroupLabelProps,
   DropdownGroupProps,
   DropdownIconProps,
@@ -144,8 +136,6 @@ export type {
   DropdownRootChangeEventDetails,
   DropdownRootChangeEventReason,
   DropdownRootProps,
-  DropdownScrollDownArrowProps,
-  DropdownScrollUpArrowProps,
   DropdownSeparatorProps,
   DropdownSeparatorState,
   DropdownTriggerProps,
@@ -276,10 +266,6 @@ export {
   NavigationMenuTrigger,
 } from './navigation-menu/navigation-menu.tsx';
 export type {
-  NavigationMenuArrowProps,
-  NavigationMenuArrowState,
-  NavigationMenuBackdropProps,
-  NavigationMenuBackdropState,
   NavigationMenuContentProps,
   NavigationMenuContentState,
   NavigationMenuIconProps,
@@ -402,10 +388,6 @@ export {
 } from './dropdown/searchable-dropdown.tsx';
 export type {
   CreateSearchableDropdownItemsOptions,
-  SearchableDropdownArrowProps,
-  SearchableDropdownArrowState,
-  SearchableDropdownBackdropProps,
-  SearchableDropdownBackdropState,
   SearchableDropdownCollectionProps,
   SearchableDropdownEmptyProps,
   SearchableDropdownFilter,
