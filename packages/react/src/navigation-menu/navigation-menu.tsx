@@ -5,7 +5,6 @@ import {mergeClassName} from '../utils/class-names.ts';
 
 export type {
   NavigationMenuRootState,
-  NavigationMenuRootProps,
   NavigationMenuRootActions,
   NavigationMenuRootChangeEventReason,
   NavigationMenuRootChangeEventDetails,
@@ -21,6 +20,11 @@ export type {
   NavigationMenuIconState,
 } from '@base-ui/react/navigation-menu';
 
+export interface NavigationMenuRootProps<Value = any>
+  extends Omit<BaseNavigationMenu.Root.Props<Value>, 'orientation'> {
+  readonly orientation?: 'horizontal';
+}
+
 export type NavigationMenuListProps = BaseNavigationMenu.List.Props;
 export type NavigationMenuItemProps = BaseNavigationMenu.Item.Props;
 export type NavigationMenuLinkProps = BaseNavigationMenu.Link.Props;
@@ -28,6 +32,13 @@ export type NavigationMenuTriggerProps = BaseNavigationMenu.Trigger.Props;
 export type NavigationMenuIconProps = BaseNavigationMenu.Icon.Props;
 export type NavigationMenuPopupProps = BaseNavigationMenu.Popup.Props;
 export type NavigationMenuContentProps = BaseNavigationMenu.Content.Props;
+
+// Preserve Base UI's value generic across forwardRef.
+const NavigationMenuRoot = forwardRef<HTMLElement, NavigationMenuRootProps<unknown>>(
+  function NavigationMenuRoot(props, ref) {
+    return <BaseNavigationMenu.Root {...props} ref={ref} orientation="horizontal" />;
+  },
+) as <Value = any>(props: NavigationMenuRootProps<Value>) => React.JSX.Element;
 
 export const NavigationMenuList = forwardRef<HTMLUListElement, NavigationMenuListProps>(
   function NavigationMenuList({className, ...props}, ref) {
@@ -121,7 +132,7 @@ export const NavigationMenuContent = forwardRef<
 });
 
 export const NavigationMenu = {
-  Root: BaseNavigationMenu.Root,
+  Root: NavigationMenuRoot,
   List: NavigationMenuList,
   Item: NavigationMenuItem,
   Link: NavigationMenuLink,
