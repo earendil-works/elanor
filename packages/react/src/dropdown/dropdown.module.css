@@ -20,23 +20,27 @@
   cursor: pointer;
 }
 
-.trigger:hover:not([data-disabled]) {
+.trigger:where(:hover:not(:disabled, [data-disabled])) {
   border-color: var(--semantic-color-background-fill-secondary-hover);
   background: var(--semantic-color-background-fill-secondary-hover);
 }
 
-.trigger[data-popup-open] {
+.trigger:where([data-popup-open]) {
   border-color: var(--semantic-color-focus-ring);
   background: var(--semantic-color-background-fill-secondary);
 }
 
-.trigger[data-invalid] {
-  border-color: var(--semantic-color-focus-ring-negative);
+.trigger:where(:focus-visible) {
+  border-color: var(--semantic-color-focus-ring);
 }
 
 .trigger:focus-visible {
-  border-color: var(--semantic-color-focus-ring);
-  outline: 0;
+  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+  outline-offset: var(--semantic-dimension-border-width-medium);
+}
+
+.trigger:where([data-invalid], [aria-invalid='true']) {
+  border-color: var(--semantic-color-focus-ring-negative);
 }
 
 .trigger[data-disabled] {
@@ -156,10 +160,13 @@
     border-color: ButtonBorder;
   }
 
-  .trigger:focus-visible,
-  .trigger[data-popup-open] {
+  .trigger:where([data-popup-open]) {
     outline: var(--semantic-dimension-border-width-default) solid Highlight;
     outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
+  }
+
+  .trigger:focus-visible {
+    outline-color: Highlight;
   }
 
   .item[data-highlighted] {
