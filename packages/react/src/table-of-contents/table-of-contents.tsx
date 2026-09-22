@@ -30,7 +30,7 @@ export interface TableOfContentsLinkProps extends AnchorHTMLAttributes<HTMLAncho
 }
 
 export const TableOfContentsLink = forwardRef<HTMLAnchorElement, TableOfContentsLinkProps>(
-  function TableOfContentsLink({active = false, className, ...props}, ref) {
+  function TableOfContentsLink({active = false, children, dangerouslySetInnerHTML, className, ...props}, ref) {
     return (
       <a
         {...props}
@@ -38,7 +38,9 @@ export const TableOfContentsLink = forwardRef<HTMLAnchorElement, TableOfContents
         aria-current={active ? 'location' : props['aria-current']}
         data-active={active ? '' : undefined}
         className={classes(styles.link, className)}
-      />
+      >
+        <span className={styles.label} dangerouslySetInnerHTML={dangerouslySetInnerHTML}>{children}</span>
+      </a>
     );
   },
 );
