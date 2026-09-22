@@ -40,7 +40,12 @@ export type SearchableDropdownTriggerProps = BaseCombobox.Trigger.Props;
 export type SearchableDropdownIconProps = BaseCombobox.Icon.Props;
 export type SearchableDropdownPopupProps = BaseCombobox.Popup.Props;
 export type SearchableDropdownInputGroupProps = BaseCombobox.InputGroup.Props;
-export type SearchableDropdownInputProps = BaseCombobox.Input.Props;
+const inputTypes = ['text', 'search'] as const;
+
+export interface SearchableDropdownInputProps extends Omit<BaseCombobox.Input.Props, 'type'> {
+  readonly type?: (typeof inputTypes)[number];
+}
+
 export type SearchableDropdownListProps = BaseCombobox.List.Props;
 export type SearchableDropdownItemProps = BaseCombobox.Item.Props;
 export type SearchableDropdownItemIndicatorProps = BaseCombobox.ItemIndicator.Props;
@@ -106,11 +111,16 @@ export const SearchableDropdownInputGroup = forwardRef<HTMLDivElement, Searchabl
 );
 
 export const SearchableDropdownInput = forwardRef<HTMLInputElement, SearchableDropdownInputProps>(
-  function SearchableDropdownInput({className, ...props}, ref) {
+  function SearchableDropdownInput({className, type = 'text', ...props}, ref) {
+    if (!inputTypes.includes(type)) {
+      throw new TypeError(`SearchableDropdown.Input does not support type="${type}". Use one of: ${inputTypes.join(', ')}.`);
+    }
+
     return (
       <BaseCombobox.Input
         {...props}
         ref={ref}
+        type={type}
         className={mergeClassName<BaseCombobox.Input.State>(styles.input, className)}
       />
     );
