@@ -5,7 +5,7 @@
   gap: var(--semantic-dimension-space-control-gap-large);
   block-size: var(--semantic-dimension-size-small);
   min-inline-size: 0;
-  padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
+  padding-inline: calc(var(--semantic-dimension-space-control-padding-inline-small) - var(--semantic-dimension-border-width-default));
   border: var(--semantic-dimension-border-width-default) solid
     var(--semantic-color-background-fill-secondary);
   border-radius: var(--semantic-dimension-radius-small);
@@ -13,15 +13,30 @@
   color: var(--semantic-color-text-primary);
 }
 
-.root:hover {
-  border-color: var(--semantic-color-background-fill-secondary-hover);
-  background: var(--semantic-color-background-fill-secondary-hover);
+@media (hover: hover) {
+  .root:where(:hover:not(:has(.input:disabled, .input[data-disabled]))) {
+    border-color: var(--semantic-color-background-fill-secondary-hover);
+    background: var(--semantic-color-background-fill-secondary-hover);
+  }
 }
 
-.root:focus-within {
+.root:where(:focus-within:not(:has(.input:disabled, .input[data-disabled]))) {
   border-color: var(--semantic-color-focus-ring);
   background: var(--semantic-color-background-fill-secondary);
-  outline: 0;
+}
+
+.root:has(.input:focus-visible) {
+  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+  outline-offset: var(--semantic-dimension-border-width-medium);
+}
+
+.root:where(:has(.input[data-invalid], .input[aria-invalid='true'])) {
+  border-color: var(--semantic-color-focus-ring-negative);
+}
+
+.root:where(:has(.input:disabled, .input[data-disabled])) {
+  cursor: not-allowed;
+  opacity: var(--semantic-number-opacity-disabled);
 }
 
 .icon,
@@ -33,6 +48,10 @@
   inline-size: var(--semantic-dimension-size-x-small);
   block-size: var(--semantic-dimension-size-x-small);
   color: var(--semantic-color-icon-primary);
+}
+
+.icon {
+  color: var(--semantic-color-icon-secondary);
 }
 
 .searchGlyph {
@@ -57,6 +76,7 @@
 }
 
 .input {
+  box-sizing: border-box;
   inline-size: 100%;
   min-inline-size: 0;
   padding: 0;
@@ -69,4 +89,19 @@
 
 .input::placeholder {
   color: var(--semantic-color-text-secondary);
+}
+
+.input:disabled,
+.input[data-disabled] {
+  cursor: not-allowed;
+}
+
+@media (forced-colors: active) {
+  .root {
+    border-color: ButtonBorder;
+  }
+
+  .root:has(.input:focus-visible) {
+    outline-color: Highlight;
+  }
 }
