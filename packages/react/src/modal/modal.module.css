@@ -28,7 +28,7 @@
   inline-size: min(var(--semantic-dimension-breakpoint-small), 100%);
   max-block-size: calc(100dvh - 2 * var(--semantic-dimension-space-padding-medium));
   overflow: auto;
-  padding: var(--semantic-dimension-space-padding-xxx-large);
+  padding: calc(var(--semantic-dimension-space-padding-xxx-large) - var(--semantic-dimension-border-width-default));
   border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-background-canvas);
   border-radius: var(--semantic-dimension-radius-small);
   background: var(--semantic-color-background-canvas);
