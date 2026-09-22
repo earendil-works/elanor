@@ -19,9 +19,7 @@ export type {
   ComboboxPositionerProps as SearchableDropdownPositionerProps,
   ComboboxPositionerState as SearchableDropdownPositionerState,
   ComboboxGroupProps as SearchableDropdownGroupProps,
-  ComboboxRowProps as SearchableDropdownRowProps,
   ComboboxStatusProps as SearchableDropdownStatusProps,
-  ComboboxRootProps as SearchableDropdownRootProps,
   ComboboxRootState as SearchableDropdownRootState,
   ComboboxRootActions as SearchableDropdownRootActions,
   ComboboxRootChangeEventReason as SearchableDropdownRootChangeEventReason,
@@ -35,6 +33,14 @@ export type {
   ComboboxItemCollection as SearchableDropdownItemCollection,
   CreateComboboxItemsOptions as CreateSearchableDropdownItemsOptions,
 } from '@base-ui/react/combobox';
+
+export type SearchableDropdownRootProps<
+  Value,
+  Multiple extends boolean | undefined = false,
+  Item = Value,
+> = BaseCombobox.Root.Props<Value, Multiple, Item> & {
+  readonly grid?: false;
+};
 
 export type SearchableDropdownTriggerProps = BaseCombobox.Trigger.Props;
 export type SearchableDropdownIconProps = BaseCombobox.Icon.Props;
@@ -54,6 +60,12 @@ export interface SearchableDropdownSeparatorProps extends Omit<BaseCombobox.Sepa
   readonly orientation?: 'horizontal';
 }
 export type SearchableDropdownEmptyProps = BaseCombobox.Empty.Props;
+
+function SearchableDropdownRoot<Value, Multiple extends boolean | undefined = false, Item = Value>(
+  props: SearchableDropdownRootProps<Value, Multiple, Item>,
+): React.JSX.Element {
+  return <BaseCombobox.Root<Value, Multiple, Item> {...props} grid={false} />;
+}
 
 export const SearchableDropdownTrigger = forwardRef<HTMLButtonElement, SearchableDropdownTriggerProps>(
   function SearchableDropdownTrigger({className, ...props}, ref) {
@@ -203,7 +215,7 @@ export const SearchableDropdownEmpty = forwardRef<HTMLDivElement, SearchableDrop
 );
 
 export const SearchableDropdown = {
-  Root: BaseCombobox.Root,
+  Root: SearchableDropdownRoot,
   Label: BaseCombobox.Label,
   Trigger: SearchableDropdownTrigger,
   Value: BaseCombobox.Value,
@@ -221,7 +233,6 @@ export const SearchableDropdown = {
   Separator: SearchableDropdownSeparator,
   Empty: SearchableDropdownEmpty,
   Collection: BaseCombobox.Collection,
-  Row: BaseCombobox.Row,
   Status: BaseCombobox.Status,
   useFilter: BaseCombobox.useFilter,
   useFilteredItems: BaseCombobox.useFilteredItems,
