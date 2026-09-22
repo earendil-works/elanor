@@ -1,10 +1,41 @@
-import {DropdownExample} from './dropdown.example.tsx';
+import {DropdownExample, DropdownRadioExample, DropdownMultipleExample} from './dropdown.example.tsx';
 import {SearchableDropdownExample} from './searchable-dropdown.example.tsx';
 
 Labels use primary UI typography and are automatically associated with their
 trigger. The parent owns label/control spacing; these examples use an 8px Stack gap.
 
 <DropdownExample client:load />
+
+## Selection indicators
+
+Compose a leading `ItemIndicator` to show an optional radio in single-select mode
+or a checkbox with `Root multiple`. Use the matching Elanor `Dropdown.Root` or
+`SearchableDropdown.Root` for automatic mode presentation; a raw Base UI Root
+does not provide that presentation context. Selection remains owned by Base UI.
+Omit the part entirely for the plain list shown above.
+
+<DropdownRadioExample client:load />
+
+<DropdownMultipleExample client:load />
+
+The part reserves a decorative 16px frame and an 8px gap to the label. The frame
+stays at the first line of wrapped labels. These are plain shared radio/checkbox
+visuals; branded Radius artwork is separate.
+
+`keepMounted` controls only the native mark: its default and explicit `false`
+unmount the unchecked mark, while `true` retains it. The outer frame remains
+while the part is composed, even when the native ref is null. Omitting the part
+removes both. Refs, classes, styles, events and `render` target the native mark,
+not the frame; hiding or resizing that mark does not hide or resize the frame.
+The added span also changes direct-child CSS selectors targeting the native mark.
+
+Omitted or `undefined` children become `null`, replacing the native default emoji
+with an empty-node CSS dot/check. A render callback with no supplied children
+therefore receives `null`. Explicit children (including `0` and `false`) and
+render-owned content are preserved without a private content wrapper. Custom
+hosts/content own their drawing. Forward the native props, including
+`data-selected`, to a DOM root inside the frame so its fill follows selection;
+selection on nested descendants does not select the surrounding frame.
 
 ## Searchable dropdown feedback
 

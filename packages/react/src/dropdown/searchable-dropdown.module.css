@@ -197,6 +197,10 @@
   overflow-wrap: anywhere;
 }
 
+.item:has(> .indicatorFrame) {
+  gap: var(--semantic-dimension-space-control-gap-large);
+}
+
 .item[data-highlighted] {
   background: var(--semantic-color-background-fill-ghost-neutral-hover);
 }
@@ -209,22 +213,88 @@
   opacity: var(--semantic-number-opacity-disabled);
 }
 
+.indicatorFrame {
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  flex: none;
+  align-self: flex-start;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--semantic-dimension-size-x-small);
+  block-size: var(--semantic-dimension-size-x-small);
+  border-radius: var(--semantic-dimension-radius-full);
+  color: var(--semantic-color-icon-radio-indicator);
+}
+
+.indicatorFrame::before {
+  position: absolute;
+  inset: 0;
+  z-index: var(--semantic-number-layer-background);
+  box-sizing: border-box;
+  border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-primary);
+  border-radius: inherit;
+  background: var(--semantic-color-background-radio);
+  content: '';
+  pointer-events: none;
+}
+
+.indicatorFrame:has(> [data-selected])::before {
+  border-color: var(--semantic-color-background-radio-selected);
+  background: var(--semantic-color-background-radio-selected);
+}
+
+.indicatorFrameMultiple {
+  border-radius: var(--semantic-dimension-radius-small);
+  color: var(--semantic-color-icon-checkbox-indicator);
+}
+
+.indicatorFrameMultiple::before {
+  background: var(--semantic-color-background-checkbox);
+}
+
+.indicatorFrameMultiple:has(> [data-selected])::before {
+  border-color: var(--semantic-color-background-checkbox-selected);
+  background: var(--semantic-color-background-checkbox-selected);
+}
+
 .itemIndicator {
+  position: relative;
   display: inline-flex;
   flex: none;
   align-items: center;
   justify-content: center;
   inline-size: var(--semantic-dimension-size-x-small);
   block-size: var(--semantic-dimension-size-x-small);
-  color: var(--semantic-color-icon-primary);
+  color: inherit;
 }
 
 .itemIndicator:empty::after {
-  content: '✓';
+  position: absolute;
+  inset: 0;
+  box-sizing: border-box;
+  inline-size: 37.5%;
+  block-size: 37.5%;
+  margin: auto;
+  border-radius: var(--semantic-dimension-radius-full);
+  background: currentcolor;
+  content: '';
+  pointer-events: none;
+}
+
+.indicatorFrameMultiple > .itemIndicator:empty::after {
+  block-size: 50%;
+  border-radius: 0;
+  background: transparent;
+  /* Physical edges keep the check nondirectional in both LTR and RTL. */
+  border-right: var(--semantic-dimension-border-width-medium) solid currentcolor;
+  border-bottom: var(--semantic-dimension-border-width-medium) solid currentcolor;
+  transform: translateY(calc(-1 * var(--semantic-dimension-space-padding-xxx-small))) rotate(45deg);
 }
 
 .itemIndicator:not([data-selected]) {
   visibility: hidden;
+  opacity: 0;
 }
 
 .groupLabel {
@@ -254,6 +324,20 @@
 }
 
 @media (forced-colors: active) {
+  .indicatorFrame::before {
+    border-color: ButtonBorder;
+    background: Canvas;
+  }
+
+  .indicatorFrame:has(> [data-selected])::before {
+    border-color: Highlight;
+    background: Highlight;
+  }
+
+  .itemIndicator {
+    color: HighlightText;
+  }
+
   .popup {
     outline-color: ButtonBorder;
     outline-offset: 0;
