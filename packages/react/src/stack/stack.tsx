@@ -25,17 +25,17 @@ const gapClasses: Readonly<Record<StackGap, string | undefined>> = {
 };
 
 const alignClasses: Readonly<Record<StackAlign, string | undefined>> = {
-  start: styles.alignStart,
+  start: undefined,
   center: styles.alignCenter,
   end: styles.alignEnd,
-  stretch: undefined,
+  stretch: styles.alignStretch,
 };
 
 export const Stack = forwardRef<HTMLDivElement, StackProps>(function Stack(
   {
     direction = 'column',
     gap = 'medium',
-    align = 'stretch',
+    align = 'start',
     wrap = 'nowrap',
     className,
     ...props
