@@ -1,10 +1,9 @@
 import {Select as BaseSelect} from '@base-ui/react/select';
-import {forwardRef} from 'react';
+import {createContext, forwardRef, useContext} from 'react';
 import styles from './dropdown.module.css';
-import {mergeClassName} from '../utils/class-names.ts';
+import {classes, mergeClassName} from '../utils/class-names.ts';
 
 export type {
-  SelectRootProps as DropdownRootProps,
   SelectRootActions as DropdownRootActions,
   SelectRootChangeEventReason as DropdownRootChangeEventReason,
   SelectRootChangeEventDetails as DropdownRootChangeEventDetails,
@@ -24,6 +23,7 @@ export type {
   SelectSeparatorState as DropdownSeparatorState,
 } from '@base-ui/react/select';
 
+export type DropdownRootProps<Value, Multiple extends boolean | undefined = false> = BaseSelect.Root.Props<Value, Multiple>;
 export type DropdownLabelProps = BaseSelect.Label.Props;
 export type DropdownTriggerProps = BaseSelect.Trigger.Props;
 export type DropdownIconProps = BaseSelect.Icon.Props;
@@ -34,6 +34,18 @@ export type DropdownItemIndicatorProps = BaseSelect.ItemIndicator.Props;
 export type DropdownGroupLabelProps = BaseSelect.GroupLabel.Props;
 export interface DropdownSeparatorProps extends Omit<BaseSelect.Separator.Props, 'orientation'> {
   readonly orientation?: 'horizontal';
+}
+
+const MultipleContext = createContext(false);
+
+function DropdownRoot<Value, Multiple extends boolean | undefined = false>(
+  props: DropdownRootProps<Value, Multiple>,
+): React.JSX.Element {
+  return (
+    <MultipleContext.Provider value={props.multiple ?? false}>
+      <BaseSelect.Root<Value, Multiple> {...props} />
+    </MultipleContext.Provider>
+  );
 }
 
 export const DropdownLabel = forwardRef<HTMLDivElement, DropdownLabelProps>(
@@ -111,13 +123,19 @@ export const DropdownItem = forwardRef<HTMLElement, DropdownItemProps>(
 );
 
 export const DropdownItemIndicator = forwardRef<HTMLSpanElement, DropdownItemIndicatorProps>(
-  function DropdownItemIndicator({className, ...props}, ref) {
+  function DropdownItemIndicator({className, children = null, ...props}, ref) {
+    const multiple = useContext(MultipleContext);
+
     return (
-      <BaseSelect.ItemIndicator
-        {...props}
-        ref={ref}
-        className={mergeClassName<BaseSelect.ItemIndicator.State>(styles.itemIndicator, className)}
-      />
+      <span className={classes(styles.indicatorFrame, multiple && styles.indicatorFrameMultiple)}>
+        <BaseSelect.ItemIndicator
+          {...props}
+          ref={ref}
+          className={mergeClassName<BaseSelect.ItemIndicator.State>(styles.itemIndicator, className)}
+        >
+          {children}
+        </BaseSelect.ItemIndicator>
+      </span>
     );
   },
 );
@@ -148,7 +166,7 @@ export const DropdownSeparator = forwardRef<HTMLDivElement, DropdownSeparatorPro
 );
 
 export const Dropdown = {
-  Root: BaseSelect.Root,
+  Root: DropdownRoot,
   Label: DropdownLabel,
   Trigger: DropdownTrigger,
   Value: BaseSelect.Value,

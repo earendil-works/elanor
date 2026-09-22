@@ -1,7 +1,7 @@
 import {Combobox as BaseCombobox} from '@base-ui/react/combobox';
-import {forwardRef} from 'react';
+import {createContext, forwardRef, useContext} from 'react';
 import styles from './searchable-dropdown.module.css';
-import {mergeClassName} from '../utils/class-names.ts';
+import {classes, mergeClassName} from '../utils/class-names.ts';
 
 export type {
   ComboboxTriggerState as SearchableDropdownTriggerState,
@@ -61,10 +61,16 @@ export interface SearchableDropdownSeparatorProps extends Omit<BaseCombobox.Sepa
 }
 export type SearchableDropdownEmptyProps = BaseCombobox.Empty.Props;
 
+const MultipleContext = createContext(false);
+
 function SearchableDropdownRoot<Value, Multiple extends boolean | undefined = false, Item = Value>(
   props: SearchableDropdownRootProps<Value, Multiple, Item>,
 ): React.JSX.Element {
-  return <BaseCombobox.Root<Value, Multiple, Item> {...props} grid={false} />;
+  return (
+    <MultipleContext.Provider value={props.multiple ?? false}>
+      <BaseCombobox.Root<Value, Multiple, Item> {...props} grid={false} />
+    </MultipleContext.Provider>
+  );
 }
 
 export const SearchableDropdownLabel = forwardRef<HTMLDivElement, SearchableDropdownLabelProps>(
@@ -177,14 +183,18 @@ export const SearchableDropdownItem = forwardRef<HTMLDivElement, SearchableDropd
 
 export const SearchableDropdownItemIndicator = forwardRef<HTMLSpanElement, SearchableDropdownItemIndicatorProps>(
   function SearchableDropdownItemIndicator({className, children = null, ...props}, ref) {
+    const multiple = useContext(MultipleContext);
+
     return (
-      <BaseCombobox.ItemIndicator
-        {...props}
-        ref={ref}
-        className={mergeClassName<BaseCombobox.ItemIndicator.State>(styles.itemIndicator, className)}
-      >
-        {children}
-      </BaseCombobox.ItemIndicator>
+      <span className={classes(styles.indicatorFrame, multiple && styles.indicatorFrameMultiple)}>
+        <BaseCombobox.ItemIndicator
+          {...props}
+          ref={ref}
+          className={mergeClassName<BaseCombobox.ItemIndicator.State>(styles.itemIndicator, className)}
+        >
+          {children}
+        </BaseCombobox.ItemIndicator>
+      </span>
     );
   },
 );

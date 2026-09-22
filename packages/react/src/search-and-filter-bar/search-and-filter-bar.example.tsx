@@ -72,8 +72,8 @@ function MemberFilter({label, value, options, onChange}: MemberFilterProps): Rea
             <Dropdown.List>
               {options.map((option) => (
                 <Dropdown.Item key={option} value={option}>
-                  <Dropdown.ItemText>{option}</Dropdown.ItemText>
                   <Dropdown.ItemIndicator />
+                  <Dropdown.ItemText>{option}</Dropdown.ItemText>
                 </Dropdown.Item>
               ))}
             </Dropdown.List>

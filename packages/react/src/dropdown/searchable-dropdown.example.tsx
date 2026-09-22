@@ -26,6 +26,7 @@ export function SearchableDropdownExample(): React.JSX.Element {
               <SearchableDropdown.List>
                 {(item: string) => (
                   <SearchableDropdown.Item key={item} value={item}>
+                    <SearchableDropdown.ItemIndicator />
                     {item}
                   </SearchableDropdown.Item>
                 )}
