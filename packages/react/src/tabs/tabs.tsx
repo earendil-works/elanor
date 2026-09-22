@@ -5,7 +5,6 @@ import {mergeClassName} from '../utils/class-names.ts';
 
 export type {
   TabsRootState,
-  TabsRootProps,
   TabsRootChangeEventReason,
   TabsRootChangeEventDetails,
   TabsIndicatorState,
@@ -14,10 +13,18 @@ export type {
   TabsListState,
 } from '@base-ui/react/tabs';
 
+export interface TabsRootProps extends Omit<BaseTabs.Root.Props, 'orientation'> {
+  readonly orientation?: 'horizontal';
+}
+
 export type TabsListProps = BaseTabs.List.Props;
 export type TabsTabProps = BaseTabs.Tab.Props;
 export type TabsIndicatorProps = BaseTabs.Indicator.Props;
 export type TabsPanelProps = BaseTabs.Panel.Props;
+
+const TabsRoot = forwardRef<HTMLDivElement, TabsRootProps>(function TabsRoot(props, ref) {
+  return <BaseTabs.Root {...props} ref={ref} orientation="horizontal" />;
+});
 
 export const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
   function TabsList({className, ...props}, ref) {
@@ -68,7 +75,7 @@ export const TabsPanel = forwardRef<HTMLDivElement, TabsPanelProps>(
 );
 
 export const Tabs = {
-  Root: BaseTabs.Root,
+  Root: TabsRoot,
   List: TabsList,
   Tab: TabsTab,
   Indicator: TabsIndicator,
