@@ -2,6 +2,8 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableCellPrimary,
+  TableCellSecondary,
   TableContainer,
   TableHead,
   TableHeaderCell,
@@ -18,8 +20,15 @@ import {
     </TableHead>
     <TableBody>
       <TableRow>
-        <TableCell>Project Alpha</TableCell>
+        <TableCell>
+          <TableCellPrimary>Project Alpha</TableCellPrimary>
+          <TableCellSecondary>Production environment</TableCellSecondary>
+        </TableCell>
         <TableCell>Active</TableCell>
+      </TableRow>
+      <TableRow>
+        <TableCell>Project Beta</TableCell>
+        <TableCell>Draft</TableCell>
       </TableRow>
     </TableBody>
   </Table>
