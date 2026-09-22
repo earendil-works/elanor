@@ -17,10 +17,6 @@ export type {
   NavigationMenuListState,
   NavigationMenuContentState,
   NavigationMenuPopupState,
-  NavigationMenuBackdropState,
-  NavigationMenuBackdropProps,
-  NavigationMenuArrowState,
-  NavigationMenuArrowProps,
   NavigationMenuLinkState,
   NavigationMenuIconState,
 } from '@base-ui/react/navigation-menu';
@@ -126,8 +122,6 @@ export const NavigationMenuContent = forwardRef<
 
 export const NavigationMenu = {
   Root: BaseNavigationMenu.Root,
-  Backdrop: BaseNavigationMenu.Backdrop,
-  Arrow: BaseNavigationMenu.Arrow,
   List: NavigationMenuList,
   Item: NavigationMenuItem,
   Link: NavigationMenuLink,

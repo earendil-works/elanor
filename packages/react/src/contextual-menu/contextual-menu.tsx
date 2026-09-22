@@ -9,10 +9,6 @@ export type {
   MenuRootActions as ContextualMenuRootActions,
   MenuRootChangeEventReason as ContextualMenuRootChangeEventReason,
   MenuRootChangeEventDetails as ContextualMenuRootChangeEventDetails,
-  MenuArrowState as ContextualMenuArrowState,
-  MenuArrowProps as ContextualMenuArrowProps,
-  MenuBackdropState as ContextualMenuBackdropState,
-  MenuBackdropProps as ContextualMenuBackdropProps,
   MenuCheckboxItemState as ContextualMenuCheckboxItemState,
   MenuCheckboxItemChangeEventReason as ContextualMenuCheckboxItemChangeEventReason,
   MenuCheckboxItemChangeEventDetails as ContextualMenuCheckboxItemChangeEventDetails,
@@ -189,8 +185,6 @@ export const ContextualMenuRadioItemIndicator = forwardRef<HTMLSpanElement, Cont
 
 export const ContextualMenu = {
   Root: BaseMenu.Root,
-  Backdrop: BaseMenu.Backdrop,
-  Arrow: BaseMenu.Arrow,
   Viewport: BaseMenu.Viewport,
   RadioGroup: BaseMenu.RadioGroup,
   Handle: BaseMenu.Handle,
