@@ -21,6 +21,38 @@
   padding-inline: var(--semantic-dimension-space-control-padding-inline-x-small);
 }
 
+.root[data-icon-start] {
+  padding-inline-start: var(--semantic-dimension-space-control-padding-inline-x-small);
+}
+
+.root[data-icon-end] {
+  padding-inline-end: var(--semantic-dimension-space-control-padding-inline-x-small);
+}
+
+.root[data-density='compact'][data-icon-start] {
+  padding-inline-start: 0;
+}
+
+.root[data-density='compact'][data-icon-end] {
+  padding-inline-end: 0;
+}
+
+.icon {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--semantic-dimension-size-x-small);
+  block-size: var(--semantic-dimension-size-x-small);
+}
+
+.icon > svg,
+.icon > img {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
 .root[data-density='compact']::after {
   position: absolute;
   inset-block: calc(-1 * var(--semantic-dimension-space-control-padding-block-small));
