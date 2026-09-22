@@ -42,7 +42,7 @@ thead > .row,
 }
 
 .headerCell {
-  font-weight: var(--semantic-typography-heading-app-6-font-weight);
+  font-weight: var(--semantic-font-weight-ui-emphasis);
 }
 
 .primary,
@@ -53,4 +53,8 @@ thead > .row,
 .secondary {
   color: var(--semantic-color-text-secondary);
   font: var(--semantic-typography-ui-primary);
+}
+
+.primary + .secondary {
+  margin-block-start: var(--semantic-dimension-space-gap-small);
 }
