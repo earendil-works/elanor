@@ -93,7 +93,7 @@ export const ContextualMenuItem = forwardRef<HTMLElement, ContextualMenuItemProp
     <BaseMenu.Item
       {...props}
       ref={ref}
-      className={mergeClassName<BaseMenu.Item.State>(styles.item, className)}
+      className={mergeClassName<BaseMenu.Item.State>(classes(styles.item, styles.composedItem), className)}
     >
       <ContextualMenuItemContent icon={icon} endAdornment={endAdornment}>
         {children}
@@ -114,7 +114,7 @@ export const ContextualMenuLinkItem = forwardRef<Element, ContextualMenuLinkItem
     <BaseMenu.LinkItem
       {...props}
       ref={ref}
-      className={mergeClassName<BaseMenu.LinkItem.State>(styles.item, className)}
+      className={mergeClassName<BaseMenu.LinkItem.State>(classes(styles.item, styles.composedItem), className)}
     >
       <ContextualMenuItemContent icon={icon} endAdornment={endAdornment}>
         {children}
