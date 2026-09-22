@@ -1,3 +1,19 @@
 import {DropdownExample} from './dropdown.example.tsx';
+import {SearchableDropdownExample} from './searchable-dropdown.example.tsx';
+
+Labels use primary UI typography and are automatically associated with their
+trigger. The parent owns label/control spacing; these examples use an 8px Stack gap.
 
 <DropdownExample client:load />
+
+## Searchable dropdown feedback
+
+Keep `SearchableDropdown.Status` mounted outside the conditionally mounted popup.
+Update its children rather than hiding or conditionally rendering the live-region
+node. It uses secondary typography and adds padding only when nonempty. This
+example owns the selected-project feedback locally; no asynchronous loading is required.
+
+`SearchableDropdown.Label` labels the trigger. When an input outside the popup is
+the form control instead, use a native label or `Field.Label` for that input.
+
+<SearchableDropdownExample client:load />

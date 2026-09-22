@@ -1,12 +1,16 @@
+import {Stack} from '../stack/stack.tsx';
 import {Dropdown} from './dropdown.tsx';
 
 export function DropdownExample(): React.JSX.Element {
   return (
     <Dropdown.Root>
-      <Dropdown.Trigger>
-        <Dropdown.Value placeholder="Select a project" />
-        <Dropdown.Icon />
-      </Dropdown.Trigger>
+      <Stack gap="small">
+        <Dropdown.Label>Project</Dropdown.Label>
+        <Dropdown.Trigger>
+          <Dropdown.Value placeholder="Select a project" />
+          <Dropdown.Icon />
+        </Dropdown.Trigger>
+      </Stack>
       <Dropdown.Portal>
         <Dropdown.Positioner>
           <Dropdown.Popup>

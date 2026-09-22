@@ -1,3 +1,8 @@
+.label {
+  color: var(--semantic-color-text-primary);
+  font: var(--semantic-typography-ui-primary);
+}
+
 .trigger {
   box-sizing: border-box;
   display: inline-flex;
@@ -235,14 +240,16 @@
   background: var(--semantic-color-border-secondary);
 }
 
-.empty {
+.empty,
+.status {
   flex: none;
   color: var(--semantic-color-text-secondary);
   font: var(--semantic-typography-ui-secondary);
   overflow-wrap: anywhere;
 }
 
-.empty:not(:empty) {
+.empty:not(:empty),
+.status:not(:empty) {
   padding: var(--semantic-dimension-space-padding-x-small);
 }
 

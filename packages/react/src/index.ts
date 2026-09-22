@@ -85,6 +85,7 @@ export {
   DropdownIcon,
   DropdownItem,
   DropdownItemIndicator,
+  DropdownLabel,
   DropdownList,
   DropdownPopup,
   DropdownSeparator,
@@ -353,9 +354,11 @@ export {
   SearchableDropdownInputGroup,
   SearchableDropdownItem,
   SearchableDropdownItemIndicator,
+  SearchableDropdownLabel,
   SearchableDropdownList,
   SearchableDropdownPopup,
   SearchableDropdownSeparator,
+  SearchableDropdownStatus,
   SearchableDropdownTrigger,
 } from './dropdown/searchable-dropdown.tsx';
 export type {
