@@ -8,7 +8,7 @@
 .headerRow {
   display: flex;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: baseline;
   justify-content: space-between;
   gap: var(--semantic-dimension-space-gap-medium);
   min-inline-size: 0;
@@ -29,7 +29,7 @@
 
 .description {
   max-inline-size: var(--semantic-dimension-breakpoint-small);
-  color: var(--semantic-color-text-secondary);
+  color: var(--semantic-color-text-primary);
   font: var(--semantic-typography-ui-primary);
 }
 
@@ -39,7 +39,7 @@
   flex-wrap: wrap;
   min-inline-size: 0;
   max-inline-size: 100%;
-  align-items: center;
+  align-items: flex-start;
   justify-content: flex-end;
-  gap: var(--semantic-dimension-space-control-gap-medium);
+  gap: var(--semantic-dimension-space-gap-medium);
 }
