@@ -15,10 +15,6 @@
   cursor: pointer;
 }
 
-.outlined {
-  border: var(--semantic-dimension-border-width-small) solid var(--semantic-color-border-secondary);
-}
-
 @media (hover: hover) {
   .trigger:hover:not([data-disabled]) {
     background: var(--semantic-color-background-fill-ghost-neutral-hover);
