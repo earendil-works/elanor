@@ -164,12 +164,8 @@ export type {
   EmptyStateTitleProps,
 } from './empty-state/empty-state.tsx';
 
-export {Field, FieldControl, FieldDescription, FieldError, FieldLabel, FieldRoot} from './field/field.tsx';
+export {Field, FieldDescription, FieldError, FieldLabel, FieldRoot} from './field/field.tsx';
 export type {
-  FieldControlChangeEventDetails,
-  FieldControlChangeEventReason,
-  FieldControlProps,
-  FieldControlState,
   FieldDescriptionProps,
   FieldDescriptionState,
   FieldErrorProps,
