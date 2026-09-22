@@ -1,4 +1,6 @@
 .root {
+  position: relative;
+  isolation: isolate;
   box-sizing: border-box;
   display: inline-flex;
   align-items: center;
@@ -9,11 +11,26 @@
   padding: 0;
   border: 0;
   border-radius: var(--semantic-dimension-radius-small);
-  background: var(--semantic-color-background-fill-ghost-neutral);
+  background: transparent;
   color: var(--semantic-color-icon-primary);
   user-select: none;
   touch-action: manipulation;
   cursor: pointer;
+}
+
+.root::before {
+  position: absolute;
+  inset-block: 0;
+  inset-inline: 0;
+  z-index: var(--semantic-number-layer-background);
+  box-sizing: border-box;
+  inline-size: var(--semantic-dimension-size-x-small);
+  block-size: var(--semantic-dimension-size-x-small);
+  margin: auto;
+  border-radius: inherit;
+  background: var(--semantic-color-background-fill-ghost-neutral);
+  content: '';
+  pointer-events: none;
 }
 
 .root > svg,
@@ -30,14 +47,14 @@
 }
 
 @media (hover: hover) {
-  .root:hover:not([data-disabled]) {
+  .root:hover:not([data-disabled])::before {
     background: var(--semantic-color-background-fill-ghost-neutral-hover);
     box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
       var(--semantic-color-background-fill-ghost-neutral-hover);
   }
 }
 
-.root:active:not([data-disabled]) {
+.root:active:not([data-disabled])::before {
   background: var(--semantic-color-background-fill-ghost-neutral-active);
   box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
     var(--semantic-color-background-fill-ghost-neutral-active);
@@ -54,7 +71,11 @@
 }
 
 @media (forced-colors: active) {
-  .root {
+  .root::before {
     border: var(--semantic-dimension-border-width-small) solid ButtonBorder;
+  }
+
+  .root:focus-visible {
+    outline-color: Highlight;
   }
 }
