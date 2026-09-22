@@ -11,7 +11,8 @@
   box-sizing: border-box;
   min-inline-size: var(--semantic-dimension-size-small);
   min-block-size: var(--semantic-dimension-size-small);
-  padding-block: var(--semantic-dimension-space-control-padding-block-large);
+  padding-block-start: var(--semantic-dimension-space-control-padding-block-large);
+  padding-block-end: calc(var(--semantic-dimension-space-control-padding-block-large) - var(--semantic-dimension-border-width-default));
   padding-inline: 0;
   border: 0;
   outline: 0;
@@ -21,10 +22,10 @@
   cursor: pointer;
 }
 
-.tab:hover:not([data-disabled])::after {
+.tab:hover:not([data-disabled], [data-active])::after {
   position: absolute;
   inset-inline: 0;
-  inset-block-end: 0;
+  inset-block-end: calc(-1 * var(--semantic-dimension-border-width-default));
   block-size: var(--semantic-dimension-border-width-default);
   background: var(--semantic-color-border-primary);
   content: '';
@@ -44,38 +45,11 @@
 .indicator {
   position: absolute;
   left: var(--active-tab-left);
-  inset-block-end: 0;
+  inset-block-end: calc(-1 * var(--semantic-dimension-border-width-default));
   inline-size: var(--active-tab-width);
   block-size: var(--semantic-dimension-border-width-default);
   background: var(--semantic-color-border-primary);
   pointer-events: none;
-}
-
-.list[data-orientation='vertical'] {
-  flex-direction: column;
-  border-block-end: 0;
-  border-inline-end: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-secondary);
-}
-
-.tab[data-orientation='vertical'] {
-  padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
-  text-align: start;
-}
-
-.tab[data-orientation='vertical']:hover:not([data-disabled])::after {
-  inset-inline-start: auto;
-  inset-block: 0;
-  inline-size: var(--semantic-dimension-border-width-default);
-  block-size: auto;
-}
-
-.indicator[data-orientation='vertical'] {
-  left: auto;
-  top: var(--active-tab-top);
-  inset-inline-end: 0;
-  inset-block-end: auto;
-  inline-size: var(--semantic-dimension-border-width-default);
-  block-size: var(--active-tab-height);
 }
 
 @media (pointer: coarse) {
@@ -87,7 +61,7 @@
 
 @media (forced-colors: active) {
   .indicator,
-  .tab:hover:not([data-disabled])::after {
+  .tab:hover:not([data-disabled], [data-active])::after {
     background: Highlight;
     forced-color-adjust: none;
   }
