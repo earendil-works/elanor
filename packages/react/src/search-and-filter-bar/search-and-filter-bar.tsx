@@ -11,8 +11,10 @@ export const SearchAndFilterBar = forwardRef<HTMLDivElement, SearchAndFilterBarP
   function SearchAndFilterBar({filters, search, children, className, ...props}, ref) {
     return (
       <div {...props} ref={ref} className={classes(styles.bar, className)}>
-        <div className={styles.filters}>{filters ?? children}</div>
-        {search ? <div className={styles.search}>{search}</div> : null}
+        <div className={styles.layout}>
+          <div className={styles.search}>{search}</div>
+          <div className={styles.filters}>{filters ?? children}</div>
+        </div>
       </div>
     );
   },
