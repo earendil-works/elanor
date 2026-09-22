@@ -9,6 +9,7 @@ export function ContextualMenuExample(): React.JSX.Element {
 
   return (
     <Stack align="start" gap="small">
+      <Text role="status">{action}</Text>
       <ContextualMenu.Root>
         <ContextualMenu.Trigger render={<Button hierarchy="secondary" />}>
           Project actions
@@ -26,7 +27,6 @@ export function ContextualMenuExample(): React.JSX.Element {
           </ContextualMenu.Positioner>
         </ContextualMenu.Portal>
       </ContextualMenu.Root>
-      <Text role="status">{action}</Text>
     </Stack>
   );
 }

@@ -8,10 +8,10 @@
   overflow: auto;
   padding: var(--semantic-dimension-space-padding-x-small);
   border: var(--semantic-dimension-border-width-default) solid
-    var(--semantic-color-border-secondary);
+    var(--semantic-color-background-fill-ghost-negative);
   border-radius: var(--semantic-dimension-radius-small);
   outline: 0;
-  background: var(--semantic-color-background-canvas);
+  background: var(--semantic-color-background-fill-ghost-negative);
   color: var(--semantic-color-text-primary);
   font: var(--semantic-typography-ui-secondary);
 }
@@ -57,6 +57,11 @@
 .item[data-disabled] {
   opacity: var(--semantic-number-opacity-disabled);
   cursor: not-allowed;
+}
+
+/* Composed items already get their icon-to-text spacing from the label padding. */
+.composedItem {
+  gap: 0;
 }
 
 .icon {
