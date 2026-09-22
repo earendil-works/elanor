@@ -26,10 +26,6 @@
   cursor: pointer;
 }
 
-.root[data-orientation='vertical'] {
-  flex-direction: column;
-}
-
 .item[data-pressed] {
   background: var(--semantic-color-background-canvas);
   box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
