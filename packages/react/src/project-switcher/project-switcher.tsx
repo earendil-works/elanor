@@ -2,17 +2,16 @@ import {Menu as BaseMenu} from '@base-ui/react/menu';
 import {forwardRef, type ReactNode, type Ref, type RefAttributes} from 'react';
 import {ContextualMenu} from '../contextual-menu/contextual-menu.tsx';
 import styles from './project-switcher.module.css';
-import {classes, mergeClassName} from '../utils/class-names.ts';
+import {mergeClassName} from '../utils/class-names.ts';
 
 export interface ProjectSwitcherTriggerProps<Payload = unknown>
   extends Omit<BaseMenu.Trigger.Props<Payload>, 'children'> {
   readonly children?: ReactNode;
   readonly indicator?: ReactNode;
-  readonly outlined?: boolean;
 }
 
 export const ProjectSwitcherTrigger = forwardRef(function ProjectSwitcherTrigger<Payload>(
-  {children, indicator, outlined = false, className, ...props}: ProjectSwitcherTriggerProps<Payload>,
+  {children, indicator, className, ...props}: ProjectSwitcherTriggerProps<Payload>,
   ref: Ref<HTMLButtonElement>,
 ) {
   return (
@@ -20,7 +19,7 @@ export const ProjectSwitcherTrigger = forwardRef(function ProjectSwitcherTrigger
       {...props}
       ref={ref}
       className={mergeClassName<BaseMenu.Trigger.State>(
-        classes(styles.trigger, outlined && styles.outlined),
+        styles.trigger,
         className,
       )}
     >
