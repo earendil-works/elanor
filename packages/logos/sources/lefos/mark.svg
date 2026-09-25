@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 560">
+  <path fill="{semantic.color.logo.symbol.1}" d="M140 420H0V0H140V420Z"/>
+  <path fill="{semantic.color.logo.symbol.2}" d="M420 420V560H140V420H420Z"/>
+  <path fill="{semantic.color.logo.symbol.3}" d="M560 140H420V0H560V140Z"/>
+</svg>

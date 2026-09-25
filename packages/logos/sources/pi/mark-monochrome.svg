@@ -1,0 +1,4 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 560 560">
+  <path fill="{semantic.color.logo.monochrome}" d="M420 280H280V140H140V280H280V420H140V560H0V0H420V280Z"/>
+  <path fill="{semantic.color.logo.monochrome}" d="M560 560H420V280H560V560Z"/>
+</svg>

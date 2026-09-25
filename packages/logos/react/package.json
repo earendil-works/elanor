@@ -1,0 +1,40 @@
+{
+  "name": "@earendil-works/elanor-logos-react",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Earendil, Pi, Radius, and Lefos logos as React components.",
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./*": {
+      "types": "./dist/*.d.ts",
+      "import": "./dist/*.js"
+    }
+  },
+  "scripts": {
+    "build": "node build.ts",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "test": "pnpm --filter @earendil-works/elanor-logos-react... run build && vitest run"
+  },
+  "peerDependencies": {
+    "react": "^17.0.0 || ^18.0.0 || ^19.0.0"
+  },
+  "devDependencies": {
+    "@earendil-works/elanor-logos": "workspace:*",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
+  }
+}
