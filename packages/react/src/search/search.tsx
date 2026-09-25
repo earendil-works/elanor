@@ -1,5 +1,5 @@
 import {Input as BaseInput} from '@base-ui/react/input';
-import {SearchIcon} from '@earendil-works/elanor-icons/react/search';
+import {SearchIcon} from '@earendil-works/elanor-icons-react/search';
 import {forwardRef, type ReactNode} from 'react';
 import styles from './search.module.css';
 import {classes, mergeClassName} from '../utils/class-names.ts';

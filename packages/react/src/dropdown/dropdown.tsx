@@ -1,5 +1,5 @@
 import {Select as BaseSelect} from '@base-ui/react/select';
-import {KeyboardArrowDownIcon} from '@earendil-works/elanor-icons/react/keyboard-arrow-down';
+import {KeyboardArrowDownIcon} from '@earendil-works/elanor-icons-react/keyboard-arrow-down';
 import {createContext, forwardRef, useContext} from 'react';
 import styles from './dropdown.module.css';
 import {classes, mergeClassName} from '../utils/class-names.ts';
