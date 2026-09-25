@@ -12,17 +12,20 @@
   "exports": {
     "./svg/*": "./dist/svg/*",
     "./manifest.json": "./dist/manifest.json",
+    "./kits/*": "./dist/kits/*",
+    "./press-kits/*": "./dist/press-kits/*",
     "./artwork.json": "./dist/artwork.json"
   },
   "scripts": {
-    "build": "tsx scripts/build.ts",
+    "build": "tsx scripts/build.ts && tsx scripts/export.ts",
     "check": "tsc -p tsconfig.json --noEmit && pnpm run check:prepare && tsx scripts/check.ts",
     "check:prepare": "pnpm --filter @earendil-works/design-tokens run build",
-    "test": "pnpm run check:prepare && vitest run --dir tests"
+    "test": "pnpm run check:prepare && pnpm run build && vitest run --dir tests"
   },
   "devDependencies": {
     "@earendil-works/design-tokens": "workspace:*",
     "@types/node": "^24.0.0",
+    "sharp": "^0.34.5",
     "tsx": "^4.23.1",
     "typescript": "^5.9.3",
     "vitest": "^4.1.0"

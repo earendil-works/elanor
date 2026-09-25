@@ -8,8 +8,12 @@ Earendil, Pi, Radius, and Lefos logos as SVG files, built from clean sources and
 
 [`config.ts`](./config.ts) defines the source parts, brands, color treatments, logo tokens, clear space, and lockup rules. Lockups are composed like the Figma auto layout, and each lockup rule adds a `logo-wordmark-<lockup>` asset kind. Paths are only moved into place, with exact decimal arithmetic, so geometry is unchanged.
 
+## Exports
+
+[`exports.config.ts`](./exports.config.ts) lists everything else the build produces: PNGs, CMYK print PDFs, favicons and web app icons, avatars, email-signature images, and per-brand press kits with the [brand guidelines](./guidelines/BRAND-GUIDELINES.md). Each entry is handled by the exporter for its `type` in `scripts/lib/exporters.ts`.
+
 ```sh
-pnpm build   # dist/svg/<brand>/<brand>-<kind>-<treatment>.svg, manifest.json, artwork.json
+pnpm build   # SVGs, manifest.json, artwork.json, kits/<brand>/…, press-kits/*.zip
 pnpm check   # sources are clean and link to existing logo tokens
 pnpm test
 ```

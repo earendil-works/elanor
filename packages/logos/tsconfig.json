@@ -4,5 +4,5 @@
     "noEmit": true,
     "types": ["node", "vitest/globals"]
   },
-  "include": ["config.ts", "scripts/**/*.ts", "tests/**/*.ts"]
+  "include": ["config.ts", "exports.config.ts", "scripts/**/*.ts", "tests/**/*.ts"]
 }
