@@ -1,0 +1,82 @@
+.browser {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  gap: var(--semantic-dimension-space-gap-large);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--semantic-dimension-size-x-large), 1fr));
+  gap: var(--semantic-dimension-space-gap-x-small);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--semantic-dimension-space-gap-x-small);
+  inline-size: 100%;
+  padding: var(--semantic-dimension-space-padding-small);
+  border: var(--semantic-dimension-border-width-default) solid transparent;
+  border-radius: var(--semantic-dimension-radius-medium);
+  background: var(--semantic-color-background-fill-ghost);
+  color: var(--semantic-color-icon-primary);
+  font: var(--semantic-typography-ui-tertiary);
+  cursor: pointer;
+}
+
+.tile:hover {
+  background: var(--semantic-color-background-fill-ghost-hover);
+}
+
+.tile[aria-pressed='true'] {
+  border-color: var(--semantic-color-border-primary);
+}
+
+.tile:focus-visible {
+  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+  outline-offset: var(--semantic-dimension-border-width-medium);
+}
+
+/* Icons are drawn as masks so they take the text color. */
+.glyph,
+.large {
+  display: block;
+  background: currentcolor;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+}
+
+.glyph {
+  inline-size: var(--semantic-dimension-size-small);
+  block-size: var(--semantic-dimension-size-small);
+}
+
+.large {
+  flex: none;
+  inline-size: var(--semantic-dimension-size-x-large);
+  block-size: var(--semantic-dimension-size-x-large);
+  color: var(--semantic-color-icon-primary);
+}
+
+.name {
+  max-inline-size: 100%;
+  overflow: hidden;
+  color: var(--semantic-color-text-secondary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.detail {
+  display: flex;
+  align-items: center;
+  gap: var(--semantic-dimension-space-gap-large);
+  padding: var(--semantic-dimension-space-padding-large);
+  border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-secondary);
+  border-radius: var(--semantic-dimension-radius-medium);
+}

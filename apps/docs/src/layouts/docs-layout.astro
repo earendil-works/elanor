@@ -4,17 +4,45 @@ import '../styles/docs.css';
 import '../styles/fonts.css';
 import {getCollection} from 'astro:content';
 import {ClientRouter} from 'astro:transitions';
-import {DocsSideNavigation} from '../components/docs-side-navigation.tsx';
+import {DocsSideNavigation, type DocsNavigationSection} from '../components/docs-side-navigation.tsx';
 
 interface Props {
-  currentComponent: string;
+  title: string;
+  /** Path of the current page, used to mark it in the navigation. */
+  current: string;
+  /** Pages with their own layout, such as grids, use the full content width. */
+  wide?: boolean;
 }
 
-const {currentComponent} = Astro.props;
+const {title, current, wide = false} = Astro.props;
 // The AppLayout demo supplies its own main landmark.
-const ContentTag = currentComponent === 'app-layout' ? 'div' : 'main';
+const ContentTag = current === '/components/app-layout/' ? 'div' : 'main';
 const entries = await getCollection('components');
-const components = entries.map((entry) => entry.id).sort();
+
+function componentName(component: string): string {
+  return component
+    .split('-')
+    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
+    .join(' ');
+}
+
+const sections: DocsNavigationSection[] = [
+  {
+    label: 'Brand',
+    links: [
+      {href: '/brand/', label: 'Logos'},
+      {href: '/brand/guidelines/', label: 'Guidelines'},
+    ],
+  },
+  {label: 'Foundations', links: [{href: '/icons/', label: 'Icons'}]},
+  {
+    label: 'Components',
+    links: entries
+      .map((entry) => entry.id)
+      .sort()
+      .map((id) => ({href: `/components/${id}/`, label: componentName(id)})),
+  },
+];
 ---
 
 <!doctype html>
@@ -22,17 +50,17 @@ const components = entries.map((entry) => entry.id).sort();
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
-    <title>{currentComponent}</title>
+    <title>{title}</title>
     <ClientRouter />
   </head>
   <body>
     <aside>
       <div data-docs-swap="navigation">
-        <DocsSideNavigation components={components} currentComponent={currentComponent} />
+        <DocsSideNavigation sections={sections} current={current} />
       </div>
     </aside>
     <ContentTag data-docs-swap="content">
-      <div class="preview">
+      <div class:list={[wide ? 'wide' : 'preview']}>
         <slot />
       </div>
     </ContentTag>
