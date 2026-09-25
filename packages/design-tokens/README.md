@@ -55,6 +55,7 @@ Generated files are written to `packages/design-tokens/dist/<brand>/` for Radius
 
 - `tokens.css`
 - `tokens.catalog.json`, a versioned catalogue used by linting
+- `tokens.resolved.json`, every token's resolved DTCG value per color scheme, including exact brand colors and print extensions (exported as `@earendil-works/design-tokens/<brand>.resolved.json`)
 - Figma-compatible JSON files from `terrazzo-plugin-figma-json`
 
 In `tokens.css`, primitive tokens, mode-independent semantic tokens, and the default light semantic colors are emitted under `:root`, which declares `color-scheme: light dark`. Only dark `semantic.color.*` overrides are emitted inside the `prefers-color-scheme: dark` media query, preventing invariant tokens from being duplicated for each mode.

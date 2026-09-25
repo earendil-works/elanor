@@ -3,6 +3,7 @@ import { round, token } from "../dtcg";
 import type {
   ColorInteractiveState,
   ColorRecipe,
+  ColorRecipeBrand,
   ColorRecipeColor,
   GeneratedTokenPatch,
   JsonObject,
@@ -19,9 +20,13 @@ const ANCHOR_COLORS: ReadonlyArray<readonly [string, number]> = [
   ["black", 0],
 ];
 const TRANSPARENT_COLOR_NAME = "transparent";
+const BRAND_GROUP_NAME = "brand";
+const BRAND_HUE_TOLERANCE = 0.01;
+const PRINT_EXTENSION_KEY = "com.earendil-works.print";
 const RESERVED_COLOR_NAMES: ReadonlySet<string> = new Set([
   ...ANCHOR_COLORS.map(([name]) => name),
   TRANSPARENT_COLOR_NAME,
+  BRAND_GROUP_NAME,
 ]);
 const INTERACTIVE_STATE_MULTIPLIERS: Readonly<
   Record<ColorInteractiveState, number>
@@ -183,7 +188,38 @@ function validateColors(colors: ColorRecipeColor[]): void {
         `Color ${color.name} saturation min must not exceed its max`,
       );
     }
+
+    if (color.brand && !color.brand.allowHueShift) {
+      const brandHue = new Color(color.brand.hex).to("okhsl").coords[0] ?? 0;
+      const difference = Math.abs(((brandHue - color.hue + 540) % 360) - 180);
+      if (difference > BRAND_HUE_TOLERANCE) {
+        throw new Error(
+          `Color ${color.name} hue ${color.hue} does not match its brand color ${color.brand.hex} (hue ${round(brandHue, 2)})`,
+        );
+      }
+    }
   }
+}
+
+/**
+ * Creates an exact sRGB token for a brand color.
+ *
+ * Brand colors are fixed artwork values, so they keep their authored hex
+ * rather than being rounded through OKLCH like generated scale steps.
+ *
+ * @param brand The brand color definition from the recipe.
+ * @returns A DTCG color token with optional print builds.
+ */
+function brandColorToken(brand: ColorRecipeBrand): JsonObject {
+  const hex = brand.hex.toLowerCase();
+  const components = [1, 3, 5].map((index) =>
+    round(Number.parseInt(hex.slice(index, index + 2), 16) / 255, 4),
+  );
+  const result = token({ colorSpace: "srgb", components, hex });
+  if (brand.cmyk) {
+    result.$extensions = { [PRINT_EXTENSION_KEY]: { cmyk: brand.cmyk } };
+  }
+  return result;
 }
 
 /**
@@ -288,6 +324,9 @@ function colorToken(
  * so the generator emits them as standalone colors for every target. Recipe
  * colors should omit the scale ends and let the anchors represent them.
  *
+ * Families with a brand color also emit it exactly as
+ * `<path>.color.brand.<family>`, after checking that it shares the family hue.
+ *
  * @param recipe The color scale recipe.
  * @returns Typed patches containing the generated color tokens.
  */
@@ -317,6 +356,12 @@ export function generateColorTokens(
 
     scales[color.name] = steps;
   }
+
+  const brand: JsonObject = {};
+  for (const color of recipe.colors) {
+    if (color.brand) brand[color.name] = brandColorToken(color.brand);
+  }
+  if (Object.keys(brand).length > 0) scales[BRAND_GROUP_NAME] = brand;
 
   return [
     {

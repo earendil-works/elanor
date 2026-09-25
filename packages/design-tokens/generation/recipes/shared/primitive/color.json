@@ -12,22 +12,51 @@
     {
       "name": "cerulianBlue",
       "hue": 231.49,
-      "saturation": { "min": 0.1, "max": 0.68 }
+      "saturation": { "min": 0.1, "max": 0.68 },
+      "brand": {
+        "hex": "#4d9abf",
+        "cmyk": {
+          "psoCoatedV3": [66, 20, 10, 6],
+          "psoUncoatedV3": [67, 15, 7, 4]
+        }
+      }
     },
     {
       "name": "coralRed",
       "hue": 20,
-      "saturation": { "min": 0.1, "max": 0.92 }
+      "saturation": { "min": 0.1, "max": 0.92 },
+      "brand": {
+        "hex": "#f09082",
+        "allowHueShift": true,
+        "cmyk": {
+          "psoCoatedV3": [1, 53, 41, 0],
+          "psoUncoatedV3": [1, 49, 37, 0]
+        }
+      }
     },
     {
       "name": "creamYellow",
       "hue": 82.36,
-      "saturation": { "min": 0.5, "max": 1 }
+      "saturation": { "min": 0.5, "max": 1 },
+      "brand": {
+        "hex": "#f1be58",
+        "cmyk": {
+          "psoCoatedV3": [4, 26, 71, 1],
+          "psoUncoatedV3": [3, 21, 70, 0]
+        }
+      }
     },
     {
       "name": "calamineBlue",
       "hue": 202.43,
-      "saturation": { "min": 0.1, "max": 0.72 }
+      "saturation": { "min": 0.1, "max": 0.72 },
+      "brand": {
+        "hex": "#83ccd2",
+        "cmyk": {
+          "psoCoatedV3": [49, 0, 18, 0],
+          "psoUncoatedV3": [44, 0, 14, 0]
+        }
+      }
     },
     {
       "name": "turquoiseGreen",

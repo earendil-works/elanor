@@ -90,6 +90,16 @@ export interface ColorRecipeColor {
     min: number;
     max: number;
   };
+  brand?: ColorRecipeBrand;
+}
+
+/** An exact brand color that shares its family's hue. */
+export interface ColorRecipeBrand {
+  hex: string;
+  /** Set when the family's hue intentionally differs from the brand color. */
+  allowHueShift?: boolean;
+  /** Print builds as CMYK percentages. */
+  cmyk?: Record<string, [number, number, number, number]>;
 }
 
 export type ColorInteractiveState = "hover" | "active";

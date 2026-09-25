@@ -75,7 +75,7 @@ The generators currently emit leaves under these paths:
 - border widths: `primitive.dimension.borderWidth.<step>`
 - border radii: `primitive.dimension.radius.<step>` and `primitive.dimension.radius.full`
 - opacity: `primitive.number.opacity.<step>`
-- colors: `primitive.color.<name>` or `primitive.color.<name>.<step>`
+- colors: `primitive.color.<name>` or `primitive.color.<name>.<step>`, plus `primitive.color.brand.<name>` for families with a `brand` color
 
 Ownership is attached to token leaves, not whole parent groups. A generated leaf must be changed through its recipe or generator because the next run replaces it. An unmarked manual token can coexist in the same groups as generated tokens as long as it does not use a generated path. For example, `primitive.dimension.spacing` can remain beside generated dimension steps and typography font sizes.
 

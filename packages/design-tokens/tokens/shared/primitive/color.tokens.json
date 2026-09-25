@@ -3153,6 +3153,234 @@
             }
           }
         }
+      },
+      "brand": {
+        "cerulianBlue": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.302,
+              0.6039,
+              0.749
+            ],
+            "hex": "#4d9abf"
+          },
+          "$extensions": {
+            "com.earendil-works.print": {
+              "cmyk": {
+                "psoCoatedV3": [
+                  66,
+                  20,
+                  10,
+                  6
+                ],
+                "psoUncoatedV3": [
+                  67,
+                  15,
+                  7,
+                  4
+                ]
+              }
+            },
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "coralRed": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.9412,
+              0.5647,
+              0.5098
+            ],
+            "hex": "#f09082"
+          },
+          "$extensions": {
+            "com.earendil-works.print": {
+              "cmyk": {
+                "psoCoatedV3": [
+                  1,
+                  53,
+                  41,
+                  0
+                ],
+                "psoUncoatedV3": [
+                  1,
+                  49,
+                  37,
+                  0
+                ]
+              }
+            },
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "creamYellow": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.9451,
+              0.7451,
+              0.3451
+            ],
+            "hex": "#f1be58"
+          },
+          "$extensions": {
+            "com.earendil-works.print": {
+              "cmyk": {
+                "psoCoatedV3": [
+                  4,
+                  26,
+                  71,
+                  1
+                ],
+                "psoUncoatedV3": [
+                  3,
+                  21,
+                  70,
+                  0
+                ]
+              }
+            },
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "calamineBlue": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.5137,
+              0.8,
+              0.8235
+            ],
+            "hex": "#83ccd2"
+          },
+          "$extensions": {
+            "com.earendil-works.print": {
+              "cmyk": {
+                "psoCoatedV3": [
+                  49,
+                  0,
+                  18,
+                  0
+                ],
+                "psoUncoatedV3": [
+                  44,
+                  0,
+                  14,
+                  0
+                ]
+              }
+            },
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "gray": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.4314,
+              0.4314,
+              0.4235
+            ],
+            "hex": "#6e6e6c"
+          },
+          "$extensions": {
+            "com.earendil-works.print": {
+              "cmyk": {
+                "psoCoatedV3": [
+                  0,
+                  0,
+                  0,
+                  73
+                ],
+                "psoUncoatedV3": [
+                  0,
+                  0,
+                  0,
+                  79
+                ]
+              }
+            }
+          }
+        },
+        "paleBlue": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.8314,
+              0.8667,
+              0.9294
+            ],
+            "hex": "#d4dded"
+          },
+          "$extensions": {
+            "com.earendil-works.print": {
+              "cmyk": {
+                "psoCoatedV3": [
+                  18,
+                  10,
+                  2,
+                  0
+                ],
+                "psoUncoatedV3": [
+                  15,
+                  7,
+                  1,
+                  0
+                ]
+              }
+            }
+          }
+        },
+        "black": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.0667,
+              0.0667,
+              0.0667
+            ],
+            "hex": "#111111"
+          },
+          "$extensions": {
+            "com.earendil-works.print": {
+              "cmyk": {
+                "psoCoatedV3": [
+                  0,
+                  0,
+                  0,
+                  100
+                ],
+                "psoUncoatedV3": [
+                  0,
+                  0,
+                  0,
+                  100
+                ]
+              }
+            }
+          }
+        },
+        "white": {
+          "$value": {
+            "colorSpace": "srgb",
+            "components": [
+              0.9647,
+              0.9647,
+              0.9647
+            ],
+            "hex": "#f6f6f6"
+          }
+        }
       }
     }
   }

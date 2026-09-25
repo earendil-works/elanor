@@ -535,6 +535,40 @@
             "$description": "Use for the visible indicator inside a selected radio."
           }
         }
+      },
+      "logo": {
+        "$description": "Use only in logo artwork. Logos keep these exact colors; do not use them for interface elements.",
+        "symbol": {
+          "1": {
+            "$value": "{primitive.color.brand.cerulianBlue}",
+            "$description": "First product symbol color (blue)."
+          },
+          "2": {
+            "$value": "{primitive.color.brand.coralRed}",
+            "$description": "Second product symbol color (coral)."
+          },
+          "3": {
+            "$value": "{primitive.color.brand.creamYellow}",
+            "$description": "Third product symbol color (yellow)."
+          },
+          "4": {
+            "$value": "{primitive.color.brand.calamineBlue}",
+            "$description": "Fourth product symbol color (light blue)."
+          },
+          "$description": "Colors of the product symbols. The same in light and dark contexts."
+        },
+        "wordmark": {
+          "$value": "{primitive.color.brand.paleBlue}",
+          "$description": "Use for logo wordmarks."
+        },
+        "earendil": {
+          "$value": "{primitive.color.brand.paleBlue}",
+          "$description": "Use for the Earendil symbol."
+        },
+        "monochrome": {
+          "$value": "{primitive.color.brand.white}",
+          "$description": "Use for every shape of a monochrome logo."
+        }
       }
     }
   }

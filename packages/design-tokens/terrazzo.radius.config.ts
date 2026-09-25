@@ -2,6 +2,7 @@ import { defineConfig } from "@terrazzo/cli";
 import css from "@terrazzo/plugin-css";
 import figmaJson from "terrazzo-plugin-figma-json";
 import { cataloguePlugin } from "./scripts/catalogue-plugin";
+import { resolvedTokensPlugin } from "./scripts/resolved-plugin";
 import { cssPermutations } from "./terrazzo.shared.config";
 
 export default defineConfig({
@@ -17,6 +18,7 @@ export default defineConfig({
       preserveReferences: true,
     }),
     cataloguePlugin("radius"),
+    resolvedTokensPlugin("radius"),
   ],
   lint: {
     rules: {},

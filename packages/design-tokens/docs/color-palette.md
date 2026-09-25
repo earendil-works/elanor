@@ -17,6 +17,25 @@ The core steps are `25`, `50`, and `100` through `900`. Step `25` provides the n
 | `turquoiseGreen` | 158.68° | 10–76% | Compatible green `#6AB98E`; positive and success states |
 | `driftwood` | 67.57° | 6–8% | Neutral `#5C5752`; neutral content and light structural backgrounds |
 
+## Brand colors
+
+The exact logo colors live in `primitive.color.brand`. The four chromatic ones are generated from the `brand` field of their palette family's recipe, which checks that the family keeps the brand color's hue (`coralRed` is intentionally red-shifted and opts out). The neutrals are authored manually.
+
+| Token | sRGB | CMYK, PSO Coated v3 | CMYK, PSO Uncoated v3 |
+|---|---|---|---|
+| `brand.cerulianBlue` | `#4D9ABF` | 66 20 10 6 | 67 15 7 4 |
+| `brand.coralRed` | `#F09082` | 1 53 41 0 | 1 49 37 0 |
+| `brand.creamYellow` | `#F1BE58` | 4 26 71 1 | 3 21 70 0 |
+| `brand.calamineBlue` | `#83CCD2` | 49 0 18 0 | 44 0 14 0 |
+| `brand.gray` | `#6E6E6C` | 0 0 0 73 | 0 0 0 79 |
+| `brand.paleBlue` | `#D4DDED` | 18 10 2 0 | 15 7 1 0 |
+| `brand.black` | `#111111` | 0 0 0 100 | 0 0 0 100 |
+| `brand.white` | `#F6F6F6` | knockout or white ink | knockout or white ink |
+
+CMYK builds are stored in the `com.earendil-works.print` extension. They were converted with LittleCMS from sRGB using relative colorimetric intent with black-point compensation (coated colors land within ΔE2000 1.5; uncoated paper cannot reach the saturated colors). Neutrals use black ink only, matched to the same lightness. Treat them as best-effort values until checked against a printed proof.
+
+Semantic `semantic.color.logo.*` tokens map these onto logo roles (`symbol.1`–`4`, `wordmark`, `earendil`, `monochrome`) per color scheme. Use them only for logo artwork.
+
 ## Semantic mapping
 
 | Semantic role | Primitive family |
