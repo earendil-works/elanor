@@ -1,5 +1,5 @@
-import {CheckIcon} from '@earendil-works/elanor-icons/react/check';
-import {ContentCopyIcon} from '@earendil-works/elanor-icons/react/content-copy';
+import {CheckIcon} from '@earendil-works/elanor-icons-react/check';
+import {ContentCopyIcon} from '@earendil-works/elanor-icons-react/content-copy';
 import {forwardRef, useEffect, useRef, useState} from 'react';
 import {IconButton, type IconButtonProps} from '../icon-button/icon-button.tsx';
 import styles from './copy-button.module.css';

@@ -1,4 +1,4 @@
-import {AddIcon} from '@earendil-works/elanor-icons/react/add';
+import {AddIcon} from '@earendil-works/elanor-icons-react/add';
 import {Button} from './button.tsx';
 import {Heading} from '../heading/heading.tsx';
 import { Stack } from '../stack/stack.tsx';
