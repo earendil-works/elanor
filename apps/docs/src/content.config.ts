@@ -10,4 +10,10 @@ const components = defineCollection({
   schema: z.object({}),
 });
 
-export const collections = {components};
+// The brand guidelines live with the logos, which also ship them in the press kits.
+const guidelines = defineCollection({
+  loader: glob({pattern: 'BRAND-GUIDELINES.md', base: '../../packages/logos/guidelines'}),
+  schema: z.object({}),
+});
+
+export const collections = {components, guidelines};

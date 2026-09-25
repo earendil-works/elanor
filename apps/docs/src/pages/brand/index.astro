@@ -1,0 +1,22 @@
+---
+import {readFile} from 'node:fs/promises';
+import {resolve} from 'node:path';
+import {Heading, Link, Text} from '@earendil-works/elanor-react';
+import DocsLayout from '../../layouts/docs-layout.astro';
+import {BrandLogos} from '../../components/brand-logos.tsx';
+import {LogoConfigurator} from '../../components/logo-configurator.tsx';
+import {type LogoManifest, logosDist} from '../../lib/packages.ts';
+
+const manifest = JSON.parse(await readFile(resolve(logosDist, 'manifest.json'), 'utf8')) as LogoManifest;
+---
+
+<DocsLayout title="Logos" current="/brand/" wide>
+  <div class="page">
+    <Heading level={1} size={1}>Logos</Heading>
+    <Text>
+      Use the supplied artwork unchanged, with one grid unit of clear space around it. See the <Link href="/brand/guidelines/">brand guidelines</Link>.
+    </Text>
+    <LogoConfigurator client:visible manifest={manifest} />
+    {manifest.brands.map((brand) => <BrandLogos brand={brand} pressKit={manifest.pressKits?.[brand.id]} />)}
+  </div>
+</DocsLayout>

@@ -26,6 +26,15 @@ importers:
       '@earendil-works/design-tokens':
         specifier: workspace:*
         version: link:../../packages/design-tokens
+      '@earendil-works/elanor-icons':
+        specifier: workspace:*
+        version: link:../../packages/icons
+      '@earendil-works/elanor-icons-react':
+        specifier: workspace:*
+        version: link:../../packages/icons/react
+      '@earendil-works/elanor-logos':
+        specifier: workspace:*
+        version: link:../../packages/logos
       '@earendil-works/elanor-react':
         specifier: workspace:*
         version: link:../../packages/react

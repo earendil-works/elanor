@@ -1,0 +1,38 @@
+.brand {
+  display: flex;
+  flex-direction: column;
+  gap: var(--semantic-dimension-space-gap-large);
+}
+
+.grid {
+  display: grid;
+  align-self: stretch;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--semantic-dimension-space-gap-medium);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tile {
+  display: flex;
+  min-inline-size: 0;
+  flex-direction: column;
+  gap: var(--semantic-dimension-space-gap-x-small);
+}
+
+.preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--semantic-dimension-space-padding-xx-large) var(--semantic-dimension-space-padding-large);
+  border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-secondary);
+  border-radius: var(--semantic-dimension-radius-medium);
+}
+
+.preview img {
+  inline-size: auto;
+  max-inline-size: 100%;
+  block-size: var(--semantic-dimension-size-x-large);
+  object-fit: contain;
+}
