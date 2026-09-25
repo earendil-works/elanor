@@ -15,12 +15,8 @@ export interface Contour {
   closed: boolean;
 }
 
-export interface ArtworkPath {
-  d: string;
-  fillRule: "nonzero" | "evenodd";
-}
-
+/** One icon: a single nonzero-filled path. */
 export interface Artwork {
   viewBox: ViewBox;
-  paths: ArtworkPath[];
+  d: string;
 }

@@ -1,7 +1,7 @@
 {
   "name": "@earendil-works/elanor-icons",
   "version": "0.1.0",
-  "description": "Boiled Material Symbols as SVG files and React components.",
+  "description": "Boiled Material Symbols as SVG files.",
   "license": "Apache-2.0",
   "type": "module",
   "sideEffects": false,
@@ -13,14 +13,6 @@
     "README.md"
   ],
   "exports": {
-    "./react": {
-      "types": "./dist/react/index.d.ts",
-      "import": "./dist/react/index.js"
-    },
-    "./react/*": {
-      "types": "./dist/react/*.d.ts",
-      "import": "./dist/react/*.js"
-    },
     "./svg/*": {
       "types": "./dist/svg.d.ts",
       "default": "./dist/svg/*"
@@ -32,25 +24,11 @@
     "build": "tsx scripts/build.ts",
     "prepack": "pnpm run build",
     "check": "tsc -p tsconfig.json --noEmit && tsx scripts/check.ts",
-    "test": "pnpm run build && vitest run",
+    "test": "vitest run --dir tests",
     "refresh": "tsx scripts/refresh.ts"
   },
-  "peerDependencies": {
-    "react": "^17.0.0 || ^18.0.0 || ^19.0.0"
-  },
   "devDependencies": {
-    "@resvg/resvg-js": "^2.6.2",
     "@types/node": "^24.0.0",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "esbuild": "^0.25.0",
-    "fast-xml-parser": "^5.3.8",
-    "pixelmatch": "^7.1.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "svg-path-properties": "^2.0.0",
-    "svg-pathdata": "^9.0.0",
-    "svgo": "^4.0.0",
     "tsx": "^4.23.1",
     "typescript": "^5.9.3",
     "vitest": "^4.1.0"

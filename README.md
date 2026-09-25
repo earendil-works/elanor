@@ -9,7 +9,7 @@ The design system monorepo for Earendil products, containing shared UI component
 ## Packages
 
 - [`packages/react`](./packages/react/README.md): `@earendil-works/elanor-react`, built with Base UI and CSS Modules.
-- [`packages/icons`](./packages/icons/README.md): `@earendil-works/elanor-icons`, boiled Material Symbols as SVG files and React components.
+- [`packages/icons`](./packages/icons/README.md): `@earendil-works/elanor-icons` and `@earendil-works/elanor-icons-react`, boiled Material Symbols as SVG files and React components.
 - [`packages/design-tokens`](./packages/design-tokens/README.md): `@earendil-works/design-tokens`, shared and brand-specific DTCG tokens, generation tooling, and CSS exports.
 - [`packages/stylelint-plugin-design-tokens`](./packages/stylelint-plugin-design-tokens/README.md): `@earendil-works/stylelint-plugin-design-tokens`, rules for consuming the generated token catalogues.
 

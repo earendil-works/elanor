@@ -12,13 +12,13 @@ export interface PipelineConfig {
     enabled: boolean;
     tolerance: number;
   };
-  optimization: {
-    enabled: boolean;
-    floatPrecision: number;
+  output: {
+    /** Largest allowed coordinate rounding step. */
+    precision: number;
   };
 }
 
-/** All lengths are display pixels at targetSize, except seed and octaves. */
+/** Lengths are display pixels at targetSize unless noted otherwise. */
 export const pipelineConfig = {
   targetSize: 16,
   boiling: {
@@ -33,8 +33,7 @@ export const pipelineConfig = {
     enabled: true,
     tolerance: 0.01,
   },
-  optimization: {
-    enabled: true,
-    floatPrecision: 3,
+  output: {
+    precision: 0.002,
   },
 } as const satisfies PipelineConfig;
