@@ -27,5 +27,5 @@ pnpm build
 ```
 
 - `pnpm check` validates the tokens, type-checks all packages, and lints React and documentation styles.
-- `pnpm test` runs package tests, including the icon pipeline/render checks and Stylelint plugin rules.
+- `pnpm test` runs package tests.
 - `pnpm build` builds every package, including all four token brands.
