@@ -63,6 +63,13 @@
   color: var(--semantic-color-icon-primary);
 }
 
+.icon > svg,
+.icon > img {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
 .popup {
   box-sizing: border-box;
   display: flex;
@@ -114,6 +121,13 @@
   inline-size: var(--semantic-dimension-size-x-small);
   block-size: var(--semantic-dimension-size-x-small);
   color: var(--semantic-color-icon-secondary);
+}
+
+.searchIcon > svg,
+.searchIcon > img {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
 }
 
 .input {

@@ -54,6 +54,15 @@
   color: var(--semantic-color-icon-secondary);
 }
 
+.icon > svg,
+.icon > img,
+.adornment > svg,
+.adornment > img {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
 .input {
   box-sizing: border-box;
   inline-size: 100%;
