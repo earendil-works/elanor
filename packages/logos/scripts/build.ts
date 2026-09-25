@@ -3,6 +3,7 @@ import {resolve} from "node:path";
 import {type BrandId, brands, clearSpace, gridUnit, type LockupName, logoTokens, treatments} from "../config.js";
 import {
   type Artwork,
+  brandBackground,
   colorArtwork,
   composeArtwork,
   kinds,
@@ -54,7 +55,8 @@ for (const brand of Object.keys(brands) as BrandId[]) {
       });
     }
   }
-  manifest.brands.push({id: brand, name: brands[brand].name, assets});
+  const backgrounds = {light: await brandBackground(brand, "light"), dark: await brandBackground(brand, "dark")};
+  manifest.brands.push({id: brand, name: brands[brand].name, backgrounds, assets});
 
   // The brand's token colors per scheme, so consumers of artwork.json need no token build.
   const colors = Object.fromEntries(

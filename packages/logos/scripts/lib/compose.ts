@@ -2,6 +2,7 @@ import {readFile} from "node:fs/promises";
 import {createRequire} from "node:module";
 import {resolve} from "node:path";
 import {
+  backgroundToken,
   type BrandConfig,
   type BrandId,
   brands,
@@ -138,6 +139,11 @@ export function loadTokens(brand: BrandId): Promise<TokenCatalog> {
     );
   }
   return catalogs.get(brand)!;
+}
+
+/** The brand's own page background for a color scheme. */
+export async function brandBackground(brand: BrandId, scheme: Scheme): Promise<string> {
+  return tokenHex(await loadTokens(brand), backgroundToken, scheme);
 }
 
 export function tokenHex(tokens: TokenCatalog, token: string, scheme: Scheme): string {

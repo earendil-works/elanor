@@ -1,8 +1,9 @@
 import {mkdir, writeFile} from "node:fs/promises";
 import {dirname, resolve} from "node:path";
-import {backgroundToken, type BrandId, brands, type LogoKind, type Treatment, treatments} from "../../config.js";
+import {type BrandId, brands, type LogoKind, type Treatment, treatments} from "../../config.js";
 import {
   type Artwork,
+  brandBackground,
   type ColoredArtwork,
   colorArtwork,
   composeArtwork,
@@ -127,7 +128,7 @@ export async function createExportContext(distDirectory: string, manifest: Manif
     },
     tokens: loadTokens,
     color,
-    background: (brand, scheme) => color(brand, backgroundToken, scheme),
+    background: brandBackground,
     manifest,
     brandManifest,
     assetManifest(asset) {
