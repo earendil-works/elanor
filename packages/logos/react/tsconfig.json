@@ -1,0 +1,9 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "noEmit": true,
+    "erasableSyntaxOnly": true,
+    "types": ["node", "react", "vitest/globals"]
+  },
+  "include": ["build.ts", "tests/**/*.ts"]
+}
