@@ -25,6 +25,6 @@ async function* assetFiles(directory) {
   for (const entry of await readdir(directory, {withFileTypes: true})) {
     const path = resolve(directory, entry.name);
     if (entry.isDirectory()) yield* assetFiles(path);
-    else if (entry.isFile() && /\.(css|svg|license)$/.test(entry.name)) yield path;
+    else if (entry.isFile() && /\.css$/.test(entry.name)) yield path;
   }
 }

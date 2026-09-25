@@ -1,6 +1,7 @@
+import {CheckIcon} from '@earendil-works/elanor-icons/react/check';
+import {ContentCopyIcon} from '@earendil-works/elanor-icons/react/content-copy';
 import {forwardRef, useEffect, useRef, useState} from 'react';
 import {IconButton, type IconButtonProps} from '../icon-button/icon-button.tsx';
-import {classes} from '../utils/class-names.ts';
 import styles from './copy-button.module.css';
 
 export interface CopyButtonProps extends Omit<IconButtonProps, 'value'> {
@@ -77,7 +78,7 @@ export const CopyButton = forwardRef<HTMLButtonElement, CopyButtonProps>(functio
           }
         }}
       >
-        {children ?? <span aria-hidden="true" className={classes(styles.icon, status === 'copied' && styles.copied)} />}
+        {children ?? (status === 'copied' ? <CheckIcon /> : <ContentCopyIcon />)}
       </IconButton>
       <span role="status" className={styles.status}>{feedback}</span>
     </>

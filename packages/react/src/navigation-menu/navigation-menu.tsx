@@ -1,4 +1,5 @@
 import {NavigationMenu as BaseNavigationMenu} from '@base-ui/react/navigation-menu';
+import {KeyboardArrowDownIcon} from '@earendil-works/elanor-icons/react/keyboard-arrow-down';
 import {forwardRef} from 'react';
 import styles from './navigation-menu.module.css';
 import {mergeClassName} from '../utils/class-names.ts';
@@ -93,13 +94,15 @@ export const NavigationMenuTrigger = forwardRef<
 });
 
 export const NavigationMenuIcon = forwardRef<HTMLSpanElement, NavigationMenuIconProps>(
-  function NavigationMenuIcon({className, ...props}, ref) {
+  function NavigationMenuIcon({className, children, ...props}, ref) {
     return (
       <BaseNavigationMenu.Icon
         {...props}
         ref={ref}
         className={mergeClassName<BaseNavigationMenu.Icon.State>(styles.icon, className)}
-      />
+      >
+        {children ?? <KeyboardArrowDownIcon />}
+      </BaseNavigationMenu.Icon>
     );
   },
 );
