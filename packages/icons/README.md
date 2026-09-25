@@ -1,20 +1,15 @@
 # `@earendil-works/elanor-icons`
 
-Material Symbols Outlined (20px, weight 400) with a hand-drawn “boil”, as SVG files and React components.
+Material Symbols Outlined (20px, weight 400) with a hand-drawn “boil”, as SVG files. React components are published separately as [`@earendil-works/elanor-icons-react`](./react/README.md).
 
-```tsx
-import {SearchIcon} from '@earendil-works/elanor-icons/react/search';
+```ts
 import searchUrl from '@earendil-works/elanor-icons/svg/search.svg';
-
-<SearchIcon aria-label="Search" />;
 ```
-
-React icons use `currentColor`. They're decorative unless labelled.
 
 ## Development
 
 ```sh
-pnpm build    # sources/ -> dist/
+pnpm build    # sources/ -> dist/svg
 pnpm test
 pnpm refresh  # re-vendor sources/ from the revision in provenance.json
 ```

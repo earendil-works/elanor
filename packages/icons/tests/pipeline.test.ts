@@ -2,41 +2,124 @@ import {readFile} from "node:fs/promises";
 import {resolve} from "node:path";
 import {describe, expect, test} from "vitest";
 import {pipelineConfig} from "../config.js";
-import {processSvg} from "../scripts/lib/pipeline.js";
-import {
-  maximumDeviation,
-  signedArea,
-  simplifyContours,
-} from "../scripts/lib/simplify.js";
+import {flattenPath, parsePathData, serializeContours} from "../scripts/lib/path-data.js";
+import {outputDecimals, processSvg, transformContours, unitsPerPixel} from "../scripts/lib/pipeline.js";
+import {maximumDeviation, signedArea, simplifyContours} from "../scripts/lib/simplify.js";
+import {parseSvg} from "../scripts/lib/svg.js";
 import type {Contour, Point} from "../scripts/lib/types.js";
 
 const packageDirectory = resolve(import.meta.dirname, "..");
+const readSource = (name: string): Promise<string> =>
+  readFile(resolve(packageDirectory, `sources/${name}.svg`), "utf8");
 
 describe("pipeline", () => {
   test("is deterministic", async () => {
-    const source = await readFile(resolve(packageDirectory, "sources/search.svg"), "utf8");
-    const first = processSvg(source, pipelineConfig, "search.svg");
-    const second = processSvg(source, pipelineConfig, "search.svg");
-    expect(first.svg).toBe(second.svg);
-    expect(first.artwork).toEqual(second.artwork);
+    const source = await readSource("search");
+    expect(processSvg(source, pipelineConfig).svg).toBe(processSvg(source, pipelineConfig).svg);
   });
 
   test("each stage can be disabled independently", () => {
-    const source = '<svg width="20" height="20"><path d="M1 1L19 1L19 19L1 19Z"/></svg>';
-    for (const [boiling, simplification, optimization] of [
-      [false, false, false],
-      [true, false, false],
-      [false, true, false],
-      [false, false, true],
+    const source = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M1 1Q10 0 19 1V19H1Z"/></svg>';
+    for (const [boiling, simplification] of [
+      [true, false],
+      [false, true],
     ] as const) {
       const config = {
         ...pipelineConfig,
         boiling: {...pipelineConfig.boiling, enabled: boiling},
         simplification: {...pipelineConfig.simplification, enabled: simplification},
-        optimization: {...pipelineConfig.optimization, enabled: optimization},
       };
-      expect(() => processSvg(source, config)).not.toThrow();
+      expect(processSvg(source, config).artwork.d).toMatch(/^m[\d.\-hlvz ]+$/);
     }
+    const untouched = {
+      ...pipelineConfig,
+      boiling: {...pipelineConfig.boiling, enabled: false},
+      simplification: {...pipelineConfig.simplification, enabled: false},
+    };
+    expect(processSvg(source, untouched).artwork.d).toBe("M1 1Q10 0 19 1V19H1Z");
+  });
+
+  test("rounds to the same display precision for any viewBox size", () => {
+    const at = (size: number) =>
+      outputDecimals({viewBox: {minX: 0, minY: 0, width: size, height: size}, d: ""}, pipelineConfig);
+    expect(at(960)).toBe(1);
+    expect(at(20)).toBe(3);
+  });
+
+  test.each(["search", "home", "settings", "check", "close", "assistant", "settings_suggest"])(
+    "%s output stays within the simplification tolerance plus rounding",
+    async (name) => {
+      const artwork = parseSvg(await readSource(name));
+      const unsimplified = transformContours(artwork, {
+        ...pipelineConfig,
+        simplification: {...pipelineConfig.simplification, enabled: false},
+      })!;
+      const output = contoursFromPathData(processSvg(await readSource(name), pipelineConfig).artwork.d);
+      const allowed =
+        pipelineConfig.simplification.tolerance * unitsPerPixel(artwork, pipelineConfig) +
+        Math.SQRT1_2 * 10 ** -outputDecimals(artwork, pipelineConfig);
+
+      expect(output).toHaveLength(unsimplified.length);
+      for (const [index, contour] of output.entries()) {
+        expect(maximumDeviation(unsimplified[index]!.points, contour.points, true)).toBeLessThanOrEqual(allowed + 1e-9);
+      }
+    },
+  );
+});
+
+describe("path data", () => {
+  test("parses absolute, relative, implicit, shorthand, and closed commands", () => {
+    const [first, second] = parsePathData("M0 0 10 0v10h-10zm20 0q5 -5 10 0t10 0");
+    expect(first!.closed).toBe(true);
+    expect(first!.segments.map(({to}) => to)).toEqual([
+      {x: 10, y: 0},
+      {x: 10, y: 10},
+      {x: 0, y: 10},
+    ]);
+    expect(second!.segments.at(-1)).toEqual({
+      type: "quadratic",
+      from: {x: 30, y: 0},
+      control: {x: 35, y: 5},
+      to: {x: 40, y: 0},
+    });
+  });
+
+  test("rejects unsupported commands", () => {
+    expect(() => parsePathData("M0 0A5 5 0 0 1 10 10")).toThrow(/Unsupported/);
+  });
+
+  test("samples curves at about the requested step", () => {
+    const [contour] = flattenPath("M0 0Q50 100 100 0", 1);
+    for (const [index, point] of contour!.points.entries()) {
+      if (index === 0) continue;
+      const previous = contour!.points[index - 1]!;
+      expect(Math.hypot(point.x - previous.x, point.y - previous.y)).toBeLessThanOrEqual(1.05);
+    }
+    expect(contour!.points.at(-1)).toEqual({x: 100, y: 0});
+  });
+
+  test("serialized output round-trips to the rounded points", () => {
+    const contour: Contour = {
+      closed: true,
+      points: [
+        {x: 0.04, y: -0.26},
+        {x: 10.56, y: -0.26},
+        {x: 10.56, y: 9.949},
+        {x: -3.2, y: 4.44},
+      ],
+    };
+    const d = serializeContours([contour, {...contour, closed: false}], 1);
+    expect(d).toBe("m0-.3h10.6v10.2l-13.8-5.5zm0 0h10.6v10.2l-13.8-5.5");
+    const [closed, open] = contoursFromPathData(d);
+    const rounded = contour.points.map(({x, y}) => ({x: Math.round(x * 10) / 10, y: Math.round(y * 10) / 10}));
+    for (const result of [closed!, open!]) {
+      for (const [index, point] of result.points.entries()) {
+        expect(point.x).toBeCloseTo(rounded[index]!.x, 9);
+        expect(point.y).toBeCloseTo(rounded[index]!.y, 9);
+      }
+    }
+    expect(closed!.closed).toBe(true);
+    expect(open!.closed).toBe(false);
   });
 });
 
@@ -69,6 +152,13 @@ describe("bounded simplification", () => {
     expect(simplifyContours([tiny], 0.1)[0]).toEqual(tiny);
   });
 });
+
+function contoursFromPathData(d: string): Contour[] {
+  return parsePathData(d).map(({segments, closed}) => ({
+    closed,
+    points: [segments[0]!.from, ...segments.map(({to}) => to)],
+  }));
+}
 
 function sampledSquare(x: number, y: number, size: number, reverse: boolean): Contour {
   const corners: Point[] = [

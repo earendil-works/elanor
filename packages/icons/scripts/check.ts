@@ -1,6 +1,7 @@
 import {readdir, readFile} from "node:fs/promises";
 import {dirname, resolve} from "node:path";
 import {fileURLToPath} from "node:url";
+import {parsePathData} from "./lib/path-data.js";
 import {parseSvg} from "./lib/svg.js";
 
 const packageDirectory = resolve(dirname(fileURLToPath(import.meta.url)), "..");
@@ -14,7 +15,12 @@ for (const file of files) {
   const publicName = file.replaceAll("_", "-");
   if (publicNames.has(publicName)) throw new Error(`Public filename collision: ${publicName}`);
   publicNames.add(publicName);
-  parseSvg(await readFile(resolve(sourceDirectory, file), "utf8"), file);
+  const {d} = parseSvg(await readFile(resolve(sourceDirectory, file), "utf8"), file);
+  try {
+    parsePathData(d);
+  } catch (error) {
+    throw new Error(`${file}: ${(error as Error).message}`);
+  }
 }
 
 const provenance = JSON.parse(
