@@ -58,6 +58,13 @@
   color: var(--semantic-color-icon-primary);
 }
 
+.icon > svg,
+.icon > img {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+}
+
 .list {
   display: flex;
   align-items: flex-start;
