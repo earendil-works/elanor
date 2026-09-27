@@ -1,0 +1,166 @@
+---
+import '@earendil-works/elanor-strokes/pencil.css';
+import {Heading, Text} from '@earendil-works/elanor-react';
+import DocsLayout from '../layouts/docs-layout.astro';
+
+const boxes = [
+  {shape: 'box-small', label: 'Small radius', className: 'button'},
+  {shape: 'box-medium', label: 'Medium radius', className: 'field'},
+  {shape: 'box-large', label: 'Large radius', className: 'card'},
+];
+const variants = [1, 2, 3, 4];
+---
+
+<DocsLayout title="Strokes" current="/strokes/" wide>
+  <div class="page">
+    <Heading level={1} size={1}>Strokes</Heading>
+    <Text>
+      Pencil outlines from <code>@earendil-works/elanor-strokes</code>. Neighboring elements use different variants. Hover to change a stroke's color; tab through the buttons to see focus.
+    </Text>
+
+    {
+      boxes.map(({shape, label, className}) => (
+        <section class="section">
+          <Heading level={2} size={3}>
+            {label}{' '}
+            <code>{shape}</code>
+          </Heading>
+          <div class="row">
+            {variants.map((variant) => (
+              <button type="button" class:list={[className]} data-stroke={shape}>
+                Variant {variant}
+              </button>
+            ))}
+          </div>
+        </section>
+      ))
+    }
+
+    <section class="section">
+      <Heading level={2} size={3}>Filled</Heading>
+      <Text>When the stroke has the fill's color, the brush edge becomes the element's outline.</Text>
+      <div class="row">
+        {variants.map((variant) => (
+          <button type="button" class="button primary" data-stroke="box-small">
+            Primary {variant}
+          </button>
+        ))}
+      </div>
+    </section>
+
+    <section class="section">
+      <Heading level={2} size={3}>Pills and circles</Heading>
+      <div class="row">
+        {variants.map((variant) => (
+          <button type="button" class="pill" data-stroke="pill-small">
+            Pill {variant}
+          </button>
+        ))}
+      </div>
+      <div class="row">
+        {variants.map(() => <span class="circle" data-stroke="circle-x-small" />)}
+      </div>
+    </section>
+
+    <section class="section">
+      <Heading level={2} size={3}>Separators</Heading>
+      <div class="lines">
+        {variants.map(() => <hr class="line" data-stroke="line" />)}
+      </div>
+      <div class="row">
+        {variants.map(() => <span class="vertical" data-stroke="line-vertical" />)}
+      </div>
+    </section>
+  </div>
+</DocsLayout>
+
+<style>
+  .section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-gap-medium);
+  }
+
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--semantic-dimension-space-gap-large);
+  }
+
+  button {
+    padding-inline: var(--semantic-dimension-space-control-padding-inline-medium);
+    border: 0;
+    background-color: var(--semantic-color-background-canvas);
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-ui-primary);
+    cursor: pointer;
+  }
+
+  button:hover {
+    --stroke-color: var(--semantic-color-border-information);
+  }
+
+  .button {
+    block-size: var(--semantic-dimension-size-medium);
+    border-radius: var(--semantic-dimension-radius-small);
+  }
+
+  .field {
+    inline-size: var(--semantic-dimension-breakpoint-x-small);
+    max-inline-size: 100%;
+    block-size: var(--semantic-dimension-size-medium);
+    border-radius: var(--semantic-dimension-radius-medium);
+    background-color: var(--semantic-color-background-surface);
+    text-align: start;
+  }
+
+  .card {
+    inline-size: var(--semantic-dimension-breakpoint-x-small);
+    max-inline-size: 100%;
+    block-size: var(--semantic-dimension-size-x-large);
+    border-radius: var(--semantic-dimension-radius-large);
+    background-color: var(--semantic-color-background-surface);
+    text-align: start;
+  }
+
+  .primary {
+    --stroke-color: var(--semantic-color-background-fill-primary);
+    background-color: var(--semantic-color-background-fill-primary);
+    color: var(--semantic-color-text-on-primary-fill);
+  }
+
+  .primary:hover {
+    --stroke-color: var(--semantic-color-background-fill-primary-hover);
+    background-color: var(--semantic-color-background-fill-primary-hover);
+  }
+
+  .pill {
+    block-size: var(--semantic-dimension-size-small);
+    border-radius: var(--semantic-dimension-radius-full);
+  }
+
+  .circle {
+    inline-size: var(--semantic-dimension-size-x-small);
+    block-size: var(--semantic-dimension-size-x-small);
+    border-radius: var(--semantic-dimension-radius-full);
+  }
+
+  .lines {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-gap-large);
+    max-inline-size: var(--semantic-dimension-breakpoint-small);
+  }
+
+  .line {
+    block-size: var(--semantic-dimension-border-width-default);
+    margin: 0;
+    border: 0;
+  }
+
+  .vertical {
+    inline-size: var(--semantic-dimension-border-width-default);
+    block-size: var(--semantic-dimension-size-x-large);
+  }
+</style>
