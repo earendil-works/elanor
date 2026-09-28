@@ -38,14 +38,24 @@ For Base UI changes, consult [the documentation index](https://base-ui.com/llms.
 - Prefer logical properties and flexible layouts. Handle narrow containers, RTL, and long content without hiding meaningful content.
 - Keep selectors scoped; avoid global overrides and specificity escalation.
 - When adding motion, respect reduced-motion preferences and list transitioned properties explicitly—no `transition: all`.
-- When linting, use the design-token plugin's strict configuration for the target brand. Allow only these Base UI runtime variables through `allowCustomProperties`:
+- When linting, use the design-token plugin's strict configuration for the target brand. Allow only these Base UI runtime variables and the stroke contract through `allowCustomProperties`:
 
 ```ts
 [
   '--anchor-width', '--available-width', '--available-height',
   '--active-tab-left', '--active-tab-top', '--active-tab-width', '--active-tab-height',
+  '--stroke-*',
 ]
 ```
+
+## Strokes
+
+Borders, focus rings, and separators follow one contract so a stroke style from `@earendil-works/elanor-strokes` can replace them:
+
+- Render `data-stroke` (`box-small`, `pill-x-small`, `circle-x-small`, `line`, …) on the element that shows the outline, before `{...props}` so callers can override it. Use `data-stroke-edge` for a line on one edge.
+- Set `--stroke-color` for every state. Paint the plain look through the switches: `box-shadow: var(--stroke-plain-shadow, inset …)` for borders, `outline: var(--stroke-plain-outline, …)` for focus, and `background: var(--stroke-plain-fill, …)` for separators.
+- Strokes are paint, never layout: no real `border` widths on stroked elements. Focus sits in the border position (`outline-offset` of minus half its width).
+- `::after` on a stroked element is reserved for the stroke layer. Native inputs, and controls whose visible box is smaller than their target, carry the stroke on a frame or inner element. Scrolling popups scroll an inner body, so the popup itself can carry the stroke.
 
 ## Validation
 

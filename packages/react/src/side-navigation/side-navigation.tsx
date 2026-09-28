@@ -60,6 +60,7 @@ export const SideNavigationLink = forwardRef<HTMLAnchorElement, SideNavigationLi
   ) {
     return (
       <a
+        data-stroke="box-small"
         {...props}
         ref={ref}
         aria-current={active ? 'page' : props['aria-current']}

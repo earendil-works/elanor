@@ -50,6 +50,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
 
   return (
     <BaseButton
+      data-stroke="box-small"
       {...props}
       {...contentProps}
       ref={ref}

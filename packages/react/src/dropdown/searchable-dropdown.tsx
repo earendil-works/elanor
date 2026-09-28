@@ -90,6 +90,7 @@ export const SearchableDropdownTrigger = forwardRef<HTMLButtonElement, Searchabl
   function SearchableDropdownTrigger({className, ...props}, ref) {
     return (
       <BaseCombobox.Trigger
+        data-stroke="box-small"
         {...props}
         ref={ref}
         className={mergeClassName<BaseCombobox.Trigger.State>(styles.trigger, className)}
@@ -116,6 +117,8 @@ export const SearchableDropdownPopup = forwardRef<HTMLDivElement, SearchableDrop
   function SearchableDropdownPopup({className, ...props}, ref) {
     return (
       <BaseCombobox.Popup
+        data-stroke="box-small"
+        data-stroke-focus="none"
         {...props}
         ref={ref}
         className={mergeClassName<BaseCombobox.Popup.State>(styles.popup, className)}
@@ -128,6 +131,8 @@ export const SearchableDropdownInputGroup = forwardRef<HTMLDivElement, Searchabl
   function SearchableDropdownInputGroup({className, children, ...props}, ref) {
     return (
       <BaseCombobox.InputGroup
+        data-stroke="line"
+        data-stroke-edge="block-end"
         {...props}
         ref={ref}
         className={mergeClassName<BaseCombobox.InputGroup.State>(styles.inputGroup, className)}
@@ -187,7 +192,10 @@ export const SearchableDropdownItemIndicator = forwardRef<HTMLSpanElement, Searc
     const multiple = useContext(MultipleContext);
 
     return (
-      <span className={classes(styles.indicatorFrame, multiple && styles.indicatorFrameMultiple)}>
+      <span
+        className={classes(styles.indicatorFrame, multiple && styles.indicatorFrameMultiple)}
+        data-stroke={multiple ? 'box-small' : 'circle-x-small'}
+      >
         <BaseCombobox.ItemIndicator
           {...props}
           ref={ref}
@@ -216,6 +224,7 @@ export const SearchableDropdownSeparator = forwardRef<HTMLDivElement, Searchable
   function SearchableDropdownSeparator({className, ...props}, ref) {
     return (
       <BaseCombobox.Separator
+        data-stroke="line"
         {...props}
         ref={ref}
         orientation="horizontal"

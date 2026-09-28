@@ -11,6 +11,7 @@ export const SocialLogin = forwardRef<HTMLButtonElement, SocialLoginProps>(
   function SocialLogin({icon, children, className, type = 'button', ...props}, ref) {
     return (
       <BaseButton
+        data-stroke="box-small"
         {...props}
         ref={ref}
         type={type}

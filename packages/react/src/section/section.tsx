@@ -11,6 +11,8 @@ export const Section = forwardRef<HTMLElement, SectionProps>(function Section(
 ) {
   return (
     <section
+      data-stroke={separated ? 'line' : undefined}
+      data-stroke-edge={separated ? 'block-end' : undefined}
       {...props}
       ref={ref}
       className={classes(styles.section, separated && styles.separated, className)}

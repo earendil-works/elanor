@@ -69,6 +69,8 @@ export const NavigationMenuLink = forwardRef<HTMLAnchorElement, NavigationMenuLi
   function NavigationMenuLink({className, ...props}, ref) {
     return (
       <BaseNavigationMenu.Link
+        data-stroke="line"
+        data-stroke-edge="block-end"
         {...props}
         ref={ref}
         className={mergeClassName<BaseNavigationMenu.Link.State>(styles.navigationItem, className)}
@@ -83,6 +85,8 @@ export const NavigationMenuTrigger = forwardRef<
 >(function NavigationMenuTrigger({className, ...props}, ref) {
   return (
     <BaseNavigationMenu.Trigger
+      data-stroke="line"
+      data-stroke-edge="block-end"
       {...props}
       ref={ref}
       className={mergeClassName<BaseNavigationMenu.Trigger.State>(
@@ -110,13 +114,18 @@ export const NavigationMenuIcon = forwardRef<HTMLSpanElement, NavigationMenuIcon
 export const NavigationMenuPositioner = BaseNavigationMenu.Positioner;
 
 export const NavigationMenuPopup = forwardRef<HTMLElement, NavigationMenuPopupProps>(
-  function NavigationMenuPopup({className, ...props}, ref) {
+  function NavigationMenuPopup({className, children, ...props}, ref) {
     return (
       <BaseNavigationMenu.Popup
+        data-stroke="box-small"
+        data-stroke-focus="none"
         {...props}
         ref={ref}
         className={mergeClassName<BaseNavigationMenu.Popup.State>(styles.popup, className)}
-      />
+      >
+        {/* Content scrolls inside, so the popup itself can carry the stroke. */}
+        <div className={styles.body}>{children}</div>
+      </BaseNavigationMenu.Popup>
     );
   },
 );

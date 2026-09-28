@@ -8,5 +8,5 @@ export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
   {className, ...props},
   ref,
 ) {
-  return <a {...props} ref={ref} className={classes(styles.root, className)} />;
+  return <a data-stroke="box-small" {...props} ref={ref} className={classes(styles.root, className)} />;
 });

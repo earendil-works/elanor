@@ -65,6 +65,7 @@ export const DropdownTrigger = forwardRef<HTMLButtonElement, DropdownTriggerProp
   function DropdownTrigger({className, ...props}, ref) {
     return (
       <BaseSelect.Trigger
+        data-stroke="box-small"
         {...props}
         ref={ref}
         className={mergeClassName<BaseSelect.Trigger.State>(styles.trigger, className)}
@@ -104,6 +105,8 @@ export const DropdownPopup = forwardRef<HTMLDivElement, DropdownPopupProps>(
   function DropdownPopup({className, ...props}, ref) {
     return (
       <BaseSelect.Popup
+        data-stroke="box-small"
+        data-stroke-focus="none"
         {...props}
         ref={ref}
         className={mergeClassName<BaseSelect.Popup.State>(styles.popup, className)}
@@ -141,7 +144,10 @@ export const DropdownItemIndicator = forwardRef<HTMLSpanElement, DropdownItemInd
     const multiple = useContext(MultipleContext);
 
     return (
-      <span className={classes(styles.indicatorFrame, multiple && styles.indicatorFrameMultiple)}>
+      <span
+        className={classes(styles.indicatorFrame, multiple && styles.indicatorFrameMultiple)}
+        data-stroke={multiple ? 'box-small' : 'circle-x-small'}
+      >
         <BaseSelect.ItemIndicator
           {...props}
           ref={ref}
@@ -170,6 +176,7 @@ export const DropdownSeparator = forwardRef<HTMLDivElement, DropdownSeparatorPro
   function DropdownSeparator({className, ...props}, ref) {
     return (
       <BaseSelect.Separator
+        data-stroke="line"
         {...props}
         ref={ref}
         orientation="horizontal"

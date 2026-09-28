@@ -30,15 +30,20 @@ export type MenuGroupLabelProps = BaseMenu.GroupLabel.Props;
 export const MenuPositioner = BaseMenu.Positioner;
 
 export const MenuPopup = forwardRef<HTMLDivElement, MenuPopupProps>(function MenuPopup(
-  {className, ...props},
+  {className, children, ...props},
   ref,
 ) {
   return (
     <BaseMenu.Popup
+      data-stroke="box-small"
+      data-stroke-focus="none"
       {...props}
       ref={ref}
       className={mergeClassName<BaseMenu.Popup.State>(styles.popup, className)}
-    />
+    >
+      {/* Content scrolls inside, so the popup itself can carry the stroke. */}
+      <div className={styles.body}>{children}</div>
+    </BaseMenu.Popup>
   );
 });
 
@@ -68,6 +73,8 @@ export const MenuItem = forwardRef<HTMLElement, MenuItemProps>(function MenuItem
 ) {
   return (
     <BaseMenu.Item
+      data-stroke="box-small"
+      data-stroke-focus="none"
       {...props}
       ref={ref}
       className={mergeClassName<BaseMenu.Item.State>(styles.item, className)}
@@ -89,6 +96,8 @@ export const MenuLinkItem = forwardRef<Element, MenuLinkItemProps>(function Menu
 ) {
   return (
     <BaseMenu.LinkItem
+      data-stroke="box-small"
+      data-stroke-focus="none"
       {...props}
       ref={ref}
       className={mergeClassName<BaseMenu.LinkItem.State>(styles.item, className)}

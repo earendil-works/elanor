@@ -20,7 +20,7 @@ export type {
 export type RadioIndicatorProps = BaseRadio.Indicator.Props;
 
 export const RadioRoot = forwardRef(function RadioRoot<Value>(
-  {className, ...props}: RadioRootProps<Value>,
+  {className, children, ...props}: RadioRootProps<Value>,
   ref: Ref<HTMLSpanElement>,
 ): React.JSX.Element {
   return (
@@ -28,7 +28,11 @@ export const RadioRoot = forwardRef(function RadioRoot<Value>(
       {...props}
       ref={ref}
       className={mergeClassName<BaseRadio.Root.State>(styles.radio, className)}
-    />
+    >
+      {/* The visible circle is smaller than the target, and carries the stroke. */}
+      <span className={styles.circle} data-stroke="circle-x-small" aria-hidden="true" />
+      {children}
+    </BaseRadio.Root>
   );
 }) as typeof BaseRadio.Root;
 

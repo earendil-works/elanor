@@ -28,13 +28,16 @@ export const ProgressiveDisclosureRoot = forwardRef<HTMLDivElement, ProgressiveD
 );
 
 export const ProgressiveDisclosurePanel = forwardRef<HTMLDivElement, ProgressiveDisclosurePanelProps>(
-  function ProgressiveDisclosurePanel({className, ...props}, ref) {
+  function ProgressiveDisclosurePanel({className, children, ...props}, ref) {
     return (
       <BaseCollapsible.Panel
         {...props}
         ref={ref}
         className={mergeClassName<BaseCollapsible.Panel.State>(styles.panel, className)}
-      />
+      >
+        <span className={styles.rule} data-stroke="line-vertical" aria-hidden="true" />
+        {children}
+      </BaseCollapsible.Panel>
     );
   },
 );

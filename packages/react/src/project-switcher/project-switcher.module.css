@@ -13,6 +13,7 @@
   font: var(--semantic-typography-ui-primary);
   white-space: nowrap;
   cursor: pointer;
+  --stroke-color: transparent;
 }
 
 @media (hover: hover) {
@@ -27,8 +28,8 @@
 }
 
 .trigger:focus-visible {
-  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
-  outline-offset: var(--semantic-dimension-border-width-medium);
+  outline: var(--stroke-plain-outline, var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring));
+  outline-offset: calc(-1 * var(--semantic-dimension-border-width-medium));
 }
 
 .trigger[data-disabled] {

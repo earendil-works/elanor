@@ -22,7 +22,7 @@ export const Search = forwardRef<HTMLInputElement, SearchProps>(function Search(
   }
 
   return (
-    <span className={classes(styles.root, rootClassName)}>
+    <span className={classes(styles.root, rootClassName)} data-stroke="box-small">
       <span className={styles.icon} aria-hidden="true">
         {icon ?? <SearchIcon />}
       </span>

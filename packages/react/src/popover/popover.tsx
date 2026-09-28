@@ -24,13 +24,18 @@ export type PopoverTitleProps = BasePopover.Title.Props;
 export type PopoverDescriptionProps = BasePopover.Description.Props;
 
 export const PopoverPopup = forwardRef<HTMLDivElement, PopoverPopupProps>(
-  function PopoverPopup({className, ...props}, ref) {
+  function PopoverPopup({className, children, ...props}, ref) {
     return (
       <BasePopover.Popup
+        data-stroke="box-small"
+        data-stroke-focus="none"
         {...props}
         ref={ref}
         className={mergeClassName<BasePopover.Popup.State>(styles.popup, className)}
-      />
+      >
+        {/* Content scrolls inside, so the popup itself can carry the stroke. */}
+        <div className={styles.body}>{children}</div>
+      </BasePopover.Popup>
     );
   },
 );

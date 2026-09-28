@@ -14,13 +14,17 @@ export type SwitchRootProps = BaseSwitch.Root.Props;
 export type SwitchThumbProps = BaseSwitch.Thumb.Props;
 
 export const SwitchRoot = forwardRef<HTMLElement, SwitchRootProps>(
-  function SwitchRoot({className, ...props}, ref) {
+  function SwitchRoot({className, children, ...props}, ref) {
     return (
       <BaseSwitch.Root
         {...props}
         ref={ref}
         className={mergeClassName<BaseSwitch.Root.State>(styles.root, className)}
-      />
+      >
+        {/* The visible control is smaller than the target, and carries the stroke. */}
+        <span className={styles.track} data-stroke="pill-x-small" aria-hidden="true" />
+        {children}
+      </BaseSwitch.Root>
     );
   },
 );

@@ -17,6 +17,7 @@ export const ProjectSwitcherTrigger = forwardRef(function ProjectSwitcherTrigger
 ) {
   return (
     <BaseMenu.Trigger
+      data-stroke="box-small"
       {...props}
       ref={ref}
       className={mergeClassName<BaseMenu.Trigger.State>(

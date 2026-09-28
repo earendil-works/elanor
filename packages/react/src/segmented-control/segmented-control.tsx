@@ -37,6 +37,7 @@ export const SegmentedControlItem = forwardRef<HTMLButtonElement, SegmentedContr
   function SegmentedControlItem({className, type = 'button', ...props}, ref) {
     return (
       <Toggle
+        data-stroke="box-small"
         {...props}
         ref={ref}
         type={type}

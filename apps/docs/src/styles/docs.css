@@ -59,3 +59,9 @@ body > aside {
 .prose img {
   max-inline-size: 100%;
 }
+
+.navigation {
+  display: flex;
+  flex-direction: column;
+  gap: var(--semantic-dimension-space-gap-large);
+}

@@ -33,6 +33,7 @@ export const TableOfContentsLink = forwardRef<HTMLAnchorElement, TableOfContents
   function TableOfContentsLink({active = false, children, dangerouslySetInnerHTML, className, ...props}, ref) {
     return (
       <a
+        data-stroke="box-small"
         {...props}
         ref={ref}
         aria-current={active ? 'location' : props['aria-current']}

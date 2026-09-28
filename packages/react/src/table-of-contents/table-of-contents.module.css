@@ -2,6 +2,7 @@
 .list,
 .link {
   box-sizing: border-box;
+  --stroke-color: transparent;
 }
 
 .root {
@@ -65,8 +66,8 @@
 
 .link:focus-visible {
   border-radius: var(--semantic-dimension-radius-small);
-  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
-  outline-offset: var(--semantic-dimension-border-width-medium);
+  outline: var(--stroke-plain-outline, var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring));
+  outline-offset: calc(-1 * var(--semantic-dimension-border-width-medium));
 }
 
 @media (pointer: coarse) {

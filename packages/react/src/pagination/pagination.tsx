@@ -26,6 +26,7 @@ export const PaginationLink = forwardRef<HTMLAnchorElement, PaginationLinkProps>
   function PaginationLink({disabled = false, className, tabIndex, href, onClick, onAuxClick, ...props}, ref) {
     return (
       <a
+        data-stroke="box-small"
         {...props}
         ref={ref}
         href={disabled ? undefined : href}

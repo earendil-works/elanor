@@ -15,13 +15,17 @@ export type CheckboxRootProps = BaseCheckbox.Root.Props;
 export type CheckboxIndicatorProps = BaseCheckbox.Indicator.Props;
 
 export const CheckboxRoot = forwardRef<HTMLElement, CheckboxRootProps>(
-  function CheckboxRoot({className, ...props}, ref) {
+  function CheckboxRoot({className, children, ...props}, ref) {
     return (
       <BaseCheckbox.Root
         {...props}
         ref={ref}
         className={mergeClassName<BaseCheckbox.Root.State>(styles.root, className)}
-      />
+      >
+        {/* The visible control is smaller than the target, and carries the stroke. */}
+        <span className={styles.box} data-stroke="box-small" aria-hidden="true" />
+        {children}
+      </BaseCheckbox.Root>
     );
   },
 );

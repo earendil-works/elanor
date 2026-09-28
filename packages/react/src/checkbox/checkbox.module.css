@@ -17,16 +17,19 @@
   cursor: pointer;
 }
 
-.root::before {
+.box {
   position: absolute;
+  inset: 0;
   z-index: var(--semantic-number-layer-background);
   box-sizing: border-box;
   inline-size: var(--semantic-dimension-size-x-small);
   block-size: var(--semantic-dimension-size-x-small);
-  border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-primary);
+  margin: auto;
   border-radius: var(--semantic-dimension-radius-small);
   background: var(--semantic-color-background-checkbox);
-  content: '';
+  --stroke-color: var(--semantic-color-border-primary);
+  box-shadow: var(--stroke-plain-shadow, inset 0 0 0 var(--semantic-dimension-border-width-default) var(--stroke-color));
+  pointer-events: none;
 }
 
 @media (pointer: coarse) {
@@ -37,23 +40,27 @@
 }
 
 @media (hover: hover) {
-  .root:hover:not([data-disabled], [data-checked], [data-indeterminate])::before {
+  .root:hover:not([data-disabled], [data-checked], [data-indeterminate]) > .box {
     background: var(--semantic-color-background-checkbox-hover);
   }
 }
 
-.root:active:not([data-disabled], [data-checked], [data-indeterminate])::before {
+.root:active:not([data-disabled], [data-checked], [data-indeterminate]) > .box {
   background: var(--semantic-color-background-checkbox-active);
 }
 
-.root:is([data-checked], [data-indeterminate])::before {
-  border-color: var(--semantic-color-background-checkbox-selected);
+.root:is([data-checked], [data-indeterminate]) > .box {
+  --stroke-color: var(--semantic-color-background-checkbox-selected);
   background: var(--semantic-color-background-checkbox-selected);
 }
 
 .root:focus-visible {
-  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
-  outline-offset: var(--semantic-dimension-border-width-medium);
+  outline: 0;
+}
+
+.root:focus-visible > .box {
+  outline: var(--stroke-plain-outline, var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring));
+  outline-offset: calc(-1 * var(--semantic-dimension-border-width-medium));
 }
 
 .root[data-disabled] {
@@ -91,12 +98,16 @@
 }
 
 @media (forced-colors: active) {
-  .root::before {
-    border-color: ButtonBorder;
+  .box {
+    border: var(--semantic-dimension-border-width-default) solid ButtonBorder;
   }
 
-  .root:is([data-checked], [data-indeterminate])::before {
+  .root:is([data-checked], [data-indeterminate]) > .box {
     background: Highlight;
+  }
+
+  .root:focus-visible > .box {
+    outline-color: Highlight;
   }
 
   .indicator {

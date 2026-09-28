@@ -51,15 +51,20 @@ export const ModalViewport = forwardRef<HTMLDivElement, ModalViewportProps>(
 );
 
 export const ModalPopup = forwardRef<HTMLDivElement, ModalPopupProps>(function ModalPopup(
-  {className, ...props},
+  {className, children, ...props},
   ref,
 ) {
   return (
     <BaseDialog.Popup
+      data-stroke="box-small"
+      data-stroke-focus="none"
       {...props}
       ref={ref}
       className={mergeClassName<BaseDialog.Popup.State>(styles.popup, className)}
-    />
+    >
+      {/* Content scrolls inside, so the popup itself can carry the stroke. */}
+      <div className={styles.body}>{children}</div>
+    </BaseDialog.Popup>
   );
 });
 

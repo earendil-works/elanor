@@ -5,15 +5,23 @@
   min-inline-size: 0;
   max-inline-size: var(--available-width);
   max-block-size: var(--available-height);
-  overflow: auto;
-  padding: calc(var(--semantic-dimension-space-padding-x-small) - var(--semantic-dimension-border-width-default));
-  border: var(--semantic-dimension-border-width-default) solid
-    var(--semantic-color-background-fill-ghost-negative);
+  border: 0;
   border-radius: var(--semantic-dimension-radius-small);
   outline: 0;
   background: var(--semantic-color-background-fill-ghost-negative);
+  --stroke-color: var(--semantic-color-background-fill-ghost-negative);
+  box-shadow: var(--stroke-plain-shadow, inset 0 0 0 var(--semantic-dimension-border-width-default) var(--stroke-color));
   color: var(--semantic-color-text-primary);
   font: var(--semantic-typography-ui-secondary);
+}
+
+.body {
+  display: flex;
+  flex-direction: column;
+  min-block-size: 0;
+  overflow: auto;
+  padding: var(--semantic-dimension-space-padding-x-small);
+  border-radius: inherit;
 }
 
 .item {
@@ -29,6 +37,8 @@
   border-radius: var(--semantic-dimension-radius-small);
   outline: 0;
   background: var(--semantic-color-background-fill-ghost-neutral);
+  --stroke-color: transparent;
+  box-shadow: var(--stroke-plain-shadow, inset 0 0 0 var(--semantic-dimension-border-width-default) var(--stroke-color));
   color: var(--semantic-color-text-primary);
   text-decoration: none;
   cursor: default;
@@ -37,21 +47,18 @@
 @media (hover: hover) {
   .item:hover:not([data-disabled]) {
     background: var(--semantic-color-background-fill-ghost-neutral-hover);
-    box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
-      var(--semantic-color-background-fill-ghost-neutral-hover);
+    --stroke-color: var(--semantic-color-background-fill-ghost-neutral-hover);
   }
 }
 
 .item[data-highlighted] {
   background: var(--semantic-color-background-fill-ghost-neutral-hover);
-  box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
-    var(--semantic-color-background-fill-ghost-neutral-hover);
+  --stroke-color: var(--semantic-color-background-fill-ghost-neutral-hover);
 }
 
 .item:active:not([data-disabled]) {
   background: var(--semantic-color-background-fill-ghost-neutral-active);
-  box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
-    var(--semantic-color-background-fill-ghost-neutral-active);
+  --stroke-color: var(--semantic-color-background-fill-ghost-neutral-active);
 }
 
 .item[data-disabled] {
@@ -106,7 +113,8 @@
 
 @media (forced-colors: active) {
   .popup {
-    border-color: CanvasText;
+    outline: var(--stroke-plain-outline, var(--semantic-dimension-border-width-default) solid CanvasText);
+    outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
   }
 
   .item[data-highlighted] {

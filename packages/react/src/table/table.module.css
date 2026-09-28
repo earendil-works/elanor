@@ -11,10 +11,16 @@
   font: var(--semantic-typography-ui-primary);
 }
 
+/* Rows keep a real border: box-shadows don't paint on table rows everywhere. */
 thead > .row,
 .row:not(:last-child) {
+  --stroke-color: var(--semantic-color-border-secondary);
   border-block-end: var(--semantic-dimension-border-width-small) solid
-    var(--semantic-color-border-secondary);
+    var(--stroke-plain-fill, var(--stroke-color));
+}
+
+tbody > .row:last-child {
+  --stroke-color: transparent;
 }
 
 .cell {

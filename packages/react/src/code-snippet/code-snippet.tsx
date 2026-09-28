@@ -12,7 +12,7 @@ export const CodeSnippet = forwardRef<HTMLPreElement, CodeSnippetProps>(function
   ref,
 ) {
   return (
-    <pre {...props} ref={ref} className={classes(styles.root, className)}>
+    <pre data-stroke="box-small" {...props} ref={ref} className={classes(styles.root, className)}>
       <code className={styles.code}>{children}</code>
       {actions ? <span className={styles.actions}>{actions}</span> : null}
     </pre>
