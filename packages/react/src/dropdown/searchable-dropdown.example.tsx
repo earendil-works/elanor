@@ -19,7 +19,7 @@ export function SearchableDropdownExample(): React.JSX.Element {
         </Stack>
         <SearchableDropdown.Portal>
           <SearchableDropdown.Positioner>
-            <SearchableDropdown.Popup>
+            <SearchableDropdown.Popup aria-label="Choose a project">
               <SearchableDropdown.InputGroup>
                 <SearchableDropdown.Input aria-label="Filter projects" placeholder="Filter projects" />
               </SearchableDropdown.InputGroup>
