@@ -11,19 +11,6 @@
   font: var(--semantic-typography-ui-primary);
 }
 
-.background {
-  position: absolute;
-  z-index: var(--semantic-number-layer-background);
-  inset: 0;
-  overflow: hidden;
-  pointer-events: none;
-}
-
-.background > * {
-  inline-size: 100%;
-  block-size: 100%;
-}
-
 .header {
   flex: none;
   min-inline-size: 0;

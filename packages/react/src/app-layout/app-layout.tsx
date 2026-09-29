@@ -10,14 +10,6 @@ export const AppLayoutRoot = forwardRef<HTMLDivElement, AppLayoutProps>(function
   return <div {...props} ref={ref} className={classes(styles.root, className)} />;
 });
 
-export interface AppLayoutBackgroundProps extends HTMLAttributes<HTMLDivElement> {}
-
-export const AppLayoutBackground = forwardRef<HTMLDivElement, AppLayoutBackgroundProps>(
-  function AppLayoutBackground({className, ...props}, ref) {
-    return <div aria-hidden="true" {...props} ref={ref} className={classes(styles.background, className)} />;
-  },
-);
-
 export interface AppLayoutHeaderProps extends HTMLAttributes<HTMLDivElement> {}
 
 export const AppLayoutHeader = forwardRef<HTMLDivElement, AppLayoutHeaderProps>(
@@ -52,7 +44,6 @@ export const AppLayoutContent = forwardRef<HTMLElement, AppLayoutContentProps>(
 
 export const AppLayout = {
   Root: AppLayoutRoot,
-  Background: AppLayoutBackground,
   Header: AppLayoutHeader,
   Body: AppLayoutBody,
   Sidebar: AppLayoutSidebar,
