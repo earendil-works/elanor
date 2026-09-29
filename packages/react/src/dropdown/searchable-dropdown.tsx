@@ -1,6 +1,5 @@
 import {Combobox as BaseCombobox} from '@base-ui/react/combobox';
-import {KeyboardArrowDownIcon} from '@earendil-works/elanor-icons-react/keyboard-arrow-down';
-import {SearchIcon} from '@earendil-works/elanor-icons-react/search';
+import {KeyboardArrowDownIcon, SearchIcon} from '@earendil-works/elanor-icons-react';
 import {createContext, forwardRef, useContext} from 'react';
 import styles from './searchable-dropdown.module.css';
 import {classes, mergeClassName} from '../utils/class-names.ts';

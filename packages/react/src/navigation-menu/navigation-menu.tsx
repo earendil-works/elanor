@@ -1,5 +1,5 @@
 import {NavigationMenu as BaseNavigationMenu} from '@base-ui/react/navigation-menu';
-import {KeyboardArrowDownIcon} from '@earendil-works/elanor-icons-react/keyboard-arrow-down';
+import {KeyboardArrowDownIcon} from '@earendil-works/elanor-icons-react';
 import {forwardRef} from 'react';
 import styles from './navigation-menu.module.css';
 import {mergeClassName} from '../utils/class-names.ts';
