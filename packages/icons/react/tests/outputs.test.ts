@@ -40,6 +40,33 @@ describe("React icons", () => {
     expect(SearchIcon).toHaveProperty("$$typeof");
   });
 
+  test.each([
+    {name: "a title", children: createElement("title", {id: "search-title"}, "Search")},
+    {
+      name: "multiple children",
+      children: [
+        createElement("title", {id: "search-title", key: "title"}, "Search"),
+        createElement("desc", {id: "search-description", key: "description"}, "Find a project"),
+      ],
+    },
+  ])("preserves $name alongside the icon geometry", async ({children}) => {
+    const SearchIcon = await load("search");
+    const markup = renderToStaticMarkup(createElement(SearchIcon, {
+      "aria-labelledby": "search-title",
+      children,
+    }));
+    const svg = await readFile(resolve(packageDirectory, "../dist/svg/search.svg"), "utf8");
+
+    expect(markup).toContain('<title id="search-title">Search</title>');
+    if (Array.isArray(children)) {
+      expect(markup).toContain('<desc id="search-description">Find a project</desc>');
+    }
+    expect(markup).toContain('aria-labelledby="search-title"');
+    expect(markup).toContain('role="img"');
+    expect(markup).not.toContain("aria-hidden");
+    expect(/<path d="([^"]+)"/.exec(markup)?.[1]).toBe(/<path d="([^"]+)"/.exec(svg)?.[1]);
+  });
+
   test("the barrel tree-shakes to the imported icon", async () => {
     const result = await build({
       stdin: {

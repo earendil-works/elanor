@@ -62,7 +62,7 @@ function runtime(): string {
 import {createElement, forwardRef} from "react";
 
 export function createIcon(displayName, viewBox, d) {
-  const Icon = forwardRef(function ElanorIcon({size = 16, ...props}, ref) {
+  const Icon = forwardRef(function ElanorIcon({size = 16, children, ...props}, ref) {
     const named = props["aria-label"] != null || props["aria-labelledby"] != null;
     return createElement(
       "svg",
@@ -79,6 +79,7 @@ export function createIcon(displayName, viewBox, d) {
         focusable: props.focusable ?? "false",
       },
       createElement("path", {d}),
+      children,
     );
   });
   Icon.displayName = displayName;
