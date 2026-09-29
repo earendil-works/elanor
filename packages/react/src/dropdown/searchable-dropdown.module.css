@@ -63,14 +63,11 @@
   color: var(--semantic-color-icon-primary);
 }
 
-.chevron {
-  box-sizing: border-box;
-  inline-size: calc(var(--semantic-dimension-size-x-small) * 0.375);
-  block-size: calc(var(--semantic-dimension-size-x-small) * 0.375);
-  /* Physical edges keep the chevron pointing down in both LTR and RTL. */
-  border-right: var(--semantic-dimension-border-width-small) solid currentcolor;
-  border-bottom: var(--semantic-dimension-border-width-small) solid currentcolor;
-  transform: rotate(45deg) translateY(calc(-1 * var(--semantic-dimension-space-padding-xxx-small)));
+.icon > svg,
+.icon > img {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
 }
 
 .popup {
@@ -126,25 +123,11 @@
   color: var(--semantic-color-icon-secondary);
 }
 
-.searchGlyph {
-  position: relative;
-  box-sizing: border-box;
-  inline-size: var(--semantic-dimension-space-padding-medium);
-  block-size: var(--semantic-dimension-space-padding-medium);
-  border: var(--semantic-dimension-border-width-small) solid currentcolor;
-  border-radius: var(--semantic-dimension-radius-full);
-}
-
-.searchGlyph::after {
-  position: absolute;
-  inset-inline-end: calc(-1 * var(--semantic-dimension-space-padding-small));
-  inset-block-end: calc(-1 * var(--semantic-dimension-space-padding-xxx-small));
-  inline-size: var(--semantic-dimension-space-padding-small);
-  block-size: var(--semantic-dimension-border-width-small);
-  background: currentcolor;
-  content: '';
-  transform: rotate(45deg);
-  transform-origin: center;
+.searchIcon > svg,
+.searchIcon > img {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
 }
 
 .input {
