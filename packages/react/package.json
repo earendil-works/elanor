@@ -16,12 +16,14 @@
   "scripts": {
     "build": "node build.mjs",
     "check": "pnpm run check:types && pnpm run lint",
-    "check:types": "tsc -p tsconfig.json --noEmit",
+    "check:prepare": "pnpm --filter @earendil-works/elanor-icons-react... run build",
+    "check:types": "pnpm run check:prepare && tsc -p tsconfig.json --noEmit",
     "lint:prepare": "pnpm --filter @earendil-works/design-tokens run build:radius && pnpm --filter @earendil-works/stylelint-plugin-design-tokens run build",
     "lint": "pnpm run lint:prepare && stylelint \"src/**/*.css\" --max-warnings 0"
   },
   "dependencies": {
-    "@base-ui/react": "1.8.0"
+    "@base-ui/react": "1.8.0",
+    "@earendil-works/elanor-icons-react": "workspace:*"
   },
   "peerDependencies": {
     "react": "^17.0.0 || ^18.0.0 || ^19.0.0",
