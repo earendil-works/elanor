@@ -1,6 +1,5 @@
 export {
   AppLayout,
-  AppLayoutBackground,
   AppLayoutBody,
   AppLayoutContent,
   AppLayoutHeader,
@@ -8,7 +7,6 @@ export {
   AppLayoutSidebar,
 } from './app-layout/app-layout.tsx';
 export type {
-  AppLayoutBackgroundProps,
   AppLayoutBodyProps,
   AppLayoutContentProps,
   AppLayoutHeaderProps,
