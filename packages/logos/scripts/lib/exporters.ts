@@ -1,9 +1,8 @@
 import {readdir, readFile} from "node:fs/promises";
-import {createRequire} from "node:module";
 import {relative, resolve} from "node:path";
 import {type BrandId, brands, gridUnit, type Treatment} from "../../config.js";
 import type {ExportDefinition, Kind} from "../../exports.config.js";
-import {type Artwork, type ColoredArtwork, monochromeToken, packageDirectory, type ResolvedTokens, serializeSvg} from "./compose.js";
+import {type Artwork, type ColoredArtwork, loadTokens, monochromeToken, packageDirectory, serializeSvg, type TokenCatalog, tokenHex} from "./compose.js";
 import {createIco, createZip} from "./containers.js";
 import {createPdf} from "./pdf.js";
 import {circleSafeFrame, frameSvg, renderPng, squareFrame, tightFrame} from "./raster.js";
@@ -32,7 +31,7 @@ export interface ManifestBrand {
 
 export interface ExportContext {
   assets: Asset[];
-  tokens: ResolvedTokens;
+  tokens: TokenCatalog;
   manifest: {brands: ManifestBrand[]; [key: string]: unknown};
   /** Writes a file relative to dist/ and returns that relative path. */
   write(path: string, data: string | Buffer): Promise<string>;
@@ -67,20 +66,9 @@ function manifestAsset(context: ExportContext, asset: Asset): ManifestAsset {
   return entry;
 }
 
-const brandTokens = new Map<BrandId, Promise<ResolvedTokens>>();
-function loadBrandTokens(brand: BrandId): Promise<ResolvedTokens> {
-  if (!brandTokens.has(brand)) {
-    const file = createRequire(import.meta.url).resolve(`@earendil-works/design-tokens/${brand}.resolved.json`);
-    brandTokens.set(brand, readFile(file, "utf8").then((text) => JSON.parse(text) as ResolvedTokens));
-  }
-  return brandTokens.get(brand)!;
-}
-
 /** The brand's own page background, used behind icons and avatars. */
 async function canvas(brand: BrandId, scheme: "light" | "dark"): Promise<string> {
-  const hex = (await loadBrandTokens(brand)).tokens["semantic.color.background.canvas"]?.modes[scheme].hex;
-  if (!hex) throw new Error(`${brand} tokens have no canvas color`);
-  return hex;
+  return tokenHex(await loadTokens(brand), "semantic.color.background.canvas", scheme);
 }
 
 function markAsset(context: ExportContext, brand: BrandId, treatment: string): Asset {

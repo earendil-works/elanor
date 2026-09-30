@@ -42,8 +42,8 @@ export const exportDefinitions: ExportDefinition[] = [
   },
   {
     type: "print",
-    // A monochrome logo on dark backgrounds is unprinted paper or white ink, so it has no CMYK file.
-    select: {treatments: ["on-light", "on-dark", "monochrome-on-light"]},
+    // White prints no ink, so on dark backgrounds it knocks out to the paper.
+    select: {treatments: ["on-light", "on-dark", "monochrome-on-light", "monochrome-on-dark"]},
     profiles: ["psoCoatedV3", "psoUncoatedV3"],
     // The 560-unit symbol frame prints 40 mm wide by default; the PDFs are vectors and scale freely.
     millimetersPerUnit: 40 / 560,
