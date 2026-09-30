@@ -73,6 +73,8 @@ describe("built exports", () => {
     const pi = await readFile(resolve(dist, "kits/pi/print/psoUncoatedV3/pi-logo-monochrome-on-light.pdf"), "latin1");
     expect(pi).toContain("0 0 0 1 k");
     expect(pi).toContain("(FOGRA52)");
+    const knockout = await readFile(resolve(dist, "kits/pi/print/psoCoatedV3/pi-logo-monochrome-on-dark.pdf"), "latin1");
+    expect(knockout).toContain("0 0 0 0 k");
   });
 
   test("the manifest lists every export", async () => {
@@ -89,7 +91,7 @@ describe("built exports", () => {
 
   test("the SVG favicon follows the color scheme only where colors change", async () => {
     const earendil = await readFile(resolve(dist, "kits/earendil/favicons/favicon.svg"), "utf8");
-    expect(earendil).toContain("@media (prefers-color-scheme:dark){.cd4dded{fill:#d4dded}}");
+    expect(earendil).toContain("@media (prefers-color-scheme:dark){.cf6f6f6{fill:#f6f6f6}}");
     const pi = await readFile(resolve(dist, "kits/pi/favicons/favicon.svg"), "utf8");
     expect(pi).not.toContain("<style>");
   });
