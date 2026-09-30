@@ -32,10 +32,11 @@ interface Shape {
 const rem = (px: number) => `${Math.round((px / PIXELS_PER_REM) * 10000) / 10000}rem`;
 
 async function tokenPixels(brand: string): Promise<(path: string) => number> {
-  const file = createRequire(import.meta.url).resolve(`@earendil-works/design-tokens/${brand}.resolved.json`);
-  const {tokens} = JSON.parse(await readFile(file, "utf8")) as {tokens: Record<string, {modes: {light: {value: number; unit: string}}}>};
+  const file = createRequire(import.meta.url).resolve(`@earendil-works/design-tokens/${brand}.catalog.json`);
+  const catalog = JSON.parse(await readFile(file, "utf8")) as {tokens: Array<{path: string; values: {light: {value: number; unit: string}}}>};
+  const tokens = new Map(catalog.tokens.map((token) => [token.path, token.values.light]));
   return (path) => {
-    const value = tokens[path]?.modes.light;
+    const value = tokens.get(path);
     if (!value || typeof value.value !== "number") throw new Error(`Token ${path} is not a dimension in the ${brand} build`);
     return value.unit === "rem" ? value.value * PIXELS_PER_REM : value.value;
   };

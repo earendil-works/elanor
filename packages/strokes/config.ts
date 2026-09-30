@@ -1,7 +1,7 @@
 /**
  * Brush stroke styles. Every shape's size comes from the brand's design
  * tokens, so strokes always match the real border radii and control sizes.
- * Token paths are resolved from `@earendil-works/design-tokens/<tokenBrand>.resolved.json`.
+ * Token paths are resolved from `@earendil-works/design-tokens/<tokenBrand>.catalog.json`.
  */
 
 export interface BrushConfig {
