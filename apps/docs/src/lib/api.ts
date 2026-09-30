@@ -83,6 +83,8 @@ export async function loadIcons(): Promise<ApiIcon[]> {
   const metadata = JSON.parse(await readFile(resolve(iconsDist, 'metadata.json'), 'utf8')) as Record<string, IconEntry>;
   const names = (await readdir(resolve(iconsDist, 'svg'))).filter((file) => file.endsWith('.svg')).map((file) => file.slice(0, -4));
   return names.sort().map((name) => {
+    const entry = metadata[name];
+    if (!entry) throw new Error(`Missing search tags for ${name}`);
     const body = name
       .split('-')
       .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
@@ -91,9 +93,7 @@ export async function loadIcons(): Promise<ApiIcon[]> {
     return {
       name,
       component,
-      tags: metadata[name]?.tags ?? [],
-      categories: metadata[name]?.categories ?? [],
-      popularity: metadata[name]?.popularity ?? 0,
+      tags: entry.tags,
       svg: `/api/icons/${name}.svg`,
       react: `import {${component}} from '@earendil-works/elanor-icons-react/${name}';`,
     };
