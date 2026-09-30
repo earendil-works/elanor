@@ -31,7 +31,7 @@ describe("React logos", () => {
   test("auto scheme uses light-dark() only where colors differ", () => {
     const markup = renderToStaticMarkup(createElement(PiLogo, {lockup: "stacked"}));
     expect(markup).toContain('fill="#4d9abf"');
-    expect(markup).toContain("fill:light-dark(#6e6e6c, #d4dded)");
+    expect(markup).toContain("fill:light-dark(#6e6e6e, #f6f6f6)");
   });
 
   test("monochrome uses the dedicated monochrome drawing", async () => {

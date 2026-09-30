@@ -73,26 +73,30 @@ export async function composeArtwork(brand: BrandId, kind: LogoKind, monochrome:
   return composeLockup(mark, wordmark, brand, lockup);
 }
 
-export interface ResolvedTokens {
-  tokens: Record<string, {modes: Record<"light" | "dark", {hex?: string}>; aliasOf?: Record<"light" | "dark", string | null>; extensions?: Record<string, unknown>}>;
+type Scheme = "light" | "dark";
+
+/** Design tokens by path, read from the design-tokens catalogue. */
+export interface TokenCatalog {
+  tokens: Record<string, {values: Record<Scheme, unknown>; aliasOf?: Record<Scheme, string | null>; extensions?: Record<string, unknown>}>;
 }
 
-export async function loadTokens(): Promise<ResolvedTokens> {
+export async function loadTokens(): Promise<TokenCatalog> {
   const require = createRequire(import.meta.url);
-  const file = require.resolve(`@earendil-works/design-tokens/${tokenBrand}.resolved.json`);
-  return JSON.parse(await readFile(file, "utf8")) as ResolvedTokens;
+  const file = require.resolve(`@earendil-works/design-tokens/${tokenBrand}.catalog.json`);
+  const catalog = JSON.parse(await readFile(file, "utf8")) as {tokens: Array<{path: string} & TokenCatalog["tokens"][string]>};
+  return {tokens: Object.fromEntries(catalog.tokens.map((token) => [token.path, token]))};
 }
 
 export const monochromeToken = "semantic.color.logo.monochrome";
 
-export function tokenHex(tokens: ResolvedTokens, token: string, scheme: "light" | "dark"): string {
-  const hex = tokens.tokens[token]?.modes[scheme].hex;
+export function tokenHex(tokens: TokenCatalog, token: string, scheme: Scheme): string {
+  const hex = (tokens.tokens[token]?.values[scheme] as {hex?: string} | undefined)?.hex;
   if (!hex) throw new Error(`Token ${token} has no ${scheme} hex value; build @earendil-works/design-tokens first`);
   return hex;
 }
 
 /** Replaces token links with the treatment's colors. Monochrome paints every shape with one color. */
-export function colorArtwork(artwork: Artwork, treatment: Treatment, tokens: ResolvedTokens): ColoredArtwork {
+export function colorArtwork(artwork: Artwork, treatment: Treatment, tokens: TokenCatalog): ColoredArtwork {
   return {
     width: artwork.width,
     height: artwork.height,
