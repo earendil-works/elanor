@@ -1,6 +1,7 @@
 import {readdir, readFile} from "node:fs/promises";
 import {dirname, resolve} from "node:path";
 import {fileURLToPath} from "node:url";
+import {validateMetadata} from "./lib/metadata.js";
 import {parsePathData} from "./lib/path-data.js";
 import {parseSvg} from "./lib/svg.js";
 
@@ -22,6 +23,9 @@ for (const file of files) {
     throw new Error(`${file}: ${(error as Error).message}`);
   }
 }
+
+const metadata: unknown = JSON.parse(await readFile(resolve(packageDirectory, "metadata.json"), "utf8"));
+validateMetadata(metadata, files);
 
 const provenance = JSON.parse(
   await readFile(resolve(packageDirectory, "provenance.json"), "utf8"),
