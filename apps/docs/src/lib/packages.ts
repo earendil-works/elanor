@@ -38,8 +38,6 @@ export interface LogoManifest {
 
 export interface IconEntry {
   tags: string[];
-  categories: string[];
-  popularity: number;
 }
 
 /** Every file below a directory, as paths relative to it. */

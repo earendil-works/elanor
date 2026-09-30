@@ -2,7 +2,7 @@ import {Button, CodeSnippet, CopyButton, Heading, Link, Search, Stack, Text} fro
 import {useDeferredValue, useEffect, useMemo, useState} from 'react';
 import styles from './icon-browser.module.css';
 
-type IndexEntry = readonly [name: string, tags: string, popularity: number];
+type IndexEntry = readonly [name: string, tags: string];
 
 const PAGE_SIZE = 240;
 
@@ -14,7 +14,7 @@ function componentName(name: string): string {
   return `${/^\d/.test(body) ? 'Number' : ''}${body}Icon`;
 }
 
-/** Ranks by name before tags; the index is already ordered by popularity. */
+/** Ranks name matches before tag matches, with alphabetical ties. */
 function search(index: readonly IndexEntry[], query: string): readonly IndexEntry[] {
   const terms = query.toLowerCase().trim().split(/[\s_-]+/).filter(Boolean);
   if (terms.length === 0) return index;
@@ -34,7 +34,7 @@ function search(index: readonly IndexEntry[], query: string): readonly IndexEntr
     }
     if (score > 0) scored.push([entry, score]);
   }
-  return scored.sort((a, b) => b[1] - a[1]).map(([entry]) => entry);
+  return scored.sort((a, b) => b[1] - a[1] || a[0][0].localeCompare(b[0][0])).map(([entry]) => entry);
 }
 
 export function IconBrowser(): React.JSX.Element {
