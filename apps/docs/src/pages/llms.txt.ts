@@ -20,7 +20,7 @@ ${tokenBrands
   )
   .join('\n')}
 
-Token values are W3C DTCG values. Colors also include \`hex\`; brand colors include CMYK print builds under \`extensions["com.earendil-works.print"]\`. Prefer \`semantic.*\` tokens; \`primitive.*\` tokens are the palette they alias.
+Token values are W3C DTCG values. Colors also include \`hex\`; key colors used in print include CMYK builds under \`extensions["com.earendil-works.print"]\`. Prefer \`semantic.*\` tokens; \`primitive.*\` tokens are the palette they alias.
 
 ## Icons
 

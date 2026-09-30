@@ -10,62 +10,57 @@ export const tokenBrands = ['earendil', 'pi', 'radius', 'lefos'] as const;
 
 type Scheme = 'light' | 'dark';
 
-interface ResolvedFile {
-  tokens: Record<
-    string,
-    {
-      type: string;
-      description: string;
-      cssVariable: string | null;
-      modes: Record<Scheme, unknown>;
-      aliasOf?: Record<Scheme, string | null>;
-      extensions?: Record<string, unknown>;
-    }
-  >;
-}
-
 interface CatalogueFile {
-  tokens: Array<{cssVariable: string; modes: Record<Scheme, string>}>;
+  tokens: Array<{
+    path: string;
+    cssVariable: string;
+    type: string;
+    description: string;
+    modes: Record<Scheme, string>;
+    values: Record<Scheme, unknown>;
+    aliasOf?: Record<Scheme, string | null>;
+    extensions?: Record<string, unknown>;
+    sourceToken?: string;
+  }>;
 }
 
 export interface ApiToken {
   name: string;
   type: string;
   description: string;
-  cssVariable: string | null;
+  cssVariable: string;
   /** Per color scheme: the resolved DTCG value, its CSS, and a hex value for colors. */
-  light: {value: unknown; css?: string; hex?: string};
-  dark: {value: unknown; css?: string; hex?: string};
+  light: {value: unknown; css: string; hex?: string};
+  dark: {value: unknown; css: string; hex?: string};
   aliasOf?: Record<Scheme, string | null>;
   extensions?: Record<string, unknown>;
   url: string;
 }
 
 export async function loadTokens(brand: string): Promise<ApiToken[]> {
-  const [resolved, catalogue] = await Promise.all([
-    readFile(resolve(tokensDist, brand, 'tokens.resolved.json'), 'utf8').then((text) => JSON.parse(text) as ResolvedFile),
-    readFile(resolve(tokensDist, brand, 'tokens.catalog.json'), 'utf8').then((text) => JSON.parse(text) as CatalogueFile),
-  ]);
-  const css = new Map(catalogue.tokens.map((entry) => [entry.cssVariable, entry.modes]));
-  return Object.entries(resolved.tokens).map(([name, token]) => {
-    const mode = (scheme: Scheme) => {
-      const value = token.modes[scheme];
-      const cssValue = token.cssVariable ? css.get(token.cssVariable)?.[scheme] : undefined;
-      const hex = token.type === 'color' ? (value as {hex?: string}).hex : undefined;
-      return {value, ...(cssValue ? {css: cssValue} : {}), ...(hex ? {hex} : {})};
-    };
-    return {
-      name,
-      type: token.type,
-      description: token.description,
-      cssVariable: token.cssVariable,
-      light: mode('light'),
-      dark: mode('dark'),
-      ...(token.aliasOf ? {aliasOf: token.aliasOf} : {}),
-      ...(token.extensions ? {extensions: token.extensions} : {}),
-      url: `/api/tokens/${brand}/${name}.json`,
-    };
-  });
+  const catalogue = JSON.parse(await readFile(resolve(tokensDist, brand, 'tokens.catalog.json'), 'utf8')) as CatalogueFile;
+  // Composite subproperties (e.g. a typography token's font size) are part of their token's value.
+  return catalogue.tokens
+    .filter((token) => !token.sourceToken)
+    .map((token) => {
+      const mode = (scheme: Scheme) => {
+        const value = token.values[scheme];
+        const hex = token.type === 'color' ? (value as {hex?: string}).hex : undefined;
+        return {value, css: token.modes[scheme], ...(hex ? {hex} : {})};
+      };
+      return {
+        name: token.path,
+        type: token.type,
+        description: token.description,
+        cssVariable: token.cssVariable,
+        light: mode('light'),
+        dark: mode('dark'),
+        ...(token.aliasOf ? {aliasOf: token.aliasOf} : {}),
+        ...(token.extensions ? {extensions: token.extensions} : {}),
+        url: `/api/tokens/${brand}/${token.path}.json`,
+      };
+    })
+    .sort((a, b) => (a.name < b.name ? -1 : a.name > b.name ? 1 : 0));
 }
 
 export async function tokensCss(brand: string): Promise<string> {
