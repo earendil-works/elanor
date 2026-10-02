@@ -1,16 +1,28 @@
 /**
- * Logo composition rules, mirroring the Figma logo components.
+ * Logo sources and composition rules, mirroring the Figma logo components.
  *
  * Lengths are in source units: the symbol frame is 560 units wide, and one grid
- * unit (a quarter of that frame) is also the minimum clear space.
+ * unit is a quarter of that frame.
  */
+
+/** Source drawings, stored as `sources/<brand>/<part>.svg`. */
+export const parts = {
+  mark: {required: true},
+  /** Dedicated one-color drawing; brands without one use their mark. */
+  "mark-monochrome": {required: false, fallback: "mark"},
+  wordmark: {required: true},
+  "wordmark-small": {required: true},
+} as const satisfies Record<string, {required: boolean; fallback?: string}>;
+
+export type PartName = keyof typeof parts;
+
 export interface LockupRule {
   direction: "row" | "column";
   gap: number;
   /** Padding above and below the lockup. */
   paddingBlock: number;
   /** Which wordmark drawing the lockup uses. */
-  wordmark: "wordmark" | "wordmark-small";
+  wordmark: PartName;
 }
 
 export interface BrandConfig {
@@ -21,7 +33,13 @@ export interface BrandConfig {
 
 export type LockupName = "horizontal" | "stacked";
 
+/** Asset kinds: the symbol alone, and the symbol with the wordmark in each lockup. */
+export type LogoKind = "logo" | `logo-wordmark-${LockupName}`;
+
 export const gridUnit = 140;
+
+/** Minimum clear space around every logo asset. */
+export const clearSpace = gridUnit;
 
 export const lockups: Record<LockupName, LockupRule> = {
   horizontal: {direction: "row", gap: 232, paddingBlock: 20, wordmark: "wordmark"},
@@ -49,3 +67,10 @@ export type Treatment = (typeof treatments)[number];
 
 /** The design-tokens build whose catalogue provides logo colors. Logo tokens are shared by every brand. */
 export const tokenBrand = "radius";
+
+export const logoTokens = {
+  /** Source fills may only link to tokens in this group. */
+  group: "semantic.color.logo",
+  /** Paints every shape of a monochrome logo. */
+  monochrome: "semantic.color.logo.monochrome",
+};
