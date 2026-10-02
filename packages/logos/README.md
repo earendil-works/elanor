@@ -4,9 +4,9 @@ Earendil, Pi, Radius, and Lefos logos as SVG files, built from clean sources and
 
 ## Sources
 
-`sources/<brand>/` holds each brand's `mark`, optional `mark-monochrome`, `wordmark`, and `wordmark-small`, transferred from the Figma logo components. A source contains only paths; each fill links to a token, for example `fill="{semantic.color.logo.symbol.1}"`. The build replaces the links with color values, so outputs are plain SVGs.
+`sources/<brand>/` holds each brand's `mark`, optional `mark-monochrome` (brands without one use their mark), `wordmark`, and `wordmark-small`, transferred from the Figma logo components. A source contains only paths; each fill links to a logo token, for example `fill="{semantic.color.logo.symbol.1}"`. The build replaces the links with color values, so outputs are plain SVGs.
 
-Lockups are composed like the Figma auto layout, using the rules in [`config.ts`](./config.ts). Paths are only moved into place, with exact decimal arithmetic, so geometry is unchanged.
+[`config.ts`](./config.ts) defines the source parts, brands, color treatments, logo tokens, clear space, and lockup rules. Lockups are composed like the Figma auto layout, and each lockup rule adds a `logo-wordmark-<lockup>` asset kind. Paths are only moved into place, with exact decimal arithmetic, so geometry is unchanged.
 
 ```sh
 pnpm build   # dist/svg/<brand>/<brand>-<kind>-<treatment>.svg, manifest.json, artwork.json

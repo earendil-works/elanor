@@ -1,15 +1,36 @@
 import {readFile} from "node:fs/promises";
 import {createRequire} from "node:module";
 import {resolve} from "node:path";
-import {type BrandId, type LockupName, type Treatment, brands, lockups, tokenBrand} from "../../config.js";
+import {
+  type BrandId,
+  brands,
+  type LockupName,
+  lockups,
+  type LogoKind,
+  logoTokens,
+  type PartName,
+  parts,
+  tokenBrand,
+  type Treatment,
+} from "../../config.js";
 import {translatePath} from "./path-data.js";
 import {parseSource, type SourceArtwork, type SourcePath} from "./svg.js";
 
 export const packageDirectory = resolve(import.meta.dirname, "../..");
 export const sourceDirectory = resolve(packageDirectory, "sources");
 
-export type LogoKind = "logo" | `logo-wordmark-${LockupName}`;
-export const kinds: LogoKind[] = ["logo", "logo-wordmark-horizontal", "logo-wordmark-stacked"];
+const lockupKindPrefix = "logo-wordmark-";
+
+/** Every asset kind: the symbol alone, then one per lockup rule. */
+export const kinds: LogoKind[] = [
+  "logo",
+  ...(Object.keys(lockups) as LockupName[]).map((lockup): LogoKind => `${lockupKindPrefix}${lockup}`),
+];
+
+/** The lockup a kind composes, or undefined for the symbol alone. */
+export function lockupOf(kind: LogoKind): LockupName | undefined {
+  return kind === "logo" ? undefined : (kind.slice(lockupKindPrefix.length) as LockupName);
+}
 
 /** Artwork with fills still linked to tokens; the input for every output format. */
 export interface Artwork {
@@ -30,15 +51,22 @@ export interface ColoredArtwork {
   paths: ColoredPath[];
 }
 
-type Part = "mark" | "mark-monochrome" | "wordmark" | "wordmark-small";
-
-export async function loadPart(brand: BrandId, part: Part): Promise<SourceArtwork | undefined> {
+/** Loads a source drawing, falling back as configured when an optional part is absent. */
+export async function loadPart(brand: BrandId, part: PartName): Promise<SourceArtwork | undefined> {
   const file = resolve(sourceDirectory, brand, `${part}.svg`);
   const source = await readFile(file, "utf8").catch((error: NodeJS.ErrnoException) => {
     if (error.code === "ENOENT") return undefined;
     throw error;
   });
-  return source === undefined ? undefined : parseSource(source, `${brand}/${part}.svg`);
+  if (source !== undefined) return parseSource(source, `${brand}/${part}.svg`);
+  const rule = parts[part];
+  return "fallback" in rule ? loadPart(brand, rule.fallback) : undefined;
+}
+
+async function requirePart(brand: BrandId, part: PartName): Promise<SourceArtwork> {
+  const artwork = await loadPart(brand, part);
+  if (!artwork) throw new Error(`${brand}: missing sources/${brand}/${part}.svg`);
+  return artwork;
 }
 
 /** Places parts like Figma auto layout: sequential on the main axis, centered on the cross axis. */
@@ -63,14 +91,10 @@ export function composeLockup(mark: SourceArtwork, wordmark: SourceArtwork, bran
 }
 
 export async function composeArtwork(brand: BrandId, kind: LogoKind, monochrome: boolean): Promise<Artwork> {
-  const mark = (monochrome ? await loadPart(brand, "mark-monochrome") : undefined) ?? (await loadPart(brand, "mark"));
-  if (!mark) throw new Error(`${brand}: missing sources/${brand}/mark.svg`);
-  if (kind === "logo") return mark;
-
-  const lockup = kind.slice("logo-wordmark-".length) as LockupName;
-  const wordmark = await loadPart(brand, lockups[lockup].wordmark);
-  if (!wordmark) throw new Error(`${brand}: missing sources/${brand}/${lockups[lockup].wordmark}.svg`);
-  return composeLockup(mark, wordmark, brand, lockup);
+  const mark = await requirePart(brand, monochrome ? "mark-monochrome" : "mark");
+  const lockup = lockupOf(kind);
+  if (!lockup) return mark;
+  return composeLockup(mark, await requirePart(brand, lockups[lockup].wordmark), brand, lockup);
 }
 
 type Scheme = "light" | "dark";
@@ -87,8 +111,6 @@ export async function loadTokens(): Promise<TokenCatalog> {
   return {tokens: Object.fromEntries(catalog.tokens.map((token) => [token.path, token]))};
 }
 
-export const monochromeToken = "semantic.color.logo.monochrome";
-
 export function tokenHex(tokens: TokenCatalog, token: string, scheme: Scheme): string {
   const hex = (tokens.tokens[token]?.values[scheme] as {hex?: string} | undefined)?.hex;
   if (!hex) throw new Error(`Token ${token} has no ${scheme} hex value; build @earendil-works/design-tokens first`);
@@ -102,7 +124,7 @@ export function colorArtwork(artwork: Artwork, treatment: Treatment, tokens: Tok
     height: artwork.height,
     paths: artwork.paths.map(({token, d, fillRule}) => ({
       d,
-      fill: tokenHex(tokens, treatment.monochrome ? monochromeToken : token, treatment.scheme),
+      fill: tokenHex(tokens, treatment.monochrome ? logoTokens.monochrome : token, treatment.scheme),
       ...(fillRule ? {fillRule} : {}),
     })),
   };
