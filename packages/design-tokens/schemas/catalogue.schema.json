@@ -13,7 +13,7 @@
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["path", "cssVariable", "type", "tier", "description", "deprecated", "modes"],
+        "required": ["path", "cssVariable", "type", "tier", "description", "deprecated", "modes", "values"],
         "properties": {
           "path": { "type": "string", "minLength": 1 },
           "cssVariable": { "type": "string", "pattern": "^--[A-Za-z0-9_-]+$" },
@@ -29,6 +29,30 @@
               "light": { "type": "string", "minLength": 1 },
               "dark": { "type": "string", "minLength": 1 }
             }
+          },
+          "values": {
+            "description": "Resolved DTCG $value per color scheme.",
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["light", "dark"],
+            "properties": {
+              "light": {},
+              "dark": {}
+            }
+          },
+          "aliasOf": {
+            "description": "The token each color scheme's value ultimately aliases.",
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["light", "dark"],
+            "properties": {
+              "light": { "type": ["string", "null"] },
+              "dark": { "type": ["string", "null"] }
+            }
+          },
+          "extensions": {
+            "description": "The token's $extensions, such as com.earendil-works.print CMYK builds.",
+            "type": "object"
           },
           "sourceToken": { "type": "string", "minLength": 1 }
         }

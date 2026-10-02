@@ -83,23 +83,27 @@ export interface TypographyRecipe {
   };
 }
 
+/**
+ * A named key color, optionally with a generated scale at the key's hue. With
+ * a scale, the key becomes the scale group's `$root`.
+ */
 export interface ColorRecipeColor {
   name: string;
-  hue: number;
-  saturation: {
+  /** The defining color, in the same shape as a DTCG color value. */
+  key: ColorRecipeKey;
+  /** Saturation range of the scale; omit for a standalone color. */
+  saturation?: {
     min: number;
     max: number;
   };
-  brand?: ColorRecipeBrand;
+  /** CMYK builds of the key color as percentages, per print profile. */
+  print?: Record<string, [number, number, number, number]>;
 }
 
-/** An exact brand color that shares its family's hue. */
-export interface ColorRecipeBrand {
-  hex: string;
-  /** Set when the family's hue intentionally differs from the brand color. */
-  allowHueShift?: boolean;
-  /** Print builds as CMYK percentages. */
-  cmyk?: Record<string, [number, number, number, number]>;
+/** An OKLCH key color: lightness 0–1, chroma, and hue in degrees. */
+export interface ColorRecipeKey {
+  colorSpace: "oklch";
+  components: [number, number, number];
 }
 
 export type ColorInteractiveState = "hover" | "active";

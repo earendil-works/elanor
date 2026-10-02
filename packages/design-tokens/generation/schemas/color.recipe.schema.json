@@ -73,28 +73,41 @@
       "type": "array",
       "minItems": 1,
       "items": {
+        "description": "A named key color, optionally with a generated scale at the key's hue. With a scale, the key becomes the scale group's $root.",
         "type": "object",
-        "required": ["name", "hue", "saturation"],
+        "required": ["name", "key"],
         "additionalProperties": false,
         "properties": {
           "name": { "type": "string", "minLength": 1, "pattern": "^[^$]+$" },
-          "hue": { "type": "number", "minimum": 0, "exclusiveMaximum": 360 },
-          "brand": {
+          "key": {
+            "description": "The defining color, in the same shape as a DTCG color value. It must lie within sRGB.",
             "type": "object",
-            "required": ["hex"],
+            "required": ["colorSpace", "components"],
             "additionalProperties": false,
             "properties": {
-              "hex": { "type": "string", "pattern": "^#[0-9a-f]{6}$" },
-              "allowHueShift": { "type": "boolean" },
-              "cmyk": {
-                "type": "object",
-                "additionalProperties": {
-                  "type": "array",
-                  "minItems": 4,
-                  "maxItems": 4,
-                  "items": { "type": "integer", "minimum": 0, "maximum": 100 }
-                }
+              "colorSpace": { "const": "oklch" },
+              "components": {
+                "description": "Lightness from 0 to 1, chroma, and hue in degrees.",
+                "type": "array",
+                "items": [
+                  { "type": "number", "minimum": 0, "maximum": 1 },
+                  { "type": "number", "minimum": 0 },
+                  { "type": "number", "minimum": 0, "exclusiveMaximum": 360 }
+                ],
+                "minItems": 3,
+                "additionalItems": false
               }
+            }
+          },
+          "print": {
+            "description": "CMYK builds of the key color as percentages, per print profile.",
+            "type": "object",
+            "minProperties": 1,
+            "additionalProperties": {
+              "type": "array",
+              "minItems": 4,
+              "maxItems": 4,
+              "items": { "type": "integer", "minimum": 0, "maximum": 100 }
             }
           },
           "saturation": {

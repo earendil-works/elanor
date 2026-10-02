@@ -132,7 +132,7 @@ semantic.color.background.fill.selected.hover
 
 The base primary fill provides the default brand-colored high-prominence treatment. Its `neutral`, `information`, `negative`, and `positive` variants provide equivalent treatments for explicit neutral, informational, destructive, and favorable intent. The base and `information` currently share Cerulian Blue values, but remain separate because default brand intent and informational intent may diverge later. They continue using the generic `onPrimaryFill` text and icon roles when the contrasting content color does not change.
 
-Use `background.fill.ghost` when a bounded element intentionally has no visible fill and should reveal its parent background. Its base and the bases of its `neutral`, `information`, `negative`, and `positive` variants all alias the generated transparent primitive. Their hover and active states use Cerulian Blue, Driftwood, Cerulian Blue, Coral Red, and Turquoise Green respectively, mirroring the default and variant structure of the primary fill. The base and informational ghost treatments currently share values while retaining distinct intent. Use `background.fill.selected` for selected controls and progress indicators that require a distinct accent fill; indicators displayed on that fill use `icon.onSelectedFill`. A corresponding text token is not defined because the current selected components do not place text inside this fill.
+Use `background.fill.ghost` when a bounded element intentionally has no visible fill and should reveal its parent background. Its base and the bases of its `neutral`, `information`, `negative`, and `positive` variants all alias the generated transparent primitive. Their hover and active states use Cerulian Blue, Graphite, Cerulian Blue, Coral Red, and Turquoise Green respectively, mirroring the default and variant structure of the primary fill. The base and informational ghost treatments currently share values while retaining distinct intent. Use `background.fill.selected` for selected controls and progress indicators that require a distinct accent fill; indicators displayed on that fill use `icon.onSelectedFill`. A corresponding text token is not defined because the current selected components do not place text inside this fill.
 
 Secondary fills may communicate a status while retaining their lower-prominence treatment. Append the status as a variant and keep background, text, and icon paths parallel:
 
@@ -198,7 +198,7 @@ The numeric step occupies one CTI+ `state` part and does not combine with anothe
 | `primitive.dimension.100` | `primitive` | `dimension` | — | — | `100` |
 | `primitive.dimension.fontSize.400` | `primitive` | `dimension` | `fontSize` | — | `400` |
 | `primitive.dimension.breakpoint.250` | `primitive` | `dimension` | `breakpoint` | — | `250` |
-| `primitive.color.driftwood.500` | `primitive` | `color` | — | `driftwood` | `500` |
+| `primitive.color.graphite.500` | `primitive` | `color` | — | `graphite` | `500` |
 | `primitive.color.dataViz.100` | `primitive` | `color` | — | `dataViz` | `100` |
 | `primitive.number.lineHeight.300` | `primitive` | `number` | `lineHeight` | — | `300` |
 | `primitive.number.opacity.150` | `primitive` | `number` | `opacity` | — | `150` |
@@ -331,14 +331,14 @@ The logical token names are `semantic.color.background.fill.selected` and `seman
 - `primitive.dimension.100` is a valid token; `primitive.dimension` is only a group.
 - Keep repeated parts consecutive and preserve the CTI+ order.
 - Omit parts that add no meaning. `none` is allowed only when it is a documented semantic choice for an explicit zero value, such as no padding; never use it as a structural placeholder.
-- Primitive names describe a value family or scale, never usage: `primitive.color.driftwood.500`.
+- Primitive names describe a value family or scale, never usage: `primitive.color.graphite.500`.
 - Semantic names describe intent, never appearance or primitive value: prefer `semantic.color.text.primary` over `semantic.color.text.gray900`.
 - Do not encode a theme (`light` or `dark`) in a name. Resolver modifiers provide themes. `onLight` and `onDark` describe contrast context, not the active theme.
 
 ## Examples
 
 ```text
-primitive.color.driftwood.500
+primitive.color.graphite.500
 primitive.color.dataViz.100
 primitive.color.transparent
 primitive.dimension.100
