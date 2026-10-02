@@ -12,7 +12,7 @@
     "./pi.css": "./dist/pi/tokens.css",
     "./earendil.css": "./dist/earendil/tokens.css",
     "./lefos.css": "./dist/lefos/tokens.css",
-    "./*.resolved.json": "./dist/*/tokens.resolved.json"
+    "./*.catalog.json": "./dist/*/tokens.catalog.json"
   },
   "scripts": {
     "clean": "rm -rf dist",

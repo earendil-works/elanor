@@ -3,8 +3,8 @@ import { round, token } from "../dtcg";
 import type {
   ColorInteractiveState,
   ColorRecipe,
-  ColorRecipeBrand,
   ColorRecipeColor,
+  ColorRecipeKey,
   GeneratedTokenPatch,
   JsonObject,
   JsonValue,
@@ -15,19 +15,9 @@ const BELL_CURVE_CENTER = 0.5;
 const BELL_CURVE_SIGMA = 0.25;
 const OKLCH_COMPONENT_PRECISION = 4;
 const OKLCH_HUE_PRECISION = 2;
-const ANCHOR_COLORS: ReadonlyArray<readonly [string, number]> = [
-  ["white", 1],
-  ["black", 0],
-];
 const TRANSPARENT_COLOR_NAME = "transparent";
-const BRAND_GROUP_NAME = "brand";
-const BRAND_HUE_TOLERANCE = 0.01;
 const PRINT_EXTENSION_KEY = "com.earendil-works.print";
-const RESERVED_COLOR_NAMES: ReadonlySet<string> = new Set([
-  ...ANCHOR_COLORS.map(([name]) => name),
-  TRANSPARENT_COLOR_NAME,
-  BRAND_GROUP_NAME,
-]);
+const SRGB_GAMUT_EPSILON = 0.0001;
 const INTERACTIVE_STATE_MULTIPLIERS: Readonly<
   Record<ColorInteractiveState, number>
 > = {
@@ -88,8 +78,11 @@ function bellCurveWeight(position: number): number {
  * @param step The numeric token step.
  * @returns The OKHSL saturation between 0 and 1.
  */
-function saturationForStep(color: ColorRecipeColor, step: number): number {
-  const { min, max } = color.saturation;
+function saturationForStep(
+  saturation: NonNullable<ColorRecipeColor["saturation"]>,
+  step: number,
+): number {
+  const { min, max } = saturation;
   return min + (max - min) * bellCurveWeight(scalePositionForStep(step));
 }
 
@@ -166,15 +159,16 @@ function expandedSteps(recipe: ColorRecipe): number[] {
  * Checks color definitions that cannot be expressed in the recipe JSON Schema.
  *
  * @param colors The color definitions from the recipe.
- * @throws When names repeat, are reserved, or a saturation range is inverted.
+ * @throws When names repeat, are reserved, a saturation range is inverted, or
+ * a key color is outside sRGB.
  */
 function validateColors(colors: ColorRecipeColor[]): void {
   const names = new Set<string>();
 
   for (const color of colors) {
-    if (RESERVED_COLOR_NAMES.has(color.name)) {
+    if (color.name === TRANSPARENT_COLOR_NAME) {
       throw new Error(
-        `Color name ${color.name} is reserved for a generated anchor color`,
+        `Color name ${color.name} is reserved for the generated transparent color`,
       );
     }
 
@@ -183,41 +177,46 @@ function validateColors(colors: ColorRecipeColor[]): void {
     }
     names.add(color.name);
 
-    if (color.saturation.min > color.saturation.max) {
+    if (color.saturation && color.saturation.min > color.saturation.max) {
       throw new Error(
         `Color ${color.name} saturation min must not exceed its max`,
       );
     }
 
-    if (color.brand && !color.brand.allowHueShift) {
-      const brandHue = new Color(color.brand.hex).to("okhsl").coords[0] ?? 0;
-      const difference = Math.abs(((brandHue - color.hue + 540) % 360) - 180);
-      if (difference > BRAND_HUE_TOLERANCE) {
-        throw new Error(
-          `Color ${color.name} hue ${color.hue} does not match its brand color ${color.brand.hex} (hue ${round(brandHue, 2)})`,
-        );
-      }
+    if (
+      !new Color("oklch", color.key.components).inGamut("srgb", {
+        epsilon: SRGB_GAMUT_EPSILON,
+      })
+    ) {
+      throw new Error(
+        `Color ${color.name} key oklch(${color.key.components.join(" ")}) is outside the sRGB gamut`,
+      );
     }
   }
 }
 
 /**
- * Creates an exact sRGB token for a brand color.
+ * Creates the token for a key color.
  *
- * Brand colors are fixed artwork values, so they keep their authored hex
- * rather than being rounded through OKLCH like generated scale steps.
+ * The authored OKLCH components are kept exactly; only the hex fallback is
+ * derived. Print builds are attached as an extension.
  *
- * @param brand The brand color definition from the recipe.
- * @returns A DTCG color token with optional print builds.
+ * @param key The authored key color.
+ * @param print Optional CMYK builds per print profile.
+ * @returns A DTCG color token in OKLCH with an sRGB hex fallback.
  */
-function brandColorToken(brand: ColorRecipeBrand): JsonObject {
-  const hex = brand.hex.toLowerCase();
-  const components = [1, 3, 5].map((index) =>
-    round(Number.parseInt(hex.slice(index, index + 2), 16) / 255, 4),
-  );
-  const result = token({ colorSpace: "srgb", components, hex });
-  if (brand.cmyk) {
-    result.$extensions = { [PRINT_EXTENSION_KEY]: { cmyk: brand.cmyk } };
+function keyColorToken(
+  key: ColorRecipeKey,
+  print: ColorRecipeColor["print"],
+): JsonObject {
+  const components = [...key.components];
+  const result = token({
+    colorSpace: key.colorSpace,
+    components,
+    hex: hexFallback(components),
+  });
+  if (print) {
+    result.$extensions = { [PRINT_EXTENSION_KEY]: { cmyk: print } };
   }
   return result;
 }
@@ -320,12 +319,15 @@ function colorToken(
 /**
  * Generates DTCG color tokens from OKHSL color scales.
  *
- * Pure white, black, and transparent are constants rather than design choices,
- * so the generator emits them as standalone colors for every target. Recipe
- * colors should omit the scale ends and let the anchors represent them.
+ * Transparent is a constant rather than a design choice, so the generator
+ * always emits it. Scales are calculated between pure white (step 0) and pure
+ * black (step 1000), but those ends are not emitted; recipe colors such as the
+ * brand black and white are authored as keys.
  *
- * Families with a brand color also emit it exactly as
- * `<path>.color.brand.<family>`, after checking that it shares the family hue.
+ * Every recipe color has a key color. Without a saturation range it is emitted
+ * as `<path>.color.<name>`. With one, the key becomes the group's `$root` and
+ * a scale is generated as `<path>.color.<name>.<step>` at the key's hue, since
+ * OKLCH and OKHSL share the same hue angle.
  *
  * @param recipe The color scale recipe.
  * @returns Typed patches containing the generated color tokens.
@@ -338,30 +340,27 @@ export function generateColorTokens(
   const selectedSteps = expandedSteps(recipe);
   const scales: JsonObject = {};
 
-  for (const [name, lightness] of ANCHOR_COLORS) {
-    scales[name] = colorToken(0, 0, lightness);
-  }
   scales[TRANSPARENT_COLOR_NAME] = colorToken(0, 0, 0, 0);
 
   for (const color of recipe.colors) {
-    const steps: JsonObject = {};
+    const key = keyColorToken(color.key, color.print);
+    if (!color.saturation) {
+      scales[color.name] = key;
+      continue;
+    }
 
+    const hue = color.key.components[2];
+    const steps: JsonObject = { $root: key };
     for (const step of selectedSteps) {
       steps[String(step)] = colorToken(
-        color.hue,
-        saturationForStep(color, step),
+        hue,
+        saturationForStep(color.saturation, step),
         lightnessForStep(step),
       );
     }
 
     scales[color.name] = steps;
   }
-
-  const brand: JsonObject = {};
-  for (const color of recipe.colors) {
-    if (color.brand) brand[color.name] = brandColorToken(color.brand);
-  }
-  if (Object.keys(brand).length > 0) scales[BRAND_GROUP_NAME] = brand;
 
   return [
     {

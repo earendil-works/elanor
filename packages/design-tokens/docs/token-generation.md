@@ -75,7 +75,7 @@ The generators currently emit leaves under these paths:
 - border widths: `primitive.dimension.borderWidth.<step>`
 - border radii: `primitive.dimension.radius.<step>` and `primitive.dimension.radius.full`
 - opacity: `primitive.number.opacity.<step>`
-- colors: `primitive.color.<name>` or `primitive.color.<name>.<step>`, plus `primitive.color.brand.<name>` for families with a `brand` color
+- colors: `primitive.color.<name>` for key colors (the group's `$root` when the color also has a scale) and `primitive.color.<name>.<step>`
 
 Ownership is attached to token leaves, not whole parent groups. A generated leaf must be changed through its recipe or generator because the next run replaces it. An unmarked manual token can coexist in the same groups as generated tokens as long as it does not use a generated path. For example, `primitive.dimension.spacing` can remain beside generated dimension steps and typography font sizes.
 
@@ -236,11 +236,15 @@ saturation = min + (max - min) * bellCurve(step / 1000)
 
 Token `0` maps to white and token `1000` to black. Lightness decreases linearly along the scale, so token `500` has OKHSL lightness `0.5`. Core palette steps are multiples of `100`, with optional `25` and `50` near-white steps for subtle structural backgrounds. All other intermediate color steps are reserved for interactive states and are derived from configured core positions; resting semantic colors must not reference them.
 
-The generator always emits pure white, black, and transparent as standalone `white`, `black`, and `transparent` tokens. They are constants rather than design choices, so they are calculation rules and their names are reserved. The transparent token uses black components with zero alpha. Chromatic colors should omit steps `0` and `1000` and let the opaque anchor tokens represent the scale ends.
+Steps `0` and `1000` are the pure white and pure black ends of the calculation, but they are not emitted; recipes should omit them. The brand `black` and `white` are ordinary key colors in the recipe. The generator always emits `transparent`, a constant rather than a design choice, so its name is reserved. It uses black components with zero alpha.
 
 Saturation follows a Gaussian bell curve centered on the middle of the scale. The curve is normalized so it reaches exactly `max` at step `500` and exactly `min` at both ends. This keeps near-white and near-black steps close to neutral while mid-tones carry the most saturation.
 
-Each color in the recipe defines a name, a constant OKHSL hue, and the `min` and `max` of its saturation bell curve:
+Each color in the recipe has a name and a key color, and optionally a scale:
+
+- `key` is the color's defining value, in the same shape as a DTCG color value: `{ "colorSpace": "oklch", "components": [lightness, chroma, hue] }`. It must lie within sRGB. The generator emits it exactly as `primitive.color.<name>`, deriving only the hex fallback. When the color has a scale, the key becomes the scale group's `$root`.
+- `saturation` holds the `min` and `max` of the bell curve and turns the color into a scale. The scale keeps the key's hue throughout, because OKLCH and OKHSL share hue angles.
+- `print` holds CMYK builds of the key per print profile, emitted in the key token's `com.earendil-works.print` extension.
 
 ```json
 {
@@ -255,14 +259,18 @@ Each color in the recipe defines a name, a constant OKHSL hue, and the `min` and
   "colors": [
     {
       "name": "cerulianBlue",
-      "hue": 231.49,
+      "key": { "colorSpace": "oklch", "components": [0.6523, 0.0938, 231.49] },
       "saturation": { "min": 0.1, "max": 0.68 }
+    },
+    {
+      "name": "white",
+      "key": { "colorSpace": "oklch", "components": [0.9731, 0, 0] }
     }
   ]
 }
 ```
 
-Interaction steps are generated for every configured color family. `lighterFrom` subtracts the configured distance from each source position, while `darkerFrom` adds it. Hover uses one distance and active uses two, so a distance of `40` derives `360` and `320` toward the lighter end from core step `400`. Source positions `0` and `1000` may be used as scale anchors even though the generated primitives expose those endpoints as standalone `white` and `black` tokens. Derived values must remain strictly between the anchors. Interaction names are recipe-only generation inputs: output remains part of the ordinary numeric primitive scale, and semantic aliases assign hover or active intent.
+Interaction steps are generated for every configured color family. `lighterFrom` subtracts the configured distance from each source position, while `darkerFrom` adds it. Hover uses one distance and active uses two, so a distance of `40` derives `360` and `320` toward the lighter end from core step `400`. Source positions `0` and `1000` may be used as scale ends even though they are not emitted. Derived values must remain strictly between them. Interaction names are recipe-only generation inputs: output remains part of the ordinary numeric primitive scale, and semantic aliases assign hover or active intent.
 
 Colors are calculated in OKHSL with colorjs.io and emitted as DTCG color tokens with `colorSpace` `oklch`. Lightness and chroma components are rounded to four decimal places and hue to two. Achromatic colors have a powerless hue; the generator retains their rounded input hue as a numeric compatibility value because Terrazzo 2.4's Color.js adapter does not translate the otherwise-valid DTCG `none` keyword before gamut conversion. The numeric hue does not affect colors with zero chroma. Every token also carries a 6-digit `hex` fallback derived from the rounded OKLCH components, so the fallback always describes the same color. OKHSL maps onto the sRGB gamut by construction, so the fallback never requires gamut mapping.
 

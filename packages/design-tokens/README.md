@@ -54,8 +54,7 @@ Equivalent entry points exist for `pi.css`, `earendil.css`, and `lefos.css`. Pac
 Generated files are written to `packages/design-tokens/dist/<brand>/` for Radius, Pi, Earendil, and Lefos. Each brand output contains:
 
 - `tokens.css`
-- `tokens.catalog.json`, a versioned catalogue used by linting
-- `tokens.resolved.json`, every token's resolved DTCG value per color scheme, including exact brand colors and print extensions (exported as `@earendil-works/design-tokens/<brand>.resolved.json`)
+- `tokens.catalog.json`, a versioned catalogue of every CSS custom property with its resolved CSS and DTCG values per color scheme, alias target, and `$extensions` such as print builds. Linting and build tools use it; it is exported as `@earendil-works/design-tokens/<brand>.catalog.json`
 - Figma-compatible JSON files from `terrazzo-plugin-figma-json`
 
 In `tokens.css`, primitive tokens, mode-independent semantic tokens, and the default light semantic colors are emitted under `:root`, which declares `color-scheme: light dark`. Only dark `semantic.color.*` overrides are emitted inside the `prefers-color-scheme: dark` media query, preventing invariant tokens from being duplicated for each mode.

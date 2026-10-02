@@ -5,6 +5,9 @@ import type {
 } from "@terrazzo/parser";
 
 export const CATALOGUE_SCHEMA_VERSION = 1;
+const GENERATION_EXTENSION_KEY = "com.earendil-works.generation";
+
+type ColorScheme = "light" | "dark";
 
 export interface CatalogueEntry {
   path: string;
@@ -13,7 +16,14 @@ export interface CatalogueEntry {
   tier: string;
   description: string;
   deprecated: boolean | string;
-  modes: Record<"light" | "dark", string>;
+  /** Resolved CSS value per color scheme. */
+  modes: Record<ColorScheme, string>;
+  /** Resolved DTCG `$value` per color scheme, e.g. a color with its `hex`. */
+  values: Record<ColorScheme, unknown>;
+  /** The token each scheme's value ultimately aliases, when it is an alias. */
+  aliasOf?: Record<ColorScheme, string | null>;
+  /** The token's `$extensions`, such as print builds of key colors. */
+  extensions?: Record<string, unknown>;
   sourceToken?: string;
 }
 
@@ -151,6 +161,10 @@ export function cataloguePlugin(brand: string): Plugin {
       for (const [name, variable] of modeVariables(darkTransforms)) darkVariables.set(name, variable);
       const lightValues = resolvedModeValues(lightVariables);
       const darkValues = resolvedModeValues(darkVariables);
+      const resolved = {
+        light: options.resolver.apply({ colorScheme: "light" }),
+        dark: options.resolver.apply({ colorScheme: "dark" }),
+      };
 
       const tokens: CatalogueEntry[] = [];
       for (const [cssVariable, variable] of [...lightVariables].sort(([a], [b]) => a.localeCompare(b))) {
@@ -171,6 +185,22 @@ export function cataloguePlugin(brand: string): Plugin {
         const token = (exactTransform ?? prefixTransform)?.token;
         if (!token) throw new Error(`Could not find token metadata for ${cssVariable}.`);
 
+        // Composite subproperties (`<token>.fontSize`) take their part of the
+        // composite value; aliases and extensions describe whole tokens only.
+        const subvalue = variable.path === token.id ? undefined : variable.path.slice(token.id.length + 1);
+        const dtcgValue = (scheme: ColorScheme): unknown => {
+          const value = (resolved[scheme][token.id] ?? token).$value;
+          return subvalue === undefined ? value : (value as Record<string, unknown>)[subvalue];
+        };
+        const aliasOf = subvalue === undefined
+          ? {
+              light: resolved.light[token.id]?.aliasOf ?? null,
+              dark: resolved.dark[token.id]?.aliasOf ?? null,
+            }
+          : { light: null, dark: null };
+        const extensions: Record<string, unknown> = subvalue === undefined ? { ...token.$extensions } : {};
+        delete extensions[GENERATION_EXTENSION_KEY];
+
         tokens.push({
           path: variable.path,
           cssVariable,
@@ -182,6 +212,9 @@ export function cataloguePlugin(brand: string): Plugin {
             light: lightValues.get(cssVariable) ?? variable.value,
             dark: darkValues.get(cssVariable) ?? darkVariable.value,
           },
+          values: { light: dtcgValue("light"), dark: dtcgValue("dark") },
+          ...(aliasOf.light || aliasOf.dark ? { aliasOf } : {}),
+          ...(Object.keys(extensions).length > 0 ? { extensions } : {}),
           ...(variable.path === token.id ? {} : { sourceToken: token.id }),
         });
       }
