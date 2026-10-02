@@ -65,6 +65,9 @@ export const treatments = [
 
 export type Treatment = (typeof treatments)[number];
 
+/** Each brand's own page background, used behind icons and avatars. */
+export const backgroundToken = "semantic.color.background.canvas";
+
 export const logoTokens = {
   /** Source fills may only link to tokens in this group. */
   group: "semantic.color.logo",

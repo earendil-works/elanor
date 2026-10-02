@@ -1,8 +1,8 @@
 import {readdir, readFile} from "node:fs/promises";
 import {relative, resolve} from "node:path";
-import {type BrandId, brands, gridUnit, type Treatment} from "../../config.js";
-import type {ExportDefinition, Kind} from "../../exports.config.js";
-import {type Artwork, type ColoredArtwork, loadTokens, monochromeToken, packageDirectory, serializeSvg, type TokenCatalog, tokenHex} from "./compose.js";
+import {backgroundToken, type BrandId, brands, type LogoKind, logoTokens, type Treatment} from "../../config.js";
+import type {ExportDefinition} from "../../exports.config.js";
+import {type Artwork, type ColoredArtwork, loadTokens, packageDirectory, serializeSvg, type TokenCatalog, tokenHex} from "./compose.js";
 import {createIco, createZip} from "./containers.js";
 import {createPdf} from "./pdf.js";
 import {circleSafeFrame, frameSvg, renderPng, squareFrame, tightFrame} from "./raster.js";
@@ -10,7 +10,7 @@ import {circleSafeFrame, frameSvg, renderPng, squareFrame, tightFrame} from "./r
 export interface Asset {
   id: string;
   brand: BrandId;
-  kind: Kind;
+  kind: LogoKind;
   treatment: Treatment;
   /** Token-linked artwork (already the monochrome drawing for monochrome treatments). */
   source: Artwork;
@@ -68,7 +68,7 @@ function manifestAsset(context: ExportContext, asset: Asset): ManifestAsset {
 
 /** The brand's own page background, used behind icons and avatars. */
 async function canvas(brand: BrandId, scheme: "light" | "dark"): Promise<string> {
-  return tokenHex(await loadTokens(brand), "semantic.color.background.canvas", scheme);
+  return tokenHex(await loadTokens(brand), backgroundToken, scheme);
 }
 
 function markAsset(context: ExportContext, brand: BrandId, treatment: string): Asset {
@@ -102,14 +102,12 @@ const pngHeights: Exporter<"png-heights"> = async (definition, context) => {
   }
 };
 
-const outputConditions: Record<string, string> = {psoCoatedV3: "FOGRA51", psoUncoatedV3: "FOGRA52"};
-
 const print: Exporter<"print"> = async (definition, context) => {
   for (const asset of select(context, definition.select)) {
     const pdfs: Record<string, string> = {};
-    for (const profile of definition.profiles) {
+    for (const [profile, outputCondition] of Object.entries(definition.profiles)) {
       const paths = asset.source.paths.map(({d, token, fillRule}) => {
-        const linked = asset.treatment.monochrome ? monochromeToken : token;
+        const linked = asset.treatment.monochrome ? logoTokens.monochrome : token;
         const primitive = context.tokens.tokens[linked]?.aliasOf?.[asset.treatment.scheme];
         const print = primitive ? context.tokens.tokens[primitive]?.extensions?.["com.earendil-works.print"] : undefined;
         const cmyk = (print as {cmyk?: Record<string, [number, number, number, number]>} | undefined)?.cmyk?.[profile];
@@ -118,7 +116,7 @@ const print: Exporter<"print"> = async (definition, context) => {
       });
       const pdf = createPdf(
         {width: asset.source.width, height: asset.source.height, paths},
-        {millimetersPerUnit: definition.millimetersPerUnit, title: asset.id, outputCondition: outputConditions[profile] ?? profile},
+        {millimetersPerUnit: definition.millimetersPerUnit, title: asset.id, outputCondition},
       );
       pdfs[profile] = await context.write(`kits/${asset.brand}/print/${profile}/${asset.id}.pdf`, pdf);
     }
@@ -135,7 +133,7 @@ const favicons: Exporter<"favicons"> = async (definition, context) => {
     const background = await canvas(brand, "light");
 
     // The SVG favicon switches to the dark colors with the browser's color scheme.
-    const svgFrame = squareFrame(light, 32, 0);
+    const svgFrame = squareFrame(light, definition.svgSize, 0);
     const changed = light.paths.map((path, index) => path.fill !== dark.paths[index]!.fill);
     const rules = [...new Set(dark.paths.filter((_, index) => changed[index]).map(({fill}) => fill))]
       .map((fill) => `.${classFor(fill)}{fill:${fill}}`)
@@ -154,17 +152,17 @@ const favicons: Exporter<"favicons"> = async (definition, context) => {
     files.ico = await context.write(`${directory}/favicon.ico`, createIco(icoImages));
     files.appleTouchIcon = await context.write(
       `${directory}/apple-touch-icon.png`,
-      await renderPng(light, squareFrame(light, definition.appleTouchSize, gridUnit, background)),
+      await renderPng(light, squareFrame(light, definition.appleTouchSize, definition.padding, background)),
     );
     const icons = [];
     for (const size of definition.iconSizes) {
-      const path = await context.write(`${directory}/icon-${size}.png`, await renderPng(light, squareFrame(light, size, gridUnit)));
+      const path = await context.write(`${directory}/icon-${size}.png`, await renderPng(light, squareFrame(light, size, definition.padding)));
       icons.push({src: `icon-${size}.png`, sizes: `${size}x${size}`, type: "image/png"});
       files[`icon${size}`] = path;
     }
     files.maskable = await context.write(
       `${directory}/icon-maskable-${definition.maskableSize}.png`,
-      await renderPng(light, circleSafeFrame(light, definition.maskableSize, 0.8, background)),
+      await renderPng(light, circleSafeFrame(light, definition.maskableSize, definition.safeZone, background)),
     );
     icons.push({src: `icon-maskable-${definition.maskableSize}.png`, sizes: `${definition.maskableSize}x${definition.maskableSize}`, type: "image/png", purpose: "maskable"});
 
@@ -198,7 +196,7 @@ const avatars: Exporter<"avatars"> = async (definition, context) => {
       const mark = markAsset(context, brand, treatment);
       const background = await canvas(brand, mark.treatment.scheme);
       for (const size of definition.sizes) {
-        const png = await renderPng(mark.colored, circleSafeFrame(mark.colored, size, 0.8, background));
+        const png = await renderPng(mark.colored, circleSafeFrame(mark.colored, size, definition.safeZone, background));
         entries.push({treatment, size, path: await context.write(`kits/${brand}/social/${brand}-avatar-${treatment}-${size}.png`, png)});
       }
     }
