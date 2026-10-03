@@ -1,5 +1,8 @@
 import {CopyButton} from '@earendil-works/elanor-react';
 
-<CopyButton value="pnpm install" aria-label="Copy command" client:load />
+<p>
+  <code>pnpm install</code>{' '}
+  <CopyButton value="pnpm install" aria-label="Copy install command" client:load />
+</p>
 
-`value` is the exact text copied. Use `onCopySuccess` and `onCopyError` for application feedback; `copiedLabel` and `errorLabel` customize the status messages. Copying requires clipboard access in a secure context (HTTPS or localhost).
+Clipboard access requires HTTPS or localhost.

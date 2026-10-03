@@ -11,7 +11,7 @@ export function SearchableDropdownExample(): React.JSX.Element {
     <div>
       <SearchableDropdown.Root items={projects} value={project} onValueChange={setProject}>
         <Stack gap="small">
-          <SearchableDropdown.Label>Searchable project</SearchableDropdown.Label>
+          <SearchableDropdown.Label>Find a project</SearchableDropdown.Label>
           <SearchableDropdown.Trigger>
             <SearchableDropdown.Value placeholder="Select a project" />
             <SearchableDropdown.Icon />
@@ -23,6 +23,7 @@ export function SearchableDropdownExample(): React.JSX.Element {
               <SearchableDropdown.InputGroup>
                 <SearchableDropdown.Input aria-label="Filter projects" placeholder="Filter projects" />
               </SearchableDropdown.InputGroup>
+              <SearchableDropdown.Empty>No projects found.</SearchableDropdown.Empty>
               <SearchableDropdown.List>
                 {(item: string) => (
                   <SearchableDropdown.Item key={item} value={item}>

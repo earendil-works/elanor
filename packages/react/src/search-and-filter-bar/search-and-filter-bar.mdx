@@ -1,17 +1,6 @@
 import {SearchAndFilterBarExample} from './search-and-filter-bar.example.tsx';
 
-Search comes first in both layout and keyboard order. At wide sizes, it spans four
-columns of a twelve-column grid; filters occupy the remaining eight, with 16px
-gutters. Up to four filter controls fill each row; additional controls wrap to the
-next row. Four controls each fill a two-column span, while fewer controls fill the
-available space. A single custom wrapper can instead manage the filter slot's
-internal layout.
-
-The bar fills its parent and reflows based on its own available width: below 48rem,
-search and filters stack with up to two filter columns; below 24rem, filters use
-one column. Empty slots collapse, leaving the other slot the full width.
-
-Use `filters` or, when it is nullish, `children` for filter content. The layout owns
-no search or filter state; this example filters a local member list in application code.
+Filter members by name, status, role, group, and two-factor authentication.
+Filtering runs locally; controls reflow to fit the available width.
 
 <SearchAndFilterBarExample client:load />

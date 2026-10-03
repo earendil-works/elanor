@@ -1,15 +1,14 @@
-import {Button, PageHeader} from '@earendil-works/elanor-react';
+import {Link, PageHeader} from '@earendil-works/elanor-react';
 
 <PageHeader.Root>
   <PageHeader.Row>
-    <PageHeader.Title level={1}>Projects</PageHeader.Title>
+    <PageHeader.Title level={1}>Component library</PageHeader.Title>
     <PageHeader.Actions>
-      <Button hierarchy="secondary">Import projects</Button>
-      <Button>New project</Button>
+      <Link href="/components/button">Buttons</Link>
+      <Link href="/components/input">Inputs</Link>
     </PageHeader.Actions>
   </PageHeader.Row>
   <PageHeader.Description>
-    Create projects for your team, import existing work, and manage access across your workspace.
-    Each project keeps its members, settings, and activity together.
+    Explore controls, navigation, and layouts for your application.
   </PageHeader.Description>
 </PageHeader.Root>

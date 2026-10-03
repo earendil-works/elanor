@@ -3,7 +3,7 @@ import {Dropdown} from './dropdown.tsx';
 
 export function DropdownExample(): React.JSX.Element {
   return (
-    <Dropdown.Root>
+    <Dropdown.Root items={[{value: 'alpha', label: 'Alpha'}, {value: 'beta', label: 'Beta'}]}>
       <Stack gap="small">
         <Dropdown.Label>Project</Dropdown.Label>
         <Dropdown.Trigger>
