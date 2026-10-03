@@ -14,23 +14,8 @@
   min-inline-size: 0;
 }
 
-.title,
-.description {
-  margin: 0;
-}
-
 .title {
   flex: 1 1 auto;
-  min-inline-size: 0;
-  overflow-wrap: anywhere;
-  font: var(--semantic-typography-heading-app-1);
-  letter-spacing: var(--semantic-typography-heading-app-1-letter-spacing);
-}
-
-.description {
-  max-inline-size: var(--semantic-dimension-breakpoint-small);
-  color: var(--semantic-color-text-primary);
-  font: var(--semantic-typography-ui-primary);
 }
 
 .actions {

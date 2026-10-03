@@ -1,5 +1,6 @@
-import {createElement, forwardRef, type HTMLAttributes} from 'react';
-import type {HeadingLevel} from '../heading/heading.tsx';
+import {forwardRef, type HTMLAttributes} from 'react';
+import {Heading, type HeadingProps} from '../heading/heading.tsx';
+import {Text} from '../text/text.tsx';
 import styles from './page-header.module.css';
 import {classes} from '../utils/class-names.ts';
 
@@ -19,21 +20,19 @@ export const PageHeaderRow = forwardRef<HTMLDivElement, PageHeaderRowProps>(
   },
 );
 
-export interface PageHeaderTitleProps extends HTMLAttributes<HTMLHeadingElement> {
-  readonly level: HeadingLevel;
-}
+export type PageHeaderTitleProps = Omit<HeadingProps, 'size'>;
 
 export const PageHeaderTitle = forwardRef<HTMLHeadingElement, PageHeaderTitleProps>(
-  function PageHeaderTitle({level, className, ...props}, ref) {
-    return createElement(`h${level}`, {...props, ref, className: classes(styles.title, className)});
+  function PageHeaderTitle({className, ...props}, ref) {
+    return <Heading {...props} ref={ref} size={1} className={classes(styles.title, className)} />;
   },
 );
 
 export interface PageHeaderDescriptionProps extends HTMLAttributes<HTMLParagraphElement> {}
 
 export const PageHeaderDescription = forwardRef<HTMLParagraphElement, PageHeaderDescriptionProps>(
-  function PageHeaderDescription({className, ...props}, ref) {
-    return <p {...props} ref={ref} className={classes(styles.description, className)} />;
+  function PageHeaderDescription(props, ref) {
+    return <Text {...props} as="p" ref={ref} />;
   },
 );
 

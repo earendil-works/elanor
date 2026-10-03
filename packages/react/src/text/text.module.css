@@ -1,4 +1,12 @@
 .text {
+  margin: 0;
   color: var(--semantic-color-text-primary);
   font: var(--semantic-typography-ui-primary);
+}
+
+.paragraph {
+  box-sizing: border-box;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+  text-wrap: pretty;
 }
