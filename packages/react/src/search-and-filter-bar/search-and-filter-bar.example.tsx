@@ -42,7 +42,7 @@ export function SearchAndFilterBarExample(): React.JSX.Element {
       </SearchAndFilterBar>
       <Text role="status">{matchingMembers.length} of {members.length} members</Text>
       <ul aria-label="Matching members" style={{margin: 0, paddingInlineStart: 'var(--semantic-dimension-space-padding-x-large)'}}>
-        {matchingMembers.map((member) => <li key={member.name}><Text>{member.name} — {member.role}</Text></li>)}
+        {matchingMembers.map((member) => <li key={member.name}><Text as="span">{member.name} — {member.role}</Text></li>)}
       </ul>
     </Stack>
   );

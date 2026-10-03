@@ -20,8 +20,8 @@ export function StackExample(): React.JSX.Element {
         <section key={label}>
           <Heading level={2}>{label}</Heading>
           <Stack direction={direction} align={align} gap="small" role="group" aria-label={label}>
-            <Text style={statusStyle}>Draft</Text>
-            <Text style={statusStyle}>Ready for review<br />2 comments</Text>
+            <Text as="span" style={statusStyle}>Draft</Text>
+            <Text as="span" style={statusStyle}>Ready for review<br />2 comments</Text>
           </Stack>
         </section>
       ))}
