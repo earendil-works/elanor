@@ -1,3 +1,8 @@
-import {NavigationItem} from '@earendil-works/elanor-react';
+import {NavigationItem, Stack} from '@earendil-works/elanor-react';
 
-<NavigationItem href="#">Navigation item</NavigationItem>
+<nav aria-label="Related components">
+  <Stack gap="small">
+    <NavigationItem href="/components/navigation-item" active>Navigation item</NavigationItem>
+    <NavigationItem href="/components/side-navigation">Side navigation</NavigationItem>
+  </Stack>
+</nav>

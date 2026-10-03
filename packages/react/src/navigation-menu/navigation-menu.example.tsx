@@ -2,13 +2,13 @@ import {NavigationMenu} from './navigation-menu.tsx';
 
 export function NavigationMenuExample(): React.JSX.Element {
   return (
-    <NavigationMenu.Root>
+    <NavigationMenu.Root aria-label="Related components">
       <NavigationMenu.List>
         <NavigationMenu.Item>
-          <NavigationMenu.Link href="#">Overview</NavigationMenu.Link>
+          <NavigationMenu.Link href="/components/tabs/">Tabs</NavigationMenu.Link>
         </NavigationMenu.Item>
         <NavigationMenu.Item>
-          <NavigationMenu.Link href="#">Projects</NavigationMenu.Link>
+          <NavigationMenu.Link href="/components/contextual-menu/">Contextual menu</NavigationMenu.Link>
         </NavigationMenu.Item>
       </NavigationMenu.List>
     </NavigationMenu.Root>

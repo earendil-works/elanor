@@ -1,27 +1,26 @@
-import {AddIcon} from '@earendil-works/elanor-icons-react';
+import {AddIcon, ArrowForwardIcon} from '@earendil-works/elanor-icons-react';
+import {useState} from 'react';
+import {Stack} from '../stack/stack.tsx';
+import {Text} from '../text/text.tsx';
 import {Button} from './button.tsx';
-import {Heading} from '../heading/heading.tsx';
-import { Stack } from '../stack/stack.tsx';
 
 export function ButtonExample(): React.JSX.Element {
+  const [taskCount, setTaskCount] = useState(0);
+
   return (
-    <Stack gap="large" align="start">
-      <Stack gap="small" align="start">
-        <Heading level={2}>Default</Heading>
-        <Stack direction="row" gap="small" align="center">
-          <Button>Continue</Button>
-          <Button iconStart={<AddIcon />}>Create</Button>
-          <Button iconEnd={<AddIcon />}>Create</Button>
-        </Stack>
+    <Stack gap="small" align="start">
+      <Stack direction="row" gap="small" align="center" wrap="wrap">
+        <Button iconStart={<AddIcon />} onClick={() => setTaskCount(count => count + 1)}>
+          Add draft task
+        </Button>
+        <Button hierarchy="secondary" density="compact" disabled={taskCount === 0} onClick={() => setTaskCount(0)}>
+          Reset
+        </Button>
+        <Button hierarchy="secondary" iconEnd={<ArrowForwardIcon />} render={<a href="/components/input" />} nativeButton={false}>
+          Explore inputs
+        </Button>
       </Stack>
-      <Stack gap="small" align="start">
-        <Heading level={2}>Compact</Heading>
-        <Stack direction="row" gap="small" align="center">
-          <Button density="compact">Continue</Button>
-          <Button density="compact" iconStart={<AddIcon />}>Create</Button>
-          <Button density="compact" iconEnd={<AddIcon />}>Create</Button>
-        </Stack>
-      </Stack>
+      <Text role="status">Draft tasks: {taskCount}</Text>
     </Stack>
   );
 }

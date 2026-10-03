@@ -1,3 +1,15 @@
-import {Section} from '@earendil-works/elanor-react';
+import {Heading, Section, Text} from '@earendil-works/elanor-react';
 
-<Section>Section content</Section>
+## With separator
+
+<Section aria-labelledby="members-heading">
+  <Heading level={2} id="members-heading">Members</Heading>
+  <Text>Invite collaborators and assign workspace roles.</Text>
+</Section>
+
+## Without separator
+
+<Section separated={false} aria-labelledby="access-heading">
+  <Heading level={2} id="access-heading">Project access</Heading>
+  <Text>Choose which projects each team can access.</Text>
+</Section>

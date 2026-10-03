@@ -12,11 +12,11 @@ body {
   font: var(--semantic-typography-ui-primary);
 }
 
-main {
+[data-docs-swap='content'] {
   padding: var(--semantic-dimension-space-padding-x-large);
 }
 
-aside {
+body > aside {
   position: sticky;
   inset-block-start: 0;
   block-size: 100vh;

@@ -11,6 +11,8 @@ interface Props {
 }
 
 const {currentComponent} = Astro.props;
+// The AppLayout demo supplies its own main landmark.
+const ContentTag = currentComponent === 'app-layout' ? 'div' : 'main';
 const entries = await getCollection('components');
 const components = entries.map((entry) => entry.id).sort();
 ---
@@ -29,11 +31,11 @@ const components = entries.map((entry) => entry.id).sort();
         <DocsSideNavigation components={components} currentComponent={currentComponent} />
       </div>
     </aside>
-    <main data-docs-swap="content">
+    <ContentTag data-docs-swap="content">
       <div class="preview">
         <slot />
       </div>
-    </main>
+    </ContentTag>
   </body>
 </html>
 
