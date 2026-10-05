@@ -2,17 +2,9 @@ import {Button, CodeSnippet, CopyButton, Heading, Link, Search, Stack, Text} fro
 import {useDeferredValue, useEffect, useMemo, useState} from 'react';
 import styles from './icon-browser.module.css';
 
-type IndexEntry = readonly [name: string, tags: string];
+type IndexEntry = readonly [name: string, tags: string, component: string];
 
 const PAGE_SIZE = 240;
-
-function componentName(name: string): string {
-  const body = name
-    .split('-')
-    .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-    .join('');
-  return `${/^\d/.test(body) ? 'Number' : ''}${body}Icon`;
-}
 
 /** Ranks name matches before tag matches, with alphabetical ties. */
 function search(index: readonly IndexEntry[], query: string): readonly IndexEntry[] {
@@ -41,7 +33,7 @@ export function IconBrowser(): React.JSX.Element {
   const [index, setIndex] = useState<readonly IndexEntry[] | null>(null);
   const [query, setQuery] = useState('');
   const [limit, setLimit] = useState(PAGE_SIZE);
-  const [selected, setSelected] = useState<string | null>(null);
+  const [selected, setSelected] = useState<IndexEntry | null>(null);
   const deferredQuery = useDeferredValue(query);
 
   useEffect(() => {
@@ -54,9 +46,7 @@ export function IconBrowser(): React.JSX.Element {
   }, []);
 
   const results = useMemo(() => (index ? search(index, deferredQuery) : []), [index, deferredQuery]);
-  const importLine = selected
-    ? `import {${componentName(selected)}} from '@earendil-works/elanor-icons-react/${selected}';`
-    : '';
+  const importLine = selected ? `import {${selected[2]}} from '@earendil-works/elanor-icons-react/${selected[0]}';` : '';
 
   return (
     <div className={styles.browser}>
@@ -71,13 +61,13 @@ export function IconBrowser(): React.JSX.Element {
       />
       {selected ? (
         <section className={styles.detail} aria-live="polite">
-          <span className={styles.large} style={{maskImage: `url(/api/icons/${selected}.svg)`}} aria-hidden="true" />
+          <span className={styles.large} style={{maskImage: `url(/api/icons/${selected[0]}.svg)`}} aria-hidden="true" />
           <Stack gap="small">
             <Heading level={2} size={3}>
-              {selected}
+              {selected[0]}
             </Heading>
             <CodeSnippet actions={<CopyButton value={importLine} aria-label="Copy import" />}>{importLine}</CodeSnippet>
-            <Link href={`/api/icons/${selected}.svg`} download>
+            <Link href={`/api/icons/${selected[0]}.svg`} download>
               Download SVG
             </Link>
           </Stack>
@@ -85,16 +75,16 @@ export function IconBrowser(): React.JSX.Element {
       ) : null}
       <Text>{index ? `${results.length} icons` : 'Loading…'}</Text>
       <ul className={styles.grid}>
-        {results.slice(0, limit).map(([name]) => (
-          <li key={name}>
+        {results.slice(0, limit).map((entry) => (
+          <li key={entry[0]}>
             <button
               type="button"
               className={styles.tile}
-              aria-pressed={name === selected}
-              onClick={() => setSelected(name)}
+              aria-pressed={entry[0] === selected?.[0]}
+              onClick={() => setSelected(entry)}
             >
-              <span className={styles.glyph} style={{maskImage: `url(/api/icons/${name}.svg)`}} aria-hidden="true" />
-              <span className={styles.name}>{name}</span>
+              <span className={styles.glyph} style={{maskImage: `url(/api/icons/${entry[0]}.svg)`}} aria-hidden="true" />
+              <span className={styles.name}>{entry[0]}</span>
             </button>
           </li>
         ))}

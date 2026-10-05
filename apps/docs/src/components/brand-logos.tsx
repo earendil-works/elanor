@@ -25,7 +25,19 @@ const iconDescriptions: Record<string, {label: string; use: string; masked?: boo
 };
 const setupFiles = new Set(['webmanifest', 'html']);
 
+/** Download labels for the print profiles the logo build exports. */
+const printProfileLabels: Record<string, string> = {
+  psoCoatedV3: 'PDF coated',
+  psoUncoatedV3: 'PDF uncoated',
+};
+
 const url = (path: string) => `/api/logos/${path}`;
+
+function printProfileLabel(profile: string): string {
+  const label = printProfileLabels[profile];
+  if (!label) throw new Error(`No label for the ${profile} print profile; add it to printProfileLabels`);
+  return label;
+}
 const fileName = (path: string) => path.split('/').at(-1);
 
 function describeIcon(key: string): {label: string; use: string; masked?: boolean} {
@@ -76,7 +88,7 @@ export function BrandLogos({brand, pressKit, children}: BrandLogosProps): React.
                     {asset.files.png ? <Link href={url(asset.files.png)} download>PNG</Link> : null}
                     {Object.entries(asset.files.pdf ?? {}).map(([profile, path]) => (
                       <Link key={profile} href={url(path)} download>
-                        {profile === 'psoCoatedV3' ? 'PDF coated' : 'PDF uncoated'}
+                        {printProfileLabel(profile)}
                       </Link>
                     ))}
                   </Stack>

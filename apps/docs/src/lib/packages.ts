@@ -9,6 +9,11 @@ export const logosDist = dirname(require.resolve('@earendil-works/elanor-logos/m
 /** The company brand guidelines and their clear-space image. */
 export const logosGuidelines = resolve(logosDist, 'guidelines/earendil');
 export const iconsDist = dirname(require.resolve('@earendil-works/elanor-icons/metadata.json'));
+/**
+ * The React icons barrel. The package only has `import` conditions, which require.resolve does not match,
+ * so it is read through the docs package's own dependency link.
+ */
+export const iconsReactBarrel = resolve(process.cwd(), 'node_modules/@earendil-works/elanor-icons-react/dist/index.js');
 
 export interface LogoAsset {
   id: string;
