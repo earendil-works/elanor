@@ -2,9 +2,11 @@ import {readFile} from "node:fs/promises";
 import {createRequire} from "node:module";
 import {resolve} from "node:path";
 import {
+  type BrandConfig,
   type BrandId,
   brands,
   type LockupName,
+  type LockupRule,
   lockups,
   type LogoKind,
   logoTokens,
@@ -69,8 +71,14 @@ async function requirePart(brand: BrandId, part: PartName): Promise<SourceArtwor
 }
 
 /** Places parts like Figma auto layout: sequential on the main axis, centered on the cross axis. */
+/** The shared lockup rule with the brand's overrides applied. */
+function lockupRule(brand: BrandId, lockup: LockupName): LockupRule {
+  const brandConfig: BrandConfig = brands[brand];
+  return {...lockups[lockup], ...brandConfig.lockups?.[lockup]};
+}
+
 export function composeLockup(mark: SourceArtwork, wordmark: SourceArtwork, brand: BrandId, lockup: LockupName): Artwork {
-  const rule = {...lockups[lockup], ...(brands[brand] as {lockups?: Record<string, object>}).lockups?.[lockup]};
+  const rule = lockupRule(brand, lockup);
   const row = rule.direction === "row";
   const width = row ? mark.width + rule.gap + wordmark.width : Math.max(mark.width, wordmark.width);
   const innerHeight = row ? Math.max(mark.height, wordmark.height) : mark.height + rule.gap + wordmark.height;
@@ -93,7 +101,7 @@ export async function composeArtwork(brand: BrandId, kind: LogoKind, monochrome:
   const mark = await requirePart(brand, monochrome ? "mark-monochrome" : "mark");
   const lockup = lockupOf(kind);
   if (!lockup) return mark;
-  return composeLockup(mark, await requirePart(brand, lockups[lockup].wordmark), brand, lockup);
+  return composeLockup(mark, await requirePart(brand, lockupRule(brand, lockup).wordmark), brand, lockup);
 }
 
 type Scheme = "light" | "dark";
