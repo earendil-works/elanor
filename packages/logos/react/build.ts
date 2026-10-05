@@ -13,11 +13,13 @@ interface Artwork {
   paths: Path[];
 }
 interface ArtworkFile {
-  colors: Record<string, {light: string; dark: string}>;
   /** The token that paints every shape of a monochrome logo. */
   monochromeToken: string;
-  /** Per brand and kind; lockup kinds name their lockup. */
-  brands: Record<string, Record<string, {lockup?: string; color: Artwork; monochrome: Artwork}>>;
+  /** Per brand: the colors of the tokens its artwork links to, and its artwork per kind. Lockup kinds name their lockup. */
+  brands: Record<
+    string,
+    {colors: Record<string, {light: string; dark: string}>; kinds: Record<string, {lockup?: string; color: Artwork; monochrome: Artwork}>}
+  >;
 }
 
 const packageDirectory = import.meta.dirname;
@@ -28,7 +30,7 @@ const manifestFile = resolve(packageDirectory, "../dist/manifest.json");
 const source = await readFile(artworkFile, "utf8").catch(() => {
   throw new Error(`Missing ${artworkFile}; build @earendil-works/elanor-logos first`);
 });
-const {colors, monochromeToken, brands} = JSON.parse(source) as ArtworkFile;
+const {monochromeToken, brands} = JSON.parse(source) as ArtworkFile;
 const names = Object.fromEntries(
   (JSON.parse(await readFile(manifestFile, "utf8")) as {brands: Array<{id: string; name: string}>}).brands.map(
     ({id, name}) => [id, name],
@@ -41,14 +43,10 @@ await writeFile(resolve(outputDirectory, "create-logo.js"), runtime());
 await writeFile(resolve(outputDirectory, "create-logo.d.ts"), runtimeTypes());
 
 const exports: string[] = [];
-for (const [brand, kinds] of Object.entries(brands)) {
+for (const [brand, {colors, kinds}] of Object.entries(brands)) {
   const componentName = `${brand.charAt(0).toUpperCase()}${brand.slice(1)}Logo`;
-  const used = new Set<string>();
-  for (const {color, monochrome} of Object.values(kinds)) {
-    for (const path of [...color.paths, ...monochrome.paths]) used.add(path.token);
-  }
   const data = {
-    colors: Object.fromEntries([...used].sort().map((token) => [token, colors[token]])),
+    colors,
     monochrome: colors[monochromeToken],
     // Keyed by the `lockup` prop; the symbol alone is "logo".
     kinds: Object.fromEntries(

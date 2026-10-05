@@ -7,11 +7,11 @@ import {translatePath} from "./lib/path-data.js";
 import {parseSource} from "./lib/svg.js";
 
 const partNames = Object.keys(parts) as PartName[];
-const tokens = await loadTokens();
 let count = 0;
 
 for (const brand of await readdir(sourceDirectory)) {
   if (!(brand in brands)) throw new Error(`sources/${brand}: unknown brand; add it to config.ts`);
+  const tokens = await loadTokens(brand as BrandId);
   for (const file of await readdir(resolve(sourceDirectory, brand))) {
     if (!partNames.some((part) => file === `${part}.svg`)) throw new Error(`sources/${brand}/${file}: unexpected file`);
     const artwork = parseSource(await readFile(resolve(sourceDirectory, brand, file), "utf8"), `${brand}/${file}`);
