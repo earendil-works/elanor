@@ -1,4 +1,5 @@
-// Generates React logo components from the artwork built by @earendil-works/elanor-logos.
+// Generates the per-brand logo modules from the artwork built by @earendil-works/elanor-logos.
+// The component they use, src/create-logo.tsx, is compiled by tsc afterwards.
 import {mkdir, readFile, rm, writeFile} from "node:fs/promises";
 import {resolve} from "node:path";
 
@@ -39,8 +40,6 @@ const names = Object.fromEntries(
 
 await rm(outputDirectory, {recursive: true, force: true});
 await mkdir(outputDirectory, {recursive: true});
-await writeFile(resolve(outputDirectory, "create-logo.js"), runtime());
-await writeFile(resolve(outputDirectory, "create-logo.d.ts"), runtimeTypes());
 
 const exports: string[] = [];
 for (const [brand, {colors, kinds}] of Object.entries(brands)) {
@@ -67,65 +66,3 @@ await writeFile(resolve(outputDirectory, "index.js"), `${exports.join("\n")}\n`)
 await writeFile(resolve(outputDirectory, "index.d.ts"), `${exports.join("\n")}\n`);
 console.log(`Built ${exports.length} React logos.`);
 
-function runtime(): string {
-  return `import {createElement, forwardRef} from "react";
-
-export function createLogo(displayName, brandName, data) {
-  const Logo = forwardRef(function ElanorLogo(
-    {lockup, monochrome = false, scheme = "auto", height = 32, style, ...props},
-    ref,
-  ) {
-    const kind = data.kinds[lockup ?? "logo"];
-    if (!kind) throw new Error(\`\${displayName} has no \${lockup} lockup\`);
-    const artwork = monochrome ? kind.monochrome : kind.color;
-    const numeric = typeof height === "number";
-    const named = props["aria-hidden"] == null || props["aria-hidden"] === false || props["aria-hidden"] === "false";
-    const paths = artwork.paths.map(({token, d, fillRule}, index) => {
-      const color = monochrome ? data.monochrome : data.colors[token];
-      const auto = scheme === "auto" && color.light !== color.dark;
-      return createElement("path", {
-        key: index,
-        d,
-        fillRule,
-        fill: auto ? undefined : color[scheme === "dark" ? "dark" : "light"],
-        style: auto ? {fill: \`light-dark(\${color.light}, \${color.dark})\`} : undefined,
-      });
-    });
-    return createElement(
-      "svg",
-      {
-        role: named ? "img" : undefined,
-        "aria-label": named ? brandName : undefined,
-        ...props,
-        ref,
-        xmlns: "http://www.w3.org/2000/svg",
-        viewBox: \`0 0 \${artwork.width} \${artwork.height}\`,
-        height,
-        width: numeric ? (height * artwork.width) / artwork.height : undefined,
-        style: numeric ? style : {aspectRatio: \`\${artwork.width} / \${artwork.height}\`, width: "auto", ...style},
-      },
-      paths,
-    );
-  });
-  Logo.displayName = displayName;
-  return Logo;
-}
-`;
-}
-
-function runtimeTypes(): string {
-  return `import type {ForwardRefExoticComponent, RefAttributes, SVGProps} from "react";
-export interface LogoProps extends Omit<SVGProps<SVGSVGElement>, "children" | "height" | "width"> {
-  /** Symbol and wordmark lockup. Omit for the symbol alone. */
-  lockup?: "horizontal" | "vertical";
-  /** One-color version, for layouts that require it. */
-  monochrome?: boolean;
-  /** "auto" follows the page's color-scheme via CSS light-dark(). */
-  scheme?: "auto" | "light" | "dark";
-  /** Rendered height; the width follows the artwork's aspect ratio. Defaults to 32. */
-  height?: number | string;
-}
-export type LogoComponent = ForwardRefExoticComponent<LogoProps & RefAttributes<SVGSVGElement>>;
-export declare function createLogo(displayName: string, brandName: string, data: unknown): LogoComponent;
-`;
-}
