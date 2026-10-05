@@ -10,7 +10,7 @@ These guidelines explain how to refer to {{names}} and how to use the logos in t
 
 ## Choosing a logo
 
-- **Symbol + wordmark (`logo-wordmark-horizontal/`, `logo-wordmark-stacked/`):** Preferred when introducing the company or product, or when its name should be immediately clear. Use the stacked lockup where the horizontal one does not fit.
+- **Symbol + wordmark (`logo-wordmark-horizontal/`, `logo-wordmark-vertical/`):** Preferred when introducing the company or product, or when its name should be immediately clear. Use the vertical lockup where the horizontal one does not fit.
 - **Symbol alone (`logo/`):** Use in compact spaces, such as an app icon, avatar, or favicon, or alongside other brands' symbols when the brand is clear from context.
 
 Use the supplied artwork as a complete asset. Do not separate the lettering from a lockup, change its proportions, or rebuild it in another typeface. Do not create new lockups.

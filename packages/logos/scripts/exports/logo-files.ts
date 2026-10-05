@@ -12,7 +12,7 @@ export interface LogoFilesOptions {
 const kitPath = (asset: Asset, extension: string) =>
   `kits/${asset.brand}/${asset.kind}/${asset.treatment.id}/${asset.id}.${extension}`;
 
-/** Logo files for the press kit folders. */
+/** Logo files for the press kits, in `kits/<brand>/<kind>/<treatment>/`. */
 export function logoFiles(options: LogoFilesOptions): ExportPlugin {
   return {
     name: "logo-files",

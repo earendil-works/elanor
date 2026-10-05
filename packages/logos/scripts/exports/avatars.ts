@@ -13,7 +13,6 @@ export interface AvatarsOptions {
 export function avatars(options: AvatarsOptions): ExportPlugin {
   return {
     name: "avatars",
-    kitContents: "`social/` profile pictures",
     async run(context) {
       for (const brand of Object.keys(brands) as BrandId[]) {
         const entries = [];
@@ -22,7 +21,7 @@ export function avatars(options: AvatarsOptions): ExportPlugin {
           const background = await context.background(brand, mark.treatment.scheme);
           for (const size of options.sizes) {
             const png = await renderPng(mark.colored, circleSafeFrame(mark.colored, size, options.safeZone, background));
-            entries.push({treatment, size, path: await context.write(`kits/${brand}/social/${brand}-avatar-${treatment}-${size}.png`, png)});
+            entries.push({treatment, size, path: await context.write(`social/${brand}/${brand}-avatar-${treatment}-${size}.png`, png)});
           }
         }
         context.brandManifest(brand).avatars = entries;

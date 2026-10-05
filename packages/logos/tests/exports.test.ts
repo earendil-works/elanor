@@ -65,12 +65,12 @@ describe("pdf", () => {
 
 describe("built exports", () => {
   test("print PDFs use the CMYK builds from the tokens", async () => {
-    const earendil = await readFile(resolve(dist, "kits/earendil/print/psoCoatedV3/earendil-logo-on-light.pdf"), "latin1");
+    const earendil = await readFile(resolve(dist, "print/earendil/psoCoatedV3/earendil-logo-on-light.pdf"), "latin1");
     expect(earendil).toContain("0 0 0 0.73 k");
-    const pi = await readFile(resolve(dist, "kits/pi/print/psoUncoatedV3/pi-logo-monochrome-on-light.pdf"), "latin1");
+    const pi = await readFile(resolve(dist, "print/pi/psoUncoatedV3/pi-logo-monochrome-on-light.pdf"), "latin1");
     expect(pi).toContain("0 0 0 1 k");
     expect(pi).toContain("(FOGRA52)");
-    const knockout = await readFile(resolve(dist, "kits/pi/print/psoCoatedV3/pi-logo-monochrome-on-dark.pdf"), "latin1");
+    const knockout = await readFile(resolve(dist, "print/pi/psoCoatedV3/pi-logo-monochrome-on-dark.pdf"), "latin1");
     expect(knockout).toContain("0 0 0 0 k");
   });
 
@@ -92,20 +92,23 @@ describe("built exports", () => {
     expect(pi).toContain("Write the name as **Pi** in prose.");
     expect(pi).not.toContain("Radius");
     expect(pi).not.toMatch(/\{\{\w+\}\}/);
-    // The file list comes from the configured plugins.
-    expect(pi).toContain("`email-signature/` PNGs 32 and 64 pixels high, `print/` vector PDFs in CMYK for coated paper (PSO Coated v3)");
+    // The file list comes from the plugins that fill the kit folders.
+    expect(pi).toContain("Each brand folder contains its logos as SVG and PNG.");
 
     const earendil = await readFile(resolve(dist, "guidelines/earendil/BRAND-GUIDELINES.md"), "utf8");
     expect(earendil).toContain("Write the names as **Earendil**, **Pi**, **Radius**, and **Lefos** in prose.");
 
-    const kit = await readFile(resolve(dist, "press-kits/radius-press-kit.zip"));
-    expect(kit.includes("radius-press-kit/BRAND-GUIDELINES.md")).toBe(true);
-    expect(kit.includes("radius-press-kit/clear-space.png")).toBe(true);
+    const kit = Object.keys(unzipSync(await readFile(resolve(dist, "press-kits/radius-press-kit.zip"))));
+    expect(kit).toContain("radius-press-kit/BRAND-GUIDELINES.md");
+    expect(kit).toContain("radius-press-kit/clear-space.png");
+    // Press kits contain only the guidelines and the logos.
+    const folders = new Set(kit.filter((path) => path.split("/").length > 2).map((path) => path.split("/").slice(1, 3).join("/")));
+    expect([...folders].sort()).toEqual(["radius/logo", "radius/logo-wordmark-horizontal", "radius/logo-wordmark-vertical"]);
   });
 
   test("favicons are monochrome, and the SVG favicon switches to white in dark mode", async () => {
     for (const brand of ["earendil", "pi"]) {
-      const svg = await readFile(resolve(dist, `kits/${brand}/favicons/favicon.svg`), "utf8");
+      const svg = await readFile(resolve(dist, `favicons/${brand}/favicon.svg`), "utf8");
       const fills = [...svg.matchAll(/<path [^>]*fill="(#[0-9a-f]+)"/g)].map((match) => match[1]);
       expect(fills.length).toBeGreaterThan(0);
       expect(new Set(fills)).toEqual(new Set(["#111111"]));

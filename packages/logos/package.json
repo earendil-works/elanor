@@ -10,12 +10,7 @@
     "README.md"
   ],
   "exports": {
-    "./svg/*": "./dist/svg/*",
-    "./manifest.json": "./dist/manifest.json",
-    "./kits/*": "./dist/kits/*",
-    "./guidelines/*": "./dist/guidelines/*",
-    "./press-kits/*": "./dist/press-kits/*",
-    "./artwork.json": "./dist/artwork.json"
+    "./*": "./dist/*"
   },
   "scripts": {
     "build": "tsx scripts/build.ts && tsx scripts/export.ts",
