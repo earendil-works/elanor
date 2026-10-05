@@ -6,7 +6,8 @@ import {dirname, relative, resolve} from 'node:path';
 const require = createRequire(resolve(process.cwd(), 'package.json'));
 
 export const logosDist = dirname(require.resolve('@earendil-works/elanor-logos/manifest.json'));
-export const logosGuidelines = resolve(logosDist, '../guidelines');
+/** The company brand guidelines and their clear-space image. */
+export const logosGuidelines = resolve(logosDist, 'guidelines/earendil');
 export const iconsDist = dirname(require.resolve('@earendil-works/elanor-icons/metadata.json'));
 
 export interface LogoAsset {
