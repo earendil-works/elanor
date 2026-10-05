@@ -20,7 +20,7 @@
     }
   },
   "scripts": {
-    "build": "node build.ts",
+    "build": "node build.ts && tsc -p tsconfig.build.json",
     "prepack": "pnpm run build",
     "check": "tsc -p tsconfig.json --noEmit",
     "test": "pnpm --filter @earendil-works/elanor-icons-react... run build && vitest run"
