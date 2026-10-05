@@ -83,6 +83,7 @@
   /* stylelint-disable-next-line design-tokens/token-property-compatibility -- This inset outline is the panel's canvas stroke, not a focus ring. */
   outline: var(--semantic-dimension-border-width-default) solid var(--semantic-color-background-canvas);
   outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
+  box-shadow: var(--semantic-shadow-popup);
   background: var(--semantic-color-background-canvas);
   color: var(--semantic-color-text-primary);
   font: var(--semantic-typography-ui-primary);
@@ -212,7 +213,7 @@
 
 .indicatorFrame::before {
   position: absolute;
-  inset: 0;
+  inset: calc(var(--semantic-dimension-border-width-default) / 2);
   z-index: var(--semantic-number-layer-background);
   box-sizing: border-box;
   border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-primary);
@@ -281,7 +282,9 @@
 }
 
 .groupLabel {
-  padding: var(--semantic-dimension-space-padding-x-small);
+  box-sizing: border-box;
+  padding-block: var(--semantic-dimension-space-padding-medium) var(--semantic-dimension-space-padding-xx-small);
+  padding-inline: var(--semantic-dimension-space-padding-medium);
   color: var(--semantic-color-text-secondary);
   font: var(--semantic-typography-ui-tertiary);
 }

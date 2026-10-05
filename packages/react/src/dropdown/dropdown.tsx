@@ -15,7 +15,6 @@ export type {
   SelectIconState as DropdownIconState,
   SelectPortalProps as DropdownPortalProps,
   SelectPositionerState as DropdownPositionerState,
-  SelectPositionerProps as DropdownPositionerProps,
   SelectPopupState as DropdownPopupState,
   SelectItemState as DropdownItemState,
   SelectItemIndicatorState as DropdownItemIndicatorState,
@@ -28,6 +27,7 @@ export type DropdownRootProps<Value, Multiple extends boolean | undefined = fals
 export type DropdownLabelProps = BaseSelect.Label.Props;
 export type DropdownTriggerProps = BaseSelect.Trigger.Props;
 export type DropdownIconProps = BaseSelect.Icon.Props;
+export type DropdownPositionerProps = BaseSelect.Positioner.Props;
 export type DropdownPopupProps = BaseSelect.Popup.Props;
 export type DropdownListProps = BaseSelect.List.Props;
 export type DropdownItemProps = BaseSelect.Item.Props;
@@ -83,6 +83,19 @@ export const DropdownIcon = forwardRef<HTMLSpanElement, DropdownIconProps>(
       >
         {children ?? <KeyboardArrowDownIcon />}
       </BaseSelect.Icon>
+    );
+  },
+);
+
+export const DropdownPositioner = forwardRef<HTMLDivElement, DropdownPositionerProps>(
+  function DropdownPositioner({alignItemWithTrigger = false, align = 'start', ...props}, ref) {
+    return (
+      <BaseSelect.Positioner
+        {...props}
+        ref={ref}
+        align={align}
+        alignItemWithTrigger={alignItemWithTrigger}
+      />
     );
   },
 );
@@ -173,7 +186,7 @@ export const Dropdown = {
   Value: BaseSelect.Value,
   Icon: DropdownIcon,
   Portal: BaseSelect.Portal,
-  Positioner: BaseSelect.Positioner,
+  Positioner: DropdownPositioner,
   Popup: DropdownPopup,
   List: DropdownList,
   Item: DropdownItem,

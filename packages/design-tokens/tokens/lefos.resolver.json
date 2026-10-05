@@ -28,6 +28,7 @@
         { "$ref": "./shared/semantic/number.tokens.json" },
         { "$ref": "./shared/semantic/fontFamily.tokens.json" },
         { "$ref": "./shared/semantic/fontWeight.tokens.json" },
+        { "$ref": "./shared/semantic/shadow.tokens.json" },
         { "$ref": "./shared/semantic/typography.tokens.json" }
       ]
     },

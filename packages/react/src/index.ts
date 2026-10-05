@@ -86,6 +86,7 @@ export {
   DropdownLabel,
   DropdownList,
   DropdownPopup,
+  DropdownPositioner,
   DropdownSeparator,
   DropdownTrigger,
 } from './dropdown/dropdown.tsx';
