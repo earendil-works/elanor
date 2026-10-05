@@ -27,8 +27,8 @@ const outputDirectory = resolve(packageDirectory, "dist");
 const artworkFile = resolve(packageDirectory, "../dist/artwork.json");
 const manifestFile = resolve(packageDirectory, "../dist/manifest.json");
 
-const source = await readFile(artworkFile, "utf8").catch(() => {
-  throw new Error(`Missing ${artworkFile}; build @earendil-works/elanor-logos first`);
+const source = await readFile(artworkFile, "utf8").catch((error: NodeJS.ErrnoException) => {
+  throw error.code === "ENOENT" ? new Error(`Missing ${artworkFile}; build @earendil-works/elanor-logos first`) : error;
 });
 const {monochromeToken, brands} = JSON.parse(source) as ArtworkFile;
 const names = Object.fromEntries(
