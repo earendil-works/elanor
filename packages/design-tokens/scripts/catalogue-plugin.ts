@@ -188,14 +188,20 @@ export function cataloguePlugin(brand: string): Plugin {
         // Composite subproperties (`<token>.fontSize`) take their part of the
         // composite value; aliases and extensions describe whole tokens only.
         const subvalue = variable.path === token.id ? undefined : variable.path.slice(token.id.length + 1);
+        const resolvedToken = (scheme: ColorScheme) => {
+          const entry = resolved[scheme][token.id];
+          if (!entry) throw new Error(`Missing ${scheme} resolver value for ${token.id}.`);
+          return entry;
+        };
         const dtcgValue = (scheme: ColorScheme): unknown => {
-          const value = (resolved[scheme][token.id] ?? token).$value;
+          const value = resolvedToken(scheme).$value;
           return subvalue === undefined ? value : (value as Record<string, unknown>)[subvalue];
         };
+        // A token that is not an alias has no aliasOf; null records that explicitly.
         const aliasOf = subvalue === undefined
           ? {
-              light: resolved.light[token.id]?.aliasOf ?? null,
-              dark: resolved.dark[token.id]?.aliasOf ?? null,
+              light: resolvedToken("light").aliasOf ?? null,
+              dark: resolvedToken("dark").aliasOf ?? null,
             }
           : { light: null, dark: null };
         const extensions: Record<string, unknown> = subvalue === undefined ? { ...token.$extensions } : {};
