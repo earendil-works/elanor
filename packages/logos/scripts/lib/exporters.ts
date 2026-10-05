@@ -2,7 +2,7 @@ import {readdir, readFile} from "node:fs/promises";
 import {relative, resolve} from "node:path";
 import {backgroundToken, type BrandId, brands, type LogoKind, logoTokens, type Treatment} from "../../config.js";
 import type {ExportDefinition} from "../../exports.config.js";
-import {type Artwork, type ColoredArtwork, loadTokens, packageDirectory, serializeSvg, type TokenCatalog, tokenHex} from "./compose.js";
+import {type Artwork, type ColoredArtwork, loadTokens, packageDirectory, serializeSvg, tokenHex} from "./compose.js";
 import {createIco, createZip} from "./containers.js";
 import {createPdf} from "./pdf.js";
 import {circleSafeFrame, frameSvg, renderPng, squareFrame, tightFrame} from "./raster.js";
@@ -31,7 +31,6 @@ export interface ManifestBrand {
 
 export interface ExportContext {
   assets: Asset[];
-  tokens: TokenCatalog;
   manifest: {brands: ManifestBrand[]; [key: string]: unknown};
   /** Writes a file relative to dist/ and returns that relative path. */
   write(path: string, data: string | Buffer): Promise<string>;
@@ -104,12 +103,13 @@ const pngHeights: Exporter<"png-heights"> = async (definition, context) => {
 
 const print: Exporter<"print"> = async (definition, context) => {
   for (const asset of select(context, definition.select)) {
+    const tokens = await loadTokens(asset.brand);
     const pdfs: Record<string, string> = {};
     for (const [profile, outputCondition] of Object.entries(definition.profiles)) {
       const paths = asset.source.paths.map(({d, token, fillRule}) => {
         const linked = asset.treatment.monochrome ? logoTokens.monochrome : token;
-        const primitive = context.tokens.tokens[linked]?.aliasOf?.[asset.treatment.scheme];
-        const print = primitive ? context.tokens.tokens[primitive]?.extensions?.["com.earendil-works.print"] : undefined;
+        const primitive = tokens.tokens[linked]?.aliasOf?.[asset.treatment.scheme];
+        const print = primitive ? tokens.tokens[primitive]?.extensions?.["com.earendil-works.print"] : undefined;
         const cmyk = (print as {cmyk?: Record<string, [number, number, number, number]>} | undefined)?.cmyk?.[profile];
         if (!cmyk) throw new Error(`${linked} (${asset.treatment.scheme}) has no ${profile} CMYK build`);
         return {d, cmyk, ...(fillRule ? {fillRule} : {})};
