@@ -30,6 +30,15 @@ export function iconImports(): Plugin {
   };
 }
 
+/** Component names by icon file name (`search` → `SearchIcon`), read from the generated barrel at `barrel`. */
+export function iconComponentNames(barrel: string): Map<string, string> {
+  const names = new Map<string, string>();
+  for (const [component, path] of iconExportPaths(readFileSync(barrel, 'utf8'))) {
+    names.set(path.slice(`${packageName}/`.length), component);
+  }
+  return names;
+}
+
 export function iconExportPaths(barrel: string): Map<string, string> {
   const paths = new Map<string, string>();
   for (const node of parseAst(barrel).body) {
