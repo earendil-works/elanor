@@ -44,6 +44,18 @@ export interface ColoredPath {
   d: string;
   fill: string;
   fillRule?: "evenodd";
+  /** CSS class, for example to target the path in color-scheme rules. */
+  className?: string;
+}
+
+/** SVG `<path>` elements for colored paths. */
+export function pathElements(paths: ColoredPath[]): string {
+  return paths
+    .map(
+      ({d, fill, fillRule, className}) =>
+        `<path${className ? ` class="${className}"` : ""} fill="${fill}"${fillRule ? ` fill-rule="${fillRule}"` : ""} d="${d}"/>`,
+    )
+    .join("");
 }
 
 export interface ColoredArtwork {
@@ -148,8 +160,5 @@ export function colorArtwork(artwork: Artwork, treatment: Treatment, tokens: Tok
 }
 
 export function serializeSvg(artwork: ColoredArtwork): string {
-  const paths = artwork.paths
-    .map(({d, fill, fillRule}) => `<path fill="${fill}"${fillRule ? ` fill-rule="${fillRule}"` : ""} d="${d}"/>`)
-    .join("");
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${artwork.width}" height="${artwork.height}" viewBox="0 0 ${artwork.width} ${artwork.height}">${paths}</svg>\n`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${artwork.width}" height="${artwork.height}" viewBox="0 0 ${artwork.width} ${artwork.height}">${pathElements(artwork.paths)}</svg>\n`;
 }

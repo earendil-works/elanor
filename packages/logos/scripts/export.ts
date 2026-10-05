@@ -12,7 +12,7 @@ await Promise.all(
   ["kits", "guidelines", "press-kits"].map((directory) => rm(resolve(distDirectory, directory), {recursive: true, force: true})),
 );
 
-const context = await createExportContext(distDirectory, JSON.parse(await readFile(manifestPath, "utf8")) as Manifest);
+const context = await createExportContext(distDirectory, JSON.parse(await readFile(manifestPath, "utf8")) as Manifest, exportPlugins);
 
 for (const plugin of exportPlugins) {
   const started = performance.now();

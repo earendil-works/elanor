@@ -20,6 +20,8 @@ import {
  */
 export interface ExportPlugin {
   name: string;
+  /** What the plugin adds to each brand's kit folder, as a phrase for the guidelines' file list. */
+  kitContents?: string;
   run(context: ExportContext): Promise<void>;
 }
 
@@ -60,6 +62,8 @@ export interface Manifest {
 }
 
 export interface ExportContext {
+  /** Every configured plugin, in run order. */
+  plugins: ExportPlugin[];
   /** Every brand, kind, and treatment, composed and colored with the brand's tokens. */
   assets: Asset[];
   select(selector?: AssetSelector): Asset[];
@@ -74,11 +78,13 @@ export interface ExportContext {
   manifest: Manifest;
   brandManifest(brand: BrandId): ManifestBrand;
   assetManifest(asset: Asset): ManifestAsset;
-  /** Writes a file relative to dist/ and returns that relative path. */
+  /** The output directory, where write() puts files and later plugins can read them. */
+  distDirectory: string;
+  /** Writes a file relative to the output directory and returns that relative path. */
   write(path: string, data: string | Buffer): Promise<string>;
 }
 
-export async function createExportContext(distDirectory: string, manifest: Manifest): Promise<ExportContext> {
+export async function createExportContext(distDirectory: string, manifest: Manifest, plugins: ExportPlugin[]): Promise<ExportContext> {
   const assets: Asset[] = [];
   for (const brand of Object.keys(brands) as BrandId[]) {
     const tokens = await loadTokens(brand);
@@ -113,6 +119,7 @@ export async function createExportContext(distDirectory: string, manifest: Manif
   };
 
   return {
+    plugins,
     assets,
     select,
     mark(brand, treatment) {
@@ -130,6 +137,7 @@ export async function createExportContext(distDirectory: string, manifest: Manif
       if (!entry) throw new Error(`Manifest has no asset ${asset.id}`);
       return entry;
     },
+    distDirectory,
     async write(path, data) {
       const file = resolve(distDirectory, path);
       await mkdir(dirname(file), {recursive: true});

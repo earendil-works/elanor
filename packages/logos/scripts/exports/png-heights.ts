@@ -12,6 +12,7 @@ export interface PngHeightsOptions {
 export function pngHeights(options: PngHeightsOptions): ExportPlugin {
   return {
     name: options.name,
+    kitContents: `\`${options.name}/\` PNGs ${options.heights.join(" and ")} pixels high`,
     async run(context) {
       for (const asset of context.select(options.select)) {
         const entries = [];

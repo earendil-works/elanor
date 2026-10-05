@@ -43,4 +43,4 @@ For co-branding, merchandise, or any use that could imply an official relationsh
 
 ## Files in this kit
 
-Each brand folder contains its logos as SVG and PNG, `print/` vector PDFs in CMYK for coated (PSO Coated v3) and uncoated (PSO Uncoated v3) paper, `favicons/` for websites and apps, `social/` profile pictures, and `email-signature/` images.
+Each brand folder contains {{kitFiles}}.

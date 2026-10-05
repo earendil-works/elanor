@@ -1,7 +1,7 @@
 import {readFile} from "node:fs/promises";
 import {resolve} from "node:path";
 import {type BrandId, brands, clearSpace, gridUnit, type LogoKind} from "../../config.js";
-import {packageDirectory} from "../lib/compose.js";
+import {packageDirectory, pathElements} from "../lib/compose.js";
 import {svgToPng} from "../lib/raster.js";
 import type {Asset, ExportContext, ExportPlugin, TreatmentId} from "./plugin.js";
 
@@ -46,6 +46,7 @@ export function guidelines(options: GuidelinesOptions): ExportPlugin {
             .join("\n\n"),
           writeNames: `Write the ${names.length === 1 ? "name" : "names"} as ${list(names.map((name) => `**${name}**`))} in prose.`,
           // An HTML image, so Markdown renderers show it as is rather than processing it.
+          kitFiles: list(context.plugins.flatMap((plugin) => (plugin.kitContents ? [plugin.kitContents] : []))),
           clearSpace: `<img src="clear-space.png" alt="${list(names)} logos with one grid unit of clear space on every side" width="800">`,
         };
         const markdown = template.replace(/\{\{(\w+)\}\}/g, (_, key: string) => {
@@ -118,13 +119,10 @@ async function block(context: ExportContext, asset: Asset, x: number, y: number,
   ];
   const vertical = lines(width, outerWidth).map((at) => `<path d="M${x + at} ${y}V${y + outerHeight}"/>`);
   const horizontal = lines(height, outerHeight).map((at) => `<path d="M${x} ${y + at}H${x + outerWidth}"/>`);
-  const artwork = paths
-    .map(({d, fill, fillRule}) => `<path fill="${fill}"${fillRule ? ` fill-rule="${fillRule}"` : ""} d="${d}"/>`)
-    .join("");
   return [
     `<rect x="${x}" y="${y}" width="${outerWidth}" height="${outerHeight}" fill="${area}"/>`,
     `<rect x="${x + clearSpace}" y="${y + clearSpace}" width="${width}" height="${height}" fill="${await context.background(asset.brand, asset.treatment.scheme)}"/>`,
-    `<g transform="translate(${x + clearSpace} ${y + clearSpace})">${artwork}</g>`,
+    `<g transform="translate(${x + clearSpace} ${y + clearSpace})">${pathElements(paths)}</g>`,
     `<g stroke="${grid}" stroke-width="${stroke}" fill="none">${[...vertical, ...horizontal].join("")}</g>`,
   ].join("");
 }

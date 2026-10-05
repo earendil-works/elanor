@@ -1,5 +1,5 @@
 import sharp from "sharp";
-import type {ColoredArtwork} from "./compose.js";
+import {type ColoredArtwork, pathElements} from "./compose.js";
 
 export interface Frame {
   /** Region of artwork coordinates shown, as x, y, width, height. */
@@ -7,6 +7,8 @@ export interface Frame {
   width: number;
   height: number;
   background?: string;
+  /** CSS for the SVG, such as color-scheme rules for classed paths. */
+  style?: string;
 }
 
 /** The artwork's own bounds. */
@@ -44,10 +46,8 @@ export function frameSvg(artwork: ColoredArtwork, frame: Frame): string {
   const background = frame.background
     ? `<rect x="${x}" y="${y}" width="${width}" height="${height}" fill="${frame.background}"/>`
     : "";
-  const paths = artwork.paths
-    .map(({d, fill, fillRule}) => `<path fill="${fill}"${fillRule ? ` fill-rule="${fillRule}"` : ""} d="${d}"/>`)
-    .join("");
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${frame.width}" height="${frame.height}" viewBox="${x} ${y} ${width} ${height}">${background}${paths}</svg>`;
+  const style = frame.style ? `<style>${frame.style}</style>` : "";
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${frame.width}" height="${frame.height}" viewBox="${x} ${y} ${width} ${height}">${style}${background}${pathElements(artwork.paths)}</svg>`;
 }
 
 export async function renderPng(artwork: ColoredArtwork, frame: Frame): Promise<Buffer> {
