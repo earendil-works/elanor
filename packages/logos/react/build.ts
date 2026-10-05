@@ -117,7 +117,7 @@ function runtimeTypes(): string {
   return `import type {ForwardRefExoticComponent, RefAttributes, SVGProps} from "react";
 export interface LogoProps extends Omit<SVGProps<SVGSVGElement>, "children" | "height" | "width"> {
   /** Symbol and wordmark lockup. Omit for the symbol alone. */
-  lockup?: "horizontal" | "stacked";
+  lockup?: "horizontal" | "vertical";
   /** One-color version, for layouts that require it. */
   monochrome?: boolean;
   /** "auto" follows the page's color-scheme via CSS light-dark(). */

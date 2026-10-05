@@ -31,7 +31,7 @@ export interface BrandConfig {
   lockups?: Partial<Record<LockupName, Partial<LockupRule>>>;
 }
 
-export type LockupName = "horizontal" | "stacked";
+export type LockupName = "horizontal" | "vertical";
 
 /** Asset kinds: the symbol alone, and the symbol with the wordmark in each lockup. */
 export type LogoKind = "logo" | `logo-wordmark-${LockupName}`;
@@ -43,7 +43,7 @@ export const clearSpace = gridUnit;
 
 export const lockups: Record<LockupName, LockupRule> = {
   horizontal: {direction: "row", gap: 232, paddingBlock: 20, wordmark: "wordmark"},
-  stacked: {direction: "column", gap: 140, paddingBlock: 0, wordmark: "wordmark-small"},
+  vertical: {direction: "column", gap: 140, paddingBlock: 0, wordmark: "wordmark-small"},
 };
 
 export const brands = {

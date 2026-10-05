@@ -8,4 +8,4 @@ import {EarendilLogo} from '@earendil-works/elanor-logos-react/earendil';
 <EarendilLogo lockup="horizontal" height={32} />;
 ```
 
-Props: `lockup` (`horizontal` | `stacked`, omit for the symbol), `monochrome`, `scheme` (`auto` follows the page's `color-scheme`), and `height`.
+Props: `lockup` (`horizontal` | `vertical`, omit for the symbol), `monochrome`, `scheme` (`auto` follows the page's `color-scheme`), and `height`.

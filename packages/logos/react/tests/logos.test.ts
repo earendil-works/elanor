@@ -5,7 +5,7 @@ import {renderToStaticMarkup} from "react-dom/server";
 import {describe, expect, test} from "vitest";
 
 type LogoProps = Omit<SVGProps<SVGSVGElement>, "height"> & {
-  lockup?: "horizontal" | "stacked";
+  lockup?: "horizontal" | "vertical";
   monochrome?: boolean;
   scheme?: "auto" | "light" | "dark";
   height?: number | string;
@@ -29,7 +29,7 @@ describe("React logos", () => {
   });
 
   test("auto scheme uses light-dark() only where colors differ", () => {
-    const markup = renderToStaticMarkup(createElement(PiLogo, {lockup: "stacked"}));
+    const markup = renderToStaticMarkup(createElement(PiLogo, {lockup: "vertical"}));
     expect(markup).toContain('fill="#4d9abf"');
     expect(markup).toContain("fill:light-dark(#6e6e6e, #f6f6f6)");
   });

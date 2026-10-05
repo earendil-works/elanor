@@ -56,8 +56,8 @@ describe("lockups match the Figma components", () => {
     expect(origin(lockup, 1)).toEqual([792, 20]);
   });
 
-  test("stacked product lockup", () => {
-    const lockup = composeLockup(part(560, 560), part(167, 200), "pi", "stacked");
+  test("vertical product lockup", () => {
+    const lockup = composeLockup(part(560, 560), part(167, 200), "pi", "vertical");
     expect([lockup.width, lockup.height]).toEqual([560, 900]);
     expect(origin(lockup, 1)).toEqual([196.5, 700]);
   });
@@ -65,20 +65,20 @@ describe("lockups match the Figma components", () => {
   test("Earendil lockups have no block padding", () => {
     const horizontal = composeLockup(part(560, 840), part(3266, 840), "earendil", "horizontal");
     expect([horizontal.width, horizontal.height]).toEqual([4058, 840]);
-    const stacked = composeLockup(part(560, 840), part(1139, 200), "earendil", "stacked");
-    expect([stacked.width, stacked.height]).toEqual([1139, 1180]);
-    expect(origin(stacked, 0)).toEqual([289.5, 0]);
+    const vertical = composeLockup(part(560, 840), part(1139, 200), "earendil", "vertical");
+    expect([vertical.width, vertical.height]).toEqual([1139, 1180]);
+    expect(origin(vertical, 0)).toEqual([289.5, 0]);
   });
 
   test.each([
     ["pi", "logo-wordmark-horizontal", 1267, 600],
-    ["pi", "logo-wordmark-stacked", 560, 900],
+    ["pi", "logo-wordmark-vertical", 560, 900],
     ["radius", "logo-wordmark-horizontal", 3295, 600],
-    ["radius", "logo-wordmark-stacked", 844, 900],
+    ["radius", "logo-wordmark-vertical", 844, 900],
     ["lefos", "logo-wordmark-horizontal", 2667, 600],
-    ["lefos", "logo-wordmark-stacked", 643, 900],
+    ["lefos", "logo-wordmark-vertical", 643, 900],
     ["earendil", "logo-wordmark-horizontal", 4058, 840],
-    ["earendil", "logo-wordmark-stacked", 1139, 1180],
+    ["earendil", "logo-wordmark-vertical", 1139, 1180],
   ] as const)("%s %s from sources is %sx%s", async (brand, kind, width, height) => {
     for (const monochrome of [false, true]) {
       const artwork = await composeArtwork(brand, kind, monochrome);
