@@ -1,4 +1,5 @@
 import {Heading, Link, Stack, Text} from '@earendil-works/elanor-react';
+import type {ReactNode} from 'react';
 import type {LogoAsset, LogoBrand} from '../lib/packages.ts';
 import styles from './brand-logos.module.css';
 
@@ -15,16 +16,38 @@ const treatmentLabels: Record<LogoAsset['treatment'], string> = {
   'monochrome-on-dark': 'Monochrome on dark',
 };
 
+/** Favicon files shown as icons, with what each is for. The manifest and head tags are part of the setup instead. */
+const iconDescriptions: Record<string, {label: string; use: string; masked?: boolean}> = {
+  svg: {label: 'SVG favicon', use: 'Modern browsers; follows light and dark mode'},
+  ico: {label: 'ICO favicon', use: 'Older browsers'},
+  appleTouchIcon: {label: 'Apple touch icon', use: 'iOS home screen'},
+  maskable: {label: 'Maskable icon', use: 'Android home screen, cropped to any shape', masked: true},
+};
+const setupFiles = new Set(['webmanifest', 'html']);
+
 const url = (path: string) => `/api/logos/${path}`;
+const fileName = (path: string) => path.split('/').at(-1);
+
+function describeIcon(key: string): {label: string; use: string; masked?: boolean} {
+  const description = iconDescriptions[key];
+  if (description) return description;
+  const appIcon = /^icon(\d+)$/.exec(key);
+  if (appIcon) return {label: `App icon, ${appIcon[1]} px`, use: 'Web app manifest'};
+  throw new Error(`No description for the ${key} favicon; add it to iconDescriptions`);
+}
 
 interface BrandLogosProps {
   readonly brand: LogoBrand;
   readonly pressKit?: string | undefined;
+  /** The favicon head tags, rendered by the page so they can be copied. */
+  readonly children?: ReactNode;
 }
 
-/** Every logo of a brand on its intended background, with download links. */
-export function BrandLogos({brand, pressKit}: BrandLogosProps): React.JSX.Element {
+/** Every logo of a brand on its intended background, its favicons and profile pictures, with download links. */
+export function BrandLogos({brand, pressKit, children}: BrandLogosProps): React.JSX.Element {
   const kinds = [...new Set(brand.assets.map((asset) => asset.kind))];
+  const icons = Object.entries(brand.favicons ?? {}).filter(([key]) => !setupFiles.has(key));
+  const avatarTreatments = [...new Set(brand.avatars?.map((avatar) => avatar.treatment))];
   return (
     <section className={styles.brand} aria-labelledby={`brand-${brand.id}`}>
       <Stack direction="row" align="center" gap="large" wrap="wrap">
@@ -33,6 +56,7 @@ export function BrandLogos({brand, pressKit}: BrandLogosProps): React.JSX.Elemen
         </Heading>
         {pressKit ? <Link href={url(pressKit)} download>Download press kit</Link> : null}
       </Stack>
+
       {kinds.map((kind) => (
         <Stack key={kind} gap="small">
           <Heading level={3} size={3}>
@@ -61,23 +85,74 @@ export function BrandLogos({brand, pressKit}: BrandLogosProps): React.JSX.Elemen
           </ul>
         </Stack>
       ))}
-      {brand.favicons ? (
+
+      {icons.length > 0 ? (
         <Stack gap="small">
           <Heading level={3} size={3}>
-            Web and social
+            Favicons and app icons
           </Heading>
-          <Stack direction="row" gap="small" wrap="wrap">
-            {Object.entries(brand.favicons).map(([name, path]) => (
-              <Link key={name} href={url(path)} download>
-                {path.split('/').at(-1)}
-              </Link>
-            ))}
-            {brand.avatars?.map((avatar) => (
-              <Link key={avatar.path} href={url(avatar.path)} download>
-                {avatar.path.split('/').at(-1)}
-              </Link>
-            ))}
-          </Stack>
+          <ul className={styles.grid}>
+            {icons.map(([key, path]) => {
+              const {label, use, masked} = describeIcon(key);
+              return (
+                <li key={key} className={`${styles.tile} ${styles.small}`}>
+                  <div className={styles.preview} style={{background: brand.backgrounds.light}}>
+                    <img className={masked ? styles.round : undefined} src={url(path)} alt={`${brand.name} ${label.toLowerCase()}`} />
+                  </div>
+                  <Text>{label}</Text>
+                  <Text className={styles.note}>{use}</Text>
+                  <Link href={url(path)} download>
+                    {fileName(path)}
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+          {children ? (
+            <div className={styles.setup}>
+              <Text>
+                Put the files in your site's root, with{' '}
+                {brand.favicons?.webmanifest ? (
+                  <Link href={url(brand.favicons.webmanifest)} download>
+                    site.webmanifest
+                  </Link>
+                ) : (
+                  'the web app manifest'
+                )}
+                , and add these tags to its <code>&lt;head&gt;</code>:
+              </Text>
+              {children}
+            </div>
+          ) : null}
+        </Stack>
+      ) : null}
+
+      {avatarTreatments.length > 0 ? (
+        <Stack gap="small">
+          <Heading level={3} size={3}>
+            Profile pictures
+          </Heading>
+          <ul className={styles.grid}>
+            {avatarTreatments.map((treatment) => {
+              const sizes = brand.avatars!.filter((avatar) => avatar.treatment === treatment);
+              const largest = sizes.reduce((a, b) => (b.size > a.size ? b : a));
+              return (
+                <li key={treatment} className={styles.tile}>
+                  <div className={styles.preview}>
+                    <img className={styles.avatar} src={url(largest.path)} alt={`${brand.name} profile picture, ${treatment}`} />
+                  </div>
+                  <Text>{treatmentLabels[treatment as LogoAsset['treatment']]}</Text>
+                  <Stack direction="row" gap="small" wrap="wrap">
+                    {sizes.map((avatar) => (
+                      <Link key={avatar.path} href={url(avatar.path)} download>
+                        {avatar.size} px
+                      </Link>
+                    ))}
+                  </Stack>
+                </li>
+              );
+            })}
+          </ul>
         </Stack>
       ) : null}
     </section>

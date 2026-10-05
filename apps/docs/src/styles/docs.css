@@ -45,6 +45,12 @@ body > aside {
   gap: var(--semantic-dimension-space-gap-x-large);
 }
 
+/* The brand page grid is 12 columns with 1rem gutters, at most 1216px wide; see brand-logos.module.css. */
+.brand-page {
+  /* stylelint-disable-next-line design-tokens/no-hardcoded-token-values -- No layout width token exists yet for the 1216px page grid. */
+  max-inline-size: 76rem;
+}
+
 .prose {
   max-inline-size: var(--semantic-dimension-breakpoint-small);
   font: var(--semantic-typography-prose-primary);
