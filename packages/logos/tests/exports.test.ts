@@ -89,6 +89,21 @@ describe("built exports", () => {
     expect(Object.keys(manifest.pressKits)).toEqual(["earendil", "pi", "radius", "lefos"]);
   });
 
+  test("each kit has its own guidelines, and the Earendil kit covers every brand", async () => {
+    const pi = await readFile(resolve(dist, "guidelines/pi/BRAND-GUIDELINES.md"), "utf8");
+    expect(pi).toMatch(/^# Pi brand guidelines\n/);
+    expect(pi).toContain("Write the name as **Pi** in prose.");
+    expect(pi).not.toContain("Radius");
+    expect(pi).not.toMatch(/\{\{\w+\}\}/);
+
+    const earendil = await readFile(resolve(dist, "guidelines/earendil/BRAND-GUIDELINES.md"), "utf8");
+    expect(earendil).toContain("Write the names as **Earendil**, **Pi**, **Radius**, and **Lefos** in prose.");
+
+    const kit = await readFile(resolve(dist, "press-kits/radius-press-kit.zip"));
+    expect(kit.includes("radius-press-kit/BRAND-GUIDELINES.md")).toBe(true);
+    expect(kit.includes("radius-press-kit/clear-space.png")).toBe(true);
+  });
+
   test("the SVG favicon follows the color scheme only where colors change", async () => {
     const earendil = await readFile(resolve(dist, "kits/earendil/favicons/favicon.svg"), "utf8");
     expect(earendil).toContain("@media (prefers-color-scheme:dark){.cf6f6f6{fill:#f6f6f6}}");
