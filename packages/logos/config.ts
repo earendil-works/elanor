@@ -65,9 +65,6 @@ export const treatments = [
 
 export type Treatment = (typeof treatments)[number];
 
-/** The design-tokens build whose catalogue provides logo colors. Logo tokens are shared by every brand. */
-export const tokenBrand = "radius";
-
 export const logoTokens = {
   /** Source fills may only link to tokens in this group. */
   group: "semantic.color.logo",

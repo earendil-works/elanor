@@ -10,7 +10,6 @@ import {
   logoTokens,
   type PartName,
   parts,
-  tokenBrand,
   type Treatment,
 } from "../../config.js";
 import {translatePath} from "./path-data.js";
@@ -104,11 +103,21 @@ export interface TokenCatalog {
   tokens: Record<string, {values: Record<Scheme, unknown>; aliasOf?: Record<Scheme, string | null>; extensions?: Record<string, unknown>}>;
 }
 
-export async function loadTokens(): Promise<TokenCatalog> {
-  const require = createRequire(import.meta.url);
-  const file = require.resolve(`@earendil-works/design-tokens/${tokenBrand}.catalog.json`);
-  const catalog = JSON.parse(await readFile(file, "utf8")) as {tokens: Array<{path: string} & TokenCatalog["tokens"][string]>};
-  return {tokens: Object.fromEntries(catalog.tokens.map((token) => [token.path, token]))};
+const catalogs = new Map<BrandId, Promise<TokenCatalog>>();
+
+/** A brand's token catalogue; each brand's logos take their colors from its own token build. */
+export function loadTokens(brand: BrandId): Promise<TokenCatalog> {
+  if (!catalogs.has(brand)) {
+    const file = createRequire(import.meta.url).resolve(`@earendil-works/design-tokens/${brand}.catalog.json`);
+    catalogs.set(
+      brand,
+      readFile(file, "utf8").then((text) => {
+        const catalog = JSON.parse(text) as {tokens: Array<{path: string} & TokenCatalog["tokens"][string]>};
+        return {tokens: Object.fromEntries(catalog.tokens.map((token) => [token.path, token]))};
+      }),
+    );
+  }
+  return catalogs.get(brand)!;
 }
 
 export function tokenHex(tokens: TokenCatalog, token: string, scheme: Scheme): string {
