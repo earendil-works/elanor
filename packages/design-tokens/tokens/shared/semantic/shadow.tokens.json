@@ -1,0 +1,18 @@
+{
+  "$schema": "https://designtokens.org/schemas/2025.10/format.json",
+  "semantic": {
+    "shadow": {
+      "$type": "shadow",
+      "popup": {
+        "$description": "Use to separate floating panels such as dropdowns from the surface beneath them.",
+        "$value": {
+          "color": { "colorSpace": "srgb", "components": [0, 0, 0], "alpha": 0.15 },
+          "offsetX": { "value": 2, "unit": "px" },
+          "offsetY": { "value": 2, "unit": "px" },
+          "blur": { "value": 8, "unit": "px" },
+          "spread": { "value": 0, "unit": "px" }
+        }
+      }
+    }
+  }
+}
