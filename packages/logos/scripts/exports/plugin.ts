@@ -20,7 +20,7 @@ import {
  */
 export interface ExportPlugin {
   name: string;
-  /** What the plugin adds to each brand's kit folder, as a phrase for the guidelines' file list. */
+  /** What the plugin adds to each brand's press kit folder (`kits/<brand>/`), as a phrase for the guidelines' file list. */
   kitContents?: string;
   run(context: ExportContext): Promise<void>;
 }

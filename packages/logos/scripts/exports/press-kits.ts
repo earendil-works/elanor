@@ -11,7 +11,7 @@ export interface PressKitsOptions {
   include: string[];
 }
 
-/** Zip archives of the brand kit folders. Runs after the plugins that fill those folders. */
+/** Zip archives of the brand kit folders (`kits/<brand>/`). Runs after the plugins that fill those folders. */
 export function pressKits(options: PressKitsOptions): ExportPlugin {
   return {
     name: "press-kits",

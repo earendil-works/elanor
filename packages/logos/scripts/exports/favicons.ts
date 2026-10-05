@@ -26,7 +26,6 @@ export interface FaviconsOptions {
 export function favicons(options: FaviconsOptions): ExportPlugin {
   return {
     name: "favicons",
-    kitContents: "`favicons/` for websites and apps",
     async run(context) {
       for (const brand of Object.keys(brands) as BrandId[]) {
         const treatments = options.treatments ?? {light: "on-light", dark: "on-dark"};
@@ -35,7 +34,7 @@ export function favicons(options: FaviconsOptions): ExportPlugin {
         if (light.paths.length !== dark.paths.length) {
           throw new Error(`${brand}: the ${treatments.light} and ${treatments.dark} symbols must share their paths for the SVG favicon`);
         }
-        const directory = `kits/${brand}/favicons`;
+        const directory = `favicons/${brand}`;
         const files: Record<string, string> = {};
         const background = await context.background(brand, "light");
 

@@ -10,12 +10,14 @@ Earendil, Pi, Radius, and Lefos logos as SVG files, built from clean sources and
 
 ## Exports
 
-[`exports.config.ts`](./exports.config.ts) lists everything else the build produces as export plugins with their options: PNGs, CMYK print PDFs, favicons and web app icons, avatars, email-signature images, brand guidelines, and press kits. Each plugin lives in [`scripts/exports/`](./scripts/exports/) and receives a shared context with the composed assets, per-brand tokens, and the manifest. Plugins run in the listed order, so press kits come last and bundle what the others wrote. To add a kind of output, add a plugin and list it in the config.
+[`exports.config.ts`](./exports.config.ts) lists everything else the build produces as export plugins with their options: PNGs, CMYK print PDFs, favicons and web app icons, avatars, email-signature images, brand guidelines, and press kits. Each plugin lives in [`scripts/exports/`](./scripts/exports/) and receives a shared context with the composed assets, per-brand tokens, and the manifest. Plugins run in the listed order. To add a kind of output, add a plugin and list it in the config.
+
+Each export writes to its own folder in `dist/`, such as `favicons/<brand>/` or `print/<brand>/<profile>/`. Press kits contain only the logos: each brand's `kits/<brand>/` folder (`logo/`, `logo-wordmark-horizontal/`, and `logo-wordmark-vertical/`, by color treatment) plus the kit's guidelines.
 
 Brand guidelines are generated per press kit from [`guidelines/template.md`](./guidelines/template.md) and a short description of each brand in [`guidelines/brands/`](./guidelines/brands/). Product kits get their own guidelines; the Earendil kit gets a company document covering every brand. Each document comes with a clear-space illustration drawn from the built artwork and the grid in `config.ts`, so it stays current when logos or tokens change.
 
 ```sh
-pnpm build   # SVGs, manifest.json, artwork.json, kits/<brand>/…, guidelines/<kit>/…, press-kits/*.zip
+pnpm build   # svg/, manifest.json, artwork.json, then every export, e.g. kits/<brand>/, favicons/<brand>/, press-kits/*.zip
 pnpm check   # sources are clean and link to existing logo tokens
 pnpm test
 ```

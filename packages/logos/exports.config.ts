@@ -29,10 +29,7 @@ export const exportPlugins: ExportPlugin[] = [
   pngHeights({name: "email-signature", select: {kinds: ["logo-wordmark-horizontal"], treatments: ["on-light"]}, heights: [32, 64]}),
   print({
     // White prints no ink, so on dark backgrounds it knocks out to the paper.
-    profiles: {
-      psoCoatedV3: {outputCondition: "FOGRA51", label: "coated paper (PSO Coated v3)"},
-      psoUncoatedV3: {outputCondition: "FOGRA52", label: "uncoated paper (PSO Uncoated v3)"},
-    },
+    profiles: {psoCoatedV3: "FOGRA51", psoUncoatedV3: "FOGRA52"},
     // The 560-unit symbol frame prints 40 mm wide by default; the PDFs are vectors and scale freely.
     millimetersPerUnit: 40 / 560,
   }),
