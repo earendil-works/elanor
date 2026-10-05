@@ -20,7 +20,7 @@ interface LogoConfiguratorProps {
 const kinds = [
   ['logo', 'Symbol'],
   ['logo-wordmark-horizontal', 'Horizontal'],
-  ['logo-wordmark-stacked', 'Stacked'],
+  ['logo-wordmark-vertical', 'Vertical'],
 ] as const;
 
 const treatments = [

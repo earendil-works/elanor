@@ -12,7 +12,7 @@ export const iconsDist = dirname(require.resolve('@earendil-works/elanor-icons/m
 
 export interface LogoAsset {
   id: string;
-  kind: 'logo' | 'logo-wordmark-horizontal' | 'logo-wordmark-stacked';
+  kind: 'logo' | 'logo-wordmark-horizontal' | 'logo-wordmark-vertical';
   treatment: 'on-light' | 'on-dark' | 'monochrome-on-light' | 'monochrome-on-dark';
   scheme: 'light' | 'dark';
   monochrome: boolean;
