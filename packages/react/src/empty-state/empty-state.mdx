@@ -1,6 +1,9 @@
 import {FolderOpenIcon} from '@earendil-works/elanor-icons-react';
 import {EmptyState, Link} from '@earendil-works/elanor-react';
 
+`EmptyState.Copy` limits the title and description to 30rem (480px at the default
+root font size). Narrower containers take precedence.
+
 <EmptyState.Root>
   <EmptyState.Illustration>
     <FolderOpenIcon size={64} aria-hidden="true" />
