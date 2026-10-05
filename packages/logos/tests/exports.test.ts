@@ -1,6 +1,6 @@
 import {readFile} from "node:fs/promises";
 import {resolve} from "node:path";
-import {crc32, inflateRawSync} from "node:zlib";
+import {unzipSync} from "fflate";
 import {describe, expect, test} from "vitest";
 import {createIco, createZip} from "../scripts/lib/containers.js";
 import {createPdf, pathOperators} from "../scripts/lib/pdf.js";
@@ -8,28 +8,17 @@ import {createPdf, pathOperators} from "../scripts/lib/pdf.js";
 const dist = resolve(import.meta.dirname, "../dist");
 
 describe("containers", () => {
-  test("zip entries round-trip with correct checksums", () => {
+  test("zip entries round-trip, PNGs are stored, and archives are reproducible", () => {
+    const png = Buffer.from([137, 80, 78, 71, 1, 2, 3]);
     const files = [
       {path: "kit/a.svg", data: Buffer.from("<svg/>".repeat(50))},
-      {path: "kit/b.png", data: Buffer.from([137, 80, 78, 71, 1, 2, 3])},
+      {path: "kit/b.png", data: png},
     ];
     const zip = createZip(files);
-    const end = zip.lastIndexOf(Buffer.from([0x50, 0x4b, 0x05, 0x06]));
-    expect(zip.readUInt16LE(end + 10)).toBe(2);
-
-    let offset = 0;
-    for (const file of files) {
-      expect(zip.readUInt32LE(offset)).toBe(0x04034b50);
-      const method = zip.readUInt16LE(offset + 8);
-      const size = zip.readUInt32LE(offset + 18);
-      const nameLength = zip.readUInt16LE(offset + 26);
-      expect(zip.toString("utf8", offset + 30, offset + 30 + nameLength)).toBe(file.path);
-      const body = zip.subarray(offset + 30 + nameLength, offset + 30 + nameLength + size);
-      const data = method === 8 ? inflateRawSync(body) : body;
-      expect(data.equals(file.data)).toBe(true);
-      expect(zip.readUInt32LE(offset + 14)).toBe(crc32(file.data));
-      offset += 30 + nameLength + size;
-    }
+    const entries = unzipSync(zip);
+    expect(Object.keys(entries)).toEqual(["kit/a.svg", "kit/b.png"]);
+    for (const file of files) expect(Buffer.from(entries[file.path]!).equals(file.data)).toBe(true);
+    expect(zip.includes(png)).toBe(true);
     expect(createZip(files).equals(zip)).toBe(true);
   });
 
