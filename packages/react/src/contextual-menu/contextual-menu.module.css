@@ -6,7 +6,7 @@
   max-inline-size: var(--available-width);
   max-block-size: var(--available-height);
   overflow: auto;
-  padding: var(--semantic-dimension-space-padding-x-small);
+  padding: calc(var(--semantic-dimension-space-padding-x-small) - var(--semantic-dimension-border-width-default));
   border: var(--semantic-dimension-border-width-default) solid
     var(--semantic-color-background-fill-ghost-negative);
   border-radius: var(--semantic-dimension-radius-small);
