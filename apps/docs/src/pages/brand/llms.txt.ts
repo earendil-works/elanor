@@ -4,7 +4,7 @@ import {guidelinesMarkdown, loadLogos, text} from '../../lib/api.ts';
 const kindLabels: Record<string, string> = {
   logo: 'Symbol',
   'logo-wordmark-horizontal': 'Horizontal lockup (symbol + wordmark)',
-  'logo-wordmark-stacked': 'Stacked lockup (symbol + wordmark)',
+  'logo-wordmark-vertical': 'Vertical lockup (symbol + wordmark)',
 };
 
 export const GET: APIRoute = async () => {
@@ -40,7 +40,7 @@ ${assets}
 ## Choosing an asset
 
 1. **Brand:** use the Earendil logo for the company and the product logo for a product.
-2. **Kind:** a lockup (symbol + wordmark) when the name must be clear; the symbol alone in small or square spaces such as avatars and favicons. Use the stacked lockup where the horizontal one does not fit.
+2. **Kind:** a lockup (symbol + wordmark) when the name must be clear; the symbol alone in small or square spaces such as avatars and favicons. Use the vertical lockup where the horizontal one does not fit.
 3. **Treatment:** \`on-light\` on light backgrounds and \`on-dark\` on dark ones. Use \`monochrome-on-light\` or \`monochrome-on-dark\` only when a single color is required.
 4. **Format:** SVG for screens and anything that scales; PNG where SVG is not supported; the CMYK PDFs for print (\`psoCoatedV3\` for coated paper, \`psoUncoatedV3\` for uncoated). White monochrome logos have no print file: print them as unprinted paper or white ink.
 5. **Clear space:** leave at least one grid unit around the whole asset. One grid unit is a quarter of the symbol frame; at a rendered height of *h* pixels it is *h* × ${manifest.gridUnit} / asset height (asset heights are listed below).
