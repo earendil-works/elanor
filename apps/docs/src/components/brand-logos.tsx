@@ -43,7 +43,7 @@ interface BrandLogosProps {
   readonly children?: ReactNode;
 }
 
-/** Every logo of a brand on its intended background, its favicons and profile pictures, with download links. */
+/** Every logo of a brand on its intended background, its profile pictures and favicons, with download links. */
 export function BrandLogos({brand, pressKit, children}: BrandLogosProps): React.JSX.Element {
   const kinds = [...new Set(brand.assets.map((asset) => asset.kind))];
   const icons = Object.entries(brand.favicons ?? {}).filter(([key]) => !setupFiles.has(key));
@@ -86,6 +86,35 @@ export function BrandLogos({brand, pressKit, children}: BrandLogosProps): React.
         </Stack>
       ))}
 
+      {avatarTreatments.length > 0 ? (
+        <Stack gap="small">
+          <Heading level={3} size={3}>
+            Profile pictures
+          </Heading>
+          <ul className={styles.grid}>
+            {avatarTreatments.map((treatment) => {
+              const sizes = brand.avatars!.filter((avatar) => avatar.treatment === treatment);
+              const largest = sizes.reduce((a, b) => (b.size > a.size ? b : a));
+              return (
+                <li key={treatment} className={styles.tile}>
+                  <div className={styles.preview}>
+                    <img className={styles.avatar} src={url(largest.path)} alt={`${brand.name} profile picture, ${treatment}`} />
+                  </div>
+                  <Text>{treatmentLabels[treatment as LogoAsset['treatment']]}</Text>
+                  <Stack direction="row" gap="small" wrap="wrap">
+                    {sizes.map((avatar) => (
+                      <Link key={avatar.path} href={url(avatar.path)} download>
+                        {avatar.size} px
+                      </Link>
+                    ))}
+                  </Stack>
+                </li>
+              );
+            })}
+          </ul>
+        </Stack>
+      ) : null}
+
       {icons.length > 0 ? (
         <Stack gap="small">
           <Heading level={3} size={3}>
@@ -124,35 +153,6 @@ export function BrandLogos({brand, pressKit, children}: BrandLogosProps): React.
               {children}
             </div>
           ) : null}
-        </Stack>
-      ) : null}
-
-      {avatarTreatments.length > 0 ? (
-        <Stack gap="small">
-          <Heading level={3} size={3}>
-            Profile pictures
-          </Heading>
-          <ul className={styles.grid}>
-            {avatarTreatments.map((treatment) => {
-              const sizes = brand.avatars!.filter((avatar) => avatar.treatment === treatment);
-              const largest = sizes.reduce((a, b) => (b.size > a.size ? b : a));
-              return (
-                <li key={treatment} className={styles.tile}>
-                  <div className={styles.preview}>
-                    <img className={styles.avatar} src={url(largest.path)} alt={`${brand.name} profile picture, ${treatment}`} />
-                  </div>
-                  <Text>{treatmentLabels[treatment as LogoAsset['treatment']]}</Text>
-                  <Stack direction="row" gap="small" wrap="wrap">
-                    {sizes.map((avatar) => (
-                      <Link key={avatar.path} href={url(avatar.path)} download>
-                        {avatar.size} px
-                      </Link>
-                    ))}
-                  </Stack>
-                </li>
-              );
-            })}
-          </ul>
         </Stack>
       ) : null}
     </section>
