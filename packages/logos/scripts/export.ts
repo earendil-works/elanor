@@ -8,7 +8,6 @@ import {type Asset, type ExportContext, exporters} from "./lib/exporters.js";
 
 const distDirectory = resolve(packageDirectory, "dist");
 const manifestPath = resolve(distDirectory, "manifest.json");
-const tokens = await loadTokens();
 
 await Promise.all([
   rm(resolve(distDirectory, "kits"), {recursive: true, force: true}),
@@ -26,7 +25,7 @@ for (const brand of Object.keys(brands) as BrandId[]) {
         kind,
         treatment,
         source,
-        colored: colorArtwork(source, treatment, tokens),
+        colored: colorArtwork(source, treatment, await loadTokens(brand)),
       });
     }
   }
@@ -34,7 +33,6 @@ for (const brand of Object.keys(brands) as BrandId[]) {
 
 const context: ExportContext = {
   assets,
-  tokens,
   manifest: JSON.parse(await readFile(manifestPath, "utf8")) as ExportContext["manifest"],
   async write(path, data) {
     const file = resolve(distDirectory, path);
