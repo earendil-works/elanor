@@ -5,7 +5,7 @@ import styles from './brand-logos.module.css';
 const kindLabels: Record<LogoAsset['kind'], string> = {
   logo: 'Symbol',
   'logo-wordmark-horizontal': 'Horizontal lockup',
-  'logo-wordmark-stacked': 'Stacked lockup',
+  'logo-wordmark-vertical': 'Vertical lockup',
 };
 
 const treatmentLabels: Record<LogoAsset['treatment'], string> = {
