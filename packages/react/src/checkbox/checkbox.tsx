@@ -1,4 +1,5 @@
 import {Checkbox as BaseCheckbox} from '@base-ui/react/checkbox';
+import {CheckIcon} from '@earendil-works/elanor-icons-react';
 import {forwardRef} from 'react';
 import styles from './checkbox.module.css';
 import {mergeClassName} from '../utils/class-names.ts';
@@ -26,13 +27,15 @@ export const CheckboxRoot = forwardRef<HTMLElement, CheckboxRootProps>(
 );
 
 export const CheckboxIndicator = forwardRef<HTMLSpanElement, CheckboxIndicatorProps>(
-  function CheckboxIndicator({className, ...props}, ref) {
+  function CheckboxIndicator({className, children, ...props}, ref) {
     return (
       <BaseCheckbox.Indicator
         {...props}
         ref={ref}
         className={mergeClassName<BaseCheckbox.Indicator.State>(styles.indicator, className)}
-      />
+      >
+        {children ?? <CheckIcon className={styles.check} aria-hidden="true" />}
+      </BaseCheckbox.Indicator>
     );
   },
 );
