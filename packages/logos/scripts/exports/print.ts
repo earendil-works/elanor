@@ -6,8 +6,11 @@ const PRINT_EXTENSION_KEY = "com.earendil-works.print";
 
 export interface PrintOptions {
   select?: AssetSelector;
-  /** Print profiles stored on the color tokens, each mapped to the characterization its PDFs declare as output condition. */
-  profiles: Record<string, string>;
+  /**
+   * Print profiles stored on the color tokens, each with the characterization
+   * its PDFs declare as output condition and a label for the guidelines.
+   */
+  profiles: Record<string, {outputCondition: string; label: string}>;
   millimetersPerUnit: number;
 }
 
@@ -15,11 +18,14 @@ export interface PrintOptions {
 export function print(options: PrintOptions): ExportPlugin {
   return {
     name: "print",
+    kitContents: `\`print/\` vector PDFs in CMYK for ${Object.values(options.profiles)
+      .map(({label}) => label)
+      .join(" and ")}`,
     async run(context) {
       for (const asset of context.select(options.select)) {
         const tokens = await context.tokens(asset.brand);
         const pdfs: Record<string, string> = {};
-        for (const [profile, outputCondition] of Object.entries(options.profiles)) {
+        for (const [profile, {outputCondition}] of Object.entries(options.profiles)) {
           const paths = asset.source.paths.map(({d, token, fillRule}) => {
             const linked = asset.treatment.monochrome ? logoTokens.monochrome : token;
             const primitive = tokens.tokens[linked]?.aliasOf?.[asset.treatment.scheme];

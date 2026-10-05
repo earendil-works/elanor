@@ -1,14 +1,13 @@
 import {readdir, readFile} from "node:fs/promises";
 import {relative, resolve} from "node:path";
 import type {BrandId} from "../../config.js";
-import {packageDirectory} from "../lib/compose.js";
 import {createZip} from "../lib/containers.js";
 import type {ExportPlugin} from "./plugin.js";
 
 export interface PressKitsOptions {
   /** Press kits by name, each with the brands whose kit folders it bundles. */
   kits: Record<string, BrandId[]>;
-  /** Directories under dist/ whose files go at the root of each kit; `{kit}` is replaced by the kit name. */
+  /** Directories in the output directory whose files go at the root of each kit; `{kit}` is replaced by the kit name. */
   include: string[];
 }
 
@@ -17,7 +16,7 @@ export function pressKits(options: PressKitsOptions): ExportPlugin {
   return {
     name: "press-kits",
     async run(context) {
-      const distDirectory = resolve(packageDirectory, "dist");
+      const {distDirectory} = context;
       const kits: Record<string, string> = {};
       for (const [kit, kitBrands] of Object.entries(options.kits)) {
         const root = `${kit}-press-kit`;

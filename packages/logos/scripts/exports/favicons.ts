@@ -20,6 +20,7 @@ export interface FaviconsOptions {
 export function favicons(options: FaviconsOptions): ExportPlugin {
   return {
     name: "favicons",
+    kitContents: "`favicons/` for websites and apps",
     async run(context) {
       for (const brand of Object.keys(brands) as BrandId[]) {
         const light = context.mark(brand, "on-light").colored;
@@ -28,19 +29,23 @@ export function favicons(options: FaviconsOptions): ExportPlugin {
         const files: Record<string, string> = {};
         const background = await context.background(brand, "light");
 
-        // The SVG favicon switches to the dark colors with the browser's color scheme.
+        // The SVG favicon switches to the dark colors with the browser's color scheme:
+        // paths whose color changes get a class named after their dark color.
+        const darkFills = new Set<string>();
+        const themed = {
+          ...light,
+          paths: light.paths.map((path, index) => {
+            const darkFill = dark.paths[index]!.fill;
+            if (darkFill === path.fill) return path;
+            darkFills.add(darkFill);
+            return {...path, className: classFor(darkFill)};
+          }),
+        };
+        const rules = [...darkFills].map((fill) => `.${classFor(fill)}{fill:${fill}}`).join("");
         const svgFrame = squareFrame(light, options.svgSize, 0);
-        const changed = light.paths.map((path, index) => path.fill !== dark.paths[index]!.fill);
-        const rules = [...new Set(dark.paths.filter((_, index) => changed[index]).map(({fill}) => fill))]
-          .map((fill) => `.${classFor(fill)}{fill:${fill}}`)
-          .join("");
-        const svg = frameSvg(light, svgFrame).replace(/<path /g, (match, offset: number, text: string) => {
-          const index = text.slice(0, offset).split("<path ").length - 1;
-          return changed[index] ? `<path class="${classFor(dark.paths[index]!.fill)}" ` : match;
-        });
         files.svg = await context.write(
           `${directory}/favicon.svg`,
-          rules ? svg.replace(/>/, `><style>@media (prefers-color-scheme:dark){${rules}}</style>`) : svg,
+          frameSvg(themed, rules ? {...svgFrame, style: `@media (prefers-color-scheme:dark){${rules}}`} : svgFrame),
         );
 
         const icoImages = [];

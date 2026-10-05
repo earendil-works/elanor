@@ -69,16 +69,25 @@ export function pathOperators(d: string): string {
   let command = "";
   let index = 0;
 
+  const isCommand = (token: string) => /[A-Za-z]/.test(token);
+
   while (index < tokens.length) {
-    if (/[A-Za-z]/.test(tokens[index]!)) {
+    if (isCommand(tokens[index]!)) {
       command = tokens[index]!;
       index += 1;
+    } else if (command === "" || command.toUpperCase() === "Z") {
+      // Numbers may only repeat the previous command's parameters.
+      throw new Error(`Path data has a number without a command: ${d}`);
     }
     const type = command.toUpperCase();
     const count = counts[type];
     if (count === undefined) throw new Error(`Unsupported path command ${command} for PDF output`);
     const relative = command !== type;
-    const values = tokens.slice(index, index + count).map(Number);
+    const parameters = tokens.slice(index, index + count);
+    if (parameters.length < count || parameters.some(isCommand)) {
+      throw new Error(`Path command ${command} needs ${count} numbers: ${d}`);
+    }
+    const values = parameters.map(Number);
     index += count;
     const px = (value: number) => (relative ? x + value : value);
     const py = (value: number) => (relative ? y + value : value);

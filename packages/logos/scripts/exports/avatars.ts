@@ -13,6 +13,7 @@ export interface AvatarsOptions {
 export function avatars(options: AvatarsOptions): ExportPlugin {
   return {
     name: "avatars",
+    kitContents: "`social/` profile pictures",
     async run(context) {
       for (const brand of Object.keys(brands) as BrandId[]) {
         const entries = [];

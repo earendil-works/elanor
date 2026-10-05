@@ -42,6 +42,14 @@ describe("pdf", () => {
     expect(() => pathOperators("M0 0A1 1 0 0 1 2 2")).toThrow(/Unsupported/);
   });
 
+  test("rejects malformed path data instead of emitting NaN or looping", () => {
+    expect(pathOperators("M0 0L1 1 2 2Z")).toBe("0 0 m\n1 1 l\n2 2 l\nh");
+    expect(() => pathOperators("M0 0L1")).toThrow(/needs 2 numbers/);
+    expect(() => pathOperators("M0 0C1 2 3 4Z")).toThrow(/needs 6 numbers/);
+    expect(() => pathOperators("M0 0L1 1Z 2 2")).toThrow(/without a command/);
+    expect(() => pathOperators("1 2")).toThrow(/without a command/);
+  });
+
   test("cross-reference offsets point at their objects", () => {
     const pdf = createPdf(
       {width: 560, height: 560, paths: [{d: "M0 0H560V560Z", cmyk: [66, 20, 10, 6]}]},
@@ -84,6 +92,8 @@ describe("built exports", () => {
     expect(pi).toContain("Write the name as **Pi** in prose.");
     expect(pi).not.toContain("Radius");
     expect(pi).not.toMatch(/\{\{\w+\}\}/);
+    // The file list comes from the configured plugins.
+    expect(pi).toContain("`email-signature/` PNGs 32 and 64 pixels high, `print/` vector PDFs in CMYK for coated paper (PSO Coated v3)");
 
     const earendil = await readFile(resolve(dist, "guidelines/earendil/BRAND-GUIDELINES.md"), "utf8");
     expect(earendil).toContain("Write the names as **Earendil**, **Pi**, **Radius**, and **Lefos** in prose.");

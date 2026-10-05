@@ -13,6 +13,7 @@
     "./svg/*": "./dist/svg/*",
     "./manifest.json": "./dist/manifest.json",
     "./kits/*": "./dist/kits/*",
+    "./guidelines/*": "./dist/guidelines/*",
     "./press-kits/*": "./dist/press-kits/*",
     "./artwork.json": "./dist/artwork.json"
   },

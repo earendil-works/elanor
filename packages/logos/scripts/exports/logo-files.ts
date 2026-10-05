@@ -16,6 +16,7 @@ const kitPath = (asset: Asset, extension: string) =>
 export function logoFiles(options: LogoFilesOptions): ExportPlugin {
   return {
     name: "logo-files",
+    kitContents: `its logos as ${options.formats.map((format) => format.toUpperCase()).join(" and ")}`,
     async run(context) {
       for (const asset of context.select(options.select)) {
         const files = context.assetManifest(asset).files;
