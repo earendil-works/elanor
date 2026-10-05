@@ -70,7 +70,13 @@
         }
       },
       "size": {
-        "$description": "Use for bounded element dimensions such as icon boxes, avatars, and other square or fixed-size UI elements.",
+        "$description": "Use for bounded element dimensions, including control sizes and content limits.",
+        "content": {
+          "small": {
+            "$value": "{primitive.dimension.12000}",
+            "$description": "Use as a maximum inline size for compact content regions."
+          }
+        },
         "xxSmall": {
           "$value": "{primitive.dimension.200}",
           "$description": "Use for the smallest bounded elements when extreme compactness is required."
