@@ -1,6 +1,6 @@
 import {readdir, readFile} from 'node:fs/promises';
 import {createRequire} from 'node:module';
-import {dirname, resolve} from 'node:path';
+import {dirname, relative, resolve} from 'node:path';
 import {type IconEntry, iconsDist, type LogoManifest, logosDist, logosGuidelines} from './packages.ts';
 
 const require = createRequire(resolve(process.cwd(), 'package.json'));
@@ -113,7 +113,9 @@ export async function loadLogos(): Promise<LogoManifest> {
 
 export async function guidelinesMarkdown(): Promise<string> {
   const markdown = await readFile(resolve(logosGuidelines, 'BRAND-GUIDELINES.md'), 'utf8');
-  return markdown.replace(/<img src="([^"]+)" alt="([^"]*)"[^>]*>/g, '![$2](/brand/guidelines/$1)');
+  // Images are relative to the document; serve them from the logo package.
+  const images = `/api/logos/${relative(logosDist, logosGuidelines)}`;
+  return markdown.replace(/<img src="([^"]+)" alt="([^"]*)"[^>]*>/g, `![$2](${images}/$1)`);
 }
 
 /** Bulk files are compact; single resources are indented for reading. */
