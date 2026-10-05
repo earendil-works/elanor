@@ -1,7 +1,8 @@
 import {readdir, readFile} from 'node:fs/promises';
 import {createRequire} from 'node:module';
 import {dirname, relative, resolve} from 'node:path';
-import {type IconEntry, iconsDist, type LogoManifest, logosDist, logosGuidelines} from './packages.ts';
+import {iconComponentNames} from '../../plugins/icon-imports.ts';
+import {type IconEntry, iconsDist, iconsReactBarrel, type LogoManifest, logosDist, logosGuidelines} from './packages.ts';
 
 const require = createRequire(resolve(process.cwd(), 'package.json'));
 const tokensDist = resolve(dirname(require.resolve('@earendil-works/design-tokens/radius.css')), '..');
@@ -77,14 +78,12 @@ export interface ApiIcon extends IconEntry {
 export async function loadIcons(): Promise<ApiIcon[]> {
   const metadata = JSON.parse(await readFile(resolve(iconsDist, 'metadata.json'), 'utf8')) as Record<string, IconEntry>;
   const names = (await readdir(resolve(iconsDist, 'svg'))).filter((file) => file.endsWith('.svg')).map((file) => file.slice(0, -4));
+  const components = iconComponentNames(iconsReactBarrel);
   return names.sort().map((name) => {
     const entry = metadata[name];
     if (!entry) throw new Error(`Missing search tags for ${name}`);
-    const body = name
-      .split('-')
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join('');
-    const component = `${/^\d/.test(body) ? 'Number' : ''}${body}Icon`;
+    const component = components.get(name);
+    if (!component) throw new Error(`${name} has no React component; build @earendil-works/elanor-icons-react first`);
     return {
       name,
       component,
