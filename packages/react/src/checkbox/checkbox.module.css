@@ -69,22 +69,21 @@
   block-size: var(--semantic-dimension-size-x-small);
 }
 
-.indicator:empty::after {
-  box-sizing: border-box;
-  inline-size: 50%;
-  block-size: 37.5%;
-  border-inline-end: var(--semantic-dimension-border-width-medium) solid currentcolor;
-  border-block-end: var(--semantic-dimension-border-width-medium) solid currentcolor;
-  content: '';
-  transform: translateY(calc(-1 * var(--semantic-dimension-space-padding-xxx-small))) rotate(45deg);
+.check {
+  inline-size: 100%;
+  block-size: 100%;
 }
 
-.indicator[data-indeterminate]:empty::after {
+.indicator[data-indeterminate] > .check {
+  display: none;
+}
+
+.indicator[data-indeterminate]:empty::after,
+.indicator[data-indeterminate]:has(> .check)::after {
   inline-size: 50%;
   block-size: var(--semantic-dimension-border-width-medium);
-  border: 0;
   background: currentcolor;
-  transform: none;
+  content: '';
 }
 
 .indicator[data-unchecked] {
