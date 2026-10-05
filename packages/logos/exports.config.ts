@@ -37,6 +37,7 @@ export const exportPlugins: ExportPlugin[] = [
     millimetersPerUnit: 40 / 560,
   }),
   favicons({
+    treatments: {light: "monochrome-on-light", dark: "monochrome-on-dark"},
     svgSize: 32,
     icoSizes: [16, 32, 48],
     appleTouchSize: 180,

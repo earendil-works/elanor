@@ -1,9 +1,15 @@
 import {type BrandId, brands} from "../../config.js";
 import {createIco} from "../lib/containers.js";
 import {circleSafeFrame, frameSvg, renderPng, squareFrame} from "../lib/raster.js";
-import type {ExportPlugin} from "./plugin.js";
+import type {ExportPlugin, TreatmentId} from "./plugin.js";
 
 export interface FaviconsOptions {
+  /**
+   * The symbol treatments for light and dark color schemes. Raster icons use
+   * the light one; the SVG favicon switches to the dark one's colors.
+   * Defaults to the color symbols.
+   */
+  treatments?: {light: TreatmentId; dark: TreatmentId};
   /** Pixel size of the SVG favicon. */
   svgSize: number;
   icoSizes: number[];
@@ -23,8 +29,12 @@ export function favicons(options: FaviconsOptions): ExportPlugin {
     kitContents: "`favicons/` for websites and apps",
     async run(context) {
       for (const brand of Object.keys(brands) as BrandId[]) {
-        const light = context.mark(brand, "on-light").colored;
-        const dark = context.mark(brand, "on-dark").colored;
+        const treatments = options.treatments ?? {light: "on-light", dark: "on-dark"};
+        const light = context.mark(brand, treatments.light).colored;
+        const dark = context.mark(brand, treatments.dark).colored;
+        if (light.paths.length !== dark.paths.length) {
+          throw new Error(`${brand}: the ${treatments.light} and ${treatments.dark} symbols must share their paths for the SVG favicon`);
+        }
         const directory = `kits/${brand}/favicons`;
         const files: Record<string, string> = {};
         const background = await context.background(brand, "light");

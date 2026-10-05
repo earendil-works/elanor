@@ -103,10 +103,13 @@ describe("built exports", () => {
     expect(kit.includes("radius-press-kit/clear-space.png")).toBe(true);
   });
 
-  test("the SVG favicon follows the color scheme only where colors change", async () => {
-    const earendil = await readFile(resolve(dist, "kits/earendil/favicons/favicon.svg"), "utf8");
-    expect(earendil).toContain("@media (prefers-color-scheme:dark){.cf6f6f6{fill:#f6f6f6}}");
-    const pi = await readFile(resolve(dist, "kits/pi/favicons/favicon.svg"), "utf8");
-    expect(pi).not.toContain("<style>");
+  test("favicons are monochrome, and the SVG favicon switches to white in dark mode", async () => {
+    for (const brand of ["earendil", "pi"]) {
+      const svg = await readFile(resolve(dist, `kits/${brand}/favicons/favicon.svg`), "utf8");
+      const fills = [...svg.matchAll(/<path [^>]*fill="(#[0-9a-f]+)"/g)].map((match) => match[1]);
+      expect(fills.length).toBeGreaterThan(0);
+      expect(new Set(fills)).toEqual(new Set(["#111111"]));
+      expect(svg).toContain("@media (prefers-color-scheme:dark){.cf6f6f6{fill:#f6f6f6}}");
+    }
   });
 });
