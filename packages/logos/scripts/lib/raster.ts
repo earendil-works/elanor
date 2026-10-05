@@ -51,5 +51,10 @@ export function frameSvg(artwork: ColoredArtwork, frame: Frame): string {
 }
 
 export async function renderPng(artwork: ColoredArtwork, frame: Frame): Promise<Buffer> {
-  return sharp(Buffer.from(frameSvg(artwork, frame))).png({compressionLevel: 9}).toBuffer();
+  return svgToPng(frameSvg(artwork, frame));
+}
+
+/** Rasterizes an SVG document at its own width and height. */
+export async function svgToPng(svg: string): Promise<Buffer> {
+  return sharp(Buffer.from(svg)).png({compressionLevel: 9}).toBuffer();
 }

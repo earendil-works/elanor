@@ -1,0 +1,140 @@
+import {mkdir, writeFile} from "node:fs/promises";
+import {dirname, resolve} from "node:path";
+import {backgroundToken, type BrandId, brands, type LogoKind, type Treatment, treatments} from "../../config.js";
+import {
+  type Artwork,
+  type ColoredArtwork,
+  colorArtwork,
+  composeArtwork,
+  kinds,
+  loadTokens,
+  type TokenCatalog,
+  tokenHex,
+} from "../lib/compose.js";
+
+/**
+ * An export plugin produces one kind of output from the built logos, such as
+ * favicons or print PDFs. Plugins are listed with their options in
+ * exports.config.ts and run in that order, so later plugins can use files
+ * earlier ones wrote.
+ */
+export interface ExportPlugin {
+  name: string;
+  run(context: ExportContext): Promise<void>;
+}
+
+export type TreatmentId = Treatment["id"];
+
+/** Picks assets by brand, kind, and color treatment; omit a field to select all of them. */
+export interface AssetSelector {
+  brands?: BrandId[];
+  kinds?: LogoKind[];
+  treatments?: TreatmentId[];
+}
+
+export interface Asset {
+  id: string;
+  brand: BrandId;
+  kind: LogoKind;
+  treatment: Treatment;
+  /** Token-linked artwork (already the monochrome drawing for monochrome treatments). */
+  source: Artwork;
+  colored: ColoredArtwork;
+}
+
+export interface ManifestAsset {
+  id: string;
+  files: Record<string, unknown>;
+}
+
+export interface ManifestBrand {
+  id: BrandId;
+  name: string;
+  assets: ManifestAsset[];
+  [key: string]: unknown;
+}
+
+export interface Manifest {
+  brands: ManifestBrand[];
+  [key: string]: unknown;
+}
+
+export interface ExportContext {
+  /** Every brand, kind, and treatment, composed and colored with the brand's tokens. */
+  assets: Asset[];
+  select(selector?: AssetSelector): Asset[];
+  /** The symbol alone for a brand and treatment. */
+  mark(brand: BrandId, treatment: TreatmentId): Asset;
+  tokens(brand: BrandId): Promise<TokenCatalog>;
+  /** A token's color in a brand's build. */
+  color(brand: BrandId, token: string, scheme: "light" | "dark"): Promise<string>;
+  /** The brand's own page background. */
+  background(brand: BrandId, scheme: "light" | "dark"): Promise<string>;
+  /** manifest.json, written after every plugin has run. */
+  manifest: Manifest;
+  brandManifest(brand: BrandId): ManifestBrand;
+  assetManifest(asset: Asset): ManifestAsset;
+  /** Writes a file relative to dist/ and returns that relative path. */
+  write(path: string, data: string | Buffer): Promise<string>;
+}
+
+export async function createExportContext(distDirectory: string, manifest: Manifest): Promise<ExportContext> {
+  const assets: Asset[] = [];
+  for (const brand of Object.keys(brands) as BrandId[]) {
+    const tokens = await loadTokens(brand);
+    for (const kind of kinds) {
+      for (const treatment of treatments) {
+        const source = await composeArtwork(brand, kind, treatment.monochrome);
+        assets.push({
+          id: `${brand}-${kind}-${treatment.id}`,
+          brand,
+          kind,
+          treatment,
+          source,
+          colored: colorArtwork(source, treatment, tokens),
+        });
+      }
+    }
+  }
+
+  const select = (selector: AssetSelector = {}) =>
+    assets.filter(
+      (asset) =>
+        (!selector.brands || selector.brands.includes(asset.brand)) &&
+        (!selector.kinds || selector.kinds.includes(asset.kind)) &&
+        (!selector.treatments || selector.treatments.includes(asset.treatment.id)),
+    );
+  const color = async (brand: BrandId, token: string, scheme: "light" | "dark") =>
+    tokenHex(await loadTokens(brand), token, scheme);
+  const brandManifest = (brand: BrandId) => {
+    const entry = manifest.brands.find(({id}) => id === brand);
+    if (!entry) throw new Error(`Manifest has no brand ${brand}`);
+    return entry;
+  };
+
+  return {
+    assets,
+    select,
+    mark(brand, treatment) {
+      const [asset] = select({brands: [brand], kinds: ["logo"], treatments: [treatment]});
+      if (!asset) throw new Error(`${brand} has no ${treatment} mark`);
+      return asset;
+    },
+    tokens: loadTokens,
+    color,
+    background: (brand, scheme) => color(brand, backgroundToken, scheme),
+    manifest,
+    brandManifest,
+    assetManifest(asset) {
+      const entry = brandManifest(asset.brand).assets.find(({id}) => id === asset.id);
+      if (!entry) throw new Error(`Manifest has no asset ${asset.id}`);
+      return entry;
+    },
+    async write(path, data) {
+      const file = resolve(distDirectory, path);
+      await mkdir(dirname(file), {recursive: true});
+      await writeFile(file, data);
+      return path;
+    },
+  };
+}
