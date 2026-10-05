@@ -1,81 +1,45 @@
-import {crc32, deflateRawSync} from "node:zlib";
+import {type Zippable, zipSync} from "fflate";
 
-/** An ICO file that embeds PNG images, as every current browser supports. */
-export function createIco(images: Array<{size: number; png: Buffer}>): Buffer {
-  const header = Buffer.alloc(6 + images.length * 16);
-  header.writeUInt16LE(0, 0);
-  header.writeUInt16LE(1, 2);
-  header.writeUInt16LE(images.length, 4);
-  let offset = header.length;
-  images.forEach(({size, png}, index) => {
-    const entry = 6 + index * 16;
-    header.writeUInt8(size >= 256 ? 0 : size, entry);
-    header.writeUInt8(size >= 256 ? 0 : size, entry + 1);
-    header.writeUInt8(0, entry + 2);
-    header.writeUInt8(0, entry + 3);
-    header.writeUInt16LE(1, entry + 4);
-    header.writeUInt16LE(32, entry + 6);
-    header.writeUInt32LE(png.length, entry + 8);
-    header.writeUInt32LE(offset, entry + 12);
-    offset += png.length;
-  });
-  return Buffer.concat([header, ...images.map(({png}) => png)]);
-}
+const ICO_HEADER_SIZE = 6;
+const ICO_ENTRY_SIZE = 16;
 
 /**
- * A ZIP archive. Already-compressed files (PNG, ZIP) are stored; others are
- * deflated. Timestamps are fixed so identical inputs produce identical archives.
+ * An ICO file that embeds PNG images, as every current browser supports.
+ *
+ * Layout: a 6-byte header, then a 16-byte directory entry per image pointing
+ * at its PNG data, then the PNGs themselves.
  */
+export function createIco(images: Array<{size: number; png: Buffer}>): Buffer {
+  const directory = Buffer.alloc(ICO_HEADER_SIZE + images.length * ICO_ENTRY_SIZE);
+  directory.writeUInt16LE(0, 0); // reserved
+  directory.writeUInt16LE(1, 2); // image type: icon
+  directory.writeUInt16LE(images.length, 4); // image count
+
+  let dataOffset = directory.length;
+  images.forEach(({size, png}, index) => {
+    const entry = ICO_HEADER_SIZE + index * ICO_ENTRY_SIZE;
+    const dimension = size >= 256 ? 0 : size; // 0 means 256 pixels
+    directory.writeUInt8(dimension, entry); // width
+    directory.writeUInt8(dimension, entry + 1); // height
+    directory.writeUInt8(0, entry + 2); // palette size: none
+    directory.writeUInt8(0, entry + 3); // reserved
+    directory.writeUInt16LE(1, entry + 4); // color planes
+    directory.writeUInt16LE(32, entry + 6); // bits per pixel
+    directory.writeUInt32LE(png.length, entry + 8); // image data size
+    directory.writeUInt32LE(dataOffset, entry + 12); // image data offset
+    dataOffset += png.length;
+  });
+  return Buffer.concat([directory, ...images.map(({png}) => png)]);
+}
+
+/** Every entry gets this date, so identical inputs produce identical archives. ZIP dates start in 1980. */
+const ZIP_ENTRY_DATE = new Date(1980, 0, 1);
+
+/** A ZIP archive. Already-compressed files (PNG, ZIP) are stored; others are deflated. */
 export function createZip(files: Array<{path: string; data: Buffer}>): Buffer {
-  const dosTime = 0;
-  const dosDate = (0 << 9) | (1 << 5) | 1; // 1980-01-01
-  const local: Buffer[] = [];
-  const central: Buffer[] = [];
-  let offset = 0;
-
+  const entries: Zippable = {};
   for (const {path, data} of files) {
-    const name = Buffer.from(path, "utf8");
-    const store = /\.(png|zip)$/i.test(path);
-    const body = store ? data : deflateRawSync(data, {level: 9});
-    const checksum = crc32(data);
-
-    const header = Buffer.alloc(30);
-    header.writeUInt32LE(0x04034b50, 0);
-    header.writeUInt16LE(20, 4);
-    header.writeUInt16LE(0x0800, 6); // UTF-8 names
-    header.writeUInt16LE(store ? 0 : 8, 8);
-    header.writeUInt16LE(dosTime, 10);
-    header.writeUInt16LE(dosDate, 12);
-    header.writeUInt32LE(checksum, 14);
-    header.writeUInt32LE(body.length, 18);
-    header.writeUInt32LE(data.length, 22);
-    header.writeUInt16LE(name.length, 26);
-    header.writeUInt16LE(0, 28);
-    local.push(header, name, body);
-
-    const entry = Buffer.alloc(46);
-    entry.writeUInt32LE(0x02014b50, 0);
-    entry.writeUInt16LE(20, 4);
-    entry.writeUInt16LE(20, 6);
-    entry.writeUInt16LE(0x0800, 8);
-    entry.writeUInt16LE(store ? 0 : 8, 10);
-    entry.writeUInt16LE(dosTime, 12);
-    entry.writeUInt16LE(dosDate, 14);
-    entry.writeUInt32LE(checksum, 16);
-    entry.writeUInt32LE(body.length, 20);
-    entry.writeUInt32LE(data.length, 24);
-    entry.writeUInt16LE(name.length, 28);
-    entry.writeUInt32LE(offset, 42);
-    central.push(entry, name);
-    offset += header.length + name.length + body.length;
+    entries[path] = [data, {level: /\.(png|zip)$/i.test(path) ? 0 : 9, mtime: ZIP_ENTRY_DATE}];
   }
-
-  const directory = Buffer.concat(central);
-  const end = Buffer.alloc(22);
-  end.writeUInt32LE(0x06054b50, 0);
-  end.writeUInt16LE(files.length, 8);
-  end.writeUInt16LE(files.length, 10);
-  end.writeUInt32LE(directory.length, 12);
-  end.writeUInt32LE(offset, 16);
-  return Buffer.concat([...local, directory, end]);
+  return Buffer.from(zipSync(entries));
 }
