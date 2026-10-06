@@ -7,13 +7,11 @@
   min-block-size: var(--semantic-dimension-size-small);
   min-inline-size: 0;
   margin: 0;
-  padding-block: var(--semantic-dimension-space-control-padding-block-small);
-  padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
-  border-radius: var(--semantic-dimension-radius-small);
-  background: var(--semantic-color-background-fill-secondary);
+  padding-block: calc(var(--semantic-dimension-space-control-padding-block-small) - var(--semantic-dimension-border-width-default));
+  padding-inline: calc(var(--semantic-dimension-space-control-padding-inline-small) - var(--semantic-dimension-border-width-default));
+  background-color: var(--semantic-color-background-fill-secondary);
   color: var(--semantic-color-text-on-secondary-fill);
-  --stroke-color: var(--semantic-color-background-fill-secondary);
-  box-shadow: var(--stroke-plain-shadow, inset 0 0 0 var(--semantic-dimension-border-width-default) var(--stroke-color));
+  --outline-color: var(--semantic-color-background-fill-secondary);
 }
 
 .code {

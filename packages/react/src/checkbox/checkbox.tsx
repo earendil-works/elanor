@@ -2,7 +2,8 @@ import {Checkbox as BaseCheckbox} from '@base-ui/react/checkbox';
 import {CheckIcon} from '@earendil-works/elanor-icons-react';
 import {forwardRef} from 'react';
 import styles from './checkbox.module.css';
-import {mergeClassName} from '../utils/class-names.ts';
+import outline from '../utils/outline.module.css';
+import {classes, mergeClassName} from '../utils/class-names.ts';
 
 export type {
   CheckboxRootState,
@@ -22,8 +23,8 @@ export const CheckboxRoot = forwardRef<HTMLElement, CheckboxRootProps>(
         ref={ref}
         className={mergeClassName<BaseCheckbox.Root.State>(styles.root, className)}
       >
-        {/* The visible control is smaller than the target, and carries the stroke. */}
-        <span className={styles.box} data-stroke="box-small" aria-hidden="true" />
+        {/* The visible control is smaller than the target, and carries the outline. */}
+        <span className={classes(styles.box, outline.outline)} data-outline="box-small" aria-hidden="true" />
         {children}
       </BaseCheckbox.Root>
     );

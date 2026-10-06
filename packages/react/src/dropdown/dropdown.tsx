@@ -2,6 +2,7 @@ import {Select as BaseSelect} from '@base-ui/react/select';
 import {KeyboardArrowDownIcon} from '@earendil-works/elanor-icons-react';
 import {createContext, forwardRef, useContext} from 'react';
 import styles from './dropdown.module.css';
+import outline from '../utils/outline.module.css';
 import {classes, mergeClassName} from '../utils/class-names.ts';
 
 export type {
@@ -65,10 +66,10 @@ export const DropdownTrigger = forwardRef<HTMLButtonElement, DropdownTriggerProp
   function DropdownTrigger({className, ...props}, ref) {
     return (
       <BaseSelect.Trigger
-        data-stroke="box-small"
+        data-outline="box-small"
         {...props}
         ref={ref}
-        className={mergeClassName<BaseSelect.Trigger.State>(styles.trigger, className)}
+        className={mergeClassName<BaseSelect.Trigger.State>(classes(styles.trigger, outline.outline), className)}
       />
     );
   },
@@ -105,11 +106,11 @@ export const DropdownPopup = forwardRef<HTMLDivElement, DropdownPopupProps>(
   function DropdownPopup({className, ...props}, ref) {
     return (
       <BaseSelect.Popup
-        data-stroke="box-small"
-        data-stroke-focus="none"
+        data-outline="box-small"
+        data-outline-focus="none"
         {...props}
         ref={ref}
-        className={mergeClassName<BaseSelect.Popup.State>(styles.popup, className)}
+        className={mergeClassName<BaseSelect.Popup.State>(classes(styles.popup, outline.outline), className)}
       />
     );
   },
@@ -145,8 +146,8 @@ export const DropdownItemIndicator = forwardRef<HTMLSpanElement, DropdownItemInd
 
     return (
       <span
-        className={classes(styles.indicatorFrame, multiple && styles.indicatorFrameMultiple)}
-        data-stroke={multiple ? 'box-small' : 'circle-x-small'}
+        className={classes(styles.indicatorFrame, multiple && styles.indicatorFrameMultiple, outline.outline)}
+        data-outline={multiple ? 'box-small' : 'circle-x-small'}
       >
         <BaseSelect.ItemIndicator
           {...props}
@@ -176,7 +177,7 @@ export const DropdownSeparator = forwardRef<HTMLDivElement, DropdownSeparatorPro
   function DropdownSeparator({className, ...props}, ref) {
     return (
       <BaseSelect.Separator
-        data-stroke="line"
+        data-outline="line"
         {...props}
         ref={ref}
         orientation="horizontal"

@@ -1,7 +1,8 @@
 import {Popover as BasePopover} from '@base-ui/react/popover';
 import {forwardRef} from 'react';
 import styles from './popover.module.css';
-import {mergeClassName} from '../utils/class-names.ts';
+import outline from '../utils/outline.module.css';
+import {classes, mergeClassName} from '../utils/class-names.ts';
 
 export type {
   PopoverRootProps,
@@ -27,13 +28,13 @@ export const PopoverPopup = forwardRef<HTMLDivElement, PopoverPopupProps>(
   function PopoverPopup({className, children, ...props}, ref) {
     return (
       <BasePopover.Popup
-        data-stroke="box-small"
-        data-stroke-focus="none"
+        data-outline="box-small"
+        data-outline-focus="none"
         {...props}
         ref={ref}
-        className={mergeClassName<BasePopover.Popup.State>(styles.popup, className)}
+        className={mergeClassName<BasePopover.Popup.State>(classes(styles.popup, outline.outline), className)}
       >
-        {/* Content scrolls inside, so the popup itself can carry the stroke. */}
+        {/* Content scrolls inside, so the popup itself can carry the outline. */}
         <div className={styles.body}>{children}</div>
       </BasePopover.Popup>
     );

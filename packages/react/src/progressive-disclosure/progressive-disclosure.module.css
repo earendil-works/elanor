@@ -20,13 +20,13 @@
   inset-block: 0;
   inset-inline-start: calc((var(--semantic-dimension-size-x-small) - var(--semantic-dimension-border-width-default)) / 2);
   inline-size: var(--semantic-dimension-border-width-default);
-  --stroke-color: var(--semantic-color-border-secondary);
-  background: var(--stroke-plain-fill, var(--stroke-color));
+  --outline-color: var(--semantic-color-border-secondary);
+  background-color: var(--outline-plain-fill, var(--outline-color));
   pointer-events: none;
 }
 
 @media (forced-colors: active) {
   .rule {
-    background: var(--stroke-plain-fill, CanvasText);
+    background-color: var(--outline-plain-fill, CanvasText);
   }
 }

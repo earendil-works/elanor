@@ -1,7 +1,8 @@
 import {Tabs as BaseTabs} from '@base-ui/react/tabs';
 import {forwardRef} from 'react';
 import styles from './tabs.module.css';
-import {mergeClassName} from '../utils/class-names.ts';
+import outline from '../utils/outline.module.css';
+import {classes, mergeClassName} from '../utils/class-names.ts';
 
 export type {
   TabsRootState,
@@ -30,8 +31,8 @@ export const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
   function TabsList({className, ...props}, ref) {
     return (
       <BaseTabs.List
-        data-stroke="line"
-        data-stroke-edge="block-end"
+        data-outline="line"
+        data-outline-edge="block-end"
         {...props}
         ref={ref}
         className={mergeClassName<BaseTabs.List.State>(styles.list, className)}
@@ -44,10 +45,11 @@ export const TabsTab = forwardRef<HTMLElement, TabsTabProps>(
   function TabsTab({className, ...props}, ref) {
     return (
       <BaseTabs.Tab
-        data-stroke="box-small"
+        data-outline="box-small"
+        data-outline-band="none"
         {...props}
         ref={ref}
-        className={mergeClassName<BaseTabs.Tab.State>(styles.tab, className)}
+        className={mergeClassName<BaseTabs.Tab.State>(classes(styles.tab, outline.outline), className)}
       />
     );
   },
@@ -57,7 +59,7 @@ export const TabsIndicator = forwardRef<HTMLSpanElement, TabsIndicatorProps>(
   function TabsIndicator({className, ...props}, ref) {
     return (
       <BaseTabs.Indicator
-        data-stroke="line"
+        data-outline="line"
         {...props}
         ref={ref}
         className={mergeClassName<BaseTabs.Indicator.State>(styles.indicator, className)}
@@ -70,10 +72,11 @@ export const TabsPanel = forwardRef<HTMLDivElement, TabsPanelProps>(
   function TabsPanel({className, ...props}, ref) {
     return (
       <BaseTabs.Panel
-        data-stroke="box-small"
+        data-outline="box-small"
+        data-outline-band="none"
         {...props}
         ref={ref}
-        className={mergeClassName<BaseTabs.Panel.State>(styles.panel, className)}
+        className={mergeClassName<BaseTabs.Panel.State>(classes(styles.panel, outline.outline), className)}
       />
     );
   },

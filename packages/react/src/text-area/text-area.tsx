@@ -1,6 +1,7 @@
 import {Field as BaseField} from '@base-ui/react/field';
 import {forwardRef, type ComponentPropsWithoutRef} from 'react';
 import styles from './text-area.module.css';
+import outline from '../utils/outline.module.css';
 import {classes, mergeClassName} from '../utils/class-names.ts';
 
 export interface TextAreaProps
@@ -21,9 +22,9 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(function 
   },
   ref,
 ) {
-  // The frame draws the field: textareas can't host the stroke layer.
+  // The frame draws the field: textareas can't host the outline layer.
   return (
-    <span className={classes(styles.frame, rootClassName)} data-stroke="box-small">
+    <span className={classes(styles.frame, outline.outline, rootClassName)} data-outline="box-small">
       <BaseField.Control
         id={id}
         name={name}

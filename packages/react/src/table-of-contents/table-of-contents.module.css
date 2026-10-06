@@ -2,7 +2,7 @@
 .list,
 .link {
   box-sizing: border-box;
-  --stroke-color: transparent;
+  --outline-color: transparent;
 }
 
 .root {
@@ -53,7 +53,7 @@
   inset-inline: 0;
   inset-block-end: calc(-1 * var(--semantic-dimension-space-control-padding-block-small));
   block-size: var(--semantic-dimension-border-width-default);
-  background: var(--semantic-color-border-primary);
+  background-color: var(--semantic-color-border-primary);
   content: '';
   visibility: hidden;
   pointer-events: none;
@@ -65,9 +65,8 @@
 }
 
 .link:focus-visible {
-  border-radius: var(--semantic-dimension-radius-small);
-  outline: var(--stroke-plain-outline, var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring));
-  outline-offset: calc(-1 * var(--semantic-dimension-border-width-medium));
+  outline: var(--outline-plain-focus, var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring));
+  outline-offset: calc(-1 * var(--semantic-dimension-border-width-large));
 }
 
 @media (pointer: coarse) {
@@ -78,7 +77,7 @@
 
 @media (forced-colors: active) {
   .label::after {
-    background: CanvasText;
+    background-color: CanvasText;
     forced-color-adjust: none;
   }
 }

@@ -4,7 +4,7 @@
   text-decoration: underline;
   text-decoration-thickness: from-font;
   text-underline-position: from-font;
-  --stroke-color: transparent;
+  --outline-color: transparent;
 }
 
 .root:hover {
@@ -12,7 +12,6 @@
 }
 
 .root:focus-visible {
-  border-radius: var(--semantic-dimension-radius-small);
-  outline: var(--stroke-plain-outline, var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring));
-  outline-offset: calc(-1 * var(--semantic-dimension-border-width-medium));
+  outline: var(--outline-plain-focus, var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring));
+  outline-offset: calc(-1 * var(--semantic-dimension-border-width-large));
 }

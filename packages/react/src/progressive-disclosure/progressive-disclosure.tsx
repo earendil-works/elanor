@@ -35,7 +35,7 @@ export const ProgressiveDisclosurePanel = forwardRef<HTMLDivElement, Progressive
         ref={ref}
         className={mergeClassName<BaseCollapsible.Panel.State>(styles.panel, className)}
       >
-        <span className={styles.rule} data-stroke="line-vertical" aria-hidden="true" />
+        <span className={styles.rule} data-outline="line-vertical" aria-hidden="true" />
         {children}
       </BaseCollapsible.Panel>
     );

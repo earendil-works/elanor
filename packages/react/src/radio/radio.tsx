@@ -2,7 +2,8 @@ import {Radio as BaseRadio, type RadioRootProps} from '@base-ui/react/radio';
 import {RadioGroup as BaseRadioGroup} from '@base-ui/react/radio-group';
 import {forwardRef, type Ref} from 'react';
 import styles from './radio.module.css';
-import {mergeClassName} from '../utils/class-names.ts';
+import outline from '../utils/outline.module.css';
+import {classes, mergeClassName} from '../utils/class-names.ts';
 
 export type {
   RadioRootState,
@@ -29,8 +30,8 @@ export const RadioRoot = forwardRef(function RadioRoot<Value>(
       ref={ref}
       className={mergeClassName<BaseRadio.Root.State>(styles.radio, className)}
     >
-      {/* The visible circle is smaller than the target, and carries the stroke. */}
-      <span className={styles.circle} data-stroke="circle-x-small" aria-hidden="true" />
+      {/* The visible circle is smaller than the target, and carries the outline. */}
+      <span className={classes(styles.circle, outline.outline)} data-outline="circle-x-small" aria-hidden="true" />
       {children}
     </BaseRadio.Root>
   );

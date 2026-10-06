@@ -7,29 +7,28 @@
   padding-block: var(--semantic-dimension-space-control-padding-block-small);
   padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
   border: 0;
-  border-radius: var(--semantic-dimension-radius-small);
-  background: var(--semantic-color-background-fill-ghost-neutral);
+  background-color: var(--semantic-color-background-fill-ghost-neutral);
   color: var(--semantic-color-text-primary);
   font: var(--semantic-typography-ui-primary);
   white-space: nowrap;
   cursor: pointer;
-  --stroke-color: transparent;
+  --outline-color: transparent;
 }
 
 @media (hover: hover) {
   .trigger:hover:not([data-disabled]) {
-    background: var(--semantic-color-background-fill-ghost-neutral-hover);
+    background-color: var(--semantic-color-background-fill-ghost-neutral-hover);
   }
 }
 
 .trigger:active:not([data-disabled]),
 .trigger[data-popup-open] {
-  background: var(--semantic-color-background-fill-ghost-neutral-active);
+  background-color: var(--semantic-color-background-fill-ghost-neutral-active);
 }
 
 .trigger:focus-visible {
-  outline: var(--stroke-plain-outline, var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring));
-  outline-offset: calc(-1 * var(--semantic-dimension-border-width-medium));
+  outline: var(--outline-plain-focus, var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring));
+  outline-offset: calc(-1 * var(--semantic-dimension-border-width-large));
 }
 
 .trigger[data-disabled] {

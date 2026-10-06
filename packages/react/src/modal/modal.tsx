@@ -1,6 +1,7 @@
 import {Dialog as BaseDialog} from '@base-ui/react/dialog';
 import {forwardRef, type HTMLAttributes} from 'react';
 import styles from './modal.module.css';
+import outline from '../utils/outline.module.css';
 import {classes, mergeClassName} from '../utils/class-names.ts';
 
 export type {
@@ -56,13 +57,13 @@ export const ModalPopup = forwardRef<HTMLDivElement, ModalPopupProps>(function M
 ) {
   return (
     <BaseDialog.Popup
-      data-stroke="box-small"
-      data-stroke-focus="none"
+      data-outline="box-small"
+      data-outline-focus="none"
       {...props}
       ref={ref}
-      className={mergeClassName<BaseDialog.Popup.State>(styles.popup, className)}
+      className={mergeClassName<BaseDialog.Popup.State>(classes(styles.popup, outline.outline), className)}
     >
-      {/* Content scrolls inside, so the popup itself can carry the stroke. */}
+      {/* Content scrolls inside, so the popup itself can carry the outline. */}
       <div className={styles.body}>{children}</div>
     </BaseDialog.Popup>
   );

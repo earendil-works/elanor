@@ -14,13 +14,13 @@
 /* Rows keep a real border: box-shadows don't paint on table rows everywhere. */
 thead > .row,
 .row:not(:last-child) {
-  --stroke-color: var(--semantic-color-border-secondary);
+  --outline-color: var(--semantic-color-border-secondary);
   border-block-end: var(--semantic-dimension-border-width-small) solid
-    var(--stroke-plain-fill, var(--stroke-color));
+    var(--outline-plain-fill, var(--outline-color));
 }
 
 tbody > .row:last-child {
-  --stroke-color: transparent;
+  --outline-color: transparent;
 }
 
 .cell {

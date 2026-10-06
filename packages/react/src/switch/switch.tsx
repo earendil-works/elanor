@@ -1,7 +1,8 @@
 import {Switch as BaseSwitch} from '@base-ui/react/switch';
 import {forwardRef} from 'react';
 import styles from './switch.module.css';
-import {mergeClassName} from '../utils/class-names.ts';
+import outline from '../utils/outline.module.css';
+import {classes, mergeClassName} from '../utils/class-names.ts';
 
 export type {
   SwitchRootState,
@@ -21,8 +22,8 @@ export const SwitchRoot = forwardRef<HTMLElement, SwitchRootProps>(
         ref={ref}
         className={mergeClassName<BaseSwitch.Root.State>(styles.root, className)}
       >
-        {/* The visible control is smaller than the target, and carries the stroke. */}
-        <span className={styles.track} data-stroke="pill-x-small" aria-hidden="true" />
+        {/* The visible control is smaller than the target, and carries the outline. */}
+        <span className={classes(styles.track, outline.outline)} data-outline="pill-x-small" aria-hidden="true" />
         {children}
       </BaseSwitch.Root>
     );

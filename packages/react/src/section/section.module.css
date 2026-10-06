@@ -6,6 +6,6 @@
 .separated {
   /* stylelint-disable-next-line design-tokens/token-property-compatibility -- The bottom line is paint, so its width is kept as padding. */
   padding-block-end: calc(var(--semantic-dimension-space-padding-xx-large) + var(--semantic-dimension-border-width-default));
-  --stroke-color: var(--semantic-color-border-secondary);
-  box-shadow: var(--stroke-plain-shadow, inset 0 calc(-1 * var(--semantic-dimension-border-width-default)) 0 var(--stroke-color));
+  --outline-color: var(--semantic-color-border-secondary);
+  box-shadow: inset 0 calc(-1 * var(--semantic-dimension-border-width-default)) 0 var(--outline-plain-border, var(--outline-color));
 }

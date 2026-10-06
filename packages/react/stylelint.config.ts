@@ -12,7 +12,7 @@ export default createStrictConfig({
     '--active-tab-top',
     '--active-tab-width',
     '--active-tab-height',
-    // Stroke contract shared with @earendil-works/elanor-strokes.
-    '--stroke-*',
+    // The outline contract, which stroke styles from @earendil-works/elanor-strokes implement.
+    '--outline-*',
   ],
 });

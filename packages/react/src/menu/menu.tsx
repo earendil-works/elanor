@@ -1,8 +1,9 @@
 import {Menu as BaseMenu} from '@base-ui/react/menu';
 import {forwardRef, type ReactNode} from 'react';
 import styles from './menu.module.css';
+import outline from '../utils/outline.module.css';
 import {Separator, type SeparatorProps} from '../separator/separator.tsx';
-import {mergeClassName} from '../utils/class-names.ts';
+import {classes, mergeClassName} from '../utils/class-names.ts';
 
 export type {
   MenuRootProps,
@@ -35,13 +36,13 @@ export const MenuPopup = forwardRef<HTMLDivElement, MenuPopupProps>(function Men
 ) {
   return (
     <BaseMenu.Popup
-      data-stroke="box-small"
-      data-stroke-focus="none"
+      data-outline="box-small"
+      data-outline-focus="none"
       {...props}
       ref={ref}
-      className={mergeClassName<BaseMenu.Popup.State>(styles.popup, className)}
+      className={mergeClassName<BaseMenu.Popup.State>(classes(styles.popup, outline.outline), className)}
     >
-      {/* Content scrolls inside, so the popup itself can carry the stroke. */}
+      {/* Content scrolls inside, so the popup itself can carry the outline. */}
       <div className={styles.body}>{children}</div>
     </BaseMenu.Popup>
   );
@@ -73,11 +74,11 @@ export const MenuItem = forwardRef<HTMLElement, MenuItemProps>(function MenuItem
 ) {
   return (
     <BaseMenu.Item
-      data-stroke="box-small"
-      data-stroke-focus="none"
+      data-outline="box-small"
+      data-outline-focus="none"
       {...props}
       ref={ref}
-      className={mergeClassName<BaseMenu.Item.State>(styles.item, className)}
+      className={mergeClassName<BaseMenu.Item.State>(classes(styles.item, outline.outline), className)}
     >
       <MenuItemContent icon={icon} endAdornment={endAdornment}>
         {children}
@@ -96,11 +97,11 @@ export const MenuLinkItem = forwardRef<Element, MenuLinkItemProps>(function Menu
 ) {
   return (
     <BaseMenu.LinkItem
-      data-stroke="box-small"
-      data-stroke-focus="none"
+      data-outline="box-small"
+      data-outline-focus="none"
       {...props}
       ref={ref}
-      className={mergeClassName<BaseMenu.LinkItem.State>(styles.item, className)}
+      className={mergeClassName<BaseMenu.LinkItem.State>(classes(styles.item, outline.outline), className)}
     >
       <MenuItemContent icon={icon} endAdornment={endAdornment}>
         {children}

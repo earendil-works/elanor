@@ -1,6 +1,7 @@
 import {Input as BaseInput} from '@base-ui/react/input';
 import {forwardRef} from 'react';
 import styles from './input.module.css';
+import outline from '../utils/outline.module.css';
 import {classes, mergeClassName} from '../utils/class-names.ts';
 
 export type {
@@ -27,9 +28,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
     throw new TypeError(`Input does not support type="${type}". Use one of: ${inputTypes.join(', ')}.`);
   }
 
-  // The frame draws the field: native inputs can't host the stroke layer.
+  // The frame draws the field: native inputs can't host the outline layer.
   return (
-    <span className={classes(styles.frame, rootClassName)} data-stroke="box-small">
+    <span className={classes(styles.frame, outline.outline, rootClassName)} data-outline="box-small">
       <BaseInput
         {...props}
         ref={ref}
