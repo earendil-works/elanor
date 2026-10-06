@@ -40,7 +40,7 @@ pnpm test
 <link rel="manifest" href="/site.webmanifest?v=0.1.0">
 ```
 
-The copied files are build output, so ignore them in Git. Favicon URLs carry the package version, because browsers cache favicons for a long time; update the tags when the version changes. Use `--base /path/` for a site served below the domain root, and `--head <file>` to write the tags to a file instead of printing them. Frameworks that render `<head>` themselves can use the same functions from JavaScript:
+The command copies from this package's build, so build it first (`pnpm --filter @earendil-works/elanor-logos build`); before that, it exits with a message saying so. The copied files are build output, so ignore them in Git. Favicon URLs carry the package version, because browsers cache favicons for a long time; update the tags when the version changes. Use `--base /path/` for a site served below the domain root, and `--head <file>` to write the tags to a file instead of printing them. Frameworks that render `<head>` themselves can use the same functions from JavaScript:
 
 ```ts
 import {copyFavicons, faviconHead} from "@earendil-works/elanor-logos";

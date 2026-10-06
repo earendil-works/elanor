@@ -8,8 +8,8 @@
 
 const tokenPattern = /[A-Za-z]|[+-]?(?:\d+\.?\d*|\.\d+)/g;
 
-/** Per-command parameter roles for absolute commands: x, y, or neither. */
-const roles: Readonly<Record<string, ReadonlyArray<"x" | "y" | "-">>> = {
+/** Per-command parameter roles for absolute commands: x, y, or neither. Their count is the command's arity. */
+export const roles: Readonly<Record<string, ReadonlyArray<"x" | "y" | "-">>> = {
   M: ["x", "y"],
   L: ["x", "y"],
   T: ["x", "y"],
@@ -22,14 +22,18 @@ const roles: Readonly<Record<string, ReadonlyArray<"x" | "y" | "-">>> = {
   Z: [],
 };
 
-export function translatePath(d: string, dx: number, dy: number): string {
-  if (dx === 0 && dy === 0) return d;
+/** Splits path data into command letters and numbers, rejecting anything else. */
+export function tokenizePath(d: string): string[] {
   if (/[eE]/.test(d)) throw new Error("Exponent notation is not supported in path data");
   if (d.replace(tokenPattern, "").replace(/[\s,]/g, "") !== "") {
     throw new Error("Path data contains unexpected characters");
   }
+  return d.match(tokenPattern) ?? [];
+}
 
-  const tokens = d.match(tokenPattern) ?? [];
+export function translatePath(d: string, dx: number, dy: number): string {
+  if (dx === 0 && dy === 0) return d;
+  const tokens = tokenizePath(d);
   const output: string[] = [];
   let command = "";
   let index = 0;

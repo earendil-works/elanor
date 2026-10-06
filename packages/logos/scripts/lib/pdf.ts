@@ -5,6 +5,8 @@
  * not embed an ICC profile, so it is not a certified PDF/X file.
  */
 
+import {roles, tokenizePath} from "./path-data.js";
+
 export interface CmykPath {
   d: string;
   cmyk: [number, number, number, number];
@@ -57,10 +59,12 @@ export function createPdf(
   return Buffer.from(body, "latin1");
 }
 
+/** The path commands PDF output supports, absolute or relative. */
+const pdfCommands = new Set(["M", "L", "H", "V", "C", "Z"]);
+
 /** Converts SVG path data (M, L, H, V, C, Z, absolute or relative) into PDF path operators. */
 export function pathOperators(d: string): string {
-  const tokens = d.match(/[A-Za-z]|[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?/g) ?? [];
-  const counts: Record<string, number> = {M: 2, L: 2, H: 1, V: 1, C: 6, Z: 0};
+  const tokens = tokenizePath(d);
   const output: string[] = [];
   let x = 0;
   let y = 0;
@@ -80,8 +84,8 @@ export function pathOperators(d: string): string {
       throw new Error(`Path data has a number without a command: ${d}`);
     }
     const type = command.toUpperCase();
-    const count = counts[type];
-    if (count === undefined) throw new Error(`Unsupported path command ${command} for PDF output`);
+    if (!pdfCommands.has(type)) throw new Error(`Unsupported path command ${command} for PDF output`);
+    const count = roles[type]!.length;
     const relative = command !== type;
     const parameters = tokens.slice(index, index + count);
     if (parameters.length < count || parameters.some(isCommand)) {
