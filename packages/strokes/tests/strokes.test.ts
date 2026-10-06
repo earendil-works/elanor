@@ -230,6 +230,7 @@ describe("built pencil style for Radius", () => {
     expect(css).toContain(':where([data-outline]:not([data-outline^="line"], [data-outline-band="none"])) {\n  --stroke-inset: calc(-1 * 0.125rem);');
     expect(css.match(/inset: calc\(-/g)).toHaveLength(1);
     expect(css).toContain("--outline-plain-border: transparent;");
+    expect(css).toContain("--outline-background-clip: padding-box;");
   });
 
   test("defines inline marks, on the root or on the scope", async () => {

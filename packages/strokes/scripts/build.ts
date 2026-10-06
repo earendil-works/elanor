@@ -81,6 +81,8 @@ function baseCss(bands: {default: number; focus: number}): string {
      falling back to --outline-color; a stroke style turns them off. */
   --outline-plain-border: transparent;
   --outline-plain-fill: transparent;
+  /* The background stops at the band, which the stroke paints. */
+  --outline-background-clip: padding-box;
   --stroke-inset: 0;
 }
 
