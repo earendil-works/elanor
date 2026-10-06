@@ -163,6 +163,10 @@ export function BrandLogos({brand, pressKit, children}: BrandLogosProps): React.
                 , and add these tags to its <code>&lt;head&gt;</code>:
               </Text>
               {children}
+              <Text className={styles.note}>
+                In this repository, <code>elanor-logos favicons {brand.id} --out public</code> copies the files for you; see
+                the logos package README.
+              </Text>
             </div>
           ) : null}
         </Stack>
