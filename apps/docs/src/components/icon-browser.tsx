@@ -43,7 +43,7 @@ export function IconBrowser(): React.JSX.Element {
     // `?q=` pre-fills the search, so searches can be linked.
     const initial = new URLSearchParams(window.location.search).get('q');
     if (initial) setQuery(initial);
-    void fetch('/api/icons/search.json')
+    void fetch('/icons/search-index.json')
       .then((response) => response.json() as Promise<IndexEntry[]>)
       .then(setIndex);
   }, []);
