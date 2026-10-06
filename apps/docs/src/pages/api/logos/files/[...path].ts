@@ -1,7 +1,7 @@
 import type {APIRoute, GetStaticPaths} from 'astro';
 import {readFile} from 'node:fs/promises';
 import {extname, resolve} from 'node:path';
-import {listFiles, logosDist} from '../../../lib/packages.ts';
+import {listFiles, logosDist} from '../../../../lib/packages.ts';
 
 /** Every file type the logo build writes. Browsers only render SVG images served with their type. */
 const contentTypes: Record<string, string> = {

@@ -31,7 +31,7 @@ const printProfileLabels: Record<string, string> = {
   psoUncoatedV3: 'PDF uncoated',
 };
 
-const url = (path: string) => `/api/logos/${path}`;
+const url = (path: string) => `/api/logos/files/${path}`;
 
 function printProfileLabel(profile: string): string {
   const label = printProfileLabels[profile];
