@@ -26,7 +26,7 @@ A token has its light and dark value as CSS and as a W3C DTCG value, its CSS var
 ## Brand
 
 - [Brand guidelines and logo rules](/brand/llms.txt): read before creating anything with a logo. Links every logo file.
-- [Logo index](/api/logos/index.json): usage rules and each brand with its background colors.
+- [Logo index](/api/logos/index.json): links to the guidelines, the grid unit, and each brand with its background colors.
 - \`/api/logos/brands/<brand>.json\`: one brand's logos with SVG, PNG, and CMYK PDF URLs, favicons, profile pictures, and press kit.
 
 ## Optional
