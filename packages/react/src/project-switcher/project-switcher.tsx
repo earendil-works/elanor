@@ -1,4 +1,5 @@
 import {Menu as BaseMenu} from '@base-ui/react/menu';
+import {KeyboardArrowDownIcon} from '@earendil-works/elanor-icons-react';
 import {forwardRef, type ReactNode, type Ref, type RefAttributes} from 'react';
 import {ContextualMenu} from '../contextual-menu/contextual-menu.tsx';
 import styles from './project-switcher.module.css';
@@ -11,7 +12,7 @@ export interface ProjectSwitcherTriggerProps<Payload = unknown>
 }
 
 export const ProjectSwitcherTrigger = forwardRef(function ProjectSwitcherTrigger<Payload>(
-  {children, indicator, className, ...props}: ProjectSwitcherTriggerProps<Payload>,
+  {children, indicator = <KeyboardArrowDownIcon aria-hidden="true" />, className, ...props}: ProjectSwitcherTriggerProps<Payload>,
   ref: Ref<HTMLButtonElement>,
 ) {
   return (
