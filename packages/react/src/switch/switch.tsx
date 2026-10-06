@@ -1,6 +1,7 @@
 import {Switch as BaseSwitch} from '@base-ui/react/switch';
 import {forwardRef} from 'react';
 import styles from './switch.module.css';
+import mark from '../utils/mark.module.css';
 import outline from '../utils/outline.module.css';
 import {classes, mergeClassName} from '../utils/class-names.ts';
 
@@ -36,7 +37,7 @@ export const SwitchThumb = forwardRef<HTMLSpanElement, SwitchThumbProps>(
       <BaseSwitch.Thumb
         {...props}
         ref={ref}
-        className={mergeClassName<BaseSwitch.Thumb.State>(styles.thumb, className)}
+        className={mergeClassName<BaseSwitch.Thumb.State>(classes(styles.thumb, mark.dot), className)}
       />
     );
   },

@@ -2,6 +2,7 @@ import {Combobox as BaseCombobox} from '@base-ui/react/combobox';
 import {KeyboardArrowDownIcon, SearchIcon} from '@earendil-works/elanor-icons-react';
 import {createContext, forwardRef, useContext} from 'react';
 import styles from './searchable-dropdown.module.css';
+import mark from '../utils/mark.module.css';
 import outline from '../utils/outline.module.css';
 import {classes, mergeClassName} from '../utils/class-names.ts';
 
@@ -202,7 +203,7 @@ export const SearchableDropdownItemIndicator = forwardRef<HTMLSpanElement, Searc
           ref={ref}
           className={mergeClassName<BaseCombobox.ItemIndicator.State>(styles.itemIndicator, className)}
         >
-          {children}
+          {children ?? <span className={multiple ? classes(styles.itemCheck, mark.check) : classes(styles.itemDot, mark.dot)} />}
         </BaseCombobox.ItemIndicator>
       </span>
     );

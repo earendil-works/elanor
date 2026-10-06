@@ -165,27 +165,23 @@
   color: inherit;
 }
 
-.itemIndicator:empty::after {
-  position: absolute;
-  inset: 0;
-  box-sizing: border-box;
-  inline-size: 37.5%;
-  block-size: 37.5%;
-  margin: auto;
-  border-radius: var(--semantic-dimension-radius-full);
+/* The default marks: a check fills the indicator, a dot sits in its middle. */
+.itemCheck,
+.itemDot {
+  flex: none;
   background-color: currentcolor;
-  content: '';
   pointer-events: none;
 }
 
-.indicatorFrameMultiple > .itemIndicator:empty::after {
-  block-size: 50%;
-  border-radius: 0;
-  background-color: transparent;
-  /* Physical edges keep the check nondirectional in both LTR and RTL. */
-  border-right: var(--semantic-dimension-border-width-medium) solid currentcolor;
-  border-bottom: var(--semantic-dimension-border-width-medium) solid currentcolor;
-  transform: translateY(calc(-1 * var(--semantic-dimension-space-padding-xxx-small))) rotate(45deg);
+.itemCheck {
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.itemDot {
+  inline-size: 37.5%;
+  block-size: 37.5%;
+  border-radius: var(--semantic-dimension-radius-full);
 }
 
 .itemIndicator:not([data-selected]) {

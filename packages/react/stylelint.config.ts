@@ -14,5 +14,7 @@ export default createStrictConfig({
     '--active-tab-height',
     // The outline contract, which stroke styles from @earendil-works/elanor-strokes implement.
     '--outline-*',
+    // The mark contract, for drawn checks, dashes, and dots.
+    '--mark-*',
   ],
 });

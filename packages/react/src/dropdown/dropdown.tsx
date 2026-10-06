@@ -2,6 +2,7 @@ import {Select as BaseSelect} from '@base-ui/react/select';
 import {KeyboardArrowDownIcon} from '@earendil-works/elanor-icons-react';
 import {createContext, forwardRef, useContext} from 'react';
 import styles from './dropdown.module.css';
+import mark from '../utils/mark.module.css';
 import outline from '../utils/outline.module.css';
 import {classes, mergeClassName} from '../utils/class-names.ts';
 
@@ -154,7 +155,7 @@ export const DropdownItemIndicator = forwardRef<HTMLSpanElement, DropdownItemInd
           ref={ref}
           className={mergeClassName<BaseSelect.ItemIndicator.State>(styles.itemIndicator, className)}
         >
-          {children}
+          {children ?? <span className={multiple ? classes(styles.itemCheck, mark.check) : classes(styles.itemDot, mark.dot)} />}
         </BaseSelect.ItemIndicator>
       </span>
     );

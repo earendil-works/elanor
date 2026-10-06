@@ -74,21 +74,8 @@
   block-size: var(--semantic-dimension-size-x-small);
 }
 
-.check {
-  inline-size: 100%;
-  block-size: 100%;
-}
-
-.indicator[data-indeterminate] > .check {
-  display: none;
-}
-
-.indicator[data-indeterminate]:empty::after,
-.indicator[data-indeterminate]:has(> .check)::after {
-  inline-size: 50%;
-  block-size: var(--semantic-dimension-border-width-medium);
+.mark {
   background-color: currentcolor;
-  content: '';
 }
 
 .indicator[data-unchecked] {

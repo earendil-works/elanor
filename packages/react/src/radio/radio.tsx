@@ -2,6 +2,7 @@ import {Radio as BaseRadio, type RadioRootProps} from '@base-ui/react/radio';
 import {RadioGroup as BaseRadioGroup} from '@base-ui/react/radio-group';
 import {forwardRef, type Ref} from 'react';
 import styles from './radio.module.css';
+import mark from '../utils/mark.module.css';
 import outline from '../utils/outline.module.css';
 import {classes, mergeClassName} from '../utils/class-names.ts';
 
@@ -43,7 +44,7 @@ export const RadioIndicator = forwardRef<HTMLSpanElement, RadioIndicatorProps>(
       <BaseRadio.Indicator
         {...props}
         ref={ref}
-        className={mergeClassName<BaseRadio.Indicator.State>(styles.indicator, className)}
+        className={mergeClassName<BaseRadio.Indicator.State>(classes(styles.indicator, mark.dot), className)}
       />
     );
   },
