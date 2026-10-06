@@ -40,6 +40,7 @@ export function guidelines(options: GuidelinesOptions): ExportPlugin {
         const image = await clearSpaceSvg(context, document, covered, options.clearSpace);
         const values: Record<string, string> = {
           title: brands[document].name,
+          gridUnit: String(gridUnit),
           names: list(names),
           about: (await Promise.all(covered.map((brand) => readFile(resolve(guidelinesDirectory, "brands", `${brand}.md`), "utf8"))))
             .map((text) => text.trim())
