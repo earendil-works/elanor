@@ -53,7 +53,8 @@ describe("guidelines template structure", () => {
     ["Title\n\n## A\n\nText.", /must start with a # title/],
     ["# Title\n\n## A\n\n### Deeper\n\nText.", /only ## section headings/],
     ["# Title\n\n## A\n\n```\ncode\n```", /code blocks are not supported/],
-    ["# Title\n\n## A\n\n## A\n\nText.", /section "A" is empty|two sections/],
+    ["# Title\n\n## A\n\nText.\n\n## A\n\nText.", /two sections are titled "A"/],
+    ["# Title\n\n## A\n\n## B\n\nText.", /section "A" is empty/],
     ["# Title\n\nIntro only.", /has no ## sections/],
     ["# Title\n\n## A\n\n<!-- image:missing -->\n\nText.", /unknown image missing/],
   ])("rejects %j", (source, message) => {
