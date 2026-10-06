@@ -4,7 +4,7 @@ import {resolve} from "node:path";
 import {brushes, type StrokeStyle, styles} from "../config.js";
 import {maskSvg, normalizeBrush} from "./lib/geometry.js";
 import {readBrush} from "./lib/path.js";
-import {OVERLAP, type Shape, shapesFor} from "./lib/shapes.js";
+import {marksFor, OVERLAP, type Shape, shapesFor} from "./lib/shapes.js";
 
 /*
  * Strokes implement the outline contract of the Elanor components: an element
@@ -32,6 +32,9 @@ async function tokenPixels(brand: string): Promise<(path: string) => number> {
     return value.unit === "rem" ? value.value * PIXELS_PER_REM : value.value;
   };
 }
+
+/** SVG for a data URL, escaping only what URLs and the surrounding quotes need. */
+const svgData = (svg: string) => svg.trim().replaceAll('"', "'").replace(/[%#<>]/g, (character) => encodeURIComponent(character));
 
 const boxPositions = "left top, center top, right top, left center, right center, left bottom, center bottom, right bottom";
 
@@ -224,13 +227,23 @@ for (const [styleName, style] of Object.entries(styles)) {
       }
     }
 
+    // Marks are inline, because a relative url() in a custom property resolves against the stylesheet
+    // that uses it, which is the component's.
+    const marks = marksFor(style, strip, pixels);
+    const markDeclarations = marks
+      .map(({name, layers, size}) => `  --mark-${name}: url("data:image/svg+xml,${svgData(maskSvg(layers, [0, 0, size, size], 0.05))}");`)
+      .join("\n");
+    const marksCss = (scope: string) =>
+      `/* Drawn marks: components paint a mark in a color and mask it with var(--mark-<name>, <their plain mark>). */\n${scope} {\n${markDeclarations}\n}\n`;
+
     const text = `${css.join("\n\n")}\n`;
-    await writeFile(resolve(styleDirectory, `${brand}.css`), text);
+    await writeFile(resolve(styleDirectory, `${brand}.css`), `${text}\n${marksCss(":where(:root)")}`);
     // The scoped copy applies only inside [data-strokes="<style>"], so pages can switch styles.
-    await writeFile(resolve(styleDirectory, `${brand}.scoped.css`), text.replace(/^(\s*)(:where\()/gm, `$1:where([data-strokes="${styleName}"]) $2`));
+    const scope = `:where([data-strokes="${styleName}"])`;
+    await writeFile(resolve(styleDirectory, `${brand}.scoped.css`), `${text.replace(/^(\s*)(:where\()/gm, `$1${scope} $2`)}\n${marksCss(scope)}`);
     await writeFile(
       resolve(styleDirectory, `${brand}.json`),
-      `${JSON.stringify({style: styleName, brand, variants: style.variants, band: bands, shapes: manifest}, null, 2)}\n`,
+      `${JSON.stringify({style: styleName, brand, variants: style.variants, band: bands, shapes: manifest, marks: marks.map(({name}) => name)}, null, 2)}\n`,
     );
     console.log(`Built ${styleName} for ${brand}: ${manifest.length} shapes × ${style.variants} variants.`);
   }

@@ -6,7 +6,7 @@ import {describe, expect, test} from "vitest";
 import {brushes, styles} from "../config.js";
 import {bend, normalizeBrush, roundedRectangle, straightLine, type Strip} from "../scripts/lib/geometry.js";
 import {flattenPath, readBrush} from "../scripts/lib/path.js";
-import {shapesFor} from "../scripts/lib/shapes.js";
+import {marksFor, shapesFor} from "../scripts/lib/shapes.js";
 
 const packageDirectory = resolve(import.meta.dirname, "..");
 const dist = resolve(packageDirectory, "dist/pencil");
@@ -70,7 +70,7 @@ describe("bending", () => {
   });
 
   test("tapers open lines to a point", () => {
-    const [[end]] = bend({polygons: [[[0, 0.5], [1, 0.5]]], extent: 0.5, edges: {inner: [0.5, 0.5], outer: [0.5, 0.5]}}, straightLine(0, 5, 100), 2, {...options, pressure: [], taper: 10}) as [
+    const [[end]] = bend({polygons: [[[0, 0.5], [1, 0.5]]], extent: 0.5, edges: {inner: [0.5, 0.5], outer: [0.5, 0.5]}}, straightLine(0, 5, 100), 2, {...options, pressure: [], ends: {start: {shape: "point", length: 10}, end: {shape: "point", length: 10}}}) as [
       [number, number][],
     ];
     expect(end![1]).toBeCloseTo(5, 9);
@@ -159,6 +159,37 @@ describe("shapes", () => {
   });
 });
 
+describe("marks", () => {
+  const pencil = styles.pencil!;
+  const tokens: Record<string, number> = {"semantic.dimension.size.xSmall": 16, "semantic.dimension.borderWidth.medium": 2};
+  const marks = Object.fromEntries(marksFor(pencil, strip, (path) => tokens[path]!).map((mark) => [mark.name, mark]));
+
+  test("stay inside their square", () => {
+    for (const {name, layers, size} of Object.values(marks)) {
+      for (const [x, y] of layers.flat(2)) {
+        expect(x, name).toBeGreaterThanOrEqual(0);
+        expect(x, name).toBeLessThanOrEqual(size);
+        expect(y, name).toBeGreaterThanOrEqual(0);
+        expect(y, name).toBeLessThanOrEqual(size);
+      }
+    }
+  });
+
+  test("the check's long arm rises to the right", () => {
+    const points = marks.check!.layers.flat(2);
+    const top = points.reduce((a, b) => (b[1] < a[1] ? b : a));
+    const bottom = points.reduce((a, b) => (b[1] > a[1] ? b : a));
+    expect(top[0]).toBeGreaterThan(bottom[0]);
+  });
+
+  test("the dot is a filled circle inside its square", () => {
+    const {layers, size} = marks.dot!;
+    for (const [x, y] of layers.flat(2)) expect(Math.hypot(x - size / 2, y - size / 2)).toBeLessThanOrEqual(size / 2 + 1e-6);
+    const [, core] = layers;
+    expect(contains(core![0]!, [size / 2, size / 2])).toBe(true);
+  });
+});
+
 describe("built pencil style for Radius", () => {
   test("references only existing masks", async () => {
     const css = await readFile(resolve(dist, "radius.css"), "utf8");
@@ -199,6 +230,16 @@ describe("built pencil style for Radius", () => {
     expect(css).toContain(':where([data-outline]:not([data-outline^="line"], [data-outline-band="none"])) {\n  --stroke-inset: calc(-1 * 0.125rem);');
     expect(css.match(/inset: calc\(-/g)).toHaveLength(1);
     expect(css).toContain("--outline-plain-border: transparent;");
+  });
+
+  test("defines inline marks, on the root or on the scope", async () => {
+    const css = await readFile(resolve(dist, "radius.css"), "utf8");
+    const scoped = await readFile(resolve(dist, "radius.scoped.css"), "utf8");
+    for (const name of ["check", "dash", "dot"]) {
+      expect(css).toContain(`--mark-${name}: url("data:image/svg+xml,`);
+    }
+    expect(css).toMatch(/:where\(:root\) \{\n  --mark-check/);
+    expect(scoped).toMatch(/:where\(\[data-strokes="pencil"\]\) \{\n  --mark-check/);
   });
 
   test("supports edges, focus opt-out, and keeps plain focus on lines", async () => {

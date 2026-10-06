@@ -141,6 +141,13 @@ export function straightLine(x: number, y: number, length: number): Backbone {
   return {length, closed: false, at: (s) => [x + s, y, 1, 0]};
 }
 
+/** A straight open path from one point to another. */
+export function segment([x1, y1]: Point, [x2, y2]: Point): Backbone {
+  const length = Math.hypot(x2 - x1, y2 - y1);
+  const [tx, ty] = [(x2 - x1) / length, (y2 - y1) / length];
+  return {length, closed: false, at: (s) => [x1 + tx * s, y1 + ty * s, tx, ty]};
+}
+
 /** Deterministic differences between variants of the same shape. */
 export interface Variation {
   /** Where along the loop the strip starts, as a fraction of its length. */
@@ -158,17 +165,29 @@ export function variation(seed: number, variant: number): Variation {
   };
 }
 
+/** How an open stroke ends: narrowing to a point, or rounding off, over `length` pixels. */
+export interface End {
+  shape: "point" | "round";
+  length: number;
+}
+
+/** The stroke's relative width at `distance` pixels from an end. */
+function narrowing({shape, length}: End, distance: number): number {
+  const t = Math.min(1, Math.max(0, distance / length));
+  return shape === "point" ? smoothstep(t) : Math.sqrt(t * (2 - t));
+}
+
 /**
  * Bends the strip along a backbone with a fixed stroke width. On closed
  * backbones the strip wraps once around, and pressure changes complete whole
- * cycles, so the loop has no visible start. `taper` narrows open strokes to a
- * point over that many pixels at each end.
+ * cycles, so the loop has no visible start. `ends` shape the start and end of
+ * an open stroke; without one, that end stays square.
  */
 export function bend(
   strip: Strip,
   backbone: Backbone,
   width: number,
-  options: {seed: number; variant: number; pressure: Array<{cycles: number; amplitude: number}>; taper?: number},
+  options: {seed: number; variant: number; pressure: Array<{cycles: number; amplitude: number}>; ends?: {start?: End | undefined; end?: End | undefined}},
 ): Polygon[] {
   const {phase, reverse} = variation(options.seed, options.variant);
   const flip = variation(options.seed, options.variant).flip && !backbone.closed;
@@ -185,14 +204,42 @@ export function bend(
       const s = backbone.closed ? (along + phase) * backbone.length : along * backbone.length;
       const [x, y, tx, ty] = backbone.at(s);
       let taper = 1;
-      if (options.taper && !backbone.closed) {
-        taper = smoothstep(Math.min(1, Math.min(s, backbone.length - s) / options.taper));
+      if (options.ends && !backbone.closed) {
+        const {start, end} = options.ends;
+        if (start) taper = Math.min(taper, narrowing(start, s));
+        if (end) taper = Math.min(taper, narrowing(end, backbone.length - s));
       }
       // The normal (-ty, tx) points inward on a clockwise loop.
       const offset = v * width * pressure(s) * taper * (flip ? -1 : 1);
       return [x - ty * offset, y + tx * offset];
     }),
   );
+}
+
+/** The part of a strip from `start` to `end` along it, stretched to run from 0 to 1. */
+export function section(strip: Strip, start: number, end: number): Strip {
+  const polygons = strip.polygons
+    .map((polygon) => clipPolygon(polygon, [start, -Infinity, end, Infinity]))
+    .filter((polygon) => polygon.length > 2)
+    .map((polygon) => polygon.map(([u, v]): Point => [(u - start) / (end - start), v]));
+  return {...strip, polygons};
+}
+
+/** Keeps the part of a polygon where (point − origin) · normal ≤ offset. */
+export function clipHalfPlane(polygon: Polygon, origin: Point, normal: Point, offset: number): Polygon {
+  const side = ([x, y]: Point) => (x - origin[0]) * normal[0] + (y - origin[1]) * normal[1] - offset;
+  const output: Polygon = [];
+  for (let i = 0; i < polygon.length; i += 1) {
+    const current = polygon[i]!;
+    const previous = polygon[(i + polygon.length - 1) % polygon.length]!;
+    const [a, b] = [side(previous), side(current)];
+    if ((a <= 0) !== (b <= 0)) {
+      const t = a / (a - b);
+      output.push([previous[0] + (current[0] - previous[0]) * t, previous[1] + (current[1] - previous[1]) * t]);
+    }
+    if (b <= 0) output.push(current);
+  }
+  return output;
 }
 
 /** Sutherland–Hodgman clipping against an axis-aligned rectangle [left, top, right, bottom]. */

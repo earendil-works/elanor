@@ -1,3 +1,5 @@
+import type {End} from "./scripts/lib/geometry.js";
+
 /**
  * Brush stroke styles. A style is built for each of its brands, from that
  * brand's design tokens (`@earendil-works/design-tokens/<brand>.catalog.json`),
@@ -47,6 +49,21 @@ export interface StrokeStyle {
     /** Separators; `taper` is the length of each tapered end in pixels. */
     lines: {taper: number};
   };
+  /**
+   * Marks inside controls, painted in a color rather than outlined: a check,
+   * a dash, and a dot (radio dots, switch knobs). They are drawn in a square
+   * of `size` with a brush of `thickness` (tokens), and scale with their
+   * element. `check` and `dash` are paths in fractions of the square, drawn
+   * as one stroke each, with `ends` shaping its start and end; the dot fills
+   * the square.
+   */
+  marks: {
+    size: string;
+    thickness: string;
+    ends: {start: End; end: End};
+    check: Array<[number, number]>;
+    dash: Array<[number, number]>;
+  };
 }
 
 export const brushes: Record<string, BrushConfig> = {
@@ -82,6 +99,20 @@ export const styles: Record<string, StrokeStyle> = {
         small: "semantic.dimension.size.small",
       },
       lines: {taper: 12},
+    },
+    marks: {
+      size: "semantic.dimension.size.xSmall",
+      thickness: "semantic.dimension.borderWidth.medium",
+      ends: {start: {shape: "round", length: 1}, end: {shape: "point", length: 4}},
+      check: [
+        [0.2, 0.5],
+        [0.42, 0.72],
+        [0.82, 0.28],
+      ],
+      dash: [
+        [0.25, 0.5],
+        [0.75, 0.5],
+      ],
     },
   },
 };

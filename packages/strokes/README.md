@@ -21,12 +21,13 @@ Strokes implement the outline contract the Elanor components follow, so componen
 - **Edges:** `data-outline-edge="block-start"`/`"block-end"` (or `"inline-start"`/`"inline-end"` for `line-vertical`) puts a line inside one edge of a larger element.
 - **Focus:** a wrapper shows focus when its direct child is focused, and an outlined element shows it when its parent is focused. `data-outline-focus="none"` opts out, for elements like popups that receive focus without showing it.
 - **Plain look:** components paint their plain border and separator fill in the colors `--outline-plain-border` and `--outline-plain-fill`, and their focus ring with `--outline-plain-focus`; a stroke style turns them off.
+- **Marks:** the style also draws marks inside controls, a check, a dash, and a dot (radio dots, switch knobs), as inline masks in `--mark-check`, `--mark-dash`, and `--mark-dot`. Components paint a mark in a color and mask it with `mask-image: var(--mark-check, <their plain check>)`, so without a style their plain mark shows.
 - **Variants:** siblings cycle through the variants; `data-stroke-variant="0"`–`"3"` picks one.
 - **Scoped:** `<style>/<brand>.scoped.css` applies only inside `[data-strokes="<style>"]`, for switching styles on a page.
 
 ## Development
 
-[`config.ts`](./config.ts) defines brushes and styles: the source brush and how it is evened out, the brands a style is built for, the bands, variants, seed, pressure variation, and which tokens size each shape.
+[`config.ts`](./config.ts) defines brushes and styles: the source brush and how it is evened out, the brands a style is built for, the bands and their overlap with the background, variants, seed, pressure variation, which tokens size each shape, and the marks.
 
 ```sh
 pnpm build   # dist/<style>/<brand>.css, .scoped.css, .json, and dist/<style>/<brand>/*.svg
