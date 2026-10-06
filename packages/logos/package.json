@@ -6,12 +6,13 @@
   "type": "module",
   "sideEffects": false,
   "files": [
+    "bin",
     "dist",
     "lib",
     "README.md"
   ],
   "bin": {
-    "elanor-logos": "./lib/cli.js"
+    "elanor-logos": "./bin/elanor-logos.js"
   },
   "exports": {
     ".": {

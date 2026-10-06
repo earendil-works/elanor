@@ -45,8 +45,8 @@ export function guidelines(options: GuidelinesOptions): ExportPlugin {
             .map((text) => text.trim())
             .join("\n\n"),
           writeNames: `Write the ${names.length === 1 ? "name" : "names"} as ${list(names.map((name) => `**${name}**`))} in prose.`,
-          // An HTML image, so Markdown renderers show it as is rather than processing it.
           kitFiles: list(context.plugins.flatMap((plugin) => (plugin.kitContents ? [plugin.kitContents] : []))),
+          // An HTML image, so Markdown renderers show it as is rather than processing it.
           clearSpace: `<img src="clear-space.png" alt="${list(names)} logos with one grid unit of clear space on every side" width="800">`,
         };
         const markdown = template.replace(/\{\{(\w+)\}\}/g, (_, key: string) => {

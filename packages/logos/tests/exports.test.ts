@@ -40,6 +40,8 @@ describe("pdf", () => {
     expect(pathOperators("M1 2L3 4H5V6C1 2 3 4 5 6Z")).toBe("1 2 m\n3 4 l\n5 4 l\n5 6 l\n1 2 3 4 5 6 c\nh");
     expect(pathOperators("m1 2l3 4z")).toBe("1 2 m\n4 6 l\nh");
     expect(() => pathOperators("M0 0A1 1 0 0 1 2 2")).toThrow(/Unsupported/);
+    expect(() => pathOperators("M0 0L1 1#")).toThrow(/unexpected characters/);
+    expect(() => pathOperators("M0 0L1e2 1")).toThrow(/Exponent notation/);
   });
 
   test("rejects malformed path data instead of emitting NaN or looping", () => {

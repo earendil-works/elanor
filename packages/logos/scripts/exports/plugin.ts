@@ -64,8 +64,7 @@ export interface Manifest {
 export interface ExportContext {
   /** Every configured plugin, in run order. */
   plugins: ExportPlugin[];
-  /** Every brand, kind, and treatment, composed and colored with the brand's tokens. */
-  assets: Asset[];
+  /** Assets of every brand, kind, and treatment, composed and colored with the brand's tokens; omit the selector for all of them. */
   select(selector?: AssetSelector): Asset[];
   /** The symbol alone for a brand and treatment. */
   mark(brand: BrandId, treatment: TreatmentId): Asset;
@@ -120,7 +119,6 @@ export async function createExportContext(distDirectory: string, manifest: Manif
 
   return {
     plugins,
-    assets,
     select,
     mark(brand, treatment) {
       const [asset] = select({brands: [brand], kinds: ["logo"], treatments: [treatment]});
