@@ -27,11 +27,6 @@
   font: inherit;
 }
 
-.description {
-  color: var(--semantic-color-text-secondary);
-  font: var(--semantic-typography-ui-secondary);
-}
-
 .root:has([data-disabled]) {
   cursor: not-allowed;
   opacity: var(--semantic-number-opacity-disabled);
