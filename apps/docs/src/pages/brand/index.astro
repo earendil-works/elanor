@@ -19,7 +19,7 @@ const guidelines = await getEntry('guidelines', 'brand-guidelines');
 if (!guidelines?.rendered) throw new Error('Missing brand guidelines; build @earendil-works/elanor-logos first');
 // The guidelines are written for the press kit: drop their title, nest their sections under this page's
 // heading, and load their images, which are relative to the document, from the logo package.
-const guidelinesImages = `/api/logos/${relative(logosDist, logosGuidelines)}/`;
+const guidelinesImages = `/api/logos/files/${relative(logosDist, logosGuidelines)}/`;
 const guidelinesHtml = guidelines.rendered.html
   .replace(/<h1[^>]*>[\s\S]*?<\/h1>/, '')
   .replace(/<(\/?)h2\b/g, '<$1h3')
