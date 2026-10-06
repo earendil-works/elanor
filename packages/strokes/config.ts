@@ -1,7 +1,7 @@
 /**
- * Brush stroke styles. Every shape's size comes from the brand's design
- * tokens, so strokes always match the real border radii and control sizes.
- * Token paths are resolved from `@earendil-works/design-tokens/<tokenBrand>.catalog.json`.
+ * Brush stroke styles. A style is built for each of its brands, from that
+ * brand's design tokens (`@earendil-works/design-tokens/<brand>.catalog.json`),
+ * so strokes always match the brand's border radii and control sizes.
  */
 
 export interface BrushConfig {
@@ -18,8 +18,13 @@ export interface BrushConfig {
 
 export interface StrokeStyle {
   brush: string;
-  tokenBrand: string;
-  /** Stroke widths, as border-width tokens. `focus` replaces `default` while focused. */
+  /** The brands the style is built for; each gets `<style>/<brand>.css`. */
+  brands: string[];
+  /**
+   * The bands strokes stay within, inside the element's edge, as border-width
+   * tokens. The brush is slimmed so the stroke and its wobble fill the band
+   * exactly. `focus` replaces `default` while focused.
+   */
   thickness: {default: string; focus: string};
   /** Number of variations per shape, so neighboring elements differ. */
   variants: number;
@@ -45,7 +50,7 @@ export const brushes: Record<string, BrushConfig> = {
 export const styles: Record<string, StrokeStyle> = {
   pencil: {
     brush: "noir",
-    tokenBrand: "radius",
+    brands: ["radius"],
     thickness: {default: "semantic.dimension.borderWidth.default", focus: "semantic.dimension.borderWidth.large"},
     variants: 4,
     seed: 731,

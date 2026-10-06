@@ -1,31 +1,34 @@
 # `@earendil-works/elanor-strokes`
 
-Brush stroke outlines as CSS and vector masks. Import a style after the design tokens:
+Brush stroke outlines as CSS and vector masks, for brands whose look uses them. Each style is built per brand; import the brand's build after its design tokens:
 
 ```css
 @import '@earendil-works/design-tokens/radius.css';
-@import '@earendil-works/elanor-strokes/pencil.css';
+@import '@earendil-works/elanor-strokes/pencil/radius.css';
 ```
+
+Strokes implement the outline contract the Elanor components follow, so components need no stroke-specific code:
 
 ```html
-<button data-stroke="box-small">Save</button>
-<hr data-stroke="line">
+<button data-outline="box-small">Save</button>
+<hr data-outline="line">
 ```
 
-Shapes are generated from the brand's tokens: `box-<radius>` (small, medium, large), `pill-<height>` (small, medium, large; the element must be that height), `circle-<size>` (x-small, small), `line`, and `line-vertical`. The stroke is centered on the element's edge on an `::after` layer, so layout and padding don't change and the fill ends beneath it.
-
-- **Color:** set `--stroke-color` (default `--semantic-color-border-primary`), for example on `:hover`. Focus uses `--stroke-focus-color` and a thicker stroke in the same position.
+- **Shapes:** generated from the brand's tokens: `box-<radius>` (small, medium, large), `pill-<height>` (x-small, small, medium, large; the element must be that height), `circle-<size>` (x-small, small), `line`, and `line-vertical`.
+- **Inside the edge:** a stroke lies within a band inside the element's edge (the border-width tokens: `default` normally, `large` while focused), so the element's size, which follows the pixel grid, includes it. The brush is slimmed so the stroke and its wobble fill the band.
+- **Border band:** a shape owns a border as wide as the band, transparent in stroke mode, where its background stops, so a stroke in the background's color still draws the edge; its padding subtracts the band. Outlines that only ever show focus, like text links, opt out with `data-outline-band="none"`.
+- **Color:** set `--outline-color` (default `--semantic-color-border-primary`), for example on `:hover`. Focus uses `--outline-focus-color` and the wider band.
+- **Edges:** `data-outline-edge="block-start"`/`"block-end"` (or `"inline-start"`/`"inline-end"` for `line-vertical`) puts a line inside one edge of a larger element.
+- **Focus:** a wrapper shows focus when its direct child is focused, and an outlined element shows it when its parent is focused. `data-outline-focus="none"` opts out, for elements like popups that receive focus without showing it.
+- **Plain look:** components paint their plain border and separator fill in the colors `--outline-plain-border` and `--outline-plain-fill`, and their focus ring with `--outline-plain-focus`; a stroke style turns them off.
 - **Variants:** siblings cycle through the variants; `data-stroke-variant="0"`–`"3"` picks one.
-- **Edges:** `data-stroke-edge="block-start"`/`"block-end"` (or `"inline-start"`/`"inline-end"` for `line-vertical`) puts a line on one edge of a larger element.
-- **Focus:** a wrapper shows focus when its direct child is focused, and a stroked element shows it when its parent is focused. `data-stroke-focus="none"` opts out, for elements like popups that receive focus without showing it.
-- **Components:** set `--stroke-color`, and paint the plain look through `--stroke-plain-shadow`, `--stroke-plain-outline`, and `--stroke-plain-fill`, which a stroke style turns off.
-- **Scoped:** `<style>.scoped.css` applies only inside `[data-strokes="<style>"]`, for switching styles on a page.
+- **Scoped:** `<style>/<brand>.scoped.css` applies only inside `[data-strokes="<style>"]`, for switching styles on a page.
 
 ## Development
 
-[`config.ts`](./config.ts) defines brushes and styles: the source brush and how it is evened out, stroke widths, variants, seed, pressure variation, and which tokens size each shape.
+[`config.ts`](./config.ts) defines brushes and styles: the source brush and how it is evened out, the brands a style is built for, the bands, variants, seed, pressure variation, and which tokens size each shape.
 
 ```sh
-pnpm build   # dist/<style>.css, dist/<style>.json, dist/<style>/*.svg
+pnpm build   # dist/<style>/<brand>.css, .scoped.css, .json, and dist/<style>/<brand>/*.svg
 pnpm test
 ```

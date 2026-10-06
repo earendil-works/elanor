@@ -2,33 +2,24 @@ import {mkdir, readFile, rm, writeFile} from "node:fs/promises";
 import {createRequire} from "node:module";
 import {resolve} from "node:path";
 import {brushes, type StrokeStyle, styles} from "../config.js";
-import {bend, maskSvg, normalizeBrush, reach, roundedRectangle, straightLine, type Strip} from "./lib/geometry.js";
-import {type Polygon, readBrush} from "./lib/path.js";
+import {maskSvg, normalizeBrush} from "./lib/geometry.js";
+import {readBrush} from "./lib/path.js";
+import {OVERLAP, type Shape, shapesFor} from "./lib/shapes.js";
+
+/*
+ * Strokes implement the outline contract of the Elanor components: an element
+ * with `data-outline="<shape>"` paints its outline in `--outline-color` within
+ * a band inside its edge, and components paint their plain look through the
+ * `--outline-plain-*` switches, which a stroke style turns off. Shapes own a
+ * border band as wide as the stroke band, where their background stops, so a
+ * stroke in the background's color still draws the edge; outlines that only
+ * show focus opt out with `data-outline-band="none"`. Strokes stay inside the
+ * element, so its size, which follows the pixel grid, includes them.
+ */
 
 const packageDirectory = resolve(import.meta.dirname, "..");
 const outputDirectory = resolve(packageDirectory, "dist");
 const PIXELS_PER_REM = 16;
-/** Length of the stretchable middle of each edge in the canonical drawing, in pixels. */
-const CANONICAL_EDGE = 64;
-/**
- * Stretched middles extend this far under their neighbors, in pixels. Slice
- * boundaries often land on fractional device pixels, where two abutting layers
- * would each paint partial coverage and leave a hairline gap.
- */
-const OVERLAP = 0.5;
-
-type Region = [number, number, number, number];
-type Slices = Array<Region | null>;
-
-interface Shape {
-  name: string;
-  kind: "box" | "circle" | "line";
-  /** Pixel size of the element the shape was drawn for (lines: length 0). */
-  size: {width: number; height: number; radius: number};
-  /** Draws the shape at one stroke width; returns polygons, canvas, slices, and CSS geometry. */
-  draw(width: number, variant: number): {polygons: Polygon[]; slices: Slices; bleed: number; slice: number};
-}
-
 const rem = (px: number) => `${Math.round((px / PIXELS_PER_REM) * 10000) / 10000}rem`;
 
 async function tokenPixels(brand: string): Promise<(path: string) => number> {
@@ -42,86 +33,6 @@ async function tokenPixels(brand: string): Promise<(path: string) => number> {
   };
 }
 
-/** Eight border regions of a nine-slice (no center), as [left, top, right, bottom]. */
-function nineSlice(width: number, height: number, slice: number): Slices {
-  const regions: Region[] = [
-    [0, 0, slice, slice],
-    [slice - OVERLAP, 0, width - slice + OVERLAP, slice],
-    [width - slice, 0, width, slice],
-    [0, slice - OVERLAP, slice, height - slice + OVERLAP],
-    [width - slice, slice - OVERLAP, width, height - slice + OVERLAP],
-    [0, height - slice, slice, height],
-    [slice - OVERLAP, height - slice, width - slice + OVERLAP, height],
-    [width - slice, height - slice, width, height],
-  ];
-  // Pills have no straight sides; their side middles only span the overlap.
-  return regions.map((region) => (region[2] - region[0] > 2 * OVERLAP + 1e-6 && region[3] - region[1] > 2 * OVERLAP + 1e-6 ? region : null));
-}
-
-function shapesFor(style: StrokeStyle, strip: Strip, pixels: (path: string) => number): Shape[] {
-  const options = (variant: number) => ({seed: style.seed, variant, pressure: style.pressure});
-  const bleedFor = (width: number) => Math.ceil((reach(strip, width, style.pressure) + 0.25) * 4) / 4;
-
-  const rounded = (name: string, kind: "box", elementWidth: number, elementHeight: number, radius: number): Shape => ({
-    name,
-    kind,
-    size: {width: elementWidth, height: elementHeight, radius},
-    draw(width, variant) {
-      const bleed = bleedFor(width);
-      const slice = bleed + radius;
-      const backbone = roundedRectangle(bleed, bleed, elementWidth, elementHeight, radius);
-      const polygons = bend(strip, backbone, width, options(variant));
-      return {polygons, slices: nineSlice(elementWidth + 2 * bleed, elementHeight + 2 * bleed, slice), bleed, slice};
-    },
-  });
-
-  const shapes: Shape[] = [];
-  for (const [name, token] of Object.entries(style.shapes.boxes)) {
-    const radius = pixels(token);
-    shapes.push(rounded(`box-${name}`, "box", 2 * radius + CANONICAL_EDGE, 2 * radius + CANONICAL_EDGE / 2, radius));
-  }
-  for (const [name, token] of Object.entries(style.shapes.pills)) {
-    const height = pixels(token);
-    shapes.push(rounded(`pill-${name}`, "box", height + CANONICAL_EDGE, height, height / 2));
-  }
-  for (const [name, token] of Object.entries(style.shapes.circles)) {
-    const diameter = pixels(token);
-    shapes.push({
-      name: `circle-${name}`,
-      kind: "circle",
-      size: {width: diameter, height: diameter, radius: diameter / 2},
-      draw(width, variant) {
-        const bleed = bleedFor(width);
-        const backbone = roundedRectangle(bleed, bleed, diameter, diameter, diameter / 2);
-        const canvas = diameter + 2 * bleed;
-        return {polygons: bend(strip, backbone, width, options(variant)), slices: [[0, 0, canvas, canvas]], bleed, slice: 0};
-      },
-    });
-  }
-  const {taper} = style.shapes.lines;
-  for (const vertical of [false, true]) {
-    shapes.push({
-      name: vertical ? "line-vertical" : "line",
-      kind: "line",
-      size: {width: 0, height: 0, radius: 0},
-      draw(width, variant) {
-        const bleed = bleedFor(width);
-        const length = 2 * taper + CANONICAL_EDGE;
-        let polygons = bend(strip, straightLine(0, bleed, length), width, {...options(variant), taper});
-        const regions: Region[] = [
-          [0, 0, taper, 2 * bleed],
-          [taper - OVERLAP, 0, length - taper + OVERLAP, 2 * bleed],
-          [length - taper, 0, length, 2 * bleed],
-        ];
-        if (!vertical) return {polygons, slices: regions, bleed, slice: taper};
-        polygons = polygons.map((polygon) => polygon.map(([x, y]): [number, number] => [y, x]));
-        return {polygons, slices: regions.map(([l, t, r, b]): Region => [t, l, b, r]), bleed, slice: taper};
-      },
-    });
-  }
-  return shapes;
-}
-
 const boxPositions = "left top, center top, right top, left center, right center, left bottom, center bottom, right bottom";
 
 function boxSizes(slice: number): string {
@@ -130,103 +41,105 @@ function boxSizes(slice: number): string {
   return [`${s} ${s}`, `${middle} ${s}`, `${s} ${s}`, `${s} ${middle}`, `${s} ${middle}`, `${s} ${s}`, `${middle} ${s}`, `${s} ${s}`].join(", ");
 }
 
-function geometry(shape: Shape, drawn: {bleed: number; slice: number}, prefix: "" | "focus-"): string[] {
+/** Mask geometry for a shape; the mask layer always covers the element itself. */
+function geometry(shape: Shape, drawn: {slice: number}, band: number, prefix: "" | "focus-"): string[] {
   const property = (name: string) => `--stroke-${prefix}${name}`;
   if (shape.kind === "box") {
-    return [
-      `${property("inset")}: ${rem(-drawn.bleed)};`,
-      ...(prefix ? [] : [`--stroke-mask-position: ${boxPositions};`]),
-      `${property("mask-size")}: ${boxSizes(drawn.slice)};`,
-    ];
+    return [...(prefix ? [] : [`--stroke-mask-position: ${boxPositions};`]), `${property("mask-size")}: ${boxSizes(drawn.slice)};`];
   }
-  if (shape.kind === "circle") {
-    return [
-      `${property("inset")}: ${rem(-drawn.bleed)};`,
-      ...(prefix ? [] : ["--stroke-mask-position: center;"]),
-      `${property("mask-size")}: 100% 100%;`,
-    ];
-  }
+  if (shape.kind === "circle") return [...(prefix ? [] : ["--stroke-mask-position: center;"]), `${property("mask-size")}: 100% 100%;`];
+  // A line fills its element when that is as thick as the band, and is centered in a thicker one.
   const vertical = shape.name.endsWith("vertical");
   const cap = rem(drawn.slice);
   const middle = `calc(100% - ${rem(2 * drawn.slice - 2 * OVERLAP)})`;
+  const centered = `calc(50% - ${rem(band / 2)})`;
   return [
-    `--stroke-inset: ${vertical ? `0 calc(50% - ${rem(drawn.bleed)})` : `calc(50% - ${rem(drawn.bleed)}) 0`};`,
+    `--stroke-inset: ${vertical ? `0 ${centered}` : `${centered} 0`};`,
     `--stroke-mask-position: ${vertical ? "center top, center center, center bottom" : "left center, center center, right center"};`,
     `--stroke-mask-size: ${vertical ? `100% ${cap}, 100% ${middle}, 100% ${cap}` : `${cap} 100%, ${middle} 100%, ${cap} 100%`};`,
   ];
 }
 
-function baseCss(fallbackWidth: number): string {
-  const width = rem(fallbackWidth);
+/** Focus shows on the focused element, on a wrapper around a focused control, and on an outlined box inside a focused control. */
+const focused = (box: string) =>
+  `:where(${box}:is(:focus-visible, :has(> :focus-visible)), :focus-visible > ${box})`;
+const focusableBox = '[data-outline]:not([data-outline^="line"], [data-outline-focus="none"])';
+
+function baseCss(bands: {default: number; focus: number}): string {
+  const band = rem(bands.default);
+  const focusBand = rem(bands.focus);
   return `/* Generated by @earendil-works/elanor-strokes. */
 
-:where([data-stroke]) {
+:where([data-outline]) {
   position: relative;
-  --stroke-color: var(--semantic-color-border-primary);
-  --stroke-focus-color: var(--semantic-color-focus-ring);
-  /* Components paint their plain border and separator fill with these
-     fallbacks; a stroke style turns them off. */
-  --stroke-plain-shadow: 0 0 transparent;
-  --stroke-plain-fill: transparent;
+  --outline-color: var(--semantic-color-border-primary);
+  --outline-focus-color: var(--semantic-color-focus-ring);
+  /* Components paint their plain border and separator fill in these colors,
+     falling back to --outline-color; a stroke style turns them off. */
+  --outline-plain-border: transparent;
+  --outline-plain-fill: transparent;
+  --stroke-inset: 0;
+}
+
+/* The layer sits inside the border band, so a shape's layer reaches back over it. */
+:where([data-outline]:not([data-outline^="line"], [data-outline-band="none"])) {
+  --stroke-inset: calc(-1 * ${band});
 }
 
 /* Box strokes also draw focus, so the plain focus ring is turned off. Line
    strokes don't, so their elements keep it. */
-:where([data-stroke]:not([data-stroke^="line"])) {
-  --stroke-plain-outline: 0 solid transparent;
+:where([data-outline]:not([data-outline^="line"])) {
+  --outline-plain-focus: 0 solid transparent;
 }
 
-/* The stroke is centered on the element's edge: its outer half is paint only,
-   so layout and padding are unchanged, and the fill ends beneath it. */
-:where([data-stroke])::after {
+/* The stroke lies inside the element's edge, so the element's size includes it
+   and it covers only the edge of the padding. */
+:where([data-outline])::after {
   content: "";
   position: absolute;
   inset: var(--stroke-inset);
   pointer-events: none;
-  background-color: var(--stroke-color);
+  background-color: var(--outline-color);
   mask-image: var(--stroke-images);
   mask-position: var(--stroke-mask-position);
   mask-size: var(--stroke-mask-size);
   mask-repeat: no-repeat;
 }
 
-/* Focus shows on the focused element, on a wrapper around a focused control,
-   and on a stroked box inside a focused control (checkbox, radio, switch).
-   data-stroke-focus="none" opts out, e.g. for popups that receive focus. */
-:where([data-stroke]:not([data-stroke^="line"], [data-stroke-focus="none"]):is(:focus-visible, :has(> :focus-visible)), :focus-visible > [data-stroke]:not([data-stroke^="line"], [data-stroke-focus="none"]))::after {
-  inset: var(--stroke-focus-inset);
-  background-color: var(--stroke-focus-color);
+/* data-outline-focus="none" opts out, e.g. for popups that receive focus. */
+${focused(focusableBox)}::after {
+  background-color: var(--outline-focus-color);
   mask-image: var(--stroke-focus-images);
   mask-size: var(--stroke-focus-mask-size);
 }
 
 @supports not (mask-image: none) {
-  :where([data-stroke]:not([data-stroke^="line"]))::after {
-    inset: calc(${width} / -2);
-    border: ${width} solid var(--stroke-color);
+  :where([data-outline]:not([data-outline^="line"]))::after {
+    border: ${band} solid var(--outline-color);
     border-radius: inherit;
     background: none;
   }
 
-  :where([data-stroke]:not([data-stroke^="line"], [data-stroke-focus="none"]):is(:focus-visible, :has(> :focus-visible)), :focus-visible > [data-stroke]:not([data-stroke^="line"], [data-stroke-focus="none"]))::after {
-    border-color: var(--stroke-focus-color);
+  ${focused(focusableBox)}::after {
+    border-width: ${focusBand};
+    border-color: var(--outline-focus-color);
   }
 }
 
 @media (forced-colors: active) {
-  :where([data-stroke]:not([data-stroke^="line"]))::after {
-    inset: calc(${width} / -2);
-    border: ${width} solid CanvasText;
+  :where([data-outline]:not([data-outline^="line"]))::after {
+    border: ${band} solid CanvasText;
     border-radius: inherit;
     background: none;
     mask: none;
   }
 
-  :where([data-stroke]:not([data-stroke^="line"], [data-stroke-focus="none"]):is(:focus-visible, :has(> :focus-visible)), :focus-visible > [data-stroke]:not([data-stroke^="line"], [data-stroke-focus="none"]))::after {
+  ${focused(focusableBox)}::after {
+    border-width: ${focusBand};
     border-color: Highlight;
   }
 
-  :where([data-stroke^="line"])::after {
+  :where([data-outline^="line"])::after {
     background-color: CanvasText;
     forced-color-adjust: none;
     mask: none;
@@ -235,93 +148,90 @@ function baseCss(fallbackWidth: number): string {
 `;
 }
 
-const styleNames = Object.keys(styles);
 await rm(outputDirectory, {recursive: true, force: true});
 
-for (const styleName of styleNames) {
-  const style = styles[styleName]!;
+for (const [styleName, style] of Object.entries(styles)) {
   const brushConfig = brushes[style.brush];
   if (!brushConfig) throw new Error(`Style ${styleName} uses unknown brush ${style.brush}`);
   if (!Number.isInteger(style.variants) || style.variants < 1) throw new Error("variants must be a positive integer");
-
+  if (style.brands.length === 0) throw new Error(`Style ${styleName} lists no brands`);
   const strip = normalizeBrush(readBrush(await readFile(resolve(packageDirectory, brushConfig.source), "utf8")), brushConfig.normalize);
-  const pixels = await tokenPixels(style.tokenBrand);
-  const widths = {default: pixels(style.thickness.default), focus: pixels(style.thickness.focus)};
-  const assetDirectory = resolve(outputDirectory, styleName);
-  await mkdir(assetDirectory, {recursive: true});
 
-  const css = [baseCss(widths.default)];
-  const manifest: Array<{name: string; kind: string; size: Shape["size"]}> = [];
-  for (const shape of shapesFor(style, strip, pixels)) {
-    manifest.push({name: shape.name, kind: shape.kind, size: shape.size});
-    const thicknesses = shape.kind === "line" ? (["default"] as const) : (["default", "focus"] as const);
-    const images: Record<string, string[]> = {};
-    const drawnGeometry: Record<string, {bleed: number; slice: number}> = {};
+  for (const brand of style.brands) {
+    const pixels = await tokenPixels(brand);
+    const bands = {default: pixels(style.thickness.default), focus: pixels(style.thickness.focus)};
+    const styleDirectory = resolve(outputDirectory, styleName);
+    const assetDirectory = resolve(styleDirectory, brand);
+    await mkdir(assetDirectory, {recursive: true});
 
-    for (const thickness of thicknesses) {
-      for (let variant = 0; variant < style.variants; variant += 1) {
-        const drawn = shape.draw(widths[thickness], variant);
-        drawnGeometry[thickness] = drawn;
-        const urls: string[] = [];
-        for (const [index, region] of drawn.slices.entries()) {
-          if (!region) {
-            urls.push("none");
-            continue;
+    const css = [baseCss(bands)];
+    const manifest: Array<{name: string; kind: string; size: Shape["size"]}> = [];
+    for (const shape of shapesFor(style, strip, pixels)) {
+      manifest.push({name: shape.name, kind: shape.kind, size: shape.size});
+      const thicknesses = shape.kind === "line" ? (["default"] as const) : (["default", "focus"] as const);
+      const images: Record<string, string[]> = {};
+      const drawnGeometry: Record<string, {slice: number}> = {};
+
+      for (const thickness of thicknesses) {
+        for (let variant = 0; variant < style.variants; variant += 1) {
+          const drawn = shape.draw(bands[thickness], variant);
+          drawnGeometry[thickness] = drawn;
+          const urls: string[] = [];
+          for (const [index, region] of drawn.slices.entries()) {
+            if (!region) {
+              urls.push("none");
+              continue;
+            }
+            const file = `${shape.name}-${thickness}-${variant}-${index}.svg`;
+            await writeFile(resolve(assetDirectory, file), maskSvg(drawn.polygons, region));
+            urls.push(`url("./${brand}/${file}")`);
           }
-          const file = `${shape.name}-${thickness}-${variant}-${index}.svg`;
-          await writeFile(resolve(assetDirectory, file), maskSvg(drawn.polygons, region));
-          urls.push(`url("./${styleName}/${file}")`);
+          images[`${thickness}-${variant}`] = urls;
         }
-        images[`${thickness}-${variant}`] = urls;
       }
-    }
 
-    const selector = `[data-stroke="${shape.name}"]`;
-    if (shape.kind === "line") {
-      // data-stroke-edge centers the line on one edge of a larger element.
-      const bleed = rem(drawnGeometry.default!.bleed);
-      const edges = shape.name.endsWith("vertical")
-        ? {"inline-start": [`inset-inline: calc(-1 * ${bleed}) calc(100% - ${bleed})`], "inline-end": [`inset-inline: calc(100% - ${bleed}) calc(-1 * ${bleed})`]}
-        : {"block-start": [`inset-block: calc(-1 * ${bleed}) calc(100% - ${bleed})`], "block-end": [`inset-block: calc(100% - ${bleed}) calc(-1 * ${bleed})`]};
-      for (const [edge, declarations] of Object.entries(edges)) {
-        css.push(
-          `:where(${selector}[data-stroke-edge="${edge}"])::after {\n  inset: 0;\n${declarations.map((line) => `  ${line};`).join("\n")}\n}`,
-        );
+      const selector = `[data-outline="${shape.name}"]`;
+      if (shape.kind === "line") {
+        // data-outline-edge puts the line inside one edge of a larger element.
+        const band = rem(bands.default);
+        const edges = shape.name.endsWith("vertical")
+          ? {"inline-start": `inset-inline-end: calc(100% - ${band})`, "inline-end": `inset-inline-start: calc(100% - ${band})`}
+          : {"block-start": `inset-block-end: calc(100% - ${band})`, "block-end": `inset-block-start: calc(100% - ${band})`};
+        for (const [edge, declaration] of Object.entries(edges)) {
+          css.push(`:where(${selector}[data-outline-edge="${edge}"])::after {\n  inset: 0;\n  ${declaration};\n}`);
+        }
       }
-    }
-    const imageDeclarations = (variant: number) => [
-      `--stroke-images: ${images[`default-${variant}`]!.join(", ")};`,
-      ...(shape.kind === "line" ? [] : [`--stroke-focus-images: ${images[`focus-${variant}`]!.join(", ")};`]),
-    ];
-    css.push(
-      `:where(${selector}) {\n${[
-        ...geometry(shape, drawnGeometry.default!, ""),
-        ...(shape.kind === "line" ? [] : geometry(shape, drawnGeometry.focus!, "focus-")),
-        ...imageDeclarations(0),
-      ]
-        .map((line) => `  ${line}`)
-        .join("\n")}\n}`,
-    );
-    // Siblings cycle through the variants unless one is chosen with data-stroke-variant.
-    for (let variant = 1; variant < style.variants; variant += 1) {
+      const imageDeclarations = (variant: number) => [
+        `--stroke-images: ${images[`default-${variant}`]!.join(", ")};`,
+        ...(shape.kind === "line" ? [] : [`--stroke-focus-images: ${images[`focus-${variant}`]!.join(", ")};`]),
+      ];
       css.push(
-        `:where(${selector}[data-stroke-variant="${variant}"], ${selector}:not([data-stroke-variant]):nth-child(${style.variants}n + ${variant + 1})) {\n${imageDeclarations(variant)
+        `:where(${selector}) {\n${[
+          ...geometry(shape, drawnGeometry.default!, bands.default, ""),
+          ...(shape.kind === "line" ? [] : geometry(shape, drawnGeometry.focus!, bands.focus, "focus-")),
+          ...imageDeclarations(0),
+        ]
           .map((line) => `  ${line}`)
           .join("\n")}\n}`,
       );
+      // Siblings cycle through the variants unless one is chosen with data-stroke-variant.
+      for (let variant = 1; variant < style.variants; variant += 1) {
+        css.push(
+          `:where(${selector}[data-stroke-variant="${variant}"], ${selector}:not([data-stroke-variant]):nth-child(${style.variants}n + ${variant + 1})) {\n${imageDeclarations(variant)
+            .map((line) => `  ${line}`)
+            .join("\n")}\n}`,
+        );
+      }
     }
-  }
 
-  const text = `${css.join("\n\n")}\n`;
-  await writeFile(resolve(outputDirectory, `${styleName}.css`), text);
-  // The scoped copy applies only inside [data-strokes="<style>"], so pages can switch styles.
-  await writeFile(
-    resolve(outputDirectory, `${styleName}.scoped.css`),
-    text.replace(/^(\s*)(:where\()/gm, `$1:where([data-strokes="${styleName}"]) $2`),
-  );
-  await writeFile(
-    resolve(outputDirectory, `${styleName}.json`),
-    `${JSON.stringify({style: styleName, variants: style.variants, thickness: widths, shapes: manifest}, null, 2)}\n`,
-  );
-  console.log(`Built ${styleName}: ${manifest.length} shapes × ${style.variants} variants.`);
+    const text = `${css.join("\n\n")}\n`;
+    await writeFile(resolve(styleDirectory, `${brand}.css`), text);
+    // The scoped copy applies only inside [data-strokes="<style>"], so pages can switch styles.
+    await writeFile(resolve(styleDirectory, `${brand}.scoped.css`), text.replace(/^(\s*)(:where\()/gm, `$1:where([data-strokes="${styleName}"]) $2`));
+    await writeFile(
+      resolve(styleDirectory, `${brand}.json`),
+      `${JSON.stringify({style: styleName, brand, variants: style.variants, band: bands, shapes: manifest}, null, 2)}\n`,
+    );
+    console.log(`Built ${styleName} for ${brand}: ${manifest.length} shapes × ${style.variants} variants.`);
+  }
 }

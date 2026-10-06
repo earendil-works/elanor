@@ -6,7 +6,7 @@ import type {Brush, Point, Polygon} from "./path.js";
  */
 export interface Strip {
   polygons: Polygon[];
-  /** Largest |v| of any point, used to size the bleed around shapes. */
+  /** Largest |v| of any point, used to fit the stroke into its band. */
   extent: number;
 }
 
@@ -179,11 +179,6 @@ export function bend(
       return [x - ty * offset, y + tx * offset];
     }),
   );
-}
-
-/** The largest distance a bent stroke can reach from its backbone. */
-export function reach(strip: Strip, width: number, pressure: Array<{cycles: number; amplitude: number}>): number {
-  return strip.extent * width * (1 + pressure.reduce((sum, {amplitude}) => sum + amplitude, 0));
 }
 
 /** Sutherland–Hodgman clipping against an axis-aligned rectangle [left, top, right, bottom]. */

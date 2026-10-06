@@ -17,7 +17,7 @@
   "scripts": {
     "build": "tsx scripts/build.ts",
     "check": "tsc -p tsconfig.json --noEmit",
-    "test": "pnpm --filter @earendil-works/design-tokens run build:radius && pnpm run build && vitest run --dir tests"
+    "test": "pnpm --filter @earendil-works/design-tokens run build && pnpm run build && vitest run --dir tests"
   },
   "devDependencies": {
     "@earendil-works/design-tokens": "workspace:*",
