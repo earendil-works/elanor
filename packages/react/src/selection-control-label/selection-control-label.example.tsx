@@ -20,7 +20,6 @@ export function SelectionControlLabelExample(): React.JSX.Element {
             <Checkbox.Indicator />
           </Checkbox.Root>
         }
-        description="Sent every Monday."
       >
         Send me a weekly summary of project activity,<br />
         including comments, assignments, and upcoming deadlines.
