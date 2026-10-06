@@ -15,7 +15,7 @@ Strokes implement the outline contract the Elanor components follow, so componen
 ```
 
 - **Shapes:** generated from the brand's tokens: `box-<radius>` (small, medium, large), `pill-<height>` (x-small, small, medium, large; the element must be that height), `circle-<size>` (x-small, small), `line`, and `line-vertical`.
-- **Inside the edge:** a stroke lies within a band inside the element's edge (the border-width tokens: `default` normally, `large` while focused), so the element's size, which follows the pixel grid, includes it. The brush is slimmed so the stroke and its wobble fill the band.
+- **Inside the edge:** a stroke lies within a band inside the element's edge (the border-width tokens: `default` normally, `large` while focused), so the element's size, which follows the pixel grid, includes it. A shape's rough brush edge faces out and wobbles within the band; its smooth edge faces in and always reaches past the band by an overlap (`overlap` in the config), over the element's background, with a solid core under the stroke, so no seam shows between the two.
 - **Border band:** a shape owns a border as wide as the band, transparent in stroke mode, where its background stops, so a stroke in the background's color still draws the edge; its padding subtracts the band. Outlines that only ever show focus, like text links, opt out with `data-outline-band="none"`.
 - **Color:** set `--outline-color` (default `--semantic-color-border-primary`), for example on `:hover`. Focus uses `--outline-focus-color` and the wider band.
 - **Edges:** `data-outline-edge="block-start"`/`"block-end"` (or `"inline-start"`/`"inline-end"` for `line-vertical`) puts a line inside one edge of a larger element.

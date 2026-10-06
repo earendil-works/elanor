@@ -21,11 +21,17 @@ export interface StrokeStyle {
   /** The brands the style is built for; each gets `<style>/<brand>.css`. */
   brands: string[];
   /**
-   * The bands strokes stay within, inside the element's edge, as border-width
-   * tokens. The brush is slimmed so the stroke and its wobble fill the band
-   * exactly. `focus` replaces `default` while focused.
+   * The bands strokes draw, inside the element's edge, as border-width tokens.
+   * An element's background stops at its band. `focus` replaces `default`
+   * while focused.
    */
   thickness: {default: string; focus: string};
+  /**
+   * How far, in pixels, a shape's stroke always reaches past its band, over
+   * the element's background, so no seam shows between the two. The rough edge
+   * of the brush faces out and wobbles within the band; the smooth edge faces in.
+   */
+  overlap: number;
   /** Number of variations per shape, so neighboring elements differ. */
   variants: number;
   seed: number;
@@ -52,6 +58,7 @@ export const styles: Record<string, StrokeStyle> = {
     brush: "noir",
     brands: ["radius"],
     thickness: {default: "semantic.dimension.borderWidth.default", focus: "semantic.dimension.borderWidth.large"},
+    overlap: 0.5,
     variants: 4,
     seed: 731,
     pressure: [

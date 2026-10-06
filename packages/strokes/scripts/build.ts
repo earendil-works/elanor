@@ -183,7 +183,7 @@ for (const [styleName, style] of Object.entries(styles)) {
               continue;
             }
             const file = `${shape.name}-${thickness}-${variant}-${index}.svg`;
-            await writeFile(resolve(assetDirectory, file), maskSvg(drawn.polygons, region));
+            await writeFile(resolve(assetDirectory, file), maskSvg([drawn.polygons, drawn.core], region));
             urls.push(`url("./${brand}/${file}")`);
           }
           images[`${thickness}-${variant}`] = urls;

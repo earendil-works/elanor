@@ -38,13 +38,18 @@ describe("normalized brush", () => {
     }
     expect(strip.extent).toBeLessThan(0.75);
   });
+
+  test("puts the smoother edge inside", () => {
+    const range = ([nearest, farthest]: [number, number]) => farthest - nearest;
+    expect(range(strip.edges.inner)).toBeLessThan(range(strip.edges.outer));
+  });
 });
 
 describe("bending", () => {
   const options = {seed: 1, variant: 0, pressure: [{cycles: 3, amplitude: 0.05}]};
 
   test("closes loops without a seam", () => {
-    const edge: Strip = {polygons: [[[0, 0.5], [1, 0.5]]], extent: 0.5};
+    const edge: Strip = {polygons: [[[0, 0.5], [1, 0.5]]], extent: 0.5, edges: {inner: [0.5, 0.5], outer: [0.5, 0.5]}};
     for (const variant of [0, 1, 2, 3]) {
       const [[start, end]] = bend(edge, roundedRectangle(0, 0, 100, 40, 6), 2, {...options, variant}) as [[number, number][]];
       expect(start![0]).toBeCloseTo(end![0], 9);
@@ -54,7 +59,7 @@ describe("bending", () => {
 
   test("keeps the stroke width regardless of shape size", () => {
     const widthAt = (width: number) => {
-      const [[inner, outer]] = bend({polygons: [[[0.3, -0.5], [0.3, 0.5]]], extent: 0.5}, roundedRectangle(0, 0, width, 40, 6), 2, {
+      const [[inner, outer]] = bend({polygons: [[[0.3, -0.5], [0.3, 0.5]]], extent: 0.5, edges: {inner: [0.5, 0.5], outer: [0.5, 0.5]}}, roundedRectangle(0, 0, width, 40, 6), 2, {
         ...options,
         pressure: [],
       }) as [[number, number][]];
@@ -65,7 +70,7 @@ describe("bending", () => {
   });
 
   test("tapers open lines to a point", () => {
-    const [[end]] = bend({polygons: [[[0, 0.5], [1, 0.5]]], extent: 0.5}, straightLine(0, 5, 100), 2, {...options, pressure: [], taper: 10}) as [
+    const [[end]] = bend({polygons: [[[0, 0.5], [1, 0.5]]], extent: 0.5, edges: {inner: [0.5, 0.5], outer: [0.5, 0.5]}}, straightLine(0, 5, 100), 2, {...options, pressure: [], taper: 10}) as [
       [number, number][],
     ];
     expect(end![1]).toBeCloseTo(5, 9);
@@ -77,6 +82,17 @@ function roundedBoxDistance([x, y]: [number, number], width: number, height: num
   const qx = Math.abs(x - width / 2) - (width / 2 - radius);
   const qy = Math.abs(y - height / 2) - (height / 2 - radius);
   return Math.hypot(Math.max(qx, 0), Math.max(qy, 0)) + Math.min(Math.max(qx, qy), 0) - radius;
+}
+
+/** Even-odd point-in-polygon test. */
+function contains(polygon: [number, number][], [x, y]: [number, number]): boolean {
+  let inside = false;
+  for (let i = 0, j = polygon.length - 1; i < polygon.length; j = i, i += 1) {
+    const [xi, yi] = polygon[i]!;
+    const [xj, yj] = polygon[j]!;
+    if (yi > y !== yj > y && x < ((xj - xi) * (y - yi)) / (yj - yi) + xi) inside = !inside;
+  }
+  return inside;
 }
 
 describe("shapes", () => {
@@ -94,26 +110,41 @@ describe("shapes", () => {
   const shapes = shapesFor(pencil, strip, (path) => tokens[path]!);
   const epsilon = 1e-6;
 
-  test.each([2, 4])("every stroke stays inside the element, within a %ipx band", (band) => {
+  test.each([2, 4])("every stroke stays inside the element and covers only the edge of a %ipx band's padding", (band) => {
     for (const shape of shapes) {
       for (let variant = 0; variant < pencil.variants; variant += 1) {
         const points = shape.draw(band, variant).polygons.flat();
-        const {width, height} = shape.size;
+        const {width, height, radius} = shape.size;
         for (const [x, y] of points) {
           if (shape.kind === "line") {
             // Lines are drawn horizontally or vertically within a band-thick element.
             const across = shape.name.endsWith("vertical") ? x : y;
             expect(across, shape.name).toBeGreaterThanOrEqual(-epsilon);
             expect(across, shape.name).toBeLessThanOrEqual(band + epsilon);
-          } else if (shape.kind === "circle") {
-            const distance = Math.hypot(x - width / 2, y - height / 2);
-            expect(distance, shape.name).toBeLessThanOrEqual(width / 2 + epsilon);
-            expect(distance, shape.name).toBeGreaterThanOrEqual(width / 2 - band - epsilon);
           } else {
-            // Depth below the element's rounded outline: inside it, and no deeper than the band.
-            const depth = -roundedBoxDistance([x, y], width, height, shape.size.radius);
+            // Depth below the element's rounded outline: inside it, and past the band by little more than the overlap.
+            const depth = -roundedBoxDistance([x, y], width, height, radius);
             expect(depth, shape.name).toBeGreaterThanOrEqual(-epsilon);
-            expect(depth, shape.name).toBeLessThanOrEqual(band + epsilon);
+            expect(depth, shape.name).toBeLessThanOrEqual(1.5 * (band + pencil.overlap));
+          }
+        }
+      }
+    }
+  });
+
+  test.each([2, 4])("every shape covers the edge of the background inside a %ipx band", (band) => {
+    // The background starts at the band; the mask covers the overlap on both sides of it.
+    for (const shape of shapes.filter(({kind}) => kind !== "line")) {
+      const {width, height, radius} = shape.size;
+      for (let variant = 0; variant < pencil.variants; variant += 1) {
+        const {polygons, core} = shape.draw(band, variant);
+        // Each layer fills even-odd; the mask is their union.
+        const covered = (point: [number, number]) => [polygons, core].some((layer) => layer.filter((polygon) => contains(polygon, point)).length % 2 === 1);
+        for (const depth of [band - pencil.overlap + 0.01, band, band + pencil.overlap - 0.01]) {
+          const path = roundedRectangle(depth, depth, width - 2 * depth, height - 2 * depth, Math.max(radius - depth, 0));
+          for (let i = 0; i < 400; i += 1) {
+            const [x, y] = path.at((i / 400) * path.length);
+            expect(covered([x, y]), `${shape.name} variant ${variant} at depth ${depth}`).toBe(true);
           }
         }
       }

@@ -3,11 +3,14 @@ import type {Brush, Point, Polygon} from "./path.js";
 /**
  * A normalized brush strip: `u` runs from 0 to 1 along the stroke, `v` is the
  * signed offset from its centerline in stroke widths (the edges sit near ±0.5).
+ * The smoother edge is at positive `v`, which faces the inside of a loop.
  */
 export interface Strip {
   polygons: Polygon[];
   /** Largest |v| of any point, used to fit the stroke into its band. */
   extent: number;
+  /** Nearest and farthest reach of each edge from the centerline, as |v|: `inner` is the smooth edge, `outer` the rough one. */
+  edges: {inner: [number, number]; outer: [number, number]};
 }
 
 export function signedArea(polygon: Polygon): number {
@@ -59,7 +62,7 @@ export function normalizeBrush(brush: Brush, {start, end, smoothing}: {start: nu
   };
   const collar = Math.min(2, (end - start) / 10);
 
-  const polygons = brush.polygons
+  const polygons = [outer, ...brush.polygons.filter((polygon) => polygon !== outer)]
     .map((polygon) => ({polygon, clipped: clipPolygon(polygon, [start, -Infinity, end, Infinity])}))
     .filter(({clipped}) => clipped.length > 2)
     .map(({polygon, clipped}) => {
@@ -78,8 +81,18 @@ export function normalizeBrush(brush: Brush, {start, end, smoothing}: {start: nu
         return [(x - start) / (end - start), v];
       });
     });
-  const extent = Math.max(...polygons.flat().map(([, v]) => Math.abs(v)));
-  return {polygons, extent};
+  const outline = polygons[0]!;
+  const reach = (side: (u: number) => number) => {
+    const values = Array.from({length: 999}, (_, i) => side((i + 1) / 1000));
+    return [Math.min(...values), Math.max(...values)] as [number, number];
+  };
+  const positive = reach((u) => envelope(outline, u)[1]);
+  const negative = reach((u) => -envelope(outline, u)[0]);
+  // The edge whose reach varies less is the smoother one; it goes to positive v.
+  const smoothIsNegative = negative[1] - negative[0] < positive[1] - positive[0];
+  const oriented = smoothIsNegative ? polygons.map((polygon) => polygon.map(([u, v]): Point => [u, -v])) : polygons;
+  const extent = Math.max(...oriented.flat().map(([, v]) => Math.abs(v)));
+  return {polygons: oriented, extent, edges: smoothIsNegative ? {inner: negative, outer: positive} : {inner: positive, outer: negative}};
 }
 
 /** A path parameterized by arc length: position and unit tangent at distance s. */
@@ -133,7 +146,7 @@ export interface Variation {
   /** Where along the loop the strip starts, as a fraction of its length. */
   phase: number;
   reverse: boolean;
-  /** Mirrors the stroke across its centerline. */
+  /** Mirrors the stroke across its centerline; loops never mirror, keeping the smooth edge inside. */
   flip: boolean;
 }
 
@@ -157,7 +170,8 @@ export function bend(
   width: number,
   options: {seed: number; variant: number; pressure: Array<{cycles: number; amplitude: number}>; taper?: number},
 ): Polygon[] {
-  const {phase, reverse, flip} = variation(options.seed, options.variant);
+  const {phase, reverse} = variation(options.seed, options.variant);
+  const flip = variation(options.seed, options.variant).flip && !backbone.closed;
   const pressure = (s: number) =>
     1 +
     options.pressure.reduce(
@@ -252,13 +266,23 @@ export function pathData(polygons: Polygon[], [x, y]: [number, number], toleranc
     .join("");
 }
 
+/** Points along a backbone, at most `step` pixels apart. */
+export function sample(backbone: Backbone, step: number): Polygon {
+  const count = Math.max(4, Math.ceil(backbone.length / step));
+  return Array.from({length: count}, (_, i) => backbone.at((i / count) * backbone.length).slice(0, 2) as Point);
+}
+
 /**
- * A mask image for one region of a shape. `preserveAspectRatio="none"` lets CSS
- * stretch a region along one axis without changing the stroke width.
+ * A mask image for one region of a shape. Each layer fills even-odd, so holes
+ * stay open, and layers add up. `preserveAspectRatio="none"` lets CSS stretch a
+ * region along one axis without changing the stroke width.
  */
-export function maskSvg(polygons: Polygon[], [left, top, right, bottom]: [number, number, number, number], tolerance = 0.01): string {
-  const clipped = polygons.map((polygon) => clipPolygon(polygon, [left, top, right, bottom]));
+export function maskSvg(layers: Polygon[][], [left, top, right, bottom]: [number, number, number, number], tolerance = 0.01): string {
+  const paths = layers
+    .map((polygons) => pathData(polygons.map((polygon) => clipPolygon(polygon, [left, top, right, bottom])), [left, top], tolerance))
+    .filter((data) => data !== "")
+    .map((data) => `<path fill-rule="evenodd" d="${data}"/>`);
   const width = right - left;
   const height = bottom - top;
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${format(width)} ${format(height)}" preserveAspectRatio="none"><path fill-rule="evenodd" d="${pathData(clipped, [left, top], tolerance)}"/></svg>\n`;
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ${format(width)} ${format(height)}" preserveAspectRatio="none">${paths.join("")}</svg>\n`;
 }
