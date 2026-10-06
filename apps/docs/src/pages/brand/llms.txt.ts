@@ -44,5 +44,6 @@ ${brands}
 
 ## Brand guidelines
 
-${(await guidelinesMarkdown()).replace(/^# .*\n+/, '').replace(/^## /gm, '### ')}`);
+${await guidelinesMarkdown(3)}
+`);
 };

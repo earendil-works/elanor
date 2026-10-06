@@ -14,7 +14,7 @@ Earendil, Pi, Radius, and Lefos logos as SVG files, built from clean sources and
 
 Each export writes to its own folder in `dist/`, such as `favicons/<brand>/` or `print/<brand>/<profile>/`. Press kits contain only the logos: each brand's `kits/<brand>/` folder (`logo/`, `logo-wordmark-horizontal/`, and `logo-wordmark-vertical/`, by color treatment) plus the kit's guidelines.
 
-Brand guidelines are generated per press kit from [`guidelines/template.md`](./guidelines/template.md) and a short description of each brand in [`guidelines/brands/`](./guidelines/brands/). Product kits get their own guidelines; the Earendil kit gets a company document covering every brand. Each document comes with a clear-space illustration drawn from the built artwork and the grid in `config.ts`, so it stays current when logos or tokens change.
+Brand guidelines are generated per press kit from [`guidelines/template.md`](./guidelines/template.md) and a short description of each brand in [`guidelines/brands/`](./guidelines/brands/). Product kits get their own guidelines; the Earendil kit gets a company document covering every brand. Each document comes with a clear-space illustration drawn from the built artwork and the grid in `config.ts`, so it stays current when logos or tokens change. The same content is also written as data to `guidelines/<kit>.json`: the title, the intro, and each section with its Markdown, HTML, and images, so the docs and design API can compose the guidelines without parsing Markdown.
 
 ```sh
 pnpm build   # svg/, manifest.json, artwork.json, every export (e.g. kits/<brand>/, favicons/<brand>/, press-kits/*.zip), and the lib/ tooling

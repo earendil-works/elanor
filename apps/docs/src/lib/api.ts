@@ -1,8 +1,17 @@
 import {readdir, readFile} from 'node:fs/promises';
 import {createRequire} from 'node:module';
-import {dirname, relative, resolve} from 'node:path';
+import {dirname, resolve} from 'node:path';
 import {iconComponentNames} from '../../plugins/icon-imports.ts';
-import {type IconEntry, iconsDist, iconsReactBarrel, type LogoBrand, type LogoManifest, logosDist, logosGuidelines} from './packages.ts';
+import {
+  companyGuidelines,
+  type GuidelinesData,
+  type IconEntry,
+  iconsDist,
+  iconsReactBarrel,
+  type LogoBrand,
+  type LogoManifest,
+  logosDist,
+} from './packages.ts';
 
 /*
  * The design API is static: every resource is a prebuilt file. Each area has a small index that lists
@@ -208,7 +217,7 @@ export async function loadLogos(): Promise<LogoManifest> {
 export async function logoIndex() {
   const manifest = await loadLogos();
   return {
-    guidelines: {markdown: logoFileUrl(`${relative(logosDist, logosGuidelines)}/BRAND-GUIDELINES.md`), withFiles: '/brand/llms.txt'},
+    guidelines: {index: '/api/logos/guidelines/index.json', withFiles: '/brand/llms.txt'},
     gridUnit: manifest.gridUnit,
     clearSpace: manifest.clearSpace,
     brands: manifest.brands.map((brand) => ({id: brand.id, name: brand.name, backgrounds: brand.backgrounds, url: logoBrandUrl(brand.id)})),
@@ -224,11 +233,53 @@ export async function logoBrands(): Promise<Array<LogoBrand & {pressKit?: string
   });
 }
 
-export async function guidelinesMarkdown(): Promise<string> {
-  const markdown = await readFile(resolve(logosGuidelines, 'BRAND-GUIDELINES.md'), 'utf8');
-  // Images are relative to the document; serve them from the logo package.
-  const images = logoFileUrl(relative(logosDist, logosGuidelines));
-  return markdown.replace(/<img src="([^"]+)" alt="([^"]*)"[^>]*>/g, `![$2](${images}/$1)`);
+export interface ApiGuidelinesImage {
+  url: string;
+  alt: string;
+  width: number;
+}
+
+export interface ApiGuidelinesSection {
+  id: string;
+  title: string;
+  markdown: string;
+  html: string;
+  images: ApiGuidelinesImage[];
+  url: string;
+}
+
+const guidelinesSectionUrl = (id: string) => `/api/logos/guidelines/${id}.json`;
+
+/** The company brand guidelines, as the logo package writes them, with image paths turned into URLs. */
+export async function loadGuidelines(): Promise<{title: string; intro: GuidelinesData['intro']; sections: ApiGuidelinesSection[]}> {
+  const data = JSON.parse(await readFile(companyGuidelines, 'utf8')) as GuidelinesData;
+  return {
+    title: data.title,
+    intro: data.intro,
+    sections: data.sections.map((section) => ({
+      ...section,
+      images: section.images.map(({path, alt, width}) => ({url: logoFileUrl(path), alt, width})),
+      url: guidelinesSectionUrl(section.id),
+    })),
+  };
+}
+
+/** The guidelines' sections, to fetch one at a time. */
+export async function guidelinesIndex() {
+  const {title, intro, sections} = await loadGuidelines();
+  return {title, intro: intro.markdown, sectionUrl: guidelinesSectionUrl('{id}'), sections: sections.map(({id, title, url}) => ({id, title, url}))};
+}
+
+/** The guidelines as Markdown under `level` headings, for text documents such as llms.txt. */
+export async function guidelinesMarkdown(level: number): Promise<string> {
+  const {intro, sections} = await loadGuidelines();
+  const heading = '#'.repeat(level);
+  return [
+    intro.markdown,
+    ...sections.map((section) =>
+      [`${heading} ${section.title}`, section.markdown, ...section.images.map((image) => `![${image.alt}](${image.url})`)].join('\n\n'),
+    ),
+  ].join('\n\n');
 }
 
 // Responses
