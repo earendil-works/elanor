@@ -1,4 +1,4 @@
-import {CodeSnippet, CopyButton, Heading, Link, Search, Stack, Text} from '@earendil-works/elanor-react';
+import {CodeSnippet, CopyButton, Heading, Link, Search, Stack} from '@earendil-works/elanor-react';
 import {useDeferredValue, useEffect, useMemo, useRef, useState} from 'react';
 import styles from './icon-browser.module.css';
 
@@ -97,7 +97,6 @@ export function IconBrowser(): React.JSX.Element {
             setLimit(PAGE_SIZE);
           }}
         />
-        <Text>{index ? `${results.length} icons` : 'Loading…'}</Text>
         <ul ref={grid} className={styles.grid}>
           {results.slice(0, limit).map((entry) => (
             <li key={entry[0]}>
