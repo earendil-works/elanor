@@ -15,19 +15,23 @@ These guidelines explain how to refer to {{names}} and how to use the logos in t
 
 Use the supplied artwork as a complete asset. Do not separate the lettering from a lockup, change its proportions, or rebuild it in another typeface. Do not create new lockups.
 
+## Choosing a file
+
+Use SVG for screens and anything that scales, and PNG where SVG is not supported. For print, use the CMYK PDFs made for coated or uncoated paper. White prints as unprinted paper; on dark stock, print it with white ink.
+
 ## Color and backgrounds
 
 Prefer the standard logos in `on-light/` and `on-dark/`. Choose the version intended for the background and ensure it remains clearly visible.
 
 Use `monochrome-on-light/` or `monochrome-on-dark/` when a one-color treatment is necessary, such as for single-ink printing, engraving, or a layout that requires all logos to be monochrome.
 
-Use the colors already present in the supplied artwork; do not recolor the marks.
+Use the colors already present in the supplied artwork; do not recolor the marks. To place a logo on a solid background, use the brand's background color for the treatment and keep the clear space.
 
 ## Clear space
 
 Every symbol is drawn in a frame of the same width. **One grid unit is one-quarter of that frame's width.**
 
-Leave at least **one grid unit of clear space around the supplied logo asset**. This applies to symbol-only logos and to lockups alike; measure from the outer edge of the entire asset, not just the symbol.
+Leave at least **one grid unit of clear space around the supplied logo asset**. This applies to symbol-only logos and to lockups alike; measure from the outer edge of the entire asset, not just the symbol. At a rendered height *h*, one grid unit is *h* × {{gridUnit}} ÷ the asset's height in its SVG `viewBox`.
 
 {{clearSpace}}
 
