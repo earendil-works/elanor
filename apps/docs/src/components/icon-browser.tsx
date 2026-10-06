@@ -1,5 +1,6 @@
-import {Button, CodeSnippet, CopyButton, Heading, Link, Search, Stack, Text} from '@earendil-works/elanor-react';
-import {useDeferredValue, useEffect, useMemo, useState} from 'react';
+import {CloseIcon} from '@earendil-works/elanor-icons-react';
+import {CodeSnippet, CopyButton, Heading, IconButton, Link, Search, Stack, Text} from '@earendil-works/elanor-react';
+import {useDeferredValue, useEffect, useMemo, useRef, useState} from 'react';
 import styles from './icon-browser.module.css';
 
 type IndexEntry = readonly [name: string, tags: string, component: string];
@@ -35,6 +36,7 @@ export function IconBrowser(): React.JSX.Element {
   const [limit, setLimit] = useState(PAGE_SIZE);
   const [selected, setSelected] = useState<IndexEntry | null>(null);
   const deferredQuery = useDeferredValue(query);
+  const end = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // `?q=` pre-fills the search, so searches can be linked.
@@ -48,51 +50,71 @@ export function IconBrowser(): React.JSX.Element {
   const results = useMemo(() => (index ? search(index, deferredQuery) : []), [index, deferredQuery]);
   const importLine = selected ? `import {${selected[2]}} from '@earendil-works/elanor-icons-react/${selected[0]}';` : '';
 
+  // Infinite scroll: show the next page once the end of the list nears the viewport. Observing again after
+  // each page keeps loading while the end stays in view.
+  useEffect(() => {
+    const target = end.current;
+    if (!target || limit >= results.length) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting) setLimit((current) => current + PAGE_SIZE);
+      },
+      {rootMargin: '0px 0px 50% 0px'},
+    );
+    observer.observe(target);
+    return () => observer.disconnect();
+  }, [limit, results.length]);
+
   return (
     <div className={styles.browser}>
-      <Search
-        aria-label="Search icons"
-        placeholder={index ? `Search ${index.length} icons by name or keyword` : 'Loading icons…'}
-        value={query}
-        onChange={(event) => {
-          setQuery(event.currentTarget.value);
-          setLimit(PAGE_SIZE);
-        }}
-      />
+      <div className={selected ? `${styles.main} ${styles.withDetails}` : styles.main}>
+        <Search
+          aria-label="Search icons"
+          placeholder={index ? `Search ${index.length} icons by name or keyword` : 'Loading icons…'}
+          value={query}
+          onChange={(event) => {
+            setQuery(event.currentTarget.value);
+            setLimit(PAGE_SIZE);
+          }}
+        />
+        <Text>{index ? `${results.length} icons` : 'Loading…'}</Text>
+        <ul className={styles.grid}>
+          {results.slice(0, limit).map((entry) => (
+            <li key={entry[0]}>
+              <button
+                type="button"
+                className={styles.tile}
+                aria-pressed={entry[0] === selected?.[0]}
+                onClick={() => setSelected(entry)}
+              >
+                <span className={styles.glyph} style={{maskImage: `url(/api/icons/${entry[0]}.svg)`}} aria-hidden="true" />
+                <span className={styles.name}>{entry[0]}</span>
+              </button>
+            </li>
+          ))}
+        </ul>
+        <div ref={end} />
+      </div>
       {selected ? (
-        <section className={styles.detail} aria-live="polite">
-          <span className={styles.large} style={{maskImage: `url(/api/icons/${selected[0]}.svg)`}} aria-hidden="true" />
-          <Stack gap="small">
+        <aside className={styles.sidebar} aria-label="Selected icon">
+          <Stack gap="medium">
+            <div className={styles.header}>
+              <span className={styles.large} style={{maskImage: `url(/api/icons/${selected[0]}.svg)`}} aria-hidden="true" />
+              <IconButton aria-label="Close" onClick={() => setSelected(null)}>
+                <CloseIcon />
+              </IconButton>
+            </div>
             <Heading level={2} size={3}>
               {selected[0]}
             </Heading>
-            <CodeSnippet actions={<CopyButton value={importLine} aria-label="Copy import" />}>{importLine}</CodeSnippet>
+            <CodeSnippet className={styles.snippet} actions={<CopyButton value={importLine} aria-label="Copy import" />}>
+              {importLine}
+            </CodeSnippet>
             <Link href={`/api/icons/${selected[0]}.svg`} download>
               Download SVG
             </Link>
           </Stack>
-        </section>
-      ) : null}
-      <Text>{index ? `${results.length} icons` : 'Loading…'}</Text>
-      <ul className={styles.grid}>
-        {results.slice(0, limit).map((entry) => (
-          <li key={entry[0]}>
-            <button
-              type="button"
-              className={styles.tile}
-              aria-pressed={entry[0] === selected?.[0]}
-              onClick={() => setSelected(entry)}
-            >
-              <span className={styles.glyph} style={{maskImage: `url(/api/icons/${entry[0]}.svg)`}} aria-hidden="true" />
-              <span className={styles.name}>{entry[0]}</span>
-            </button>
-          </li>
-        ))}
-      </ul>
-      {results.length > limit ? (
-        <Button hierarchy="secondary" onClick={() => setLimit(limit + PAGE_SIZE)}>
-          Show more
-        </Button>
+        </aside>
       ) : null}
     </div>
   );

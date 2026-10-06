@@ -1,8 +1,48 @@
+/* The page grid: the icons take all 12 columns, or 8 while the selected icon's details take the other 4. */
 .browser {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  align-items: start;
+  column-gap: var(--semantic-dimension-space-gap-medium);
+}
+
+.main {
   display: flex;
+  min-inline-size: 0;
   flex-direction: column;
-  align-items: stretch;
+  grid-column: 1 / -1;
   gap: var(--semantic-dimension-space-gap-large);
+}
+
+.withDetails {
+  grid-column: span 8;
+}
+
+/* Stays in view while the icons scroll. */
+.sidebar {
+  position: sticky;
+  inset-block-start: var(--semantic-dimension-space-padding-x-large);
+  min-inline-size: 0;
+  grid-column: span 4;
+  padding: var(--semantic-dimension-space-padding-x-large);
+  border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-secondary);
+  border-radius: var(--semantic-dimension-radius-medium);
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+}
+
+/* The import line wraps to the sidebar's width instead of overflowing it. */
+.snippet {
+  align-self: stretch;
+}
+
+.snippet code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
 }
 
 .grid {
@@ -59,8 +99,8 @@
 
 .large {
   flex: none;
-  inline-size: var(--semantic-dimension-size-x-large);
-  block-size: var(--semantic-dimension-size-x-large);
+  inline-size: calc(var(--semantic-dimension-size-x-large) * 2);
+  block-size: calc(var(--semantic-dimension-size-x-large) * 2);
   color: var(--semantic-color-icon-primary);
 }
 
@@ -70,13 +110,4 @@
   color: var(--semantic-color-text-secondary);
   text-overflow: ellipsis;
   white-space: nowrap;
-}
-
-.detail {
-  display: flex;
-  align-items: center;
-  gap: var(--semantic-dimension-space-gap-large);
-  padding: var(--semantic-dimension-space-padding-large);
-  border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-secondary);
-  border-radius: var(--semantic-dimension-radius-medium);
 }
