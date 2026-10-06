@@ -1,5 +1,4 @@
-import {CloseIcon} from '@earendil-works/elanor-icons-react';
-import {CodeSnippet, CopyButton, Heading, IconButton, Link, Search, Stack, Text} from '@earendil-works/elanor-react';
+import {CodeSnippet, CopyButton, Heading, Link, Search, Stack, Text} from '@earendil-works/elanor-react';
 import {useDeferredValue, useEffect, useMemo, useRef, useState} from 'react';
 import styles from './icon-browser.module.css';
 
@@ -37,6 +36,8 @@ export function IconBrowser(): React.JSX.Element {
   const [selected, setSelected] = useState<IndexEntry | null>(null);
   const deferredQuery = useDeferredValue(query);
   const end = useRef<HTMLDivElement>(null);
+  const grid = useRef<HTMLUListElement>(null);
+  const sidebar = useRef<HTMLElement>(null);
 
   useEffect(() => {
     // `?q=` pre-fills the search, so searches can be linked.
@@ -49,6 +50,25 @@ export function IconBrowser(): React.JSX.Element {
 
   const results = useMemo(() => (index ? search(index, deferredQuery) : []), [index, deferredQuery]);
   const importLine = selected ? `import {${selected[2]}} from '@earendil-works/elanor-icons-react/${selected[0]}';` : '';
+
+  // Clicking anywhere but an icon or the sidebar, or pressing Escape, deselects the icon.
+  useEffect(() => {
+    if (!selected) return;
+    const deselectOutside = (event: PointerEvent) => {
+      const target = event.target as Node;
+      const onIcon = target instanceof Element && target.closest('button') && grid.current?.contains(target);
+      if (!onIcon && !sidebar.current?.contains(target)) setSelected(null);
+    };
+    const deselectOnEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setSelected(null);
+    };
+    document.addEventListener('pointerdown', deselectOutside);
+    document.addEventListener('keydown', deselectOnEscape);
+    return () => {
+      document.removeEventListener('pointerdown', deselectOutside);
+      document.removeEventListener('keydown', deselectOnEscape);
+    };
+  }, [selected]);
 
   // Infinite scroll: show the next page once the end of the list nears the viewport. Observing again after
   // each page keeps loading while the end stays in view.
@@ -67,7 +87,7 @@ export function IconBrowser(): React.JSX.Element {
 
   return (
     <div className={styles.browser}>
-      <div className={selected ? `${styles.main} ${styles.withDetails}` : styles.main}>
+      <div className={styles.main}>
         <Search
           aria-label="Search icons"
           placeholder={index ? `Search ${index.length} icons by name or keyword` : 'Loading icons…'}
@@ -78,7 +98,7 @@ export function IconBrowser(): React.JSX.Element {
           }}
         />
         <Text>{index ? `${results.length} icons` : 'Loading…'}</Text>
-        <ul className={styles.grid}>
+        <ul ref={grid} className={styles.grid}>
           {results.slice(0, limit).map((entry) => (
             <li key={entry[0]}>
               <button
@@ -96,14 +116,9 @@ export function IconBrowser(): React.JSX.Element {
         <div ref={end} />
       </div>
       {selected ? (
-        <aside className={styles.sidebar} aria-label="Selected icon">
+        <aside ref={sidebar} className={styles.sidebar} aria-label="Selected icon">
           <Stack gap="medium">
-            <div className={styles.header}>
-              <span className={styles.large} style={{maskImage: `url(/api/icons/${selected[0]}.svg)`}} aria-hidden="true" />
-              <IconButton aria-label="Close" onClick={() => setSelected(null)}>
-                <CloseIcon />
-              </IconButton>
-            </div>
+            <span className={styles.large} style={{maskImage: `url(/api/icons/${selected[0]}.svg)`}} aria-hidden="true" />
             <Heading level={2} size={3}>
               {selected[0]}
             </Heading>
