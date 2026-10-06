@@ -7,13 +7,21 @@
   "sideEffects": false,
   "files": [
     "dist",
+    "lib",
     "README.md"
   ],
+  "bin": {
+    "elanor-logos": "./lib/cli.js"
+  },
   "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./lib/index.js"
+    },
     "./*": "./dist/*"
   },
   "scripts": {
-    "build": "tsx scripts/build.ts && tsx scripts/export.ts",
+    "build": "tsx scripts/build.ts && tsx scripts/export.ts && tsc -p tsconfig.lib.json",
     "check": "tsc -p tsconfig.json --noEmit && pnpm run check:prepare && tsx scripts/check.ts",
     "check:prepare": "pnpm --filter @earendil-works/design-tokens run build",
     "test": "pnpm run check:prepare && pnpm run build && vitest run --dir tests"
