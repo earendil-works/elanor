@@ -50,6 +50,7 @@ export {
   ContextualMenuLinkItem,
   ContextualMenuPopup,
   ContextualMenuPositioner,
+  ContextualMenuSeparator,
 } from './contextual-menu/contextual-menu.tsx';
 export type {
   ContextualMenuGroupLabelProps,
@@ -68,6 +69,7 @@ export type {
   ContextualMenuRootChangeEventDetails,
   ContextualMenuRootChangeEventReason,
   ContextualMenuRootProps,
+  ContextualMenuSeparatorProps,
   ContextualMenuTriggerProps,
   ContextualMenuTriggerState,
   ContextualMenuViewportProps,
