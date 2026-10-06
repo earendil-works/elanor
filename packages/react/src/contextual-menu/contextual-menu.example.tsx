@@ -20,6 +20,7 @@ export function ContextualMenuExample(): React.JSX.Element {
               <ContextualMenu.Item onClick={() => setAction('Selected: Rename project.')}>
                 Rename project
               </ContextualMenu.Item>
+              <ContextualMenu.Separator />
               <ContextualMenu.Item onClick={() => setAction('Selected: Archive project.')}>
                 Archive project
               </ContextualMenu.Item>

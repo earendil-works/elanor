@@ -1,7 +1,7 @@
 import {Menu as BaseMenu} from '@base-ui/react/menu';
 import {forwardRef, type ReactNode} from 'react';
 import styles from './contextual-menu.module.css';
-import {Separator} from '../separator/separator.tsx';
+import {Separator, type SeparatorProps} from '../separator/separator.tsx';
 import {mergeClassName} from '../utils/class-names.ts';
 
 export type {
@@ -125,6 +125,16 @@ export const ContextualMenuGroupLabel = forwardRef<HTMLDivElement, ContextualMen
   },
 );
 
+export interface ContextualMenuSeparatorProps extends Omit<SeparatorProps, 'orientation'> {
+  readonly orientation?: 'horizontal';
+}
+
+export const ContextualMenuSeparator = forwardRef<HTMLDivElement, ContextualMenuSeparatorProps>(
+  function ContextualMenuSeparator(props, ref) {
+    return <Separator {...props} ref={ref} orientation="horizontal" />;
+  },
+);
+
 export const ContextualMenu = {
   Root: BaseMenu.Root,
   Viewport: BaseMenu.Viewport,
@@ -137,6 +147,6 @@ export const ContextualMenu = {
   LinkItem: ContextualMenuLinkItem,
   Group: ContextualMenuGroup,
   GroupLabel: ContextualMenuGroupLabel,
-  Separator,
+  Separator: ContextualMenuSeparator,
   createHandle: BaseMenu.createHandle,
 } as const;
