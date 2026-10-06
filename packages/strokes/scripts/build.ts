@@ -164,6 +164,16 @@ function baseCss(fallbackWidth: number): string {
   position: relative;
   --stroke-color: var(--semantic-color-border-primary);
   --stroke-focus-color: var(--semantic-color-focus-ring);
+  /* Components paint their plain border and separator fill with these
+     fallbacks; a stroke style turns them off. */
+  --stroke-plain-shadow: 0 0 transparent;
+  --stroke-plain-fill: transparent;
+}
+
+/* Box strokes also draw focus, so the plain focus ring is turned off. Line
+   strokes don't, so their elements keep it. */
+:where([data-stroke]:not([data-stroke^="line"])) {
+  --stroke-plain-outline: 0 solid transparent;
 }
 
 /* The stroke is centered on the element's edge: its outer half is paint only,
@@ -180,7 +190,10 @@ function baseCss(fallbackWidth: number): string {
   mask-repeat: no-repeat;
 }
 
-:where([data-stroke]:not([data-stroke^="line"])):is(:focus-visible, :has(:focus-visible))::after {
+/* Focus shows on the focused element, on a wrapper around a focused control,
+   and on a stroked box inside a focused control (checkbox, radio, switch).
+   data-stroke-focus="none" opts out, e.g. for popups that receive focus. */
+:where([data-stroke]:not([data-stroke^="line"], [data-stroke-focus="none"]):is(:focus-visible, :has(> :focus-visible)), :focus-visible > [data-stroke]:not([data-stroke^="line"], [data-stroke-focus="none"]))::after {
   inset: var(--stroke-focus-inset);
   background-color: var(--stroke-focus-color);
   mask-image: var(--stroke-focus-images);
@@ -195,7 +208,7 @@ function baseCss(fallbackWidth: number): string {
     background: none;
   }
 
-  :where([data-stroke]:not([data-stroke^="line"])):is(:focus-visible, :has(:focus-visible))::after {
+  :where([data-stroke]:not([data-stroke^="line"], [data-stroke-focus="none"]):is(:focus-visible, :has(> :focus-visible)), :focus-visible > [data-stroke]:not([data-stroke^="line"], [data-stroke-focus="none"]))::after {
     border-color: var(--stroke-focus-color);
   }
 }
@@ -209,7 +222,7 @@ function baseCss(fallbackWidth: number): string {
     mask: none;
   }
 
-  :where([data-stroke]:not([data-stroke^="line"])):is(:focus-visible, :has(:focus-visible))::after {
+  :where([data-stroke]:not([data-stroke^="line"], [data-stroke-focus="none"]):is(:focus-visible, :has(> :focus-visible)), :focus-visible > [data-stroke]:not([data-stroke^="line"], [data-stroke-focus="none"]))::after {
     border-color: Highlight;
   }
 
@@ -264,6 +277,18 @@ for (const styleName of styleNames) {
     }
 
     const selector = `[data-stroke="${shape.name}"]`;
+    if (shape.kind === "line") {
+      // data-stroke-edge centers the line on one edge of a larger element.
+      const bleed = rem(drawnGeometry.default!.bleed);
+      const edges = shape.name.endsWith("vertical")
+        ? {"inline-start": [`inset-inline: calc(-1 * ${bleed}) calc(100% - ${bleed})`], "inline-end": [`inset-inline: calc(100% - ${bleed}) calc(-1 * ${bleed})`]}
+        : {"block-start": [`inset-block: calc(-1 * ${bleed}) calc(100% - ${bleed})`], "block-end": [`inset-block: calc(100% - ${bleed}) calc(-1 * ${bleed})`]};
+      for (const [edge, declarations] of Object.entries(edges)) {
+        css.push(
+          `:where(${selector}[data-stroke-edge="${edge}"])::after {\n  inset: 0;\n${declarations.map((line) => `  ${line};`).join("\n")}\n}`,
+        );
+      }
+    }
     const imageDeclarations = (variant: number) => [
       `--stroke-images: ${images[`default-${variant}`]!.join(", ")};`,
       ...(shape.kind === "line" ? [] : [`--stroke-focus-images: ${images[`focus-${variant}`]!.join(", ")};`]),
@@ -287,7 +312,13 @@ for (const styleName of styleNames) {
     }
   }
 
-  await writeFile(resolve(outputDirectory, `${styleName}.css`), `${css.join("\n\n")}\n`);
+  const text = `${css.join("\n\n")}\n`;
+  await writeFile(resolve(outputDirectory, `${styleName}.css`), text);
+  // The scoped copy applies only inside [data-strokes="<style>"], so pages can switch styles.
+  await writeFile(
+    resolve(outputDirectory, `${styleName}.scoped.css`),
+    text.replace(/^(\s*)(:where\()/gm, `$1:where([data-strokes="${styleName}"]) $2`),
+  );
   await writeFile(
     resolve(outputDirectory, `${styleName}.json`),
     `${JSON.stringify({style: styleName, variants: style.variants, thickness: widths, shapes: manifest}, null, 2)}\n`,

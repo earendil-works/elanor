@@ -97,6 +97,21 @@ describe("built pencil style", () => {
     expect(css).toContain('[data-stroke="line"][data-stroke-variant="3"]');
   });
 
+  test("the scoped copy applies only inside its scope", async () => {
+    const scoped = await readFile(resolve(dist, "pencil.scoped.css"), "utf8");
+    const rules = scoped.split("\n").filter((line) => /^\s*:where\(/.test(line));
+    expect(rules.length).toBeGreaterThan(50);
+    for (const rule of rules) expect(rule.trimStart().startsWith(':where([data-strokes="pencil"]) ')).toBe(true);
+  });
+
+  test("supports edges, focus opt-out, and keeps plain focus on lines", async () => {
+    const css = await readFile(resolve(dist, "pencil.css"), "utf8");
+    expect(css).toContain('[data-stroke="line"][data-stroke-edge="block-end"]');
+    expect(css).toContain('[data-stroke="line-vertical"][data-stroke-edge="inline-start"]');
+    expect(css).toContain('[data-stroke-focus="none"]');
+    expect(css).toMatch(/:where\(\[data-stroke\]:not\(\[data-stroke\^="line"\]\)\) \{\n  --stroke-plain-outline/);
+  });
+
   test("builds reproducibly", async () => {
     const before = await readFile(resolve(dist, "pencil.css"), "utf8");
     const sample = await readFile(resolve(dist, "pencil/box-medium-focus-2-4.svg"), "utf8");

@@ -60,6 +60,7 @@ export const styles: Record<string, StrokeStyle> = {
         large: "semantic.dimension.radius.large",
       },
       pills: {
+        "x-small": "semantic.dimension.size.xSmall",
         small: "semantic.dimension.size.small",
         medium: "semantic.dimension.size.medium",
         large: "semantic.dimension.size.large",
