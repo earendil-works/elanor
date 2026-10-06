@@ -19,7 +19,6 @@
     "@earendil-works/elanor-icons-react": "workspace:*",
     "@earendil-works/elanor-logos": "workspace:*",
     "@earendil-works/elanor-react": "workspace:*",
-    "@earendil-works/elanor-strokes": "workspace:*",
     "astro": "^5.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"

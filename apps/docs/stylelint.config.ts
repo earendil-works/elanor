@@ -7,8 +7,6 @@ const strictConfig = createStrictConfig({
   ),
   // Font-face descriptors define the font assets that the typography tokens consume.
   ignoreFiles: ['**/fonts.css'],
-  // Public properties of @earendil-works/elanor-strokes.
-  allowCustomProperties: ['--stroke-*'],
 });
 
 export default {
