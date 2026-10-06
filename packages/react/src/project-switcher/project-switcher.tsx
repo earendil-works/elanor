@@ -1,7 +1,7 @@
 import {Menu as BaseMenu} from '@base-ui/react/menu';
 import {KeyboardArrowDownIcon} from '@earendil-works/elanor-icons-react';
 import {forwardRef, type ReactNode, type Ref, type RefAttributes} from 'react';
-import {ContextualMenu} from '../contextual-menu/contextual-menu.tsx';
+import {Menu} from '../menu/menu.tsx';
 import styles from './project-switcher.module.css';
 import {mergeClassName} from '../utils/class-names.ts';
 
@@ -33,14 +33,14 @@ export const ProjectSwitcherTrigger = forwardRef(function ProjectSwitcherTrigger
 ) => React.JSX.Element;
 
 export const ProjectSwitcher = {
-  Root: ContextualMenu.Root,
+  Root: Menu.Root,
   Trigger: ProjectSwitcherTrigger,
-  Portal: ContextualMenu.Portal,
-  Positioner: ContextualMenu.Positioner,
-  Popup: ContextualMenu.Popup,
-  Item: ContextualMenu.Item,
-  LinkItem: ContextualMenu.LinkItem,
-  Group: ContextualMenu.Group,
-  GroupLabel: ContextualMenu.GroupLabel,
-  Separator: ContextualMenu.Separator,
+  Portal: Menu.Portal,
+  Positioner: Menu.Positioner,
+  Popup: Menu.Popup,
+  Item: Menu.Item,
+  LinkItem: Menu.LinkItem,
+  Group: Menu.Group,
+  GroupLabel: Menu.GroupLabel,
+  Separator: Menu.Separator,
 } as const;
