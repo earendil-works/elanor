@@ -1,4 +1,6 @@
+import {basename} from "node:path";
 import {type BrandId, brands} from "../../config.js";
+import {faviconTags, packageVersion} from "../../src/favicons.js";
 import {createIco} from "../lib/containers.js";
 import {circleSafeFrame, frameSvg, renderPng, squareFrame} from "../lib/raster.js";
 import type {ExportPlugin, TreatmentId} from "./plugin.js";
@@ -27,6 +29,8 @@ export function favicons(options: FaviconsOptions): ExportPlugin {
   return {
     name: "favicons",
     async run(context) {
+      // Favicon URLs carry the package version, so browsers fetch updated icons.
+      const version = await packageVersion();
       for (const brand of Object.keys(brands) as BrandId[]) {
         const treatments = options.treatments ?? {light: "on-light", dark: "on-dark"};
         const light = context.mark(brand, treatments.light).colored;
@@ -67,14 +71,14 @@ export function favicons(options: FaviconsOptions): ExportPlugin {
         const icons = [];
         for (const size of options.iconSizes) {
           const path = await context.write(`${directory}/icon-${size}.png`, await renderPng(light, squareFrame(light, size, options.padding)));
-          icons.push({src: `icon-${size}.png`, sizes: `${size}x${size}`, type: "image/png"});
+          icons.push({src: `icon-${size}.png?v=${version}`, sizes: `${size}x${size}`, type: "image/png"});
           files[`icon${size}`] = path;
         }
         files.maskable = await context.write(
           `${directory}/icon-maskable-${options.maskableSize}.png`,
           await renderPng(light, circleSafeFrame(light, options.maskableSize, options.safeZone, background)),
         );
-        icons.push({src: `icon-maskable-${options.maskableSize}.png`, sizes: `${options.maskableSize}x${options.maskableSize}`, type: "image/png", purpose: "maskable"});
+        icons.push({src: `icon-maskable-${options.maskableSize}.png?v=${version}`, sizes: `${options.maskableSize}x${options.maskableSize}`, type: "image/png", purpose: "maskable"});
 
         const name = brands[brand].name;
         files.webmanifest = await context.write(
@@ -83,13 +87,10 @@ export function favicons(options: FaviconsOptions): ExportPlugin {
         );
         files.html = await context.write(
           `${directory}/head.html`,
-          [
-            '<link rel="icon" href="/favicon.ico" sizes="32x32">',
-            '<link rel="icon" href="/favicon.svg" type="image/svg+xml">',
-            '<link rel="apple-touch-icon" href="/apple-touch-icon.png">',
-            '<link rel="manifest" href="/site.webmanifest">',
-            "",
-          ].join("\n"),
+          faviconTags(
+            {ico: basename(files.ico), svg: basename(files.svg), appleTouchIcon: basename(files.appleTouchIcon), webmanifest: basename(files.webmanifest)},
+            version,
+          ),
         );
         context.brandManifest(brand).favicons = files;
       }
