@@ -1,12 +1,12 @@
 ---
 import {readFile} from 'node:fs/promises';
-import {relative, resolve} from 'node:path';
-import {getEntry} from 'astro:content';
+import {resolve} from 'node:path';
 import {Heading, Link, Text} from '@earendil-works/elanor-react';
 import DocsLayout from '../../layouts/docs-layout.astro';
 import {BrandLogos} from '../../components/brand-logos.tsx';
 import {HeadSnippet} from '../../components/head-snippet.tsx';
-import {type LogoManifest, logosDist, logosGuidelines} from '../../lib/packages.ts';
+import {loadGuidelines} from '../../lib/api.ts';
+import {type LogoManifest, logosDist} from '../../lib/packages.ts';
 
 const manifest = JSON.parse(await readFile(resolve(logosDist, 'manifest.json'), 'utf8')) as LogoManifest;
 const headTags = new Map(
@@ -15,15 +15,8 @@ const headTags = new Map(
   ),
 );
 
-const guidelines = await getEntry('guidelines', 'brand-guidelines');
-if (!guidelines?.rendered) throw new Error('Missing brand guidelines; build @earendil-works/elanor-logos first');
-// The guidelines are written for the press kit: drop their title, nest their sections under this page's
-// heading, and load their images, which are relative to the document, from the logo package.
-const guidelinesImages = `/api/logos/files/${relative(logosDist, logosGuidelines)}/`;
-const guidelinesHtml = guidelines.rendered.html
-  .replace(/<h1[^>]*>[\s\S]*?<\/h1>/, '')
-  .replace(/<(\/?)h2\b/g, '<$1h3')
-  .replace(/(<img [^>]*src=")(?![a-z]+:|\/)/g, `$1${guidelinesImages}`);
+// The company guidelines as data, composed under this page's own heading.
+const guidelines = await loadGuidelines();
 ---
 
 <DocsLayout title="Logos" current="/brand/" wide>
@@ -44,7 +37,20 @@ const guidelinesHtml = guidelines.rendered.html
     }
     <section aria-labelledby="guidelines">
       <Heading level={2} size={2} id="guidelines">Brand guidelines</Heading>
-      <article class="prose" set:html={guidelinesHtml} />
+      <article class="prose">
+        <Fragment set:html={guidelines.intro.html} />
+        {
+          guidelines.sections.map((section) => (
+            <>
+              <h3 id={section.id}>{section.title}</h3>
+              <Fragment set:html={section.html} />
+              {section.images.map((image) => (
+                <img src={image.url} alt={image.alt} width={image.width} />
+              ))}
+            </>
+          ))
+        }
+      </article>
     </section>
   </div>
 </DocsLayout>
