@@ -8,7 +8,7 @@ export function NavigationMenuExample(): React.JSX.Element {
           <NavigationMenu.Link href="/components/tabs/">Tabs</NavigationMenu.Link>
         </NavigationMenu.Item>
         <NavigationMenu.Item>
-          <NavigationMenu.Link href="/components/contextual-menu/">Contextual menu</NavigationMenu.Link>
+          <NavigationMenu.Link href="/components/menu/">Menu</NavigationMenu.Link>
         </NavigationMenu.Item>
       </NavigationMenu.List>
     </NavigationMenu.Root>
