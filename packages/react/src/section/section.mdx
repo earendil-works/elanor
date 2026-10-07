@@ -1,15 +1,65 @@
-import {Heading, Section, Text} from '@earendil-works/elanor-react';
+import {SectionExample} from './section.example.tsx';
 
-## With separator
+Section groups related content and an optional separator. Root supplies the large
+gap token (24px at the default scale) between Content and Separator, with no
+built-in border, trailing padding or width cap.
 
-<Section aria-labelledby="members-heading">
-  <Heading level={2} id="members-heading">Members</Heading>
-  <Text>Invite collaborators and assign workspace roles.</Text>
-</Section>
+<SectionExample client:load />
 
-## Without separator
+## Usage
 
-<Section separated={false} aria-labelledby="access-heading">
-  <Heading level={2} id="access-heading">Project access</Heading>
-  <Text>Choose which projects each team can access.</Text>
-</Section>
+```tsx
+import {Heading, Section, Stack, Text} from '@earendil-works/elanor-react';
+
+<Section.Root aria-labelledby="members-heading">
+  <Section.Content>
+    <Stack gap="small">
+      <Heading level={2} id="members-heading">Members</Heading>
+      <Text>Invite collaborators and assign workspace roles.</Text>
+    </Stack>
+  </Section.Content>
+  <Section.Separator span={{base: 'full', small: 6}} />
+</Section.Root>
+```
+
+- `Section.Root` renders a native `section`. Use a heading and `aria-labelledby`
+  to name it. Root owns the space **before** the separator, not after it.
+- `Section.Content` renders a `div` grouping arbitrary children into one content
+  region. Compose Stack or Grid inside it to control internal spacing and layout.
+- `Section.Separator` composes an independent, twelve-column Grid with the default
+  gutters and a horizontal Separator. Include or omit this part rather than using
+  a visibility flag.
+
+## Separator span
+
+`Section.Separator` accepts Grid's existing `span` API: 1–12 or `full` (the default),
+optionally keyed by container breakpoint. Use `span={6}` for six columns at every
+size, or `span="full"` for all twelve. In the example, the rule is full-width below
+`small` and spans six columns above it.
+
+The internal Grid measures its own available width, not the viewport or an outer
+Grid. It does not inherit parent tracks. To align content with the separator, use
+an equally wide Grid with twelve columns and default gutters inside Content, as
+in the preview. For a custom grid or shared-track subgrid, compose the standalone
+Separator and Grid parts directly instead. See [Grid](/components/grid/) for
+container breakpoints and subgrid usage.
+
+## Without a separator
+
+Omit `Section.Separator`. A Root with only Content has no extra bottom space.
+Arrange multiple sections using the parent layout's spacing rather than trailing
+padding in each Section.
+
+## Props and migration
+
+Root and Content accept native HTML attributes, event handlers, `className` and
+`style`, forwarding refs to their `section` and `div` respectively. Separator
+forwards its ref and other props to the actual separator line, not the internal
+Grid wrapper. This includes Base UI `render`, stateful `className`/`style`, events
+and ARIA attributes. Section separators are horizontal-only; standalone Separator
+still supports both orientations.
+
+Replace the former `<Section>` with `<Section.Root>` and group its content in
+`Section.Content`. `SectionRootProps` replaces `SectionProps`. The former
+`separated` prop is removed: include `Section.Separator` for a rule or omit it
+instead of using `separated={false}`.

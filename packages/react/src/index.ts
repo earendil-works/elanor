@@ -461,8 +461,12 @@ export type {
   SearchableDropdownValueProps,
 } from './dropdown/searchable-dropdown.tsx';
 
-export {Section} from './section/section.tsx';
-export type {SectionProps} from './section/section.tsx';
+export {Section, SectionContent, SectionRoot, SectionSeparator} from './section/section.tsx';
+export type {
+  SectionContentProps,
+  SectionRootProps,
+  SectionSeparatorProps,
+} from './section/section.tsx';
 
 export {SegmentedControl, SegmentedControlItem} from './segmented-control/segmented-control.tsx';
 export type {
