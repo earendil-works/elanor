@@ -1,0 +1,40 @@
+{
+  "name": "@earendil-works/elanor-logos",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Earendil, Pi, Radius, and Lefos logos as SVG files.",
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "bin",
+    "dist",
+    "lib",
+    "README.md"
+  ],
+  "bin": {
+    "elanor-logos": "./bin/elanor-logos.js"
+  },
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./lib/index.js"
+    },
+    "./*": "./dist/*"
+  },
+  "scripts": {
+    "build": "tsx scripts/build.ts && tsx scripts/export.ts && tsc -p tsconfig.lib.json",
+    "check": "tsc -p tsconfig.json --noEmit && pnpm run check:prepare && tsx scripts/check.ts",
+    "check:prepare": "pnpm --filter @earendil-works/design-tokens run build",
+    "test": "pnpm run check:prepare && pnpm run build && vitest run --dir tests"
+  },
+  "devDependencies": {
+    "@earendil-works/design-tokens": "workspace:*",
+    "@types/node": "^24.0.0",
+    "fflate": "^0.8.3",
+    "marked": "^18.0.14",
+    "sharp": "^0.34.5",
+    "tsx": "^4.23.1",
+    "typescript": "^5.9.3",
+    "vitest": "^4.1.0"
+  }
+}

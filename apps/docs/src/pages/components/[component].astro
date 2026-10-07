@@ -19,6 +19,6 @@ const {entry} = Astro.props;
 const {Content} = await render(entry);
 ---
 
-<DocsLayout currentComponent={entry.id}>
+<DocsLayout title={entry.id} current={`/components/${entry.id}/`}>
   <Content />
 </DocsLayout>

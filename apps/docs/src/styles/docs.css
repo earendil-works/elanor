@@ -33,3 +33,29 @@ body > aside {
   inline-size: 100%;
   max-inline-size: var(--semantic-dimension-breakpoint-small);
 }
+
+.wide {
+  inline-size: 100%;
+  max-inline-size: var(--semantic-dimension-breakpoint-x-large);
+}
+
+.page {
+  display: flex;
+  flex-direction: column;
+  gap: var(--semantic-dimension-space-gap-x-large);
+}
+
+/* Pages on the 12-column grid (1rem gutters) are at most 1216px wide; see brand-logos.module.css and icon-browser.module.css. */
+.grid-page {
+  /* stylelint-disable-next-line design-tokens/no-hardcoded-token-values -- No layout width token exists yet for the 1216px page grid. */
+  max-inline-size: 76rem;
+}
+
+.prose {
+  max-inline-size: var(--semantic-dimension-breakpoint-small);
+  font: var(--semantic-typography-prose-primary);
+}
+
+.prose img {
+  max-inline-size: 100%;
+}

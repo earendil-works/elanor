@@ -1,0 +1,13 @@
+---
+import {Heading, Text} from '@earendil-works/elanor-react';
+import DocsLayout from '../layouts/docs-layout.astro';
+import {IconBrowser} from '../components/icon-browser.tsx';
+---
+
+<DocsLayout title="Icons" current="/icons/" wide>
+  <div class="page grid-page">
+    <Heading level={1} size={1}>Icons</Heading>
+    <Text>Material Symbols with a hand-drawn boil. Select an icon for its React import and SVG.</Text>
+    <IconBrowser client:load />
+  </div>
+</DocsLayout>

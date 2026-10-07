@@ -1,0 +1,104 @@
+/* The page grid: the icons take 8 of 12 columns, and the selected icon's details the other 4. The details
+   column is reserved even when nothing is selected, so selecting an icon never moves the grid. */
+.browser {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  align-items: start;
+  column-gap: var(--semantic-dimension-space-gap-medium);
+}
+
+.main {
+  display: flex;
+  min-inline-size: 0;
+  flex-direction: column;
+  grid-column: span 8;
+  gap: var(--semantic-dimension-space-gap-large);
+}
+
+/* Stays in view while the icons scroll. */
+.sidebar {
+  position: sticky;
+  inset-block-start: var(--semantic-dimension-space-padding-x-large);
+  min-inline-size: 0;
+  grid-column: span 4;
+  padding: var(--semantic-dimension-space-padding-x-large);
+  border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-secondary);
+  border-radius: var(--semantic-dimension-radius-medium);
+}
+
+/* The import line wraps to the sidebar's width instead of overflowing it. */
+.snippet {
+  align-self: stretch;
+}
+
+.snippet code {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--semantic-dimension-size-x-large), 1fr));
+  gap: var(--semantic-dimension-space-gap-x-small);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--semantic-dimension-space-gap-x-small);
+  inline-size: 100%;
+  padding: var(--semantic-dimension-space-padding-small);
+  border: var(--semantic-dimension-border-width-default) solid transparent;
+  border-radius: var(--semantic-dimension-radius-medium);
+  background: var(--semantic-color-background-fill-ghost);
+  color: var(--semantic-color-icon-primary);
+  font: var(--semantic-typography-ui-tertiary);
+  cursor: pointer;
+}
+
+.tile:hover {
+  background: var(--semantic-color-background-fill-ghost-hover);
+}
+
+.tile[aria-pressed='true'] {
+  border-color: var(--semantic-color-border-primary);
+}
+
+.tile:focus-visible {
+  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+  outline-offset: var(--semantic-dimension-border-width-medium);
+}
+
+/* Icons are drawn as masks so they take the text color. */
+.glyph,
+.large {
+  display: block;
+  background: currentcolor;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+}
+
+.glyph {
+  inline-size: var(--semantic-dimension-size-small);
+  block-size: var(--semantic-dimension-size-small);
+}
+
+.large {
+  flex: none;
+  inline-size: calc(var(--semantic-dimension-size-x-large) * 2);
+  block-size: calc(var(--semantic-dimension-size-x-large) * 2);
+  color: var(--semantic-color-icon-primary);
+}
+
+.name {
+  max-inline-size: 100%;
+  overflow: hidden;
+  color: var(--semantic-color-text-secondary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

@@ -11,7 +11,8 @@
     "./radius.css": "./dist/radius/tokens.css",
     "./pi.css": "./dist/pi/tokens.css",
     "./earendil.css": "./dist/earendil/tokens.css",
-    "./lefos.css": "./dist/lefos/tokens.css"
+    "./lefos.css": "./dist/lefos/tokens.css",
+    "./*.catalog.json": "./dist/*/tokens.catalog.json"
   },
   "scripts": {
     "clean": "rm -rf dist",

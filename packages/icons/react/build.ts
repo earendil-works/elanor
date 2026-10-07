@@ -1,4 +1,5 @@
-// Generates React components from the built SVGs of @earendil-works/elanor-icons.
+// Generates the per-icon modules from the built SVGs of @earendil-works/elanor-icons.
+// The component they use, src/create-icon.tsx, is compiled by tsc afterwards.
 import {copyFile, mkdir, readdir, readFile, rm, writeFile} from "node:fs/promises";
 import {resolve} from "node:path";
 
@@ -14,8 +15,6 @@ if (svgFiles.length === 0) throw new Error(`No SVGs in ${svgDirectory}; build @e
 await rm(outputDirectory, {recursive: true, force: true});
 await mkdir(outputDirectory, {recursive: true});
 await Promise.all([
-  writeFile(resolve(outputDirectory, "create-icon.js"), runtime()),
-  writeFile(resolve(outputDirectory, "create-icon.d.ts"), runtimeTypes()),
   copyFile(resolve(iconsDirectory, "LICENSE"), resolve(outputDirectory, "LICENSE")),
   copyFile(resolve(iconsDirectory, "NOTICE"), resolve(outputDirectory, "NOTICE")),
 ]);
@@ -57,43 +56,3 @@ function toComponentName(name: string): string {
   return `${/^\d/.test(body) ? "Number" : ""}${body}Icon`;
 }
 
-function runtime(): string {
-  return `/*! @license Apache-2.0 */
-import {createElement, forwardRef} from "react";
-
-export function createIcon(displayName, viewBox, d) {
-  const Icon = forwardRef(function ElanorIcon({size = 16, children, ...props}, ref) {
-    const named = props["aria-label"] != null || props["aria-labelledby"] != null;
-    return createElement(
-      "svg",
-      {
-        ...props,
-        ref,
-        xmlns: "http://www.w3.org/2000/svg",
-        width: props.width ?? size,
-        height: props.height ?? size,
-        viewBox,
-        fill: "currentColor",
-        role: props.role ?? (named ? "img" : undefined),
-        "aria-hidden": props["aria-hidden"] ?? (named ? undefined : true),
-        focusable: props.focusable ?? "false",
-      },
-      createElement("path", {d}),
-      children,
-    );
-  });
-  Icon.displayName = displayName;
-  return Icon;
-}
-`;
-}
-
-function runtimeTypes(): string {
-  return `import type {ForwardRefExoticComponent, RefAttributes, SVGProps} from "react";
-export interface IconProps extends SVGProps<SVGSVGElement> {
-  size?: number | string;
-}
-export type IconComponent = ForwardRefExoticComponent<IconProps & RefAttributes<SVGSVGElement>>;
-export declare function createIcon(displayName: string, viewBox: string, d: string): IconComponent;
-`;
-}

@@ -51,15 +51,15 @@
             },
             "neutral": {
               "$root": {
-                "$value": "{primitive.color.driftwood.400}",
+                "$value": "{primitive.color.graphite.400}",
                 "$description": "Use for high-prominence filled elements that require a neutral treatment."
               },
               "hover": {
-                "$value": "{primitive.color.driftwood.360}",
+                "$value": "{primitive.color.graphite.360}",
                 "$description": "Use when a neutral high-prominence filled interactive element is hovered."
               },
               "active": {
-                "$value": "{primitive.color.driftwood.320}",
+                "$value": "{primitive.color.graphite.320}",
                 "$description": "Use while a neutral high-prominence filled interactive element is actively pressed."
               }
             },
@@ -108,15 +108,15 @@
           },
           "secondary": {
             "$root": {
-              "$value": "{primitive.color.driftwood.800}",
+              "$value": "{primitive.color.graphite.800}",
               "$description": "Use for lower-prominence filled elements such as secondary buttons, neutral chips, or subtle selected states."
             },
             "hover": {
-              "$value": "{primitive.color.driftwood.760}",
+              "$value": "{primitive.color.graphite.760}",
               "$description": "Use when a neutral lower-prominence filled interactive element is hovered."
             },
             "active": {
-              "$value": "{primitive.color.driftwood.720}",
+              "$value": "{primitive.color.graphite.720}",
               "$description": "Use while a neutral lower-prominence filled interactive element is actively pressed."
             },
             "information": {
@@ -195,11 +195,11 @@
                 "$description": "Use when a neutral bounded element intentionally has no visible fill and should reveal its parent background."
               },
               "hover": {
-                "$value": "{primitive.color.driftwood.960}",
+                "$value": "{primitive.color.graphite.960}",
                 "$description": "Use when a neutral ghost filled interactive element is hovered."
               },
               "active": {
-                "$value": "{primitive.color.driftwood.920}",
+                "$value": "{primitive.color.graphite.920}",
                 "$description": "Use while a neutral ghost filled interactive element is actively pressed."
               }
             },
@@ -343,7 +343,7 @@
         },
         "switch": {
           "$root": {
-            "$value": "{primitive.color.driftwood.400}",
+            "$value": "{primitive.color.graphite.400}",
             "$description": "Use for the switch track when it is off."
           },
           "selected": {
@@ -362,12 +362,12 @@
         "$description": "Use these colors for boundaries, dividers, and status outlines according to their prominence and meaning.",
         "primary": {
           "$root": {
-            "$value": "{primitive.color.driftwood.400}",
+            "$value": "{primitive.color.graphite.400}",
             "$description": "Use for default boundaries and dividers that require clear visual separation."
           }
         },
         "secondary": {
-          "$value": "{primitive.color.driftwood.800}",
+          "$value": "{primitive.color.graphite.800}",
           "$description": "Use for subtle decorative boundaries and dividers. Do not use when the boundary is the only visual cue identifying a control."
         },
         "information": {
@@ -413,7 +413,7 @@
           "$description": "Use for default body copy and interface labels requiring the strongest standard text emphasis."
         },
         "secondary": {
-          "$value": "{primitive.color.driftwood.300}",
+          "$value": "{primitive.color.graphite.300}",
           "$description": "Use for supporting text and metadata that should be less prominent than primary text."
         },
         "information": {
@@ -442,7 +442,7 @@
         },
         "onSecondaryFill": {
           "$root": {
-            "$value": "{primitive.color.driftwood.200}",
+            "$value": "{primitive.color.graphite.200}",
             "$description": "Use for text placed on secondary fills that have lower visual prominence than primary fills."
           },
           "information": {
@@ -534,6 +534,40 @@
             "$value": "{semantic.color.icon.onSelectedFill}",
             "$description": "Use for the visible indicator inside a selected radio."
           }
+        }
+      },
+      "logo": {
+        "$description": "Use only in logo artwork. Logos keep these exact colors; do not use them for interface elements.",
+        "symbol": {
+          "1": {
+            "$value": "{primitive.color.cerulianBlue.$root}",
+            "$description": "First product symbol color (blue)."
+          },
+          "2": {
+            "$value": "{primitive.color.coralRed.$root}",
+            "$description": "Second product symbol color (coral)."
+          },
+          "3": {
+            "$value": "{primitive.color.creamYellow.$root}",
+            "$description": "Third product symbol color (yellow)."
+          },
+          "4": {
+            "$value": "{primitive.color.calamineBlue.$root}",
+            "$description": "Fourth product symbol color (light blue)."
+          },
+          "$description": "Colors of the product symbols. The same in light and dark contexts."
+        },
+        "wordmark": {
+          "$value": "{primitive.color.white}",
+          "$description": "Use for logo wordmarks."
+        },
+        "earendil": {
+          "$value": "{primitive.color.white}",
+          "$description": "Use for the Earendil symbol."
+        },
+        "monochrome": {
+          "$value": "{primitive.color.white}",
+          "$description": "Use for every shape of a monochrome logo."
         }
       }
     }
