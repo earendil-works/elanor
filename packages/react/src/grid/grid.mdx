@@ -1,0 +1,106 @@
+import {GridExample} from './grid.example.tsx';
+
+Grid divides its available width into equal CSS Grid tracks. It does not set a page
+width or manage navigation. Wrap it in `Container` when content needs a centered cap.
+
+<GridExample client:load />
+
+## Usage
+
+```tsx
+import {Grid, Card} from '@earendil-works/elanor-react';
+
+<Grid.Root>
+  <Grid.Item span={{base: 'full', small: 6, medium: 4}} render={<Card />}>
+    A card without an extra wrapper
+  </Grid.Item>
+  <Grid.Item>Full-width next row</Grid.Item>
+</Grid.Root>
+```
+
+- `Grid.Root`: `columns` is an integer from 1–12 (default 12). `gap` uses the shared
+  gap scale: `xxSmall`, `xSmall`, `small`, `medium` (default), `large`, `xLarge`.
+- `Grid.Item`: `span` is 1–12 or `full` (default), optionally keyed by breakpoint.
+  Omitted `base` means `full`; each value persists until the next specified key.
+  Numeric spans are clamped to their grid's available columns, preventing implicit
+  extra tracks. `full` explicitly starts a full row with `grid-column: 1 / -1`.
+- `Grid.Subgrid`: accepts the same `span` prop. It occupies parent tracks **and**
+  exposes those tracks to its children. Its default column gap follows its parent.
+  Rows are independent and content-driven; custom row sizing is ordinary CSS.
+- All parts forward refs and support Base UI `render`, HTML attributes, `className`,
+  and `style`. Their defaults render `div` elements without adding landmarks.
+
+## Container breakpoints
+
+| Key | Minimum inline size |
+| --- | --- |
+| `base` | Always |
+| `xSmall` | 40rem |
+| `small` | 48rem |
+| `medium` | 64rem |
+| `large` | 80rem |
+| `xLarge` | 96rem |
+
+These are the existing shared breakpoint tokens, resolved into CSS during source
+generation. They query the nearest `Grid.Root`, **not the viewport**. A sidebar
+collapse can therefore change card spans without any React resize observer.
+
+Subgrid descendants intentionally query the owning `Grid.Root`: applying size
+containment to a subgrid breaks shared tracks in some browser engines. To respond
+to a nested region's own width, put an independent `Grid.Root` in a `Grid.Item`.
+Nested Roots reset both the query boundary and the column count.
+
+A default capped `Container` has 76rem of content, so `large` and `xLarge` apply only
+when the cap is overridden or removed. Use CSS for application-specific thresholds.
+
+## Shared tracks
+
+```tsx
+<Grid.Root>
+  <Grid.Item span={4}>Search</Grid.Item>
+  <Grid.Subgrid span={8}>
+    <Grid.Item>Filters</Grid.Item>
+    <Grid.Item span={2}>Status</Grid.Item>
+    <Grid.Item span={2}>Owner</Grid.Item>
+    <Grid.Item span={2}>Region</Grid.Item>
+    <Grid.Item span={2}>Period</Grid.Item>
+  </Grid.Subgrid>
+</Grid.Root>
+```
+
+Grid items and subgrids must be inside a Root and be **DOM children** of the grid
+they occupy. React fragments/components are fine if they introduce no extra DOM
+wrapper. Ordinary DOM children still work with native CSS Grid placement, but do
+not receive `Grid.Item`'s full-width default or span clamping.
+
+Do not change `grid-template-columns` or `grid-column` through custom CSS if you
+also rely on the built-in span clamping: it derives track counts from the public
+`columns` and `span` props. Use those props together, or own placement entirely in
+CSS. Layout preserves source order; row APIs, dense packing, and JavaScript
+fallbacks are intentionally omitted.
+
+## Maintaining the CSS
+
+Edit `src/grid/grid.module.css` directly: it owns all Grid styles, including
+column counts, gaps, and span rules. There are no separate CSS templates.
+
+Only query thresholds need build-time token resolution because native CSS cannot
+use `var()` in query conditions. Each threshold names its source token in a comment:
+
+```css
+@container elanor-grid (min-width: 64rem /* token: semantic.dimension.breakpoint.medium */) {
+  /* Responsive span rules are maintained here, too. */
+}
+```
+
+`scripts/generate-layout-css.mjs` synchronizes **only those annotated values** in
+the Grid and Layout CSS Modules. It does not generate selectors or declarations,
+and it leaves other styles untouched. After changing breakpoint tokens run:
+
+```sh
+pnpm --filter @earendil-works/elanor-react generate:css
+```
+
+Normal `check` and `build` commands verify that annotated thresholds match their tokens. No runtime
+style injection, CSS custom-property allowlist, or extra CSS processing dependency
+is required. Native CSS Grid, column subgrid, and container-query support are required.

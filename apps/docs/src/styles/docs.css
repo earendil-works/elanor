@@ -59,3 +59,8 @@ body > aside {
 .prose img {
   max-inline-size: 100%;
 }
+
+.preview[data-wide] {
+  max-inline-size: none;
+  align-items: stretch;
+}

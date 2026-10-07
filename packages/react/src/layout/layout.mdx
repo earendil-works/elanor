@@ -1,0 +1,177 @@
+import {LayoutExample} from './layout.example.tsx';
+
+# Layout
+
+Neutral page regions with ordinary children. Layout does not own routing, navigation
+state, content grids, or header measurements. All six parts accept `render`, `ref`,
+`className`, `style`, and native element props.
+
+| Part | Default element | Responsibility |
+| --- | --- | --- |
+| `Root` | `div` | Isolated, unclipped page frame; document scrolling |
+| `Header` | `header` | Optional top region; non-sticky by default |
+| `Body` | `div` | Groups zero, one, or two asides with flexible main content |
+| `Aside` | `aside` | Supporting region; sticky and scrollable on wide screens |
+| `Main` | `main` | Flexible main landmark, without a content-width cap |
+| `Footer` | `footer` | Optional bottom region |
+
+Use one `Main` per document. When embedding a layout inside an existing main,
+use `Layout.Main render={<div />}` instead. `Page` is a content group, not another
+main landmark. A simple header/main/footer page needs no `Body`.
+
+## Docs recipe
+
+This live recipe supplies this documentation page's only main landmark. The
+preview reduces Root's viewport-height minimum; omit that override in a page.
+Text-only navigation stays expanded: no collapse control or destinations hidden
+on small screens. The left navigation precedes Main and the TOC follows it in
+source order, including when stacked.
+
+<LayoutExample />
+
+The outer Container centers Body; the inner Container caps the reading region
+using the existing `size.content.small` token. Both side regions default to
+`size.sidebar`. These are recipe choices, not a separate exported DocsLayout.
+
+## App recipe
+
+A side region sits **outside** the main content grid. Its width never consumes
+columns. Container centers content in the remaining area and caps its content at
+1216px; removing Aside gives Main more room without removing that cap.
+
+```tsx
+import {Container, Layout, Page, SideNavigation, Stack} from '@earendil-works/elanor-react';
+
+<Layout.Root>
+  <Layout.Body>
+    <Layout.Aside aria-label="Workspace" style={{padding: 'var(--semantic-dimension-space-padding-medium)'}}>
+      <Stack>
+        <a href="/">Workspace</a>
+        <SideNavigation.Root aria-label="Application">
+          <SideNavigation.List>
+            <SideNavigation.Item>
+              <SideNavigation.Link href="/projects" active>Projects</SideNavigation.Link>
+            </SideNavigation.Item>
+            <SideNavigation.Item>
+              <SideNavigation.Link href="/settings">Settings</SideNavigation.Link>
+            </SideNavigation.Item>
+          </SideNavigation.List>
+        </SideNavigation.Root>
+        <a href="/account">Account</a>
+      </Stack>
+    </Layout.Aside>
+    <Layout.Main>
+      <Container>
+        <Page>
+          <h1>Projects</h1>
+          {/* A Grid may go here; it fills this Container independently. */}
+        </Page>
+      </Container>
+    </Layout.Main>
+  </Layout.Body>
+</Layout.Root>
+```
+
+Replace the contents of Aside with your own branding, navigation, and account
+controls. This recipe deliberately does not require Sidebar's collapse API.
+Render-compatible side components can compose onto `Layout.Aside` rather than
+adding another aside wrapper. Keep their width independent of content Grid.
+
+## Marketing / top-navigation recipe
+
+Zero asides, no Body, one main. `render` puts TopNavigation and Layout.Header on
+one header element instead of nesting landmarks. Capped sections and uncapped
+sections can alternate inside Main.
+
+```tsx
+import {Container, Layout, Link, Stack, TopNavigation} from '@earendil-works/elanor-react';
+
+<Layout.Root>
+  <Layout.Header render={<TopNavigation.Root variant="marketing" />}>
+    <Container>
+      <Stack direction="row" align="center" gap="auto" wrap="wrap">
+        <TopNavigation.Identity><Link href="/">Elanor</Link></TopNavigation.Identity>
+        <TopNavigation.Navigation>
+          <nav aria-label="Primary"><Link href="/about">About</Link></nav>
+        </TopNavigation.Navigation>
+        <TopNavigation.Actions><Link href="/login">Sign in</Link></TopNavigation.Actions>
+      </Stack>
+    </Container>
+  </Layout.Header>
+  <Layout.Main>
+    <Container render={<section aria-labelledby="intro" />}>
+      <h1 id="intro">Build with Elanor</h1>
+      <p>Your product content.</p>
+    </Container>
+    <Container width="full" render={<section aria-label="Showcase" />}>
+      Full-width content retains gutters. Omit Container for a truly full-bleed region.
+    </Container>
+  </Layout.Main>
+  <Layout.Footer><Container>Your footer content</Container></Layout.Footer>
+</Layout.Root>
+```
+
+## Sticky regions and narrow screens
+
+At `semantic.dimension.breakpoint.medium` (currently 64rem), Body becomes a row
+and Aside becomes sticky at the block-start edge. A long Aside scrolls within
+`100dvh`. Below that shared viewport breakpoint, regions stack in source order,
+Aside is normal-flow, and all navigation remains reachable in the document.
+This is not mobile overlay navigation. Breakpoint literals in the shipped CSS
+are synchronized from semantic tokens, not maintained separately. Edit all styles
+directly in `src/layout/layout.module.css`; only the annotated `min-width` value
+is maintained by `scripts/generate-layout-css.mjs`. Run `generate:css` after a
+breakpoint token changes. No separate CSS template is needed.
+
+Root and Body intentionally do not clip content or create a scroll container.
+Do not add `overflow: hidden`, `overflow: auto`, or containment to their ancestors
+unless you intend to change the sticky scrollport. Aside has no built-in padding;
+the recipes add a semantic padding token to leave room around focus indicators.
+When composing another component onto Aside, let that component own its insets.
+Keep scrollable content keyboard-reachable, including when substituting
+noninteractive content.
+
+Header stickiness is an ordinary styling choice. When both header and aside are
+sticky, explicitly budget the header's block size and Aside's available height.
+There is no automatic measurement or private layout custom property. For example:
+
+```tsx
+<Layout.Header className={styles.stickyHeader}>...</Layout.Header>
+<Layout.Body>
+  <Layout.Aside className={styles.belowHeader}>...</Layout.Aside>
+  <Layout.Main>...</Layout.Main>
+</Layout.Body>
+```
+
+```css
+/* Application CSS Module. Enable the fixed-size recipe only on wide screens.
+   Resolve this condition from semantic.dimension.breakpoint.medium in your build. */
+@media (min-width: 64rem) {
+  .stickyHeader {
+    position: sticky;
+    inset-block-start: 0;
+    box-sizing: border-box;
+    block-size: var(--semantic-dimension-size-x-large);
+    z-index: var(--semantic-number-layer-overlay);
+    background: var(--semantic-color-background-canvas);
+  }
+
+  .belowHeader {
+    inset-block-start: var(--semantic-dimension-size-x-large);
+    max-block-size: calc(100dvh - var(--semantic-dimension-size-x-large));
+  }
+}
+```
+
+This recipe budgets 48px using an existing size token; it does not assert every
+header is that tall. Match **both** values to your actual header. If a header can
+wrap or grow, leave it in normal flow rather than guessing its height. Include
+appropriate `scroll-margin-block-start` on anchor targets in a sticky-header app.
+Use ordinary `style={{insetBlockStart: ..., maxBlockSize: ...}}` for a known offset
+when it applies at every viewport, or responsive classes as above. To opt an
+Aside out of stickiness entirely, set `position: 'static'`, `maxBlockSize: 'none'`,
+and `overflow: 'visible'` through `style`.
+
+These are maintained recipes to copy and adapt, not exported application layout
+components. Product state, persistence, portal placement, and routing remain
+application-owned.

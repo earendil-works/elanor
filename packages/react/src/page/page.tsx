@@ -4,7 +4,7 @@ import {classes} from '../utils/class-names.ts';
 
 export interface PageProps extends HTMLAttributes<HTMLDivElement> {}
 
-// AppLayout.Content owns the main landmark; Page groups content inside it.
+// Layout.Main owns the main landmark; Page groups content inside it.
 export const Page = forwardRef<HTMLDivElement, PageProps>(function Page(
   {className, ...props}, ref,
 ) {

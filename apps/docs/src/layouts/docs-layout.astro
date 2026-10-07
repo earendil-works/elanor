@@ -15,8 +15,13 @@ interface Props {
 }
 
 const {title, current, wide = false} = Astro.props;
-// The AppLayout demo supplies its own main landmark.
-const ContentTag = current === '/components/app-layout/' ? 'div' : 'main';
+// The Layout demo supplies the page's single main landmark.
+const ContentTag = current === '/components/layout/' ? 'div' : 'main';
+const widePreview = [
+  '/components/layout/',
+  '/components/grid/',
+  '/components/container/',
+].includes(current);
 const entries = await getCollection('components');
 
 function componentName(component: string): string {
@@ -57,7 +62,7 @@ const sections: DocsNavigationSection[] = [
       </div>
     </aside>
     <ContentTag data-docs-swap="content">
-      <div class:list={[wide ? 'wide' : 'preview']}>
+      <div class:list={[wide ? 'wide' : 'preview']} data-wide={widePreview ? '' : undefined}>
         <slot />
       </div>
     </ContentTag>

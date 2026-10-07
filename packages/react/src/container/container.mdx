@@ -1,0 +1,68 @@
+import {ContainerExample} from './container.example.tsx';
+
+# Container
+
+Centers content, adds inline gutters, and applies an optional width cap. It renders
+a `div`, not a main landmark. Use it inside `Layout.Main`, around a section, or
+independently of Layout and Grid.
+
+<ContainerExample />
+
+## Width and gutters
+
+| Prop | Values | Default |
+| --- | --- | --- |
+| `width` | `'capped'`, `'full'` | `'capped'` |
+
+The default content area is at most `semantic.dimension.size.content.large`
+(currently 76rem / 1216px). It has `space.padding.xLarge` gutters (currently 16px)
+on each side, so its maximum outer width is currently 1248px. It shrinks to fit a
+narrower parent. There is no block padding; sections own their vertical rhythm.
+
+`width="full"` removes the cap but preserves gutters. For truly edge-to-edge
+content, omit Container or explicitly set `paddingInline: 0`. A Grid that spans
+all its tracks still respects its Container's cap; use an uncapped Container to
+give the Grid more available width.
+
+```tsx
+import {Container, Layout} from '@earendil-works/elanor-react';
+
+<Layout.Main>
+  <Container>Centered, capped content</Container>
+  <Container width="full">Uncapped content with gutters</Container>
+</Layout.Main>
+```
+
+## Ordinary styling and composition
+
+Native props, `ref`, `className`, and `style` pass through. Base UI's `render`
+contract supports an element or render function and merges props and refs.
+Container does not inspect or clone its children to impose page structure.
+
+```tsx
+<Container
+  render={<section aria-labelledby="reading-title" />}
+  style={{maxInlineSize: 'var(--semantic-dimension-size-content-small)'}}
+>
+  <h2 id="reading-title">A compact reading region</h2>
+  <p>Application content.</p>
+</Container>
+```
+
+Container uses border-box sizing. A `maxInlineSize` override limits the **outer**
+box, including padding. When changing gutters while preserving a precise content
+cap, update the outer maximum too:
+
+```css
+.wideGutters {
+  padding-inline: var(--semantic-dimension-space-padding-xx-large);
+  max-inline-size: calc(
+    var(--semantic-dimension-size-content-large) +
+    var(--semantic-dimension-space-padding-xx-large) * 2
+  );
+}
+```
+
+Logical properties work in RTL. Long tables, code, and other intrinsically wide
+children should provide their own wrapping or accessible overflow handling;
+Container never clips them.

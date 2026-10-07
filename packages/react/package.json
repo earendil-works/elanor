@@ -14,8 +14,10 @@
     }
   },
   "scripts": {
-    "build": "node build.mjs && tsc -p tsconfig.json",
-    "check": "pnpm run check:types && pnpm run lint",
+    "build": "pnpm run generate:css:check && node build.mjs && tsc -p tsconfig.json",
+    "generate:css": "node scripts/generate-layout-css.mjs",
+    "generate:css:check": "node scripts/generate-layout-css.mjs --check",
+    "check": "pnpm run generate:css:check && pnpm run check:types && pnpm run lint",
     "check:prepare": "pnpm --filter @earendil-works/elanor-icons-react... run build",
     "check:types": "pnpm run check:prepare && tsc -p tsconfig.json --noEmit",
     "lint:prepare": "pnpm --filter @earendil-works/design-tokens run build:radius && pnpm --filter @earendil-works/stylelint-plugin-design-tokens run build",
