@@ -190,9 +190,31 @@
           }
         }
       },
+      "5250": {
+        "$value": {
+          "value": 13.125,
+          "unit": "rem"
+        },
+        "$extensions": {
+          "com.earendil-works.generation": {
+            "source": "recipes/shared/primitive/dimension.json"
+          }
+        }
+      },
       "12000": {
         "$value": {
           "value": 30,
+          "unit": "rem"
+        },
+        "$extensions": {
+          "com.earendil-works.generation": {
+            "source": "recipes/shared/primitive/dimension.json"
+          }
+        }
+      },
+      "30400": {
+        "$value": {
+          "value": 76,
           "unit": "rem"
         },
         "$extensions": {
