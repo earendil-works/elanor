@@ -10,5 +10,5 @@
     "skipLibCheck": true,
     "strict": true
   },
-  "include": ["generation/**/*.ts", "scripts/**/*.ts", "terrazzo.*.config.ts"]
+  "include": ["generation/**/*.ts", "scripts/**/*.ts", "scripts/**/*.mts", "terrazzo.*.config.ts"]
 }

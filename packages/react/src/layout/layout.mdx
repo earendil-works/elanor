@@ -117,11 +117,8 @@ At `semantic.dimension.breakpoint.medium` (currently 64rem), Body becomes a row
 and Aside becomes sticky at the block-start edge. A long Aside scrolls within
 `100dvh`. Below that shared viewport breakpoint, regions stack in source order,
 Aside is normal-flow, and all navigation remains reachable in the document.
-This is not mobile overlay navigation. Breakpoint literals in the shipped CSS
-are synchronized from semantic tokens, not maintained separately. Edit all styles
-directly in `src/layout/layout.module.css`; only the annotated `min-width` value
-is maintained by `scripts/generate-layout-css.mjs`. Run `generate:css` after a
-breakpoint token changes. No separate CSS template is needed.
+This is not mobile overlay navigation. Edit `src/layout/layout.module.css` directly;
+see [Maintaining the CSS](/components/grid/#maintaining-the-css) for breakpoint synchronization.
 
 Root and Body intentionally do not clip content or create a scroll container.
 Do not add `overflow: hidden`, `overflow: auto`, or containment to their ancestors

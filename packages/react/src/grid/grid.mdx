@@ -81,26 +81,20 @@ fallbacks are intentionally omitted.
 
 ## Maintaining the CSS
 
-Edit `src/grid/grid.module.css` directly: it owns all Grid styles, including
-column counts, gaps, and span rules. There are no separate CSS templates.
-
-Only query thresholds need build-time token resolution because native CSS cannot
-use `var()` in query conditions. Each threshold names its source token in a comment:
+Edit `src/grid/grid.module.css` directly. Annotate query thresholds with their
+source tokens; use `var()` in ordinary declarations:
 
 ```css
-@container elanor-grid (min-width: 64rem /* token: semantic.dimension.breakpoint.medium */) {
-  /* Responsive span rules are maintained here, too. */
+@container elanor-grid (48rem /* token: semantic.dimension.breakpoint.small */ <= width < 64rem /* token: semantic.dimension.breakpoint.medium */) {
+  /* Responsive rules */
 }
 ```
 
-`scripts/generate-layout-css.mjs` synchronizes **only those annotated values** in
-the Grid and Layout CSS Modules. It does not generate selectors or declarations,
-and it leaves other styles untouched. After changing breakpoint tokens run:
+After changing breakpoint tokens, synchronize annotated `rem`/`px` values in the
+Grid and Layout CSS Modules:
 
 ```sh
 pnpm --filter @earendil-works/elanor-react generate:css
 ```
 
-Normal `check` and `build` commands verify that annotated thresholds match their tokens. No runtime
-style injection, CSS custom-property allowlist, or extra CSS processing dependency
-is required. Native CSS Grid, column subgrid, and container-query support are required.
+`check` and `build` reject stale thresholds.
