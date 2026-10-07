@@ -4,38 +4,6 @@
   "primitive": {
     "color": {
       "$type": "color",
-      "white": {
-        "$value": {
-          "colorSpace": "oklch",
-          "components": [
-            1,
-            0,
-            0
-          ],
-          "hex": "#ffffff"
-        },
-        "$extensions": {
-          "com.earendil-works.generation": {
-            "source": "recipes/shared/primitive/color.json"
-          }
-        }
-      },
-      "black": {
-        "$value": {
-          "colorSpace": "oklch",
-          "components": [
-            0,
-            0,
-            0
-          ],
-          "hex": "#000000"
-        },
-        "$extensions": {
-          "com.earendil-works.generation": {
-            "source": "recipes/shared/primitive/color.json"
-          }
-        }
-      },
       "transparent": {
         "$value": {
           "colorSpace": "oklch",
@@ -165,504 +133,6 @@
           }
         },
         "$description": "Ordered categorical colors for data visualizations. Numeric steps encode the recommended series order."
-      },
-      "driftwood": {
-        "25": {
-          "$value": {
-            "colorSpace": "oklch",
-            "components": [
-              0.9785,
-              0.001,
-              67.57
-            ],
-            "hex": "#f8f8f7"
-          },
-          "$extensions": {
-            "com.earendil-works.generation": {
-              "source": "recipes/shared/primitive/color.json"
-            }
-          }
-        },
-        "40": {
-          "$value": {
-            "colorSpace": "oklch",
-            "components": [
-              0.9657,
-              0.0017,
-              67.57
-            ],
-            "hex": "#f4f3f2"
-          },
-          "$extensions": {
-            "com.earendil-works.generation": {
-              "source": "recipes/shared/primitive/color.json"
-            }
-          }
-        },
-        "50": {
-          "$value": {
-            "colorSpace": "oklch",
-            "components": [
-              0.9571,
-              0.0021,
-              67.57
-            ],
-            "hex": "#f2f0ef"
-          },
-          "$extensions": {
-            "com.earendil-works.generation": {
-              "source": "recipes/shared/primitive/color.json"
-            }
-          }
-        },
-        "80": {
-          "$value": {
-            "colorSpace": "oklch",
-            "components": [
-              0.9313,
-              0.0034,
-              67.57
-            ],
-            "hex": "#eae8e6"
-          },
-          "$extensions": {
-            "com.earendil-works.generation": {
-              "source": "recipes/shared/primitive/color.json"
-            }
-          }
-        },
-        "100": {
-          "$value": {
-            "colorSpace": "oklch",
-            "components": [
-              0.9141,
-              0.0043,
-              67.57
-            ],
-            "hex": "#e5e2e0"
-          },
-          "$extensions": {
-            "com.earendil-works.generation": {
-              "source": "recipes/shared/primitive/color.json"
-            }
-          }
-        },
-        "140": {
-          "$value": {
-            "colorSpace": "oklch",
-            "components": [
-              0.8797,
-              0.0061,
-              67.57
-            ],
-            "hex": "#dad7d3"
-          },
-          "$extensions": {
-            "com.earendil-works.generation": {
-              "source": "recipes/shared/primitive/color.json"
-            }
-          }
-        },
-        "180": {
-          "$value": {
-            "colorSpace": "oklch",
-            "components": [
-              0.8453,
-              0.0078,
-              67.57
-            ],
-            "hex": "#d0cbc7"
-          },
-          "$extensions": {
-            "com.earendil-works.generation": {
-              "source": "recipes/shared/primitive/color.json"
-            }
-          }
-        },
-        "200": {
-          "$value": {
-            "colorSpace": "oklch",
-            "components": [
-              0.8281,
-              0.0087,
-              67.57
-            ],
-            "hex": "#cbc6c1"
-          },
-          "$extensions": {
-            "com.earendil-works.generation": {
-              "source": "recipes/shared/primitive/color.json"
-            }
-          }
-        },
-        "220": {
-          "$value": {
-            "colorSpace": "oklch",
-            "components": [
-              0.8109,
-              0.0096,
-              67.57
-            ],
-            "hex": "#c5c0bb"
-          },
-          "$extensions": {
-            "com.earendil-works.generation": {
-              "source": "recipes/shared/primitive/color.json"
-            }
-          }
-        },
-        "260": {
-          "$value": {
-            "colorSpace": "oklch",
-            "components": [
-              0.7765,
-              0.0111,
-              67.57
-            ],
-            "hex": "#bbb5af"
-          },
-          "$extensions": {
-            "com.earendil-works.generation": {
-              "source": "recipes/shared/primitive/color.json"
-            }
-          }
-        },
-        "300": {
-          "$value": {
-            "colorSpace": "oklch",
-            "components": [
-              0.742,
-              0.0125,
-              67.57
-            ],
-            "hex": "#b1aaa3"
-          },
-          "$extensions": {
-            "com.earendil-works.generation": {
-              "source": "recipes/shared/primitive/color.json"
-            }
-          }
-        },
-        "320": {
-          "$value": {
-            "colorSpace": "oklch",
-            "components": [
-              0.7247,
-              0.0131,
-              67.57
-            ],
-            "hex": "#aca59e"
-          },
-          "$extensions": {
-            "com.earendil-works.generation": {
-              "source": "recipes/shared/primitive/color.json"
-            }
-          }
-        },
-        "360": {
-          "$value": {
-            "colorSpace": "oklch",
-            "components": [
-              0.6902,
-              0.014,
-              67.57
-            ],
-            "hex": "#a19a92"
-          },
-          "$extensions": {
-            "com.earendil-works.generation": {
-              "source": "recipes/shared/primitive/color.json"
-            }
-          }
-        },
-        "400": {
-          "$value": {
-            "colorSpace": "oklch",
-            "components": [
-              0.6556,
-              0.0146,
-              67.57
-            ],
-            "hex": "#978f88"
-          },
-          "$extensions": {
-            "com.earendil-works.generation": {
-              "source": "recipes/shared/primitive/color.json"
-            }
-          }
-        },
-        "420": {
-          "$value": {
-            "colorSpace": "oklch",
-            "components": [
-              0.6383,
-              0.0148,
-              67.57
-            ],
-            "hex": "#928a82"
-          },
-          "$extensions": {
-            "com.earendil-works.generation": {
-              "source": "recipes/shared/primitive/color.json"
-            }
-          }
-        },
-        "460": {
-          "$value": {
-            "colorSpace": "oklch",
-            "components": [
-              0.6036,
-              0.0149,
-              67.57
-            ],
-            "hex": "#888078"
-          },
-          "$extensions": {
-            "com.earendil-works.generation": {
-              "source": "recipes/shared/primitive/color.json"
-            }
-          }
-        },
-        "500": {
-          "$value": {
-            "colorSpace": "oklch",
-            "components": [
-              0.5688,
-              0.0147,
-              67.57
-            ],
-            "hex": "#7d766e"
-          },
-          "$extensions": {
-            "com.earendil-works.generation": {
-              "source": "recipes/shared/primitive/color.json"
-            }
-          }
-        },
-        "540": {
-          "$value": {
-            "colorSpace": "oklch",
-            "components": [
-              0.534,
-              0.0142,
-              67.57
-            ],
-            "hex": "#736c64"
-          },
-          "$extensions": {
-            "com.earendil-works.generation": {
-              "source": "recipes/shared/primitive/color.json"
-            }
-          }
-        },
-        "580": {
-          "$value": {
-            "colorSpace": "oklch",
-            "components": [
-              0.499,
-              0.0135,
-              67.57
-            ],
-            "hex": "#68625b"
-          },
-          "$extensions": {
-            "com.earendil-works.generation": {
-              "source": "recipes/shared/primitive/color.json"
-            }
-          }
-        },
-        "600": {
-          "$value": {
-            "colorSpace": "oklch",
-            "components": [
-              0.4815,
-              0.0131,
-              67.57
-            ],
-            "hex": "#635d56"
-          },
-          "$extensions": {
-            "com.earendil-works.generation": {
-              "source": "recipes/shared/primitive/color.json"
-            }
-          }
-        },
-        "640": {
-          "$value": {
-            "colorSpace": "oklch",
-            "components": [
-              0.4462,
-              0.0121,
-              67.57
-            ],
-            "hex": "#59534d"
-          },
-          "$extensions": {
-            "com.earendil-works.generation": {
-              "source": "recipes/shared/primitive/color.json"
-            }
-          }
-        },
-        "680": {
-          "$value": {
-            "colorSpace": "oklch",
-            "components": [
-              0.4107,
-              0.011,
-              67.57
-            ],
-            "hex": "#4f4a44"
-          },
-          "$extensions": {
-            "com.earendil-works.generation": {
-              "source": "recipes/shared/primitive/color.json"
-            }
-          }
-        },
-        "700": {
-          "$value": {
-            "colorSpace": "oklch",
-            "components": [
-              0.3929,
-              0.0105,
-              67.57
-            ],
-            "hex": "#4a4540"
-          },
-          "$extensions": {
-            "com.earendil-works.generation": {
-              "source": "recipes/shared/primitive/color.json"
-            }
-          }
-        },
-        "720": {
-          "$value": {
-            "colorSpace": "oklch",
-            "components": [
-              0.3749,
-              0.0099,
-              67.57
-            ],
-            "hex": "#45403c"
-          },
-          "$extensions": {
-            "com.earendil-works.generation": {
-              "source": "recipes/shared/primitive/color.json"
-            }
-          }
-        },
-        "740": {
-          "$value": {
-            "colorSpace": "oklch",
-            "components": [
-              0.3568,
-              0.0094,
-              67.57
-            ],
-            "hex": "#403b37"
-          },
-          "$extensions": {
-            "com.earendil-works.generation": {
-              "source": "recipes/shared/primitive/color.json"
-            }
-          }
-        },
-        "760": {
-          "$value": {
-            "colorSpace": "oklch",
-            "components": [
-              0.3386,
-              0.0088,
-              67.57
-            ],
-            "hex": "#3b3733"
-          },
-          "$extensions": {
-            "com.earendil-works.generation": {
-              "source": "recipes/shared/primitive/color.json"
-            }
-          }
-        },
-        "780": {
-          "$value": {
-            "colorSpace": "oklch",
-            "components": [
-              0.3202,
-              0.0082,
-              67.57
-            ],
-            "hex": "#36322f"
-          },
-          "$extensions": {
-            "com.earendil-works.generation": {
-              "source": "recipes/shared/primitive/color.json"
-            }
-          }
-        },
-        "800": {
-          "$value": {
-            "colorSpace": "oklch",
-            "components": [
-              0.3015,
-              0.0077,
-              67.57
-            ],
-            "hex": "#312d2a"
-          },
-          "$extensions": {
-            "com.earendil-works.generation": {
-              "source": "recipes/shared/primitive/color.json"
-            }
-          }
-        },
-        "900": {
-          "$value": {
-            "colorSpace": "oklch",
-            "components": [
-              0.201,
-              0.0048,
-              67.57
-            ],
-            "hex": "#181614"
-          },
-          "$extensions": {
-            "com.earendil-works.generation": {
-              "source": "recipes/shared/primitive/color.json"
-            }
-          }
-        },
-        "920": {
-          "$value": {
-            "colorSpace": "oklch",
-            "components": [
-              0.1776,
-              0.0042,
-              67.57
-            ],
-            "hex": "#12110f"
-          },
-          "$extensions": {
-            "com.earendil-works.generation": {
-              "source": "recipes/shared/primitive/color.json"
-            }
-          }
-        },
-        "960": {
-          "$value": {
-            "colorSpace": "oklch",
-            "components": [
-              0.1201,
-              0.0028,
-              67.57
-            ],
-            "hex": "#060605"
-          },
-          "$extensions": {
-            "com.earendil-works.generation": {
-              "source": "recipes/shared/primitive/color.json"
-            }
-          }
-        }
       },
       "cerulianBlue": {
         "25": {
@@ -1160,6 +630,38 @@
               "source": "recipes/shared/primitive/color.json"
             }
           }
+        },
+        "$root": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.6523,
+              0.0938,
+              231.49
+            ],
+            "hex": "#4d9abf"
+          },
+          "$extensions": {
+            "com.earendil-works.print": {
+              "cmyk": {
+                "psoCoatedV3": [
+                  66,
+                  20,
+                  10,
+                  6
+                ],
+                "psoUncoatedV3": [
+                  67,
+                  15,
+                  7,
+                  4
+                ]
+              }
+            },
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
         }
       },
       "coralRed": {
@@ -1169,7 +671,7 @@
             "components": [
               0.9785,
               0.002,
-              20
+              25
             ],
             "hex": "#f9f7f7"
           },
@@ -1185,9 +687,9 @@
             "components": [
               0.9657,
               0.0037,
-              20
+              25
             ],
-            "hex": "#f6f3f3"
+            "hex": "#f6f3f2"
           },
           "$extensions": {
             "com.earendil-works.generation": {
@@ -1201,9 +703,9 @@
             "components": [
               0.9571,
               0.005,
-              20
+              25
             ],
-            "hex": "#f4efef"
+            "hex": "#f4f0ef"
           },
           "$extensions": {
             "com.earendil-works.generation": {
@@ -1216,8 +718,8 @@
             "colorSpace": "oklch",
             "components": [
               0.9313,
-              0.01,
-              20
+              0.0099,
+              25
             ],
             "hex": "#efe6e5"
           },
@@ -1232,10 +734,10 @@
             "colorSpace": "oklch",
             "components": [
               0.9141,
-              0.0143,
-              20
+              0.0142,
+              25
             ],
-            "hex": "#ecdfdf"
+            "hex": "#ecdfde"
           },
           "$extensions": {
             "com.earendil-works.generation": {
@@ -1248,10 +750,10 @@
             "colorSpace": "oklch",
             "components": [
               0.8797,
-              0.0255,
-              20
+              0.0253,
+              25
             ],
-            "hex": "#e8d1d0"
+            "hex": "#e8d1cf"
           },
           "$extensions": {
             "com.earendil-works.generation": {
@@ -1264,10 +766,10 @@
             "colorSpace": "oklch",
             "components": [
               0.8453,
-              0.0405,
-              20
+              0.0402,
+              25
             ],
-            "hex": "#e6c2c1"
+            "hex": "#e6c3bf"
           },
           "$extensions": {
             "com.earendil-works.generation": {
@@ -1280,10 +782,10 @@
             "colorSpace": "oklch",
             "components": [
               0.8281,
-              0.0496,
-              20
+              0.0491,
+              25
             ],
-            "hex": "#e5bbb9"
+            "hex": "#e5bbb7"
           },
           "$extensions": {
             "com.earendil-works.generation": {
@@ -1296,10 +798,10 @@
             "colorSpace": "oklch",
             "components": [
               0.8109,
-              0.0597,
-              20
+              0.0591,
+              25
             ],
-            "hex": "#e6b2b1"
+            "hex": "#e5b3ae"
           },
           "$extensions": {
             "com.earendil-works.generation": {
@@ -1312,10 +814,10 @@
             "colorSpace": "oklch",
             "components": [
               0.7765,
-              0.0831,
-              20
+              0.0821,
+              25
             ],
-            "hex": "#e7a1a0"
+            "hex": "#e6a29c"
           },
           "$extensions": {
             "com.earendil-works.generation": {
@@ -1328,10 +830,10 @@
             "colorSpace": "oklch",
             "components": [
               0.742,
-              0.1105,
-              20
+              0.1087,
+              25
             ],
-            "hex": "#e98e8e"
+            "hex": "#e89089"
           },
           "$extensions": {
             "com.earendil-works.generation": {
@@ -1344,10 +846,10 @@
             "colorSpace": "oklch",
             "components": [
               0.7247,
-              0.1253,
-              20
+              0.123,
+              25
             ],
-            "hex": "#ea8485"
+            "hex": "#e9867e"
           },
           "$extensions": {
             "com.earendil-works.generation": {
@@ -1360,10 +862,10 @@
             "colorSpace": "oklch",
             "components": [
               0.6902,
-              0.1558,
-              20
+              0.152,
+              25
             ],
-            "hex": "#ec6e72"
+            "hex": "#eb716a"
           },
           "$extensions": {
             "com.earendil-works.generation": {
@@ -1376,10 +878,10 @@
             "colorSpace": "oklch",
             "components": [
               0.6556,
-              0.1849,
-              20
+              0.1795,
+              25
             ],
-            "hex": "#ec5660"
+            "hex": "#ea5a56"
           },
           "$extensions": {
             "com.earendil-works.generation": {
@@ -1392,10 +894,10 @@
             "colorSpace": "oklch",
             "components": [
               0.6383,
-              0.1987,
-              20
+              0.1927,
+              25
             ],
-            "hex": "#ec4857"
+            "hex": "#e94d4c"
           },
           "$extensions": {
             "com.earendil-works.generation": {
@@ -1408,10 +910,10 @@
             "colorSpace": "oklch",
             "components": [
               0.6036,
-              0.2096,
-              20
+              0.2048,
+              25
             ],
-            "hex": "#e3344a"
+            "hex": "#e2393c"
           },
           "$extensions": {
             "com.earendil-works.generation": {
@@ -1424,10 +926,10 @@
             "colorSpace": "oklch",
             "components": [
               0.5688,
-              0.2054,
-              20
+              0.2013,
+              25
             ],
-            "hex": "#d52841"
+            "hex": "#d42e33"
           },
           "$extensions": {
             "com.earendil-works.generation": {
@@ -1440,10 +942,10 @@
             "colorSpace": "oklch",
             "components": [
               0.534,
-              0.1923,
-              20
+              0.1877,
+              25
             ],
-            "hex": "#c3243b"
+            "hex": "#c22a2f"
           },
           "$extensions": {
             "com.earendil-works.generation": {
@@ -1456,10 +958,10 @@
             "colorSpace": "oklch",
             "components": [
               0.499,
-              0.1735,
-              20
+              0.1682,
+              25
             ],
-            "hex": "#b02637"
+            "hex": "#af2b2d"
           },
           "$extensions": {
             "com.earendil-works.generation": {
@@ -1472,10 +974,10 @@
             "colorSpace": "oklch",
             "components": [
               0.4815,
-              0.1627,
-              20
+              0.1571,
+              25
             ],
-            "hex": "#a62735"
+            "hex": "#a42c2d"
           },
           "$extensions": {
             "com.earendil-works.generation": {
@@ -1488,10 +990,10 @@
             "colorSpace": "oklch",
             "components": [
               0.4462,
-              0.1392,
-              20
+              0.1343,
+              25
             ],
-            "hex": "#922932"
+            "hex": "#902d2b"
           },
           "$extensions": {
             "com.earendil-works.generation": {
@@ -1504,10 +1006,10 @@
             "colorSpace": "oklch",
             "components": [
               0.4107,
-              0.1149,
-              20
+              0.1113,
+              25
             ],
-            "hex": "#7d2a30"
+            "hex": "#7c2c2a"
           },
           "$extensions": {
             "com.earendil-works.generation": {
@@ -1520,10 +1022,10 @@
             "colorSpace": "oklch",
             "components": [
               0.3929,
-              0.1031,
-              20
+              0.1,
+              25
             ],
-            "hex": "#732a2e"
+            "hex": "#722c29"
           },
           "$extensions": {
             "com.earendil-works.generation": {
@@ -1536,10 +1038,10 @@
             "colorSpace": "oklch",
             "components": [
               0.3749,
-              0.0916,
-              20
+              0.0891,
+              25
             ],
-            "hex": "#69292c"
+            "hex": "#682b28"
           },
           "$extensions": {
             "com.earendil-works.generation": {
@@ -1552,10 +1054,10 @@
             "colorSpace": "oklch",
             "components": [
               0.3568,
-              0.0807,
-              20
+              0.0786,
+              25
             ],
-            "hex": "#60282a"
+            "hex": "#5f2a27"
           },
           "$extensions": {
             "com.earendil-works.generation": {
@@ -1568,10 +1070,10 @@
             "colorSpace": "oklch",
             "components": [
               0.3386,
-              0.0704,
-              20
+              0.0687,
+              25
             ],
-            "hex": "#562728"
+            "hex": "#562825"
           },
           "$extensions": {
             "com.earendil-works.generation": {
@@ -1584,10 +1086,10 @@
             "colorSpace": "oklch",
             "components": [
               0.3202,
-              0.0608,
-              20
+              0.0594,
+              25
             ],
-            "hex": "#4d2526"
+            "hex": "#4d2623"
           },
           "$extensions": {
             "com.earendil-works.generation": {
@@ -1600,10 +1102,10 @@
             "colorSpace": "oklch",
             "components": [
               0.3015,
-              0.0519,
-              20
+              0.0508,
+              25
             ],
-            "hex": "#452323"
+            "hex": "#442321"
           },
           "$extensions": {
             "com.earendil-works.generation": {
@@ -1616,10 +1118,10 @@
             "colorSpace": "oklch",
             "components": [
               0.201,
-              0.0189,
-              20
+              0.0186,
+              25
             ],
-            "hex": "#1e1313"
+            "hex": "#1e1312"
           },
           "$extensions": {
             "com.earendil-works.generation": {
@@ -1632,8 +1134,8 @@
             "colorSpace": "oklch",
             "components": [
               0.1776,
-              0.0144,
-              20
+              0.0142,
+              25
             ],
             "hex": "#170f0e"
           },
@@ -1649,11 +1151,43 @@
             "components": [
               0.1201,
               0.007,
-              20
+              25
             ],
             "hex": "#080505"
           },
           "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "$root": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.7505,
+              0.1191,
+              25
+            ],
+            "hex": "#f08f88"
+          },
+          "$extensions": {
+            "com.earendil-works.print": {
+              "cmyk": {
+                "psoCoatedV3": [
+                  1,
+                  53,
+                  36,
+                  0
+                ],
+                "psoUncoatedV3": [
+                  1,
+                  50,
+                  33,
+                  0
+                ]
+              }
+            },
             "com.earendil-works.generation": {
               "source": "recipes/shared/primitive/color.json"
             }
@@ -2156,6 +1690,38 @@
               "source": "recipes/shared/primitive/color.json"
             }
           }
+        },
+        "$root": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.8282,
+              0.1322,
+              82.36
+            ],
+            "hex": "#f1be58"
+          },
+          "$extensions": {
+            "com.earendil-works.print": {
+              "cmyk": {
+                "psoCoatedV3": [
+                  4,
+                  26,
+                  71,
+                  1
+                ],
+                "psoUncoatedV3": [
+                  3,
+                  21,
+                  70,
+                  0
+                ]
+              }
+            },
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
         }
       },
       "calamineBlue": {
@@ -2650,6 +2216,38 @@
             "hex": "#040606"
           },
           "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "$root": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.7995,
+              0.0732,
+              202.43
+            ],
+            "hex": "#83ccd2"
+          },
+          "$extensions": {
+            "com.earendil-works.print": {
+              "cmyk": {
+                "psoCoatedV3": [
+                  49,
+                  0,
+                  18,
+                  0
+                ],
+                "psoUncoatedV3": [
+                  44,
+                  0,
+                  14,
+                  0
+                ]
+              }
+            },
             "com.earendil-works.generation": {
               "source": "recipes/shared/primitive/color.json"
             }
@@ -3151,6 +2749,616 @@
             "com.earendil-works.generation": {
               "source": "recipes/shared/primitive/color.json"
             }
+          }
+        },
+        "$root": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.7229,
+              0.1012,
+              158.68
+            ],
+            "hex": "#6ab98e"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        }
+      },
+      "graphite": {
+        "25": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.9785,
+              0,
+              0
+            ],
+            "hex": "#f8f8f8"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "40": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.9657,
+              0,
+              0
+            ],
+            "hex": "#f4f4f4"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "50": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.9571,
+              0,
+              0
+            ],
+            "hex": "#f1f1f1"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "80": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.9313,
+              0,
+              0
+            ],
+            "hex": "#e8e8e8"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "100": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.9141,
+              0,
+              0
+            ],
+            "hex": "#e2e2e2"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "140": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.8797,
+              0,
+              0
+            ],
+            "hex": "#d7d7d7"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "180": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.8453,
+              0,
+              0
+            ],
+            "hex": "#cccccc"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "200": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.8281,
+              0,
+              0
+            ],
+            "hex": "#c6c6c6"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "220": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.8109,
+              0,
+              0
+            ],
+            "hex": "#c1c1c1"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "260": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.7765,
+              0,
+              0
+            ],
+            "hex": "#b6b6b6"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "300": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.742,
+              0,
+              0
+            ],
+            "hex": "#ababab"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "320": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.7247,
+              0,
+              0
+            ],
+            "hex": "#a6a6a6"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "360": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.6902,
+              0,
+              0
+            ],
+            "hex": "#9b9b9b"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "400": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.6556,
+              0,
+              0
+            ],
+            "hex": "#919191"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "420": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.6383,
+              0,
+              0
+            ],
+            "hex": "#8b8b8b"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "460": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.6036,
+              0,
+              0
+            ],
+            "hex": "#818181"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "500": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.5688,
+              0,
+              0
+            ],
+            "hex": "#777777"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "540": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.534,
+              0,
+              0
+            ],
+            "hex": "#6d6d6d"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "580": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.499,
+              0,
+              0
+            ],
+            "hex": "#636363"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "600": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.4815,
+              0,
+              0
+            ],
+            "hex": "#5e5e5e"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "640": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.4462,
+              0,
+              0
+            ],
+            "hex": "#545454"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "680": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.4107,
+              0,
+              0
+            ],
+            "hex": "#4a4a4a"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "700": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.3929,
+              0,
+              0
+            ],
+            "hex": "#464646"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "720": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.3749,
+              0,
+              0
+            ],
+            "hex": "#414141"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "740": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.3568,
+              0,
+              0
+            ],
+            "hex": "#3c3c3c"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "760": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.3386,
+              0,
+              0
+            ],
+            "hex": "#373737"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "780": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.3202,
+              0,
+              0
+            ],
+            "hex": "#333333"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "800": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.3015,
+              0,
+              0
+            ],
+            "hex": "#2e2e2e"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "900": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.201,
+              0,
+              0
+            ],
+            "hex": "#161616"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "920": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.1776,
+              0,
+              0
+            ],
+            "hex": "#111111"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "960": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.1201,
+              0,
+              0
+            ],
+            "hex": "#060606"
+          },
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        },
+        "$root": {
+          "$value": {
+            "colorSpace": "oklch",
+            "components": [
+              0.5376,
+              0,
+              0
+            ],
+            "hex": "#6e6e6e"
+          },
+          "$extensions": {
+            "com.earendil-works.print": {
+              "cmyk": {
+                "psoCoatedV3": [
+                  0,
+                  0,
+                  0,
+                  73
+                ],
+                "psoUncoatedV3": [
+                  0,
+                  0,
+                  0,
+                  79
+                ]
+              }
+            },
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/color.json"
+            }
+          }
+        }
+      },
+      "black": {
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.1776,
+            0,
+            0
+          ],
+          "hex": "#111111"
+        },
+        "$extensions": {
+          "com.earendil-works.print": {
+            "cmyk": {
+              "psoCoatedV3": [
+                0,
+                0,
+                0,
+                100
+              ],
+              "psoUncoatedV3": [
+                0,
+                0,
+                0,
+                100
+              ]
+            }
+          },
+          "com.earendil-works.generation": {
+            "source": "recipes/shared/primitive/color.json"
+          }
+        }
+      },
+      "white": {
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [
+            0.9731,
+            0,
+            0
+          ],
+          "hex": "#f6f6f6"
+        },
+        "$extensions": {
+          "com.earendil-works.print": {
+            "cmyk": {
+              "psoCoatedV3": [
+                0,
+                0,
+                0,
+                0
+              ],
+              "psoUncoatedV3": [
+                0,
+                0,
+                0,
+                0
+              ]
+            }
+          },
+          "com.earendil-works.generation": {
+            "source": "recipes/shared/primitive/color.json"
           }
         }
       }

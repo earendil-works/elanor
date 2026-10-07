@@ -75,7 +75,7 @@ Semantic and component tokens both live under the `semantic/` folder. They assig
 
 **Semantic tokens** describe intent across the system:
 
-- `color.text.primary` can reference a dark Driftwood step in light mode or a light Driftwood step in dark mode.
+- `color.text.primary` can reference a dark Graphite step in light mode or a light Graphite step in dark mode.
 - `semantic.dimension.space.gap.medium` references `{primitive.dimension.400}`.
 - `semantic.dimension.breakpoint.medium` references `{primitive.dimension.breakpoint.400}`.
 - `semantic.number.opacity.disabled` references `{primitive.number.opacity.400}`.

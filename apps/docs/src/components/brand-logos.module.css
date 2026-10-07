@@ -1,0 +1,67 @@
+.brand {
+  display: flex;
+  flex-direction: column;
+  gap: var(--semantic-dimension-space-gap-large);
+}
+
+/* The page grid: 12 columns with 1rem gutters. */
+.grid {
+  display: grid;
+  align-self: stretch;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  column-gap: var(--semantic-dimension-space-gap-medium);
+  row-gap: var(--semantic-dimension-space-gap-large);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tile {
+  display: flex;
+  min-inline-size: 0;
+  flex-direction: column;
+  grid-column: span 3;
+  gap: var(--semantic-dimension-space-gap-x-small);
+}
+
+.small {
+  grid-column: span 2;
+}
+
+.preview {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--semantic-dimension-space-padding-xx-large) var(--semantic-dimension-space-padding-large);
+  border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-secondary);
+  border-radius: var(--semantic-dimension-radius-medium);
+}
+
+.preview img {
+  inline-size: auto;
+  max-inline-size: 100%;
+  block-size: var(--semantic-dimension-size-x-large);
+  object-fit: contain;
+}
+
+/* Maskable icons and avatars are shown cropped, as platforms display them. */
+.round,
+.preview .avatar {
+  border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-secondary);
+  border-radius: var(--semantic-dimension-radius-full);
+}
+
+.preview .avatar {
+  block-size: calc(var(--semantic-dimension-size-x-large) * 2);
+}
+
+.note {
+  color: var(--semantic-color-text-secondary);
+}
+
+.setup {
+  display: flex;
+  max-inline-size: var(--semantic-dimension-breakpoint-small);
+  flex-direction: column;
+  gap: var(--semantic-dimension-space-gap-small);
+}
