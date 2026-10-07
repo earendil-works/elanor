@@ -1,4 +1,5 @@
 import {NavigationMenu} from './navigation-menu.tsx';
+import {Stack} from '../stack/stack.tsx';
 
 export function NavigationMenuExample(): React.JSX.Element {
   return (
@@ -10,7 +11,26 @@ export function NavigationMenuExample(): React.JSX.Element {
         <NavigationMenu.Item>
           <NavigationMenu.Link href="/components/menu/">Menu</NavigationMenu.Link>
         </NavigationMenu.Item>
+        <NavigationMenu.Item>
+          <NavigationMenu.Trigger>
+            More
+            <NavigationMenu.Icon />
+          </NavigationMenu.Trigger>
+          <NavigationMenu.Content>
+            <Stack gap="xxSmall">
+              <NavigationMenu.Link href="/components/modal/">Modal</NavigationMenu.Link>
+              <NavigationMenu.Link href="/components/popover/">Popover</NavigationMenu.Link>
+            </Stack>
+          </NavigationMenu.Content>
+        </NavigationMenu.Item>
       </NavigationMenu.List>
+      <NavigationMenu.Portal>
+        <NavigationMenu.Positioner align="start">
+          <NavigationMenu.Popup>
+            <NavigationMenu.Viewport />
+          </NavigationMenu.Popup>
+        </NavigationMenu.Positioner>
+      </NavigationMenu.Portal>
     </NavigationMenu.Root>
   );
 }

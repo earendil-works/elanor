@@ -225,9 +225,6 @@ export type {
   ModalViewportState,
 } from './modal/modal.tsx';
 
-export {NavigationItem} from './navigation-item/navigation-item.tsx';
-export type {NavigationItemProps} from './navigation-item/navigation-item.tsx';
-
 export {
   NavigationMenu,
   NavigationMenuContent,

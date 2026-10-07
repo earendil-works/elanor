@@ -1,13 +1,5 @@
-import {Link, TopNavigation} from '@earendil-works/elanor-react';
+import {TopNavigationExample} from './top-navigation.example.tsx';
 
-<TopNavigation.Root>
-  <TopNavigation.Identity><Link href="/">Elanor</Link></TopNavigation.Identity>
-  <TopNavigation.Navigation>
-    <nav aria-label="Component shortcuts">
-      <Link href="/components/button">Buttons</Link>
-    </nav>
-  </TopNavigation.Navigation>
-  <TopNavigation.Actions>
-    <Link href="https://github.com/earendil-works/elanor">Source code</Link>
-  </TopNavigation.Actions>
-</TopNavigation.Root>
+Top Navigation arranges the identity, navigation and actions. [Navigation Menu](/components/navigation-menu/) supplies the links and submenu behavior.
+
+<TopNavigationExample client:load />
