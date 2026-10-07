@@ -14,6 +14,28 @@ export type {
   AppLayoutSidebarProps,
 } from './app-layout/app-layout.tsx';
 
+export {
+  ScrollArea,
+  ScrollAreaRoot,
+  ScrollAreaViewport,
+  ScrollAreaContent,
+  ScrollAreaScrollbar,
+  ScrollAreaThumb,
+} from './scroll-area/scroll-area.tsx';
+export type {
+  ScrollAreaRootProps,
+  ScrollAreaRootState,
+  ScrollAreaViewportProps,
+  ScrollAreaViewportState,
+  ScrollAreaContentProps,
+  ScrollAreaContentState,
+  ScrollAreaScrollbarProps,
+  ScrollAreaScrollbarState,
+  ScrollAreaThumbProps,
+  ScrollAreaThumbState,
+  ScrollAreaCornerProps,
+} from './scroll-area/scroll-area.tsx';
+
 export {Button} from './button/button.tsx';
 export type {
   ButtonDensity,

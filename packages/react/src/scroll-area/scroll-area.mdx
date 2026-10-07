@@ -1,0 +1,77 @@
+import {ScrollAreaExample} from './scroll-area.example.tsx';
+
+# Scroll area
+
+A thin styled wrapper around Base UI Scroll Area. Scrolling stays native; Base UI
+measures overflow and supplies draggable scrollbars, keyboard focus handling, and
+state attributes. Use it for bounded regions, not as a replacement for document
+scrolling or a virtualization system.
+
+<ScrollAreaExample client:load />
+
+## Composition
+
+```tsx
+import {ScrollArea} from '@earendil-works/elanor-react';
+
+<ScrollArea.Root style={{blockSize: 'var(--semantic-dimension-size-content-small)'}}>
+  <ScrollArea.Viewport role="region" aria-label="Release notes">
+    <ScrollArea.Content>{/* Your content */}</ScrollArea.Content>
+  </ScrollArea.Viewport>
+  <ScrollArea.Scrollbar>
+    <ScrollArea.Thumb />
+  </ScrollArea.Scrollbar>
+</ScrollArea.Root>
+```
+
+- **Root** owns the frame. Give it a bounded block size, or let a constrained
+  flex/grid parent allocate its height. It does not create a second scrollport.
+- **Viewport** is the scrollable element: put `ref`, `onScroll`, accessible naming,
+  and imperative scroll calls here. Base UI adds a tab stop only while content
+  overflows. Do not override `tabIndex` unless intentionally changing that policy.
+- **Content** is measured as content changes. It has semantic padding by default.
+  For single-axis content that must shrink/truncate rather than grow horizontally,
+  override Base UI's default fit-content minimum with `style={{minWidth: 0}}`.
+- **Scrollbar / Thumb** render only when needed by default. Scrollbar defaults
+  to vertical; add `orientation="horizontal"` and **Corner** for both axes.
+  Custom scrollbars overlay the viewport; retain content padding so they do not
+  cover meaningful content or focus indicators.
+
+All retained Base UI props, stateful `className`/`style` callbacks, `render`, and
+refs pass through. There are no extra visibility, sizing, or scrolling-mode props.
+Use ordinary styling and composition. Both axes use logical placement; set DOM
+`dir` and Base UI's `DirectionProvider` together for RTL.
+
+## State attributes
+
+Use Base UI's attributes directly—no duplicate scroll-position React state is
+needed for styling:
+
+| Attribute | Meaning |
+| --- | --- |
+| `data-has-overflow-x`, `data-has-overflow-y` | Content exceeds the viewport |
+| `data-overflow-y-start`, `data-overflow-y-end` | More content above/below |
+| `data-overflow-x-start`, `data-overflow-x-end` | More content at an inline edge |
+| `data-scrolling` | Currently scrolling |
+| `data-hovering` | Pointer is over the scroll area; exposed on Scrollbar |
+| `data-orientation` | Scrollbar/Thumb axis |
+
+Thumb styling uses `data-hovering` and `data-scrolling`. Standalone ScrollArea
+scrollbars remain visible while content overflows.
+
+We do not consume Base UI's geometry CSS variables in our styles. Its internals
+own that geometry, so the existing token-lint allowlist stays unchanged. No animation
+or reduced-motion exception is needed. Focus rings and scrollbar colors have
+forced-colors treatments.
+
+## Choosing a scroll region
+
+A long docs TOC or navigation pane can opt into this component. Other layout
+regions can retain normal document scrolling.
+
+Keep the scroll viewport mounted while changing surrounding UI. Avoid wrapping
+an existing `overflow: auto` container in another scroll viewport. Retain native
+scrolling when custom scrollbars and overflow state do not add value.
+
+Live examples must stay in `.example.tsx` files imported by MDX: Astro MDX JSX
+values are not React elements suitable for Base UI's `render` prop.
