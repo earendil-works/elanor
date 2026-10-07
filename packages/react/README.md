@@ -8,7 +8,7 @@ React components built with Base UI and CSS Modules.
 pnpm add @earendil-works/elanor-react react react-dom
 ```
 
-Requires React 17–19 and a bundler that supports CSS Modules in dependencies.
+Requires React 18–19 and a bundler that supports CSS Modules in dependencies.
 
 ## Usage
 
