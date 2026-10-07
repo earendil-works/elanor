@@ -1,0 +1,174 @@
+.root {
+  box-sizing: border-box;
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  inline-size: var(--semantic-dimension-size-sidebar);
+  max-inline-size: 100%;
+  min-inline-size: 0;
+  min-block-size: 0;
+  max-block-size: 100dvh;
+  padding: 0;
+  overflow: visible;
+  border-inline-end: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-secondary);
+  background: var(--semantic-color-background-canvas);
+  color: var(--semantic-color-text-primary);
+  font: var(--semantic-typography-ui-primary);
+}
+
+.root[data-collapsed] {
+  inline-size: var(--semantic-dimension-size-x-large);
+}
+
+.header,
+.footer {
+  box-sizing: border-box;
+  display: flex;
+  flex: none;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: var(--semantic-dimension-space-gap-small);
+  min-inline-size: 0;
+  padding: var(--semantic-dimension-space-padding-small);
+}
+
+.footer {
+  align-items: stretch;
+}
+
+.scrollArea {
+  isolation: isolate;
+  box-sizing: border-box;
+  flex: 1 1 auto;
+  min-inline-size: 0;
+  min-block-size: 0;
+}
+
+.content {
+  overscroll-behavior: contain;
+  scroll-padding-block-end: var(--semantic-dimension-size-small);
+}
+
+.contentInner {
+  padding: var(--semantic-dimension-space-padding-small);
+}
+
+.scrollbar {
+  z-index: var(--semantic-number-layer-overlay);
+}
+
+/* Keep the bar measured but non-interactive while idle. Base UI owns timing.
+   Forced-colors users retain the always-visible overflow scrollbar. */
+@media (forced-colors: none) {
+  .scrollbar:not([data-scrolling]):not(:active) {
+    opacity: 0;
+    pointer-events: none;
+  }
+}
+
+/* The bottom fade stays below the scrollbar and never intercepts clicks. */
+.scrollArea::before,
+.scrollArea::after {
+  position: absolute;
+  inset-inline: 0;
+  pointer-events: none;
+}
+
+.scrollArea[data-overflow-y-start]::before {
+  z-index: var(--semantic-number-layer-overlay);
+  content: '';
+  inset-block-start: 0;
+  border-block-start: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-secondary);
+}
+
+.scrollArea[data-overflow-y-end]::after {
+  content: '';
+  inset-block-end: 0;
+  block-size: var(--semantic-dimension-size-small);
+  background: linear-gradient(to bottom, transparent, var(--semantic-color-background-canvas));
+}
+
+/* Never wash out a keyboard-focused destination or the viewport focus ring. */
+.scrollArea[data-overflow-y-end]:has(:focus-visible)::after {
+  block-size: 0;
+  background: none;
+  border-block-end: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-secondary);
+}
+
+.trigger {
+  box-sizing: border-box;
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  inline-size: var(--semantic-dimension-size-medium);
+  block-size: var(--semantic-dimension-size-medium);
+  max-inline-size: 100%;
+  padding: 0;
+  border: 0;
+  border-radius: var(--semantic-dimension-radius-small);
+  background: var(--semantic-color-background-fill-ghost-neutral);
+  color: var(--semantic-color-icon-primary);
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.trigger > svg,
+.trigger > img {
+  inline-size: var(--semantic-dimension-size-x-small);
+  block-size: var(--semantic-dimension-size-x-small);
+}
+
+@media (hover: hover) {
+  .trigger:hover:not([data-disabled]) {
+    background: var(--semantic-color-background-fill-ghost-neutral-hover);
+  }
+}
+
+.trigger:active:not([data-disabled]),
+.trigger[data-pressed] {
+  background: var(--semantic-color-background-fill-ghost-neutral-active);
+}
+
+.trigger:focus-visible {
+  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+  outline-offset: var(--semantic-dimension-border-width-medium);
+}
+
+.trigger[data-disabled] {
+  cursor: not-allowed;
+  opacity: var(--semantic-number-opacity-disabled);
+}
+
+@media (forced-colors: active) {
+  .scrollArea[data-overflow-y-end]::after {
+    block-size: 0;
+    background: none;
+    border-block-end: var(--semantic-dimension-border-width-default) solid CanvasText;
+  }
+
+  .scrollArea::before,
+  .scrollArea::after {
+    border-color: CanvasText;
+  }
+
+  .root {
+    border-color: CanvasText;
+  }
+
+  .trigger {
+    border: var(--semantic-dimension-border-width-small) solid ButtonText;
+  }
+
+  .trigger[data-pressed] {
+    border-color: Highlight;
+  }
+
+  .trigger:focus-visible {
+    outline-color: Highlight;
+  }
+
+  .trigger[data-disabled] {
+    color: GrayText;
+  }
+}

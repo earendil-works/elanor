@@ -1,0 +1,19 @@
+.popup {
+  box-sizing: border-box;
+  max-inline-size: min(var(--semantic-dimension-size-content-small), var(--available-width));
+  max-block-size: var(--available-height);
+  overflow: auto;
+  overflow-wrap: anywhere;
+  padding: var(--semantic-dimension-space-padding-medium);
+  border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-secondary);
+  border-radius: var(--semantic-dimension-radius-small);
+  background: var(--semantic-color-background-canvas);
+  color: var(--semantic-color-text-primary);
+  font: var(--semantic-typography-ui-primary);
+}
+
+@media (forced-colors: active) {
+  .popup {
+    border-color: CanvasText;
+  }
+}

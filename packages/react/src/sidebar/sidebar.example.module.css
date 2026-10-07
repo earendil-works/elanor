@@ -1,0 +1,41 @@
+.frame {
+  inline-size: 100%;
+  border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-secondary);
+  border-radius: var(--semantic-dimension-radius-small);
+}
+
+.sidebar {
+  block-size: var(--semantic-dimension-size-content-small);
+}
+
+.description {
+  padding: var(--semantic-dimension-space-padding-x-large);
+  overflow-wrap: anywhere;
+}
+
+.description p {
+  margin: 0;
+  margin-block-end: var(--semantic-dimension-space-gap-medium);
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: var(--semantic-dimension-space-gap-medium);
+}
+
+.identity {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: var(--semantic-dimension-size-medium);
+  min-block-size: var(--semantic-dimension-size-medium);
+  max-inline-size: 100%;
+  color: var(--semantic-color-text-primary);
+  overflow-wrap: anywhere;
+}
+
+.identity:focus-visible {
+  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+  outline-offset: var(--semantic-dimension-border-width-medium);
+}

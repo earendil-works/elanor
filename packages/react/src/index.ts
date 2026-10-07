@@ -32,6 +32,26 @@ export {Container} from './container/container.tsx';
 export type {ContainerProps, ContainerWidth} from './container/container.tsx';
 
 export {
+  Sidebar,
+  SidebarRoot,
+  SidebarTrigger,
+  SidebarHeader,
+  SidebarContent,
+  SidebarFooter,
+} from './sidebar/sidebar.tsx';
+export type {
+  SidebarRootProps,
+  SidebarTriggerProps,
+  SidebarHeaderProps,
+  SidebarContentProps,
+  SidebarFooterProps,
+  SidebarState,
+  SidebarChangeEventDetails,
+  SidebarChangeEventReason,
+  SidebarTriggerState,
+} from './sidebar/sidebar.tsx';
+
+export {
   ScrollArea,
   ScrollAreaRoot,
   ScrollAreaViewport,
@@ -478,6 +498,7 @@ export type {
   SideNavigationLinkProps,
   SideNavigationListProps,
   SideNavigationRootProps,
+  SideNavigationVariant,
 } from './side-navigation/side-navigation.tsx';
 
 export {SocialLogin} from './social-login/social-login.tsx';

@@ -7,6 +7,10 @@
   font: var(--semantic-typography-ui-primary);
 }
 
+.root[data-variant='compact'] {
+  inline-size: 100%;
+}
+
 .group {
   display: flex;
   flex-direction: column;
@@ -39,6 +43,7 @@
 }
 
 .link {
+  position: relative;
   box-sizing: border-box;
   display: flex;
   align-items: center;
@@ -96,4 +101,46 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+.link[data-compact] {
+  justify-content: center;
+  min-block-size: var(--semantic-dimension-size-medium);
+  padding-inline: 0;
+}
+
+.link[data-compact] .label,
+.groupLabel[data-compact] {
+  position: absolute;
+  inline-size: var(--semantic-dimension-border-width-small);
+  block-size: var(--semantic-dimension-border-width-small);
+  overflow: hidden;
+  padding: 0;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.icon[hidden],
+.compactContent[hidden] {
+  display: none;
+}
+
+.compactContent {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+
+@media (forced-colors: active) {
+  .link[data-active] {
+    outline: var(--semantic-dimension-border-width-default) solid Highlight;
+    outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
+  }
+
+  .link:focus-visible {
+    outline: var(--semantic-dimension-border-width-large) solid Highlight;
+    outline-offset: var(--semantic-dimension-border-width-medium);
+  }
 }

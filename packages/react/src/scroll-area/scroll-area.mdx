@@ -57,7 +57,11 @@ needed for styling:
 | `data-orientation` | Scrollbar/Thumb axis |
 
 Thumb styling uses `data-hovering` and `data-scrolling`. Standalone ScrollArea
-scrollbars remain visible while content overflows.
+scrollbars remain visible while content overflows. Sidebar intentionally overrides
+this: its scrollbar appears only while scrolling or dragging, and its bottom fade
+signals remaining content using `data-overflow-y-end`. Keyboard focus and
+forced-colors mode replace the fade with a boundary line; forced-colors also keeps
+the scrollbar visible. Its header and footer remain outside the scroll area.
 
 We do not consume Base UI's geometry CSS variables in our styles. Its internals
 own that geometry, so the existing token-lint allowlist stays unchanged. No animation
@@ -66,8 +70,9 @@ forced-colors treatments.
 
 ## Choosing a scroll region
 
-A long docs TOC or navigation pane can opt into this component. Other layout
-regions can retain normal document scrolling.
+Sidebar's middle navigation is an appropriate bounded region. A long docs TOC or
+navigation pane can opt into the same component. Grid, Container, and Layout.Main
+remain ordinary layout primitives with normal document scrolling.
 
 Keep the scroll viewport mounted while changing surrounding UI. Avoid wrapping
 an existing `overflow: auto` container in another scroll viewport. Retain native

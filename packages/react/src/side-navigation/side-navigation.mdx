@@ -13,3 +13,19 @@ import {SideNavigation} from '@earendil-works/elanor-react';
     </SideNavigation.List>
   </SideNavigation.Group>
 </SideNavigation.Root>
+
+## Compact application navigation
+
+Text-only documentation navigation above stays expanded. Application sidebars can
+explicitly select `variant="compact"` on Root. Supply `iconStart`, `iconEnd`, or
+decorative `compactContent` on every Link in both presentations. Rich label
+children require an explicit `aria-label`; plain text labels are named automatically.
+
+See [Sidebar](/components/sidebar/) for a hydrated collapse example, controlled
+state, cancellation, and retained keyboard focus. Changing Root's variant does not
+replace links, their label spans, or their tooltip trigger wrappers. Group labels
+and link text are visually hidden, not removed from the accessibility tree.
+
+Root exposes `data-variant="default" | "compact"`. Links and group labels expose
+`data-compact` in compact mode; active links retain `aria-current="page"` and
+`data-active`. Tooltip labels supplement independently accessible link names.
