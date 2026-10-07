@@ -7,3 +7,6 @@ packages:
 allowBuilds:
   esbuild: false
   sharp: true
+
+minimumReleaseAge: 10080 # 7 days
+minimumReleaseAgeStrict: true

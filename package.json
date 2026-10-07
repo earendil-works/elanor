@@ -3,10 +3,10 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@11.13.1",
+  "packageManager": "pnpm@12.8.2",
   "engines": {
     "node": ">=24",
-    "pnpm": "11.13.1"
+    "pnpm": "12.8.2"
   },
   "scripts": {
     "dev": "pnpm --filter @earendil-works/elanor-docs dev",
@@ -34,7 +34,7 @@
     "stylelint:test": "pnpm --filter @earendil-works/stylelint-plugin-design-tokens run test"
   },
   "devDependencies": {
-    "@types/node": "^24.0.0",
-    "typescript": "^5.9.3"
+    "@types/node": "^24.19.0",
+    "typescript": "^7.0.2"
   }
 }

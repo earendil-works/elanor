@@ -2,6 +2,8 @@
 
 Stylelint rules for consuming a generated design-token catalogue. The plugin does not assume a custom-property prefix: the selected catalogue is the complete allowlist.
 
+Requires Stylelint 17.
+
 ## Policy
 
 The strict configuration enforces the following contract for application CSS and CSS Modules:

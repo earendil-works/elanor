@@ -29,12 +29,12 @@
   },
   "devDependencies": {
     "@earendil-works/design-tokens": "workspace:*",
-    "@types/node": "^24.0.0",
+    "@types/node": "^24.19.0",
     "fflate": "^0.8.3",
     "marked": "^18.0.14",
     "sharp": "^0.34.5",
-    "tsx": "^4.23.1",
-    "typescript": "^5.9.3",
-    "vitest": "^4.1.0"
+    "tsx": "^4.23.15",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.2"
   }
 }

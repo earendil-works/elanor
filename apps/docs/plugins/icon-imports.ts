@@ -1,10 +1,7 @@
 import {readFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
 import MagicString from 'magic-string';
-import {parseAst, type Plugin} from 'vite';
-
-// Rollup attaches offsets at runtime, but nested ESTree node types omit them.
-type Positioned<T> = T & {start: number; end: number};
+import {parseSync, type Plugin} from 'vite';
 
 const packageName = '@earendil-works/elanor-icons-react';
 const barrelPath = fileURLToPath(new URL('../../../packages/icons/react/dist/index.js', import.meta.url));
@@ -39,10 +36,17 @@ export function iconComponentNames(barrel: string): Map<string, string> {
   return names;
 }
 
+function parseModule(code: string, id: string) {
+  const {program, errors} = parseSync(id, code, {lang: 'js', sourceType: 'module'});
+  const [error] = errors;
+  if (error) throw new Error(`Cannot parse ${id}: ${error.message}`);
+  return program;
+}
+
 export function iconExportPaths(barrel: string): Map<string, string> {
   const paths = new Map<string, string>();
-  for (const node of parseAst(barrel).body) {
-    if (node.type !== 'ExportNamedDeclaration' || typeof node.source?.value !== 'string') continue;
+  for (const node of parseModule(barrel, barrelPath).body) {
+    if (node.type !== 'ExportNamedDeclaration' || !node.source) continue;
     const path = `${packageName}/${node.source.value.replace(/^\.\//, '').replace(/\.js$/, '')}`;
     for (const specifier of node.specifiers) {
       const name = specifier.exported.type === 'Identifier' ? specifier.exported.name : String(specifier.exported.value);
@@ -54,7 +58,7 @@ export function iconExportPaths(barrel: string): Map<string, string> {
 
 export function rewriteIconImports(code: string, id: string, paths: Map<string, string>) {
   const output = new MagicString(code);
-  for (const node of parseAst(code).body) {
+  for (const node of parseModule(code, id).body) {
     if (node.type !== 'ImportDeclaration' && node.type !== 'ExportNamedDeclaration') continue;
     if (node.source?.value !== packageName || node.specifiers.length === 0) continue;
     // Namespace/default imports cannot be narrowed without changing semantics.
@@ -65,10 +69,10 @@ export function rewriteIconImports(code: string, id: string, paths: Map<string, 
       const path = paths.get(name);
       if (!path) throw new Error(`Unknown Elanor icon export: ${name}`);
       const keyword = node.type === 'ImportDeclaration' ? 'import' : 'export';
-      const {start, end} = specifier as Positioned<typeof specifier>;
+      const {start, end} = specifier;
       return `${keyword} {${code.slice(start, end)}} from ${JSON.stringify(path)};`;
     });
-    const {start, end} = node as Positioned<typeof node>;
+    const {start, end} = node;
     output.overwrite(start, end, statements.join('\n'));
   }
   if (!output.hasChanged()) return;

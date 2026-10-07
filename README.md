@@ -18,7 +18,12 @@ Products provide application state, routing, and lifecycle, and select a brand s
 
 ## Development
 
-Requirements: Node.js 24 or newer and pnpm 11.13.1.
+Requirements: Node.js 24 or newer and pnpm 12.8.2.
+
+The docs use Astro 7 and Vite 8. Library and tooling packages use TypeScript 7;
+the docs keep TypeScript 6 because `@astrojs/check` does not yet support TypeScript 7.
+
+Package releases must be at least seven days old, enforced by `pnpm-workspace.yaml`.
 
 ```sh
 pnpm install --frozen-lockfile

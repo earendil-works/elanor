@@ -14,7 +14,7 @@
     }
   },
   "scripts": {
-    "build": "node build.mjs",
+    "build": "node build.mjs && tsc -p tsconfig.json",
     "check": "pnpm run check:types && pnpm run lint",
     "check:prepare": "pnpm --filter @earendil-works/elanor-icons-react... run build",
     "check:types": "pnpm run check:prepare && tsc -p tsconfig.json --noEmit",
@@ -32,10 +32,10 @@
   "devDependencies": {
     "@earendil-works/design-tokens": "workspace:*",
     "@earendil-works/stylelint-plugin-design-tokens": "workspace:*",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0",
-    "stylelint": "^16.26.1"
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "stylelint": "^17.15.0"
   }
 }

@@ -5,7 +5,7 @@
 ## Requirements
 
 - Node.js 24 or newer
-- pnpm 11.13.1
+- pnpm 12.8.2
 
 ## Generate primitive tokens
 

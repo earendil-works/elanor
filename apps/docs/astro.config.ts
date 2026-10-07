@@ -4,6 +4,8 @@ import react from '@astrojs/react';
 import {iconImports} from './plugins/icon-imports.ts';
 
 export default defineConfig({
+  // Preserve the existing HTML whitespace behavior across the Astro 7 upgrade.
+  compressHTML: true,
   integrations: [mdx(), react()],
   vite: {
     plugins: [iconImports()],
