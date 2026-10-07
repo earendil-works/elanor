@@ -1,4 +1,4 @@
-import {CodeSnippet, CopyButton, Heading, Link, Search, Stack} from '@earendil-works/elanor-react';
+import {Button, CodeSnippet, CopyButton, Heading, Link, Search, Stack, Text} from '@earendil-works/elanor-react';
 import {useDeferredValue, useEffect, useMemo, useRef, useState} from 'react';
 import styles from './icon-browser.module.css';
 
@@ -31,6 +31,8 @@ function search(index: readonly IndexEntry[], query: string): readonly IndexEntr
 
 export function IconBrowser(): React.JSX.Element {
   const [index, setIndex] = useState<readonly IndexEntry[] | null>(null);
+  const [loadFailed, setLoadFailed] = useState(false);
+  const [attempt, setAttempt] = useState(0);
   const [query, setQuery] = useState('');
   const [limit, setLimit] = useState(PAGE_SIZE);
   const [selected, setSelected] = useState<IndexEntry | null>(null);
@@ -43,10 +45,23 @@ export function IconBrowser(): React.JSX.Element {
     // `?q=` pre-fills the search, so searches can be linked.
     const initial = new URLSearchParams(window.location.search).get('q');
     if (initial) setQuery(initial);
-    void fetch('/icons/search-index.json')
-      .then((response) => response.json() as Promise<IndexEntry[]>)
-      .then(setIndex);
   }, []);
+
+  useEffect(() => {
+    const controller = new AbortController();
+    void fetch('/icons/search-index.json', {signal: controller.signal})
+      .then((response) => {
+        if (!response.ok) throw new Error(`Icon index request failed: ${response.status}`);
+        return response.json() as Promise<IndexEntry[]>;
+      })
+      .then((entries) => {
+        if (!controller.signal.aborted) setIndex(entries);
+      })
+      .catch(() => {
+        if (!controller.signal.aborted) setLoadFailed(true);
+      });
+    return () => controller.abort();
+  }, [attempt]);
 
   const results = useMemo(() => (index ? search(index, deferredQuery) : []), [index, deferredQuery]);
   const importLine = selected ? `import {${selected[2]}} from '@earendil-works/elanor-icons-react/${selected[0]}';` : '';
@@ -90,13 +105,22 @@ export function IconBrowser(): React.JSX.Element {
       <div className={styles.main}>
         <Search
           aria-label="Search icons"
-          placeholder={index ? `Search ${index.length} icons by name or keyword` : 'Loading icons…'}
+          placeholder={index ? `Search ${index.length} icons by name or keyword` : loadFailed ? 'Search icons' : 'Loading icons…'}
           value={query}
           onChange={(event) => {
             setQuery(event.currentTarget.value);
             setLimit(PAGE_SIZE);
           }}
         />
+        {loadFailed ? (
+          <Stack gap="small" align="start">
+            <Text role="alert">Could not load icons. Please try again.</Text>
+            <Button hierarchy="secondary" onClick={() => {
+              setLoadFailed(false);
+              setAttempt(current => current + 1);
+            }}>Retry</Button>
+          </Stack>
+        ) : null}
         <ul ref={grid} className={styles.grid}>
           {results.slice(0, limit).map((entry) => (
             <li key={entry[0]}>
