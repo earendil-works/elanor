@@ -1,5 +1,5 @@
 import {execFileSync} from "node:child_process";
-import {cp, mkdtemp, mkdir, readFile, readdir, rename, rm, writeFile} from "node:fs/promises";
+import {cp, mkdtemp, mkdir, readFile, rename, rm, writeFile} from "node:fs/promises";
 import {tmpdir} from "node:os";
 import {dirname, resolve} from "node:path";
 import {fileURLToPath} from "node:url";

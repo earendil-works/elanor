@@ -2,16 +2,17 @@
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  min-inline-size: 0;
+  min-inline-size: min(var(--anchor-width), var(--available-width));
   max-inline-size: var(--available-width);
   max-block-size: var(--available-height);
   overflow: auto;
   padding: calc(var(--semantic-dimension-space-padding-x-small) - var(--semantic-dimension-border-width-default));
   border: var(--semantic-dimension-border-width-default) solid
-    var(--semantic-color-background-fill-ghost-negative);
+    var(--semantic-color-background-canvas);
   border-radius: var(--semantic-dimension-radius-small);
   outline: 0;
-  background: var(--semantic-color-background-fill-ghost-negative);
+  box-shadow: var(--semantic-shadow-popup);
+  background: var(--semantic-color-background-canvas);
   color: var(--semantic-color-text-primary);
   font: var(--semantic-typography-ui-secondary);
 }

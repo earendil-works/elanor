@@ -7,9 +7,13 @@ provider. It stays interactive when collapsed; it never hides the navigation.
 
 <h2 id="sidebar-examples">Interactive examples</h2>
 
-### Uncontrolled sidebar
+### Application sidebar
 
 <SidebarExample client:load />
+
+The example follows the Figma structure: brand and toggle, project switcher,
+separator, grouped navigation, and a separated account footer. The brand row is
+24px high; text replaces the Radius logo.
 
 ### Controlled state, cancellation, and retained focus
 
@@ -24,7 +28,7 @@ retained DOM identity and focus can be inspected directly.
 ## Composition
 
 ```tsx
-import {Layout, Sidebar, SideNavigation} from '@earendil-works/elanor-react';
+import {Layout, Sidebar, SideNavigation, Stack} from '@earendil-works/elanor-react';
 import {HomeIcon, SettingsIcon} from '@earendil-works/elanor-icons-react';
 
 <Layout.Body>
@@ -32,7 +36,17 @@ import {HomeIcon, SettingsIcon} from '@earendil-works/elanor-icons-react';
     {({collapsed}) => (
       <>
         <Sidebar.Header>
-          <Sidebar.Trigger />
+          <Stack
+            direction={collapsed ? 'column' : 'row'}
+            gap={collapsed ? 'small' : 'auto'}
+            align="center"
+            style={{inlineSize: '100%'}}
+          >
+            <a href="/" aria-label="Acme workspace">
+              {collapsed ? 'A' : 'Acme workspace'}
+            </a>
+            <Sidebar.Trigger />
+          </Stack>
         </Sidebar.Header>
         <Sidebar.Content>
           <SideNavigation.Root
@@ -155,9 +169,15 @@ visually hidden label content.
 
 ## Sizing and scrolling
 
-Expanded width is `semantic.dimension.size.sidebar` (approximately 210px);
-collapsed width is `semantic.dimension.size.xLarge` (48px). Controls are 32px
-and padding fits inside the rail. Override widths with normal CSS or inline styles,
+Expanded width is `semantic.dimension.size.sidebar` (210px with Radius tokens),
+including the 4px end divider. The 8px inline insets leave 190px for content;
+24px block insets and 16px gaps separate Header, Content, and Footer. Header uses
+16px gaps and Footer uses 8px gaps. These insets belong to Root, not each region.
+Collapsed width is `semantic.dimension.size.xLarge` (48px). Its 6px inline insets
+leave 32px for controls after the 4px divider.
+The trigger is 16px square, with an 8px end inset when expanded;
+compact navigation targets remain 32px high.
+Override widths with normal CSS or inline styles,
 not custom component variables. Root has a viewport-height cap; Content owns
 one native scroll viewport with a custom vertical scrollbar. Header/Footer remain
 outside that scroll area. The scrollbar appears only while scrolling or dragging,

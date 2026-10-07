@@ -23,7 +23,7 @@ export interface PaginationLinkProps extends AnchorHTMLAttributes<HTMLAnchorElem
 }
 
 export const PaginationLink = forwardRef<HTMLAnchorElement, PaginationLinkProps>(
-  function PaginationLink({disabled = false, className, tabIndex, href, onClick, onAuxClick, ...props}, ref) {
+  function PaginationLink({disabled = false, className, children, tabIndex, href, onClick, onAuxClick, ...props}, ref) {
     return (
       <a
         {...props}
@@ -49,7 +49,9 @@ export const PaginationLink = forwardRef<HTMLAnchorElement, PaginationLinkProps>
           onAuxClick?.(event);
         }}
         className={classes(styles.link, className)}
-      />
+      >
+        {children}
+      </a>
     );
   },
 );

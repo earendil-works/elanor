@@ -1,7 +1,7 @@
 import {Toggle} from '@base-ui/react/toggle';
 import {Tooltip} from '@base-ui/react/tooltip';
 import {useRender} from '@base-ui/react/use-render';
-import {SideNavigationIcon} from '@earendil-works/elanor-icons-react';
+import {DockToLeftIcon} from '@earendil-works/elanor-icons-react';
 import {createContext, forwardRef, useContext, useState, type ReactNode} from 'react';
 import {classes, mergeClassName} from '../utils/class-names.ts';
 import {CompactTooltip} from './compact-tooltip.tsx';
@@ -70,7 +70,7 @@ export const SidebarRoot = forwardRef<HTMLDivElement, SidebarRootProps>(function
 export interface SidebarTriggerProps extends Omit<Toggle.Props, 'pressed' | 'defaultPressed' | 'onPressedChange'> {}
 
 export const SidebarTrigger = forwardRef<HTMLButtonElement, SidebarTriggerProps>(function SidebarTrigger(
-  {className, children = <SideNavigationIcon aria-hidden="true" />, 'aria-label': label = 'Collapse sidebar', ...props},
+  {className, children = <DockToLeftIcon aria-hidden="true" />, 'aria-label': label = 'Collapse sidebar', ...props},
   ref,
 ) {
   const {state, setCollapsed} = useSidebarContext();

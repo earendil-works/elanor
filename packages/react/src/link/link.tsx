@@ -5,8 +5,8 @@ import {classes} from '../utils/class-names.ts';
 export interface LinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {}
 
 export const Link = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
-  {className, ...props},
+  {className, children, ...props},
   ref,
 ) {
-  return <a {...props} ref={ref} className={classes(styles.root, className)} />;
+  return <a {...props} ref={ref} className={classes(styles.root, className)}>{children}</a>;
 });

@@ -16,7 +16,7 @@ export function ButtonExample(): React.JSX.Element {
         <Button hierarchy="secondary" density="compact" disabled={taskCount === 0} onClick={() => setTaskCount(0)}>
           Reset
         </Button>
-        <Button hierarchy="secondary" iconEnd={<ArrowForwardIcon />} render={<a href="/components/input" />} nativeButton={false}>
+        <Button hierarchy="secondary" iconEnd={<ArrowForwardIcon />} render={<a href="/components/input" aria-label="Explore inputs" />} nativeButton={false}>
           Explore inputs
         </Button>
       </Stack>

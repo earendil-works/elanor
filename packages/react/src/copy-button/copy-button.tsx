@@ -1,5 +1,5 @@
 import {CheckIcon, ContentCopyIcon} from '@earendil-works/elanor-icons-react';
-import {forwardRef, useEffect, useRef, useState} from 'react';
+import {forwardRef, useEffect, useState} from 'react';
 import {IconButton, type IconButtonProps} from '../icon-button/icon-button.tsx';
 import styles from './copy-button.module.css';
 
@@ -20,7 +20,6 @@ export const CopyButton = forwardRef<HTMLButtonElement, CopyButtonProps>(functio
     onCopyError,
     onClick,
     disabled,
-    focusableWhenDisabled = false,
     children,
     'aria-label': label = 'Copy',
     title,
@@ -28,13 +27,7 @@ export const CopyButton = forwardRef<HTMLButtonElement, CopyButtonProps>(functio
   },
   ref,
 ) {
-  const [status, setStatus] = useState<'idle' | 'copying' | 'copied' | 'error'>('idle');
-  const request = useRef(0);
-
-  useEffect(() => {
-    setStatus('idle');
-    return () => { request.current += 1; };
-  }, [value]);
+  const [status, setStatus] = useState<'idle' | 'copied' | 'error'>('idle');
 
   useEffect(() => {
     if (status !== 'copied') return;
@@ -43,17 +36,13 @@ export const CopyButton = forwardRef<HTMLButtonElement, CopyButtonProps>(functio
   }, [status]);
 
   async function copy(): Promise<void> {
-    const currentRequest = ++request.current;
-    setStatus('copying');
     try {
       await navigator.clipboard.writeText(value);
     } catch (error) {
-      if (currentRequest !== request.current) return;
       setStatus('error');
       onCopyError?.(error instanceof Error ? error : new Error(String(error)));
       return;
     }
-    if (currentRequest !== request.current) return;
     setStatus('copied');
     onCopySuccess?.();
   }
@@ -67,12 +56,11 @@ export const CopyButton = forwardRef<HTMLButtonElement, CopyButtonProps>(functio
         ref={ref}
         aria-label={label}
         title={feedback || title || label}
-        disabled={disabled || status === 'copying'}
-        focusableWhenDisabled={status === 'copying' || focusableWhenDisabled}
+        disabled={disabled}
         data-copy-state={status}
         onClick={(event) => {
           onClick?.(event);
-          if (!event.defaultPrevented && !event.baseUIHandlerPrevented && !disabled && status !== 'copying') {
+          if (!event.defaultPrevented && !event.baseUIHandlerPrevented && !disabled) {
             void copy();
           }
         }}

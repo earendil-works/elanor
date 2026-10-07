@@ -110,7 +110,7 @@ export function BrandLogos({brand, pressKit, children}: BrandLogosProps): React.
               return (
                 <li key={treatment} className={styles.tile}>
                   <div className={styles.preview}>
-                    <img className={styles.avatar} src={url(largest.path)} alt={`${brand.name} profile picture, ${treatment}`} />
+                    <img className={styles.avatar} src={url(largest.path)} alt={`${brand.name} avatar, ${treatment}`} />
                   </div>
                   <Text>{treatmentLabels[treatment as LogoAsset['treatment']]}</Text>
                   <Stack direction="row" gap="small" wrap="wrap">

@@ -53,8 +53,7 @@ describe("React icons", () => {
     const SearchIcon = await load("search");
     const markup = renderToStaticMarkup(createElement(SearchIcon, {
       "aria-labelledby": "search-title",
-      children,
-    }));
+    }, children));
     const svg = await readFile(resolve(packageDirectory, "../dist/svg/search.svg"), "utf8");
 
     expect(markup).toContain('<title id="search-title">Search</title>');

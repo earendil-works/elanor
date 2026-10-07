@@ -145,7 +145,7 @@ export function IconBrowser(): React.JSX.Element {
             <Heading level={2} size={3}>
               {selected[0]}
             </Heading>
-            <CodeSnippet className={styles.snippet} actions={<CopyButton value={importLine} aria-label="Copy import" />}>
+            <CodeSnippet className={styles.snippet} actions={<CopyButton key={importLine} value={importLine} aria-label="Copy import" />}>
               {importLine}
             </CodeSnippet>
             <Link href={`/api/icons/${selected[0]}.svg`} download>
