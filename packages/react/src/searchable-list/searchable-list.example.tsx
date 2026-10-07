@@ -1,21 +1,21 @@
 import {useState} from 'react';
 import {SearchableDropdown} from '../dropdown/searchable-dropdown.tsx';
-import {Stack} from '../stack/stack.tsx';
+import {Field} from '../field/field.tsx';
 
 const projects = ['Alpha', 'Beta', 'Gamma'];
 
-export function SearchableListExample(): React.JSX.Element {
+export function SearchableListExample({inputId}: {readonly inputId: string}): React.JSX.Element {
   const [project, setProject] = useState<string | null>(null);
 
   return (
-    <SearchableDropdown.Root inline open items={projects} value={project} onValueChange={setProject}>
-      <Stack gap="small" align="stretch">
-        <label htmlFor="searchable-list-project">Find a project</label>
+    <Field.Root>
+      <SearchableDropdown.Root inline open items={projects} value={project} onValueChange={setProject}>
+        <Field.Label htmlFor={inputId}>Find a project</Field.Label>
         <SearchableDropdown.InputGroup>
-          <SearchableDropdown.Input id="searchable-list-project" placeholder="Filter projects" />
+          <SearchableDropdown.Input id={inputId} placeholder="Filter projects" />
         </SearchableDropdown.InputGroup>
         <SearchableDropdown.Empty>No projects found.</SearchableDropdown.Empty>
-        <SearchableDropdown.List>
+        <SearchableDropdown.List aria-label="Projects">
           {(item: string) => (
             <SearchableDropdown.Item key={item} value={item}>
               <SearchableDropdown.ItemIndicator />
@@ -24,7 +24,7 @@ export function SearchableListExample(): React.JSX.Element {
           )}
         </SearchableDropdown.List>
         <SearchableDropdown.Status>{project === null ? null : `Selected ${project}.`}</SearchableDropdown.Status>
-      </Stack>
-    </SearchableDropdown.Root>
+      </SearchableDropdown.Root>
+    </Field.Root>
   );
 }
