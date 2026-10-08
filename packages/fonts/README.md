@@ -11,7 +11,6 @@ Import the required families once at the application entry:
 ```ts
 import '@earendil-works/elanor-fonts/earendil.css';
 import '@earendil-works/elanor-fonts/commit-mono.css';
-import '@earendil-works/design-tokens/radius.css';
 ```
 
 | Export            | CSS family    | Weights       | Styles         |
