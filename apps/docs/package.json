@@ -6,10 +6,12 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "check": "pnpm run check:types && pnpm run lint",
+    "check": "pnpm run lint && pnpm run check:types",
     "check:types": "astro check",
-    "lint:prepare": "pnpm --filter @earendil-works/design-tokens run build:radius && pnpm --filter @earendil-works/stylelint-plugin-design-tokens run build",
-    "lint": "pnpm run lint:prepare && stylelint \"src/**/*.{css,astro}\" --max-warnings 0"
+    "lint": "pnpm run lint:oxlint && pnpm run lint:stylelint",
+    "lint:oxlint": "oxlint . --max-warnings 0 --report-unused-disable-directives",
+    "lint:stylelint": "pnpm run lint:stylelint:prepare && stylelint \"src/**/*.{css,astro}\" --max-warnings 0",
+    "lint:stylelint:prepare": "pnpm --filter @earendil-works/design-tokens run build:radius && pnpm --filter @earendil-works/stylelint-plugin-design-tokens run build"
   },
   "dependencies": {
     "@astrojs/mdx": "^8.0.2",

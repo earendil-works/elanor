@@ -1,0 +1,13 @@
+{
+  "$schema": "../../../node_modules/oxlint/configuration_schema.json",
+  "extends": ["../../../.oxlintrc.json"],
+  "plugins": ["react", "jsx-a11y"],
+  "ignorePatterns": ["**/node_modules/**", "**/dist/**", "**/coverage/**", "**/*.generated.*", "**/*.mdx"],
+  "rules": {
+    "react/rules-of-hooks": "error",
+    // Native roles remain valid on composed components and live-region wrappers.
+    "jsx-a11y/prefer-tag-over-role": "off",
+    // Forwarding a component prop does not itself move focus to a DOM element.
+    "jsx-a11y/no-autofocus": ["error", {"ignoreNonDOM": true}]
+  }
+}

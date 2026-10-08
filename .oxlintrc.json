@@ -1,0 +1,38 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "oxc", "import"],
+  "categories": {
+    "correctness": "error"
+  },
+  "ignorePatterns": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/coverage/**",
+    "**/.astro/**",
+    "**/.vite/**",
+    "**/*.generated.*",
+    "**/*.astro",
+    "**/*.mdx"
+  ],
+  "rules": {
+    "eslint/no-debugger": "error",
+    "import/no-self-import": "error"
+  },
+  "overrides": [
+    {
+      "files": ["**/*.{test,spec}.{js,jsx,ts,tsx,mjs,cjs,mts,cts}"],
+      "plugins": ["typescript", "oxc", "import", "vitest"],
+      "rules": {
+        "vitest/no-focused-tests": "error",
+        "vitest/valid-describe-callback": "error",
+        "vitest/valid-expect": "error",
+        "vitest/valid-expect-in-promise": "error",
+        // Parameterized cases may assert only the properties relevant to a case.
+        "vitest/no-conditional-expect": "off",
+        // Some contracts require rejection without prescribing an error message.
+        "vitest/require-to-throw-message": "off",
+        "vitest/valid-title": ["error", {"ignoreTypeOfDescribeName": true}]
+      }
+    }
+  ]
+}

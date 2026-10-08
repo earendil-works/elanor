@@ -23,7 +23,8 @@
   },
   "scripts": {
     "build": "tsx scripts/build.ts && tsx scripts/export.ts && tsc -p tsconfig.lib.json",
-    "check": "tsc -p tsconfig.json --noEmit && pnpm run check:prepare && tsx scripts/check.ts",
+    "check": "pnpm run lint && tsc -p tsconfig.json --noEmit && pnpm run check:prepare && tsx scripts/check.ts",
+    "lint": "oxlint . --ignore-pattern \"react/**\" --max-warnings 0 --report-unused-disable-directives",
     "check:prepare": "pnpm --filter @earendil-works/design-tokens run build",
     "test": "pnpm run check:prepare && pnpm run build && vitest run --dir tests"
   },

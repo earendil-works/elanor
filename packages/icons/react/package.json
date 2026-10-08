@@ -22,7 +22,8 @@
   "scripts": {
     "build": "node build.ts && tsc -p tsconfig.build.json",
     "prepack": "pnpm run build",
-    "check": "tsc -p tsconfig.json --noEmit",
+    "check": "pnpm run lint && tsc -p tsconfig.json --noEmit",
+    "lint": "oxlint . --max-warnings 0 --report-unused-disable-directives",
     "test": "pnpm --filter @earendil-works/elanor-icons-react... run build && vitest run"
   },
   "peerDependencies": {

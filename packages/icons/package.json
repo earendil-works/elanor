@@ -24,7 +24,8 @@
   "scripts": {
     "build": "tsx scripts/build.ts",
     "prepack": "pnpm run build",
-    "check": "tsc -p tsconfig.json --noEmit && tsx scripts/check.ts",
+    "check": "pnpm run lint && tsc -p tsconfig.json --noEmit && tsx scripts/check.ts",
+    "lint": "oxlint . --ignore-pattern \"react/**\" --max-warnings 0 --report-unused-disable-directives",
     "test": "vitest run --dir tests",
     "refresh": "tsx scripts/refresh.ts"
   },

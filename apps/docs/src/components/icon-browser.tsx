@@ -44,6 +44,7 @@ export function IconBrowser(): React.JSX.Element {
   useEffect(() => {
     // `?q=` pre-fills the search, so searches can be linked.
     const initial = new URLSearchParams(window.location.search).get('q');
+    // oxlint-disable-next-line react/set-state-in-effect -- Read the browser URL after hydration, preserving the server's initial query.
     if (initial) setQuery(initial);
   }, []);
 

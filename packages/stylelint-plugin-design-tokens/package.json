@@ -19,7 +19,8 @@
   "scripts": {
     "clean": "rm -rf dist",
     "build": "pnpm run clean && tsc -p tsconfig.build.json",
-    "check": "tsc -p tsconfig.json",
+    "check": "pnpm run lint && tsc -p tsconfig.json",
+    "lint": "oxlint . --max-warnings 0 --report-unused-disable-directives",
     "pretest": "pnpm --filter @earendil-works/design-tokens run build:radius",
     "test": "vitest run"
   },

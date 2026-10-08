@@ -1,0 +1,35 @@
+{
+  "$schema": "../../node_modules/oxlint/configuration_schema.json",
+  "extends": ["../../.oxlintrc.json"],
+  "plugins": ["react", "jsx-a11y"],
+  "ignorePatterns": ["**/node_modules/**", "**/dist/**", "**/coverage/**", "**/*.generated.*", "**/*.mdx"],
+  "rules": {
+    "import/no-cycle": ["error", {"ignoreExternal": true}],
+    "react/rules-of-hooks": "error",
+    // Native roles remain valid on composed components and live-region wrappers.
+    "jsx-a11y/prefer-tag-over-role": "off",
+    // Forwarding a component prop does not itself move focus to a DOM element.
+    "jsx-a11y/no-autofocus": ["error", {"ignoreNonDOM": true}],
+    // This rule doesn't recognise <label> wrapped around custom controls
+    "jsx-a11y/label-has-associated-control": "off"
+  },
+  "overrides": [
+    {
+      "files": ["src/**/*.{js,jsx,ts,tsx,mjs,cjs,mts,cts}"],
+      "excludeFiles": ["src/**/*.example.tsx"],
+      "rules": {
+        "eslint/no-restricted-imports": ["error", {
+          "paths": [{
+            "name": "@earendil-works/elanor-react",
+            "message": "Import a component entry point or implementation file, not the package-wide entry point."
+          }],
+          "patterns": [{
+            // Block own/ancestor entries, not sibling entries such as ../menu/index.ts.
+            "regex": "^(?:\\.\\.?/)+(?:index(?:\\.[cm]?[jt]sx?)?)?$|^(?:\\.\\.?/)*\\.\\.?$",
+            "message": "Do not import your own or an ancestor entry point; use a direct file or another component's entry point."
+          }]
+        }]
+      }
+    }
+  ]
+}

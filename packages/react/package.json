@@ -17,11 +17,13 @@
     "build": "pnpm run generate:css:check && node build.mjs && tsc -p tsconfig.json",
     "generate:css": "node scripts/generate-layout-css.mjs",
     "generate:css:check": "node scripts/generate-layout-css.mjs --check",
-    "check": "pnpm run generate:css:check && pnpm run check:types && pnpm run lint",
+    "check": "pnpm run lint && pnpm run generate:css:check && pnpm run check:types",
     "check:prepare": "pnpm --filter @earendil-works/elanor-icons-react... run build",
     "check:types": "pnpm run check:prepare && tsc -p tsconfig.json --noEmit",
-    "lint:prepare": "pnpm --filter @earendil-works/design-tokens run build:radius && pnpm --filter @earendil-works/stylelint-plugin-design-tokens run build",
-    "lint": "pnpm run lint:prepare && stylelint \"src/**/*.css\" --max-warnings 0"
+    "lint": "pnpm run lint:oxlint && pnpm run lint:stylelint",
+    "lint:oxlint": "oxlint . --max-warnings 0 --report-unused-disable-directives",
+    "lint:stylelint": "pnpm run lint:stylelint:prepare && stylelint \"src/**/*.css\" --max-warnings 0",
+    "lint:stylelint:prepare": "pnpm --filter @earendil-works/design-tokens run build:radius && pnpm --filter @earendil-works/stylelint-plugin-design-tokens run build"
   },
   "dependencies": {
     "@base-ui/react": "1.8.0",
