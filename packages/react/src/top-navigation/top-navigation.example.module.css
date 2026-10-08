@@ -1,0 +1,111 @@
+.header,
+.centered,
+.stacked {
+  padding-block-start: var(--semantic-dimension-space-padding-xx-large);
+  padding-block-end: var(--semantic-dimension-space-padding-xxx-large);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--semantic-dimension-space-gap-medium);
+}
+
+.frame {
+  container: navigation-recipe / inline-size;
+  inline-size: 100%;
+}
+
+.centered,
+.stacked {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.end {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+  justify-content: flex-end;
+}
+
+.centeredLinks,
+.fullRow {
+  grid-column: 1 / -1;
+  grid-row: 2;
+}
+
+.centeredLinks {
+  justify-content: center;
+}
+
+@container navigation-recipe (width >= 40rem /* token: semantic.dimension.breakpoint.xSmall */) {
+  .centered {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  }
+
+  .centeredLinks {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .centered > .end {
+    grid-column: 3;
+  }
+}
+
+.application {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  inline-size: 100%;
+  block-size: var(--semantic-dimension-size-content-small);
+  min-block-size: 0;
+  max-block-size: 100dvh;
+  border: var(--semantic-dimension-border-width-default) solid
+    var(--semantic-color-border-secondary);
+}
+
+.applicationHeader {
+  padding: var(--semantic-dimension-space-padding-large);
+  border-block-end: var(--semantic-dimension-border-width-default) solid
+    var(--semantic-color-border-secondary);
+}
+
+.applicationBody {
+  min-block-size: 0;
+}
+
+.desktopOnly,
+.desktopSidebar {
+  display: none;
+}
+
+.content {
+  overflow: auto;
+  padding: var(--semantic-dimension-space-padding-x-large);
+  overflow-wrap: anywhere;
+}
+
+.overlay {
+  /* Keep the absolute iOS backdrop anchored to the viewport. */
+  position: fixed;
+  inset: 0;
+  z-index: var(--semantic-number-layer-overlay);
+}
+
+@media (width >= 64rem /* token: semantic.dimension.breakpoint.medium */) {
+  .desktopOnly,
+  .desktopSidebar {
+    display: flex;
+  }
+
+  .desktopSidebar {
+    position: static;
+    block-size: 100%;
+    max-block-size: 100%;
+  }
+
+  .mobileOnly {
+    display: none;
+  }
+}

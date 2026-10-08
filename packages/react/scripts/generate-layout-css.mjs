@@ -12,7 +12,11 @@ const threshold =
   /(?<![\w.+-])[+-]?(?:\d*\.\d+|\d+)(?:[eE][+-]?\d+)?(?:rem|px)(\s*\/\*\s*token:\s*(semantic\.dimension\.breakpoint\.\w+)\s*\*\/)/g;
 const annotation = /\/\*\s*token:/g;
 
-for (const path of ['src/grid/grid.module.css', 'src/layout/layout.module.css']) {
+for (const path of [
+  'src/grid/grid.module.css',
+  'src/layout/layout.module.css',
+  'src/top-navigation/top-navigation.example.module.css',
+]) {
   const url = new URL(path, root);
   const source = await readFile(url, 'utf8');
   let resolved = 0;

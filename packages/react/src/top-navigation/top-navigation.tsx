@@ -4,22 +4,11 @@ import {classes} from '../utils/class-names.ts';
 
 import styles from './top-navigation.module.css';
 
-export type TopNavigationVariant = 'marketing' | 'login' | 'app';
-
-export interface TopNavigationProps extends HTMLAttributes<HTMLElement> {
-  readonly variant?: TopNavigationVariant;
-}
+export interface TopNavigationProps extends HTMLAttributes<HTMLElement> {}
 
 export const TopNavigationRoot = forwardRef<HTMLElement, TopNavigationProps>(
-  function TopNavigationRoot({variant = 'app', className, ...props}, ref) {
-    return (
-      <header
-        {...props}
-        ref={ref}
-        data-variant={variant}
-        className={classes(styles.root, className)}
-      />
-    );
+  function TopNavigationRoot({className, ...props}, ref) {
+    return <header {...props} ref={ref} className={classes(styles.root, className)} />;
   },
 );
 

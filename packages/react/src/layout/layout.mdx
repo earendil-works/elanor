@@ -82,7 +82,9 @@ controls. This recipe deliberately does not require Sidebar's collapse API.
 Render-compatible side components can compose onto `Layout.Aside` rather than
 adding another aside wrapper. Keep their width independent of content Grid.
 
-## Marketing / top-navigation recipe
+## Top navigation recipe
+
+See [top navigation recipes](/components/top-navigation/) for inline, centered, stacked and responsive arrangements.
 
 Zero asides, no Body, one main. `render` puts TopNavigation and Layout.Header on
 one header element instead of nesting landmarks. Capped sections and uncapped
@@ -92,7 +94,10 @@ sections can alternate inside Main.
 import {Container, Layout, Link, Stack, TopNavigation} from '@earendil-works/elanor-react';
 
 <Layout.Root>
-  <Layout.Header render={<TopNavigation.Root variant="marketing" />}>
+  <Layout.Header
+    render={<TopNavigation.Root />}
+    style={{paddingBlock: 'var(--semantic-dimension-space-padding-xx-large)'}}
+  >
     <Container>
       <Stack direction="row" align="center" gap="auto" wrap="wrap">
         <TopNavigation.Identity>

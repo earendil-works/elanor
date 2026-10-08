@@ -1,5 +1,55 @@
-import {TopNavigationExample} from './top-navigation.example.tsx';
+import {CodeSnippet} from '../code-snippet/code-snippet.tsx';
+import {
+  TopNavigationExample,
+  CenteredTopNavigationExample,
+  StackedTopNavigationExample,
+} from './top-navigation.example.tsx';
+import {ResponsiveNavigationExample} from './responsive-navigation.example.tsx';
+import layoutsSource from './top-navigation.example.tsx?raw';
+import responsiveSource from './responsive-navigation.example.tsx?raw';
+import recipeStyles from './top-navigation.example.module.css?raw';
 
-Top Navigation arranges the identity, navigation and actions. [Navigation Menu](/components/navigation-menu/) supplies the links and submenu behavior.
+# Top navigation recipes
+
+Application-owned compositions, not component variants. Copy the arrangement and styles you need.
+
+## Inline
+
+Identity, links and actions share a row and wrap when needed.
 
 <TopNavigationExample client:load />
+
+## Centered
+
+Equal side tracks keep navigation centered despite unequal identity/action widths. In narrow containers, links move to their own row.
+
+<CenteredTopNavigationExample client:load />
+
+## Stacked
+
+Identity and actions above a separate navigation row.
+
+<StackedTopNavigationExample client:load />
+
+## Responsive navigation
+
+Desktop [Sidebar](/components/sidebar/) and inline resources become a mobile [Drawer](/components/drawer/) below `semantic.dimension.breakpoint.medium`. Both share destinations and selection; desktop collapse stays independent. Try resizing with the drawer open.
+
+<ResponsiveNavigationExample client:load />
+
+<details>
+  <summary>Inline, centered and stacked source</summary>
+  <CodeSnippet>{layoutsSource}</CodeSnippet>
+</details>
+
+<details>
+  <summary>Responsive composition source</summary>
+  <CodeSnippet>{responsiveSource}</CodeSnippet>
+</details>
+
+<details>
+  <summary>Recipe styles</summary>
+  <CodeSnippet>{recipeStyles}</CodeSnippet>
+</details>
+
+The responsive example uses local selection in place of routing. Applications own links, breakpoints and modal cleanup. [Navigation Menu](/components/navigation-menu/) supplies submenu behavior when needed.

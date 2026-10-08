@@ -589,7 +589,6 @@ export type {
   TopNavigationIdentityProps,
   TopNavigationNavigationProps,
   TopNavigationProps,
-  TopNavigationVariant,
 } from './top-navigation/top-navigation.tsx';
 
 export {DirectionProvider, useDirection} from '@base-ui/react/direction-provider';

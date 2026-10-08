@@ -1,21 +1,13 @@
 .root {
   box-sizing: border-box;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
   gap: var(--semantic-dimension-space-gap-small);
   inline-size: 100%;
-  padding-block: var(--semantic-dimension-space-padding-xx-large);
   color: var(--semantic-color-text-primary);
   font: var(--semantic-typography-ui-primary);
-}
-
-.root[data-variant='login'] {
-  align-items: baseline;
-}
-
-.root[data-variant='app'] {
-  padding-block-end: var(--semantic-dimension-space-padding-xxx-large);
 }
 
 .identity,
@@ -24,14 +16,9 @@
   display: flex;
   align-items: center;
   min-inline-size: 0;
-}
-
-.identity,
-.navigation {
   gap: var(--semantic-dimension-space-gap-small);
-}
-
-.navigation,
-.actions {
-  flex: none;
+  flex: 0 1 auto;
+  flex-wrap: wrap;
+  max-inline-size: 100%;
+  overflow-wrap: anywhere;
 }
