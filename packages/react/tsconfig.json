@@ -3,6 +3,9 @@
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist",
+    "sourceMap": true,
+    "inlineSources": true,
+    "declarationMap": false,
     "jsx": "react-jsx",
     "allowImportingTsExtensions": true,
     "rewriteRelativeImportExtensions": true
