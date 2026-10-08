@@ -594,3 +594,36 @@ export type {
 
 export {DirectionProvider, useDirection} from '@base-ui/react/direction-provider';
 export type {DirectionProviderProps, TextDirection} from '@base-ui/react/direction-provider';
+
+export {
+  Drawer,
+  DrawerBackdrop,
+  DrawerViewport,
+  DrawerPopup,
+  DrawerTitle,
+  DrawerDescription,
+} from './drawer/index.ts';
+export type {
+  DrawerRootProps,
+  DrawerRootActions,
+  DrawerRootChangeEventReason,
+  DrawerRootChangeEventDetails,
+  DrawerRootSnapPointChangeEventReason,
+  DrawerRootSnapPointChangeEventDetails,
+  DrawerTriggerProps,
+  DrawerTriggerState,
+  DrawerPortalProps,
+  DrawerCloseProps,
+  DrawerCloseState,
+  DrawerContentProps,
+  DrawerHandle,
+  DrawerSnapPoint,
+  DrawerBackdropProps,
+  DrawerBackdropState,
+  DrawerViewportProps,
+  DrawerViewportState,
+  DrawerPopupProps,
+  DrawerPopupState,
+  DrawerTitleProps,
+  DrawerDescriptionProps,
+} from './drawer/index.ts';

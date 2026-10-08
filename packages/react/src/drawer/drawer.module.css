@@ -1,0 +1,103 @@
+.backdrop {
+  position: fixed;
+  inset: 0;
+  min-block-size: 100dvh;
+  background: var(--semantic-color-background-backdrop);
+}
+
+@supports (-webkit-touch-callout: none) {
+  .backdrop {
+    position: absolute;
+  }
+}
+
+.viewport {
+  position: fixed;
+  inset: 0;
+  display: grid;
+  place-items: end center;
+  pointer-events: none;
+}
+
+.popup {
+  box-sizing: border-box;
+  min-inline-size: 0;
+  inline-size: min(var(--semantic-dimension-size-content-small), 100%);
+  max-block-size: 100%;
+  overflow: auto;
+  overscroll-behavior: contain;
+  padding: var(--semantic-dimension-space-padding-x-large);
+  padding-block-end: max(
+    var(--semantic-dimension-space-padding-x-large),
+    env(safe-area-inset-bottom)
+  );
+  border: var(--semantic-dimension-border-width-default) solid
+    var(--semantic-color-border-secondary);
+  background: var(--semantic-color-background-canvas);
+  color: var(--semantic-color-text-primary);
+  font: var(--semantic-typography-ui-primary);
+  overflow-wrap: anywhere;
+  pointer-events: auto;
+  touch-action: auto;
+  /* stylelint-disable-next-line design-tokens/no-non-token-custom-properties -- Base UI owns live gesture and snap-point geometry, not design tokens. */
+  transform: translateY(calc(var(--drawer-snap-point-offset) + var(--drawer-swipe-movement-y)));
+}
+
+.popup[data-swipe-direction='up'] {
+  align-self: start;
+}
+
+.popup[data-swipe-direction='left'],
+.popup[data-swipe-direction='right'] {
+  position: absolute;
+  inset-block: 0;
+  inline-size: min(
+    var(--semantic-dimension-size-content-small),
+    calc(100% - var(--semantic-dimension-size-x-large))
+  );
+  block-size: 100%;
+  /* stylelint-disable-next-line design-tokens/no-non-token-custom-properties -- Base UI owns live gesture geometry. */
+  transform: translateX(var(--drawer-swipe-movement-x));
+}
+
+/* Swipe directions are physical, including in RTL. */
+.popup[data-swipe-direction='left'] {
+  left: 0;
+}
+
+.popup[data-swipe-direction='right'] {
+  right: 0;
+}
+
+.popup[data-swiping] {
+  user-select: none;
+}
+
+.popup:focus-visible {
+  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+  outline-offset: calc(-1 * var(--semantic-dimension-border-width-large));
+}
+
+.title {
+  margin: 0;
+  color: var(--semantic-color-text-primary);
+  font: var(--semantic-typography-heading-app-4);
+  letter-spacing: var(--semantic-typography-heading-app-4-letter-spacing);
+}
+
+.description {
+  margin: 0;
+  color: var(--semantic-color-text-secondary);
+  font: var(--semantic-typography-ui-primary);
+}
+
+@media (forced-colors: active) {
+  .backdrop {
+    background: Canvas;
+    opacity: var(--semantic-number-opacity-disabled);
+  }
+
+  .popup {
+    border-color: CanvasText;
+  }
+}
