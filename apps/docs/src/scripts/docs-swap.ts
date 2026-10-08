@@ -1,6 +1,6 @@
 import {swapFunctions} from 'astro:transitions/client';
 
-const regions = ['navigation', 'content'] as const;
+const regions = ['mobile-navigation', 'navigation', 'content'] as const;
 
 document.addEventListener('astro:before-swap', (event) => {
   event.swap = () => {

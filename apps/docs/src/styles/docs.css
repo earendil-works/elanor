@@ -4,7 +4,8 @@
 
 body {
   display: grid;
-  grid-template-columns: max-content minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
+  grid-template-rows: auto 1fr;
   min-height: 100vh;
   margin: 0;
   background: var(--semantic-color-background-canvas);
@@ -17,6 +18,7 @@ body {
 }
 
 body > aside {
+  display: none;
   position: sticky;
   inset-block-start: 0;
   block-size: 100vh;
@@ -32,6 +34,40 @@ body > aside {
   align-items: flex-start;
   inline-size: 100%;
   max-inline-size: var(--semantic-dimension-breakpoint-small);
+}
+
+/* Keep docs flex items (including hydrated examples) within the content column. */
+.preview,
+.wide,
+.page,
+.prose {
+  min-inline-size: 0;
+}
+
+.preview > *,
+.preview > astro-island > * {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+}
+
+.preview pre.astro-code,
+.prose pre {
+  min-inline-size: 0;
+  max-inline-size: 100%;
+  overflow-x: auto;
+}
+
+/* MDX tables have no wrapper; scroll the table locally, not the page. */
+.preview > table,
+.prose table {
+  display: block;
+  max-inline-size: 100%;
+  overflow-x: auto;
+}
+
+.preview > :where(p, ul, ol, dl, blockquote, table) code,
+.prose :not(pre) > code {
+  overflow-wrap: anywhere;
 }
 
 .wide {
@@ -63,4 +99,33 @@ body > aside {
 .preview[data-wide] {
   max-inline-size: none;
   align-items: stretch;
+}
+
+.docs-navigation-layer {
+  /* Keep the absolute iOS backdrop anchored to the viewport. */
+  position: fixed;
+  inset: 0;
+  z-index: var(--semantic-number-layer-overlay);
+}
+
+.docs-mobile-header {
+  padding: var(--semantic-dimension-space-padding-medium)
+    var(--semantic-dimension-space-padding-x-large);
+  border-block-end: var(--semantic-dimension-border-width-default) solid
+    var(--semantic-color-border-secondary);
+}
+
+@media (width >= 64rem /* token: semantic.dimension.breakpoint.medium */) {
+  body {
+    grid-template-columns: max-content minmax(0, 1fr);
+    grid-template-rows: auto;
+  }
+
+  body > aside {
+    display: block;
+  }
+
+  [data-docs-swap='mobile-navigation'] {
+    display: none;
+  }
 }

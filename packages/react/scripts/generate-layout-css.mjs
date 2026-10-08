@@ -16,6 +16,8 @@ for (const path of [
   'src/grid/grid.module.css',
   'src/layout/layout.module.css',
   'src/top-navigation/top-navigation.example.module.css',
+  '../../apps/docs/src/styles/docs.css',
+  '../../apps/docs/src/components/brand-logos.module.css',
 ]) {
   const url = new URL(path, root);
   const source = await readFile(url, 'utf8');

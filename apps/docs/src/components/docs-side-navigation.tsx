@@ -15,21 +15,27 @@ export interface DocsNavigationSection {
 interface DocsSideNavigationProps {
   readonly sections: readonly DocsNavigationSection[];
   readonly current: string;
+  readonly onNavigate?: () => void;
 }
 
 export function DocsSideNavigation({
   sections,
   current,
+  onNavigate,
 }: DocsSideNavigationProps): React.JSX.Element {
   return (
-    <SideNavigationRoot>
+    <SideNavigationRoot aria-label="Documentation">
       {sections.map((section) => (
         <SideNavigationGroup key={section.label}>
           <SideNavigationGroupLabel>{section.label}</SideNavigationGroupLabel>
           <SideNavigationList>
             {section.links.map((link) => (
               <SideNavigationItem key={link.href}>
-                <SideNavigationLink href={link.href} active={link.href === current}>
+                <SideNavigationLink
+                  href={link.href}
+                  active={link.href === current}
+                  onClick={onNavigate}
+                >
                   {link.label}
                 </SideNavigationLink>
               </SideNavigationItem>

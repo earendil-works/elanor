@@ -1,12 +1,15 @@
 .brand {
   display: flex;
+  min-inline-size: 0;
   flex-direction: column;
   gap: var(--semantic-dimension-space-gap-large);
 }
 
-/* The page grid: 12 columns with 1rem gutters. */
+/* Retain the desktop's 12 tracks; tiles span more tracks in narrow galleries. */
 .grid {
   display: grid;
+  container: brand-gallery / inline-size;
+  min-inline-size: 0;
   align-self: stretch;
   grid-template-columns: repeat(12, minmax(0, 1fr));
   column-gap: var(--semantic-dimension-space-gap-medium);
@@ -19,13 +22,10 @@
 .tile {
   display: flex;
   min-inline-size: 0;
+  overflow-wrap: anywhere;
   flex-direction: column;
-  grid-column: span 3;
+  grid-column: span 12;
   gap: var(--semantic-dimension-space-gap-x-small);
-}
-
-.small {
-  grid-column: span 2;
 }
 
 .preview {
@@ -64,7 +64,29 @@
 
 .setup {
   display: flex;
+  min-inline-size: 0;
+  inline-size: 100%;
   max-inline-size: var(--semantic-dimension-breakpoint-small);
   flex-direction: column;
   gap: var(--semantic-dimension-space-gap-small);
+}
+
+@container brand-gallery (min-width: 40rem /* token: semantic.dimension.breakpoint.xSmall */) {
+  .tile {
+    grid-column: span 6;
+  }
+
+  .small {
+    grid-column: span 4;
+  }
+}
+
+@container brand-gallery (min-width: 64rem /* token: semantic.dimension.breakpoint.medium */) {
+  .tile {
+    grid-column: span 3;
+  }
+
+  .small {
+    grid-column: span 2;
+  }
 }

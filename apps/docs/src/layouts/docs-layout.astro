@@ -6,6 +6,7 @@ import '@earendil-works/elanor-fonts/commit-mono.css';
 import {getCollection} from 'astro:content';
 import {ClientRouter} from 'astro:transitions';
 import {DocsSideNavigation, type DocsNavigationSection} from '../components/docs-side-navigation.tsx';
+import {DocsMobileNavigation} from '../components/docs-mobile-navigation.tsx';
 
 interface Props {
   title: string;
@@ -58,6 +59,9 @@ const sections: DocsNavigationSection[] = [
     <ClientRouter />
   </head>
   <body>
+    <div data-docs-swap="mobile-navigation">
+      <DocsMobileNavigation sections={sections} current={current} client:load />
+    </div>
     <aside>
       <div data-docs-swap="navigation">
         <DocsSideNavigation sections={sections} current={current} />
