@@ -1,5 +1,5 @@
 import {Button} from '../button/button.tsx';
-import {Popover} from './popover.tsx';
+import {Popover} from './index.ts';
 
 export function PopoverExample(): React.JSX.Element {
   return (

@@ -104,18 +104,3 @@ export const ModalActions = forwardRef<HTMLDivElement, ModalActionsProps>(functi
 ) {
   return <div {...props} ref={ref} className={classes(styles.actions, className)} />;
 });
-
-export const Modal = {
-  Root: BaseDialog.Root,
-  Trigger: BaseDialog.Trigger,
-  Portal: BaseDialog.Portal,
-  Backdrop: ModalBackdrop,
-  Viewport: ModalViewport,
-  Popup: ModalPopup,
-  Title: ModalTitle,
-  Description: ModalDescription,
-  Body: ModalBody,
-  Actions: ModalActions,
-  Close: BaseDialog.Close,
-  createHandle: BaseDialog.createHandle,
-} as const;

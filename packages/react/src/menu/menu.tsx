@@ -134,19 +134,3 @@ export const MenuSeparator = forwardRef<HTMLDivElement, MenuSeparatorProps>(
     return <Separator {...props} ref={ref} orientation="horizontal" />;
   },
 );
-
-export const Menu = {
-  Root: BaseMenu.Root,
-  Viewport: BaseMenu.Viewport,
-  Handle: BaseMenu.Handle,
-  Trigger: BaseMenu.Trigger,
-  Portal: BaseMenu.Portal,
-  Positioner: MenuPositioner,
-  Popup: MenuPopup,
-  Item: MenuItem,
-  LinkItem: MenuLinkItem,
-  Group: MenuGroup,
-  GroupLabel: MenuGroupLabel,
-  Separator: MenuSeparator,
-  createHandle: BaseMenu.createHandle,
-} as const;

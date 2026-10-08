@@ -64,7 +64,7 @@ export type SearchableDropdownEmptyProps = BaseCombobox.Empty.Props;
 
 const MultipleContext = createContext(false);
 
-function SearchableDropdownRoot<Value, Multiple extends boolean | undefined = false, Item = Value>(
+export function SearchableDropdownRoot<Value, Multiple extends boolean | undefined = false, Item = Value>(
   props: SearchableDropdownRootProps<Value, Multiple, Item>,
 ): React.JSX.Element {
   return (
@@ -248,28 +248,3 @@ export const SearchableDropdownStatus = forwardRef<HTMLDivElement, SearchableDro
     );
   },
 );
-
-export const SearchableDropdown = {
-  Root: SearchableDropdownRoot,
-  Label: SearchableDropdownLabel,
-  Trigger: SearchableDropdownTrigger,
-  Value: BaseCombobox.Value,
-  Icon: SearchableDropdownIcon,
-  Portal: BaseCombobox.Portal,
-  Positioner: BaseCombobox.Positioner,
-  Popup: SearchableDropdownPopup,
-  InputGroup: SearchableDropdownInputGroup,
-  Input: SearchableDropdownInput,
-  List: SearchableDropdownList,
-  Item: SearchableDropdownItem,
-  ItemIndicator: SearchableDropdownItemIndicator,
-  Group: BaseCombobox.Group,
-  GroupLabel: SearchableDropdownGroupLabel,
-  Separator: SearchableDropdownSeparator,
-  Empty: SearchableDropdownEmpty,
-  Collection: BaseCombobox.Collection,
-  Status: SearchableDropdownStatus,
-  useFilter: BaseCombobox.useFilter,
-  useFilteredItems: BaseCombobox.useFilteredItems,
-  createItems: BaseCombobox.createItems,
-} as const;

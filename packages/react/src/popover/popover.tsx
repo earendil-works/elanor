@@ -58,15 +58,3 @@ export const PopoverDescription = forwardRef<HTMLParagraphElement, PopoverDescri
     );
   },
 );
-
-export const Popover = {
-  Root: BasePopover.Root,
-  Trigger: BasePopover.Trigger,
-  Portal: BasePopover.Portal,
-  Positioner: BasePopover.Positioner,
-  Popup: PopoverPopup,
-  Title: PopoverTitle,
-  Description: PopoverDescription,
-  Close: BasePopover.Close,
-  createHandle: BasePopover.createHandle,
-} as const;

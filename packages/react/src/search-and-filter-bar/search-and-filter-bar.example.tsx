@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {Dropdown} from '../dropdown/dropdown.tsx';
+import {Dropdown} from '../dropdown/index.ts';
 import {Search} from '../search/search.tsx';
 import {Stack} from '../stack/stack.tsx';
 import {Text} from '../text/text.tsx';

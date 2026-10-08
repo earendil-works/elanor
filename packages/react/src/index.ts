@@ -110,7 +110,7 @@ export {
   MenuPopup,
   MenuPositioner,
   MenuSeparator,
-} from './menu/menu.tsx';
+} from './menu/index.ts';
 export type {
   MenuGroupLabelProps,
   MenuGroupProps,
@@ -133,7 +133,7 @@ export type {
   MenuTriggerState,
   MenuViewportProps,
   MenuViewportState,
-} from './menu/menu.tsx';
+} from './menu/index.ts';
 
 export {ControlAndLabel} from './control-and-label/control-and-label.tsx';
 export type {ControlAndLabelProps} from './control-and-label/control-and-label.tsx';
@@ -150,7 +150,7 @@ export {
   DropdownPositioner,
   DropdownSeparator,
   DropdownTrigger,
-} from './dropdown/dropdown.tsx';
+} from './dropdown/index.ts';
 export type {
   DropdownGroupLabelProps,
   DropdownGroupProps,
@@ -179,7 +179,7 @@ export type {
   DropdownTriggerState,
   DropdownValueProps,
   DropdownValueState,
-} from './dropdown/dropdown.tsx';
+} from './dropdown/index.ts';
 
 export {
   EmptyState,
@@ -260,7 +260,7 @@ export {
   ModalPopup,
   ModalTitle,
   ModalViewport,
-} from './modal/modal.tsx';
+} from './modal/index.ts';
 export type {
   ModalActionsProps,
   ModalBackdropProps,
@@ -282,7 +282,7 @@ export type {
   ModalTriggerState,
   ModalViewportProps,
   ModalViewportState,
-} from './modal/modal.tsx';
+} from './modal/index.ts';
 
 export {
   NavigationMenu,
@@ -346,7 +346,7 @@ export type {
   PaginationSeparatorProps,
 } from './pagination/pagination.tsx';
 
-export {Popover, PopoverDescription, PopoverPopup, PopoverTitle} from './popover/popover.tsx';
+export {Popover, PopoverDescription, PopoverPopup, PopoverTitle} from './popover/index.ts';
 export type {
   PopoverCloseProps,
   PopoverDescriptionProps,
@@ -363,7 +363,7 @@ export type {
   PopoverTitleProps,
   PopoverTriggerProps,
   PopoverTriggerState,
-} from './popover/popover.tsx';
+} from './popover/index.ts';
 
 export {
   ProgressiveDisclosure,
@@ -417,7 +417,7 @@ export {
   SearchableDropdownSeparator,
   SearchableDropdownStatus,
   SearchableDropdownTrigger,
-} from './dropdown/searchable-dropdown.tsx';
+} from './dropdown/index.ts';
 export type {
   CreateSearchableDropdownItemsOptions,
   SearchableDropdownCollectionProps,
@@ -459,7 +459,7 @@ export type {
   SearchableDropdownTriggerProps,
   SearchableDropdownTriggerState,
   SearchableDropdownValueProps,
-} from './dropdown/searchable-dropdown.tsx';
+} from './dropdown/index.ts';
 
 export {Section, SectionContent, SectionRoot, SectionSeparator} from './section/section.tsx';
 export type {

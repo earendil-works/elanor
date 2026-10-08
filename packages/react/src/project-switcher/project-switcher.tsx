@@ -1,7 +1,7 @@
 import {Menu as BaseMenu} from '@base-ui/react/menu';
 import {KeyboardArrowDownIcon} from '@earendil-works/elanor-icons-react';
 import {forwardRef, type ReactNode, type Ref, type RefAttributes} from 'react';
-import {Menu} from '../menu/menu.tsx';
+import {Menu} from '../menu/index.ts';
 import styles from './project-switcher.module.css';
 import {mergeClassName} from '../utils/class-names.ts';
 

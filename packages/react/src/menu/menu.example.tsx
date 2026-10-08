@@ -2,7 +2,7 @@ import {useState} from 'react';
 import {Button} from '../button/button.tsx';
 import {Stack} from '../stack/stack.tsx';
 import {Text} from '../text/text.tsx';
-import {Menu} from './menu.tsx';
+import {Menu} from './index.ts';
 
 export function MenuExample(): React.JSX.Element {
   const [action, setAction] = useState('No action selected.');

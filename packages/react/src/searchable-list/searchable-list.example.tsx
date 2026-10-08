@@ -1,5 +1,5 @@
 import {useState} from 'react';
-import {SearchableDropdown} from '../dropdown/searchable-dropdown.tsx';
+import {SearchableDropdown} from '../dropdown/index.ts';
 import {Field} from '../field/field.tsx';
 
 const projects = ['Alpha', 'Beta', 'Gamma'];

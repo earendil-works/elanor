@@ -14,8 +14,9 @@ For Base UI changes, consult [the documentation index](https://base-ui.com/llms.
 
 ## Imports and exports
 
-- Within library implementations, import files directly, such as `../button/button.tsx`. Never import through the public entry point. Examples and documentation are exempt.
-- Keep one public entry point, `src/index.ts`, with explicit value and type exports. No `export *` or per-directory barrels.
+- Within a component, import implementation files directly, never its own barrel. Across components, use their local entry point when present, otherwise a direct file. Never import the package-wide entry point from library implementations. Examples and documentation are exempt.
+- Keep runtime dependencies between components acyclic.
+- Keep one public entry point, `src/index.ts`, with explicit value and type exports. No `export *`. Avoid per-directory barrels by default; allow them when a distinct architectural or tooling need justifies a local entry point, such as separating namespace assembly from a component-only Fast Refresh boundary.
 - Keep internal paths out of the package export map.
 - Give implemented public components and parts named props types and use those types in their declarations. Derive Base UI-backed types rather than copying contracts.
 - Export supporting types for retained public APIs; don't mirror upstream internals or export empty state aliases.

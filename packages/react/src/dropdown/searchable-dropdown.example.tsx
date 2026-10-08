@@ -1,6 +1,6 @@
 import {useState} from 'react';
 import {Stack} from '../stack/stack.tsx';
-import {SearchableDropdown} from './searchable-dropdown.tsx';
+import {SearchableDropdown} from './index.ts';
 
 const projects = ['Alpha', 'Beta', 'Gamma'];
 
