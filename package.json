@@ -11,7 +11,9 @@
   "scripts": {
     "dev": "pnpm --filter @earendil-works/elanor-docs dev",
     "build": "pnpm -r --workspace-concurrency=1 --if-present run build",
-    "check": "pnpm -r --workspace-concurrency=1 --if-present run check",
+    "check": "pnpm run format:check && pnpm -r --workspace-concurrency=1 --if-present run check",
+    "format": "oxfmt .",
+    "format:check": "oxfmt --check .",
     "lint": "pnpm -r --workspace-concurrency=1 --if-present run lint",
     "lint:oxlint": "oxlint . --max-warnings 0 --report-unused-disable-directives",
     "lint:stylelint": "pnpm -r --workspace-concurrency=1 --if-present run lint:stylelint",
@@ -36,6 +38,7 @@
   },
   "devDependencies": {
     "@types/node": "^24.19.0",
+    "oxfmt": "0.71.0",
     "oxlint": "1.86.0",
     "typescript": "^7.0.2"
   }

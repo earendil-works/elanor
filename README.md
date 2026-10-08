@@ -33,6 +33,7 @@ pnpm build
 ```
 
 - `pnpm lint` runs all linters; `pnpm lint:oxlint` and `pnpm lint:stylelint` run each tool separately.
-- `pnpm check` validates the tokens, type-checks all packages, and runs JavaScript/TypeScript and style linting.
+- `pnpm format` formats files; `pnpm format:check` checks formatting.
+- `pnpm check` runs formatting, lint, type and token checks.
 - `pnpm test` runs package tests.
 - `pnpm build` builds every package, including all four token brands.

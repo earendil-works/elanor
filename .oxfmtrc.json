@@ -1,0 +1,32 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "singleQuote": true,
+  "bracketSpacing": false,
+  "sortImports": {
+    "groups": [
+      "builtin",
+      "external",
+      ["internal", "subpath", "parent", "sibling", "index"],
+      "style",
+      "unknown"
+    ],
+    "sortSideEffects": false
+  },
+  "sortPackageJson": false,
+  "ignorePatterns": [
+    "**/dist/**",
+    "**/coverage/**",
+    "**/.astro/**",
+    "**/.vite/**",
+    "**/*.generated.*",
+    "**/*.astro",
+    "**/*.svg",
+    "**/*.xml",
+    "packages/design-tokens/schemas/dtcg/**",
+    "packages/design-tokens/tokens/shared/primitive/color.tokens.json",
+    "packages/design-tokens/tokens/shared/primitive/dimension.tokens.json",
+    "packages/design-tokens/tokens/shared/primitive/number.tokens.json",
+    "packages/icons/sources/**",
+    "packages/icons/provenance.json"
+  ]
+}
