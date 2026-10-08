@@ -1,6 +1,14 @@
-import {forwardRef, type HTMLAttributes, type TableHTMLAttributes, type TdHTMLAttributes, type ThHTMLAttributes} from 'react';
-import styles from './table.module.css';
+import {
+  forwardRef,
+  type HTMLAttributes,
+  type TableHTMLAttributes,
+  type TdHTMLAttributes,
+  type ThHTMLAttributes,
+} from 'react';
+
 import {classes} from '../utils/class-names.ts';
+
+import styles from './table.module.css';
 
 export interface TableContainerProps extends HTMLAttributes<HTMLDivElement> {}
 
@@ -37,17 +45,20 @@ export const TableBody = forwardRef<HTMLTableSectionElement, TableBodyProps>(
 
 export interface TableRowProps extends HTMLAttributes<HTMLTableRowElement> {}
 
-export const TableRow = forwardRef<HTMLTableRowElement, TableRowProps>(
-  function TableRow({className, ...props}, ref) {
-    return <tr {...props} ref={ref} className={classes(styles.row, className)} />;
-  },
-);
+export const TableRow = forwardRef<HTMLTableRowElement, TableRowProps>(function TableRow(
+  {className, ...props},
+  ref,
+) {
+  return <tr {...props} ref={ref} className={classes(styles.row, className)} />;
+});
 
 export interface TableHeaderCellProps extends ThHTMLAttributes<HTMLTableCellElement> {}
 
 export const TableHeaderCell = forwardRef<HTMLTableCellElement, TableHeaderCellProps>(
   function TableHeaderCell({className, ...props}, ref) {
-    return <th {...props} ref={ref} className={classes(styles.cell, styles.headerCell, className)} />;
+    return (
+      <th {...props} ref={ref} className={classes(styles.cell, styles.headerCell, className)} />
+    );
   },
 );
 
@@ -59,14 +70,7 @@ export const TableCell = forwardRef<HTMLTableCellElement, TableCellProps>(functi
   {align = 'start', className, ...props},
   ref,
 ) {
-  return (
-    <td
-      {...props}
-      ref={ref}
-      data-align={align}
-      className={classes(styles.cell, className)}
-    />
-  );
+  return <td {...props} ref={ref} data-align={align} className={classes(styles.cell, className)} />;
 });
 
 export interface TableCellPrimaryProps extends HTMLAttributes<HTMLSpanElement> {}

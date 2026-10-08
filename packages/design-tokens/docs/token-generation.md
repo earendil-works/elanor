@@ -14,11 +14,11 @@ Recipes contain scale-specific design choices. `packages/design-tokens/generatio
 
 This structure provides:
 
-* repeatable values
-* small and reviewable configuration changes
-* reusable calculation logic
-* automatic recipe validation
-* checks for stale generated output
+- repeatable values
+- small and reviewable configuration changes
+- reusable calculation logic
+- automatic recipe validation
+- checks for stale generated output
 
 ## Parts
 
@@ -105,8 +105,8 @@ The recipe selects which scale steps to output. Omitting a step does not change 
   "lineHeight": {
     "multiplier": 1.2,
     "gridTiers": [
-      { "minFontSizePx": 0, "gridPx": 4 },
-      { "minFontSizePx": 24, "gridPx": 8 }
+      {"minFontSizePx": 0, "gridPx": 4},
+      {"minFontSizePx": 24, "gridPx": 8}
     ]
   }
 }
@@ -259,12 +259,12 @@ Each color in the recipe has a name and a key color, and optionally a scale:
   "colors": [
     {
       "name": "cerulianBlue",
-      "key": { "colorSpace": "oklch", "components": [0.6523, 0.0938, 231.49] },
-      "saturation": { "min": 0.1, "max": 0.68 }
+      "key": {"colorSpace": "oklch", "components": [0.6523, 0.0938, 231.49]},
+      "saturation": {"min": 0.1, "max": 0.68}
     },
     {
       "name": "white",
-      "key": { "colorSpace": "oklch", "components": [0.9731, 0, 0] }
+      "key": {"colorSpace": "oklch", "components": [0.9731, 0, 0]}
     }
   ]
 }

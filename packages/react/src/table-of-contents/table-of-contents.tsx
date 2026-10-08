@@ -1,6 +1,8 @@
 import {forwardRef, type AnchorHTMLAttributes, type HTMLAttributes, type ReactNode} from 'react';
-import styles from './table-of-contents.module.css';
+
 import {classes} from '../utils/class-names.ts';
+
+import styles from './table-of-contents.module.css';
 
 export interface TableOfContentsProps extends Omit<HTMLAttributes<HTMLElement>, 'title'> {
   readonly title?: ReactNode;
@@ -9,7 +11,12 @@ export interface TableOfContentsProps extends Omit<HTMLAttributes<HTMLElement>, 
 export const TableOfContents = forwardRef<HTMLElement, TableOfContentsProps>(
   function TableOfContents({title = 'On this page', children, className, ...props}, ref) {
     return (
-      <nav {...props} ref={ref} aria-label={props['aria-label'] ?? 'Table of contents'} className={classes(styles.root, className)}>
+      <nav
+        {...props}
+        ref={ref}
+        aria-label={props['aria-label'] ?? 'Table of contents'}
+        className={classes(styles.root, className)}
+      >
         <div className={styles.title}>{title}</div>
         <ol className={styles.list}>{children}</ol>
       </nav>

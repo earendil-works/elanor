@@ -1,8 +1,10 @@
-import path from "node:path";
-import { minimatch } from "minimatch";
-import type { Result } from "postcss";
-import type { LoadedCatalogue } from "./catalogue.js";
-import { loadCatalogue } from "./catalogue.js";
+import path from 'node:path';
+
+import {minimatch} from 'minimatch';
+import type {Result} from 'postcss';
+
+import type {LoadedCatalogue} from './catalogue.js';
+import {loadCatalogue} from './catalogue.js';
 
 export interface RuleOptions {
   catalogue: string;
@@ -15,11 +17,11 @@ export interface RuleOptions {
 }
 
 export const DEFAULT_IGNORES = [
-  "**/dist/**",
-  "**/vendor/**",
-  "**/reset.css",
-  "**/reset/**/*.css",
-  "**/*.generated.css",
+  '**/dist/**',
+  '**/vendor/**',
+  '**/reset.css',
+  '**/reset/**/*.css',
+  '**/*.generated.css',
 ];
 
 /**
@@ -29,7 +31,7 @@ export const DEFAULT_IGNORES = [
  * @returns The absolute, slash-normalized filename or `<input>`.
  */
 function filenameFor(result: Result): string {
-  return (result.opts.from ? path.resolve(result.opts.from) : "<input>").replaceAll("\\", "/");
+  return (result.opts.from ? path.resolve(result.opts.from) : '<input>').replaceAll('\\', '/');
 }
 
 /**
@@ -41,7 +43,7 @@ function filenameFor(result: Result): string {
  */
 export function matchesFile(result: Result, patterns: string[] = []): boolean {
   const filename = filenameFor(result);
-  return patterns.some((pattern) => minimatch(filename, pattern, { dot: true, matchBase: true }));
+  return patterns.some((pattern) => minimatch(filename, pattern, {dot: true, matchBase: true}));
 }
 
 /**
@@ -74,7 +76,8 @@ export function isFoundation(result: Result, options: RuleOptions): boolean {
  * @throws When no catalogue path is configured or the catalogue is invalid.
  */
 export function getCatalogue(options: RuleOptions): LoadedCatalogue {
-  if (!options?.catalogue) throw new Error("A generated token catalogue path is required in the rule options.");
+  if (!options?.catalogue)
+    throw new Error('A generated token catalogue path is required in the rule options.');
   return loadCatalogue(options.catalogue);
 }
 

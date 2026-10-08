@@ -1,6 +1,8 @@
 import {createElement, forwardRef, type HTMLAttributes} from 'react';
-import styles from './heading.module.css';
+
 import {classes} from '../utils/class-names.ts';
+
+import styles from './heading.module.css';
 
 export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
 export type HeadingSize = 1 | 2 | 3;

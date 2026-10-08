@@ -1,5 +1,6 @@
-import sharp from "sharp";
-import {type ColoredArtwork, pathElements} from "./compose.js";
+import sharp from 'sharp';
+
+import {type ColoredArtwork, pathElements} from './compose.js';
 
 export interface Frame {
   /** Region of artwork coordinates shown, as x, y, width, height. */
@@ -17,7 +18,12 @@ export function tightFrame(artwork: ColoredArtwork, width: number, height: numbe
 }
 
 /** A square frame with the artwork centered and `padding` source units around its longer side. */
-export function squareFrame(artwork: ColoredArtwork, size: number, padding: number, background?: string): Frame {
+export function squareFrame(
+  artwork: ColoredArtwork,
+  size: number,
+  padding: number,
+  background?: string,
+): Frame {
   const side = Math.max(artwork.width, artwork.height) + 2 * padding;
   return centeredSquare(artwork, side, size, background);
 }
@@ -27,12 +33,22 @@ export function squareFrame(artwork: ColoredArtwork, size: number, padding: numb
  * circle with `ratio` of the frame's width as diameter, so circular crops and
  * maskable-icon masks never cut into it.
  */
-export function circleSafeFrame(artwork: ColoredArtwork, size: number, ratio: number, background?: string): Frame {
+export function circleSafeFrame(
+  artwork: ColoredArtwork,
+  size: number,
+  ratio: number,
+  background?: string,
+): Frame {
   const side = Math.hypot(artwork.width, artwork.height) / ratio;
   return centeredSquare(artwork, side, size, background);
 }
 
-function centeredSquare(artwork: ColoredArtwork, side: number, size: number, background?: string): Frame {
+function centeredSquare(
+  artwork: ColoredArtwork,
+  side: number,
+  size: number,
+  background?: string,
+): Frame {
   return {
     viewBox: [(artwork.width - side) / 2, (artwork.height - side) / 2, side, side],
     width: size,
@@ -45,8 +61,8 @@ export function frameSvg(artwork: ColoredArtwork, frame: Frame): string {
   const [x, y, width, height] = frame.viewBox;
   const background = frame.background
     ? `<rect x="${x}" y="${y}" width="${width}" height="${height}" fill="${frame.background}"/>`
-    : "";
-  const style = frame.style ? `<style>${frame.style}</style>` : "";
+    : '';
+  const style = frame.style ? `<style>${frame.style}</style>` : '';
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${frame.width}" height="${frame.height}" viewBox="${x} ${y} ${width} ${height}">${style}${background}${pathElements(artwork.paths)}</svg>`;
 }
 

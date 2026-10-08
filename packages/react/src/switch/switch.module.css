@@ -42,16 +42,26 @@
 
 .thumb {
   position: absolute;
-  inset-inline-start: calc((100% - var(--semantic-dimension-size-medium)) / 2 + var(--semantic-dimension-space-padding-xx-small));
-  inline-size: calc(var(--semantic-dimension-size-x-small) - 2 * var(--semantic-dimension-space-padding-xx-small));
-  block-size: calc(var(--semantic-dimension-size-x-small) - 2 * var(--semantic-dimension-space-padding-xx-small));
+  inset-inline-start: calc(
+    (100% - var(--semantic-dimension-size-medium)) / 2 +
+      var(--semantic-dimension-space-padding-xx-small)
+  );
+  inline-size: calc(
+    var(--semantic-dimension-size-x-small) - 2 * var(--semantic-dimension-space-padding-xx-small)
+  );
+  block-size: calc(
+    var(--semantic-dimension-size-x-small) - 2 * var(--semantic-dimension-space-padding-xx-small)
+  );
   border-radius: var(--semantic-dimension-radius-full);
   background: var(--semantic-color-background-switch-knob);
 }
 
 .root[data-checked] .thumb {
   inset-inline-start: auto;
-  inset-inline-end: calc((100% - var(--semantic-dimension-size-medium)) / 2 + var(--semantic-dimension-space-padding-xx-small));
+  inset-inline-end: calc(
+    (100% - var(--semantic-dimension-size-medium)) / 2 +
+      var(--semantic-dimension-space-padding-xx-small)
+  );
 }
 
 @media (pointer: coarse) {

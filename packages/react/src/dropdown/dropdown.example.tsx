@@ -3,7 +3,12 @@ import {Dropdown} from './index.ts';
 
 export function DropdownExample(): React.JSX.Element {
   return (
-    <Dropdown.Root items={[{value: 'alpha', label: 'Alpha'}, {value: 'beta', label: 'Beta'}]}>
+    <Dropdown.Root
+      items={[
+        {value: 'alpha', label: 'Alpha'},
+        {value: 'beta', label: 'Beta'},
+      ]}
+    >
       <Stack gap="small">
         <Dropdown.Label>Project</Dropdown.Label>
         <Dropdown.Trigger>
@@ -39,7 +44,7 @@ export function DropdownRadioExample(): React.JSX.Element {
         <Dropdown.Positioner>
           <Dropdown.Popup>
             <Dropdown.List>
-              {['Alpha', 'Beta', 'Gamma'].map(project => (
+              {['Alpha', 'Beta', 'Gamma'].map((project) => (
                 <Dropdown.Item key={project} value={project}>
                   <Dropdown.ItemIndicator />
                   <Dropdown.ItemText>{project}</Dropdown.ItemText>
@@ -67,7 +72,7 @@ export function DropdownMultipleExample(): React.JSX.Element {
         <Dropdown.Positioner>
           <Dropdown.Popup>
             <Dropdown.List>
-              {['Alpha', 'Beta', 'Gamma'].map(project => (
+              {['Alpha', 'Beta', 'Gamma'].map((project) => (
                 <Dropdown.Item key={project} value={project}>
                   <Dropdown.ItemIndicator />
                   <Dropdown.ItemText>{project}</Dropdown.ItemText>

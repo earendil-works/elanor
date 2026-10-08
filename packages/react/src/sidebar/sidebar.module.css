@@ -12,7 +12,8 @@
   padding-block: var(--semantic-dimension-space-padding-xx-large);
   padding-inline: var(--semantic-dimension-space-padding-medium);
   overflow: visible;
-  border-inline-end: var(--semantic-dimension-border-width-large) solid var(--semantic-color-border-secondary);
+  border-inline-end: var(--semantic-dimension-border-width-large) solid
+    var(--semantic-color-border-secondary);
   background: var(--semantic-color-background-canvas);
   color: var(--semantic-color-text-primary);
   font: var(--semantic-typography-ui-primary);
@@ -83,7 +84,8 @@
   z-index: var(--semantic-number-layer-overlay);
   content: '';
   inset-block-start: 0;
-  border-block-start: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-secondary);
+  border-block-start: var(--semantic-dimension-border-width-default) solid
+    var(--semantic-color-border-secondary);
 }
 
 .scrollArea[data-overflow-y-end]::after {
@@ -97,7 +99,8 @@
 .scrollArea[data-overflow-y-end]:has(:focus-visible)::after {
   block-size: 0;
   background: none;
-  border-block-end: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-secondary);
+  border-block-end: var(--semantic-dimension-border-width-default) solid
+    var(--semantic-color-border-secondary);
 }
 
 .trigger {

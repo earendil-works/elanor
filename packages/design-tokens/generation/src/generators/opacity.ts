@@ -1,5 +1,5 @@
-import { token } from "../dtcg";
-import type { GeneratedTokenPatch, JsonObject, OpacityRecipe } from "../types";
+import {token} from '../dtcg';
+import type {GeneratedTokenPatch, JsonObject, OpacityRecipe} from '../types';
 
 const FULL_OPACITY_STEP = 1000;
 
@@ -25,7 +25,7 @@ function opacityForStep(step: number): number {
 function validateSteps(steps: number[]): void {
   for (let index = 1; index < steps.length; index += 1) {
     if (steps[index] <= steps[index - 1]) {
-      throw new Error("Opacity steps must be in ascending order");
+      throw new Error('Opacity steps must be in ascending order');
     }
   }
 }
@@ -36,9 +36,7 @@ function validateSteps(steps: number[]): void {
  * @param recipe The opacity scale recipe.
  * @returns Typed patches containing the generated opacity tokens.
  */
-export function generateOpacityTokens(
-  recipe: OpacityRecipe,
-): GeneratedTokenPatch[] {
+export function generateOpacityTokens(recipe: OpacityRecipe): GeneratedTokenPatch[] {
   validateSteps(recipe.steps);
   const steps: JsonObject = {};
 
@@ -48,8 +46,8 @@ export function generateOpacityTokens(
 
   return [
     {
-      type: "number",
-      path: [...recipe.path, "number", "opacity"],
+      type: 'number',
+      path: [...recipe.path, 'number', 'opacity'],
       value: steps,
     },
   ];

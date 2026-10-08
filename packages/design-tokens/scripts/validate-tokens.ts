@@ -1,31 +1,23 @@
 #!/usr/bin/env node
 
-import { createHash } from "node:crypto";
-import { readdir, readFile } from "node:fs/promises";
-import path from "node:path";
-import Ajv, {
-  type AnySchema,
-  type ErrorObject,
-  type ValidateFunction,
-} from "ajv";
-import addFormats from "ajv-formats";
+import {createHash} from 'node:crypto';
+import {readdir, readFile} from 'node:fs/promises';
+import path from 'node:path';
 
-const ROOT_DIRECTORY = path.join(__dirname, "..");
-const TOKENS_DIRECTORY = path.join(ROOT_DIRECTORY, "tokens");
-const SCHEMA_VERSION = "2025.10";
-const SCHEMA_DIRECTORY = path.join(
-  ROOT_DIRECTORY,
-  "schemas",
-  "dtcg",
-  SCHEMA_VERSION,
-);
-const SCHEMA_NAMES = ["format", "resolver"] as const;
+import Ajv, {type AnySchema, type ErrorObject, type ValidateFunction} from 'ajv';
+import addFormats from 'ajv-formats';
+
+const ROOT_DIRECTORY = path.join(__dirname, '..');
+const TOKENS_DIRECTORY = path.join(ROOT_DIRECTORY, 'tokens');
+const SCHEMA_VERSION = '2025.10';
+const SCHEMA_DIRECTORY = path.join(ROOT_DIRECTORY, 'schemas', 'dtcg', SCHEMA_VERSION);
+const SCHEMA_NAMES = ['format', 'resolver'] as const;
 
 type SchemaName = (typeof SCHEMA_NAMES)[number];
 
 interface Manifest {
   version: string;
-  schemas: Record<SchemaName, { sha256: string; url: string }>;
+  schemas: Record<SchemaName, {sha256: string; url: string}>;
 }
 
 interface JsonFile<T> {
@@ -50,7 +42,7 @@ function errorMessage(error: unknown): string {
  * @returns A lowercase hexadecimal digest.
  */
 function sha256(content: Buffer): string {
-  return createHash("sha256").update(content).digest("hex");
+  return createHash('sha256').update(content).digest('hex');
 }
 
 /**
@@ -64,11 +56,9 @@ async function readJson<T = unknown>(file: string): Promise<JsonFile<T>> {
   const content = await readFile(file);
 
   try {
-    return { content, value: JSON.parse(content.toString("utf8")) as T };
+    return {content, value: JSON.parse(content.toString('utf8')) as T};
   } catch (error) {
-    throw new Error(
-      `${path.relative(ROOT_DIRECTORY, file)}: ${errorMessage(error)}`,
-    );
+    throw new Error(`${path.relative(ROOT_DIRECTORY, file)}: ${errorMessage(error)}`);
   }
 }
 
@@ -79,7 +69,7 @@ async function readJson<T = unknown>(file: string): Promise<JsonFile<T>> {
  * @returns Absolute file paths sorted by name.
  */
 async function findJsonFiles(directory: string): Promise<string[]> {
-  const entries = await readdir(directory, { withFileTypes: true });
+  const entries = await readdir(directory, {withFileTypes: true});
   const files: string[] = [];
 
   for (const entry of entries) {
@@ -123,10 +113,8 @@ function printErrors(file: string, errors?: ErrorObject[] | null): void {
   const relativeFile = path.relative(ROOT_DIRECTORY, file);
 
   for (const error of errors ?? []) {
-    const location = error.instancePath || "/";
-    console.error(
-      `${relativeFile}${location}: ${error.message} (${error.schemaPath})`,
-    );
+    const location = error.instancePath || '/';
+    console.error(`${relativeFile}${location}: ${error.message} (${error.schemaPath})`);
   }
 }
 
@@ -134,8 +122,8 @@ function printErrors(file: string, errors?: ErrorObject[] | null): void {
  * Verifies schema checksums and validates every token and resolver file.
  */
 async function main(): Promise<void> {
-  const manifestPath = path.join(SCHEMA_DIRECTORY, "manifest.json");
-  const { value: manifest } = await readJson<Manifest>(manifestPath);
+  const manifestPath = path.join(SCHEMA_DIRECTORY, 'manifest.json');
+  const {value: manifest} = await readJson<Manifest>(manifestPath);
   const validators = {} as Record<SchemaName, ValidateFunction>;
 
   if (manifest.version !== SCHEMA_VERSION) {
@@ -146,7 +134,7 @@ async function main(): Promise<void> {
 
   for (const name of SCHEMA_NAMES) {
     const schemaPath = path.join(SCHEMA_DIRECTORY, `${name}.json`);
-    const { content, value } = await readJson(schemaPath);
+    const {content, value} = await readJson(schemaPath);
     const expectedHash = manifest.schemas?.[name]?.sha256;
     const actualHash = sha256(content);
 
@@ -164,15 +152,15 @@ async function main(): Promise<void> {
   const resolverFiles: string[] = [];
 
   for (const file of jsonFiles) {
-    if (file.endsWith(".tokens.json")) {
+    if (file.endsWith('.tokens.json')) {
       tokenFiles.push(file);
-    } else if (file.endsWith(".resolver.json")) {
+    } else if (file.endsWith('.resolver.json')) {
       resolverFiles.push(file);
     }
   }
 
   if (tokenFiles.length === 0 || resolverFiles.length === 0) {
-    throw new Error("Expected at least one token file and one resolver file");
+    throw new Error('Expected at least one token file and one resolver file');
   }
 
   let valid = true;
@@ -180,13 +168,13 @@ async function main(): Promise<void> {
     files: string[];
     validate: ValidateFunction;
   }> = [
-    { files: tokenFiles, validate: validators.format },
-    { files: resolverFiles, validate: validators.resolver },
+    {files: tokenFiles, validate: validators.format},
+    {files: resolverFiles, validate: validators.resolver},
   ];
 
-  for (const { files, validate } of validationGroups) {
+  for (const {files, validate} of validationGroups) {
     for (const file of files) {
-      const { value } = await readJson(file);
+      const {value} = await readJson(file);
       if (!validate(value)) {
         valid = false;
         printErrors(file, validate.errors);

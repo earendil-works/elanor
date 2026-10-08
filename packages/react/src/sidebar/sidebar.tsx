@@ -3,9 +3,11 @@ import {Tooltip} from '@base-ui/react/tooltip';
 import {useRender} from '@base-ui/react/use-render';
 import {DockToLeftIcon} from '@earendil-works/elanor-icons-react';
 import {createContext, forwardRef, useContext, useState, type ReactNode} from 'react';
+
+import {ScrollArea} from '../scroll-area/scroll-area.tsx';
 import {classes, mergeClassName} from '../utils/class-names.ts';
 import {CompactTooltip} from './compact-tooltip.tsx';
-import {ScrollArea} from '../scroll-area/scroll-area.tsx';
+
 import styles from './sidebar.module.css';
 
 export type SidebarState = {
@@ -16,7 +18,10 @@ export type SidebarChangeEventDetails = Toggle.ChangeEventDetails;
 export type SidebarChangeEventReason = Toggle.ChangeEventReason;
 export type SidebarTriggerState = Toggle.State;
 
-export interface SidebarRootProps extends Omit<useRender.ComponentProps<'div', SidebarState>, 'children'> {
+export interface SidebarRootProps extends Omit<
+  useRender.ComponentProps<'div', SidebarState>,
+  'children'
+> {
   readonly collapsed?: boolean;
   readonly defaultCollapsed?: boolean;
   readonly onCollapsedChange?: (collapsed: boolean, details: SidebarChangeEventDetails) => void;
@@ -37,7 +42,15 @@ function useSidebarContext() {
 }
 
 export const SidebarRoot = forwardRef<HTMLDivElement, SidebarRootProps>(function SidebarRoot(
-  {collapsed: controlledCollapsed, defaultCollapsed = false, onCollapsedChange, children, render, className, ...props},
+  {
+    collapsed: controlledCollapsed,
+    defaultCollapsed = false,
+    onCollapsedChange,
+    children,
+    render,
+    className,
+    ...props
+  },
   ref,
 ) {
   const [uncontrolledCollapsed, setUncontrolledCollapsed] = useState(defaultCollapsed);
@@ -67,75 +80,103 @@ export const SidebarRoot = forwardRef<HTMLDivElement, SidebarRootProps>(function
   );
 });
 
-export interface SidebarTriggerProps extends Omit<Toggle.Props, 'pressed' | 'defaultPressed' | 'onPressedChange'> {}
+export interface SidebarTriggerProps extends Omit<
+  Toggle.Props,
+  'pressed' | 'defaultPressed' | 'onPressedChange'
+> {}
 
-export const SidebarTrigger = forwardRef<HTMLButtonElement, SidebarTriggerProps>(function SidebarTrigger(
-  {className, children = <DockToLeftIcon aria-hidden="true" />, 'aria-label': label = 'Collapse sidebar', ...props},
-  ref,
-) {
-  const {state, setCollapsed} = useSidebarContext();
-  return (
-    <CompactTooltip label={label}>
-      <Toggle
-        {...props}
-        ref={ref}
-        aria-label={label}
-        pressed={state.collapsed}
-        onPressedChange={setCollapsed}
-        className={mergeClassName<Toggle.State>(styles.trigger, className)}
-      >
-        {children}
-      </Toggle>
-    </CompactTooltip>
-  );
-});
+export const SidebarTrigger = forwardRef<HTMLButtonElement, SidebarTriggerProps>(
+  function SidebarTrigger(
+    {
+      className,
+      children = <DockToLeftIcon aria-hidden="true" />,
+      'aria-label': label = 'Collapse sidebar',
+      ...props
+    },
+    ref,
+  ) {
+    const {state, setCollapsed} = useSidebarContext();
+    return (
+      <CompactTooltip label={label}>
+        <Toggle
+          {...props}
+          ref={ref}
+          aria-label={label}
+          pressed={state.collapsed}
+          onPressedChange={setCollapsed}
+          className={mergeClassName<Toggle.State>(styles.trigger, className)}
+        >
+          {children}
+        </Toggle>
+      </CompactTooltip>
+    );
+  },
+);
 
 export interface SidebarHeaderProps extends useRender.ComponentProps<'div', SidebarState> {}
 
 export const SidebarHeader = forwardRef<HTMLDivElement, SidebarHeaderProps>(function SidebarHeader(
-  {render, className, ...props}, ref,
+  {render, className, ...props},
+  ref,
 ) {
   const {state} = useSidebarContext();
-  return useRender({defaultTagName: 'div', render, ref, state, props: {...props, className: classes(styles.header, className)}});
-});
-
-export interface SidebarContentProps extends useRender.ComponentProps<'div', SidebarState> {}
-
-export const SidebarContent = forwardRef<HTMLDivElement, SidebarContentProps>(function SidebarContent(
-  {render, className, children, ...props}, ref,
-) {
-  const {state} = useSidebarContext();
-  // Keep render, ref, events and native attributes on the actual scrolling element.
-  const viewport = useRender({
+  return useRender({
     defaultTagName: 'div',
     render,
     ref,
     state,
-    props: {
-      ...props,
-      className: classes(styles.content, className),
-      // Base UI uses min-width: fit-content for two-axis scrolling. Sidebar
-      // navigation is single-axis: allow long labels to shrink and truncate.
-      children: <ScrollArea.Content className={styles.contentInner} style={{minWidth: 0}}>{children}</ScrollArea.Content>,
-    },
+    props: {...props, className: classes(styles.header, className)},
   });
-  return (
-    <ScrollArea.Root className={styles.scrollArea}>
-      <ScrollArea.Viewport render={viewport} />
-      <ScrollArea.Scrollbar className={styles.scrollbar}>
-        <ScrollArea.Thumb />
-      </ScrollArea.Scrollbar>
-    </ScrollArea.Root>
-  );
 });
+
+export interface SidebarContentProps extends useRender.ComponentProps<'div', SidebarState> {}
+
+export const SidebarContent = forwardRef<HTMLDivElement, SidebarContentProps>(
+  function SidebarContent({render, className, children, ...props}, ref) {
+    const {state} = useSidebarContext();
+    // Keep render, ref, events and native attributes on the actual scrolling element.
+    const viewport = useRender({
+      defaultTagName: 'div',
+      render,
+      ref,
+      state,
+      props: {
+        ...props,
+        className: classes(styles.content, className),
+        // Base UI uses min-width: fit-content for two-axis scrolling. Sidebar
+        // navigation is single-axis: allow long labels to shrink and truncate.
+        children: (
+          <ScrollArea.Content className={styles.contentInner} style={{minWidth: 0}}>
+            {children}
+          </ScrollArea.Content>
+        ),
+      },
+    });
+    return (
+      <ScrollArea.Root className={styles.scrollArea}>
+        <ScrollArea.Viewport render={viewport} />
+        <ScrollArea.Scrollbar className={styles.scrollbar}>
+          <ScrollArea.Thumb />
+        </ScrollArea.Scrollbar>
+      </ScrollArea.Root>
+    );
+  },
+);
 
 export interface SidebarFooterProps extends useRender.ComponentProps<'div', SidebarState> {}
 
 export const SidebarFooter = forwardRef<HTMLDivElement, SidebarFooterProps>(function SidebarFooter(
-  {render, className, ...props}, ref,
+  {render, className, ...props},
+  ref,
 ) {
   const {state} = useSidebarContext();
-  return useRender({defaultTagName: 'div', render, ref, state, props: {...props, className: classes(styles.footer, className)}});
+  return useRender({
+    defaultTagName: 'div',
+    render,
+    ref,
+    state,
+    props: {...props, className: classes(styles.footer, className)},
+  });
 });
 
 export const Sidebar = {

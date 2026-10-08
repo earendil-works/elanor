@@ -1,5 +1,5 @@
-import type {PipelineConfig} from "../../config.js";
-import type {Contour, ViewBox} from "./types.js";
+import type {PipelineConfig} from '../../config.js';
+import type {Contour, ViewBox} from './types.js';
 
 export function boilContours(
   contours: Contour[],
@@ -9,7 +9,7 @@ export function boilContours(
   const settings = config.boiling;
   if (!settings.enabled || settings.displacement === 0) return contours;
   if (settings.octaves < 1 || !Number.isInteger(settings.octaves)) {
-    throw new Error("Boiling octaves must be a positive integer");
+    throw new Error('Boiling octaves must be a positive integer');
   }
 
   const noiseX = new PerlinNoise(settings.seed);

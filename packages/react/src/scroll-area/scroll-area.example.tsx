@@ -1,10 +1,12 @@
-import {useRef, useState} from 'react';
 import {DirectionProvider} from '@base-ui/react/direction-provider';
+import {useRef, useState} from 'react';
+
 import {Button} from '../button/button.tsx';
 import {Heading} from '../heading/heading.tsx';
 import {Stack} from '../stack/stack.tsx';
 import {Text} from '../text/text.tsx';
 import {ScrollArea} from './scroll-area.tsx';
+
 import styles from './scroll-area.example.module.css';
 
 export function ScrollAreaExample() {
@@ -16,13 +18,19 @@ export function ScrollAreaExample() {
       <Stack align="stretch" gap="large" dir={direction} style={{inlineSize: '100%'}}>
         <label>
           Direction{' '}
-          <select value={direction} onChange={(event) => setDirection(event.currentTarget.value as 'ltr' | 'rtl')}>
+          <select
+            value={direction}
+            onChange={(event) => setDirection(event.currentTarget.value as 'ltr' | 'rtl')}
+          >
             <option value="ltr">Left to right</option>
             <option value="rtl">Right to left</option>
           </select>
         </label>
         <Heading level={2}>Vertical scrolling</Heading>
-        <Text>Tab to the named viewport and use arrow keys or Page Down. The scrollbar also supports dragging.</Text>
+        <Text>
+          Tab to the named viewport and use arrow keys or Page Down. The scrollbar also supports
+          dragging.
+        </Text>
         <ScrollArea.Root className={styles.frame}>
           <ScrollArea.Viewport
             ref={viewportRef}
@@ -32,18 +40,29 @@ export function ScrollAreaExample() {
           >
             <ScrollArea.Content className={styles.entries}>
               {Array.from({length: 12}, (_, index) => (
-                <Text key={index}>Release {index + 1}: navigation, layout, and component improvements.</Text>
+                <Text key={index}>
+                  Release {index + 1}: navigation, layout, and component improvements.
+                </Text>
               ))}
             </ScrollArea.Content>
           </ScrollArea.Viewport>
-          <ScrollArea.Scrollbar><ScrollArea.Thumb /></ScrollArea.Scrollbar>
+          <ScrollArea.Scrollbar>
+            <ScrollArea.Thumb />
+          </ScrollArea.Scrollbar>
         </ScrollArea.Root>
         <Stack direction="row" wrap="wrap">
-          <Button hierarchy="secondary" onClick={() => viewportRef.current?.scrollTo({top: 0})}>Scroll to start</Button>
-          <Button hierarchy="secondary" onClick={() => {
-            const viewport = viewportRef.current;
-            viewport?.scrollTo({top: viewport.scrollHeight});
-          }}>Scroll to end</Button>
+          <Button hierarchy="secondary" onClick={() => viewportRef.current?.scrollTo({top: 0})}>
+            Scroll to start
+          </Button>
+          <Button
+            hierarchy="secondary"
+            onClick={() => {
+              const viewport = viewportRef.current;
+              viewport?.scrollTo({top: viewport.scrollHeight});
+            }}
+          >
+            Scroll to end
+          </Button>
           <Text>Viewport scrollTop: {position}px</Text>
         </Stack>
 
@@ -52,12 +71,21 @@ export function ScrollAreaExample() {
           <ScrollArea.Viewport role="region" aria-label="Wide content example">
             <ScrollArea.Content>
               <div className={styles.wideContent}>
-                {Array.from({length: 8}, (_, index) => <Text key={index}>Row {index + 1}: this deliberately wide region demonstrates horizontal overflow as well as vertical scrolling.</Text>)}
+                {Array.from({length: 8}, (_, index) => (
+                  <Text key={index}>
+                    Row {index + 1}: this deliberately wide region demonstrates horizontal overflow
+                    as well as vertical scrolling.
+                  </Text>
+                ))}
               </div>
             </ScrollArea.Content>
           </ScrollArea.Viewport>
-          <ScrollArea.Scrollbar><ScrollArea.Thumb /></ScrollArea.Scrollbar>
-          <ScrollArea.Scrollbar orientation="horizontal"><ScrollArea.Thumb /></ScrollArea.Scrollbar>
+          <ScrollArea.Scrollbar>
+            <ScrollArea.Thumb />
+          </ScrollArea.Scrollbar>
+          <ScrollArea.Scrollbar orientation="horizontal">
+            <ScrollArea.Thumb />
+          </ScrollArea.Scrollbar>
           <ScrollArea.Corner />
         </ScrollArea.Root>
 
@@ -67,7 +95,9 @@ export function ScrollAreaExample() {
           <ScrollArea.Viewport role="region" aria-label="Short content example">
             <ScrollArea.Content>All content fits.</ScrollArea.Content>
           </ScrollArea.Viewport>
-          <ScrollArea.Scrollbar><ScrollArea.Thumb /></ScrollArea.Scrollbar>
+          <ScrollArea.Scrollbar>
+            <ScrollArea.Thumb />
+          </ScrollArea.Scrollbar>
         </ScrollArea.Root>
       </Stack>
     </DirectionProvider>

@@ -1,4 +1,5 @@
 import {fileURLToPath} from 'node:url';
+
 import {createStrictConfig} from '@earendil-works/stylelint-plugin-design-tokens';
 
 const strictConfig = createStrictConfig({

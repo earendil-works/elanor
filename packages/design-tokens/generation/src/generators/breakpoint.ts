@@ -1,5 +1,5 @@
-import { token } from "../dtcg";
-import type { BreakpointRecipe, GeneratedTokenPatch } from "../types";
+import {token} from '../dtcg';
+import type {BreakpointRecipe, GeneratedTokenPatch} from '../types';
 
 const BASE_REM = 16;
 const TOKEN_INCREMENT = 100;
@@ -26,7 +26,7 @@ function calculateRem(step: number): number {
 function validateSteps(steps: number[]): void {
   for (let index = 1; index < steps.length; index += 1) {
     if (steps[index] <= steps[index - 1]) {
-      throw new Error("Breakpoint steps must be in ascending order");
+      throw new Error('Breakpoint steps must be in ascending order');
     }
   }
 }
@@ -40,16 +40,14 @@ function validateSteps(steps: number[]): void {
  * @param recipe The breakpoint scale recipe.
  * @returns Typed patches containing the generated breakpoint tokens.
  */
-export function generateBreakpointTokens(
-  recipe: BreakpointRecipe,
-): GeneratedTokenPatch[] {
+export function generateBreakpointTokens(recipe: BreakpointRecipe): GeneratedTokenPatch[] {
   validateSteps(recipe.steps);
   return recipe.steps.map((step) => ({
-    type: "dimension",
-    path: [...recipe.path, "dimension", "breakpoint", String(step)],
+    type: 'dimension',
+    path: [...recipe.path, 'dimension', 'breakpoint', String(step)],
     value: token({
       value: calculateRem(step),
-      unit: "rem",
+      unit: 'rem',
     }),
   }));
 }

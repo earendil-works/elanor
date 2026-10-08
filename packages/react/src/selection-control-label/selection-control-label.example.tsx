@@ -21,7 +21,8 @@ export function SelectionControlLabelExample(): React.JSX.Element {
           </Checkbox.Root>
         }
       >
-        Send me a weekly summary of project activity,<br />
+        Send me a weekly summary of project activity,
+        <br />
         including comments, assignments, and upcoming deadlines.
       </SelectionControlAndLabel>
     </Stack>

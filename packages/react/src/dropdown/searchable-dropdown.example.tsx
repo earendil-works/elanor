@@ -1,4 +1,5 @@
 import {useState} from 'react';
+
 import {Stack} from '../stack/stack.tsx';
 import {SearchableDropdown} from './index.ts';
 
@@ -21,7 +22,10 @@ export function SearchableDropdownExample(): React.JSX.Element {
           <SearchableDropdown.Positioner>
             <SearchableDropdown.Popup aria-label="Choose a project">
               <SearchableDropdown.InputGroup>
-                <SearchableDropdown.Input aria-label="Filter projects" placeholder="Filter projects" />
+                <SearchableDropdown.Input
+                  aria-label="Filter projects"
+                  placeholder="Filter projects"
+                />
               </SearchableDropdown.InputGroup>
               <SearchableDropdown.Empty>No projects found.</SearchableDropdown.Empty>
               <SearchableDropdown.List>
@@ -35,7 +39,9 @@ export function SearchableDropdownExample(): React.JSX.Element {
             </SearchableDropdown.Popup>
           </SearchableDropdown.Positioner>
         </SearchableDropdown.Portal>
-        <SearchableDropdown.Status>{project === null ? null : `Selected ${project}.`}</SearchableDropdown.Status>
+        <SearchableDropdown.Status>
+          {project === null ? null : `Selected ${project}.`}
+        </SearchableDropdown.Status>
       </SearchableDropdown.Root>
     </div>
   );

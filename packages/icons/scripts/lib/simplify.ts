@@ -1,4 +1,4 @@
-import type {Contour, Point} from "./types.js";
+import type {Contour, Point} from './types.js';
 
 /**
  * Ramer-Douglas-Peucker simplification with a point-to-segment error bound.
@@ -7,7 +7,7 @@ import type {Contour, Point} from "./types.js";
  * not claim general topology preservation.
  */
 export function simplifyContours(contours: Contour[], tolerance: number): Contour[] {
-  if (tolerance < 0) throw new Error("Simplification tolerance cannot be negative");
+  if (tolerance < 0) throw new Error('Simplification tolerance cannot be negative');
   if (tolerance === 0) return contours;
   return contours.map((contour) => simplifyContour(contour, tolerance));
 }
@@ -65,14 +65,14 @@ export function simplifyOpen(points: Point[], tolerance: number): Point[] {
   return points.filter((_, index) => keep[index] === 1);
 }
 
-export function maximumDeviation(
-  original: Point[],
-  simplified: Point[],
-  closed: boolean,
-): number {
+export function maximumDeviation(original: Point[], simplified: Point[], closed: boolean): number {
   if (simplified.length === 0) return Number.POSITIVE_INFINITY;
   if (simplified.length === 1) {
-    return Math.max(...original.map((point) => Math.hypot(point.x - simplified[0]!.x, point.y - simplified[0]!.y)));
+    return Math.max(
+      ...original.map((point) =>
+        Math.hypot(point.x - simplified[0]!.x, point.y - simplified[0]!.y),
+      ),
+    );
   }
 
   let maximumSquared = 0;

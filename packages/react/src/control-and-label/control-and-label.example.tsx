@@ -6,7 +6,11 @@ export function ControlAndLabelExample() {
       <ControlAndLabel label="Display name" description="Shown to other workspace members.">
         <Input name="displayName" autoComplete="name" defaultValue="Alex Morgan" />
       </ControlAndLabel>
-      <ControlAndLabel label="Workspace ID" description="Assigned when the workspace is created." disabled>
+      <ControlAndLabel
+        label="Workspace ID"
+        description="Assigned when the workspace is created."
+        disabled
+      >
         <Input name="workspaceId" defaultValue="workspace-2048" />
       </ControlAndLabel>
     </Stack>

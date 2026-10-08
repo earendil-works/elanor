@@ -1,15 +1,9 @@
-import type {
-  DtcgToken,
-  GenerationMarker,
-  JsonObject,
-  JsonValue,
-} from "./types";
+import type {DtcgToken, GenerationMarker, JsonObject, JsonValue} from './types';
 
-export const FORMAT_SCHEMA =
-  "https://designtokens.org/schemas/2025.10/format.json";
+export const FORMAT_SCHEMA = 'https://designtokens.org/schemas/2025.10/format.json';
 export const GENERATED_DESCRIPTION =
-  "Contains generated and manually authored tokens. Edit only paths not managed by a generator.";
-export const GENERATION_EXTENSION_KEY = "com.earendil-works.generation";
+  'Contains generated and manually authored tokens. Edit only paths not managed by a generator.';
+export const GENERATION_EXTENSION_KEY = 'com.earendil-works.generation';
 
 /**
  * Creates a DTCG token object.
@@ -18,7 +12,7 @@ export const GENERATION_EXTENSION_KEY = "com.earendil-works.generation";
  * @returns A token object with `$value` set.
  */
 export function token(value: JsonValue): JsonObject {
-  return { $value: value };
+  return {$value: value};
 }
 
 /**
@@ -85,7 +79,7 @@ export function isJsonObject(value: JsonValue): value is JsonObject {
  * @returns Whether the value is a token object with `$value`.
  */
 export function isToken(value: JsonValue): value is DtcgToken {
-  return isJsonObject(value) && Object.hasOwn(value, "$value");
+  return isJsonObject(value) && Object.hasOwn(value, '$value');
 }
 
 /**
@@ -95,10 +89,7 @@ export function isToken(value: JsonValue): value is DtcgToken {
  * @param marker The ownership marker to stamp onto each token.
  * @returns A cloned and stamped subtree.
  */
-export function stampGeneratedTokens(
-  value: JsonObject,
-  marker: GenerationMarker,
-): JsonObject {
+export function stampGeneratedTokens(value: JsonObject, marker: GenerationMarker): JsonObject {
   const stamped = cloneJson(value);
   stampNode(stamped, marker);
   return stamped;
@@ -119,7 +110,7 @@ function stampNode(node: JsonValue, marker: GenerationMarker): void {
   }
 
   for (const [key, child] of Object.entries(node)) {
-    if (!key.startsWith("$") || key === "$root") {
+    if (!key.startsWith('$') || key === '$root') {
       stampNode(child, marker);
     }
   }

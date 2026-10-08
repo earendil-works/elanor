@@ -1,10 +1,8 @@
 import {useState} from 'react';
+
 import {Stack} from '../stack/stack.tsx';
 import {Text} from '../text/text.tsx';
-import {
-  SegmentedControl,
-  SegmentedControlItem,
-} from './segmented-control.tsx';
+import {SegmentedControl, SegmentedControlItem} from './segmented-control.tsx';
 
 export function SegmentedControlExample(): React.JSX.Element {
   const [period, setPeriod] = useState(['monthly']);
@@ -14,7 +12,7 @@ export function SegmentedControlExample(): React.JSX.Element {
       <SegmentedControl
         aria-label="Billing period"
         value={period}
-        onValueChange={next => {
+        onValueChange={(next) => {
           if (next.length > 0) setPeriod(next);
         }}
       >

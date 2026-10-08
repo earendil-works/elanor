@@ -4,11 +4,7 @@
     "fontFamily": {
       "$type": "fontFamily",
       "mono": {
-        "$value": [
-          "DepartureMono",
-          "ui-monospace",
-          "monospace"
-        ]
+        "$value": ["DepartureMono", "ui-monospace", "monospace"]
       }
     }
   }

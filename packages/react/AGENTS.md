@@ -43,9 +43,14 @@ For Base UI changes, consult [the documentation index](https://base-ui.com/llms.
 
 ```ts
 [
-  '--anchor-width', '--available-width', '--available-height',
-  '--active-tab-left', '--active-tab-top', '--active-tab-width', '--active-tab-height',
-]
+  '--anchor-width',
+  '--available-width',
+  '--available-height',
+  '--active-tab-left',
+  '--active-tab-top',
+  '--active-tab-width',
+  '--active-tab-height',
+];
 ```
 
 ## Validation

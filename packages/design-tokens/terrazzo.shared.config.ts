@@ -1,6 +1,6 @@
-import type { Permutation } from "@terrazzo/plugin-css";
+import type {Permutation} from '@terrazzo/plugin-css';
 
-const SEMANTIC_COLOR_TOKEN_PATTERN = "semantic.color.**";
+const SEMANTIC_COLOR_TOKEN_PATTERN = 'semantic.color.**';
 
 /**
  * Indents generated CSS declarations for use inside nested rule blocks.
@@ -11,13 +11,13 @@ const SEMANTIC_COLOR_TOKEN_PATTERN = "semantic.color.**";
  */
 function indentDeclarations(contents: string, level = 1): string {
   const result: string[] = [];
-  const indentation = "  ".repeat(level);
+  const indentation = '  '.repeat(level);
 
-  for (const line of contents.split("\n")) {
+  for (const line of contents.split('\n')) {
     result.push(line ? `${indentation}${line.trimStart()}` : line);
   }
 
-  return result.join("\n");
+  return result.join('\n');
 }
 
 /**
@@ -56,7 +56,7 @@ export const cssPermutations: Permutation[] = [
     prepare: prepareBaseCss,
   },
   {
-    input: { colorScheme: "dark" },
+    input: {colorScheme: 'dark'},
     include: [SEMANTIC_COLOR_TOKEN_PATTERN],
     prepare: prepareDarkColorSchemeCss,
   },

@@ -17,7 +17,10 @@ interface DocsSideNavigationProps {
   readonly current: string;
 }
 
-export function DocsSideNavigation({sections, current}: DocsSideNavigationProps): React.JSX.Element {
+export function DocsSideNavigation({
+  sections,
+  current,
+}: DocsSideNavigationProps): React.JSX.Element {
   return (
     <SideNavigationRoot>
       {sections.map((section) => (

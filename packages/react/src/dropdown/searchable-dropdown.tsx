@@ -1,8 +1,10 @@
 import {Combobox as BaseCombobox} from '@base-ui/react/combobox';
 import {KeyboardArrowDownIcon, SearchIcon} from '@earendil-works/elanor-icons-react';
 import {createContext, forwardRef, useContext} from 'react';
-import styles from './searchable-dropdown.module.css';
+
 import {classes, mergeClassName} from '../utils/class-names.ts';
+
+import styles from './searchable-dropdown.module.css';
 
 export type {
   ComboboxTriggerState as SearchableDropdownTriggerState,
@@ -57,16 +59,21 @@ export type SearchableDropdownListProps = BaseCombobox.List.Props;
 export type SearchableDropdownItemProps = BaseCombobox.Item.Props;
 export type SearchableDropdownItemIndicatorProps = BaseCombobox.ItemIndicator.Props;
 export type SearchableDropdownGroupLabelProps = BaseCombobox.GroupLabel.Props;
-export interface SearchableDropdownSeparatorProps extends Omit<BaseCombobox.Separator.Props, 'orientation'> {
+export interface SearchableDropdownSeparatorProps extends Omit<
+  BaseCombobox.Separator.Props,
+  'orientation'
+> {
   readonly orientation?: 'horizontal';
 }
 export type SearchableDropdownEmptyProps = BaseCombobox.Empty.Props;
 
 const MultipleContext = createContext(false);
 
-export function SearchableDropdownRoot<Value, Multiple extends boolean | undefined = false, Item = Value>(
-  props: SearchableDropdownRootProps<Value, Multiple, Item>,
-): React.JSX.Element {
+export function SearchableDropdownRoot<
+  Value,
+  Multiple extends boolean | undefined = false,
+  Item = Value,
+>(props: SearchableDropdownRootProps<Value, Multiple, Item>): React.JSX.Element {
   return (
     <MultipleContext.Provider value={props.multiple ?? false}>
       <BaseCombobox.Root<Value, Multiple, Item> {...props} grid={false} />
@@ -86,17 +93,18 @@ export const SearchableDropdownLabel = forwardRef<HTMLDivElement, SearchableDrop
   },
 );
 
-export const SearchableDropdownTrigger = forwardRef<HTMLButtonElement, SearchableDropdownTriggerProps>(
-  function SearchableDropdownTrigger({className, ...props}, ref) {
-    return (
-      <BaseCombobox.Trigger
-        {...props}
-        ref={ref}
-        className={mergeClassName<BaseCombobox.Trigger.State>(styles.trigger, className)}
-      />
-    );
-  },
-);
+export const SearchableDropdownTrigger = forwardRef<
+  HTMLButtonElement,
+  SearchableDropdownTriggerProps
+>(function SearchableDropdownTrigger({className, ...props}, ref) {
+  return (
+    <BaseCombobox.Trigger
+      {...props}
+      ref={ref}
+      className={mergeClassName<BaseCombobox.Trigger.State>(styles.trigger, className)}
+    />
+  );
+});
 
 export const SearchableDropdownIcon = forwardRef<HTMLSpanElement, SearchableDropdownIconProps>(
   function SearchableDropdownIcon({className, children, ...props}, ref) {
@@ -124,27 +132,30 @@ export const SearchableDropdownPopup = forwardRef<HTMLDivElement, SearchableDrop
   },
 );
 
-export const SearchableDropdownInputGroup = forwardRef<HTMLDivElement, SearchableDropdownInputGroupProps>(
-  function SearchableDropdownInputGroup({className, children, ...props}, ref) {
-    return (
-      <BaseCombobox.InputGroup
-        {...props}
-        ref={ref}
-        className={mergeClassName<BaseCombobox.InputGroup.State>(styles.inputGroup, className)}
-      >
-        <span className={styles.searchIcon} aria-hidden="true">
-          <SearchIcon />
-        </span>
-        {children}
-      </BaseCombobox.InputGroup>
-    );
-  },
-);
+export const SearchableDropdownInputGroup = forwardRef<
+  HTMLDivElement,
+  SearchableDropdownInputGroupProps
+>(function SearchableDropdownInputGroup({className, children, ...props}, ref) {
+  return (
+    <BaseCombobox.InputGroup
+      {...props}
+      ref={ref}
+      className={mergeClassName<BaseCombobox.InputGroup.State>(styles.inputGroup, className)}
+    >
+      <span className={styles.searchIcon} aria-hidden="true">
+        <SearchIcon />
+      </span>
+      {children}
+    </BaseCombobox.InputGroup>
+  );
+});
 
 export const SearchableDropdownInput = forwardRef<HTMLInputElement, SearchableDropdownInputProps>(
   function SearchableDropdownInput({className, type = 'text', ...props}, ref) {
     if (!inputTypes.includes(type)) {
-      throw new TypeError(`SearchableDropdown.Input does not support type="${type}". Use one of: ${inputTypes.join(', ')}.`);
+      throw new TypeError(
+        `SearchableDropdown.Input does not support type="${type}". Use one of: ${inputTypes.join(', ')}.`,
+      );
     }
 
     return (
@@ -182,48 +193,54 @@ export const SearchableDropdownItem = forwardRef<HTMLDivElement, SearchableDropd
   },
 );
 
-export const SearchableDropdownItemIndicator = forwardRef<HTMLSpanElement, SearchableDropdownItemIndicatorProps>(
-  function SearchableDropdownItemIndicator({className, children = null, ...props}, ref) {
-    const multiple = useContext(MultipleContext);
+export const SearchableDropdownItemIndicator = forwardRef<
+  HTMLSpanElement,
+  SearchableDropdownItemIndicatorProps
+>(function SearchableDropdownItemIndicator({className, children = null, ...props}, ref) {
+  const multiple = useContext(MultipleContext);
 
-    return (
-      <span className={classes(styles.indicatorFrame, multiple && styles.indicatorFrameMultiple)}>
-        <BaseCombobox.ItemIndicator
-          {...props}
-          ref={ref}
-          className={mergeClassName<BaseCombobox.ItemIndicator.State>(styles.itemIndicator, className)}
-        >
-          {children}
-        </BaseCombobox.ItemIndicator>
-      </span>
-    );
-  },
-);
-
-export const SearchableDropdownGroupLabel = forwardRef<HTMLDivElement, SearchableDropdownGroupLabelProps>(
-  function SearchableDropdownGroupLabel({className, ...props}, ref) {
-    return (
-      <BaseCombobox.GroupLabel
+  return (
+    <span className={classes(styles.indicatorFrame, multiple && styles.indicatorFrameMultiple)}>
+      <BaseCombobox.ItemIndicator
         {...props}
         ref={ref}
-        className={mergeClassName<BaseCombobox.GroupLabel.State>(styles.groupLabel, className)}
-      />
-    );
-  },
-);
+        className={mergeClassName<BaseCombobox.ItemIndicator.State>(
+          styles.itemIndicator,
+          className,
+        )}
+      >
+        {children}
+      </BaseCombobox.ItemIndicator>
+    </span>
+  );
+});
 
-export const SearchableDropdownSeparator = forwardRef<HTMLDivElement, SearchableDropdownSeparatorProps>(
-  function SearchableDropdownSeparator({className, ...props}, ref) {
-    return (
-      <BaseCombobox.Separator
-        {...props}
-        ref={ref}
-        orientation="horizontal"
-        className={mergeClassName<BaseCombobox.Separator.State>(styles.separator, className)}
-      />
-    );
-  },
-);
+export const SearchableDropdownGroupLabel = forwardRef<
+  HTMLDivElement,
+  SearchableDropdownGroupLabelProps
+>(function SearchableDropdownGroupLabel({className, ...props}, ref) {
+  return (
+    <BaseCombobox.GroupLabel
+      {...props}
+      ref={ref}
+      className={mergeClassName<BaseCombobox.GroupLabel.State>(styles.groupLabel, className)}
+    />
+  );
+});
+
+export const SearchableDropdownSeparator = forwardRef<
+  HTMLDivElement,
+  SearchableDropdownSeparatorProps
+>(function SearchableDropdownSeparator({className, ...props}, ref) {
+  return (
+    <BaseCombobox.Separator
+      {...props}
+      ref={ref}
+      orientation="horizontal"
+      className={mergeClassName<BaseCombobox.Separator.State>(styles.separator, className)}
+    />
+  );
+});
 
 export const SearchableDropdownEmpty = forwardRef<HTMLDivElement, SearchableDropdownEmptyProps>(
   function SearchableDropdownEmpty({className, ...props}, ref) {

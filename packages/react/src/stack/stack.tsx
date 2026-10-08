@@ -1,6 +1,8 @@
 import {forwardRef, type HTMLAttributes} from 'react';
-import styles from './stack.module.css';
+
 import {classes} from '../utils/class-names.ts';
+
+import styles from './stack.module.css';
 
 export type StackDirection = 'row' | 'column';
 export type StackGap = 'xxSmall' | 'xSmall' | 'small' | 'medium' | 'large' | 'xLarge' | 'auto';
@@ -32,14 +34,7 @@ const alignClasses: Readonly<Record<StackAlign, string | undefined>> = {
 };
 
 export const Stack = forwardRef<HTMLDivElement, StackProps>(function Stack(
-  {
-    direction = 'column',
-    gap = 'medium',
-    align = 'start',
-    wrap = 'nowrap',
-    className,
-    ...props
-  },
+  {direction = 'column', gap = 'medium', align = 'start', wrap = 'nowrap', className, ...props},
   ref,
 ) {
   return (

@@ -31,7 +31,7 @@ Use the colors already present in the supplied artwork; do not recolor the marks
 
 Every symbol is drawn in a frame of the same width. **One grid unit is one-quarter of that frame's width.**
 
-Leave at least **one grid unit of clear space around the supplied logo asset**. This applies to symbol-only logos and to lockups alike; measure from the outer edge of the entire asset, not just the symbol. At a rendered height *h*, one grid unit is *h* × {{gridUnit}} ÷ the asset's height in its SVG `viewBox`.
+Leave at least **one grid unit of clear space around the supplied logo asset**. This applies to symbol-only logos and to lockups alike; measure from the outer edge of the entire asset, not just the symbol. At a rendered height _h_, one grid unit is _h_ × {{gridUnit}} ÷ the asset's height in its SVG `viewBox`.
 
 {{clearSpace}}
 

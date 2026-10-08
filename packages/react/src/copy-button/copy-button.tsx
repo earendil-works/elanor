@@ -1,6 +1,8 @@
 import {CheckIcon, ContentCopyIcon} from '@earendil-works/elanor-icons-react';
 import {forwardRef, useEffect, useState} from 'react';
+
 import {IconButton, type IconButtonProps} from '../icon-button/icon-button.tsx';
+
 import styles from './copy-button.module.css';
 
 export interface CopyButtonProps extends Omit<IconButtonProps, 'value'> {
@@ -67,7 +69,9 @@ export const CopyButton = forwardRef<HTMLButtonElement, CopyButtonProps>(functio
       >
         {children ?? (status === 'copied' ? <CheckIcon /> : <ContentCopyIcon />)}
       </IconButton>
-      <span role="status" className={styles.status}>{feedback}</span>
+      <span role="status" className={styles.status}>
+        {feedback}
+      </span>
     </>
   );
 });

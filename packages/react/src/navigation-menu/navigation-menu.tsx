@@ -1,8 +1,10 @@
 import {NavigationMenu as BaseNavigationMenu} from '@base-ui/react/navigation-menu';
 import {KeyboardArrowDownIcon} from '@earendil-works/elanor-icons-react';
 import {forwardRef} from 'react';
-import styles from './navigation-menu.module.css';
+
 import {mergeClassName} from '../utils/class-names.ts';
+
+import styles from './navigation-menu.module.css';
 
 export type {
   NavigationMenuRootState,
@@ -21,8 +23,10 @@ export type {
   NavigationMenuIconState,
 } from '@base-ui/react/navigation-menu';
 
-export interface NavigationMenuRootProps<Value = any>
-  extends Omit<BaseNavigationMenu.Root.Props<Value>, 'orientation'> {
+export interface NavigationMenuRootProps<Value = any> extends Omit<
+  BaseNavigationMenu.Root.Props<Value>,
+  'orientation'
+> {
   readonly orientation?: 'horizontal';
 }
 
@@ -77,21 +81,20 @@ export const NavigationMenuLink = forwardRef<HTMLAnchorElement, NavigationMenuLi
   },
 );
 
-export const NavigationMenuTrigger = forwardRef<
-  HTMLButtonElement,
-  NavigationMenuTriggerProps
->(function NavigationMenuTrigger({className, ...props}, ref) {
-  return (
-    <BaseNavigationMenu.Trigger
-      {...props}
-      ref={ref}
-      className={mergeClassName<BaseNavigationMenu.Trigger.State>(
-        styles.navigationItem,
-        className,
-      )}
-    />
-  );
-});
+export const NavigationMenuTrigger = forwardRef<HTMLButtonElement, NavigationMenuTriggerProps>(
+  function NavigationMenuTrigger({className, ...props}, ref) {
+    return (
+      <BaseNavigationMenu.Trigger
+        {...props}
+        ref={ref}
+        className={mergeClassName<BaseNavigationMenu.Trigger.State>(
+          styles.navigationItem,
+          className,
+        )}
+      />
+    );
+  },
+);
 
 export const NavigationMenuIcon = forwardRef<HTMLSpanElement, NavigationMenuIconProps>(
   function NavigationMenuIcon({className, children, ...props}, ref) {
@@ -121,18 +124,17 @@ export const NavigationMenuPopup = forwardRef<HTMLElement, NavigationMenuPopupPr
   },
 );
 
-export const NavigationMenuContent = forwardRef<
-  HTMLDivElement,
-  NavigationMenuContentProps
->(function NavigationMenuContent({className, ...props}, ref) {
-  return (
-    <BaseNavigationMenu.Content
-      {...props}
-      ref={ref}
-      className={mergeClassName<BaseNavigationMenu.Content.State>(styles.content, className)}
-    />
-  );
-});
+export const NavigationMenuContent = forwardRef<HTMLDivElement, NavigationMenuContentProps>(
+  function NavigationMenuContent({className, ...props}, ref) {
+    return (
+      <BaseNavigationMenu.Content
+        {...props}
+        ref={ref}
+        className={mergeClassName<BaseNavigationMenu.Content.State>(styles.content, className)}
+      />
+    );
+  },
+);
 
 export const NavigationMenu = {
   Root: NavigationMenuRoot,

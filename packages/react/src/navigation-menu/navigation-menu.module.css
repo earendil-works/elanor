@@ -84,7 +84,8 @@
   max-block-size: var(--available-height);
   overflow: auto;
   padding: var(--semantic-dimension-space-padding-x-small);
-  border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-secondary);
+  border: var(--semantic-dimension-border-width-default) solid
+    var(--semantic-color-border-secondary);
   border-radius: var(--semantic-dimension-radius-small);
   outline: 0;
   background: var(--semantic-color-background-surface);

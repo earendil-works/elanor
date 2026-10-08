@@ -1,6 +1,6 @@
 import {VisibilityIcon, VisibilityOffIcon} from '@earendil-works/elanor-icons-react';
-import {useState} from 'react';
 import {IconButton, Stack, Text} from '@earendil-works/elanor-react';
+import {useState} from 'react';
 
 export function IconButtonExample() {
   const [visible, setVisible] = useState(true);
@@ -15,7 +15,9 @@ export function IconButtonExample() {
       >
         {visible ? <VisibilityOffIcon /> : <VisibilityIcon />}
       </IconButton>
-      <Text as="span" id="workspace-tip" hidden={!visible}>Tip: give each project a descriptive name.</Text>
+      <Text as="span" id="workspace-tip" hidden={!visible}>
+        Tip: give each project a descriptive name.
+      </Text>
     </Stack>
   );
 }

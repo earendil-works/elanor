@@ -18,7 +18,7 @@ Install the [brand tokens](https://github.com/earendil-works/elanor/tree/main/pa
 import '@earendil-works/design-tokens/radius.css';
 import {Button} from '@earendil-works/elanor-react';
 
-<Button>Continue</Button>
+<Button>Continue</Button>;
 ```
 
 - [Components and examples](https://github.com/earendil-works/elanor/tree/main/packages/react/src)

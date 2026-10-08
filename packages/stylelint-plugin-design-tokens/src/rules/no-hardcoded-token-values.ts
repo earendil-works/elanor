@@ -1,10 +1,11 @@
-import type { Rule } from "stylelint";
-import type { RuleOptions } from "../options.js";
-import { getCatalogue, isFoundation, isIgnored } from "../options.js";
-import { tokenizableLiterals } from "../value-parser.js";
-import { report } from "./shared.js";
+import type {Rule} from 'stylelint';
 
-export const ruleName = "design-tokens/no-hardcoded-token-values";
+import type {RuleOptions} from '../options.js';
+import {getCatalogue, isFoundation, isIgnored} from '../options.js';
+import {tokenizableLiterals} from '../value-parser.js';
+import {report} from './shared.js';
+
+export const ruleName = 'design-tokens/no-hardcoded-token-values';
 
 /**
  * Creates a Stylelint rule that rejects tokenizable literal values.
@@ -23,7 +24,7 @@ export const rule: Rule<true, RuleOptions> = (primary, options) => (root, result
   const representedTypes = new Set(catalogue.tokens.map((token) => token.type));
 
   root.walkDecls((declaration) => {
-    if (declaration.prop.startsWith("--")) return;
+    if (declaration.prop.startsWith('--')) return;
     const literals = tokenizableLiterals(declaration.prop, declaration.value, {
       allowUnitlessZero: options.allowUnitlessZero ?? true,
     });

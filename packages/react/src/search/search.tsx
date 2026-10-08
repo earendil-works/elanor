@@ -1,8 +1,10 @@
 import {Input as BaseInput} from '@base-ui/react/input';
 import {SearchIcon} from '@earendil-works/elanor-icons-react';
 import {forwardRef, type ReactNode} from 'react';
-import styles from './search.module.css';
+
 import {classes, mergeClassName} from '../utils/class-names.ts';
+
+import styles from './search.module.css';
 
 const inputTypes = ['text', 'search'] as const;
 
@@ -18,7 +20,9 @@ export const Search = forwardRef<HTMLInputElement, SearchProps>(function Search(
   ref,
 ) {
   if (!inputTypes.includes(type)) {
-    throw new TypeError(`Search does not support type="${type}". Use one of: ${inputTypes.join(', ')}.`);
+    throw new TypeError(
+      `Search does not support type="${type}". Use one of: ${inputTypes.join(', ')}.`,
+    );
   }
 
   return (

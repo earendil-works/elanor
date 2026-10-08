@@ -1,6 +1,8 @@
 import {Heading, Link, Stack, Text} from '@earendil-works/elanor-react';
 import type {ReactNode} from 'react';
+
 import type {LogoAsset, LogoBrand} from '../lib/packages.ts';
+
 import styles from './brand-logos.module.css';
 
 const kindLabels: Record<LogoAsset['kind'], string> = {
@@ -21,7 +23,11 @@ const iconDescriptions: Record<string, {label: string; use: string; masked?: boo
   svg: {label: 'SVG favicon', use: 'Modern browsers; follows light and dark mode'},
   ico: {label: 'ICO favicon', use: 'Older browsers'},
   appleTouchIcon: {label: 'Apple touch icon', use: 'iOS home screen'},
-  maskable: {label: 'Maskable icon', use: 'Android home screen, cropped to any shape', masked: true},
+  maskable: {
+    label: 'Maskable icon',
+    use: 'Android home screen, cropped to any shape',
+    masked: true,
+  },
 };
 const setupFiles = new Set(['webmanifest', 'html']);
 
@@ -35,7 +41,8 @@ const url = (path: string) => `/api/logos/files/${path}`;
 
 function printProfileLabel(profile: string): string {
   const label = printProfileLabels[profile];
-  if (!label) throw new Error(`No label for the ${profile} print profile; add it to printProfileLabels`);
+  if (!label)
+    throw new Error(`No label for the ${profile} print profile; add it to printProfileLabels`);
   return label;
 }
 const fileName = (path: string) => path.split('/').at(-1);
@@ -66,7 +73,11 @@ export function BrandLogos({brand, pressKit, children}: BrandLogosProps): React.
         <Heading level={2} size={2} id={`brand-${brand.id}`}>
           {brand.name}
         </Heading>
-        {pressKit ? <Link href={url(pressKit)} download>Download press kit</Link> : null}
+        {pressKit ? (
+          <Link href={url(pressKit)} download>
+            Download press kit
+          </Link>
+        ) : null}
       </Stack>
 
       {kinds.map((kind) => (
@@ -79,13 +90,25 @@ export function BrandLogos({brand, pressKit, children}: BrandLogosProps): React.
               .filter((asset) => asset.kind === kind)
               .map((asset) => (
                 <li key={asset.id} className={styles.tile}>
-                  <div className={styles.preview} style={{background: brand.backgrounds[asset.scheme]}}>
-                    <img src={url(asset.files.svg)} alt={`${brand.name} ${kindLabels[kind].toLowerCase()}, ${treatmentLabels[asset.treatment].toLowerCase()}`} />
+                  <div
+                    className={styles.preview}
+                    style={{background: brand.backgrounds[asset.scheme]}}
+                  >
+                    <img
+                      src={url(asset.files.svg)}
+                      alt={`${brand.name} ${kindLabels[kind].toLowerCase()}, ${treatmentLabels[asset.treatment].toLowerCase()}`}
+                    />
                   </div>
                   <Text>{treatmentLabels[asset.treatment]}</Text>
                   <Stack direction="row" gap="small" wrap="wrap">
-                    <Link href={url(asset.files.svg)} download>SVG</Link>
-                    {asset.files.png ? <Link href={url(asset.files.png)} download>PNG</Link> : null}
+                    <Link href={url(asset.files.svg)} download>
+                      SVG
+                    </Link>
+                    {asset.files.png ? (
+                      <Link href={url(asset.files.png)} download>
+                        PNG
+                      </Link>
+                    ) : null}
                     {Object.entries(asset.files.pdf ?? {}).map(([profile, path]) => (
                       <Link key={profile} href={url(path)} download>
                         {printProfileLabel(profile)}
@@ -110,7 +133,11 @@ export function BrandLogos({brand, pressKit, children}: BrandLogosProps): React.
               return (
                 <li key={treatment} className={styles.tile}>
                   <div className={styles.preview}>
-                    <img className={styles.avatar} src={url(largest.path)} alt={`${brand.name} avatar, ${treatment}`} />
+                    <img
+                      className={styles.avatar}
+                      src={url(largest.path)}
+                      alt={`${brand.name} avatar, ${treatment}`}
+                    />
                   </div>
                   <Text>{treatmentLabels[treatment as LogoAsset['treatment']]}</Text>
                   <Stack direction="row" gap="small" wrap="wrap">
@@ -138,7 +165,11 @@ export function BrandLogos({brand, pressKit, children}: BrandLogosProps): React.
               return (
                 <li key={key} className={`${styles.tile} ${styles.small}`}>
                   <div className={styles.preview} style={{background: brand.backgrounds.light}}>
-                    <img className={masked ? styles.round : undefined} src={url(path)} alt={`${brand.name} ${label.toLowerCase()}`} />
+                    <img
+                      className={masked ? styles.round : undefined}
+                      src={url(path)}
+                      alt={`${brand.name} ${label.toLowerCase()}`}
+                    />
                   </div>
                   <Text>{label}</Text>
                   <Text className={styles.note}>{use}</Text>
@@ -164,8 +195,8 @@ export function BrandLogos({brand, pressKit, children}: BrandLogosProps): React.
               </Text>
               {children}
               <Text className={styles.note}>
-                In this repository, <code>elanor-logos favicons {brand.id} --out public</code> copies the files for you; see
-                the logos package README.
+                In this repository, <code>elanor-logos favicons {brand.id} --out public</code>{' '}
+                copies the files for you; see the logos package README.
               </Text>
             </div>
           ) : null}

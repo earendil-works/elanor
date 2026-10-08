@@ -1,18 +1,40 @@
-import valueParser, { type Node } from "postcss-value-parser";
+import valueParser, {type Node} from 'postcss-value-parser';
 
 const COLOR_FUNCTIONS = new Set([
-  "rgb", "rgba", "hsl", "hsla", "hwb", "lab", "lch", "oklab", "oklch", "color", "color-mix",
+  'rgb',
+  'rgba',
+  'hsl',
+  'hsla',
+  'hwb',
+  'lab',
+  'lch',
+  'oklab',
+  'oklch',
+  'color',
+  'color-mix',
 ]);
 const NAMED_COLORS = new Set([
-  "black", "white", "red", "green", "blue", "yellow", "purple", "gray", "grey", "orange", "pink",
+  'black',
+  'white',
+  'red',
+  'green',
+  'blue',
+  'yellow',
+  'purple',
+  'gray',
+  'grey',
+  'orange',
+  'pink',
 ]);
 const DIMENSION = /^[-+]?(?:\d*\.)?\d+(px|rem)$/i;
 const NUMBER = /^[-+]?(?:\d*\.)?\d+$/;
 const FONT_WEIGHT_KEYWORDS = /^(?:normal|bold|bolder|lighter)$/;
-const GENERIC_FONT_FAMILIES = /^(?:serif|sans-serif|monospace|system-ui|inherit|initial|unset|revert)$/;
+const GENERIC_FONT_FAMILIES =
+  /^(?:serif|sans-serif|monospace|system-ui|inherit|initial|unset|revert)$/;
 const FONT_STYLE_KEYWORDS = /^(?:normal|italic|oblique)$/;
 const FONT_VARIANT_KEYWORDS = /^(?:normal|small-caps)$/;
-const FONT_STRETCH_KEYWORDS = /^(?:normal|ultra-condensed|extra-condensed|condensed|semi-condensed|semi-expanded|expanded|extra-expanded|ultra-expanded)$/;
+const FONT_STRETCH_KEYWORDS =
+  /^(?:normal|ultra-condensed|extra-condensed|condensed|semi-condensed|semi-expanded|expanded|extra-expanded|ultra-expanded)$/;
 
 export interface LiteralPolicy {
   allowUnitlessZero: boolean;
@@ -20,7 +42,7 @@ export interface LiteralPolicy {
 
 export interface LiteralValue {
   value: string;
-  category: "color" | "dimension" | "fontFamily" | "fontWeight" | "number";
+  category: 'color' | 'dimension' | 'fontFamily' | 'fontWeight' | 'number';
 }
 
 /**
@@ -32,8 +54,10 @@ export interface LiteralValue {
 export function customPropertiesInValue(value: string): string[] {
   const properties: string[] = [];
   valueParser(value).walk((node) => {
-    if (node.type !== "function" || node.value.toLowerCase() !== "var") return;
-    const property = node.nodes.find((child) => child.type === "word" && child.value.startsWith("--"));
+    if (node.type !== 'function' || node.value.toLowerCase() !== 'var') return;
+    const property = node.nodes.find(
+      (child) => child.type === 'word' && child.value.startsWith('--'),
+    );
     if (property) properties.push(property.value);
   });
   return properties;
@@ -46,15 +70,17 @@ export function customPropertiesInValue(value: string): string[] {
  * @returns Whether color literals should be inspected for the property.
  */
 function isColorProperty(property: string): boolean {
-  return property === "color"
-    || property === "background"
-    || property === "background-color"
-    || property === "fill"
-    || property === "stroke"
-    || property === "box-shadow"
-    || property === "text-shadow"
-    || /(?:^|-)color$/.test(property)
-    || /^(?:border|outline)(?:-|$)/.test(property);
+  return (
+    property === 'color' ||
+    property === 'background' ||
+    property === 'background-color' ||
+    property === 'fill' ||
+    property === 'stroke' ||
+    property === 'box-shadow' ||
+    property === 'text-shadow' ||
+    /(?:^|-)color$/.test(property) ||
+    /^(?:border|outline)(?:-|$)/.test(property)
+  );
 }
 
 /**
@@ -64,9 +90,13 @@ function isColorProperty(property: string): boolean {
  * @returns Whether dimension literals should be inspected for the property.
  */
 function isDimensionProperty(property: string): boolean {
-  return /^(?:margin|padding|gap|row-gap|column-gap|inset|top|right|bottom|left|width|height|min-width|max-width|min-height|max-height|border-radius|border-width|outline-width|outline-offset|scroll-margin|scroll-padding|grid-template|transform|flex-basis|font-size|letter-spacing|box-shadow|text-shadow)(?:-|$)/.test(property)
-    || /^(?:min-|max-)?(?:inline-size|block-size)$/.test(property)
-    || /^(?:background|border|outline|font)$/.test(property);
+  return (
+    /^(?:margin|padding|gap|row-gap|column-gap|inset|top|right|bottom|left|width|height|min-width|max-width|min-height|max-height|border-radius|border-width|outline-width|outline-offset|scroll-margin|scroll-padding|grid-template|transform|flex-basis|font-size|letter-spacing|box-shadow|text-shadow)(?:-|$)/.test(
+      property,
+    ) ||
+    /^(?:min-|max-)?(?:inline-size|block-size)$/.test(property) ||
+    /^(?:background|border|outline|font)$/.test(property)
+  );
 }
 
 /**
@@ -92,38 +122,42 @@ function literalFromNode(
   property: string,
   policy: LiteralPolicy,
 ): LiteralValue | undefined {
-  if (node.type === "function" && COLOR_FUNCTIONS.has(node.value.toLowerCase()) && isColorProperty(property)) {
-    return { value: valueParser.stringify(node), category: "color" };
+  if (
+    node.type === 'function' &&
+    COLOR_FUNCTIONS.has(node.value.toLowerCase()) &&
+    isColorProperty(property)
+  ) {
+    return {value: valueParser.stringify(node), category: 'color'};
   }
-  if (node.type === "string" && property === "font-family") {
-    return { value: node.value, category: "fontFamily" };
+  if (node.type === 'string' && property === 'font-family') {
+    return {value: node.value, category: 'fontFamily'};
   }
-  if (node.type !== "word") return undefined;
+  if (node.type !== 'word') return undefined;
 
   const word = node.value;
-  if (isColorProperty(property) && (/^#[\da-f]{3,8}$/i.test(word) || NAMED_COLORS.has(word.toLowerCase()))) {
-    return { value: word, category: "color" };
+  if (
+    isColorProperty(property) &&
+    (/^#[\da-f]{3,8}$/i.test(word) || NAMED_COLORS.has(word.toLowerCase()))
+  ) {
+    return {value: word, category: 'color'};
   }
   if (isDimensionProperty(property) && DIMENSION.test(word)) {
-    return { value: word, category: "dimension" };
+    return {value: word, category: 'dimension'};
   }
-  if (property === "font-weight" && (NUMBER.test(word) || FONT_WEIGHT_KEYWORDS.test(word))) {
-    return { value: word, category: "fontWeight" };
+  if (property === 'font-weight' && (NUMBER.test(word) || FONT_WEIGHT_KEYWORDS.test(word))) {
+    return {value: word, category: 'fontWeight'};
   }
   if (isNumberProperty(property) && NUMBER.test(word)) {
     if (policy.allowUnitlessZero && Number(word) === 0) return undefined;
-    return { value: word, category: "number" };
+    return {value: word, category: 'number'};
   }
-  if (property === "font-family" && !GENERIC_FONT_FAMILIES.test(word)) {
-    return { value: word, category: "fontFamily" };
+  if (property === 'font-family' && !GENERIC_FONT_FAMILIES.test(word)) {
+    return {value: word, category: 'fontFamily'};
   }
   return undefined;
 }
 
-function tokenizableFontShorthandLiterals(
-  value: string,
-  policy: LiteralPolicy,
-): LiteralValue[] {
+function tokenizableFontShorthandLiterals(value: string, policy: LiteralPolicy): LiteralValue[] {
   const literals: LiteralValue[] = [];
   const seen = new Set<string>();
   let sawFontSize = false;
@@ -138,25 +172,29 @@ function tokenizableFontShorthandLiterals(
   };
 
   for (const node of valueParser(value).nodes) {
-    if (node.type === "space" || node.type === "comment") continue;
-    if (node.type === "div") {
-      if (node.value === "/" && sawFontSize) expectLineHeight = true;
+    if (node.type === 'space' || node.type === 'comment') continue;
+    if (node.type === 'div') {
+      if (node.value === '/' && sawFontSize) expectLineHeight = true;
       continue;
     }
     if (!sawFontSize) {
-      if (node.type === "string") continue;
-      if (node.type !== "word") continue;
+      if (node.type === 'string') continue;
+      if (node.type !== 'word') continue;
       const word = node.value;
       if (DIMENSION.test(word)) {
         sawFontSize = true;
-        push({ value: word, category: "dimension" });
+        push({value: word, category: 'dimension'});
         continue;
       }
       if (NUMBER.test(word) || FONT_WEIGHT_KEYWORDS.test(word)) {
-        push({ value: word, category: "fontWeight" });
+        push({value: word, category: 'fontWeight'});
         continue;
       }
-      if (FONT_STYLE_KEYWORDS.test(word) || FONT_VARIANT_KEYWORDS.test(word) || FONT_STRETCH_KEYWORDS.test(word)) {
+      if (
+        FONT_STYLE_KEYWORDS.test(word) ||
+        FONT_VARIANT_KEYWORDS.test(word) ||
+        FONT_STRETCH_KEYWORDS.test(word)
+      ) {
         continue;
       }
       continue;
@@ -164,19 +202,20 @@ function tokenizableFontShorthandLiterals(
 
     if (expectLineHeight) {
       expectLineHeight = false;
-      if (node.type === "word") {
-        if (DIMENSION.test(node.value)) push({ value: node.value, category: "dimension" });
-        else if (NUMBER.test(node.value) && !(policy.allowUnitlessZero && Number(node.value) === 0)) push({ value: node.value, category: "number" });
+      if (node.type === 'word') {
+        if (DIMENSION.test(node.value)) push({value: node.value, category: 'dimension'});
+        else if (NUMBER.test(node.value) && !(policy.allowUnitlessZero && Number(node.value) === 0))
+          push({value: node.value, category: 'number'});
       }
       continue;
     }
 
-    if (node.type === "string") {
-      push({ value: node.value, category: "fontFamily" });
+    if (node.type === 'string') {
+      push({value: node.value, category: 'fontFamily'});
       continue;
     }
-    if (node.type === "word" && !GENERIC_FONT_FAMILIES.test(node.value)) {
-      push({ value: node.value, category: "fontFamily" });
+    if (node.type === 'word' && !GENERIC_FONT_FAMILIES.test(node.value)) {
+      push({value: node.value, category: 'fontFamily'});
     }
   }
 
@@ -194,31 +233,33 @@ function tokenizableFontShorthandLiterals(
 export function tokenizableLiterals(
   property: string,
   value: string,
-  policy: LiteralPolicy = { allowUnitlessZero: true },
+  policy: LiteralPolicy = {allowUnitlessZero: true},
 ): LiteralValue[] {
-  if (property.toLowerCase() === "font") return tokenizableFontShorthandLiterals(value, policy);
+  if (property.toLowerCase() === 'font') return tokenizableFontShorthandLiterals(value, policy);
 
   const literals: LiteralValue[] = [];
   const seen = new Set<string>();
   const parsed = valueParser(value);
   const arithmeticScalars = new Set<Node>();
   parsed.walk((node) => {
-    if (node.type !== "function" || node.value.toLowerCase() !== "calc") return;
+    if (node.type !== 'function' || node.value.toLowerCase() !== 'calc') return;
     if (customPropertiesInValue(valueParser.stringify(node)).length === 0) return;
-    const operands = node.nodes.filter((child) => child.type !== "space" && child.type !== "comment");
+    const operands = node.nodes.filter(
+      (child) => child.type !== 'space' && child.type !== 'comment',
+    );
     for (const [index, operand] of operands.entries()) {
-      if (operand.type !== "word" || !NUMBER.test(operand.value)) continue;
+      if (operand.type !== 'word' || !NUMBER.test(operand.value)) continue;
       const before = operands[index - 1]?.value;
       const after = operands[index + 1]?.value;
       // Signs and ratios derive geometry from a token; they are not additional
       // brand values. Literal dimensions and var() fallbacks are still checked.
-      if (before === "*" || before === "/" || after === "*") arithmeticScalars.add(operand);
+      if (before === '*' || before === '/' || after === '*') arithmeticScalars.add(operand);
     }
   });
   parsed.walk((node) => {
     // URLs are resources, not design values. Color functions are reported as a
     // whole, so their numeric channels are not independently inspected.
-    if (node.type === "function" && node.value.toLowerCase() === "url") return false;
+    if (node.type === 'function' && node.value.toLowerCase() === 'url') return false;
     if (arithmeticScalars.has(node)) return undefined;
     const literal = literalFromNode(node, property.toLowerCase(), policy);
     if (!literal) return undefined;
@@ -227,7 +268,7 @@ export function tokenizableLiterals(
       seen.add(key);
       literals.push(literal);
     }
-    if (node.type === "function" && COLOR_FUNCTIONS.has(node.value.toLowerCase())) return false;
+    if (node.type === 'function' && COLOR_FUNCTIONS.has(node.value.toLowerCase())) return false;
     return undefined;
   });
   return literals;

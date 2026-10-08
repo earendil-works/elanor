@@ -1,88 +1,104 @@
-import { minimatch } from "minimatch";
-import valueParser, { type Node } from "postcss-value-parser";
-import type { Rule } from "stylelint";
-import type { CatalogueToken } from "../catalogue.js";
-import type { RuleOptions } from "../options.js";
-import { getCatalogue, isFoundation, isIgnored } from "../options.js";
-import { report } from "./shared.js";
+import {minimatch} from 'minimatch';
+import valueParser, {type Node} from 'postcss-value-parser';
+import type {Rule} from 'stylelint';
 
-export const ruleName = "design-tokens/token-property-compatibility";
+import type {CatalogueToken} from '../catalogue.js';
+import type {RuleOptions} from '../options.js';
+import {getCatalogue, isFoundation, isIgnored} from '../options.js';
+import {report} from './shared.js';
+
+export const ruleName = 'design-tokens/token-property-compatibility';
 
 const DEFAULT_TYPES: Record<string, string[]> = {
-  "color": ["color"],
-  "*-color": ["color"],
-  "background": ["color", "dimension"],
-  "border": ["color", "dimension", "strokeStyle"],
-  "border-*": ["color", "dimension", "strokeStyle"],
-  "border-color": ["color"],
-  "border-width": ["dimension"],
-  "border-radius": ["dimension"],
-  "outline": ["color", "dimension", "strokeStyle"],
-  "outline-*": ["color", "dimension", "strokeStyle"],
-  "outline-color": ["color"],
-  "outline-width": ["dimension"],
-  "outline-offset": ["dimension"],
-  "fill": ["color"],
-  "stroke": ["color", "dimension"],
-  "margin*": ["dimension"],
-  "padding*": ["dimension"],
-  "gap": ["dimension"],
-  "row-gap": ["dimension"],
-  "column-gap": ["dimension"],
-  "inset*": ["dimension"],
-  "top": ["dimension"],
-  "right": ["dimension"],
-  "bottom": ["dimension"],
-  "left": ["dimension"],
-  "width": ["dimension"],
-  "height": ["dimension"],
-  "inline-size": ["dimension"],
-  "block-size": ["dimension"],
-  "min-*": ["dimension"],
-  "max-*": ["dimension"],
-  "scroll-margin*": ["dimension"],
-  "scroll-padding*": ["dimension"],
-  "grid-template*": ["dimension"],
-  "transform": ["dimension", "number"],
-  "transform-origin": ["dimension"],
-  "flex-basis": ["dimension"],
-  "z-index": ["number"],
-  "aspect-ratio": ["number"],
-  "font-family": ["fontFamily"],
-  "font-size": ["dimension"],
-  "font-weight": ["fontWeight"],
-  "line-height": ["number", "dimension"],
-  "letter-spacing": ["dimension"],
-  "font": ["typography", "fontFamily", "fontWeight", "dimension", "number"],
-  "opacity": ["number"],
-  "box-shadow": ["shadow", "color", "dimension"],
-  "text-shadow": ["shadow", "color", "dimension"],
+  color: ['color'],
+  '*-color': ['color'],
+  background: ['color', 'dimension'],
+  border: ['color', 'dimension', 'strokeStyle'],
+  'border-*': ['color', 'dimension', 'strokeStyle'],
+  'border-color': ['color'],
+  'border-width': ['dimension'],
+  'border-radius': ['dimension'],
+  outline: ['color', 'dimension', 'strokeStyle'],
+  'outline-*': ['color', 'dimension', 'strokeStyle'],
+  'outline-color': ['color'],
+  'outline-width': ['dimension'],
+  'outline-offset': ['dimension'],
+  fill: ['color'],
+  stroke: ['color', 'dimension'],
+  'margin*': ['dimension'],
+  'padding*': ['dimension'],
+  gap: ['dimension'],
+  'row-gap': ['dimension'],
+  'column-gap': ['dimension'],
+  'inset*': ['dimension'],
+  top: ['dimension'],
+  right: ['dimension'],
+  bottom: ['dimension'],
+  left: ['dimension'],
+  width: ['dimension'],
+  height: ['dimension'],
+  'inline-size': ['dimension'],
+  'block-size': ['dimension'],
+  'min-*': ['dimension'],
+  'max-*': ['dimension'],
+  'scroll-margin*': ['dimension'],
+  'scroll-padding*': ['dimension'],
+  'grid-template*': ['dimension'],
+  transform: ['dimension', 'number'],
+  'transform-origin': ['dimension'],
+  'flex-basis': ['dimension'],
+  'z-index': ['number'],
+  'aspect-ratio': ['number'],
+  'font-family': ['fontFamily'],
+  'font-size': ['dimension'],
+  'font-weight': ['fontWeight'],
+  'line-height': ['number', 'dimension'],
+  'letter-spacing': ['dimension'],
+  font: ['typography', 'fontFamily', 'fontWeight', 'dimension', 'number'],
+  opacity: ['number'],
+  'box-shadow': ['shadow', 'color', 'dimension'],
+  'text-shadow': ['shadow', 'color', 'dimension'],
 };
 
 const DEFAULT_ROLES: Record<string, string[]> = {
   // CSS properties are paint mechanisms, not a one-to-one semantic taxonomy:
   // icons inherit currentColor, separators paint borders with backgrounds, and
   // filled controls can extend their fill or focus treatment through a border.
-  "color": ["semantic.color.text.", "semantic.color.icon."],
-  "background": ["semantic.color.background.", "semantic.color.border."],
-  "background-color": ["semantic.color.background.", "semantic.color.border."],
-  "border": ["semantic.color.border.", "semantic.color.background.", "semantic.color.focusRing.", "semantic.dimension.borderWidth."],
-  "border-*": ["semantic.color.border.", "semantic.color.background.", "semantic.color.focusRing.", "semantic.dimension.borderWidth.", "semantic.dimension.radius."],
-  "border-color": ["semantic.color.border.", "semantic.color.background.", "semantic.color.focusRing."],
-  "border-width": ["semantic.dimension.borderWidth."],
-  "border-radius": ["semantic.dimension.radius."],
-  "outline": ["semantic.color.focusRing.", "semantic.dimension.borderWidth."],
-  "outline-*": ["semantic.color.focusRing.", "semantic.dimension.borderWidth."],
-  "outline-color": ["semantic.color.focusRing."],
-  "outline-width": ["semantic.dimension.borderWidth."],
-  "fill": ["semantic.color.icon."],
-  "stroke": ["semantic.color.icon."],
-  "z-index": ["semantic.number.layer."],
-  "opacity": ["semantic.number.opacity."],
-  "padding*": ["semantic.dimension.space.padding.", "semantic.dimension.space.control.padding."],
-  "gap": ["semantic.dimension.space.gap.", "semantic.dimension.space.control.gap."],
-  "row-gap": ["semantic.dimension.space.gap.", "semantic.dimension.space.control.gap."],
-  "column-gap": ["semantic.dimension.space.gap.", "semantic.dimension.space.control.gap."],
+  color: ['semantic.color.text.', 'semantic.color.icon.'],
+  background: ['semantic.color.background.', 'semantic.color.border.'],
+  'background-color': ['semantic.color.background.', 'semantic.color.border.'],
+  border: [
+    'semantic.color.border.',
+    'semantic.color.background.',
+    'semantic.color.focusRing.',
+    'semantic.dimension.borderWidth.',
+  ],
+  'border-*': [
+    'semantic.color.border.',
+    'semantic.color.background.',
+    'semantic.color.focusRing.',
+    'semantic.dimension.borderWidth.',
+    'semantic.dimension.radius.',
+  ],
+  'border-color': [
+    'semantic.color.border.',
+    'semantic.color.background.',
+    'semantic.color.focusRing.',
+  ],
+  'border-width': ['semantic.dimension.borderWidth.'],
+  'border-radius': ['semantic.dimension.radius.'],
+  outline: ['semantic.color.focusRing.', 'semantic.dimension.borderWidth.'],
+  'outline-*': ['semantic.color.focusRing.', 'semantic.dimension.borderWidth.'],
+  'outline-color': ['semantic.color.focusRing.'],
+  'outline-width': ['semantic.dimension.borderWidth.'],
+  fill: ['semantic.color.icon.'],
+  stroke: ['semantic.color.icon.'],
+  'z-index': ['semantic.number.layer.'],
+  opacity: ['semantic.number.opacity.'],
+  'padding*': ['semantic.dimension.space.padding.', 'semantic.dimension.space.control.padding.'],
+  gap: ['semantic.dimension.space.gap.', 'semantic.dimension.space.control.gap.'],
+  'row-gap': ['semantic.dimension.space.gap.', 'semantic.dimension.space.control.gap.'],
+  'column-gap': ['semantic.dimension.space.gap.', 'semantic.dimension.space.control.gap.'],
 };
 
 /**
@@ -116,36 +132,56 @@ function rolePath(token: CatalogueToken): string {
  * @returns Whether the path equals or descends from the role prefix.
  */
 function matchesRolePrefix(tokenPath: string, prefix: string): boolean {
-  const basePath = prefix.replace(/\.+$/, "");
+  const basePath = prefix.replace(/\.+$/, '');
   return tokenPath === basePath || tokenPath.startsWith(`${basePath}.`);
 }
 
 function significantNodes(nodes: Node[]): Node[] {
-  return nodes.filter((node) => node.type !== "space" && node.type !== "comment");
+  return nodes.filter((node) => node.type !== 'space' && node.type !== 'comment');
 }
 
 /** Resolves a bare var() operand; fallbacks remain subject to normal validation. */
-function operandToken(node: Node, tokens: ReadonlyMap<string, CatalogueToken>): CatalogueToken | undefined {
-  if (node.type !== "function" || node.value.toLowerCase() !== "var") return;
+function operandToken(
+  node: Node,
+  tokens: ReadonlyMap<string, CatalogueToken>,
+): CatalogueToken | undefined {
+  if (node.type !== 'function' || node.value.toLowerCase() !== 'var') return;
   const args = significantNodes(node.nodes);
-  if (args.length !== 1 || args[0]?.type !== "word") return;
+  if (args.length !== 1 || args[0]?.type !== 'word') return;
   return tokens.get(args[0].value);
 }
 
 /** Recognizes only top-level calc(padding token - border-width token) values. */
-function compensatedBorderOperands(nodes: Node[], tokens: ReadonlyMap<string, CatalogueToken>): Set<Node> {
+function compensatedBorderOperands(
+  nodes: Node[],
+  tokens: ReadonlyMap<string, CatalogueToken>,
+): Set<Node> {
   const operands = new Set<Node>();
   for (const node of nodes) {
-    if (node.type !== "function" || node.value.toLowerCase() !== "calc") continue;
+    if (node.type !== 'function' || node.value.toLowerCase() !== 'calc') continue;
     const expression = significantNodes(node.nodes);
     const [left, operator, right] = expression;
-    if (expression.length !== 3 || !left || !right || operator?.type !== "word" || operator.value !== "-") continue;
+    if (
+      expression.length !== 3 ||
+      !left ||
+      !right ||
+      operator?.type !== 'word' ||
+      operator.value !== '-'
+    )
+      continue;
     const padding = operandToken(left, tokens);
     const border = operandToken(right, tokens);
-    if (padding?.tier !== "semantic" || padding.type !== "dimension"
-      || border?.tier !== "semantic" || border.type !== "dimension") continue;
-    if (DEFAULT_ROLES["padding*"]!.some((prefix) => matchesRolePrefix(rolePath(padding), prefix))
-      && matchesRolePrefix(rolePath(border), "semantic.dimension.borderWidth.")) {
+    if (
+      padding?.tier !== 'semantic' ||
+      padding.type !== 'dimension' ||
+      border?.tier !== 'semantic' ||
+      border.type !== 'dimension'
+    )
+      continue;
+    if (
+      DEFAULT_ROLES['padding*']!.some((prefix) => matchesRolePrefix(rolePath(padding), prefix)) &&
+      matchesRolePrefix(rolePath(border), 'semantic.dimension.borderWidth.')
+    ) {
       // Track the operand occurrence, not its name: other uses must still be checked.
       operands.add(right);
     }
@@ -165,22 +201,25 @@ function compensatedBorderOperands(nodes: Node[], tokens: ReadonlyMap<string, Ca
 export const rule: Rule<true, RuleOptions> = (primary, options) => (root, result) => {
   if (primary !== true || isIgnored(result, options) || isFoundation(result, options)) return;
   const catalogue = getCatalogue(options);
-  const typeMap = { ...DEFAULT_TYPES, ...(options.propertyTypes ?? {}) };
-  const roleMap = { ...DEFAULT_ROLES, ...(options.semanticRoles ?? {}) };
+  const typeMap = {...DEFAULT_TYPES, ...(options.propertyTypes ?? {})};
+  const roleMap = {...DEFAULT_ROLES, ...(options.semanticRoles ?? {})};
 
   root.walkDecls((declaration) => {
-    if (declaration.prop.startsWith("--")) return;
+    if (declaration.prop.startsWith('--')) return;
     const property = declaration.prop.toLowerCase();
     const expectedTypes = valuesFor(property, typeMap);
     const expectedRoles = valuesFor(property, roleMap);
     const parsed = valueParser(declaration.value);
-    const compensatedBorders = /^padding(?:-(?:top|right|bottom|left|(?:block|inline)(?:-start|-end)?))?$/.test(property)
-      ? compensatedBorderOperands(parsed.nodes, catalogue.tokensByVariable)
-      : new Set<Node>();
+    const compensatedBorders =
+      /^padding(?:-(?:top|right|bottom|left|(?:block|inline)(?:-start|-end)?))?$/.test(property)
+        ? compensatedBorderOperands(parsed.nodes, catalogue.tokensByVariable)
+        : new Set<Node>();
 
     parsed.walk((node) => {
-      if (node.type !== "function" || node.value.toLowerCase() !== "var") return;
-      const variable = node.nodes.find((child) => child.type === "word" && child.value.startsWith("--"))?.value;
+      if (node.type !== 'function' || node.value.toLowerCase() !== 'var') return;
+      const variable = node.nodes.find(
+        (child) => child.type === 'word' && child.value.startsWith('--'),
+      )?.value;
       if (!variable) return;
       const token = catalogue.tokensByVariable.get(variable);
       if (!token) return;
@@ -189,18 +228,22 @@ export const rule: Rule<true, RuleOptions> = (primary, options) => (root, result
           result,
           ruleName,
           declaration,
-          `Token "${variable}" has type "${token.type}", which is incompatible with "${property}" (expected ${expectedTypes.join(", ")}).`,
+          `Token "${variable}" has type "${token.type}", which is incompatible with "${property}" (expected ${expectedTypes.join(', ')}).`,
           variable,
         );
         return;
       }
-      if (token.tier === "semantic" && expectedRoles && !compensatedBorders.has(node)
-        && !expectedRoles.some((prefix) => matchesRolePrefix(rolePath(token), prefix))) {
+      if (
+        token.tier === 'semantic' &&
+        expectedRoles &&
+        !compensatedBorders.has(node) &&
+        !expectedRoles.some((prefix) => matchesRolePrefix(rolePath(token), prefix))
+      ) {
         report(
           result,
           ruleName,
           declaration,
-          `Semantic token "${variable}" has the wrong role for "${property}" (expected ${expectedRoles.join(" or ")}).`,
+          `Semantic token "${variable}" has the wrong role for "${property}" (expected ${expectedRoles.join(' or ')}).`,
           variable,
         );
       }

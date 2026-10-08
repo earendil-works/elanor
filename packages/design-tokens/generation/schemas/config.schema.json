@@ -5,7 +5,7 @@
   "required": ["pixelsPerRem"],
   "additionalProperties": false,
   "properties": {
-    "$schema": { "type": "string" },
+    "$schema": {"type": "string"},
     "pixelsPerRem": {
       "type": "number",
       "exclusiveMinimum": 0

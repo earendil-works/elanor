@@ -7,22 +7,22 @@
     "shared-primitive": {
       "description": "Shared primitive tokens grouped by DTCG type.",
       "sources": [
-        { "$ref": "./shared/primitive/color.tokens.json" },
-        { "$ref": "./shared/primitive/dimension.tokens.json" },
-        { "$ref": "./shared/primitive/number.tokens.json" },
-        { "$ref": "./shared/primitive/fontFamily.tokens.json" },
-        { "$ref": "./shared/primitive/fontWeight.tokens.json" }
+        {"$ref": "./shared/primitive/color.tokens.json"},
+        {"$ref": "./shared/primitive/dimension.tokens.json"},
+        {"$ref": "./shared/primitive/number.tokens.json"},
+        {"$ref": "./shared/primitive/fontFamily.tokens.json"},
+        {"$ref": "./shared/primitive/fontWeight.tokens.json"}
       ]
     },
     "shared-semantic": {
       "description": "Shared mode-independent semantic tokens grouped by DTCG type.",
       "sources": [
-        { "$ref": "./shared/semantic/dimension.tokens.json" },
-        { "$ref": "./shared/semantic/number.tokens.json" },
-        { "$ref": "./shared/semantic/fontFamily.tokens.json" },
-        { "$ref": "./shared/semantic/fontWeight.tokens.json" },
-        { "$ref": "./shared/semantic/shadow.tokens.json" },
-        { "$ref": "./shared/semantic/typography.tokens.json" }
+        {"$ref": "./shared/semantic/dimension.tokens.json"},
+        {"$ref": "./shared/semantic/number.tokens.json"},
+        {"$ref": "./shared/semantic/fontFamily.tokens.json"},
+        {"$ref": "./shared/semantic/fontWeight.tokens.json"},
+        {"$ref": "./shared/semantic/shadow.tokens.json"},
+        {"$ref": "./shared/semantic/typography.tokens.json"}
       ]
     }
   },
@@ -30,19 +30,15 @@
     "colorScheme": {
       "description": "Selects semantic colors for the active color scheme.",
       "contexts": {
-        "light": [
-          { "$ref": "./shared/semantic/color/light.tokens.json" }
-        ],
-        "dark": [
-          { "$ref": "./shared/semantic/color/dark.tokens.json" }
-        ]
+        "light": [{"$ref": "./shared/semantic/color/light.tokens.json"}],
+        "dark": [{"$ref": "./shared/semantic/color/dark.tokens.json"}]
       },
       "default": "light"
     }
   },
   "resolutionOrder": [
-    { "$ref": "#/sets/shared-primitive" },
-    { "$ref": "#/sets/shared-semantic" },
-    { "$ref": "#/modifiers/colorScheme" }
+    {"$ref": "#/sets/shared-primitive"},
+    {"$ref": "#/sets/shared-semantic"},
+    {"$ref": "#/modifiers/colorScheme"}
   ]
 }

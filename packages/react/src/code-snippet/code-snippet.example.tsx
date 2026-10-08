@@ -1,5 +1,6 @@
 import {CopyButton} from '../copy-button/copy-button.tsx';
 import {CodeSnippet} from './code-snippet.tsx';
+
 import styles from './code-snippet.example.module.css';
 
 const code = 'pnpm install';

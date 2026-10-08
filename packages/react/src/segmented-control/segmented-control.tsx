@@ -1,8 +1,10 @@
 import {Toggle} from '@base-ui/react/toggle';
 import {ToggleGroup as BaseToggleGroup} from '@base-ui/react/toggle-group';
 import {forwardRef, type Ref, type RefAttributes} from 'react';
-import styles from './segmented-control.module.css';
+
 import {mergeClassName} from '../utils/class-names.ts';
+
+import styles from './segmented-control.module.css';
 
 export type SegmentedControlProps<Value extends string = string> = BaseToggleGroup.Props<Value> & {
   readonly orientation?: 'horizontal';

@@ -1,24 +1,26 @@
 #!/usr/bin/env node
 
-import { readFile } from "node:fs/promises";
-import path from "node:path";
-import Color from "colorjs.io";
-import { isJsonObject, parseJson } from "../generation/src/dtcg";
-import type { JsonValue } from "../generation/src/types";
+import {readFile} from 'node:fs/promises';
+import path from 'node:path';
 
-const ROOT_DIRECTORY = path.join(__dirname, "..");
-const TOKEN_DIRECTORY = path.join(ROOT_DIRECTORY, "tokens", "shared");
+import Color from 'colorjs.io';
+
+import {isJsonObject, parseJson} from '../generation/src/dtcg';
+import type {JsonValue} from '../generation/src/types';
+
+const ROOT_DIRECTORY = path.join(__dirname, '..');
+const TOKEN_DIRECTORY = path.join(ROOT_DIRECTORY, 'tokens', 'shared');
 const REQUIRED_TEXT_CONTRAST = 4.5;
 const REQUIRED_NON_TEXT_CONTRAST = 3;
-const INTERACTIVE_KEYS = new Set(["hover", "active"]);
-const MODES = ["light", "dark"] as const;
+const INTERACTIVE_KEYS = new Set(['hover', 'active']);
+const MODES = ['light', 'dark'] as const;
 
 type Mode = (typeof MODES)[number];
 
 type ColorToken =
-  | { readonly kind: "alias"; readonly path: string }
-  | { readonly kind: "color"; readonly color: Color }
-  | { readonly kind: "pointer" };
+  | {readonly kind: 'alias'; readonly path: string}
+  | {readonly kind: 'color'; readonly color: Color}
+  | {readonly kind: 'pointer'};
 
 interface TokenTree {
   readonly token: ColorToken | undefined;
@@ -56,10 +58,7 @@ interface ContrastResult extends ContrastCheck {
 
 /** Reads a color token file and decodes it into a resting-state token tree. */
 async function readColorTokenFile(file: string): Promise<TokenTree> {
-  return decodeColorTokenFile(
-    await readFile(file, "utf8"),
-    path.relative(ROOT_DIRECTORY, file),
-  );
+  return decodeColorTokenFile(await readFile(file, 'utf8'), path.relative(ROOT_DIRECTORY, file));
 }
 
 /** Decodes a DTCG color token document, dropping hover and active states. */
@@ -85,8 +84,8 @@ function decodeTree(value: JsonValue, label: string): TokenTree {
 
   const fields = new Map(Object.entries(value));
   let token: ColorToken | undefined;
-  const rawValue = fields.get("$value");
-  const rawRoot = fields.get("$root");
+  const rawValue = fields.get('$value');
+  const rawRoot = fields.get('$root');
 
   if (rawValue !== undefined) {
     token = decodeTokenValue(rawValue, label);
@@ -100,22 +99,22 @@ function decodeTree(value: JsonValue, label: string): TokenTree {
 
   const children = new Map<string, TokenTree>();
   for (const [key, child] of fields) {
-    if (key.startsWith("$") || INTERACTIVE_KEYS.has(key)) continue;
+    if (key.startsWith('$') || INTERACTIVE_KEYS.has(key)) continue;
     children.set(key, decodeTree(child, `${label}.${key}`));
   }
 
-  return { token, children };
+  return {token, children};
 }
 
 /** Decodes a DTCG `$value` into an alias or a concrete colorjs color. */
 function decodeTokenValue(value: JsonValue, label: string): ColorToken {
-  if (typeof value === "string") {
+  if (typeof value === 'string') {
     const alias = /^\{(.+)\}$/.exec(value);
     const path = alias?.[1];
-    if (path === undefined || path === "") {
+    if (path === undefined || path === '') {
       throw new Error(`Unsupported string value at ${label}: ${value}`);
     }
-    return { kind: "alias", path };
+    return {kind: 'alias', path};
   }
 
   if (!isJsonObject(value)) {
@@ -123,19 +122,15 @@ function decodeTokenValue(value: JsonValue, label: string): ColorToken {
   }
 
   const fields = new Map(Object.entries(value));
-  const colorSpace = fields.get("colorSpace");
-  const components = fields.get("components");
-  const alpha = fields.get("alpha");
-  if (
-    hasJsonPointer(colorSpace) ||
-    hasJsonPointer(alpha) ||
-    hasJsonPointerItems(components)
-  ) {
-    return { kind: "pointer" };
+  const colorSpace = fields.get('colorSpace');
+  const components = fields.get('components');
+  const alpha = fields.get('alpha');
+  if (hasJsonPointer(colorSpace) || hasJsonPointer(alpha) || hasJsonPointerItems(components)) {
+    return {kind: 'pointer'};
   }
   if (
     colorSpace === undefined ||
-    typeof colorSpace !== "string" ||
+    typeof colorSpace !== 'string' ||
     !Array.isArray(components) ||
     components.length !== 3
   ) {
@@ -158,12 +153,8 @@ function decodeTokenValue(value: JsonValue, label: string): ColorToken {
   }
 
   return {
-    kind: "color",
-    color: new Color(
-      colorSpace,
-      [first, second, third],
-      alpha === undefined ? 1 : alpha,
-    ),
+    kind: 'color',
+    color: new Color(colorSpace, [first, second, third], alpha === undefined ? 1 : alpha),
   };
 }
 
@@ -179,7 +170,7 @@ function hasJsonPointerItems(value: JsonValue | undefined): boolean {
 
 /** Returns whether a JSON value is a DTCG `$ref` pointer. */
 function isJsonPointer(value: JsonValue): boolean {
-  return isJsonObject(value) && typeof value.$ref === "string";
+  return isJsonObject(value) && typeof value.$ref === 'string';
 }
 
 /** Lists logical token paths present in a resting-state tree. */
@@ -190,13 +181,9 @@ function listTokenPaths(tree: TokenTree): string[] {
 }
 
 /** Collects token paths from a tree node. */
-function collectTokenPaths(
-  node: TokenTree,
-  prefix: readonly string[],
-  paths: string[],
-): void {
+function collectTokenPaths(node: TokenTree, prefix: readonly string[], paths: string[]): void {
   if (node.token !== undefined && prefix.length > 0) {
-    paths.push(prefix.join("."));
+    paths.push(prefix.join('.'));
   }
   for (const [key, child] of node.children) {
     collectTokenPaths(child, [...prefix, key], paths);
@@ -207,10 +194,8 @@ function collectTokenPaths(
 function sharedRestingPaths(light: TokenTree, dark: TokenTree): string[] {
   const lightPaths = listTokenPaths(light);
   const darkPaths = listTokenPaths(dark);
-  if (lightPaths.join("\n") !== darkPaths.join("\n")) {
-    throw new Error(
-      "Light and dark semantic color documents expose different resting tokens",
-    );
+  if (lightPaths.join('\n') !== darkPaths.join('\n')) {
+    throw new Error('Light and dark semantic color documents expose different resting tokens');
   }
   return lightPaths;
 }
@@ -224,7 +209,7 @@ function under(
   const found: string[] = [];
   for (const tokenPath of paths) {
     if (tokenPath === prefix) {
-      if (keep("")) found.push(tokenPath);
+      if (keep('')) found.push(tokenPath);
       continue;
     }
     if (!tokenPath.startsWith(`${prefix}.`)) continue;
@@ -246,7 +231,7 @@ function requirePath(paths: ReadonlySet<string>, tokenPath: string): string {
 
 /** Returns the path suffix after a prefix. */
 function suffixAfter(tokenPath: string, prefix: string): string {
-  if (tokenPath === prefix) return "";
+  if (tokenPath === prefix) return '';
   if (!tokenPath.startsWith(`${prefix}.`)) {
     throw new Error(`${tokenPath} is not under ${prefix}`);
   }
@@ -261,20 +246,14 @@ function pairBySuffix(
   backgroundPrefix: string,
 ): ContrastPair[] {
   const foregroundBySuffix = new Map(
-    foregrounds.map((tokenPath) => [
-      suffixAfter(tokenPath, foregroundPrefix),
-      tokenPath,
-    ]),
+    foregrounds.map((tokenPath) => [suffixAfter(tokenPath, foregroundPrefix), tokenPath]),
   );
   const backgroundBySuffix = new Map(
-    backgrounds.map((tokenPath) => [
-      suffixAfter(tokenPath, backgroundPrefix),
-      tokenPath,
-    ]),
+    backgrounds.map((tokenPath) => [suffixAfter(tokenPath, backgroundPrefix), tokenPath]),
   );
   const foregroundSuffixes = [...foregroundBySuffix.keys()].sort();
   const backgroundSuffixes = [...backgroundBySuffix.keys()].sort();
-  if (foregroundSuffixes.join("\n") !== backgroundSuffixes.join("\n")) {
+  if (foregroundSuffixes.join('\n') !== backgroundSuffixes.join('\n')) {
     throw new Error(
       `Mismatched contrast pair suffixes between ${foregroundPrefix} and ${backgroundPrefix}`,
     );
@@ -288,7 +267,7 @@ function pairBySuffix(
         `Mismatched contrast pair suffixes between ${foregroundPrefix} and ${backgroundPrefix}`,
       );
     }
-    return { foreground, background };
+    return {foreground, background};
   });
 }
 
@@ -298,7 +277,7 @@ function everyCombination(
   backgrounds: readonly string[],
 ): ContrastPair[] {
   return foregrounds.flatMap((foreground) =>
-    backgrounds.map((background) => ({ foreground, background })),
+    backgrounds.map((background) => ({foreground, background})),
   );
 }
 
@@ -313,197 +292,167 @@ function createRules(paths: readonly string[]): ContrastRule[] {
   const pathSet = new Set(paths);
   const page = under(
     paths,
-    "semantic.color.background",
-    (relative) => relative === "canvas" || relative === "surface",
+    'semantic.color.background',
+    (relative) => relative === 'canvas' || relative === 'surface',
   );
   if (page.length !== 2) {
-    throw new Error(
-      `Expected canvas and surface page backgrounds, found: ${page.join(", ")}`,
-    );
+    throw new Error(`Expected canvas and surface page backgrounds, found: ${page.join(', ')}`);
   }
 
-  const primaryFills = under(paths, "semantic.color.background.fill.primary");
-  const secondaryFills = under(
-    paths,
-    "semantic.color.background.fill.secondary",
-  );
+  const primaryFills = under(paths, 'semantic.color.background.fill.primary');
+  const secondaryFills = under(paths, 'semantic.color.background.fill.secondary');
   const statusSecondaryFills = under(
     paths,
-    "semantic.color.background.fill.secondary",
-    (relative) => relative !== "",
+    'semantic.color.background.fill.secondary',
+    (relative) => relative !== '',
   );
   const statusBorders = under(
     paths,
-    "semantic.color.border",
-    (relative) => relative !== "primary" && relative !== "secondary",
+    'semantic.color.border',
+    (relative) => relative !== 'primary' && relative !== 'secondary',
   );
 
   return [
     {
-      category: "text/page",
+      category: 'text/page',
       threshold: REQUIRED_TEXT_CONTRAST,
       pairs: everyCombination(
-        under(
-          paths,
-          "semantic.color.text",
-          (relative) => !relative.startsWith("on"),
-        ),
+        under(paths, 'semantic.color.text', (relative) => !relative.startsWith('on')),
         page,
       ),
     },
     {
-      category: "icon/page",
+      category: 'icon/page',
       threshold: REQUIRED_NON_TEXT_CONTRAST,
       pairs: everyCombination(
         under(
           paths,
-          "semantic.color.icon",
+          'semantic.color.icon',
           (relative) =>
-            !relative.startsWith("on") &&
-            !relative.startsWith("checkbox") &&
-            !relative.startsWith("radio"),
+            !relative.startsWith('on') &&
+            !relative.startsWith('checkbox') &&
+            !relative.startsWith('radio'),
         ),
         page,
       ),
     },
     {
-      category: "text/on-primary-fill",
+      category: 'text/on-primary-fill',
       threshold: REQUIRED_TEXT_CONTRAST,
       pairs: everyCombination(
-        [requirePath(pathSet, "semantic.color.text.onPrimaryFill")],
+        [requirePath(pathSet, 'semantic.color.text.onPrimaryFill')],
         primaryFills,
       ),
     },
     {
-      category: "icon/on-primary-fill",
+      category: 'icon/on-primary-fill',
       threshold: REQUIRED_NON_TEXT_CONTRAST,
       pairs: everyCombination(
-        [requirePath(pathSet, "semantic.color.icon.onPrimaryFill")],
+        [requirePath(pathSet, 'semantic.color.icon.onPrimaryFill')],
         primaryFills,
       ),
     },
     {
-      category: "fill/primary-boundary",
+      category: 'fill/primary-boundary',
       threshold: REQUIRED_NON_TEXT_CONTRAST,
       pairs: everyCombination(primaryFills, page),
     },
     {
-      category: "text/on-secondary-fill",
+      category: 'text/on-secondary-fill',
       threshold: REQUIRED_TEXT_CONTRAST,
       pairs: pairBySuffix(
-        under(paths, "semantic.color.text.onSecondaryFill"),
-        "semantic.color.text.onSecondaryFill",
+        under(paths, 'semantic.color.text.onSecondaryFill'),
+        'semantic.color.text.onSecondaryFill',
         secondaryFills,
-        "semantic.color.background.fill.secondary",
+        'semantic.color.background.fill.secondary',
       ),
     },
     {
-      category: "icon/on-secondary-fill",
+      category: 'icon/on-secondary-fill',
       threshold: REQUIRED_NON_TEXT_CONTRAST,
       pairs: pairBySuffix(
-        under(paths, "semantic.color.icon.onSecondaryFill"),
-        "semantic.color.icon.onSecondaryFill",
+        under(paths, 'semantic.color.icon.onSecondaryFill'),
+        'semantic.color.icon.onSecondaryFill',
         secondaryFills,
-        "semantic.color.background.fill.secondary",
+        'semantic.color.background.fill.secondary',
       ),
     },
     {
-      category: "border/primary",
+      category: 'border/primary',
       threshold: REQUIRED_NON_TEXT_CONTRAST,
-      pairs: everyCombination(
-        [requirePath(pathSet, "semantic.color.border.primary")],
-        page,
-      ),
+      pairs: everyCombination([requirePath(pathSet, 'semantic.color.border.primary')], page),
     },
     {
-      category: "border/status",
+      category: 'border/status',
       threshold: REQUIRED_NON_TEXT_CONTRAST,
       pairs: everyCombination(statusBorders, page),
     },
     {
-      category: "border/status-vs-secondary-fill",
+      category: 'border/status-vs-secondary-fill',
       threshold: REQUIRED_NON_TEXT_CONTRAST,
       pairs: pairBySuffix(
         statusBorders,
-        "semantic.color.border",
+        'semantic.color.border',
         statusSecondaryFills,
-        "semantic.color.background.fill.secondary",
+        'semantic.color.background.fill.secondary',
       ),
     },
     {
-      category: "focus-ring",
+      category: 'focus-ring',
       threshold: REQUIRED_NON_TEXT_CONTRAST,
-      pairs: everyCombination(under(paths, "semantic.color.focusRing"), page),
+      pairs: everyCombination(under(paths, 'semantic.color.focusRing'), page),
     },
     {
-      category: "fill/selected-boundary",
+      category: 'fill/selected-boundary',
       threshold: REQUIRED_NON_TEXT_CONTRAST,
       pairs: everyCombination(
-        [requirePath(pathSet, "semantic.color.background.fill.selected")],
+        [requirePath(pathSet, 'semantic.color.background.fill.selected')],
         page,
       ),
     },
     {
-      category: "icon/on-selected-fill",
+      category: 'icon/on-selected-fill',
       threshold: REQUIRED_NON_TEXT_CONTRAST,
       pairs: [
         {
-          foreground: requirePath(pathSet, "semantic.color.icon.onSelectedFill"),
-          background: requirePath(
-            pathSet,
-            "semantic.color.background.fill.selected",
-          ),
+          foreground: requirePath(pathSet, 'semantic.color.icon.onSelectedFill'),
+          background: requirePath(pathSet, 'semantic.color.background.fill.selected'),
         },
       ],
     },
     {
-      category: "slider/progress-vs-track",
+      category: 'slider/progress-vs-track',
       threshold: REQUIRED_NON_TEXT_CONTRAST,
       pairs: [
         {
-          foreground: requirePath(
-            pathSet,
-            "semantic.color.background.fill.selected",
-          ),
-          background: requirePath(
-            pathSet,
-            "semantic.color.background.fill.secondary",
-          ),
+          foreground: requirePath(pathSet, 'semantic.color.background.fill.selected'),
+          background: requirePath(pathSet, 'semantic.color.background.fill.secondary'),
         },
       ],
     },
     {
-      category: "switch/off-track-boundary",
+      category: 'switch/off-track-boundary',
       threshold: REQUIRED_NON_TEXT_CONTRAST,
-      pairs: everyCombination(
-        [requirePath(pathSet, "semantic.color.background.switch")],
-        page,
-      ),
+      pairs: everyCombination([requirePath(pathSet, 'semantic.color.background.switch')], page),
     },
     {
-      category: "switch/knob-vs-track",
+      category: 'switch/knob-vs-track',
       threshold: REQUIRED_NON_TEXT_CONTRAST,
       pairs: everyCombination(
-        [requirePath(pathSet, "semantic.color.background.switch.knob")],
+        [requirePath(pathSet, 'semantic.color.background.switch.knob')],
         [
-          requirePath(pathSet, "semantic.color.background.switch"),
-          requirePath(pathSet, "semantic.color.background.switch.selected"),
+          requirePath(pathSet, 'semantic.color.background.switch'),
+          requirePath(pathSet, 'semantic.color.background.switch.selected'),
         ],
       ),
     },
     {
-      category: "slider/endstop-vs-track",
+      category: 'slider/endstop-vs-track',
       threshold: REQUIRED_NON_TEXT_CONTRAST,
       pairs: [
         {
-          foreground: requirePath(
-            pathSet,
-            "semantic.color.background.slider.track.endstop",
-          ),
-          background: requirePath(
-            pathSet,
-            "semantic.color.background.slider.track",
-          ),
+          foreground: requirePath(pathSet, 'semantic.color.background.slider.track.endstop'),
+          background: requirePath(pathSet, 'semantic.color.background.slider.track'),
         },
       ],
     },
@@ -517,7 +466,7 @@ function createChecks(paths: readonly string[]): ContrastCheck[] {
 
   for (const mode of MODES) {
     for (const rule of rules) {
-      for (const { foreground, background } of rule.pairs) {
+      for (const {foreground, background} of rule.pairs) {
         checks.push({
           mode,
           category: rule.category,
@@ -541,15 +490,13 @@ function resolveColor(
 ): Color {
   const cycleKey = `${mode}:${tokenPath}`;
   if (stack.includes(cycleKey)) {
-    throw new Error(`Circular color alias: ${[...stack, cycleKey].join(" -> ")}`);
+    throw new Error(`Circular color alias: ${[...stack, cycleKey].join(' -> ')}`);
   }
 
-  const document = tokenPath.startsWith("primitive.")
-    ? documents.primitive
-    : documents[mode];
+  const document = tokenPath.startsWith('primitive.') ? documents.primitive : documents[mode];
   const token = tokenAt(document, tokenPath);
-  if (token.kind === "color") return token.color;
-  if (token.kind === "pointer") {
+  if (token.kind === 'color') return token.color;
+  if (token.kind === 'pointer') {
     throw new Error(
       `${mode} ${tokenPath} uses a JSON Pointer color and cannot be contrast-checked`,
     );
@@ -560,8 +507,8 @@ function resolveColor(
 /** Returns the token stored at a logical path, including explicit `$root`. */
 function tokenAt(tree: TokenTree, tokenPath: string): ColorToken {
   let node = tree;
-  for (const segment of tokenPath.split(".")) {
-    if (segment === "$root") continue;
+  for (const segment of tokenPath.split('.')) {
+    if (segment === '$root') continue;
     const child = node.children.get(segment);
     if (child === undefined) {
       throw new Error(`Unknown color token path: ${tokenPath}`);
@@ -576,56 +523,36 @@ function tokenAt(tree: TokenTree, tokenPath: string): ColorToken {
 
 /** Displays a resolved color compactly in a failure message. */
 function displayColor(color: Color): string {
-  return color
-    .to("srgb")
-    .toString({ format: "hex", collapse: false })
-    .toUpperCase();
+  return color.to('srgb').toString({format: 'hex', collapse: false}).toUpperCase();
 }
 
 /** Checks all required semantic pairs and exits unsuccessfully on any failure. */
 async function main(): Promise<void> {
   const [primitive, light, dark] = await Promise.all([
-    readColorTokenFile(
-      path.join(TOKEN_DIRECTORY, "primitive", "color.tokens.json"),
-    ),
-    readColorTokenFile(
-      path.join(TOKEN_DIRECTORY, "semantic", "color", "light.tokens.json"),
-    ),
-    readColorTokenFile(
-      path.join(TOKEN_DIRECTORY, "semantic", "color", "dark.tokens.json"),
-    ),
+    readColorTokenFile(path.join(TOKEN_DIRECTORY, 'primitive', 'color.tokens.json')),
+    readColorTokenFile(path.join(TOKEN_DIRECTORY, 'semantic', 'color', 'light.tokens.json')),
+    readColorTokenFile(path.join(TOKEN_DIRECTORY, 'semantic', 'color', 'dark.tokens.json')),
   ]);
-  const documents = { primitive, light, dark };
+  const documents = {primitive, light, dark};
   const checks = createChecks(sharedRestingPaths(light, dark));
   const checkKeys = checks.map(
-    ({ mode, category, foreground, background }) =>
-      `${mode}|${category}|${foreground}|${background}`,
+    ({mode, category, foreground, background}) => `${mode}|${category}|${foreground}|${background}`,
   );
-  const duplicateCheckKeys = checkKeys.filter(
-    (key, index) => checkKeys.indexOf(key) !== index,
-  );
+  const duplicateCheckKeys = checkKeys.filter((key, index) => checkKeys.indexOf(key) !== index);
   if (duplicateCheckKeys.length > 0) {
     throw new Error(
-      `Duplicate color contrast checks:\n${[...new Set(duplicateCheckKeys)].join("\n")}`,
+      `Duplicate color contrast checks:\n${[...new Set(duplicateCheckKeys)].join('\n')}`,
     );
   }
 
   const results: ContrastResult[] = checks.map((check) => {
-    const foregroundColor = resolveColor(
-      check.mode,
-      check.foreground,
-      documents,
-    );
-    const backgroundColor = resolveColor(
-      check.mode,
-      check.background,
-      documents,
-    );
+    const foregroundColor = resolveColor(check.mode, check.foreground, documents);
+    const backgroundColor = resolveColor(check.mode, check.background, documents);
     return {
       ...check,
       foregroundColor,
       backgroundColor,
-      ratio: foregroundColor.contrast(backgroundColor, "WCAG21"),
+      ratio: foregroundColor.contrast(backgroundColor, 'WCAG21'),
     };
   });
   const failures = results.filter((result) => result.ratio < result.threshold);
@@ -641,18 +568,16 @@ async function main(): Promise<void> {
           `${failure.foreground} (${displayColor(failure.foregroundColor)})`,
           `on ${failure.background} (${displayColor(failure.backgroundColor)})`,
           `is ${failure.ratio.toFixed(2)}:1; requires ${failure.threshold.toFixed(1)}:1`,
-        ].join(" "),
+        ].join(' '),
       );
     }
     process.exitCode = 1;
     return;
   }
 
-  const weakest = [...results].sort(
-    (a, b) => a.ratio / a.threshold - b.ratio / b.threshold,
-  )[0];
+  const weakest = [...results].sort((a, b) => a.ratio / a.threshold - b.ratio / b.threshold)[0];
   if (weakest === undefined) {
-    throw new Error("Expected at least one color contrast check");
+    throw new Error('Expected at least one color contrast check');
   }
   console.log(
     `Validated ${results.length} required resting-state color contrast pairs (WCAG 2.1).`,

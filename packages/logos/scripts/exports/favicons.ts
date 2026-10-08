@@ -1,9 +1,10 @@
-import {basename} from "node:path";
-import {type BrandId, brands} from "../../config.js";
-import {faviconTags, packageVersion} from "../../src/favicons.js";
-import {createIco} from "../lib/containers.js";
-import {circleSafeFrame, frameSvg, renderPng, squareFrame} from "../lib/raster.js";
-import type {ExportPlugin, TreatmentId} from "./plugin.js";
+import {basename} from 'node:path';
+
+import {type BrandId, brands} from '../../config.js';
+import {faviconTags, packageVersion} from '../../src/favicons.js';
+import {createIco} from '../lib/containers.js';
+import {circleSafeFrame, frameSvg, renderPng, squareFrame} from '../lib/raster.js';
+import type {ExportPlugin, TreatmentId} from './plugin.js';
 
 export interface FaviconsOptions {
   /**
@@ -27,20 +28,22 @@ export interface FaviconsOptions {
 /** Favicon, touch icon, PWA icons, web manifest, and an HTML snippet per brand. */
 export function favicons(options: FaviconsOptions): ExportPlugin {
   return {
-    name: "favicons",
+    name: 'favicons',
     async run(context) {
       // Favicon URLs carry the package version, so browsers fetch updated icons.
       const version = await packageVersion();
       for (const brand of Object.keys(brands) as BrandId[]) {
-        const treatments = options.treatments ?? {light: "on-light", dark: "on-dark"};
+        const treatments = options.treatments ?? {light: 'on-light', dark: 'on-dark'};
         const light = context.mark(brand, treatments.light).colored;
         const dark = context.mark(brand, treatments.dark).colored;
         if (light.paths.length !== dark.paths.length) {
-          throw new Error(`${brand}: the ${treatments.light} and ${treatments.dark} symbols must share their paths for the SVG favicon`);
+          throw new Error(
+            `${brand}: the ${treatments.light} and ${treatments.dark} symbols must share their paths for the SVG favicon`,
+          );
         }
         const directory = `favicons/${brand}`;
         const files: Record<string, string> = {};
-        const background = await context.background(brand, "light");
+        const background = await context.background(brand, 'light');
 
         // The SVG favicon switches to the dark colors with the browser's color scheme:
         // paths whose color changes get a class named after their dark color.
@@ -54,41 +57,68 @@ export function favicons(options: FaviconsOptions): ExportPlugin {
             return {...path, className: classFor(darkFill)};
           }),
         };
-        const rules = [...darkFills].map((fill) => `.${classFor(fill)}{fill:${fill}}`).join("");
+        const rules = [...darkFills].map((fill) => `.${classFor(fill)}{fill:${fill}}`).join('');
         const svgFrame = squareFrame(light, options.svgSize, 0);
         files.svg = await context.write(
           `${directory}/favicon.svg`,
-          frameSvg(themed, rules ? {...svgFrame, style: `@media (prefers-color-scheme:dark){${rules}}`} : svgFrame),
+          frameSvg(
+            themed,
+            rules ? {...svgFrame, style: `@media (prefers-color-scheme:dark){${rules}}`} : svgFrame,
+          ),
         );
 
         const icoImages = [];
-        for (const size of options.icoSizes) icoImages.push({size, png: await renderPng(light, squareFrame(light, size, 0))});
+        for (const size of options.icoSizes)
+          icoImages.push({size, png: await renderPng(light, squareFrame(light, size, 0))});
         files.ico = await context.write(`${directory}/favicon.ico`, createIco(icoImages));
         files.appleTouchIcon = await context.write(
           `${directory}/apple-touch-icon.png`,
-          await renderPng(light, squareFrame(light, options.appleTouchSize, options.padding, background)),
+          await renderPng(
+            light,
+            squareFrame(light, options.appleTouchSize, options.padding, background),
+          ),
         );
         const icons = [];
         for (const size of options.iconSizes) {
-          const path = await context.write(`${directory}/icon-${size}.png`, await renderPng(light, squareFrame(light, size, options.padding)));
-          icons.push({src: `icon-${size}.png?v=${version}`, sizes: `${size}x${size}`, type: "image/png"});
+          const path = await context.write(
+            `${directory}/icon-${size}.png`,
+            await renderPng(light, squareFrame(light, size, options.padding)),
+          );
+          icons.push({
+            src: `icon-${size}.png?v=${version}`,
+            sizes: `${size}x${size}`,
+            type: 'image/png',
+          });
           files[`icon${size}`] = path;
         }
         files.maskable = await context.write(
           `${directory}/icon-maskable-${options.maskableSize}.png`,
-          await renderPng(light, circleSafeFrame(light, options.maskableSize, options.safeZone, background)),
+          await renderPng(
+            light,
+            circleSafeFrame(light, options.maskableSize, options.safeZone, background),
+          ),
         );
-        icons.push({src: `icon-maskable-${options.maskableSize}.png?v=${version}`, sizes: `${options.maskableSize}x${options.maskableSize}`, type: "image/png", purpose: "maskable"});
+        icons.push({
+          src: `icon-maskable-${options.maskableSize}.png?v=${version}`,
+          sizes: `${options.maskableSize}x${options.maskableSize}`,
+          type: 'image/png',
+          purpose: 'maskable',
+        });
 
         const name = brands[brand].name;
         files.webmanifest = await context.write(
           `${directory}/site.webmanifest`,
-          `${JSON.stringify({name, short_name: name, icons, theme_color: background, background_color: background, display: "standalone"}, null, 2)}\n`,
+          `${JSON.stringify({name, short_name: name, icons, theme_color: background, background_color: background, display: 'standalone'}, null, 2)}\n`,
         );
         files.html = await context.write(
           `${directory}/head.html`,
           faviconTags(
-            {ico: basename(files.ico), svg: basename(files.svg), appleTouchIcon: basename(files.appleTouchIcon), webmanifest: basename(files.webmanifest)},
+            {
+              ico: basename(files.ico),
+              svg: basename(files.svg),
+              appleTouchIcon: basename(files.appleTouchIcon),
+              webmanifest: basename(files.webmanifest),
+            },
             version,
           ),
         );

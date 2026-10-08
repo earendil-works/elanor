@@ -6,5 +6,9 @@ interface HeadSnippetProps {
 
 /** The favicon `<head>` tags, with a copy button. */
 export function HeadSnippet({code}: HeadSnippetProps): React.JSX.Element {
-  return <CodeSnippet actions={<CopyButton value={code} aria-label="Copy the head tags" />}>{code}</CodeSnippet>;
+  return (
+    <CodeSnippet actions={<CopyButton value={code} aria-label="Copy the head tags" />}>
+      {code}
+    </CodeSnippet>
+  );
 }

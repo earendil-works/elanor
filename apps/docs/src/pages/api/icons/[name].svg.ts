@@ -1,6 +1,8 @@
-import type {APIRoute, GetStaticPaths} from 'astro';
 import {readdir, readFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
+
+import type {APIRoute, GetStaticPaths} from 'astro';
+
 import {iconsDist} from '../../../lib/packages.ts';
 
 export const getStaticPaths = (async () =>

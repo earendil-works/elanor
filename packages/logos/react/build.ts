@@ -1,12 +1,12 @@
 // Generates the per-brand logo modules from the artwork built by @earendil-works/elanor-logos.
 // The component they use, src/create-logo.tsx, is compiled by tsc afterwards.
-import {mkdir, readFile, rm, writeFile} from "node:fs/promises";
-import {resolve} from "node:path";
+import {mkdir, readFile, rm, writeFile} from 'node:fs/promises';
+import {resolve} from 'node:path';
 
 interface Path {
   token: string;
   d: string;
-  fillRule?: "evenodd";
+  fillRule?: 'evenodd';
 }
 interface Artwork {
   width: number;
@@ -19,23 +19,28 @@ interface ArtworkFile {
   /** Per brand: the colors of the tokens its artwork links to, and its artwork per kind. Lockup kinds name their lockup. */
   brands: Record<
     string,
-    {colors: Record<string, {light: string; dark: string}>; kinds: Record<string, {lockup?: string; color: Artwork; monochrome: Artwork}>}
+    {
+      colors: Record<string, {light: string; dark: string}>;
+      kinds: Record<string, {lockup?: string; color: Artwork; monochrome: Artwork}>;
+    }
   >;
 }
 
 const packageDirectory = import.meta.dirname;
-const outputDirectory = resolve(packageDirectory, "dist");
-const artworkFile = resolve(packageDirectory, "../dist/artwork.json");
-const manifestFile = resolve(packageDirectory, "../dist/manifest.json");
+const outputDirectory = resolve(packageDirectory, 'dist');
+const artworkFile = resolve(packageDirectory, '../dist/artwork.json');
+const manifestFile = resolve(packageDirectory, '../dist/manifest.json');
 
-const source = await readFile(artworkFile, "utf8").catch((error: NodeJS.ErrnoException) => {
-  throw error.code === "ENOENT" ? new Error(`Missing ${artworkFile}; build @earendil-works/elanor-logos first`) : error;
+const source = await readFile(artworkFile, 'utf8').catch((error: NodeJS.ErrnoException) => {
+  throw error.code === 'ENOENT'
+    ? new Error(`Missing ${artworkFile}; build @earendil-works/elanor-logos first`)
+    : error;
 });
 const {monochromeToken, brands} = JSON.parse(source) as ArtworkFile;
 const names = Object.fromEntries(
-  (JSON.parse(await readFile(manifestFile, "utf8")) as {brands: Array<{id: string; name: string}>}).brands.map(
-    ({id, name}) => [id, name],
-  ),
+  (
+    JSON.parse(await readFile(manifestFile, 'utf8')) as {brands: Array<{id: string; name: string}>}
+  ).brands.map(({id, name}) => [id, name]),
 );
 
 await rm(outputDirectory, {recursive: true, force: true});
@@ -49,7 +54,10 @@ for (const [brand, {colors, kinds}] of Object.entries(brands)) {
     monochrome: colors[monochromeToken],
     // Keyed by the `lockup` prop; the symbol alone is "logo".
     kinds: Object.fromEntries(
-      Object.values(kinds).map(({lockup, color, monochrome}) => [lockup ?? "logo", {color, monochrome}]),
+      Object.values(kinds).map(({lockup, color, monochrome}) => [
+        lockup ?? 'logo',
+        {color, monochrome},
+      ]),
     ),
   };
   await writeFile(
@@ -62,7 +70,6 @@ for (const [brand, {colors, kinds}] of Object.entries(brands)) {
   );
   exports.push(`export {${componentName}} from "./${brand}.js";`);
 }
-await writeFile(resolve(outputDirectory, "index.js"), `${exports.join("\n")}\n`);
-await writeFile(resolve(outputDirectory, "index.d.ts"), `${exports.join("\n")}\n`);
+await writeFile(resolve(outputDirectory, 'index.js'), `${exports.join('\n')}\n`);
+await writeFile(resolve(outputDirectory, 'index.d.ts'), `${exports.join('\n')}\n`);
 console.log(`Built ${exports.length} React logos.`);
-

@@ -1,7 +1,9 @@
 import {Input as BaseInput} from '@base-ui/react/input';
 import {forwardRef} from 'react';
-import styles from './input.module.css';
+
 import {mergeClassName} from '../utils/class-names.ts';
+
+import styles from './input.module.css';
 
 export type {
   InputState,
@@ -22,7 +24,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   ref,
 ) {
   if (!inputTypes.includes(type)) {
-    throw new TypeError(`Input does not support type="${type}". Use one of: ${inputTypes.join(', ')}.`);
+    throw new TypeError(
+      `Input does not support type="${type}". Use one of: ${inputTypes.join(', ')}.`,
+    );
   }
 
   return (

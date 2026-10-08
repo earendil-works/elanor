@@ -148,11 +148,11 @@ Static breakpoint aliases remain in `semantic/dimension.tokens.json` alongside o
 
 Common modifiers:
 
-| Modifier | Example contexts | Applies to |
-|---|---|---|
-| `colorScheme` | `light`, `dark` | `color` |
-| `viewport` | `base`, `xSmall`, `small`, `medium`, `large`, `xLarge` | Token values with responsive overrides |
-| `density` | `comfortable`, `compact` | `dimension` |
+| Modifier      | Example contexts                                       | Applies to                             |
+| ------------- | ------------------------------------------------------ | -------------------------------------- |
+| `colorScheme` | `light`, `dark`                                        | `color`                                |
+| `viewport`    | `base`, `xSmall`, `small`, `medium`, `large`, `xLarge` | Token values with responsive overrides |
+| `density`     | `comfortable`, `compact`                               | `dimension`                            |
 
 A `viewport` modifier is appropriate only when token values vary by available viewport width and the build pipeline explicitly maps each context to a breakpoint threshold. Configure modifier names and contexts in the resolver's `modifiers` section.
 

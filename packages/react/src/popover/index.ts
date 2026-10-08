@@ -1,4 +1,5 @@
 import {Popover as BasePopover} from '@base-ui/react/popover';
+
 import {PopoverDescription, PopoverPopup, PopoverTitle} from './popover.tsx';
 
 // Keep utilities outside the component-only Fast Refresh boundary.

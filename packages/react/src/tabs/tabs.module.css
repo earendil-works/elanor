@@ -3,7 +3,8 @@
   display: flex;
   gap: var(--semantic-dimension-space-control-gap-x-large);
   min-inline-size: 0;
-  border-block-end: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-secondary);
+  border-block-end: var(--semantic-dimension-border-width-default) solid
+    var(--semantic-color-border-secondary);
 }
 
 .tab {
@@ -12,7 +13,10 @@
   min-inline-size: var(--semantic-dimension-size-small);
   min-block-size: var(--semantic-dimension-size-small);
   padding-block-start: var(--semantic-dimension-space-control-padding-block-large);
-  padding-block-end: calc(var(--semantic-dimension-space-control-padding-block-large) - var(--semantic-dimension-border-width-default));
+  padding-block-end: calc(
+    var(--semantic-dimension-space-control-padding-block-large) -
+      var(--semantic-dimension-border-width-default)
+  );
   padding-inline: 0;
   border: 0;
   outline: 0;

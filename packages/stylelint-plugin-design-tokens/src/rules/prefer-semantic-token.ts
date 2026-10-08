@@ -1,10 +1,11 @@
-import type { Rule } from "stylelint";
-import type { RuleOptions } from "../options.js";
-import { getCatalogue, isFoundation, isIgnored } from "../options.js";
-import { customPropertiesInValue } from "../value-parser.js";
-import { report } from "./shared.js";
+import type {Rule} from 'stylelint';
 
-export const ruleName = "design-tokens/prefer-semantic-token";
+import type {RuleOptions} from '../options.js';
+import {getCatalogue, isFoundation, isIgnored} from '../options.js';
+import {customPropertiesInValue} from '../value-parser.js';
+import {report} from './shared.js';
+
+export const ruleName = 'design-tokens/prefer-semantic-token';
 
 /**
  * Creates a Stylelint rule that rejects primitive tokens in application styles.
@@ -20,10 +21,10 @@ export const rule: Rule<true, RuleOptions> = (primary, options) => (root, result
   const catalogue = getCatalogue(options);
 
   root.walkDecls((declaration) => {
-    if (declaration.prop.startsWith("--")) return;
+    if (declaration.prop.startsWith('--')) return;
     for (const variable of customPropertiesInValue(declaration.value)) {
       const token = catalogue.tokensByVariable.get(variable);
-      if (token?.tier !== "primitive") continue;
+      if (token?.tier !== 'primitive') continue;
       report(
         result,
         ruleName,

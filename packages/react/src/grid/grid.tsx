@@ -1,6 +1,8 @@
 import {useRender} from '@base-ui/react/use-render';
 import {createContext, forwardRef, useContext} from 'react';
+
 import {classes} from '../utils/class-names.ts';
+
 import styles from './grid.module.css';
 
 export type GridColumns = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
@@ -29,9 +31,10 @@ function resolveSpans(span: GridResponsiveSpan, counts: TrackCounts) {
     if (current !== 'full' && (!Number.isInteger(current) || current < 1 || current > 12)) {
       throw new RangeError('Grid spans must be an integer from 1 to 12, or "full".');
     }
-    tracks[breakpoint] = current === 'full'
-      ? counts[breakpoint]
-      : Math.min(current, counts[breakpoint]) as GridColumns;
+    tracks[breakpoint] =
+      current === 'full'
+        ? counts[breakpoint]
+        : (Math.min(current, counts[breakpoint]) as GridColumns);
     spans[breakpoint] = current === 'full' ? 'full' : tracks[breakpoint];
   }
   return {spans, tracks};
@@ -54,7 +57,8 @@ export interface GridRootProps extends useRender.ComponentProps<'div'> {
 }
 
 export const GridRoot = forwardRef<HTMLDivElement, GridRootProps>(function GridRoot(
-  {columns = 12, gap = 'medium', render, className, ...props}, ref,
+  {columns = 12, gap = 'medium', render, className, ...props},
+  ref,
 ) {
   if (!Number.isInteger(columns) || columns < 1 || columns > 12) {
     throw new RangeError('Grid columns must be an integer from 1 to 12.');
@@ -71,8 +75,12 @@ export const GridRoot = forwardRef<HTMLDivElement, GridRootProps>(function GridR
     },
   });
   const counts: TrackCounts = {
-    base: columns, xSmall: columns, small: columns,
-    medium: columns, large: columns, xLarge: columns,
+    base: columns,
+    xSmall: columns,
+    small: columns,
+    medium: columns,
+    large: columns,
+    xLarge: columns,
   };
   return <GridContext.Provider value={counts}>{element}</GridContext.Provider>;
 });
@@ -82,7 +90,8 @@ export interface GridItemProps extends useRender.ComponentProps<'div'> {
 }
 
 export const GridItem = forwardRef<HTMLDivElement, GridItemProps>(function GridItem(
-  {span = 'full', render, className, ...props}, ref,
+  {span = 'full', render, className, ...props},
+  ref,
 ) {
   const {spans} = resolveSpans(span, useTrackCounts());
   return useRender({
@@ -96,7 +105,8 @@ export const GridItem = forwardRef<HTMLDivElement, GridItemProps>(function GridI
 export interface GridSubgridProps extends GridItemProps {}
 
 export const GridSubgrid = forwardRef<HTMLDivElement, GridSubgridProps>(function GridSubgrid(
-  {span = 'full', render, className, ...props}, ref,
+  {span = 'full', render, className, ...props},
+  ref,
 ) {
   const {spans, tracks} = resolveSpans(span, useTrackCounts());
   const element = useRender({

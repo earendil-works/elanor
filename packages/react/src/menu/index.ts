@@ -1,4 +1,5 @@
 import {Menu as BaseMenu} from '@base-ui/react/menu';
+
 import {
   MenuGroup,
   MenuGroupLabel,

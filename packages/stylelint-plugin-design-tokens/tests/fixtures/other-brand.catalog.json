@@ -9,7 +9,7 @@
       "tier": "semantic",
       "description": "Fixture token.",
       "deprecated": false,
-      "modes": { "light": "white", "dark": "black" }
+      "modes": {"light": "white", "dark": "black"}
     }
   ]
 }

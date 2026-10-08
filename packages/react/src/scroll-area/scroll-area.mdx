@@ -21,7 +21,7 @@ import {ScrollArea} from '@earendil-works/elanor-react';
   <ScrollArea.Scrollbar>
     <ScrollArea.Thumb />
   </ScrollArea.Scrollbar>
-</ScrollArea.Root>
+</ScrollArea.Root>;
 ```
 
 - **Root** owns the frame. Give it a bounded block size, or let a constrained
@@ -47,14 +47,14 @@ Use ordinary styling and composition. Both axes use logical placement; set DOM
 Use Base UI's attributes directly—no duplicate scroll-position React state is
 needed for styling:
 
-| Attribute | Meaning |
-| --- | --- |
-| `data-has-overflow-x`, `data-has-overflow-y` | Content exceeds the viewport |
-| `data-overflow-y-start`, `data-overflow-y-end` | More content above/below |
-| `data-overflow-x-start`, `data-overflow-x-end` | More content at an inline edge |
-| `data-scrolling` | Currently scrolling |
-| `data-hovering` | Pointer is over the scroll area; exposed on Scrollbar |
-| `data-orientation` | Scrollbar/Thumb axis |
+| Attribute                                      | Meaning                                               |
+| ---------------------------------------------- | ----------------------------------------------------- |
+| `data-has-overflow-x`, `data-has-overflow-y`   | Content exceeds the viewport                          |
+| `data-overflow-y-start`, `data-overflow-y-end` | More content above/below                              |
+| `data-overflow-x-start`, `data-overflow-x-end` | More content at an inline edge                        |
+| `data-scrolling`                               | Currently scrolling                                   |
+| `data-hovering`                                | Pointer is over the scroll area; exposed on Scrollbar |
+| `data-orientation`                             | Scrollbar/Thumb axis                                  |
 
 Thumb styling uses `data-hovering` and `data-scrolling`. Standalone ScrollArea
 scrollbars remain visible while content overflows. Sidebar intentionally overrides

@@ -1,6 +1,7 @@
 import {readdir, readFile} from 'node:fs/promises';
 import {createRequire} from 'node:module';
 import {dirname, resolve} from 'node:path';
+
 import {iconComponentNames} from '../../plugins/icon-imports.ts';
 import {
   companyGuidelines,
@@ -19,7 +20,10 @@ import {
  */
 
 const require = createRequire(resolve(process.cwd(), 'package.json'));
-const tokensDist = resolve(dirname(require.resolve('@earendil-works/design-tokens/radius.css')), '..');
+const tokensDist = resolve(
+  dirname(require.resolve('@earendil-works/design-tokens/radius.css')),
+  '..',
+);
 
 type Scheme = 'light' | 'dark';
 
@@ -64,11 +68,16 @@ const groupUrl = (brand: string, path: string) => `/api/tokens/${brand}/groups/$
 /** The brands the design-tokens package builds, from its catalogues. */
 export async function tokenBrands(): Promise<string[]> {
   const entries = await readdir(tokensDist, {withFileTypes: true});
-  return entries.filter((entry) => entry.isDirectory()).map((entry) => entry.name).sort();
+  return entries
+    .filter((entry) => entry.isDirectory())
+    .map((entry) => entry.name)
+    .sort();
 }
 
 export async function loadTokens(brand: string): Promise<ApiToken[]> {
-  const catalogue = JSON.parse(await readFile(resolve(tokensDist, brand, 'tokens.catalog.json'), 'utf8')) as CatalogueFile;
+  const catalogue = JSON.parse(
+    await readFile(resolve(tokensDist, brand, 'tokens.catalog.json'), 'utf8'),
+  ) as CatalogueFile;
   // Composite subproperties (e.g. a typography token's font size) are part of their token's value.
   return catalogue.tokens
     .filter((token) => !token.sourceToken)
@@ -101,14 +110,19 @@ export async function loadTokenGroups(brand: string): Promise<ApiTokenGroup[]> {
   const tokens = await loadTokens(brand);
   const prefix = (path: string, depth: number) => path.split('.').slice(0, depth).join('.');
   const counts = new Map<string, number>();
-  for (const token of tokens) counts.set(prefix(token.path, 3), (counts.get(prefix(token.path, 3)) ?? 0) + 1);
+  for (const token of tokens)
+    counts.set(prefix(token.path, 3), (counts.get(prefix(token.path, 3)) ?? 0) + 1);
   const groups = new Map<string, ApiToken[]>();
   for (const token of tokens) {
     const category = prefix(token.path, 3);
     const group = counts.get(category)! > 1 ? category : prefix(token.path, 2);
     groups.set(group, [...(groups.get(group) ?? []), token]);
   }
-  return [...groups].map(([path, members]) => ({path, url: groupUrl(brand, path), tokens: members}));
+  return [...groups].map(([path, members]) => ({
+    path,
+    url: groupUrl(brand, path),
+    tokens: members,
+  }));
 }
 
 /** A brand's token index: every group with its token names, and descriptions for semantic tokens. */
@@ -124,7 +138,9 @@ export async function tokenIndex(brand: string) {
       tokens: group.tokens.map((token) => {
         const name = token.path === group.path ? '$root' : token.path.slice(group.path.length + 1);
         // Semantic descriptions say when to use a token; primitives are the palette they alias.
-        return token.path.startsWith('semantic.') && token.description ? {name, description: token.description} : name;
+        return token.path.startsWith('semantic.') && token.description
+          ? {name, description: token.description}
+          : name;
       }),
     })),
   };
@@ -143,17 +159,39 @@ export interface ApiIcon extends IconEntry {
 const iconUrl = (name: string) => `/api/icons/${name}.json`;
 const keywordUrl = (keyword: string) => `/api/icons/keywords/${keyword}.json`;
 /** Words that match most icons without narrowing a search. */
-const keywordStopWords = new Set(['an', 'and', 'as', 'at', 'by', 'for', 'in', 'is', 'of', 'on', 'or', 'the', 'to', 'with']);
+const keywordStopWords = new Set([
+  'an',
+  'and',
+  'as',
+  'at',
+  'by',
+  'for',
+  'in',
+  'is',
+  'of',
+  'on',
+  'or',
+  'the',
+  'to',
+  'with',
+]);
 
 export async function loadIcons(): Promise<ApiIcon[]> {
-  const metadata = JSON.parse(await readFile(resolve(iconsDist, 'metadata.json'), 'utf8')) as Record<string, IconEntry>;
-  const names = (await readdir(resolve(iconsDist, 'svg'))).filter((file) => file.endsWith('.svg')).map((file) => file.slice(0, -4));
+  const metadata = JSON.parse(
+    await readFile(resolve(iconsDist, 'metadata.json'), 'utf8'),
+  ) as Record<string, IconEntry>;
+  const names = (await readdir(resolve(iconsDist, 'svg')))
+    .filter((file) => file.endsWith('.svg'))
+    .map((file) => file.slice(0, -4));
   const components = iconComponentNames(iconsReactBarrel);
   return names.sort().map((name) => {
     const entry = metadata[name];
     if (!entry) throw new Error(`Missing search tags for ${name}`);
     const component = components.get(name);
-    if (!component) throw new Error(`${name} has no React component; build @earendil-works/elanor-icons-react first`);
+    if (!component)
+      throw new Error(
+        `${name} has no React component; build @earendil-works/elanor-icons-react first`,
+      );
     return {
       name,
       component,
@@ -169,7 +207,9 @@ export async function loadIcons(): Promise<ApiIcon[]> {
 export async function iconKeywords(): Promise<Map<string, string[]>> {
   const keywords = new Map<string, string[]>();
   for (const icon of await loadIcons()) {
-    const words = new Set([icon.name, ...icon.tags].flatMap((text) => text.toLowerCase().match(/[a-z0-9]+/g) ?? []));
+    const words = new Set(
+      [icon.name, ...icon.tags].flatMap((text) => text.toLowerCase().match(/[a-z0-9]+/g) ?? []),
+    );
     for (const word of words) {
       if (word.length < 2 || keywordStopWords.has(word)) continue;
       keywords.set(word, [...(keywords.get(word) ?? []), icon.name]);
@@ -196,12 +236,17 @@ const logoBrandUrl = (brand: string) => `/api/logos/brands/${brand}.json`;
 
 /** The logo manifest with every file path turned into its URL. */
 export async function loadLogos(): Promise<LogoManifest> {
-  const manifest = JSON.parse(await readFile(resolve(logosDist, 'manifest.json'), 'utf8')) as LogoManifest;
+  const manifest = JSON.parse(
+    await readFile(resolve(logosDist, 'manifest.json'), 'utf8'),
+  ) as LogoManifest;
   const urls = (value: unknown, key?: string): unknown => {
-    if (typeof value === 'string') return key === 'id' || !/\.[a-z]+$/.test(value) ? value : logoFileUrl(value);
+    if (typeof value === 'string')
+      return key === 'id' || !/\.[a-z]+$/.test(value) ? value : logoFileUrl(value);
     if (Array.isArray(value)) return value.map((item) => urls(item));
     if (value && typeof value === 'object') {
-      return Object.fromEntries(Object.entries(value).map(([name, item]) => [name, urls(item, name)]));
+      return Object.fromEntries(
+        Object.entries(value).map(([name, item]) => [name, urls(item, name)]),
+      );
     }
     return value;
   };
@@ -220,7 +265,12 @@ export async function logoIndex() {
     guidelines: {index: '/api/logos/guidelines/index.json', withFiles: '/brand/llms.txt'},
     gridUnit: manifest.gridUnit,
     clearSpace: manifest.clearSpace,
-    brands: manifest.brands.map((brand) => ({id: brand.id, name: brand.name, backgrounds: brand.backgrounds, url: logoBrandUrl(brand.id)})),
+    brands: manifest.brands.map((brand) => ({
+      id: brand.id,
+      name: brand.name,
+      backgrounds: brand.backgrounds,
+      url: logoBrandUrl(brand.id),
+    })),
   };
 }
 
@@ -251,7 +301,11 @@ export interface ApiGuidelinesSection {
 const guidelinesSectionUrl = (id: string) => `/api/logos/guidelines/${id}.json`;
 
 /** The company brand guidelines, as the logo package writes them, with image paths turned into URLs. */
-export async function loadGuidelines(): Promise<{title: string; intro: GuidelinesData['intro']; sections: ApiGuidelinesSection[]}> {
+export async function loadGuidelines(): Promise<{
+  title: string;
+  intro: GuidelinesData['intro'];
+  sections: ApiGuidelinesSection[];
+}> {
   const data = JSON.parse(await readFile(companyGuidelines, 'utf8')) as GuidelinesData;
   return {
     title: data.title,
@@ -267,7 +321,12 @@ export async function loadGuidelines(): Promise<{title: string; intro: Guideline
 /** The guidelines' sections, to fetch one at a time. */
 export async function guidelinesIndex() {
   const {title, intro, sections} = await loadGuidelines();
-  return {title, intro: intro.markdown, sectionUrl: guidelinesSectionUrl('{id}'), sections: sections.map(({id, title, url}) => ({id, title, url}))};
+  return {
+    title,
+    intro: intro.markdown,
+    sectionUrl: guidelinesSectionUrl('{id}'),
+    sections: sections.map(({id, title, url}) => ({id, title, url})),
+  };
 }
 
 /** The guidelines as Markdown under `level` headings, for text documents such as llms.txt. */
@@ -277,7 +336,11 @@ export async function guidelinesMarkdown(level: number): Promise<string> {
   return [
     intro.markdown,
     ...sections.map((section) =>
-      [`${heading} ${section.title}`, section.markdown, ...section.images.map((image) => `![${image.alt}](${image.url})`)].join('\n\n'),
+      [
+        `${heading} ${section.title}`,
+        section.markdown,
+        ...section.images.map((image) => `![${image.alt}](${image.url})`),
+      ].join('\n\n'),
     ),
   ].join('\n\n');
 }

@@ -49,10 +49,7 @@ import {HomeIcon, SettingsIcon} from '@earendil-works/elanor-icons-react';
           </Stack>
         </Sidebar.Header>
         <Sidebar.Content>
-          <SideNavigation.Root
-            aria-label="Application"
-            variant={collapsed ? 'compact' : 'default'}
-          >
+          <SideNavigation.Root aria-label="Application" variant={collapsed ? 'compact' : 'default'}>
             <SideNavigation.Group>
               <SideNavigation.GroupLabel>Workspace</SideNavigation.GroupLabel>
               <SideNavigation.List>
@@ -71,10 +68,7 @@ import {HomeIcon, SettingsIcon} from '@earendil-works/elanor-icons-react';
           </SideNavigation.Root>
         </Sidebar.Content>
         <Sidebar.Footer>
-          <SideNavigation.Root
-            aria-label="Account"
-            variant={collapsed ? 'compact' : 'default'}
-          >
+          <SideNavigation.Root aria-label="Account" variant={collapsed ? 'compact' : 'default'}>
             <SideNavigation.List>
               <SideNavigation.Item>
                 <SideNavigation.Link href="/account" compactContent="AB">
@@ -88,7 +82,7 @@ import {HomeIcon, SettingsIcon} from '@earendil-works/elanor-icons-react';
     )}
   </Sidebar.Root>
   <Layout.Main>{/* Main content, independently capped by Container */}</Layout.Main>
-</Layout.Body>
+</Layout.Body>;
 ```
 
 The root defaults to a `div`. Compose it with `Layout.Aside` to get one aside,
@@ -121,7 +115,7 @@ const [collapsed, setCollapsed] = useState(false);
   }}
 >
   {/* Compose regions as above. */}
-</Sidebar.Root>
+</Sidebar.Root>;
 ```
 
 Omit `collapsed` for local state; `defaultCollapsed` defaults to false.

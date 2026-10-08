@@ -1,5 +1,6 @@
-import Color from "colorjs.io";
-import { round, token } from "../dtcg";
+import Color from 'colorjs.io';
+
+import {round, token} from '../dtcg';
 import type {
   ColorInteractiveState,
   ColorRecipe,
@@ -8,19 +9,17 @@ import type {
   GeneratedTokenPatch,
   JsonObject,
   JsonValue,
-} from "../types";
+} from '../types';
 
 const LAST_SCALE_STEP = 1000;
 const BELL_CURVE_CENTER = 0.5;
 const BELL_CURVE_SIGMA = 0.25;
 const OKLCH_COMPONENT_PRECISION = 4;
 const OKLCH_HUE_PRECISION = 2;
-const TRANSPARENT_COLOR_NAME = "transparent";
-const PRINT_EXTENSION_KEY = "com.earendil-works.print";
+const TRANSPARENT_COLOR_NAME = 'transparent';
+const PRINT_EXTENSION_KEY = 'com.earendil-works.print';
 const SRGB_GAMUT_EPSILON = 0.0001;
-const INTERACTIVE_STATE_MULTIPLIERS: Readonly<
-  Record<ColorInteractiveState, number>
-> = {
+const INTERACTIVE_STATE_MULTIPLIERS: Readonly<Record<ColorInteractiveState, number>> = {
   hover: 1,
   active: 2,
 };
@@ -79,10 +78,10 @@ function bellCurveWeight(position: number): number {
  * @returns The OKHSL saturation between 0 and 1.
  */
 function saturationForStep(
-  saturation: NonNullable<ColorRecipeColor["saturation"]>,
+  saturation: NonNullable<ColorRecipeColor['saturation']>,
   step: number,
 ): number {
-  const { min, max } = saturation;
+  const {min, max} = saturation;
   return min + (max - min) * bellCurveWeight(scalePositionForStep(step));
 }
 
@@ -95,7 +94,7 @@ function saturationForStep(
 function validateSteps(steps: number[]): void {
   for (let index = 1; index < steps.length; index += 1) {
     if (steps[index] <= steps[index - 1]) {
-      throw new Error("Color steps must be in ascending order");
+      throw new Error('Color steps must be in ascending order');
     }
   }
 }
@@ -119,26 +118,17 @@ function expandedSteps(recipe: ColorRecipe): number[] {
   validateSteps(interactive.darkerFrom);
 
   const coreSteps = new Set(recipe.steps);
-  const addGeneratedSteps = (
-    sourceSteps: number[],
-    direction: -1 | 1,
-  ): void => {
+  const addGeneratedSteps = (sourceSteps: number[], direction: -1 | 1): void => {
     for (const sourceStep of sourceSteps) {
-      if (
-        sourceStep !== 0
-        && sourceStep !== LAST_SCALE_STEP
-        && !coreSteps.has(sourceStep)
-      ) {
+      if (sourceStep !== 0 && sourceStep !== LAST_SCALE_STEP && !coreSteps.has(sourceStep)) {
         throw new Error(
           `Interactive color source step ${sourceStep} must be a core step or a scale anchor`,
         );
       }
 
       for (const state of interactive.states) {
-        const generatedStep = sourceStep
-          + direction
-            * interactive.distance
-            * INTERACTIVE_STATE_MULTIPLIERS[state];
+        const generatedStep =
+          sourceStep + direction * interactive.distance * INTERACTIVE_STATE_MULTIPLIERS[state];
 
         if (generatedStep <= 0 || generatedStep >= LAST_SCALE_STEP) {
           throw new Error(
@@ -167,9 +157,7 @@ function validateColors(colors: ColorRecipeColor[]): void {
 
   for (const color of colors) {
     if (color.name === TRANSPARENT_COLOR_NAME) {
-      throw new Error(
-        `Color name ${color.name} is reserved for the generated transparent color`,
-      );
+      throw new Error(`Color name ${color.name} is reserved for the generated transparent color`);
     }
 
     if (names.has(color.name)) {
@@ -178,18 +166,16 @@ function validateColors(colors: ColorRecipeColor[]): void {
     names.add(color.name);
 
     if (color.saturation && color.saturation.min > color.saturation.max) {
-      throw new Error(
-        `Color ${color.name} saturation min must not exceed its max`,
-      );
+      throw new Error(`Color ${color.name} saturation min must not exceed its max`);
     }
 
     if (
-      !new Color("oklch", color.key.components).inGamut("srgb", {
+      !new Color('oklch', color.key.components).inGamut('srgb', {
         epsilon: SRGB_GAMUT_EPSILON,
       })
     ) {
       throw new Error(
-        `Color ${color.name} key oklch(${color.key.components.join(" ")}) is outside the sRGB gamut`,
+        `Color ${color.name} key oklch(${color.key.components.join(' ')}) is outside the sRGB gamut`,
       );
     }
   }
@@ -205,10 +191,7 @@ function validateColors(colors: ColorRecipeColor[]): void {
  * @param print Optional CMYK builds per print profile.
  * @returns A DTCG color token in OKLCH with an sRGB hex fallback.
  */
-function keyColorToken(
-  key: ColorRecipeKey,
-  print: ColorRecipeColor["print"],
-): JsonObject {
+function keyColorToken(key: ColorRecipeKey, print: ColorRecipeColor['print']): JsonObject {
   const components = [...key.components];
   const result = token({
     colorSpace: key.colorSpace,
@@ -216,7 +199,7 @@ function keyColorToken(
     hex: hexFallback(components),
   });
   if (print) {
-    result.$extensions = { [PRINT_EXTENSION_KEY]: { cmyk: print } };
+    result.$extensions = {[PRINT_EXTENSION_KEY]: {cmyk: print}};
   }
   return result;
 }
@@ -246,23 +229,17 @@ function roundHue(hue: number): number {
  * @param lightness The OKHSL lightness between 0 and 1.
  * @returns The rounded OKLCH lightness, chroma, and hue components.
  */
-function oklchComponents(
-  hue: number,
-  saturation: number,
-  lightness: number,
-): JsonValue[] {
-  const [oklchLightness, oklchChroma, oklchHue] = new Color("okhsl", [
+function oklchComponents(hue: number, saturation: number, lightness: number): JsonValue[] {
+  const [oklchLightness, oklchChroma, oklchHue] = new Color('okhsl', [
     hue,
     saturation,
     lightness,
-  ]).to("oklch").coords;
+  ]).to('oklch').coords;
 
   return [
     round(oklchLightness ?? 0, OKLCH_COMPONENT_PRECISION),
     round(Math.max(0, oklchChroma ?? 0), OKLCH_COMPONENT_PRECISION),
-    roundHue(
-      oklchHue == null || Number.isNaN(oklchHue) ? hue : oklchHue,
-    ),
+    roundHue(oklchHue == null || Number.isNaN(oklchHue) ? hue : oklchHue),
   ];
 }
 
@@ -278,13 +255,13 @@ function oklchComponents(
  */
 function hexFallback(components: JsonValue[]): string {
   const [lightness, chroma, hue] = components;
-  return new Color("oklch", [
+  return new Color('oklch', [
     lightness as number,
     chroma as number,
-    hue === "none" ? 0 : (hue as number),
+    hue === 'none' ? 0 : (hue as number),
   ])
-    .to("srgb")
-    .toString({ format: "hex", collapse: false });
+    .to('srgb')
+    .toString({format: 'hex', collapse: false});
 }
 
 /**
@@ -304,7 +281,7 @@ function colorToken(
 ): JsonObject {
   const components = oklchComponents(hue, saturation, lightness);
   const value: JsonObject = {
-    colorSpace: "oklch",
+    colorSpace: 'oklch',
     components,
     hex: hexFallback(components),
   };
@@ -332,9 +309,7 @@ function colorToken(
  * @param recipe The color scale recipe.
  * @returns Typed patches containing the generated color tokens.
  */
-export function generateColorTokens(
-  recipe: ColorRecipe,
-): GeneratedTokenPatch[] {
+export function generateColorTokens(recipe: ColorRecipe): GeneratedTokenPatch[] {
   validateSteps(recipe.steps);
   validateColors(recipe.colors);
   const selectedSteps = expandedSteps(recipe);
@@ -350,7 +325,7 @@ export function generateColorTokens(
     }
 
     const hue = color.key.components[2];
-    const steps: JsonObject = { $root: key };
+    const steps: JsonObject = {$root: key};
     for (const step of selectedSteps) {
       steps[String(step)] = colorToken(
         hue,
@@ -364,8 +339,8 @@ export function generateColorTokens(
 
   return [
     {
-      type: "color",
-      path: [...recipe.path, "color"],
+      type: 'color',
+      path: [...recipe.path, 'color'],
       value: scales,
     },
   ];

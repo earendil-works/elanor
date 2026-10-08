@@ -1,4 +1,4 @@
-import { swapFunctions } from 'astro:transitions/client';
+import {swapFunctions} from 'astro:transitions/client';
 
 const regions = ['navigation', 'content'] as const;
 

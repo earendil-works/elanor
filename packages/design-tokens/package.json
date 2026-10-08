@@ -5,8 +5,12 @@
   "description": "W3C DTCG design tokens powered by Terrazzo.",
   "license": "ISC",
   "type": "commonjs",
-  "files": ["dist"],
-  "sideEffects": ["**/*.css"],
+  "files": [
+    "dist"
+  ],
+  "sideEffects": [
+    "**/*.css"
+  ],
   "exports": {
     "./radius.css": "./dist/radius/tokens.css",
     "./pi.css": "./dist/pi/tokens.css",

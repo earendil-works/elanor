@@ -16,19 +16,10 @@
         ]
       },
       "serif": {
-        "$value": [
-          "Earendil",
-          "Georgia",
-          "serif"
-        ]
+        "$value": ["Earendil", "Georgia", "serif"]
       },
       "sansSerif": {
-        "$value": [
-          "Inter",
-          "Helvetica Neue",
-          "Arial",
-          "sans-serif"
-        ]
+        "$value": ["Inter", "Helvetica Neue", "Arial", "sans-serif"]
       }
     }
   }

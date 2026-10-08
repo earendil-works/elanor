@@ -1,10 +1,6 @@
-import { token } from "../dtcg";
-import type {
-  GeneratedTokenPatch,
-  GenerationConfig,
-  RadiusRecipe,
-} from "../types";
-import { pixelsToRem } from "../units";
+import {token} from '../dtcg';
+import type {GeneratedTokenPatch, GenerationConfig, RadiusRecipe} from '../types';
+import {pixelsToRem} from '../units';
 
 const BASE_PX = 3;
 const BASE_STEP = 100;
@@ -35,7 +31,7 @@ function calculatePixels(step: number): number {
 function validateSteps(steps: number[]): void {
   for (let index = 1; index < steps.length; index += 1) {
     if (steps[index] <= steps[index - 1]) {
-      throw new Error("Radius steps must be in ascending order");
+      throw new Error('Radius steps must be in ascending order');
     }
   }
 }
@@ -57,20 +53,20 @@ export function generateRadiusTokens(
 ): GeneratedTokenPatch[] {
   validateSteps(recipe.steps);
   const patches: GeneratedTokenPatch[] = recipe.steps.map((step) => ({
-    type: "dimension",
-    path: [...recipe.path, "dimension", "radius", String(step)],
+    type: 'dimension',
+    path: [...recipe.path, 'dimension', 'radius', String(step)],
     value: token({
       value: pixelsToRem(calculatePixels(step), config),
-      unit: "rem",
+      unit: 'rem',
     }),
   }));
 
   patches.push({
-    type: "dimension",
-    path: [...recipe.path, "dimension", "radius", "full"],
+    type: 'dimension',
+    path: [...recipe.path, 'dimension', 'radius', 'full'],
     value: token({
       value: FULL_RADIUS_REM,
-      unit: "rem",
+      unit: 'rem',
     }),
   });
 

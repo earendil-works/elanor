@@ -1,10 +1,13 @@
 import {readFileSync} from 'node:fs';
 import {fileURLToPath} from 'node:url';
+
 import MagicString from 'magic-string';
 import {parseSync, type Plugin} from 'vite';
 
 const packageName = '@earendil-works/elanor-icons-react';
-const barrelPath = fileURLToPath(new URL('../../../packages/icons/react/dist/index.js', import.meta.url));
+const barrelPath = fileURLToPath(
+  new URL('../../../packages/icons/react/dist/index.js', import.meta.url),
+);
 
 // Keep the public barrel API, but bypass its unused re-exports in native-ESM dev.
 // Read the generated exports rather than guessing filenames from component names.
@@ -49,7 +52,10 @@ export function iconExportPaths(barrel: string): Map<string, string> {
     if (node.type !== 'ExportNamedDeclaration' || !node.source) continue;
     const path = `${packageName}/${node.source.value.replace(/^\.\//, '').replace(/\.js$/, '')}`;
     for (const specifier of node.specifiers) {
-      const name = specifier.exported.type === 'Identifier' ? specifier.exported.name : String(specifier.exported.value);
+      const name =
+        specifier.exported.type === 'Identifier'
+          ? specifier.exported.name
+          : String(specifier.exported.value);
       paths.set(name, path);
     }
   }
@@ -62,7 +68,12 @@ export function rewriteIconImports(code: string, id: string, paths: Map<string, 
     if (node.type !== 'ImportDeclaration' && node.type !== 'ExportNamedDeclaration') continue;
     if (node.source?.value !== packageName || node.specifiers.length === 0) continue;
     // Namespace/default imports cannot be narrowed without changing semantics.
-    if (node.specifiers.some((specifier) => specifier.type !== 'ImportSpecifier' && specifier.type !== 'ExportSpecifier')) continue;
+    if (
+      node.specifiers.some(
+        (specifier) => specifier.type !== 'ImportSpecifier' && specifier.type !== 'ExportSpecifier',
+      )
+    )
+      continue;
     const statements = node.specifiers.map((specifier) => {
       const symbol = specifier.type === 'ImportSpecifier' ? specifier.imported : specifier.local;
       const name = symbol.type === 'Identifier' ? symbol.name : String(symbol.value);
@@ -76,5 +87,8 @@ export function rewriteIconImports(code: string, id: string, paths: Map<string, 
     output.overwrite(start, end, statements.join('\n'));
   }
   if (!output.hasChanged()) return;
-  return {code: output.toString(), map: output.generateMap({source: id, includeContent: true, hires: true})};
+  return {
+    code: output.toString(),
+    map: output.generateMap({source: id, includeContent: true, hires: true}),
+  };
 }

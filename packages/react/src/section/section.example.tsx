@@ -8,7 +8,9 @@ export function SectionExample() {
           <Grid.Root>
             <Grid.Item span={{base: 'full', small: 6}}>
               <Stack gap="small">
-                <Heading level={2} id="members-heading">Members</Heading>
+                <Heading level={2} id="members-heading">
+                  Members
+                </Heading>
                 <Text>Invite collaborators and assign workspace roles.</Text>
               </Stack>
             </Grid.Item>
@@ -20,8 +22,12 @@ export function SectionExample() {
       <Section.Root aria-labelledby="access-heading">
         <Section.Content>
           <Stack gap="small">
-            <Heading level={2} id="access-heading">Project access</Heading>
-            <Text>Choose which projects each team can access. The separator spans all twelve columns.</Text>
+            <Heading level={2} id="access-heading">
+              Project access
+            </Heading>
+            <Text>
+              Choose which projects each team can access. The separator spans all twelve columns.
+            </Text>
           </Stack>
         </Section.Content>
         <Section.Separator />
@@ -30,7 +36,9 @@ export function SectionExample() {
       <Section.Root aria-labelledby="notifications-heading">
         <Section.Content>
           <Stack gap="small">
-            <Heading level={2} id="notifications-heading">Notifications</Heading>
+            <Heading level={2} id="notifications-heading">
+              Notifications
+            </Heading>
             <Text>This section has no separator and no trailing padding.</Text>
           </Stack>
         </Section.Content>

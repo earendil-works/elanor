@@ -52,7 +52,9 @@ Set `<html dir="rtl">` and wrap the application:
 ```tsx
 import {DirectionProvider} from '@earendil-works/elanor-react';
 
-<DirectionProvider direction="rtl"><App /></DirectionProvider>
+<DirectionProvider direction="rtl">
+  <App />
+</DirectionProvider>;
 ```
 
 The provider controls keyboard and positioning behavior; DOM direction controls

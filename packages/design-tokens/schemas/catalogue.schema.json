@@ -6,28 +6,37 @@
   "additionalProperties": false,
   "required": ["schemaVersion", "brand", "tokens"],
   "properties": {
-    "schemaVersion": { "const": 1 },
-    "brand": { "type": "string", "minLength": 1 },
+    "schemaVersion": {"const": 1},
+    "brand": {"type": "string", "minLength": 1},
     "tokens": {
       "type": "array",
       "items": {
         "type": "object",
         "additionalProperties": false,
-        "required": ["path", "cssVariable", "type", "tier", "description", "deprecated", "modes", "values"],
+        "required": [
+          "path",
+          "cssVariable",
+          "type",
+          "tier",
+          "description",
+          "deprecated",
+          "modes",
+          "values"
+        ],
         "properties": {
-          "path": { "type": "string", "minLength": 1 },
-          "cssVariable": { "type": "string", "pattern": "^--[A-Za-z0-9_-]+$" },
-          "type": { "type": "string", "minLength": 1 },
-          "tier": { "enum": ["primitive", "semantic", "component"] },
-          "description": { "type": "string" },
-          "deprecated": { "oneOf": [{ "type": "boolean" }, { "type": "string", "minLength": 1 }] },
+          "path": {"type": "string", "minLength": 1},
+          "cssVariable": {"type": "string", "pattern": "^--[A-Za-z0-9_-]+$"},
+          "type": {"type": "string", "minLength": 1},
+          "tier": {"enum": ["primitive", "semantic", "component"]},
+          "description": {"type": "string"},
+          "deprecated": {"oneOf": [{"type": "boolean"}, {"type": "string", "minLength": 1}]},
           "modes": {
             "type": "object",
             "additionalProperties": false,
             "required": ["light", "dark"],
             "properties": {
-              "light": { "type": "string", "minLength": 1 },
-              "dark": { "type": "string", "minLength": 1 }
+              "light": {"type": "string", "minLength": 1},
+              "dark": {"type": "string", "minLength": 1}
             }
           },
           "values": {
@@ -46,15 +55,15 @@
             "additionalProperties": false,
             "required": ["light", "dark"],
             "properties": {
-              "light": { "type": ["string", "null"] },
-              "dark": { "type": ["string", "null"] }
+              "light": {"type": ["string", "null"]},
+              "dark": {"type": ["string", "null"]}
             }
           },
           "extensions": {
             "description": "The token's $extensions, such as com.earendil-works.print CMYK builds.",
             "type": "object"
           },
-          "sourceToken": { "type": "string", "minLength": 1 }
+          "sourceToken": {"type": "string", "minLength": 1}
         }
       }
     }

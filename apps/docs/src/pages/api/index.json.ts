@@ -1,4 +1,5 @@
 import type {APIRoute} from 'astro';
+
 import {json} from '../../lib/api.ts';
 
 export const GET: APIRoute = () =>

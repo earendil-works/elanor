@@ -6,9 +6,11 @@ import {
   type HTMLAttributes,
   type ReactNode,
 } from 'react';
-import styles from './side-navigation.module.css';
-import {classes} from '../utils/class-names.ts';
+
 import {CompactTooltip} from '../sidebar/compact-tooltip.tsx';
+import {classes} from '../utils/class-names.ts';
+
+import styles from './side-navigation.module.css';
 
 export type SideNavigationVariant = 'default' | 'compact';
 
@@ -22,7 +24,12 @@ export const SideNavigationRoot = forwardRef<HTMLElement, SideNavigationRootProp
   function SideNavigationRoot({variant = 'default', className, ...props}, ref) {
     return (
       <CompactContext.Provider value={variant === 'compact'}>
-        <nav {...props} ref={ref} data-variant={variant} className={classes(styles.root, className)} />
+        <nav
+          {...props}
+          ref={ref}
+          data-variant={variant}
+          className={classes(styles.root, className)}
+        />
       </CompactContext.Provider>
     );
   },
@@ -41,7 +48,14 @@ export interface SideNavigationGroupLabelProps extends HTMLAttributes<HTMLDivEle
 export const SideNavigationGroupLabel = forwardRef<HTMLDivElement, SideNavigationGroupLabelProps>(
   function SideNavigationGroupLabel({className, ...props}, ref) {
     const compact = useContext(CompactContext);
-    return <div {...props} ref={ref} data-compact={compact ? '' : undefined} className={classes(styles.groupLabel, className)} />;
+    return (
+      <div
+        {...props}
+        ref={ref}
+        data-compact={compact ? '' : undefined}
+        className={classes(styles.groupLabel, className)}
+      />
+    );
   },
 );
 
@@ -75,15 +89,20 @@ export const SideNavigationLink = forwardRef<HTMLAnchorElement, SideNavigationLi
     ref,
   ) {
     const compact = useContext(CompactContext);
-    const compactLabel = props['aria-label'] ?? (
-      typeof children === 'string' || typeof children === 'number' ? String(children) : undefined
-    );
-    const hasCompactContent = compactContent != null && typeof compactContent !== 'boolean' && compactContent !== '';
+    const compactLabel =
+      props['aria-label'] ??
+      (typeof children === 'string' || typeof children === 'number' ? String(children) : undefined);
+    const hasCompactContent =
+      compactContent != null && typeof compactContent !== 'boolean' && compactContent !== '';
     if (compact && !(hasCompactContent || iconStart || iconEnd)) {
-      throw new Error('Compact SideNavigation.Link requires iconStart, iconEnd, or compactContent.');
+      throw new Error(
+        'Compact SideNavigation.Link requires iconStart, iconEnd, or compactContent.',
+      );
     }
     if (compact && !compactLabel?.trim()) {
-      throw new Error('Compact SideNavigation.Link requires text children or an explicit aria-label.');
+      throw new Error(
+        'Compact SideNavigation.Link requires text children or an explicit aria-label.',
+      );
     }
     return (
       <CompactTooltip enabled={compact} label={compactLabel}>
@@ -103,7 +122,11 @@ export const SideNavigationLink = forwardRef<HTMLAnchorElement, SideNavigationLi
           ) : null}
           <span className={styles.label}>{children}</span>
           {iconEnd ? (
-            <span className={styles.icon} aria-hidden="true" hidden={compact && (hasCompactContent || Boolean(iconStart))}>
+            <span
+              className={styles.icon}
+              aria-hidden="true"
+              hidden={compact && (hasCompactContent || Boolean(iconStart))}
+            >
               {iconEnd}
             </span>
           ) : null}

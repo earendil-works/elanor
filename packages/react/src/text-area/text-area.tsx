@@ -1,10 +1,14 @@
 import {Field as BaseField} from '@base-ui/react/field';
 import {forwardRef, type ComponentPropsWithoutRef} from 'react';
-import styles from './text-area.module.css';
+
 import {mergeClassName} from '../utils/class-names.ts';
 
-export interface TextAreaProps
-  extends Omit<ComponentPropsWithoutRef<'textarea'>, 'className' | 'style'> {
+import styles from './text-area.module.css';
+
+export interface TextAreaProps extends Omit<
+  ComponentPropsWithoutRef<'textarea'>,
+  'className' | 'style'
+> {
   readonly className?: BaseField.Control.Props['className'];
   readonly style?: BaseField.Control.Props['style'];
   readonly onValueChange?: BaseField.Control.Props['onValueChange'];
@@ -12,7 +16,15 @@ export interface TextAreaProps
 
 export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(function TextArea(
   {
-    className, style, value, defaultValue, onValueChange, id, name, disabled, autoFocus,
+    className,
+    style,
+    value,
+    defaultValue,
+    onValueChange,
+    id,
+    name,
+    disabled,
+    autoFocus,
     'aria-describedby': ariaDescribedBy,
     'aria-invalid': ariaInvalid,
     ...props

@@ -6,8 +6,11 @@
   max-inline-size: min(var(--semantic-dimension-breakpoint-x-small), var(--available-width));
   max-block-size: var(--available-height);
   overflow: auto;
-  padding: calc(var(--semantic-dimension-space-padding-medium) - var(--semantic-dimension-border-width-default));
-  border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-secondary);
+  padding: calc(
+    var(--semantic-dimension-space-padding-medium) - var(--semantic-dimension-border-width-default)
+  );
+  border: var(--semantic-dimension-border-width-default) solid
+    var(--semantic-color-border-secondary);
   border-radius: var(--semantic-dimension-radius-small);
   outline: 0;
   background: var(--semantic-color-background-canvas);

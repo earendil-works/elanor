@@ -1,9 +1,14 @@
 import {Tooltip} from '@base-ui/react/tooltip';
 import type {ReactElement, ReactNode} from 'react';
+
 import styles from './compact-tooltip.module.css';
 
 // Private: keep the trigger mounted when enabling/disabling the visual hint.
-export function CompactTooltip({children, label, enabled = true}: {
+export function CompactTooltip({
+  children,
+  label,
+  enabled = true,
+}: {
   readonly children: ReactElement;
   readonly label: ReactNode;
   readonly enabled?: boolean;

@@ -1,5 +1,5 @@
-import { readFileSync } from "node:fs";
-import path from "node:path";
+import {readFileSync} from 'node:fs';
+import path from 'node:path';
 
 export interface CatalogueToken {
   path: string;
@@ -37,7 +37,7 @@ export function loadCatalogue(filename: string): LoadedCatalogue {
   const cached = cache.get(absolutePath);
   if (cached) return cached;
 
-  const catalogue = JSON.parse(readFileSync(absolutePath, "utf8")) as TokenCatalogue;
+  const catalogue = JSON.parse(readFileSync(absolutePath, 'utf8')) as TokenCatalogue;
   if (catalogue.schemaVersion !== 1 || !Array.isArray(catalogue.tokens)) {
     throw new Error(`Unsupported token catalogue at ${absolutePath}. Expected schemaVersion 1.`);
   }

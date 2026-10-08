@@ -5,7 +5,7 @@
   "required": ["path", "steps", "colors"],
   "additionalProperties": false,
   "properties": {
-    "$schema": { "type": "string" },
+    "$schema": {"type": "string"},
     "path": {
       "type": "array",
       "minItems": 1,
@@ -23,10 +23,7 @@
         "type": "integer",
         "minimum": 0,
         "maximum": 1000,
-        "anyOf": [
-          { "enum": [25, 50] },
-          { "multipleOf": 100 }
-        ]
+        "anyOf": [{"enum": [25, 50]}, {"multipleOf": 100}]
       }
     },
     "interactiveSteps": {
@@ -43,7 +40,7 @@
           "type": "array",
           "minItems": 1,
           "uniqueItems": true,
-          "items": { "enum": ["hover", "active"] }
+          "items": {"enum": ["hover", "active"]}
         },
         "lighterFrom": {
           "type": "array",
@@ -78,21 +75,21 @@
         "required": ["name", "key"],
         "additionalProperties": false,
         "properties": {
-          "name": { "type": "string", "minLength": 1, "pattern": "^[^$]+$" },
+          "name": {"type": "string", "minLength": 1, "pattern": "^[^$]+$"},
           "key": {
             "description": "The defining color, in the same shape as a DTCG color value. It must lie within sRGB.",
             "type": "object",
             "required": ["colorSpace", "components"],
             "additionalProperties": false,
             "properties": {
-              "colorSpace": { "const": "oklch" },
+              "colorSpace": {"const": "oklch"},
               "components": {
                 "description": "Lightness from 0 to 1, chroma, and hue in degrees.",
                 "type": "array",
                 "items": [
-                  { "type": "number", "minimum": 0, "maximum": 1 },
-                  { "type": "number", "minimum": 0 },
-                  { "type": "number", "minimum": 0, "exclusiveMaximum": 360 }
+                  {"type": "number", "minimum": 0, "maximum": 1},
+                  {"type": "number", "minimum": 0},
+                  {"type": "number", "minimum": 0, "exclusiveMaximum": 360}
                 ],
                 "minItems": 3,
                 "additionalItems": false
@@ -107,7 +104,7 @@
               "type": "array",
               "minItems": 4,
               "maxItems": 4,
-              "items": { "type": "integer", "minimum": 0, "maximum": 100 }
+              "items": {"type": "integer", "minimum": 0, "maximum": 100}
             }
           },
           "saturation": {

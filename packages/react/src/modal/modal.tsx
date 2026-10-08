@@ -1,7 +1,9 @@
 import {Dialog as BaseDialog} from '@base-ui/react/dialog';
 import {forwardRef, type HTMLAttributes} from 'react';
-import styles from './modal.module.css';
+
 import {classes, mergeClassName} from '../utils/class-names.ts';
+
+import styles from './modal.module.css';
 
 export type {
   DialogRootProps as ModalRootProps,
@@ -26,29 +28,31 @@ export type ModalPopupProps = BaseDialog.Popup.Props;
 export type ModalTitleProps = BaseDialog.Title.Props;
 export type ModalDescriptionProps = BaseDialog.Description.Props;
 
-export const ModalBackdrop = forwardRef<HTMLDivElement, ModalBackdropProps>(
-  function ModalBackdrop({className, ...props}, ref) {
-    return (
-      <BaseDialog.Backdrop
-        {...props}
-        ref={ref}
-        className={mergeClassName<BaseDialog.Backdrop.State>(styles.backdrop, className)}
-      />
-    );
-  },
-);
+export const ModalBackdrop = forwardRef<HTMLDivElement, ModalBackdropProps>(function ModalBackdrop(
+  {className, ...props},
+  ref,
+) {
+  return (
+    <BaseDialog.Backdrop
+      {...props}
+      ref={ref}
+      className={mergeClassName<BaseDialog.Backdrop.State>(styles.backdrop, className)}
+    />
+  );
+});
 
-export const ModalViewport = forwardRef<HTMLDivElement, ModalViewportProps>(
-  function ModalViewport({className, ...props}, ref) {
-    return (
-      <BaseDialog.Viewport
-        {...props}
-        ref={ref}
-        className={mergeClassName<BaseDialog.Viewport.State>(styles.viewport, className)}
-      />
-    );
-  },
-);
+export const ModalViewport = forwardRef<HTMLDivElement, ModalViewportProps>(function ModalViewport(
+  {className, ...props},
+  ref,
+) {
+  return (
+    <BaseDialog.Viewport
+      {...props}
+      ref={ref}
+      className={mergeClassName<BaseDialog.Viewport.State>(styles.viewport, className)}
+    />
+  );
+});
 
 export const ModalPopup = forwardRef<HTMLDivElement, ModalPopupProps>(function ModalPopup(
   {className, ...props},
@@ -63,17 +67,18 @@ export const ModalPopup = forwardRef<HTMLDivElement, ModalPopupProps>(function M
   );
 });
 
-export const ModalTitle = forwardRef<HTMLHeadingElement, ModalTitleProps>(
-  function ModalTitle({className, ...props}, ref) {
-    return (
-      <BaseDialog.Title
-        {...props}
-        ref={ref}
-        className={mergeClassName<BaseDialog.Title.State>(styles.title, className)}
-      />
-    );
-  },
-);
+export const ModalTitle = forwardRef<HTMLHeadingElement, ModalTitleProps>(function ModalTitle(
+  {className, ...props},
+  ref,
+) {
+  return (
+    <BaseDialog.Title
+      {...props}
+      ref={ref}
+      className={mergeClassName<BaseDialog.Title.State>(styles.title, className)}
+    />
+  );
+});
 
 export const ModalDescription = forwardRef<HTMLParagraphElement, ModalDescriptionProps>(
   function ModalDescription({className, ...props}, ref) {

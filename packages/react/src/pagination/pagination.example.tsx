@@ -1,7 +1,20 @@
+import {
+  Pagination,
+  PaginationLink,
+  PaginationSeparator,
+  Stack,
+  Text,
+} from '@earendil-works/elanor-react';
 import {useState} from 'react';
-import {Pagination, PaginationLink, PaginationSeparator, Stack, Text} from '@earendil-works/elanor-react';
 
-const projects = ['Website redesign', 'Design system', 'Release notes', 'Customer research', 'Help center', 'Mobile app'];
+const projects = [
+  'Website redesign',
+  'Design system',
+  'Release notes',
+  'Customer research',
+  'Help center',
+  'Mobile app',
+];
 const pageSize = 2;
 const pageCount = Math.ceil(projects.length / pageSize);
 
@@ -11,9 +24,13 @@ export function PaginationExample() {
 
   return (
     <Stack gap="medium">
-      <Text role="status">Projects {start + 1}–{start + pageSize} of {projects.length}</Text>
+      <Text role="status">
+        Projects {start + 1}–{start + pageSize} of {projects.length}
+      </Text>
       <ul>
-        {projects.slice(start, start + pageSize).map((project) => <li key={project}>{project}</li>)}
+        {projects.slice(start, start + pageSize).map((project) => (
+          <li key={project}>{project}</li>
+        ))}
       </ul>
       <Pagination summary={`Page ${page} of ${pageCount}`} aria-label="Project pages">
         <PaginationLink
@@ -21,7 +38,7 @@ export function PaginationExample() {
           disabled={page === 1}
           onClick={(event) => {
             event.preventDefault();
-            setPage(current => current - 1);
+            setPage((current) => current - 1);
           }}
         >
           Previous
@@ -32,7 +49,7 @@ export function PaginationExample() {
           disabled={page === pageCount}
           onClick={(event) => {
             event.preventDefault();
-            setPage(current => current + 1);
+            setPage((current) => current + 1);
           }}
         >
           Next

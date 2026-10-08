@@ -1,7 +1,9 @@
-import {forwardRef} from 'react';
-import {useRender} from '@base-ui/react/use-render';
 import {mergeProps} from '@base-ui/react/merge-props';
+import {useRender} from '@base-ui/react/use-render';
+import {forwardRef} from 'react';
+
 import {classes} from '../utils/class-names.ts';
+
 import styles from './container.module.css';
 
 export type ContainerWidth = 'capped' | 'full';
@@ -12,14 +14,18 @@ export interface ContainerProps extends useRender.ComponentProps<'div'> {
 }
 
 export const Container = forwardRef<HTMLDivElement, ContainerProps>(function Container(
-  {width = 'capped', render, ...props}, ref,
+  {width = 'capped', render, ...props},
+  ref,
 ) {
   return useRender({
     defaultTagName: 'div',
     render,
     ref,
-    props: mergeProps<'div'>({
-      className: classes(styles.root, width === 'full' && styles.full),
-    }, props),
+    props: mergeProps<'div'>(
+      {
+        className: classes(styles.root, width === 'full' && styles.full),
+      },
+      props,
+    ),
   });
 });

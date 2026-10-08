@@ -1,31 +1,31 @@
 export type JsonPrimitive = boolean | number | string | null;
-export type JsonValue = JsonPrimitive | JsonValue[] | { [key: string]: JsonValue };
-export type JsonObject = { [key: string]: JsonValue };
-export type DtcgToken = JsonObject & { $value: JsonValue };
+export type JsonValue = JsonPrimitive | JsonValue[] | {[key: string]: JsonValue};
+export type JsonObject = {[key: string]: JsonValue};
+export type DtcgToken = JsonObject & {$value: JsonValue};
 
 export type GeneratorName =
-  | "borderWidth"
-  | "breakpoint"
-  | "color"
-  | "dimension"
-  | "opacity"
-  | "radius"
-  | "typography";
+  | 'borderWidth'
+  | 'breakpoint'
+  | 'color'
+  | 'dimension'
+  | 'opacity'
+  | 'radius'
+  | 'typography';
 
 export type DtcgTokenType =
-  | "border"
-  | "color"
-  | "cubicBezier"
-  | "dimension"
-  | "duration"
-  | "fontFamily"
-  | "fontWeight"
-  | "gradient"
-  | "number"
-  | "shadow"
-  | "strokeStyle"
-  | "transition"
-  | "typography";
+  | 'border'
+  | 'color'
+  | 'cubicBezier'
+  | 'dimension'
+  | 'duration'
+  | 'fontFamily'
+  | 'fontWeight'
+  | 'gradient'
+  | 'number'
+  | 'shadow'
+  | 'strokeStyle'
+  | 'transition'
+  | 'typography';
 
 export interface GeneratedTokenPatch {
   path: string[];
@@ -102,11 +102,11 @@ export interface ColorRecipeColor {
 
 /** An OKLCH key color: lightness 0–1, chroma, and hue in degrees. */
 export interface ColorRecipeKey {
-  colorSpace: "oklch";
+  colorSpace: 'oklch';
   components: [number, number, number];
 }
 
-export type ColorInteractiveState = "hover" | "active";
+export type ColorInteractiveState = 'hover' | 'active';
 
 export interface ColorInteractiveSteps {
   distance: number;

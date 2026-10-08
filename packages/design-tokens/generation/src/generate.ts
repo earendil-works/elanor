@@ -1,14 +1,9 @@
 #!/usr/bin/env node
-import {
-  mkdir,
-  readdir,
-  readFile,
-  rename,
-  rm,
-  writeFile,
-} from "node:fs/promises";
-import path from "node:path";
-import Ajv from "ajv";
+import {mkdir, readdir, readFile, rename, rm, writeFile} from 'node:fs/promises';
+import path from 'node:path';
+
+import Ajv from 'ajv';
+
 import {
   cloneJson,
   FORMAT_SCHEMA,
@@ -18,14 +13,14 @@ import {
   isToken,
   parseJson,
   stampGeneratedTokens,
-} from "./dtcg";
-import { generateBorderWidthTokens } from "./generators/borderWidth";
-import { generateBreakpointTokens } from "./generators/breakpoint";
-import { generateColorTokens } from "./generators/color";
-import { generateDimensionTokens } from "./generators/dimension";
-import { generateOpacityTokens } from "./generators/opacity";
-import { generateRadiusTokens } from "./generators/radius";
-import { generateTypographyTokens } from "./generators/typography";
+} from './dtcg';
+import {generateBorderWidthTokens} from './generators/borderWidth';
+import {generateBreakpointTokens} from './generators/breakpoint';
+import {generateColorTokens} from './generators/color';
+import {generateDimensionTokens} from './generators/dimension';
+import {generateOpacityTokens} from './generators/opacity';
+import {generateRadiusTokens} from './generators/radius';
+import {generateTypographyTokens} from './generators/typography';
 import type {
   BorderWidthRecipe,
   BreakpointRecipe,
@@ -40,19 +35,16 @@ import type {
   OpacityRecipe,
   RadiusRecipe,
   TypographyRecipe,
-} from "./types";
+} from './types';
 
-const ROOT_DIRECTORY = path.resolve(__dirname, "../..");
-const GENERATION_DIRECTORY = path.join(ROOT_DIRECTORY, "generation");
-const GENERATION_CONFIG_PATH = path.join(GENERATION_DIRECTORY, "config.json");
-const RECIPES_DIRECTORY = path.join(GENERATION_DIRECTORY, "recipes");
-const TOKENS_DIRECTORY = path.join(ROOT_DIRECTORY, "tokens");
-const SCHEMAS_DIRECTORY = path.join(GENERATION_DIRECTORY, "schemas");
-const GENERATION_CONFIG_SCHEMA_PATH = path.join(
-  SCHEMAS_DIRECTORY,
-  "config.schema.json",
-);
-const CHECK_MODE = process.argv.includes("--check");
+const ROOT_DIRECTORY = path.resolve(__dirname, '../..');
+const GENERATION_DIRECTORY = path.join(ROOT_DIRECTORY, 'generation');
+const GENERATION_CONFIG_PATH = path.join(GENERATION_DIRECTORY, 'config.json');
+const RECIPES_DIRECTORY = path.join(GENERATION_DIRECTORY, 'recipes');
+const TOKENS_DIRECTORY = path.join(ROOT_DIRECTORY, 'tokens');
+const SCHEMAS_DIRECTORY = path.join(GENERATION_DIRECTORY, 'schemas');
+const GENERATION_CONFIG_SCHEMA_PATH = path.join(SCHEMAS_DIRECTORY, 'config.schema.json');
+const CHECK_MODE = process.argv.includes('--check');
 const JSON_INDENT = 2;
 
 type RecipeDocument =
@@ -84,8 +76,8 @@ interface FileUpdate {
 }
 
 interface ValidationContext {
-  configValidator: ReturnType<Ajv["compile"]>;
-  recipeValidators: Map<GeneratorName, ReturnType<Ajv["compile"]>>;
+  configValidator: ReturnType<Ajv['compile']>;
+  recipeValidators: Map<GeneratorName, ReturnType<Ajv['compile']>>;
 }
 
 /**
@@ -98,19 +90,14 @@ async function main(): Promise<void> {
   const plannedPatches = planPatches(recipes, config);
   const filePlans = groupPatchesByFile(plannedPatches);
   const existingTokenFiles = await findTokenFiles(TOKENS_DIRECTORY);
-  const filesToReconcile = [
-    ...new Set([...filePlans.keys(), ...existingTokenFiles]),
-  ].sort();
+  const filesToReconcile = [...new Set([...filePlans.keys(), ...existingTokenFiles])].sort();
   const updates: FileUpdate[] = [];
 
   for (const filePath of filesToReconcile) {
     const plans = filePlans.get(filePath) ?? [];
     if (plans.length === 0) {
       const existing = await readJsonIfExists(filePath);
-      if (
-        existing === null ||
-        collectGeneratedTokenPaths(existing, []).length === 0
-      ) {
+      if (existing === null || collectGeneratedTokenPaths(existing, []).length === 0) {
         continue;
       }
     }
@@ -120,14 +107,14 @@ async function main(): Promise<void> {
     const currentContent = await readTextIfExists(filePath);
 
     if (currentContent !== nextContent) {
-      updates.push({ filePath, content: nextContent });
+      updates.push({filePath, content: nextContent});
     }
   }
 
   if (CHECK_MODE && updates.length > 0) {
     const changedFiles = updates
-      .map(({ filePath }) => `  ${path.relative(ROOT_DIRECTORY, filePath)}`)
-      .join("\n");
+      .map(({filePath}) => `  ${path.relative(ROOT_DIRECTORY, filePath)}`)
+      .join('\n');
     throw new Error(
       `Generated token files are not current:\n${changedFiles}\nRun pnpm tokens:generate from the workspace root.`,
     );
@@ -139,15 +126,13 @@ async function main(): Promise<void> {
     }
   }
 
-  const mode = CHECK_MODE ? "Checked" : "Generated";
-  console.log(
-    `${mode} ${filePlans.size} generated token file${filePlans.size === 1 ? "" : "s"}.`,
-  );
+  const mode = CHECK_MODE ? 'Checked' : 'Generated';
+  console.log(`${mode} ${filePlans.size} generated token file${filePlans.size === 1 ? '' : 's'}.`);
   if (!CHECK_MODE) {
     console.log(
       updates.length === 0
-        ? "No generated changes."
-        : `Updated ${updates.length} file${updates.length === 1 ? "" : "s"}.`,
+        ? 'No generated changes.'
+        : `Updated ${updates.length} file${updates.length === 1 ? '' : 's'}.`,
     );
   }
 }
@@ -165,29 +150,21 @@ async function loadValidators(): Promise<ValidationContext> {
   });
   const configSchema = await readJsonIfExists(GENERATION_CONFIG_SCHEMA_PATH);
   if (configSchema === null) {
-    throw new Error(
-      `Generation config schema does not exist: ${GENERATION_CONFIG_SCHEMA_PATH}`,
-    );
+    throw new Error(`Generation config schema does not exist: ${GENERATION_CONFIG_SCHEMA_PATH}`);
   }
   const configValidator = ajv.compile(configSchema);
-  const recipeValidators = new Map<
-    GeneratorName,
-    ReturnType<Ajv["compile"]>
-  >();
+  const recipeValidators = new Map<GeneratorName, ReturnType<Ajv['compile']>>();
 
   for (const generator of [
-    "borderWidth",
-    "breakpoint",
-    "color",
-    "dimension",
-    "opacity",
-    "radius",
-    "typography",
+    'borderWidth',
+    'breakpoint',
+    'color',
+    'dimension',
+    'opacity',
+    'radius',
+    'typography',
   ] as const) {
-    const schemaPath = path.join(
-      SCHEMAS_DIRECTORY,
-      `${generator}.recipe.schema.json`,
-    );
+    const schemaPath = path.join(SCHEMAS_DIRECTORY, `${generator}.recipe.schema.json`);
     const schema = await readJsonIfExists(schemaPath);
     if (schema === null) {
       throw new Error(`Recipe schema does not exist: ${schemaPath}`);
@@ -195,7 +172,7 @@ async function loadValidators(): Promise<ValidationContext> {
     recipeValidators.set(generator, ajv.compile(schema));
   }
 
-  return { configValidator, recipeValidators };
+  return {configValidator, recipeValidators};
 }
 
 /**
@@ -204,20 +181,16 @@ async function loadValidators(): Promise<ValidationContext> {
  * @param validation The compiled configuration validator.
  * @returns Validated global generation settings.
  */
-async function loadConfig(
-  validation: ValidationContext,
-): Promise<GenerationConfig> {
+async function loadConfig(validation: ValidationContext): Promise<GenerationConfig> {
   const configValue = await readJsonIfExists(GENERATION_CONFIG_PATH);
   if (configValue === null) {
-    throw new Error(
-      `Generation config does not exist: ${GENERATION_CONFIG_PATH}`,
-    );
+    throw new Error(`Generation config does not exist: ${GENERATION_CONFIG_PATH}`);
   }
 
   if (!validation.configValidator(configValue)) {
     const details = (validation.configValidator.errors ?? [])
-      .map((error) => `${error.instancePath || "/"} ${error.message}`)
-      .join("; ");
+      .map((error) => `${error.instancePath || '/'} ${error.message}`)
+      .join('; ');
     throw new Error(`Invalid generation config: ${details}`);
   }
 
@@ -230,40 +203,32 @@ async function loadConfig(
  * @param validation The compiled recipe validators.
  * @returns Loaded recipes with their inferred generator metadata.
  */
-async function loadRecipes(
-  validation: ValidationContext,
-): Promise<LoadedRecipe[]> {
+async function loadRecipes(validation: ValidationContext): Promise<LoadedRecipe[]> {
   const recipeFiles = await findJsonFiles(RECIPES_DIRECTORY);
   const loaded: LoadedRecipe[] = [];
 
   for (const absolutePath of recipeFiles) {
     const relativePath = path.relative(RECIPES_DIRECTORY, absolutePath);
-    const source = path.join("recipes", relativePath).split(path.sep).join("/");
+    const source = path.join('recipes', relativePath).split(path.sep).join('/');
     const recipeValue = await readJsonIfExists(absolutePath);
     if (recipeValue === null) {
       throw new Error(`Recipe does not exist: ${source}`);
     }
     const recipe = recipeValue as unknown as RecipeDocument;
-    const generator = generatorForRecipe(
-      recipe.$schema,
-      absolutePath,
-      relativePath,
-    );
+    const generator = generatorForRecipe(recipe.$schema, absolutePath, relativePath);
     const validator = validation.recipeValidators.get(generator);
 
     if (!validator?.(recipe)) {
       const details = (validator?.errors ?? [])
-        .map((error) => `${error.instancePath || "/"} ${error.message}`)
-        .join("; ");
+        .map((error) => `${error.instancePath || '/'} ${error.message}`)
+        .join('; ');
       throw new Error(`Invalid recipe ${source}: ${details}`);
     }
 
-    loaded.push({ relativePath, source, generator, recipe });
+    loaded.push({relativePath, source, generator, recipe});
   }
 
-  return loaded.sort((first, second) =>
-    first.relativePath.localeCompare(second.relativePath),
-  );
+  return loaded.sort((first, second) => first.relativePath.localeCompare(second.relativePath));
 }
 
 /**
@@ -283,31 +248,23 @@ function generatorForRecipe(
     throw new Error(`Recipe is missing $schema: ${relativePath}`);
   }
 
-  const resolvedSchemaPath = path.resolve(
-    path.dirname(recipePath),
-    schemaReference,
-  );
+  const resolvedSchemaPath = path.resolve(path.dirname(recipePath), schemaReference);
   for (const generator of [
-    "borderWidth",
-    "breakpoint",
-    "color",
-    "dimension",
-    "opacity",
-    "radius",
-    "typography",
+    'borderWidth',
+    'breakpoint',
+    'color',
+    'dimension',
+    'opacity',
+    'radius',
+    'typography',
   ] as const) {
-    const expectedSchemaPath = path.join(
-      SCHEMAS_DIRECTORY,
-      `${generator}.recipe.schema.json`,
-    );
+    const expectedSchemaPath = path.join(SCHEMAS_DIRECTORY, `${generator}.recipe.schema.json`);
     if (resolvedSchemaPath === expectedSchemaPath) {
       return generator;
     }
   }
 
-  throw new Error(
-    `Unsupported recipe schema in ${relativePath}: ${schemaReference}`,
-  );
+  throw new Error(`Unsupported recipe schema in ${relativePath}: ${schemaReference}`);
 }
 
 /**
@@ -319,15 +276,9 @@ function generatorForRecipe(
  * @param config Global generation settings.
  * @returns Planned patches grouped with file and source metadata.
  */
-function planPatches(
-  recipes: LoadedRecipe[],
-  config: GenerationConfig,
-): PlannedPatch[] {
+function planPatches(recipes: LoadedRecipe[], config: GenerationConfig): PlannedPatch[] {
   const planned: PlannedPatch[] = [];
-  const claimedLeafPaths = new Map<
-    string,
-    Array<{ path: string[]; source: string }>
-  >();
+  const claimedLeafPaths = new Map<string, Array<{path: string[]; source: string}>>();
 
   for (const loaded of recipes) {
     const patches = generateRecipe(loaded, config);
@@ -340,15 +291,12 @@ function planPatches(
         throw new Error(`Recipe produced an empty patch path: ${loaded.source}`);
       }
 
-      const filePath = outputFilePathForPatch(
-        loaded.relativePath,
-        patch.type,
-      );
+      const filePath = outputFilePathForPatch(loaded.relativePath, patch.type);
       ensureOutputPath(filePath);
       const leafPaths = collectLeafPaths(patch.value, patch.path);
       if (leafPaths.length === 0) {
         throw new Error(
-          `Recipe produced no token leaves at ${patch.path.join(".")}: ${loaded.source}`,
+          `Recipe produced no token leaves at ${patch.path.join('.')}: ${loaded.source}`,
         );
       }
 
@@ -360,11 +308,11 @@ function planPatches(
         if (conflict) {
           throw new Error(
             `Generated token path conflict in ${path.relative(ROOT_DIRECTORY, filePath)}: ` +
-              `${conflict.path.join(".")} from ${conflict.source} overlaps ` +
-              `${leafPath.join(".")} from ${loaded.source}`,
+              `${conflict.path.join('.')} from ${conflict.source} overlaps ` +
+              `${leafPath.join('.')} from ${loaded.source}`,
           );
         }
-        claims.push({ path: leafPath, source: loaded.source });
+        claims.push({path: leafPath, source: loaded.source});
       }
       claimedLeafPaths.set(filePath, claims);
 
@@ -387,31 +335,22 @@ function planPatches(
  * @param config Global generation settings.
  * @returns The generated token patches.
  */
-function generateRecipe(
-  loaded: LoadedRecipe,
-  config: GenerationConfig,
-): GeneratedTokenPatch[] {
+function generateRecipe(loaded: LoadedRecipe, config: GenerationConfig): GeneratedTokenPatch[] {
   switch (loaded.generator) {
-    case "borderWidth":
+    case 'borderWidth':
       return generateBorderWidthTokens(loaded.recipe as BorderWidthRecipe);
-    case "breakpoint":
+    case 'breakpoint':
       return generateBreakpointTokens(loaded.recipe as BreakpointRecipe);
-    case "color":
+    case 'color':
       return generateColorTokens(loaded.recipe as ColorRecipe);
-    case "dimension":
-      return generateDimensionTokens(
-        loaded.recipe as DimensionRecipe,
-        config,
-      );
-    case "opacity":
+    case 'dimension':
+      return generateDimensionTokens(loaded.recipe as DimensionRecipe, config);
+    case 'opacity':
       return generateOpacityTokens(loaded.recipe as OpacityRecipe);
-    case "radius":
+    case 'radius':
       return generateRadiusTokens(loaded.recipe as RadiusRecipe, config);
-    case "typography":
-      return generateTypographyTokens(
-        loaded.recipe as TypographyRecipe,
-        config,
-      );
+    case 'typography':
+      return generateTypographyTokens(loaded.recipe as TypographyRecipe, config);
   }
 }
 
@@ -422,10 +361,7 @@ function generateRecipe(
  * @param type The DTCG token type for the patch.
  * @returns The output token file path.
  */
-function outputFilePathForPatch(
-  relativeRecipePath: string,
-  type: string,
-): string {
+function outputFilePathForPatch(relativeRecipePath: string, type: string): string {
   const relativeDirectory = path.dirname(relativeRecipePath);
   return path.join(TOKENS_DIRECTORY, relativeDirectory, `${type}.tokens.json`);
 }
@@ -438,13 +374,11 @@ function outputFilePathForPatch(
 function ensureOutputPath(outputPath: string): void {
   const relativePath = path.relative(TOKENS_DIRECTORY, outputPath);
   if (
-    relativePath === ".." ||
+    relativePath === '..' ||
     relativePath.startsWith(`..${path.sep}`) ||
     path.isAbsolute(relativePath)
   ) {
-    throw new Error(
-      `Generated output is outside the token directory: ${outputPath}`,
-    );
+    throw new Error(`Generated output is outside the token directory: ${outputPath}`);
   }
 }
 
@@ -458,10 +392,7 @@ function ensureOutputPath(outputPath: string): void {
  * @param second The second token leaf path.
  * @returns Whether the paths conflict structurally.
  */
-function tokenPathsStructurallyOverlap(
-  first: string[],
-  second: string[],
-): boolean {
+function tokenPathsStructurallyOverlap(first: string[], second: string[]): boolean {
   const sharedLength = Math.min(first.length, second.length);
   for (let index = 0; index < sharedLength; index += 1) {
     if (first[index] !== second[index]) {
@@ -477,9 +408,7 @@ function tokenPathsStructurallyOverlap(
  * @param planned The flat list of planned patches.
  * @returns Patches grouped by output file path.
  */
-function groupPatchesByFile(
-  planned: PlannedPatch[],
-): Map<string, PlannedPatch[]> {
+function groupPatchesByFile(planned: PlannedPatch[]): Map<string, PlannedPatch[]> {
   const grouped = new Map<string, PlannedPatch[]>();
   for (const patch of planned) {
     const existing = grouped.get(patch.filePath);
@@ -502,10 +431,7 @@ function groupPatchesByFile(
  * @param plans The patches targeting that file.
  * @returns The next document contents.
  */
-async function buildFileDocument(
-  filePath: string,
-  plans: PlannedPatch[],
-): Promise<JsonObject> {
+async function buildFileDocument(filePath: string, plans: PlannedPatch[]): Promise<JsonObject> {
   const existing = await readJsonIfExists(filePath);
   const document = existing ?? createEmptyDocument();
   const emittedLeafPathsBySource = new Map<string, Set<string>>();
@@ -518,8 +444,7 @@ async function buildFileDocument(
     ensureGroupType(document, plan.patch.path, plan.patch.type);
     mergeAtPath(document, plan.patch.path, stampedValue);
 
-    const emitted =
-      emittedLeafPathsBySource.get(plan.source) ?? new Set<string>();
+    const emitted = emittedLeafPathsBySource.get(plan.source) ?? new Set<string>();
     for (const leafPath of plan.leafPaths) {
       emitted.add(tokenPathKey(leafPath));
     }
@@ -549,15 +474,11 @@ function createEmptyDocument(): JsonObject {
  * @param patchPath The generated patch path.
  * @param type The DTCG token type for that patch.
  */
-function ensureGroupType(
-  document: JsonObject,
-  patchPath: string[],
-  type: string,
-): void {
+function ensureGroupType(document: JsonObject, patchPath: string[], type: string): void {
   const typeIndex = patchPath.indexOf(type);
   if (typeIndex < 0) {
     throw new Error(
-      `Generated path does not include its DTCG type (${type}): ${patchPath.join(".")}`,
+      `Generated path does not include its DTCG type (${type}): ${patchPath.join('.')}`,
     );
   }
 
@@ -566,7 +487,7 @@ function ensureGroupType(
   const existingType = group.$type;
   if (existingType !== undefined && existingType !== type) {
     throw new Error(
-      `Conflicting $type at ${groupPath.join(".")}: ${String(existingType)} vs ${type}`,
+      `Conflicting $type at ${groupPath.join('.')}: ${String(existingType)} vs ${type}`,
     );
   }
   group.$type = type;
@@ -590,7 +511,7 @@ function ensureObjectPath(root: JsonObject, objectPath: string[]): JsonObject {
     }
 
     if (!isJsonObject(next) || isToken(next)) {
-      throw new Error(`Path is not a group: ${objectPath.join(".")}`);
+      throw new Error(`Path is not a group: ${objectPath.join('.')}`);
     }
     current = next;
   }
@@ -604,11 +525,7 @@ function ensureObjectPath(root: JsonObject, objectPath: string[]): JsonObject {
  * @param patchPath The patch path.
  * @param value The stamped generated subtree.
  */
-function mergeAtPath(
-  root: JsonObject,
-  patchPath: string[],
-  value: JsonObject,
-): void {
+function mergeAtPath(root: JsonObject, patchPath: string[], value: JsonObject): void {
   const parent = ensureObjectPath(root, patchPath.slice(0, -1));
   const key = patchPath[patchPath.length - 1];
   const existing = parent[key];
@@ -619,7 +536,7 @@ function mergeAtPath(
   }
 
   if (!isJsonObject(existing)) {
-    throw new Error(`Generated path is not an object: ${patchPath.join(".")}`);
+    throw new Error(`Generated path is not an object: ${patchPath.join('.')}`);
   }
 
   const existingIsToken = isToken(existing);
@@ -630,8 +547,8 @@ function mergeAtPath(
   }
   if (existingIsToken !== incomingIsToken) {
     throw new Error(
-      `Generated path conflicts with an existing ${existingIsToken ? "token" : "group"}: ` +
-        patchPath.join("."),
+      `Generated path conflicts with an existing ${existingIsToken ? 'token' : 'group'}: ` +
+        patchPath.join('.'),
     );
   }
 
@@ -650,11 +567,7 @@ function mergeAtPath(
  * @param groupPath The path of the groups being merged.
  * @returns The merged object.
  */
-function mergeObjects(
-  target: JsonObject,
-  source: JsonObject,
-  groupPath: string[],
-): JsonObject {
+function mergeObjects(target: JsonObject, source: JsonObject, groupPath: string[]): JsonObject {
   const merged = cloneJson(target);
 
   for (const [key, incoming] of Object.entries(source)) {
@@ -670,7 +583,7 @@ function mergeObjects(
       continue;
     }
     if (!isJsonObject(incoming) || !isJsonObject(current)) {
-      throw new Error(`Token path is not an object: ${tokenPath.join(".")}`);
+      throw new Error(`Token path is not an object: ${tokenPath.join('.')}`);
     }
 
     const currentIsToken = isToken(current);
@@ -681,8 +594,8 @@ function mergeObjects(
       merged[key] = mergeObjects(current, incoming, tokenPath);
     } else {
       throw new Error(
-        `Generated token path conflicts with an existing ${currentIsToken ? "token" : "group"}: ` +
-          tokenPath.join("."),
+        `Generated token path conflicts with an existing ${currentIsToken ? 'token' : 'group'}: ` +
+          tokenPath.join('.'),
       );
     }
   }
@@ -720,24 +633,22 @@ function sweepGeneratedTokens(
 function collectGeneratedTokenPaths(
   node: JsonValue,
   currentPath: string[],
-): Array<{ path: string[]; marker: GenerationMarker }> {
+): Array<{path: string[]; marker: GenerationMarker}> {
   if (!isJsonObject(node)) {
     return [];
   }
 
   if (isToken(node)) {
     const marker = generationMarkerForToken(node, currentPath);
-    return marker ? [{ path: currentPath, marker }] : [];
+    return marker ? [{path: currentPath, marker}] : [];
   }
 
-  const collected: Array<{ path: string[]; marker: GenerationMarker }> = [];
+  const collected: Array<{path: string[]; marker: GenerationMarker}> = [];
   for (const [key, child] of Object.entries(node)) {
     if (isGroupMetadataKey(key)) {
       continue;
     }
-    collected.push(
-      ...collectGeneratedTokenPaths(child, [...currentPath, key]),
-    );
+    collected.push(...collectGeneratedTokenPaths(child, [...currentPath, key]));
   }
   return collected;
 }
@@ -758,24 +669,20 @@ function generationMarkerForToken(
     return null;
   }
   if (!isJsonObject(extensions)) {
-    throw new Error(`Token has invalid $extensions: ${tokenPath.join(".")}`);
+    throw new Error(`Token has invalid $extensions: ${tokenPath.join('.')}`);
   }
 
   const marker = extensions[GENERATION_EXTENSION_KEY];
   if (marker === undefined) {
     return null;
   }
-  if (
-    !isJsonObject(marker) ||
-    typeof marker.source !== "string" ||
-    marker.source.length === 0
-  ) {
+  if (!isJsonObject(marker) || typeof marker.source !== 'string' || marker.source.length === 0) {
     throw new Error(
-      `Token has invalid ${GENERATION_EXTENSION_KEY} metadata: ${tokenPath.join(".")}`,
+      `Token has invalid ${GENERATION_EXTENSION_KEY} metadata: ${tokenPath.join('.')}`,
     );
   }
 
-  return { source: marker.source };
+  return {source: marker.source};
 }
 
 /**
@@ -785,7 +692,7 @@ function generationMarkerForToken(
  * @param tokenPath The token path to remove.
  */
 function deleteTokenAtPath(root: JsonObject, tokenPath: string[]): void {
-  const ancestors: Array<{ node: JsonObject; key: string }> = [];
+  const ancestors: Array<{node: JsonObject; key: string}> = [];
   let current = root;
 
   for (let index = 0; index < tokenPath.length - 1; index += 1) {
@@ -794,14 +701,14 @@ function deleteTokenAtPath(root: JsonObject, tokenPath: string[]): void {
     if (!isJsonObject(next) || isToken(next)) {
       return;
     }
-    ancestors.push({ node: current, key });
+    ancestors.push({node: current, key});
     current = next;
   }
 
   delete current[tokenPath[tokenPath.length - 1]];
 
   for (let index = ancestors.length - 1; index >= 0; index -= 1) {
-    const { node, key } = ancestors[index];
+    const {node, key} = ancestors[index];
     const child = node[key];
     if (!isJsonObject(child) || isToken(child)) {
       return;
@@ -847,7 +754,7 @@ function collectLeafPaths(value: JsonValue, currentPath: string[]): string[][] {
  * @returns Whether the key contains group metadata.
  */
 function isGroupMetadataKey(key: string): boolean {
-  return key.startsWith("$") && key !== "$root";
+  return key.startsWith('$') && key !== '$root';
 }
 
 /**
@@ -867,14 +774,14 @@ function tokenPathKey(tokenPath: string[]): string {
  * @returns Sorted absolute file paths.
  */
 async function findJsonFiles(directory: string): Promise<string[]> {
-  const entries = await readdir(directory, { withFileTypes: true });
+  const entries = await readdir(directory, {withFileTypes: true});
   const files: string[] = [];
 
   for (const entry of entries) {
     const absolutePath = path.join(directory, entry.name);
     if (entry.isDirectory()) {
       files.push(...(await findJsonFiles(absolutePath)));
-    } else if (entry.isFile() && entry.name.endsWith(".json")) {
+    } else if (entry.isFile() && entry.name.endsWith('.json')) {
       files.push(absolutePath);
     }
   }
@@ -889,9 +796,7 @@ async function findJsonFiles(directory: string): Promise<string[]> {
  * @returns Sorted absolute token file paths.
  */
 async function findTokenFiles(directory: string): Promise<string[]> {
-  return (await findJsonFiles(directory)).filter((filePath) =>
-    filePath.endsWith(".tokens.json"),
-  );
+  return (await findJsonFiles(directory)).filter((filePath) => filePath.endsWith('.tokens.json'));
 }
 
 /**
@@ -906,14 +811,9 @@ async function readJsonIfExists(filePath: string): Promise<JsonObject | null> {
     return null;
   }
 
-  const parsed = parseJson(
-    content,
-    path.relative(ROOT_DIRECTORY, filePath),
-  );
+  const parsed = parseJson(content, path.relative(ROOT_DIRECTORY, filePath));
   if (!isJsonObject(parsed)) {
-    throw new Error(
-      `${path.relative(ROOT_DIRECTORY, filePath)} must contain a JSON object`,
-    );
+    throw new Error(`${path.relative(ROOT_DIRECTORY, filePath)} must contain a JSON object`);
   }
   return parsed;
 }
@@ -926,9 +826,9 @@ async function readJsonIfExists(filePath: string): Promise<JsonObject | null> {
  */
 async function readTextIfExists(filePath: string): Promise<string | null> {
   try {
-    return await readFile(filePath, "utf8");
+    return await readFile(filePath, 'utf8');
   } catch (error) {
-    if ((error as NodeJS.ErrnoException).code === "ENOENT") {
+    if ((error as NodeJS.ErrnoException).code === 'ENOENT') {
       return null;
     }
     throw error;
@@ -942,14 +842,14 @@ async function readTextIfExists(filePath: string): Promise<string | null> {
  * @param content The complete file contents.
  */
 async function writeAtomically(filePath: string, content: string): Promise<void> {
-  await mkdir(path.dirname(filePath), { recursive: true });
+  await mkdir(path.dirname(filePath), {recursive: true});
   const temporaryPath = `${filePath}.${process.pid}.tmp`;
 
   try {
-    await writeFile(temporaryPath, content, "utf8");
+    await writeFile(temporaryPath, content, 'utf8');
     await rename(temporaryPath, filePath);
   } catch (error) {
-    await rm(temporaryPath, { force: true });
+    await rm(temporaryPath, {force: true});
     throw error;
   }
 }

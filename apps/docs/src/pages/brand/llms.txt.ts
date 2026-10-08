@@ -1,4 +1,5 @@
 import type {APIRoute} from 'astro';
+
 import {guidelinesMarkdown, loadLogos, text} from '../../lib/api.ts';
 
 const kindLabels: Record<string, string> = {
@@ -13,15 +14,23 @@ export const GET: APIRoute = async () => {
     .map((brand) => {
       const assets = brand.assets
         .map((asset) => {
-          const pdfs = Object.entries(asset.files.pdf ?? {}).map(([profile, url]) => `[PDF ${profile}](${url})`);
-          const files = [`[SVG](${asset.files.svg})`, ...(asset.files.png ? [`[PNG](${asset.files.png})`] : []), ...pdfs];
+          const pdfs = Object.entries(asset.files.pdf ?? {}).map(
+            ([profile, url]) => `[PDF ${profile}](${url})`,
+          );
+          const files = [
+            `[SVG](${asset.files.svg})`,
+            ...(asset.files.png ? [`[PNG](${asset.files.png})`] : []),
+            ...pdfs,
+          ];
           return `- ${kindLabels[asset.kind]}, ${asset.treatment} (${asset.width}×${asset.height}): ${files.join(', ')}`;
         })
         .join('\n');
       const favicons = Object.entries(brand.favicons ?? {})
         .map(([name, url]) => `[${name}](${url})`)
         .join(', ');
-      const avatars = (brand.avatars ?? []).map((avatar) => `[${avatar.treatment} ${avatar.size}px](${avatar.path})`).join(', ');
+      const avatars = (brand.avatars ?? [])
+        .map((avatar) => `[${avatar.treatment} ${avatar.size}px](${avatar.path})`)
+        .join(', ');
       const pressKit = manifest.pressKits?.[brand.id];
       return `### ${brand.name}
 

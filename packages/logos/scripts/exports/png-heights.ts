@@ -1,5 +1,5 @@
-import {renderPng, tightFrame} from "../lib/raster.js";
-import type {AssetSelector, ExportPlugin} from "./plugin.js";
+import {renderPng, tightFrame} from '../lib/raster.js';
+import type {AssetSelector, ExportPlugin} from './plugin.js';
 
 export interface PngHeightsOptions {
   /** Output folder and manifest key, e.g. `email-signature`. */
@@ -18,7 +18,13 @@ export function pngHeights(options: PngHeightsOptions): ExportPlugin {
         for (const height of options.heights) {
           const width = Math.round((height * asset.colored.width) / asset.colored.height);
           const png = await renderPng(asset.colored, tightFrame(asset.colored, width, height));
-          entries.push({height, path: await context.write(`${options.name}/${asset.brand}/${asset.id}-${height}px.png`, png)});
+          entries.push({
+            height,
+            path: await context.write(
+              `${options.name}/${asset.brand}/${asset.id}-${height}px.png`,
+              png,
+            ),
+          });
         }
         context.assetManifest(asset).files[options.name] = entries;
       }

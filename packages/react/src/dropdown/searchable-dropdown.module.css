@@ -12,8 +12,14 @@
   inline-size: 100%;
   min-block-size: var(--semantic-dimension-size-small);
   min-inline-size: 0;
-  padding-block: calc(var(--semantic-dimension-space-control-padding-block-small) - var(--semantic-dimension-border-width-default));
-  padding-inline: calc(var(--semantic-dimension-space-control-padding-inline-small) - var(--semantic-dimension-border-width-default));
+  padding-block: calc(
+    var(--semantic-dimension-space-control-padding-block-small) -
+      var(--semantic-dimension-border-width-default)
+  );
+  padding-inline: calc(
+    var(--semantic-dimension-space-control-padding-inline-small) -
+      var(--semantic-dimension-border-width-default)
+  );
   border: var(--semantic-dimension-border-width-default) solid
     var(--semantic-color-background-fill-secondary);
   border-radius: var(--semantic-dimension-radius-small);
@@ -80,8 +86,10 @@
   overflow: hidden;
   border: 0;
   border-radius: var(--semantic-dimension-radius-small);
-  /* stylelint-disable-next-line design-tokens/token-property-compatibility -- This inset outline is the panel's canvas stroke, not a focus ring. */
-  outline: var(--semantic-dimension-border-width-default) solid var(--semantic-color-background-canvas);
+  /* stylelint-disable design-tokens/token-property-compatibility -- This inset outline is the panel's canvas stroke, not a focus ring. */
+  outline: var(--semantic-dimension-border-width-default) solid
+    var(--semantic-color-background-canvas);
+  /* stylelint-enable design-tokens/token-property-compatibility */
   outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
   box-shadow: var(--semantic-shadow-popup);
   background: var(--semantic-color-background-canvas);
@@ -283,7 +291,8 @@
 
 .groupLabel {
   box-sizing: border-box;
-  padding-block: var(--semantic-dimension-space-padding-medium) var(--semantic-dimension-space-padding-xx-small);
+  padding-block: var(--semantic-dimension-space-padding-medium)
+    var(--semantic-dimension-space-padding-xx-small);
   padding-inline: var(--semantic-dimension-space-padding-medium);
   color: var(--semantic-color-text-secondary);
   font: var(--semantic-typography-ui-tertiary);

@@ -1,8 +1,10 @@
 import {Menu as BaseMenu} from '@base-ui/react/menu';
 import {forwardRef, type ReactNode} from 'react';
-import styles from './menu.module.css';
+
 import {Separator, type SeparatorProps} from '../separator/separator.tsx';
 import {mergeClassName} from '../utils/class-names.ts';
+
+import styles from './menu.module.css';
 
 export type {
   MenuRootProps,
@@ -59,8 +61,7 @@ function MenuItemContent({children, icon, endAdornment}: MenuItemContentProps): 
 }
 
 export interface MenuItemProps
-  extends Omit<BaseMenu.Item.Props, 'children'>,
-    MenuItemContentProps {}
+  extends Omit<BaseMenu.Item.Props, 'children'>, MenuItemContentProps {}
 
 export const MenuItem = forwardRef<HTMLElement, MenuItemProps>(function MenuItem(
   {children, icon, endAdornment, className, ...props},
@@ -80,8 +81,7 @@ export const MenuItem = forwardRef<HTMLElement, MenuItemProps>(function MenuItem
 });
 
 export interface MenuLinkItemProps
-  extends Omit<BaseMenu.LinkItem.Props, 'children'>,
-    MenuItemContentProps {}
+  extends Omit<BaseMenu.LinkItem.Props, 'children'>, MenuItemContentProps {}
 
 export const MenuLinkItem = forwardRef<Element, MenuLinkItemProps>(function MenuLinkItem(
   {children, icon, endAdornment, className, ...props},

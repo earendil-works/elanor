@@ -2,7 +2,13 @@
   "$schema": "../../../node_modules/oxlint/configuration_schema.json",
   "extends": ["../../../.oxlintrc.json"],
   "plugins": ["react", "jsx-a11y"],
-  "ignorePatterns": ["**/node_modules/**", "**/dist/**", "**/coverage/**", "**/*.generated.*", "**/*.mdx"],
+  "ignorePatterns": [
+    "**/node_modules/**",
+    "**/dist/**",
+    "**/coverage/**",
+    "**/*.generated.*",
+    "**/*.mdx"
+  ],
   "rules": {
     "react/rules-of-hooks": "error",
     // Native roles remain valid on composed components and live-region wrappers.

@@ -1,6 +1,15 @@
-import {mkdir, rm, writeFile} from "node:fs/promises";
-import {resolve} from "node:path";
-import {type BrandId, brands, clearSpace, gridUnit, type LockupName, logoTokens, treatments} from "../config.js";
+import {mkdir, rm, writeFile} from 'node:fs/promises';
+import {resolve} from 'node:path';
+
+import {
+  type BrandId,
+  brands,
+  clearSpace,
+  gridUnit,
+  type LockupName,
+  logoTokens,
+  treatments,
+} from '../config.js';
 import {
   type Artwork,
   brandBackground,
@@ -12,24 +21,27 @@ import {
   packageDirectory,
   serializeSvg,
   tokenHex,
-} from "./lib/compose.js";
+} from './lib/compose.js';
 
-const outputDirectory = resolve(packageDirectory, "dist");
+const outputDirectory = resolve(packageDirectory, 'dist');
 
 await rm(outputDirectory, {recursive: true, force: true});
 
 const manifest = {gridUnit, clearSpace, brands: [] as unknown[]};
 const artwork: Record<
   string,
-  {colors: Record<string, {light: string; dark: string}>; kinds: Record<string, {lockup?: LockupName; color: Artwork; monochrome: Artwork}>}
+  {
+    colors: Record<string, {light: string; dark: string}>;
+    kinds: Record<string, {lockup?: LockupName; color: Artwork; monochrome: Artwork}>;
+  }
 > = {};
 
 for (const brand of Object.keys(brands) as BrandId[]) {
   const tokens = await loadTokens(brand);
   const assets: unknown[] = [];
-  const artworkKinds: (typeof artwork)[string]["kinds"] = {};
+  const artworkKinds: (typeof artwork)[string]['kinds'] = {};
   const usedTokens = new Set<string>([logoTokens.monochrome]);
-  await mkdir(resolve(outputDirectory, "svg", brand), {recursive: true});
+  await mkdir(resolve(outputDirectory, 'svg', brand), {recursive: true});
 
   for (const kind of kinds) {
     const color = await composeArtwork(brand, kind, false);
@@ -55,19 +67,30 @@ for (const brand of Object.keys(brands) as BrandId[]) {
       });
     }
   }
-  const backgrounds = {light: await brandBackground(brand, "light"), dark: await brandBackground(brand, "dark")};
+  const backgrounds = {
+    light: await brandBackground(brand, 'light'),
+    dark: await brandBackground(brand, 'dark'),
+  };
   manifest.brands.push({id: brand, name: brands[brand].name, backgrounds, assets});
 
   // The brand's token colors per scheme, so consumers of artwork.json need no token build.
   const colors = Object.fromEntries(
-    [...usedTokens].sort().map((token) => [token, {light: tokenHex(tokens, token, "light"), dark: tokenHex(tokens, token, "dark")}]),
+    [...usedTokens]
+      .sort()
+      .map((token) => [
+        token,
+        {light: tokenHex(tokens, token, 'light'), dark: tokenHex(tokens, token, 'dark')},
+      ]),
   );
   artwork[brand] = {colors, kinds: artworkKinds};
 }
 
-await writeFile(resolve(outputDirectory, "manifest.json"), `${JSON.stringify(manifest, null, 2)}\n`);
 await writeFile(
-  resolve(outputDirectory, "artwork.json"),
+  resolve(outputDirectory, 'manifest.json'),
+  `${JSON.stringify(manifest, null, 2)}\n`,
+);
+await writeFile(
+  resolve(outputDirectory, 'artwork.json'),
   `${JSON.stringify({monochromeToken: logoTokens.monochrome, brands: artwork})}\n`,
 );
 console.log(`Built ${manifest.brands.length} brands.`);

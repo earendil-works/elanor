@@ -1,7 +1,9 @@
 import {Button as BaseButton} from '@base-ui/react/button';
 import {forwardRef} from 'react';
-import styles from './icon-button.module.css';
+
 import {mergeClassName} from '../utils/class-names.ts';
+
+import styles from './icon-button.module.css';
 
 export interface IconButtonProps extends BaseButton.Props {}
 

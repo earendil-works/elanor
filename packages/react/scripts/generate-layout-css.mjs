@@ -1,4 +1,5 @@
 import {readFile, writeFile} from 'node:fs/promises';
+
 import {resolveBreakpoints} from '../../design-tokens/scripts/resolve-breakpoints.mts';
 
 const root = new URL('../', import.meta.url);
@@ -7,7 +8,8 @@ const check = process.argv.includes('--check');
 
 // CSS cannot use var() in query conditions. Resolve only explicitly annotated
 // dimensions; the surrounding query syntax and formatting stay author-owned.
-const threshold = /(?<![\w.+-])[+-]?(?:\d*\.\d+|\d+)(?:[eE][+-]?\d+)?(?:rem|px)(\s*\/\*\s*token:\s*(semantic\.dimension\.breakpoint\.\w+)\s*\*\/)/g;
+const threshold =
+  /(?<![\w.+-])[+-]?(?:\d*\.\d+|\d+)(?:[eE][+-]?\d+)?(?:rem|px)(\s*\/\*\s*token:\s*(semantic\.dimension\.breakpoint\.\w+)\s*\*\/)/g;
 const annotation = /\/\*\s*token:/g;
 
 for (const path of ['src/grid/grid.module.css', 'src/layout/layout.module.css']) {
@@ -21,11 +23,15 @@ for (const path of ['src/grid/grid.module.css', 'src/layout/layout.module.css'])
     return `${value}${suffix}`;
   });
   if (!resolved || resolved !== (source.match(annotation)?.length ?? 0)) {
-    throw new Error(`${path}: expected token annotations immediately after dimensions in rem or px.`);
+    throw new Error(
+      `${path}: expected token annotations immediately after dimensions in rem or px.`,
+    );
   }
   if (output === source) continue;
   if (check) {
-    throw new Error(`${path} has stale breakpoint values. Run pnpm --filter @earendil-works/elanor-react generate:css`);
+    throw new Error(
+      `${path} has stale breakpoint values. Run pnpm --filter @earendil-works/elanor-react generate:css`,
+    );
   }
   await writeFile(url, output);
 }

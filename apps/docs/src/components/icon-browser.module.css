@@ -22,7 +22,8 @@
   min-inline-size: 0;
   grid-column: span 4;
   padding: var(--semantic-dimension-space-padding-x-large);
-  border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-secondary);
+  border: var(--semantic-dimension-border-width-default) solid
+    var(--semantic-color-border-secondary);
   border-radius: var(--semantic-dimension-radius-medium);
 }
 

@@ -1,5 +1,5 @@
-import type { AtRule, Declaration } from "postcss";
-import stylelint from "stylelint";
+import type {AtRule, Declaration} from 'postcss';
+import stylelint from 'stylelint';
 
 /**
  * Reports a Stylelint warning for a declaration or at-rule.
@@ -11,11 +11,11 @@ import stylelint from "stylelint";
  * @param word The specific word to highlight, when available.
  */
 export function report(
-  result: Parameters<typeof stylelint.utils.report>[0]["result"],
+  result: Parameters<typeof stylelint.utils.report>[0]['result'],
   ruleName: string,
   node: Declaration | AtRule,
   message: string,
   word?: string,
 ): void {
-  stylelint.utils.report({ result, ruleName, node, message, ...(word ? { word } : {}) });
+  stylelint.utils.report({result, ruleName, node, message, ...(word ? {word} : {})});
 }

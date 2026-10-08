@@ -6,14 +6,14 @@ Neutral page regions with ordinary children. Layout does not own routing, naviga
 state, content grids, or header measurements. All six parts accept `render`, `ref`,
 `className`, `style`, and native element props.
 
-| Part | Default element | Responsibility |
-| --- | --- | --- |
-| `Root` | `div` | Isolated, unclipped page frame; document scrolling |
-| `Header` | `header` | Optional top region; non-sticky by default |
-| `Body` | `div` | Groups zero, one, or two asides with flexible main content |
-| `Aside` | `aside` | Supporting region; sticky and scrollable on wide screens |
-| `Main` | `main` | Flexible main landmark, without a content-width cap |
-| `Footer` | `footer` | Optional bottom region |
+| Part     | Default element | Responsibility                                             |
+| -------- | --------------- | ---------------------------------------------------------- |
+| `Root`   | `div`           | Isolated, unclipped page frame; document scrolling         |
+| `Header` | `header`        | Optional top region; non-sticky by default                 |
+| `Body`   | `div`           | Groups zero, one, or two asides with flexible main content |
+| `Aside`  | `aside`         | Supporting region; sticky and scrollable on wide screens   |
+| `Main`   | `main`          | Flexible main landmark, without a content-width cap        |
+| `Footer` | `footer`        | Optional bottom region                                     |
 
 Use one `Main` per document. When embedding a layout inside an existing main,
 use `Layout.Main render={<div />}` instead. `Page` is a content group, not another
@@ -44,13 +44,18 @@ import {Container, Layout, Page, SideNavigation, Stack} from '@earendil-works/el
 
 <Layout.Root>
   <Layout.Body>
-    <Layout.Aside aria-label="Workspace" style={{padding: 'var(--semantic-dimension-space-padding-medium)'}}>
+    <Layout.Aside
+      aria-label="Workspace"
+      style={{padding: 'var(--semantic-dimension-space-padding-medium)'}}
+    >
       <Stack>
         <a href="/">Workspace</a>
         <SideNavigation.Root aria-label="Application">
           <SideNavigation.List>
             <SideNavigation.Item>
-              <SideNavigation.Link href="/projects" active>Projects</SideNavigation.Link>
+              <SideNavigation.Link href="/projects" active>
+                Projects
+              </SideNavigation.Link>
             </SideNavigation.Item>
             <SideNavigation.Item>
               <SideNavigation.Link href="/settings">Settings</SideNavigation.Link>
@@ -69,7 +74,7 @@ import {Container, Layout, Page, SideNavigation, Stack} from '@earendil-works/el
       </Container>
     </Layout.Main>
   </Layout.Body>
-</Layout.Root>
+</Layout.Root>;
 ```
 
 Replace the contents of Aside with your own branding, navigation, and account
@@ -90,11 +95,17 @@ import {Container, Layout, Link, Stack, TopNavigation} from '@earendil-works/ela
   <Layout.Header render={<TopNavigation.Root variant="marketing" />}>
     <Container>
       <Stack direction="row" align="center" gap="auto" wrap="wrap">
-        <TopNavigation.Identity><Link href="/">Elanor</Link></TopNavigation.Identity>
+        <TopNavigation.Identity>
+          <Link href="/">Elanor</Link>
+        </TopNavigation.Identity>
         <TopNavigation.Navigation>
-          <nav aria-label="Primary"><Link href="/about">About</Link></nav>
+          <nav aria-label="Primary">
+            <Link href="/about">About</Link>
+          </nav>
         </TopNavigation.Navigation>
-        <TopNavigation.Actions><Link href="/login">Sign in</Link></TopNavigation.Actions>
+        <TopNavigation.Actions>
+          <Link href="/login">Sign in</Link>
+        </TopNavigation.Actions>
       </Stack>
     </Container>
   </Layout.Header>
@@ -107,8 +118,10 @@ import {Container, Layout, Link, Stack, TopNavigation} from '@earendil-works/ela
       Full-width content retains gutters. Omit Container for a truly full-bleed region.
     </Container>
   </Layout.Main>
-  <Layout.Footer><Container>Your footer content</Container></Layout.Footer>
-</Layout.Root>
+  <Layout.Footer>
+    <Container>Your footer content</Container>
+  </Layout.Footer>
+</Layout.Root>;
 ```
 
 ## Sticky regions and narrow screens

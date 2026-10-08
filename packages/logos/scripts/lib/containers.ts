@@ -1,4 +1,4 @@
-import {type Zippable, zipSync} from "fflate";
+import {type Zippable, zipSync} from 'fflate';
 
 const ICO_HEADER_SIZE = 6;
 const ICO_ENTRY_SIZE = 16;

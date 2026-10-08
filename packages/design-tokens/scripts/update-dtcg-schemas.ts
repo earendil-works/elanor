@@ -1,18 +1,12 @@
 #!/usr/bin/env node
 
-import { createHash } from "node:crypto";
-import { mkdir, writeFile } from "node:fs/promises";
-import path from "node:path";
+import {createHash} from 'node:crypto';
+import {mkdir, writeFile} from 'node:fs/promises';
+import path from 'node:path';
 
-const VERSION = "2025.10";
-const SCHEMA_DIRECTORY = path.join(
-  __dirname,
-  "..",
-  "schemas",
-  "dtcg",
-  VERSION,
-);
-const SCHEMA_NAMES = ["format", "resolver"] as const;
+const VERSION = '2025.10';
+const SCHEMA_DIRECTORY = path.join(__dirname, '..', 'schemas', 'dtcg', VERSION);
+const SCHEMA_NAMES = ['format', 'resolver'] as const;
 
 type SchemaName = (typeof SCHEMA_NAMES)[number];
 
@@ -55,7 +49,7 @@ function schemaUrl(name: SchemaName): string {
  * @returns A lowercase hexadecimal digest.
  */
 function sha256(content: Buffer): string {
-  return createHash("sha256").update(content).digest("hex");
+  return createHash('sha256').update(content).digest('hex');
 }
 
 /**
@@ -68,8 +62,8 @@ function sha256(content: Buffer): string {
 async function downloadSchema(name: SchemaName): Promise<DownloadedSchema> {
   const url = schemaUrl(name);
   const response = await fetch(url, {
-    headers: { "user-agent": "design-tokens-schema-updater" },
-    redirect: "follow",
+    headers: {'user-agent': 'design-tokens-schema-updater'},
+    redirect: 'follow',
   });
 
   if (!response.ok) {
@@ -80,20 +74,20 @@ async function downloadSchema(name: SchemaName): Promise<DownloadedSchema> {
   let schema: SchemaMetadata;
 
   try {
-    schema = JSON.parse(content.toString("utf8")) as SchemaMetadata;
+    schema = JSON.parse(content.toString('utf8')) as SchemaMetadata;
   } catch (error) {
     throw new Error(`${url} did not return valid JSON: ${errorMessage(error)}`);
   }
 
   if (
-    schema.$schema !== "http://json-schema.org/draft-07/schema#" ||
-    typeof schema.$id !== "string" ||
+    schema.$schema !== 'http://json-schema.org/draft-07/schema#' ||
+    typeof schema.$id !== 'string' ||
     !schema.$id.includes(`/schemas/${VERSION}/`)
   ) {
     throw new Error(`${url} did not return the expected DTCG ${VERSION} schema`);
   }
 
-  return { name, url, content, sha256: sha256(content) };
+  return {name, url, content, sha256: sha256(content)};
 }
 
 /**
@@ -102,19 +96,18 @@ async function downloadSchema(name: SchemaName): Promise<DownloadedSchema> {
 async function main(): Promise<void> {
   // Download and validate everything before changing the vendored copies.
   const schemas = await Promise.all(SCHEMA_NAMES.map(downloadSchema));
-  await mkdir(SCHEMA_DIRECTORY, { recursive: true });
+  await mkdir(SCHEMA_DIRECTORY, {recursive: true});
 
   for (const schema of schemas) {
-    await writeFile(
-      path.join(SCHEMA_DIRECTORY, `${schema.name}.json`),
-      schema.content,
-    );
+    await writeFile(path.join(SCHEMA_DIRECTORY, `${schema.name}.json`), schema.content);
   }
 
-  const manifestSchemas: Record<SchemaName, { url: string; sha256: string }> =
-    {} as Record<SchemaName, { url: string; sha256: string }>;
-  for (const { name, url, sha256: digest } of schemas) {
-    manifestSchemas[name] = { url, sha256: digest };
+  const manifestSchemas: Record<SchemaName, {url: string; sha256: string}> = {} as Record<
+    SchemaName,
+    {url: string; sha256: string}
+  >;
+  for (const {name, url, sha256: digest} of schemas) {
+    manifestSchemas[name] = {url, sha256: digest};
   }
 
   const manifest = {
@@ -124,7 +117,7 @@ async function main(): Promise<void> {
 
   // Write the checksum manifest last so an interrupted update fails validation.
   await writeFile(
-    path.join(SCHEMA_DIRECTORY, "manifest.json"),
+    path.join(SCHEMA_DIRECTORY, 'manifest.json'),
     `${JSON.stringify(manifest, null, 2)}\n`,
   );
 

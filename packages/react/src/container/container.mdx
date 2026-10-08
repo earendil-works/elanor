@@ -10,8 +10,8 @@ independently of Layout and Grid.
 
 ## Width and gutters
 
-| Prop | Values | Default |
-| --- | --- | --- |
+| Prop    | Values               | Default    |
+| ------- | -------------------- | ---------- |
 | `width` | `'capped'`, `'full'` | `'capped'` |
 
 The default content area is at most `semantic.dimension.size.content.large`
@@ -30,7 +30,7 @@ import {Container, Layout} from '@earendil-works/elanor-react';
 <Layout.Main>
   <Container>Centered, capped content</Container>
   <Container width="full">Uncapped content with gutters</Container>
-</Layout.Main>
+</Layout.Main>;
 ```
 
 ## Ordinary styling and composition
@@ -58,7 +58,7 @@ cap, update the outer maximum too:
   padding-inline: var(--semantic-dimension-space-padding-xx-large);
   max-inline-size: calc(
     var(--semantic-dimension-size-content-large) +
-    var(--semantic-dimension-space-padding-xx-large) * 2
+      var(--semantic-dimension-space-padding-xx-large) * 2
   );
 }
 ```

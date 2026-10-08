@@ -1,13 +1,9 @@
-import type {
-  BuildHookOptions,
-  Plugin,
-  TokenTransformed,
-} from "@terrazzo/parser";
+import type {BuildHookOptions, Plugin, TokenTransformed} from '@terrazzo/parser';
 
 export const CATALOGUE_SCHEMA_VERSION = 1;
-const GENERATION_EXTENSION_KEY = "com.earendil-works.generation";
+const GENERATION_EXTENSION_KEY = 'com.earendil-works.generation';
 
-type ColorScheme = "light" | "dark";
+type ColorScheme = 'light' | 'dark';
 
 export interface CatalogueEntry {
   path: string;
@@ -34,31 +30,31 @@ export interface TokenCatalogue {
 }
 
 const SUBVALUE_TYPES: Record<string, string> = {
-  color: "color",
-  "font-family": "fontFamily",
-  "font-size": "dimension",
-  "font-weight": "fontWeight",
-  "letter-spacing": "dimension",
-  "line-height": "number",
+  color: 'color',
+  'font-family': 'fontFamily',
+  'font-size': 'dimension',
+  'font-weight': 'fontWeight',
+  'letter-spacing': 'dimension',
+  'line-height': 'number',
 };
 
 const SUBVALUE_PATHS: Record<string, string> = {
-  "font-family": "fontFamily",
-  "font-size": "fontSize",
-  "font-weight": "fontWeight",
-  "letter-spacing": "letterSpacing",
-  "line-height": "lineHeight",
+  'font-family': 'fontFamily',
+  'font-size': 'fontSize',
+  'font-weight': 'fontWeight',
+  'letter-spacing': 'letterSpacing',
+  'line-height': 'lineHeight',
 };
 
 function tierFor(path: string): string {
-  return path.split(".", 1)[0] ?? "unknown";
+  return path.split('.', 1)[0] ?? 'unknown';
 }
 
 function transformsFor(
   options: BuildHookOptions,
   input: Record<string, string>,
 ): TokenTransformed[] {
-  return options.getTransforms({ format: "css", input });
+  return options.getTransforms({format: 'css', input});
 }
 
 function cssVariablesFor(transform: TokenTransformed): Array<{
@@ -70,13 +66,15 @@ function cssVariablesFor(transform: TokenTransformed): Array<{
   const localID = transform.localID;
   if (!localID) return [];
 
-  if (transform.type === "SINGLE_VALUE") {
-    return [{
-      name: localID,
-      path: transform.token.id,
-      type: transform.token.$type,
-      value: transform.value,
-    }];
+  if (transform.type === 'SINGLE_VALUE') {
+    return [
+      {
+        name: localID,
+        path: transform.token.id,
+        type: transform.token.$type,
+        value: transform.value,
+      },
+    ];
   }
 
   const variables: Array<{
@@ -86,8 +84,9 @@ function cssVariablesFor(transform: TokenTransformed): Array<{
     value: string;
   }> = [];
 
-  const shorthand = transform.value["."]
-    ?? (transform.token.$type === "typography"
+  const shorthand =
+    transform.value['.'] ??
+    (transform.token.$type === 'typography'
       ? `var(${localID}-font-weight) var(${localID}-font-size)/var(${localID}-line-height) var(${localID}-font-family)`
       : undefined);
   if (shorthand) {
@@ -100,7 +99,8 @@ function cssVariablesFor(transform: TokenTransformed): Array<{
   }
 
   for (const [subvalue, value] of Object.entries(transform.value)) {
-    if (subvalue === "." || subvalue === "p3" || subvalue === "rec2020" || subvalue === "srgb") continue;
+    if (subvalue === '.' || subvalue === 'p3' || subvalue === 'rec2020' || subvalue === 'srgb')
+      continue;
     variables.push({
       name: `${localID}-${subvalue}`,
       path: `${transform.token.id}.${SUBVALUE_PATHS[subvalue] ?? subvalue}`,
@@ -123,7 +123,11 @@ function cssVariablesFor(transform: TokenTransformed): Array<{
   return variables;
 }
 
-function resolveValue(value: string, values: ReadonlyMap<string, string>, stack = new Set<string>()): string {
+function resolveValue(
+  value: string,
+  values: ReadonlyMap<string, string>,
+  stack = new Set<string>(),
+): string {
   return value.replace(/var\((--[A-Za-z0-9_-]+)\)/g, (match, name: string) => {
     if (stack.has(name)) return match;
     const referenced = values.get(name);
@@ -134,7 +138,9 @@ function resolveValue(value: string, values: ReadonlyMap<string, string>, stack 
   });
 }
 
-function modeVariables(transforms: TokenTransformed[]): Map<string, ReturnType<typeof cssVariablesFor>[number]> {
+function modeVariables(
+  transforms: TokenTransformed[],
+): Map<string, ReturnType<typeof cssVariablesFor>[number]> {
   const result = new Map<string, ReturnType<typeof cssVariablesFor>[number]>();
   for (const transform of transforms) {
     for (const variable of cssVariablesFor(transform)) result.set(variable.name, variable);
@@ -142,32 +148,35 @@ function modeVariables(transforms: TokenTransformed[]): Map<string, ReturnType<t
   return result;
 }
 
-function resolvedModeValues(variables: ReadonlyMap<string, { value: string }>): Map<string, string> {
+function resolvedModeValues(variables: ReadonlyMap<string, {value: string}>): Map<string, string> {
   const raw = new Map([...variables].map(([name, variable]) => [name, variable.value]));
   return new Map([...raw].map(([name, value]) => [name, resolveValue(value, raw)]));
 }
 
 export function cataloguePlugin(brand: string): Plugin {
   return {
-    name: "@earendil-works/token-catalogue",
-    enforce: "post",
+    name: '@earendil-works/token-catalogue',
+    enforce: 'post',
     build(options): void {
-      const lightTransforms = transformsFor(options, { colorScheme: "light" });
-      const darkTransforms = transformsFor(options, { colorScheme: "dark" });
+      const lightTransforms = transformsFor(options, {colorScheme: 'light'});
+      const darkTransforms = transformsFor(options, {colorScheme: 'dark'});
       const lightVariables = modeVariables(lightTransforms);
       // The CSS dark permutation intentionally contains only semantic color
       // overrides. Merge it over the complete light set to model the cascade.
       const darkVariables = new Map(lightVariables);
-      for (const [name, variable] of modeVariables(darkTransforms)) darkVariables.set(name, variable);
+      for (const [name, variable] of modeVariables(darkTransforms))
+        darkVariables.set(name, variable);
       const lightValues = resolvedModeValues(lightVariables);
       const darkValues = resolvedModeValues(darkVariables);
       const resolved = {
-        light: options.resolver.apply({ colorScheme: "light" }),
-        dark: options.resolver.apply({ colorScheme: "dark" }),
+        light: options.resolver.apply({colorScheme: 'light'}),
+        dark: options.resolver.apply({colorScheme: 'dark'}),
       };
 
       const tokens: CatalogueEntry[] = [];
-      for (const [cssVariable, variable] of [...lightVariables].sort(([a], [b]) => a.localeCompare(b))) {
+      for (const [cssVariable, variable] of [...lightVariables].sort(([a], [b]) =>
+        a.localeCompare(b),
+      )) {
         const darkVariable = darkVariables.get(cssVariable);
         if (!darkVariable) throw new Error(`Missing dark-mode value for ${cssVariable}.`);
 
@@ -175,11 +184,15 @@ export function cataloguePlugin(brand: string): Plugin {
         // Only composite subproperties (e.g. `--…-font-size` emitted by a
         // typography composite) fall back to a prefix match, using the longest
         // matching localID so nested composites win over their parents.
-        const exactTransform = lightTransforms.find((candidate) => cssVariable === candidate.localID);
+        const exactTransform = lightTransforms.find(
+          (candidate) => cssVariable === candidate.localID,
+        );
         const prefixTransform = exactTransform
           ? undefined
           : lightTransforms
-              .filter((candidate) => candidate.localID && cssVariable.startsWith(`${candidate.localID}-`))
+              .filter(
+                (candidate) => candidate.localID && cssVariable.startsWith(`${candidate.localID}-`),
+              )
               .sort((a, b) => (b.localID?.length ?? 0) - (a.localID?.length ?? 0))
               .at(0);
         const token = (exactTransform ?? prefixTransform)?.token;
@@ -187,7 +200,8 @@ export function cataloguePlugin(brand: string): Plugin {
 
         // Composite subproperties (`<token>.fontSize`) take their part of the
         // composite value; aliases and extensions describe whole tokens only.
-        const subvalue = variable.path === token.id ? undefined : variable.path.slice(token.id.length + 1);
+        const subvalue =
+          variable.path === token.id ? undefined : variable.path.slice(token.id.length + 1);
         const resolvedToken = (scheme: ColorScheme) => {
           const entry = resolved[scheme][token.id];
           if (!entry) throw new Error(`Missing ${scheme} resolver value for ${token.id}.`);
@@ -198,13 +212,15 @@ export function cataloguePlugin(brand: string): Plugin {
           return subvalue === undefined ? value : (value as Record<string, unknown>)[subvalue];
         };
         // A token that is not an alias has no aliasOf; null records that explicitly.
-        const aliasOf = subvalue === undefined
-          ? {
-              light: resolvedToken("light").aliasOf ?? null,
-              dark: resolvedToken("dark").aliasOf ?? null,
-            }
-          : { light: null, dark: null };
-        const extensions: Record<string, unknown> = subvalue === undefined ? { ...token.$extensions } : {};
+        const aliasOf =
+          subvalue === undefined
+            ? {
+                light: resolvedToken('light').aliasOf ?? null,
+                dark: resolvedToken('dark').aliasOf ?? null,
+              }
+            : {light: null, dark: null};
+        const extensions: Record<string, unknown> =
+          subvalue === undefined ? {...token.$extensions} : {};
         delete extensions[GENERATION_EXTENSION_KEY];
 
         tokens.push({
@@ -212,22 +228,23 @@ export function cataloguePlugin(brand: string): Plugin {
           cssVariable,
           type: variable.type,
           tier: tierFor(token.id),
-          description: token.$description ?? "",
+          description: token.$description ?? '',
           deprecated: token.$deprecated ?? false,
           modes: {
             light: lightValues.get(cssVariable) ?? variable.value,
             dark: darkValues.get(cssVariable) ?? darkVariable.value,
           },
-          values: { light: dtcgValue("light"), dark: dtcgValue("dark") },
-          ...(aliasOf.light || aliasOf.dark ? { aliasOf } : {}),
-          ...(Object.keys(extensions).length > 0 ? { extensions } : {}),
-          ...(variable.path === token.id ? {} : { sourceToken: token.id }),
+          values: {light: dtcgValue('light'), dark: dtcgValue('dark')},
+          ...(aliasOf.light || aliasOf.dark ? {aliasOf} : {}),
+          ...(Object.keys(extensions).length > 0 ? {extensions} : {}),
+          ...(variable.path === token.id ? {} : {sourceToken: token.id}),
         });
       }
 
       const names = new Set<string>();
       for (const token of tokens) {
-        if (names.has(token.cssVariable)) throw new Error(`Duplicate catalogue custom property ${token.cssVariable}.`);
+        if (names.has(token.cssVariable))
+          throw new Error(`Duplicate catalogue custom property ${token.cssVariable}.`);
         names.add(token.cssVariable);
       }
 
@@ -237,7 +254,7 @@ export function cataloguePlugin(brand: string): Plugin {
         tokens,
       };
 
-      options.outputFile("tokens.catalog.json", `${JSON.stringify(catalogue, null, 2)}\n`);
+      options.outputFile('tokens.catalog.json', `${JSON.stringify(catalogue, null, 2)}\n`);
     },
   };
 }

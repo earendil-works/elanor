@@ -1,6 +1,6 @@
-import {type BrandId, brands} from "../../config.js";
-import {circleSafeFrame, renderPng} from "../lib/raster.js";
-import type {ExportPlugin, TreatmentId} from "./plugin.js";
+import {type BrandId, brands} from '../../config.js';
+import {circleSafeFrame, renderPng} from '../lib/raster.js';
+import type {ExportPlugin, TreatmentId} from './plugin.js';
 
 export interface AvatarsOptions {
   sizes: number[];
@@ -12,7 +12,7 @@ export interface AvatarsOptions {
 /** Square profile pictures on the brand's background. */
 export function avatars(options: AvatarsOptions): ExportPlugin {
   return {
-    name: "avatars",
+    name: 'avatars',
     async run(context) {
       for (const brand of Object.keys(brands) as BrandId[]) {
         const entries = [];
@@ -20,8 +20,18 @@ export function avatars(options: AvatarsOptions): ExportPlugin {
           const mark = context.mark(brand, treatment);
           const background = await context.background(brand, mark.treatment.scheme);
           for (const size of options.sizes) {
-            const png = await renderPng(mark.colored, circleSafeFrame(mark.colored, size, options.safeZone, background));
-            entries.push({treatment, size, path: await context.write(`social/${brand}/${brand}-avatar-${treatment}-${size}.png`, png)});
+            const png = await renderPng(
+              mark.colored,
+              circleSafeFrame(mark.colored, size, options.safeZone, background),
+            );
+            entries.push({
+              treatment,
+              size,
+              path: await context.write(
+                `social/${brand}/${brand}-avatar-${treatment}-${size}.png`,
+                png,
+              ),
+            });
           }
         }
         context.brandManifest(brand).avatars = entries;

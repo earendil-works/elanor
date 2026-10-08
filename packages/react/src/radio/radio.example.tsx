@@ -7,12 +7,20 @@ export function RadioExample(): React.JSX.Element {
     <Radio.Group defaultValue="daily" aria-label="Email digest frequency">
       <Stack gap="small">
         <SelectionControlAndLabel
-          control={<Radio.Root value="daily"><Radio.Indicator /></Radio.Root>}
+          control={
+            <Radio.Root value="daily">
+              <Radio.Indicator />
+            </Radio.Root>
+          }
         >
           Daily digest
         </SelectionControlAndLabel>
         <SelectionControlAndLabel
-          control={<Radio.Root value="weekly"><Radio.Indicator /></Radio.Root>}
+          control={
+            <Radio.Root value="weekly">
+              <Radio.Indicator />
+            </Radio.Root>
+          }
         >
           Weekly digest
         </SelectionControlAndLabel>

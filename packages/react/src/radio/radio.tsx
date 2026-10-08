@@ -1,14 +1,12 @@
 import {Radio as BaseRadio, type RadioRootProps} from '@base-ui/react/radio';
 import {RadioGroup as BaseRadioGroup} from '@base-ui/react/radio-group';
 import {forwardRef, type Ref} from 'react';
-import styles from './radio.module.css';
+
 import {mergeClassName} from '../utils/class-names.ts';
 
-export type {
-  RadioRootState,
-  RadioRootProps,
-  RadioIndicatorState,
-} from '@base-ui/react/radio';
+import styles from './radio.module.css';
+
+export type {RadioRootState, RadioRootProps, RadioIndicatorState} from '@base-ui/react/radio';
 
 export type {
   RadioGroupState,

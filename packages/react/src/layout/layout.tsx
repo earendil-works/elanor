@@ -1,12 +1,14 @@
-import {forwardRef} from 'react';
-import {useRender} from '@base-ui/react/use-render';
 import {mergeProps} from '@base-ui/react/merge-props';
+import {useRender} from '@base-ui/react/use-render';
+import {forwardRef} from 'react';
+
 import styles from './layout.module.css';
 
 export interface LayoutRootProps extends useRender.ComponentProps<'div'> {}
 
 export const LayoutRoot = forwardRef<HTMLDivElement, LayoutRootProps>(function LayoutRoot(
-  {render, ...props}, ref,
+  {render, ...props},
+  ref,
 ) {
   return useRender({
     defaultTagName: 'div',
@@ -19,7 +21,8 @@ export const LayoutRoot = forwardRef<HTMLDivElement, LayoutRootProps>(function L
 export interface LayoutHeaderProps extends useRender.ComponentProps<'header'> {}
 
 export const LayoutHeader = forwardRef<HTMLElement, LayoutHeaderProps>(function LayoutHeader(
-  {render, ...props}, ref,
+  {render, ...props},
+  ref,
 ) {
   return useRender({
     defaultTagName: 'header',
@@ -32,7 +35,8 @@ export const LayoutHeader = forwardRef<HTMLElement, LayoutHeaderProps>(function 
 export interface LayoutBodyProps extends useRender.ComponentProps<'div'> {}
 
 export const LayoutBody = forwardRef<HTMLDivElement, LayoutBodyProps>(function LayoutBody(
-  {render, ...props}, ref,
+  {render, ...props},
+  ref,
 ) {
   return useRender({
     defaultTagName: 'div',
@@ -45,7 +49,8 @@ export const LayoutBody = forwardRef<HTMLDivElement, LayoutBodyProps>(function L
 export interface LayoutAsideProps extends useRender.ComponentProps<'aside'> {}
 
 export const LayoutAside = forwardRef<HTMLElement, LayoutAsideProps>(function LayoutAside(
-  {render, ...props}, ref,
+  {render, ...props},
+  ref,
 ) {
   return useRender({
     defaultTagName: 'aside',
@@ -58,7 +63,8 @@ export const LayoutAside = forwardRef<HTMLElement, LayoutAsideProps>(function La
 export interface LayoutMainProps extends useRender.ComponentProps<'main'> {}
 
 export const LayoutMain = forwardRef<HTMLElement, LayoutMainProps>(function LayoutMain(
-  {render, ...props}, ref,
+  {render, ...props},
+  ref,
 ) {
   return useRender({
     defaultTagName: 'main',
@@ -71,7 +77,8 @@ export const LayoutMain = forwardRef<HTMLElement, LayoutMainProps>(function Layo
 export interface LayoutFooterProps extends useRender.ComponentProps<'footer'> {}
 
 export const LayoutFooter = forwardRef<HTMLElement, LayoutFooterProps>(function LayoutFooter(
-  {render, ...props}, ref,
+  {render, ...props},
+  ref,
 ) {
   return useRender({
     defaultTagName: 'footer',

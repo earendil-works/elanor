@@ -1,15 +1,18 @@
 import {createElement, forwardRef, type HTMLAttributes} from 'react';
+
 import type {HeadingLevel} from '../heading/heading.tsx';
-import styles from './empty-state.module.css';
 import {classes} from '../utils/class-names.ts';
+
+import styles from './empty-state.module.css';
 
 export interface EmptyStateProps extends HTMLAttributes<HTMLDivElement> {}
 
-export const EmptyStateRoot = forwardRef<HTMLDivElement, EmptyStateProps>(
-  function EmptyStateRoot({className, ...props}, ref) {
-    return <div {...props} ref={ref} className={classes(styles.root, className)} />;
-  },
-);
+export const EmptyStateRoot = forwardRef<HTMLDivElement, EmptyStateProps>(function EmptyStateRoot(
+  {className, ...props},
+  ref,
+) {
+  return <div {...props} ref={ref} className={classes(styles.root, className)} />;
+});
 
 export interface EmptyStateIllustrationProps extends HTMLAttributes<HTMLDivElement> {}
 

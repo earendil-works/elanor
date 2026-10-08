@@ -1,10 +1,6 @@
-import { token } from "../dtcg";
-import type {
-  DimensionRecipe,
-  GeneratedTokenPatch,
-  GenerationConfig,
-} from "../types";
-import { pixelsToRem } from "../units";
+import {token} from '../dtcg';
+import type {DimensionRecipe, GeneratedTokenPatch, GenerationConfig} from '../types';
+import {pixelsToRem} from '../units';
 
 const BASE_PX = 8;
 const TOKEN_INCREMENT = 200;
@@ -31,7 +27,7 @@ function calculatePixels(step: number): number {
 function validateSteps(steps: number[]): void {
   for (let index = 1; index < steps.length; index += 1) {
     if (steps[index] <= steps[index - 1]) {
-      throw new Error("Dimension steps must be in ascending order");
+      throw new Error('Dimension steps must be in ascending order');
     }
   }
 }
@@ -55,11 +51,11 @@ export function generateDimensionTokens(
 
   for (const step of recipe.steps) {
     patches.push({
-      type: "dimension",
-      path: [...recipe.path, "dimension", String(step)],
+      type: 'dimension',
+      path: [...recipe.path, 'dimension', String(step)],
       value: token({
         value: pixelsToRem(calculatePixels(step), config),
-        unit: "rem",
+        unit: 'rem',
       }),
     });
   }

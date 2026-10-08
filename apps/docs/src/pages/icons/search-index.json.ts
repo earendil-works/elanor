@@ -1,4 +1,5 @@
 import type {APIRoute} from 'astro';
+
 import {json, loadIcons} from '../../lib/api.ts';
 
 /**

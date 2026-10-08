@@ -9,15 +9,15 @@
 export const parts = {
   mark: {required: true},
   /** Dedicated one-color drawing; brands without one use their mark. */
-  "mark-monochrome": {required: false, fallback: "mark"},
+  'mark-monochrome': {required: false, fallback: 'mark'},
   wordmark: {required: true},
-  "wordmark-small": {required: true},
+  'wordmark-small': {required: true},
 } as const satisfies Record<string, {required: boolean; fallback?: string}>;
 
 export type PartName = keyof typeof parts;
 
 export interface LockupRule {
-  direction: "row" | "column";
+  direction: 'row' | 'column';
   gap: number;
   /** Padding above and below the lockup. */
   paddingBlock: number;
@@ -31,10 +31,10 @@ export interface BrandConfig {
   lockups?: Partial<Record<LockupName, Partial<LockupRule>>>;
 }
 
-export type LockupName = "horizontal" | "vertical";
+export type LockupName = 'horizontal' | 'vertical';
 
 /** Asset kinds: the symbol alone, and the symbol with the wordmark in each lockup. */
-export type LogoKind = "logo" | `logo-wordmark-${LockupName}`;
+export type LogoKind = 'logo' | `logo-wordmark-${LockupName}`;
 
 export const gridUnit = 140;
 
@@ -42,35 +42,35 @@ export const gridUnit = 140;
 export const clearSpace = gridUnit;
 
 export const lockups: Record<LockupName, LockupRule> = {
-  horizontal: {direction: "row", gap: 232, paddingBlock: 20, wordmark: "wordmark"},
-  vertical: {direction: "column", gap: 140, paddingBlock: 0, wordmark: "wordmark-small"},
+  horizontal: {direction: 'row', gap: 232, paddingBlock: 20, wordmark: 'wordmark'},
+  vertical: {direction: 'column', gap: 140, paddingBlock: 0, wordmark: 'wordmark-small'},
 };
 
 export const brands = {
-  earendil: {name: "Earendil", lockups: {horizontal: {paddingBlock: 0}}},
-  pi: {name: "Pi"},
-  radius: {name: "Radius"},
-  lefos: {name: "Lefos"},
+  earendil: {name: 'Earendil', lockups: {horizontal: {paddingBlock: 0}}},
+  pi: {name: 'Pi'},
+  radius: {name: 'Radius'},
+  lefos: {name: 'Lefos'},
 } as const satisfies Record<string, BrandConfig>;
 
 export type BrandId = keyof typeof brands;
 
 /** Color treatments, named like the press kit folders. */
 export const treatments = [
-  {id: "on-light", scheme: "light", monochrome: false},
-  {id: "on-dark", scheme: "dark", monochrome: false},
-  {id: "monochrome-on-light", scheme: "light", monochrome: true},
-  {id: "monochrome-on-dark", scheme: "dark", monochrome: true},
+  {id: 'on-light', scheme: 'light', monochrome: false},
+  {id: 'on-dark', scheme: 'dark', monochrome: false},
+  {id: 'monochrome-on-light', scheme: 'light', monochrome: true},
+  {id: 'monochrome-on-dark', scheme: 'dark', monochrome: true},
 ] as const;
 
 export type Treatment = (typeof treatments)[number];
 
 /** Each brand's own page background, used behind icons and avatars. */
-export const backgroundToken = "semantic.color.background.canvas";
+export const backgroundToken = 'semantic.color.background.canvas';
 
 export const logoTokens = {
   /** Source fills may only link to tokens in this group. */
-  group: "semantic.color.logo",
+  group: 'semantic.color.logo',
   /** Paints every shape of a monochrome logo. */
-  monochrome: "semantic.color.logo.monochrome",
+  monochrome: 'semantic.color.logo.monochrome',
 };

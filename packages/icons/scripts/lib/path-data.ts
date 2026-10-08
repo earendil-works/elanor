@@ -1,4 +1,4 @@
-import type {Contour, Point} from "./types.js";
+import type {Contour, Point} from './types.js';
 
 /**
  * Minimal SVG path support for Material Symbols sources: M, L, H, V, Q, T and Z
@@ -6,8 +6,8 @@ import type {Contour, Point} from "./types.js";
  */
 
 type Segment =
-  | {type: "line"; from: Point; to: Point}
-  | {type: "quadratic"; from: Point; control: Point; to: Point};
+  | {type: 'line'; from: Point; to: Point}
+  | {type: 'quadratic'; from: Point; control: Point; to: Point};
 
 interface SubPath {
   segments: Segment[];
@@ -15,18 +15,26 @@ interface SubPath {
 }
 
 const tokenPattern = /[A-Za-z]|[+-]?(?:\d+\.?\d*|\.\d+)(?:[eE][+-]?\d+)?/g;
-const parameterCounts: Readonly<Record<string, number>> = {M: 2, L: 2, H: 1, V: 1, Q: 4, T: 2, Z: 0};
+const parameterCounts: Readonly<Record<string, number>> = {
+  M: 2,
+  L: 2,
+  H: 1,
+  V: 1,
+  Q: 4,
+  T: 2,
+  Z: 0,
+};
 
 export function parsePathData(d: string): SubPath[] {
-  if (d.replace(tokenPattern, "").replace(/[\s,]/g, "") !== "") {
-    throw new Error("Path data contains unexpected characters");
+  if (d.replace(tokenPattern, '').replace(/[\s,]/g, '') !== '') {
+    throw new Error('Path data contains unexpected characters');
   }
   const tokens = d.match(tokenPattern) ?? [];
   const subPaths: SubPath[] = [];
   let subPath: SubPath | undefined;
   let current: Point = {x: 0, y: 0};
   let start = current;
-  let command = "";
+  let command = '';
   let lastControl: Point | undefined;
   let index = 0;
 
@@ -48,14 +56,14 @@ export function parsePathData(d: string): SubPath[] {
       }
       command = token;
       index += 1;
-      if (command.toUpperCase() === "Z") {
+      if (command.toUpperCase() === 'Z') {
         if (subPath) subPath.closed = true;
         current = start;
         lastControl = undefined;
         continue;
       }
-    } else if (command === "" || command.toUpperCase() === "Z") {
-      throw new Error("Path data has a number without a command");
+    } else if (command === '' || command.toUpperCase() === 'Z') {
+      throw new Error('Path data has a number without a command');
     }
 
     const type = command.toUpperCase();
@@ -73,32 +81,32 @@ export function parsePathData(d: string): SubPath[] {
     let control: Point | undefined;
 
     switch (type) {
-      case "M":
+      case 'M':
         current = point(a, b);
         start = current;
         subPath = {segments: [], closed: false};
         subPaths.push(subPath);
         // Further coordinate pairs after a move are implicit line commands.
-        command = relative ? "l" : "L";
+        command = relative ? 'l' : 'L';
         break;
-      case "L":
-        add({type: "line", from: current, to: point(a, b)});
+      case 'L':
+        add({type: 'line', from: current, to: point(a, b)});
         break;
-      case "H":
-        add({type: "line", from: current, to: {x: relative ? current.x + a : a, y: current.y}});
+      case 'H':
+        add({type: 'line', from: current, to: {x: relative ? current.x + a : a, y: current.y}});
         break;
-      case "V":
-        add({type: "line", from: current, to: {x: current.x, y: relative ? current.y + a : a}});
+      case 'V':
+        add({type: 'line', from: current, to: {x: current.x, y: relative ? current.y + a : a}});
         break;
-      case "Q":
+      case 'Q':
         control = point(a, b);
-        add({type: "quadratic", from: current, control, to: point(c, e)});
+        add({type: 'quadratic', from: current, control, to: point(c, e)});
         break;
-      case "T":
+      case 'T':
         control = lastControl
           ? {x: 2 * current.x - lastControl.x, y: 2 * current.y - lastControl.y}
           : current;
-        add({type: "quadratic", from: current, control, to: point(a, b)});
+        add({type: 'quadratic', from: current, control, to: point(a, b)});
         break;
     }
     lastControl = control;
@@ -109,13 +117,15 @@ export function parsePathData(d: string): SubPath[] {
 
 /** Samples every segment at roughly `step` intervals along its length. */
 export function flattenPath(d: string, step: number): Contour[] {
-  if (!(step > 0)) throw new Error("Sampling step must be positive");
+  if (!(step > 0)) throw new Error('Sampling step must be positive');
 
   return parsePathData(d).map(({segments, closed}) => {
     const first = segments[0]!.from;
     const last = segments.at(-1)!.to;
     const all: Segment[] =
-      closed && !samePoint(first, last) ? [...segments, {type: "line", from: last, to: first}] : segments;
+      closed && !samePoint(first, last)
+        ? [...segments, {type: 'line', from: last, to: first}]
+        : segments;
 
     const points: Point[] = [first];
     for (const segment of all) {
@@ -126,12 +136,15 @@ export function flattenPath(d: string, step: number): Contour[] {
       }
     }
     if (closed && samePoint(points[0]!, points.at(-1)!)) points.pop();
-    return {closed, points: points.filter((point, index) => index === 0 || !samePoint(point, points[index - 1]!))};
+    return {
+      closed,
+      points: points.filter((point, index) => index === 0 || !samePoint(point, points[index - 1]!)),
+    };
   });
 }
 
 function segmentSampler(segment: Segment): {length: number; at(distance: number): Point} {
-  if (segment.type === "line") {
+  if (segment.type === 'line') {
     const {from, to} = segment;
     const length = Math.hypot(to.x - from.x, to.y - from.y);
     return {
@@ -180,15 +193,16 @@ function segmentSampler(segment: Segment): {length: number; at(distance: number)
  * accumulate rounding error.
  */
 export function serializeContours(contours: Contour[], decimals: number): string {
-  if (!Number.isInteger(decimals) || decimals < 0) throw new Error("Decimals must be a non-negative integer");
+  if (!Number.isInteger(decimals) || decimals < 0)
+    throw new Error('Decimals must be a non-negative integer');
   const scale = 10 ** decimals;
-  let output = "";
-  let previousCommand = "";
+  let output = '';
+  let previousCommand = '';
   let previousNumber: string | undefined;
   let current = {x: 0, y: 0};
 
   const write = (command: string, values: number[]): void => {
-    if (command !== previousCommand || command === "m") {
+    if (command !== previousCommand || command === 'm') {
       output += command;
       previousNumber = undefined;
     }
@@ -196,13 +210,13 @@ export function serializeContours(contours: Contour[], decimals: number): string
       const text = formatFixed(value, decimals);
       const needsSeparator =
         previousNumber !== undefined &&
-        !text.startsWith("-") &&
-        !(text.startsWith(".") && previousNumber.includes("."));
-      output += (needsSeparator ? " " : "") + text;
+        !text.startsWith('-') &&
+        !(text.startsWith('.') && previousNumber.includes('.'));
+      output += (needsSeparator ? ' ' : '') + text;
       previousNumber = text;
     }
     // Pairs after a move are implicit line commands.
-    previousCommand = command === "m" ? "l" : command;
+    previousCommand = command === 'm' ? 'l' : command;
   };
 
   for (const contour of contours) {
@@ -216,18 +230,18 @@ export function serializeContours(contours: Contour[], decimals: number): string
     if (points.length === 0) continue;
 
     const [first, ...rest] = points;
-    write("m", [first!.x - current.x, first!.y - current.y]);
+    write('m', [first!.x - current.x, first!.y - current.y]);
     current = first!;
     for (const point of rest) {
       const dx = point.x - current.x;
       const dy = point.y - current.y;
-      if (dy === 0) write("h", [dx]);
-      else if (dx === 0) write("v", [dy]);
-      else write("l", [dx, dy]);
+      if (dy === 0) write('h', [dx]);
+      else if (dx === 0) write('v', [dy]);
+      else write('l', [dx, dy]);
       current = point;
     }
     if (contour.closed) {
-      write("z", []);
+      write('z', []);
       current = first!;
     }
   }
@@ -238,8 +252,10 @@ function formatFixed(value: number, decimals: number): string {
   const scale = 10 ** decimals;
   const magnitude = Math.abs(value);
   const whole = Math.floor(magnitude / scale);
-  const fraction = String(magnitude % scale).padStart(decimals, "0").replace(/0+$/, "");
-  const digits = fraction === "" ? String(whole) : `${whole === 0 ? "" : whole}.${fraction}`;
+  const fraction = String(magnitude % scale)
+    .padStart(decimals, '0')
+    .replace(/0+$/, '');
+  const digits = fraction === '' ? String(whole) : `${whole === 0 ? '' : whole}.${fraction}`;
   return value < 0 ? `-${digits}` : digits;
 }
 

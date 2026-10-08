@@ -2,7 +2,8 @@
 .shortFrame {
   inline-size: 100%;
   max-inline-size: var(--semantic-dimension-size-content-small);
-  border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-secondary);
+  border: var(--semantic-dimension-border-width-default) solid
+    var(--semantic-color-border-secondary);
   border-radius: var(--semantic-dimension-radius-small);
 }
 

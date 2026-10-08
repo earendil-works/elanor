@@ -15,7 +15,7 @@ import {Grid, Card} from '@earendil-works/elanor-react';
     A card without an extra wrapper
   </Grid.Item>
   <Grid.Item>Full-width next row</Grid.Item>
-</Grid.Root>
+</Grid.Root>;
 ```
 
 - `Grid.Root`: `columns` is an integer from 1–12 (default 12). `gap` uses the shared
@@ -32,14 +32,14 @@ import {Grid, Card} from '@earendil-works/elanor-react';
 
 ## Container breakpoints
 
-| Key | Minimum inline size |
-| --- | --- |
-| `base` | Always |
-| `xSmall` | 40rem |
-| `small` | 48rem |
-| `medium` | 64rem |
-| `large` | 80rem |
-| `xLarge` | 96rem |
+| Key      | Minimum inline size |
+| -------- | ------------------- |
+| `base`   | Always              |
+| `xSmall` | 40rem               |
+| `small`  | 48rem               |
+| `medium` | 64rem               |
+| `large`  | 80rem               |
+| `xLarge` | 96rem               |
 
 These are the existing shared breakpoint tokens, resolved into CSS during source
 generation. They query the nearest `Grid.Root`, **not the viewport**. A sidebar

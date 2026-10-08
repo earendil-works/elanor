@@ -1,6 +1,7 @@
 .frame {
   inline-size: 100%;
-  border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-secondary);
+  border: var(--semantic-dimension-border-width-default) solid
+    var(--semantic-color-border-secondary);
   border-radius: var(--semantic-dimension-radius-small);
 }
 
@@ -47,8 +48,14 @@
 
 .projectTrigger {
   inline-size: 100%;
-  padding-block: calc(var(--semantic-dimension-space-control-padding-block-small) - var(--semantic-dimension-border-width-small));
-  padding-inline: calc(var(--semantic-dimension-space-control-padding-inline-small) - var(--semantic-dimension-border-width-small));
+  padding-block: calc(
+    var(--semantic-dimension-space-control-padding-block-small) -
+      var(--semantic-dimension-border-width-small)
+  );
+  padding-inline: calc(
+    var(--semantic-dimension-space-control-padding-inline-small) -
+      var(--semantic-dimension-border-width-small)
+  );
   border: var(--semantic-dimension-border-width-small) solid var(--semantic-color-border-secondary);
 }
 

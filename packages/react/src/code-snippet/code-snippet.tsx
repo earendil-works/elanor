@@ -1,6 +1,8 @@
 import {forwardRef, type HTMLAttributes, type ReactNode} from 'react';
-import styles from './code-snippet.module.css';
+
 import {classes} from '../utils/class-names.ts';
+
+import styles from './code-snippet.module.css';
 
 export interface CodeSnippetProps extends Omit<HTMLAttributes<HTMLPreElement>, 'children'> {
   readonly children?: ReactNode;

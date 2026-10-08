@@ -1,8 +1,10 @@
 import {Select as BaseSelect} from '@base-ui/react/select';
 import {KeyboardArrowDownIcon} from '@earendil-works/elanor-icons-react';
 import {createContext, forwardRef, useContext} from 'react';
-import styles from './dropdown.module.css';
+
 import {classes, mergeClassName} from '../utils/class-names.ts';
+
+import styles from './dropdown.module.css';
 
 export type {
   SelectRootActions as DropdownRootActions,
@@ -23,7 +25,10 @@ export type {
   SelectSeparatorState as DropdownSeparatorState,
 } from '@base-ui/react/select';
 
-export type DropdownRootProps<Value, Multiple extends boolean | undefined = false> = BaseSelect.Root.Props<Value, Multiple>;
+export type DropdownRootProps<
+  Value,
+  Multiple extends boolean | undefined = false,
+> = BaseSelect.Root.Props<Value, Multiple>;
 export type DropdownLabelProps = BaseSelect.Label.Props;
 export type DropdownTriggerProps = BaseSelect.Trigger.Props;
 export type DropdownIconProps = BaseSelect.Icon.Props;
@@ -49,17 +54,18 @@ function DropdownRoot<Value, Multiple extends boolean | undefined = false>(
   );
 }
 
-export const DropdownLabel = forwardRef<HTMLDivElement, DropdownLabelProps>(
-  function DropdownLabel({className, ...props}, ref) {
-    return (
-      <BaseSelect.Label
-        {...props}
-        ref={ref}
-        className={mergeClassName<BaseSelect.Label.State>(styles.label, className)}
-      />
-    );
-  },
-);
+export const DropdownLabel = forwardRef<HTMLDivElement, DropdownLabelProps>(function DropdownLabel(
+  {className, ...props},
+  ref,
+) {
+  return (
+    <BaseSelect.Label
+      {...props}
+      ref={ref}
+      className={mergeClassName<BaseSelect.Label.State>(styles.label, className)}
+    />
+  );
+});
 
 export const DropdownTrigger = forwardRef<HTMLButtonElement, DropdownTriggerProps>(
   function DropdownTrigger({className, ...props}, ref) {
@@ -73,19 +79,20 @@ export const DropdownTrigger = forwardRef<HTMLButtonElement, DropdownTriggerProp
   },
 );
 
-export const DropdownIcon = forwardRef<HTMLSpanElement, DropdownIconProps>(
-  function DropdownIcon({className, children, ...props}, ref) {
-    return (
-      <BaseSelect.Icon
-        {...props}
-        ref={ref}
-        className={mergeClassName<BaseSelect.Icon.State>(styles.icon, className)}
-      >
-        {children ?? <KeyboardArrowDownIcon />}
-      </BaseSelect.Icon>
-    );
-  },
-);
+export const DropdownIcon = forwardRef<HTMLSpanElement, DropdownIconProps>(function DropdownIcon(
+  {className, children, ...props},
+  ref,
+) {
+  return (
+    <BaseSelect.Icon
+      {...props}
+      ref={ref}
+      className={mergeClassName<BaseSelect.Icon.State>(styles.icon, className)}
+    >
+      {children ?? <KeyboardArrowDownIcon />}
+    </BaseSelect.Icon>
+  );
+});
 
 export const DropdownPositioner = forwardRef<HTMLDivElement, DropdownPositionerProps>(
   function DropdownPositioner({alignItemWithTrigger = false, align = 'start', ...props}, ref) {
@@ -100,41 +107,44 @@ export const DropdownPositioner = forwardRef<HTMLDivElement, DropdownPositionerP
   },
 );
 
-export const DropdownPopup = forwardRef<HTMLDivElement, DropdownPopupProps>(
-  function DropdownPopup({className, ...props}, ref) {
-    return (
-      <BaseSelect.Popup
-        {...props}
-        ref={ref}
-        className={mergeClassName<BaseSelect.Popup.State>(styles.popup, className)}
-      />
-    );
-  },
-);
+export const DropdownPopup = forwardRef<HTMLDivElement, DropdownPopupProps>(function DropdownPopup(
+  {className, ...props},
+  ref,
+) {
+  return (
+    <BaseSelect.Popup
+      {...props}
+      ref={ref}
+      className={mergeClassName<BaseSelect.Popup.State>(styles.popup, className)}
+    />
+  );
+});
 
-export const DropdownList = forwardRef<HTMLDivElement, DropdownListProps>(
-  function DropdownList({className, ...props}, ref) {
-    return (
-      <BaseSelect.List
-        {...props}
-        ref={ref}
-        className={mergeClassName<BaseSelect.List.State>(styles.list, className)}
-      />
-    );
-  },
-);
+export const DropdownList = forwardRef<HTMLDivElement, DropdownListProps>(function DropdownList(
+  {className, ...props},
+  ref,
+) {
+  return (
+    <BaseSelect.List
+      {...props}
+      ref={ref}
+      className={mergeClassName<BaseSelect.List.State>(styles.list, className)}
+    />
+  );
+});
 
-export const DropdownItem = forwardRef<HTMLElement, DropdownItemProps>(
-  function DropdownItem({className, ...props}, ref) {
-    return (
-      <BaseSelect.Item
-        {...props}
-        ref={ref}
-        className={mergeClassName<BaseSelect.Item.State>(styles.item, className)}
-      />
-    );
-  },
-);
+export const DropdownItem = forwardRef<HTMLElement, DropdownItemProps>(function DropdownItem(
+  {className, ...props},
+  ref,
+) {
+  return (
+    <BaseSelect.Item
+      {...props}
+      ref={ref}
+      className={mergeClassName<BaseSelect.Item.State>(styles.item, className)}
+    />
+  );
+});
 
 export const DropdownItemIndicator = forwardRef<HTMLSpanElement, DropdownItemIndicatorProps>(
   function DropdownItemIndicator({className, children = null, ...props}, ref) {
@@ -145,7 +155,10 @@ export const DropdownItemIndicator = forwardRef<HTMLSpanElement, DropdownItemInd
         <BaseSelect.ItemIndicator
           {...props}
           ref={ref}
-          className={mergeClassName<BaseSelect.ItemIndicator.State>(styles.itemIndicator, className)}
+          className={mergeClassName<BaseSelect.ItemIndicator.State>(
+            styles.itemIndicator,
+            className,
+          )}
         >
           {children}
         </BaseSelect.ItemIndicator>

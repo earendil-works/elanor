@@ -1,7 +1,9 @@
 import {Button as BaseButton} from '@base-ui/react/button';
 import {forwardRef, type ReactNode} from 'react';
-import styles from './button.module.css';
+
 import {mergeClassName} from '../utils/class-names.ts';
+
+import styles from './button.module.css';
 
 export type {ButtonState} from '@base-ui/react/button';
 
@@ -36,17 +38,26 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
   },
   ref,
 ) {
-  const contentProps = iconStart || iconEnd
-    ? {
-        children: (
-          <>
-            {iconStart ? <span className={styles.icon} aria-hidden="true">{iconStart}</span> : null}
-            {props.children}
-            {iconEnd ? <span className={styles.icon} aria-hidden="true">{iconEnd}</span> : null}
-          </>
-        ),
-      }
-    : {};
+  const contentProps =
+    iconStart || iconEnd
+      ? {
+          children: (
+            <>
+              {iconStart ? (
+                <span className={styles.icon} aria-hidden="true">
+                  {iconStart}
+                </span>
+              ) : null}
+              {props.children}
+              {iconEnd ? (
+                <span className={styles.icon} aria-hidden="true">
+                  {iconEnd}
+                </span>
+              ) : null}
+            </>
+          ),
+        }
+      : {};
 
   return (
     <BaseButton

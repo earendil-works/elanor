@@ -1,10 +1,28 @@
-import {useRef, useState, type Ref, type UIEventHandler} from 'react';
 import {
-  AccountBalanceIcon, ArrowOutwardIcon, AttachMoneyIcon, AvgTimeIcon, CallSplitIcon,
-  CardsStackIcon, ChatIcon, ContractIcon, DataExplorationIcon, DescriptionIcon,
-  FinanceChipIcon, GroupsIcon, HomeIcon, KeyboardArrowDownIcon, KeyIcon,
-  LogoutIcon, PerformanceMaxIcon, PersonIcon, RuleIcon, SettingsIcon, SmartToyIcon,
+  AccountBalanceIcon,
+  ArrowOutwardIcon,
+  AttachMoneyIcon,
+  AvgTimeIcon,
+  CallSplitIcon,
+  CardsStackIcon,
+  ChatIcon,
+  ContractIcon,
+  DataExplorationIcon,
+  DescriptionIcon,
+  FinanceChipIcon,
+  GroupsIcon,
+  HomeIcon,
+  KeyboardArrowDownIcon,
+  KeyIcon,
+  LogoutIcon,
+  PerformanceMaxIcon,
+  PersonIcon,
+  RuleIcon,
+  SettingsIcon,
+  SmartToyIcon,
 } from '@earendil-works/elanor-icons-react';
+import {useRef, useState, type Ref, type UIEventHandler} from 'react';
+
 import {Button} from '../button/button.tsx';
 import {Checkbox} from '../checkbox/checkbox.tsx';
 import {Layout} from '../layout/layout.tsx';
@@ -13,6 +31,7 @@ import {Separator} from '../separator/separator.tsx';
 import {SideNavigation} from '../side-navigation/side-navigation.tsx';
 import {Stack} from '../stack/stack.tsx';
 import {Sidebar} from './sidebar.tsx';
+
 import styles from './sidebar.example.module.css';
 
 const navigationGroups = [
@@ -47,7 +66,12 @@ const navigationGroups = [
   },
 ];
 
-function ExampleContents({collapsed, homeRef, viewportRef, onScroll}: {
+function ExampleContents({
+  collapsed,
+  homeRef,
+  viewportRef,
+  onScroll,
+}: {
   collapsed: boolean;
   homeRef?: Ref<HTMLAnchorElement>;
   viewportRef?: Ref<HTMLDivElement>;
@@ -59,7 +83,12 @@ function ExampleContents({collapsed, homeRef, viewportRef, onScroll}: {
   return (
     <>
       <Sidebar.Header>
-        <Stack direction={collapsed ? 'column' : 'row'} gap={collapsed ? 'small' : 'auto'} align="center" className={styles.headerRow}>
+        <Stack
+          direction={collapsed ? 'column' : 'row'}
+          gap={collapsed ? 'small' : 'auto'}
+          align="center"
+          className={styles.headerRow}
+        >
           <a href="#sidebar-examples" aria-label="Acme workspace" className={styles.identity}>
             {collapsed ? 'A' : 'Acme workspace'}
           </a>
@@ -77,7 +106,7 @@ function ExampleContents({collapsed, homeRef, viewportRef, onScroll}: {
           <ProjectSwitcher.Portal>
             <ProjectSwitcher.Positioner align="start">
               <ProjectSwitcher.Popup>
-                {['Earendil', 'Radius', 'Pi.dev'].map(name => (
+                {['Earendil', 'Radius', 'Pi.dev'].map((name) => (
                   <ProjectSwitcher.Item key={name} onClick={() => setProject(name)}>
                     {name}
                   </ProjectSwitcher.Item>
@@ -88,8 +117,17 @@ function ExampleContents({collapsed, homeRef, viewportRef, onScroll}: {
         </ProjectSwitcher.Root>
         <Separator />
       </Sidebar.Header>
-      <Sidebar.Content ref={viewportRef} onScroll={onScroll} role="region" aria-label="Workspace navigation scroll area">
-        <SideNavigation.Root aria-label="Example workspace" variant={collapsed ? 'compact' : 'default'} className={styles.navigation}>
+      <Sidebar.Content
+        ref={viewportRef}
+        onScroll={onScroll}
+        role="region"
+        aria-label="Workspace navigation scroll area"
+      >
+        <SideNavigation.Root
+          aria-label="Example workspace"
+          variant={collapsed ? 'compact' : 'default'}
+          className={styles.navigation}
+        >
           <SideNavigation.List>
             <SideNavigation.Item>
               <SideNavigation.Link
@@ -97,7 +135,7 @@ function ExampleContents({collapsed, homeRef, viewportRef, onScroll}: {
                 href="#sidebar-examples"
                 iconStart={<HomeIcon />}
                 active={activePage === 'Home'}
-                onClick={event => {
+                onClick={(event) => {
                   event.preventDefault();
                   setActivePage('Home');
                 }}
@@ -106,17 +144,17 @@ function ExampleContents({collapsed, homeRef, viewportRef, onScroll}: {
               </SideNavigation.Link>
             </SideNavigation.Item>
           </SideNavigation.List>
-          {navigationGroups.map(group => (
+          {navigationGroups.map((group) => (
             <SideNavigation.Group key={group.label}>
               <SideNavigation.GroupLabel>{group.label}</SideNavigation.GroupLabel>
               <SideNavigation.List>
-                {group.items.map(item => (
+                {group.items.map((item) => (
                   <SideNavigation.Item key={item.label}>
                     <SideNavigation.Link
                       href="#sidebar-examples"
                       iconStart={item.icon}
                       active={activePage === item.label}
-                      onClick={event => {
+                      onClick={(event) => {
                         event.preventDefault();
                         setActivePage(item.label);
                       }}
@@ -132,15 +170,26 @@ function ExampleContents({collapsed, homeRef, viewportRef, onScroll}: {
       </Sidebar.Content>
       <Sidebar.Footer>
         <Separator />
-        <SideNavigation.Root aria-label="Example account" variant={collapsed ? 'compact' : 'default'}>
+        <SideNavigation.Root
+          aria-label="Example account"
+          variant={collapsed ? 'compact' : 'default'}
+        >
           <SideNavigation.List>
             <SideNavigation.Item>
-              <SideNavigation.Link href="#sidebar-examples" iconStart={<DescriptionIcon />} iconEnd={<ArrowOutwardIcon />}>
+              <SideNavigation.Link
+                href="#sidebar-examples"
+                iconStart={<DescriptionIcon />}
+                iconEnd={<ArrowOutwardIcon />}
+              >
                 Documentation
               </SideNavigation.Link>
             </SideNavigation.Item>
             <SideNavigation.Item>
-              <SideNavigation.Link href="#sidebar-examples" iconStart={<ContractIcon />} iconEnd={<ArrowOutwardIcon />}>
+              <SideNavigation.Link
+                href="#sidebar-examples"
+                iconStart={<ContractIcon />}
+                iconEnd={<ArrowOutwardIcon />}
+              >
                 Legal
               </SideNavigation.Link>
             </SideNavigation.Item>
@@ -150,7 +199,11 @@ function ExampleContents({collapsed, homeRef, viewportRef, onScroll}: {
               </SideNavigation.Link>
             </SideNavigation.Item>
             <SideNavigation.Item>
-              <SideNavigation.Link href="#sidebar-examples" iconStart={<PersonIcon />} iconEnd={<LogoutIcon />}>
+              <SideNavigation.Link
+                href="#sidebar-examples"
+                iconStart={<PersonIcon />}
+                iconEnd={<LogoutIcon />}
+              >
                 max@earendil.com
               </SideNavigation.Link>
             </SideNavigation.Item>
@@ -167,13 +220,18 @@ export function SidebarExample() {
       <Layout.Body>
         <Sidebar.Root
           className={styles.sidebar}
-          render={<Layout.Aside aria-label="Uncontrolled sidebar example" style={{position: 'static'}} />}
+          render={
+            <Layout.Aside aria-label="Uncontrolled sidebar example" style={{position: 'static'}} />
+          }
         >
           {({collapsed}) => <ExampleContents collapsed={collapsed} />}
         </Sidebar.Root>
         <Layout.Main render={<div />} className={styles.description}>
           <p>The Radius sidebar layout, with text in place of the logo.</p>
-          <p>Switch projects or collapse the sidebar. Header and footer stay in place while navigation scrolls.</p>
+          <p>
+            Switch projects or collapse the sidebar. Header and footer stay in place while
+            navigation scrolls.
+          </p>
         </Layout.Main>
       </Layout.Body>
     </Layout.Root>
@@ -203,7 +261,9 @@ export function ControlledSidebarExample() {
             setMessage(next ? 'Sidebar collapsed.' : 'Sidebar expanded.');
           }}
           className={styles.sidebar}
-          render={<Layout.Aside aria-label="Controlled sidebar example" style={{position: 'static'}} />}
+          render={
+            <Layout.Aside aria-label="Controlled sidebar example" style={{position: 'static'}} />
+          }
         >
           {({collapsed: current}) => (
             <ExampleContents
@@ -222,23 +282,34 @@ export function ControlledSidebarExample() {
             </Checkbox.Root>
             Cancel changes from the sidebar toggle
           </label>
-          <p>Enable cancellation, then press the sidebar toggle. The callback calls details.cancel() without changing the owner's state.</p>
+          <p>
+            Enable cancellation, then press the sidebar toggle. The callback calls details.cancel()
+            without changing the owner's state.
+          </p>
           <Button
             hierarchy="secondary"
             onClick={() => {
               // Focus the existing anchor BEFORE changing its presentation.
               homeRef.current?.focus();
-              setCollapsed(current => !current);
+              setCollapsed((current) => !current);
               setMessage('Owner changed state; keyboard focus stays on the same Home link.');
             }}
           >
             Focus Home and toggle from owner
           </Button>
-          <p>This owner action bypasses the toggle callback. The link stays focused and mounted in both presentations.</p>
-          <Button hierarchy="secondary" onClick={() => {
-            const viewport = viewportRef.current;
-            viewport?.scrollTo({top: viewport.scrollHeight});
-          }}>Scroll navigation to end</Button>
+          <p>
+            This owner action bypasses the toggle callback. The link stays focused and mounted in
+            both presentations.
+          </p>
+          <Button
+            hierarchy="secondary"
+            onClick={() => {
+              const viewport = viewportRef.current;
+              viewport?.scrollTo({top: viewport.scrollHeight});
+            }}
+          >
+            Scroll navigation to end
+          </Button>
           <p>Content viewport scrollTop: {scrollTop}px. Header and account stay in place.</p>
           <p role="status">{message}</p>
         </Layout.Main>

@@ -1,6 +1,14 @@
-import {createElement, forwardRef, type ForwardRefExoticComponent, type HTMLAttributes, type RefAttributes} from 'react';
-import styles from './text.module.css';
+import {
+  createElement,
+  forwardRef,
+  type ForwardRefExoticComponent,
+  type HTMLAttributes,
+  type RefAttributes,
+} from 'react';
+
 import {classes} from '../utils/class-names.ts';
+
+import styles from './text.module.css';
 
 type ParagraphProps = HTMLAttributes<HTMLParagraphElement> & {
   readonly as?: 'p';

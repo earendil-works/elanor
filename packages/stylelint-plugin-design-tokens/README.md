@@ -26,16 +26,14 @@ Default file ignores are `**/dist/**`, `**/vendor/**`, reset files, and `**/*.ge
 Build the selected brand so its catalogue exists, then use the configuration factory:
 
 ```js
-import { createStrictConfig } from "@earendil-works/stylelint-plugin-design-tokens";
+import {createStrictConfig} from '@earendil-works/stylelint-plugin-design-tokens';
 
 export default [
   createStrictConfig({
-    catalogue: new URL(
-      "./packages/design-tokens/dist/radius/tokens.catalog.json",
-      import.meta.url,
-    ).pathname,
-    foundationFiles: ["**/tokens.css", "**/foundation/**"],
-    ignoreFiles: ["**/tests/fixtures/**"],
+    catalogue: new URL('./packages/design-tokens/dist/radius/tokens.catalog.json', import.meta.url)
+      .pathname,
+    foundationFiles: ['**/tokens.css', '**/foundation/**'],
+    ignoreFiles: ['**/tests/fixtures/**'],
     // Keep empty unless an integration has a documented requirement.
     allowCustomProperties: [],
   }),

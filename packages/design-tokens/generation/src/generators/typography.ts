@@ -1,11 +1,6 @@
-import { round, token } from "../dtcg";
-import type {
-  GeneratedTokenPatch,
-  GenerationConfig,
-  JsonObject,
-  TypographyRecipe,
-} from "../types";
-import { pixelsToRem } from "../units";
+import {round, token} from '../dtcg';
+import type {GeneratedTokenPatch, GenerationConfig, JsonObject, TypographyRecipe} from '../types';
+import {pixelsToRem} from '../units';
 
 const CLASSICAL_FUNDAMENTAL_PX = 12;
 const CLASSICAL_RATIO = 2;
@@ -24,10 +19,7 @@ const LINE_HEIGHT_RATIO_PRECISION = 6;
  * @returns The corresponding classical scale index.
  */
 function scaleIndexForStep(step: number): number {
-  return (
-    CLASSICAL_FIRST_INDEX +
-    (step - CLASSICAL_FIRST_TOKEN) / CLASSICAL_TOKEN_INCREMENT
-  );
+  return CLASSICAL_FIRST_INDEX + (step - CLASSICAL_FIRST_TOKEN) / CLASSICAL_TOKEN_INCREMENT;
 }
 
 /**
@@ -39,10 +31,7 @@ function scaleIndexForStep(step: number): number {
  * @returns The calculated font size in pixels.
  */
 function calculateFontSize(index: number): number {
-  return (
-    CLASSICAL_FUNDAMENTAL_PX *
-    CLASSICAL_RATIO ** (index / CLASSICAL_NOTES_PER_INTERVAL)
-  );
+  return CLASSICAL_FUNDAMENTAL_PX * CLASSICAL_RATIO ** (index / CLASSICAL_NOTES_PER_INTERVAL);
 }
 
 /**
@@ -54,7 +43,7 @@ function calculateFontSize(index: number): number {
 function validateSteps(steps: number[]): void {
   for (let index = 1; index < steps.length; index += 1) {
     if (steps[index] <= steps[index - 1]) {
-      throw new Error("Typography steps must be in ascending order");
+      throw new Error('Typography steps must be in ascending order');
     }
   }
 }
@@ -69,20 +58,15 @@ function validateSteps(steps: number[]): void {
  * @throws When the grid tiers do not start at zero or are not ascending.
  */
 function validateGridTiers(recipe: TypographyRecipe): void {
-  const { gridTiers } = recipe.lineHeight;
+  const {gridTiers} = recipe.lineHeight;
 
   if (gridTiers[0].minFontSizePx !== 0) {
-    throw new Error("The first line-height grid tier must start at 0px");
+    throw new Error('The first line-height grid tier must start at 0px');
   }
 
   for (let index = 1; index < gridTiers.length; index += 1) {
-    if (
-      gridTiers[index].minFontSizePx <=
-      gridTiers[index - 1].minFontSizePx
-    ) {
-      throw new Error(
-        "Line-height grid tiers must be in ascending font-size order",
-      );
+    if (gridTiers[index].minFontSizePx <= gridTiers[index - 1].minFontSizePx) {
+      throw new Error('Line-height grid tiers must be in ascending font-size order');
     }
   }
 }
@@ -94,10 +78,7 @@ function validateGridTiers(recipe: TypographyRecipe): void {
  * @param fontSizePx The rounded font size in pixels.
  * @returns The grid size from the highest matching tier.
  */
-function gridPxForFontSize(
-  recipe: TypographyRecipe,
-  fontSizePx: number,
-): number {
+function gridPxForFontSize(recipe: TypographyRecipe, fontSizePx: number): number {
   let gridPx = recipe.lineHeight.gridTiers[0].gridPx;
 
   for (const tier of recipe.lineHeight.gridTiers.slice(1)) {
@@ -117,11 +98,8 @@ function gridPxForFontSize(
  * @param fontSizePx The rounded font size in pixels.
  * @returns A line height in pixels that is divisible by the selected grid size.
  */
-function calculateLineHeightPx(
-  recipe: TypographyRecipe,
-  fontSizePx: number,
-): number {
-  const { multiplier } = recipe.lineHeight;
+function calculateLineHeightPx(recipe: TypographyRecipe, fontSizePx: number): number {
+  const {multiplier} = recipe.lineHeight;
   const gridPx = gridPxForFontSize(recipe, fontSizePx);
   const nearestGridValue = Math.round((fontSizePx * multiplier) / gridPx) * gridPx;
   const minimumGridValue = Math.ceil(fontSizePx / gridPx) * gridPx;
@@ -147,27 +125,24 @@ export function generateTypographyTokens(
   for (const step of recipe.steps) {
     const fontSizePx = Math.round(calculateFontSize(scaleIndexForStep(step)));
     const lineHeightPx = calculateLineHeightPx(recipe, fontSizePx);
-    const lineHeightRatio = round(
-      lineHeightPx / fontSizePx,
-      LINE_HEIGHT_RATIO_PRECISION,
-    );
+    const lineHeightRatio = round(lineHeightPx / fontSizePx, LINE_HEIGHT_RATIO_PRECISION);
 
     fontSizes[String(step)] = token({
       value: pixelsToRem(fontSizePx, config),
-      unit: "rem",
+      unit: 'rem',
     });
     lineHeights[String(step)] = token(lineHeightRatio);
   }
 
   return [
     {
-      type: "dimension",
-      path: [...recipe.path, "dimension", "fontSize"],
+      type: 'dimension',
+      path: [...recipe.path, 'dimension', 'fontSize'],
       value: fontSizes,
     },
     {
-      type: "number",
-      path: [...recipe.path, "number", "lineHeight"],
+      type: 'number',
+      path: [...recipe.path, 'number', 'lineHeight'],
       value: lineHeights,
     },
   ];

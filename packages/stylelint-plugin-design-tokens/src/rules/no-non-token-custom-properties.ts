@@ -1,11 +1,12 @@
-import type { Rule } from "stylelint";
-import valueParser from "postcss-value-parser";
-import { customPropertiesInValue } from "../value-parser.js";
-import type { RuleOptions } from "../options.js";
-import { getCatalogue, isAllowedCustomProperty, isFoundation, isIgnored } from "../options.js";
-import { report } from "./shared.js";
+import valueParser from 'postcss-value-parser';
+import type {Rule} from 'stylelint';
 
-export const ruleName = "design-tokens/no-non-token-custom-properties";
+import type {RuleOptions} from '../options.js';
+import {getCatalogue, isAllowedCustomProperty, isFoundation, isIgnored} from '../options.js';
+import {customPropertiesInValue} from '../value-parser.js';
+import {report} from './shared.js';
+
+export const ruleName = 'design-tokens/no-non-token-custom-properties';
 
 /**
  * Creates a Stylelint rule that rejects unknown custom property definitions and references.
@@ -22,11 +23,17 @@ export const rule: Rule<true, RuleOptions> = (primary, options) => (root, result
 
   const check = (name: string, node: Parameters<typeof report>[2]): void => {
     if (catalogue.tokensByVariable.has(name) || isAllowedCustomProperty(name, options)) return;
-    report(result, ruleName, node, `Unknown custom property "${name}" for brand "${catalogue.brand}".`, name);
+    report(
+      result,
+      ruleName,
+      node,
+      `Unknown custom property "${name}" for brand "${catalogue.brand}".`,
+      name,
+    );
   };
 
   root.walkDecls((declaration) => {
-    if (declaration.prop.startsWith("--")) check(declaration.prop, declaration);
+    if (declaration.prop.startsWith('--')) check(declaration.prop, declaration);
     for (const name of customPropertiesInValue(declaration.value)) check(name, declaration);
   });
 
@@ -35,17 +42,17 @@ export const rule: Rule<true, RuleOptions> = (primary, options) => (root, result
     // Media-query policy is intentionally outside this plugin. Breakpoint
     // tokens remain ordinary catalogue variables, but @media parameters are
     // neither interpreted nor validated.
-    if (atName !== "media" && atName !== "custom-media") {
+    if (atName !== 'media' && atName !== 'custom-media') {
       for (const name of customPropertiesInValue(atRule.params)) check(name, atRule);
     }
-    if (atName === "supports") {
+    if (atName === 'supports') {
       valueParser(atRule.params).walk((node) => {
-        if (node.type === "word" && node.value.startsWith("--")) check(node.value, atRule);
+        if (node.type === 'word' && node.value.startsWith('--')) check(node.value, atRule);
       });
     }
-    if (atName === "property") {
+    if (atName === 'property') {
       const name = atRule.params.trim().split(/\s/u)[0];
-      if (name?.startsWith("--")) check(name, atRule);
+      if (name?.startsWith('--')) check(name, atRule);
     }
   });
 };

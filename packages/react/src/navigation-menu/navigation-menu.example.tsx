@@ -1,5 +1,5 @@
-import {NavigationMenu} from './navigation-menu.tsx';
 import {Stack} from '../stack/stack.tsx';
+import {NavigationMenu} from './navigation-menu.tsx';
 
 export function NavigationMenuExample(): React.JSX.Element {
   return (

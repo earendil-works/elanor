@@ -1,4 +1,5 @@
 import type {APIRoute} from 'astro';
+
 import {text, tokenBrands} from '../lib/api.ts';
 
 export const GET: APIRoute = async () =>

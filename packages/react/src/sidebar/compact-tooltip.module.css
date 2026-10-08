@@ -5,7 +5,8 @@
   overflow: auto;
   overflow-wrap: anywhere;
   padding: var(--semantic-dimension-space-padding-medium);
-  border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-secondary);
+  border: var(--semantic-dimension-border-width-default) solid
+    var(--semantic-color-border-secondary);
   border-radius: var(--semantic-dimension-radius-small);
   background: var(--semantic-color-background-canvas);
   color: var(--semantic-color-text-primary);

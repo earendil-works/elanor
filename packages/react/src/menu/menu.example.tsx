@@ -1,4 +1,5 @@
 import {useState} from 'react';
+
 import {Button} from '../button/button.tsx';
 import {Stack} from '../stack/stack.tsx';
 import {Text} from '../text/text.tsx';
@@ -11,9 +12,7 @@ export function MenuExample(): React.JSX.Element {
     <Stack align="start" gap="small">
       <Text role="status">{action}</Text>
       <Menu.Root>
-        <Menu.Trigger render={<Button hierarchy="secondary" />}>
-          Project actions
-        </Menu.Trigger>
+        <Menu.Trigger render={<Button hierarchy="secondary" />}>Project actions</Menu.Trigger>
         <Menu.Portal>
           <Menu.Positioner>
             <Menu.Popup>

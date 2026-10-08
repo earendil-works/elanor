@@ -1,5 +1,5 @@
-import { token } from "../dtcg";
-import type { BorderWidthRecipe, GeneratedTokenPatch } from "../types";
+import {token} from '../dtcg';
+import type {BorderWidthRecipe, GeneratedTokenPatch} from '../types';
 
 const BASE_PX = 1;
 const BASE_STEP = 100;
@@ -29,7 +29,7 @@ function calculatePixels(step: number): number {
 function validateSteps(steps: number[]): void {
   for (let index = 1; index < steps.length; index += 1) {
     if (steps[index] <= steps[index - 1]) {
-      throw new Error("Border width steps must be in ascending order");
+      throw new Error('Border width steps must be in ascending order');
     }
   }
 }
@@ -43,16 +43,14 @@ function validateSteps(steps: number[]): void {
  * @param recipe The border-width scale recipe.
  * @returns Typed patches containing the generated border-width tokens.
  */
-export function generateBorderWidthTokens(
-  recipe: BorderWidthRecipe,
-): GeneratedTokenPatch[] {
+export function generateBorderWidthTokens(recipe: BorderWidthRecipe): GeneratedTokenPatch[] {
   validateSteps(recipe.steps);
   return recipe.steps.map((step) => ({
-    type: "dimension",
-    path: [...recipe.path, "dimension", "borderWidth", String(step)],
+    type: 'dimension',
+    path: [...recipe.path, 'dimension', 'borderWidth', String(step)],
     value: token({
       value: calculatePixels(step),
-      unit: "px",
+      unit: 'px',
     }),
   }));
 }

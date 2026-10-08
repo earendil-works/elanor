@@ -1,19 +1,23 @@
-import type {PipelineConfig} from "../../config.js";
-import {boilContours} from "./boil.js";
-import {flattenPath, serializeContours} from "./path-data.js";
-import {simplifyContours} from "./simplify.js";
-import {parseSvg, viewBoxString} from "./svg.js";
-import type {Artwork, Contour} from "./types.js";
+import type {PipelineConfig} from '../../config.js';
+import {boilContours} from './boil.js';
+import {flattenPath, serializeContours} from './path-data.js';
+import {simplifyContours} from './simplify.js';
+import {parseSvg, viewBoxString} from './svg.js';
+import type {Artwork, Contour} from './types.js';
 
 export const modificationNotice =
-  "Modified by Elanor from Google Material Symbols: sampled, noise-displaced, and simplified. Apache-2.0; see LICENSE and NOTICE.";
+  'Modified by Elanor from Google Material Symbols: sampled, noise-displaced, and simplified. Apache-2.0; see LICENSE and NOTICE.';
 
 export interface PipelineResult {
   svg: string;
   artwork: Artwork;
 }
 
-export function processSvg(source: string, config: PipelineConfig, fileName = "SVG"): PipelineResult {
+export function processSvg(
+  source: string,
+  config: PipelineConfig,
+  fileName = 'SVG',
+): PipelineResult {
   const artwork = parseSvg(source, fileName);
   const contours = transformContours(artwork, config);
   const result: Artwork = {
@@ -27,7 +31,7 @@ export function processSvg(source: string, config: PipelineConfig, fileName = "S
 /** Sampled, boiled, and simplified contours, or undefined when both stages are off. */
 export function transformContours(artwork: Artwork, config: PipelineConfig): Contour[] | undefined {
   if (!config.boiling.enabled && !config.simplification.enabled) return undefined;
-  if (!(config.targetSize > 0)) throw new Error("Target size must be positive");
+  if (!(config.targetSize > 0)) throw new Error('Target size must be positive');
 
   // Use the smaller source-units/display-pixel ratio so the configured error
   // and sampling limits also hold for non-square viewBoxes.
@@ -42,7 +46,7 @@ export function transformContours(artwork: Artwork, config: PipelineConfig): Con
 /** Fewest decimal places whose rounding step stays within the configured precision. */
 export function outputDecimals(artwork: Artwork, config: PipelineConfig): number {
   const step = config.output.precision * unitsPerPixel(artwork, config);
-  if (!(step > 0)) throw new Error("Output precision must be positive");
+  if (!(step > 0)) throw new Error('Output precision must be positive');
   return Math.max(0, Math.ceil(-Math.log10(step)));
 }
 

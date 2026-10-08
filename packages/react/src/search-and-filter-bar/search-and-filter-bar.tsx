@@ -1,6 +1,8 @@
 import {forwardRef, type ReactNode} from 'react';
-import styles from './search-and-filter-bar.module.css';
+
 import {classes} from '../utils/class-names.ts';
+
+import styles from './search-and-filter-bar.module.css';
 
 export interface SearchAndFilterBarProps extends React.HTMLAttributes<HTMLDivElement> {
   readonly filters?: ReactNode;

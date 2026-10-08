@@ -1,6 +1,7 @@
-import {mkdir, writeFile} from "node:fs/promises";
-import {dirname, resolve} from "node:path";
-import {type BrandId, brands, type LogoKind, type Treatment, treatments} from "../../config.js";
+import {mkdir, writeFile} from 'node:fs/promises';
+import {dirname, resolve} from 'node:path';
+
+import {type BrandId, brands, type LogoKind, type Treatment, treatments} from '../../config.js';
 import {
   type Artwork,
   brandBackground,
@@ -11,7 +12,7 @@ import {
   loadTokens,
   type TokenCatalog,
   tokenHex,
-} from "../lib/compose.js";
+} from '../lib/compose.js';
 
 /**
  * An export plugin produces one kind of output from the built logos, such as
@@ -26,7 +27,7 @@ export interface ExportPlugin {
   run(context: ExportContext): Promise<void>;
 }
 
-export type TreatmentId = Treatment["id"];
+export type TreatmentId = Treatment['id'];
 
 /** Picks assets by brand, kind, and color treatment; omit a field to select all of them. */
 export interface AssetSelector {
@@ -71,9 +72,9 @@ export interface ExportContext {
   mark(brand: BrandId, treatment: TreatmentId): Asset;
   tokens(brand: BrandId): Promise<TokenCatalog>;
   /** A token's color in a brand's build. */
-  color(brand: BrandId, token: string, scheme: "light" | "dark"): Promise<string>;
+  color(brand: BrandId, token: string, scheme: 'light' | 'dark'): Promise<string>;
   /** The brand's own page background. */
-  background(brand: BrandId, scheme: "light" | "dark"): Promise<string>;
+  background(brand: BrandId, scheme: 'light' | 'dark'): Promise<string>;
   /** manifest.json, written after every plugin has run. */
   manifest: Manifest;
   brandManifest(brand: BrandId): ManifestBrand;
@@ -84,7 +85,11 @@ export interface ExportContext {
   write(path: string, data: string | Buffer): Promise<string>;
 }
 
-export async function createExportContext(distDirectory: string, manifest: Manifest, plugins: ExportPlugin[]): Promise<ExportContext> {
+export async function createExportContext(
+  distDirectory: string,
+  manifest: Manifest,
+  plugins: ExportPlugin[],
+): Promise<ExportContext> {
   const assets: Asset[] = [];
   for (const brand of Object.keys(brands) as BrandId[]) {
     const tokens = await loadTokens(brand);
@@ -110,7 +115,7 @@ export async function createExportContext(distDirectory: string, manifest: Manif
         (!selector.kinds || selector.kinds.includes(asset.kind)) &&
         (!selector.treatments || selector.treatments.includes(asset.treatment.id)),
     );
-  const color = async (brand: BrandId, token: string, scheme: "light" | "dark") =>
+  const color = async (brand: BrandId, token: string, scheme: 'light' | 'dark') =>
     tokenHex(await loadTokens(brand), token, scheme);
   const brandManifest = (brand: BrandId) => {
     const entry = manifest.brands.find(({id}) => id === brand);
@@ -122,7 +127,7 @@ export async function createExportContext(distDirectory: string, manifest: Manif
     plugins,
     select,
     mark(brand, treatment) {
-      const [asset] = select({brands: [brand], kinds: ["logo"], treatments: [treatment]});
+      const [asset] = select({brands: [brand], kinds: ['logo'], treatments: [treatment]});
       if (!asset) throw new Error(`${brand} has no ${treatment} mark`);
       return asset;
     },

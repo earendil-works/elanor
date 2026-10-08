@@ -20,16 +20,16 @@ Every token name contains at least `layer`, `category`, and one additional meani
 
 Repeatability means that a grammatical role may occupy several consecutive name parts. It does not mean repeating the same word without adding meaning.
 
-| Part | Cardinality | Meaning | Vocabulary |
-|---|---:|---|---|
-| `layer` | exactly 1 | Level of abstraction. It cannot repeat. | `primitive`, `semantic` |
-| `category` | 1 or more | What the token is and, optionally, broader classifications. The first category matches the DTCG `$type`; additional categories may narrow the design area. | See the closed list below. |
-| `type` | 0 or 1 for primitives; exactly 1 for semantics | How the token is grouped or used. It cannot repeat. | See the closed lists below. |
-| `item` | 0 or 1 | Element, component, or documented relational role, such as `link`, `button`, `canvas`, or `onPrimaryFill`. It cannot repeat; use `subitem` for nested parts. | Open; normally use a singular noun. |
-| `variant` | 0 or more | Successive distinctions such as `primary` and `strong`. It may repeat to make a variant more specific. | Open. |
-| `subitem` | 0 or more | Successive parts of an item, such as `trigger` and `icon`. It may repeat for nested parts. | Open. |
-| `state` | 0 or more | Scale step, documented primitive derivation, size, interaction, or UI state. It may repeat for compound states such as `selected.hover`. | A numeric primitive step; a derived-color operation documented below; a semantic heading level (`1`–`6`); a T-shirt size (`xxxSmall`, `xxSmall`, `xSmall`, `small`, `medium`, `large`, `xLarge`, `xxLarge`, `xxxLarge`, `xxxxLarge`); or `none`, `default`, `full`, `hover`, `focus`, `active`, `selected`, `checked`, `disabled`, `visited`. `none` is reserved for explicit zero spacing and `full` for radius tokens. |
-| `context` | 0 or 1 | Behavior relative to its surroundings. It cannot repeat because the contexts are mutually exclusive. | `onLight`, `onDark` |
+| Part       |                                    Cardinality | Meaning                                                                                                                                                      | Vocabulary                                                                                                                                                                                                                                                                                                                                                                                                               |
+| ---------- | ---------------------------------------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `layer`    |                                      exactly 1 | Level of abstraction. It cannot repeat.                                                                                                                      | `primitive`, `semantic`                                                                                                                                                                                                                                                                                                                                                                                                  |
+| `category` |                                      1 or more | What the token is and, optionally, broader classifications. The first category matches the DTCG `$type`; additional categories may narrow the design area.   | See the closed list below.                                                                                                                                                                                                                                                                                                                                                                                               |
+| `type`     | 0 or 1 for primitives; exactly 1 for semantics | How the token is grouped or used. It cannot repeat.                                                                                                          | See the closed lists below.                                                                                                                                                                                                                                                                                                                                                                                              |
+| `item`     |                                         0 or 1 | Element, component, or documented relational role, such as `link`, `button`, `canvas`, or `onPrimaryFill`. It cannot repeat; use `subitem` for nested parts. | Open; normally use a singular noun.                                                                                                                                                                                                                                                                                                                                                                                      |
+| `variant`  |                                      0 or more | Successive distinctions such as `primary` and `strong`. It may repeat to make a variant more specific.                                                       | Open.                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `subitem`  |                                      0 or more | Successive parts of an item, such as `trigger` and `icon`. It may repeat for nested parts.                                                                   | Open.                                                                                                                                                                                                                                                                                                                                                                                                                    |
+| `state`    |                                      0 or more | Scale step, documented primitive derivation, size, interaction, or UI state. It may repeat for compound states such as `selected.hover`.                     | A numeric primitive step; a derived-color operation documented below; a semantic heading level (`1`–`6`); a T-shirt size (`xxxSmall`, `xxSmall`, `xSmall`, `small`, `medium`, `large`, `xLarge`, `xxLarge`, `xxxLarge`, `xxxxLarge`); or `none`, `default`, `full`, `hover`, `focus`, `active`, `selected`, `checked`, `disabled`, `visited`. `none` is reserved for explicit zero spacing and `full` for radius tokens. |
+| `context`  |                                         0 or 1 | Behavior relative to its surroundings. It cannot repeat because the contexts are mutually exclusive.                                                         | `onLight`, `onDark`                                                                                                                                                                                                                                                                                                                                                                                                      |
 
 For example:
 
@@ -62,16 +62,16 @@ strokeStyle, border, transition, shadow, gradient, typography
 
 Allowed `type` values are layer- and category-specific. When categories repeat, the first category selects the type vocabulary.
 
-| Layer | First category | Allowed types |
-|---|---|---|
-| `primitive` | `dimension` | `borderWidth`, `breakpoint`, `fontSize`, `letterSpacing` |
-| `primitive` | `number` | `lineHeight`, `opacity` |
-| `semantic` | `color` | `background`, `border`, `focusRing`, `icon`, `text` |
-| `semantic` | `dimension` | `borderWidth`, `breakpoint`, `radius`, `size`, `space` |
-| `semantic` | `number` | `opacity`, `layer` |
-| `semantic` | `fontFamily` | `prose`, `ui`, `code` |
-| `semantic` | `fontWeight` | `ui` |
-| `semantic` | `typography` | `code`, `heading`, `prose`, `ui` |
+| Layer       | First category | Allowed types                                            |
+| ----------- | -------------- | -------------------------------------------------------- |
+| `primitive` | `dimension`    | `borderWidth`, `breakpoint`, `fontSize`, `letterSpacing` |
+| `primitive` | `number`       | `lineHeight`, `opacity`                                  |
+| `semantic`  | `color`        | `background`, `border`, `focusRing`, `icon`, `text`      |
+| `semantic`  | `dimension`    | `borderWidth`, `breakpoint`, `radius`, `size`, `space`   |
+| `semantic`  | `number`       | `opacity`, `layer`                                       |
+| `semantic`  | `fontFamily`   | `prose`, `ui`, `code`                                    |
+| `semantic`  | `fontWeight`   | `ui`                                                     |
+| `semantic`  | `typography`   | `code`, `heading`, `prose`, `ui`                         |
 
 Primitive categories omitted from this table currently have no `type`; continue directly with the next applicable part. Define new controlled values here before introducing them in tokens. Do not create synonyms such as both `background` and `surface` as types.
 
@@ -193,15 +193,15 @@ Steps are usually in hundreds (`100`, `200`, `300`) so the order is obvious and 
 
 The numeric step occupies one CTI+ `state` part and does not combine with another state:
 
-| Token | Layer | Category | Type | Variant | State |
-|---|---|---|---|---|---|
-| `primitive.dimension.100` | `primitive` | `dimension` | — | — | `100` |
-| `primitive.dimension.fontSize.400` | `primitive` | `dimension` | `fontSize` | — | `400` |
-| `primitive.dimension.breakpoint.250` | `primitive` | `dimension` | `breakpoint` | — | `250` |
-| `primitive.color.graphite.500` | `primitive` | `color` | — | `graphite` | `500` |
-| `primitive.color.dataViz.100` | `primitive` | `color` | — | `dataViz` | `100` |
-| `primitive.number.lineHeight.300` | `primitive` | `number` | `lineHeight` | — | `300` |
-| `primitive.number.opacity.150` | `primitive` | `number` | `opacity` | — | `150` |
+| Token                                | Layer       | Category    | Type         | Variant    | State |
+| ------------------------------------ | ----------- | ----------- | ------------ | ---------- | ----- |
+| `primitive.dimension.100`            | `primitive` | `dimension` | —            | —          | `100` |
+| `primitive.dimension.fontSize.400`   | `primitive` | `dimension` | `fontSize`   | —          | `400` |
+| `primitive.dimension.breakpoint.250` | `primitive` | `dimension` | `breakpoint` | —          | `250` |
+| `primitive.color.graphite.500`       | `primitive` | `color`     | —            | `graphite` | `500` |
+| `primitive.color.dataViz.100`        | `primitive` | `color`     | —            | `dataViz`  | `100` |
+| `primitive.number.lineHeight.300`    | `primitive` | `number`    | `lineHeight` | —          | `300` |
+| `primitive.number.opacity.150`       | `primitive` | `number`    | `opacity`    | —          | `150` |
 
 ### Imported exact color scales
 
@@ -209,22 +209,22 @@ An authoritative brand palette may use a sparse numeric primitive scale when no 
 
 The imported Lefos neutral palettes therefore use these positions:
 
-| Source swatch | Primitive token |
-|---|---|
-| `warm-white` | `primitive.color.warm.50` |
-| `warm-10` | `primitive.color.warm.100` |
-| `warm-20` | `primitive.color.warm.300` |
-| `warm-30` | `primitive.color.warm.400` |
-| `warm-40` | `primitive.color.warm.600` |
-| `warm-50` | `primitive.color.warm.800` |
-| `warm-black` | `primitive.color.warm.900` |
-| `cool-white` | `primitive.color.cool.50` |
-| `cool-10` | `primitive.color.cool.100` |
-| `cool-20` | `primitive.color.cool.300` |
-| `cool-30` | `primitive.color.cool.500` |
-| `cool-40` | `primitive.color.cool.700` |
-| `cool-50` | `primitive.color.cool.800` |
-| `cool-black` | `primitive.color.cool.900` |
+| Source swatch | Primitive token            |
+| ------------- | -------------------------- |
+| `warm-white`  | `primitive.color.warm.50`  |
+| `warm-10`     | `primitive.color.warm.100` |
+| `warm-20`     | `primitive.color.warm.300` |
+| `warm-30`     | `primitive.color.warm.400` |
+| `warm-40`     | `primitive.color.warm.600` |
+| `warm-50`     | `primitive.color.warm.800` |
+| `warm-black`  | `primitive.color.warm.900` |
+| `cool-white`  | `primitive.color.cool.50`  |
+| `cool-10`     | `primitive.color.cool.100` |
+| `cool-20`     | `primitive.color.cool.300` |
+| `cool-30`     | `primitive.color.cool.500` |
+| `cool-40`     | `primitive.color.cool.700` |
+| `cool-50`     | `primitive.color.cool.800` |
+| `cool-black`  | `primitive.color.cool.900` |
 
 Leave unoccupied positions absent. Do not invent interpolated swatches merely to complete a scale, and do not substitute an approximate generated color for an exact brand value. Consumers still choose semantic tokens; the numeric primitive position does not encode usage.
 
