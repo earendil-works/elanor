@@ -6,8 +6,6 @@ const strictConfig = createStrictConfig({
   catalogue: fileURLToPath(
     new URL('../../packages/design-tokens/dist/radius/tokens.catalog.json', import.meta.url),
   ),
-  // Font-face descriptors define the font assets that the typography tokens consume.
-  ignoreFiles: ['**/fonts.css'],
 });
 
 export default {

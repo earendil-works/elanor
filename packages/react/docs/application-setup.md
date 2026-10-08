@@ -1,5 +1,15 @@
 # Application setup
 
+## Fonts and tokens
+
+Install `@earendil-works/elanor-fonts` alongside the brand tokens. Import the font faces and one brand stylesheet at the application entry:
+
+```ts
+import '@earendil-works/elanor-fonts/earendil.css';
+import '@earendil-works/elanor-fonts/commit-mono.css';
+import '@earendil-works/design-tokens/radius.css';
+```
+
 ## Portals
 
 Follow [Base UI's portal setup](https://base-ui.com/react/overview/quick-start):

@@ -17,6 +17,7 @@
     "@astrojs/mdx": "^8.0.2",
     "@astrojs/react": "^7.0.0",
     "@earendil-works/design-tokens": "workspace:*",
+    "@earendil-works/elanor-fonts": "workspace:*",
     "@earendil-works/elanor-icons": "workspace:*",
     "@earendil-works/elanor-icons-react": "workspace:*",
     "@earendil-works/elanor-logos": "workspace:*",

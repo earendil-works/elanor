@@ -190,6 +190,9 @@ importers:
       '@earendil-works/design-tokens':
         specifier: workspace:*
         version: link:../../packages/design-tokens
+      '@earendil-works/elanor-fonts':
+        specifier: workspace:*
+        version: link:../../packages/fonts
       '@earendil-works/elanor-icons':
         specifier: workspace:*
         version: link:../../packages/icons
@@ -272,6 +275,8 @@ importers:
       typescript:
         specifier: ^7.0.2
         version: 7.0.2
+
+  packages/fonts: {}
 
   packages/icons:
     devDependencies:
