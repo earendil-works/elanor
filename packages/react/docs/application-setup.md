@@ -1,14 +1,17 @@
 # Application setup
 
-## Fonts and tokens
+## Styles, fonts and tokens
 
-Install `@earendil-works/elanor-fonts` alongside the brand tokens. Import the font faces and one brand stylesheet at the application entry:
+Import the component stylesheet, font faces and one brand stylesheet once at the application entry:
 
 ```ts
 import '@earendil-works/elanor-fonts/earendil.css';
 import '@earendil-works/elanor-fonts/commit-mono.css';
 import '@earendil-works/design-tokens/radius.css';
+import '@earendil-works/elanor-react/elanor.min.css';
 ```
+
+`elanor.min.css` contains all component styles. Component JavaScript does not load CSS; fonts and tokens remain separate.
 
 ## Portals
 

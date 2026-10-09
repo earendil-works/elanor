@@ -8,7 +8,7 @@ React components built with Base UI and CSS Modules.
 pnpm add @earendil-works/elanor-react react react-dom
 ```
 
-Requires React 18–19 and a bundler that supports CSS Modules in dependencies.
+Requires React 18–19. Styles are precompiled; consumers do not need CSS Modules support.
 
 ## Usage
 
@@ -18,6 +18,7 @@ Install the [fonts](https://github.com/earendil-works/elanor/tree/main/packages/
 import '@earendil-works/elanor-fonts/earendil.css';
 import '@earendil-works/elanor-fonts/commit-mono.css';
 import '@earendil-works/design-tokens/radius.css';
+import '@earendil-works/elanor-react/elanor.min.css';
 import {Button} from '@earendil-works/elanor-react';
 
 <Button>Continue</Button>;

@@ -1,5 +1,4 @@
-import {Stack} from '../stack/stack.tsx';
-import {Dropdown} from './index.ts';
+import {Stack, Dropdown} from '@earendil-works/elanor-react';
 
 export function DropdownExample(): React.JSX.Element {
   return (

@@ -1,8 +1,5 @@
+import {Stack, Text, SocialLogin} from '@earendil-works/elanor-react';
 import {useState} from 'react';
-
-import {Stack} from '../stack/stack.tsx';
-import {Text} from '../text/text.tsx';
-import {SocialLogin} from './social-login.tsx';
 
 export function SocialLoginExample(): React.JSX.Element {
   const [message, setMessage] = useState('Demo only. No account will be connected.');

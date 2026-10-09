@@ -431,6 +431,9 @@ importers:
       stylelint:
         specifier: ^17.15.0
         version: 17.15.0(typescript@7.0.2)
+      vite:
+        specifier: 8.3.1
+        version: 8.3.1(@types/node@24.19.0)(esbuild@0.28.2)(tsx@4.23.15)(yaml@2.9.1)
 
   packages/stylelint-plugin-design-tokens:
     dependencies:

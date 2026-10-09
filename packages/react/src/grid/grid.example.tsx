@@ -1,10 +1,5 @@
+import {Card, Heading, Stack, Text, Grid, type GridColumns} from '@earendil-works/elanor-react';
 import {useState} from 'react';
-
-import {Card} from '../card/card.tsx';
-import {Heading} from '../heading/heading.tsx';
-import {Stack} from '../stack/stack.tsx';
-import {Text} from '../text/text.tsx';
-import {Grid, type GridColumns} from './grid.tsx';
 
 const cellStyle = {
   background: 'var(--semantic-color-background-fill-secondary)',

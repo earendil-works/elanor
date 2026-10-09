@@ -1,6 +1,4 @@
-import {SelectionControlAndLabel} from '../selection-control-label/selection-control-label.tsx';
-import {Stack} from '../stack/stack.tsx';
-import {Radio} from './radio.tsx';
+import {SelectionControlAndLabel, Stack, Radio} from '@earendil-works/elanor-react';
 
 export function RadioExample(): React.JSX.Element {
   return (

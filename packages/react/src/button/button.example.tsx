@@ -1,9 +1,6 @@
 import {AddIcon, ArrowForwardIcon} from '@earendil-works/elanor-icons-react';
+import {Stack, Text, Button} from '@earendil-works/elanor-react';
 import {useState} from 'react';
-
-import {Stack} from '../stack/stack.tsx';
-import {Text} from '../text/text.tsx';
-import {Button} from './button.tsx';
 
 export function ButtonExample(): React.JSX.Element {
   const [taskCount, setTaskCount] = useState(0);

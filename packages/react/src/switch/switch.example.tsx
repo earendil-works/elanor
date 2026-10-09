@@ -1,5 +1,4 @@
-import {SelectionControlAndLabel} from '../selection-control-label/selection-control-label.tsx';
-import {Switch} from './switch.tsx';
+import {SelectionControlAndLabel, Switch} from '@earendil-works/elanor-react';
 
 export function SwitchExample(): React.JSX.Element {
   return (

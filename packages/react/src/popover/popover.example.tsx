@@ -1,5 +1,4 @@
-import {Button} from '../button/button.tsx';
-import {Popover} from './index.ts';
+import {Button, Popover} from '@earendil-works/elanor-react';
 
 export function PopoverExample(): React.JSX.Element {
   return (

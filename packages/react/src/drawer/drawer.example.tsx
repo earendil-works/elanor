@@ -1,11 +1,13 @@
 import {CloseIcon} from '@earendil-works/elanor-icons-react';
+import {
+  Button,
+  IconButton,
+  SideNavigation,
+  Stack,
+  Drawer,
+  type DrawerRootActions,
+} from '@earendil-works/elanor-react';
 import {useRef} from 'react';
-
-import {Button} from '../button/button.tsx';
-import {IconButton} from '../icon-button/icon-button.tsx';
-import {SideNavigation} from '../side-navigation/side-navigation.tsx';
-import {Stack} from '../stack/stack.tsx';
-import {Drawer, type DrawerRootActions} from './index.ts';
 
 export function DrawerExample(): React.JSX.Element {
   const actionsRef = useRef<DrawerRootActions>(null);

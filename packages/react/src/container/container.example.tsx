@@ -1,7 +1,4 @@
-import {Heading} from '../heading/heading.tsx';
-import {Stack} from '../stack/stack.tsx';
-import {Text} from '../text/text.tsx';
-import {Container} from './container.tsx';
+import {Heading, Stack, Text, Container} from '@earendil-works/elanor-react';
 
 export function ContainerExample() {
   return (

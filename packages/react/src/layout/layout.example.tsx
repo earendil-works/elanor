@@ -1,15 +1,15 @@
-import {Container} from '../container/container.tsx';
-import {Heading} from '../heading/heading.tsx';
-import {Link} from '../link/link.tsx';
-import {Page} from '../page/page.tsx';
-import {SideNavigation} from '../side-navigation/side-navigation.tsx';
 import {
+  Container,
+  Heading,
+  Link,
+  Page,
+  SideNavigation,
   TableOfContents,
   TableOfContentsItem,
   TableOfContentsLink,
-} from '../table-of-contents/table-of-contents.tsx';
-import {Text} from '../text/text.tsx';
-import {Layout} from './layout.tsx';
+  Text,
+  Layout,
+} from '@earendil-works/elanor-react';
 
 export function LayoutExample() {
   return (

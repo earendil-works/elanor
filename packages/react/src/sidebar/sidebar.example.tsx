@@ -21,16 +21,17 @@ import {
   SettingsIcon,
   SmartToyIcon,
 } from '@earendil-works/elanor-icons-react';
+import {
+  Button,
+  Checkbox,
+  Layout,
+  ProjectSwitcher,
+  Separator,
+  SideNavigation,
+  Stack,
+  Sidebar,
+} from '@earendil-works/elanor-react';
 import {useRef, useState, type Ref, type UIEventHandler} from 'react';
-
-import {Button} from '../button/button.tsx';
-import {Checkbox} from '../checkbox/checkbox.tsx';
-import {Layout} from '../layout/layout.tsx';
-import {ProjectSwitcher} from '../project-switcher/project-switcher.tsx';
-import {Separator} from '../separator/separator.tsx';
-import {SideNavigation} from '../side-navigation/side-navigation.tsx';
-import {Stack} from '../stack/stack.tsx';
-import {Sidebar} from './sidebar.tsx';
 
 import styles from './sidebar.example.module.css';
 

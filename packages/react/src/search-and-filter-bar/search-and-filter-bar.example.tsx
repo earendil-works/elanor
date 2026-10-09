@@ -1,10 +1,5 @@
+import {Dropdown, Search, Stack, Text, SearchAndFilterBar} from '@earendil-works/elanor-react';
 import {useState} from 'react';
-
-import {Dropdown} from '../dropdown/index.ts';
-import {Search} from '../search/search.tsx';
-import {Stack} from '../stack/stack.tsx';
-import {Text} from '../text/text.tsx';
-import {SearchAndFilterBar} from './search-and-filter-bar.tsx';
 
 const members = [
   {

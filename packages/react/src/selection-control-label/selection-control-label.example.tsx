@@ -1,6 +1,4 @@
-import {Checkbox} from '../checkbox/checkbox.tsx';
-import {Stack} from '../stack/stack.tsx';
-import {SelectionControlAndLabel} from './selection-control-label.tsx';
+import {Checkbox, Stack, SelectionControlAndLabel} from '@earendil-works/elanor-react';
 
 export function SelectionControlLabelExample(): React.JSX.Element {
   return (

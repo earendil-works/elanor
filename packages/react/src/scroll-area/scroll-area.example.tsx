@@ -1,11 +1,6 @@
 import {DirectionProvider} from '@base-ui/react/direction-provider';
+import {Button, Heading, Stack, Text, ScrollArea} from '@earendil-works/elanor-react';
 import {useRef, useState} from 'react';
-
-import {Button} from '../button/button.tsx';
-import {Heading} from '../heading/heading.tsx';
-import {Stack} from '../stack/stack.tsx';
-import {Text} from '../text/text.tsx';
-import {ScrollArea} from './scroll-area.tsx';
 
 import styles from './scroll-area.example.module.css';
 

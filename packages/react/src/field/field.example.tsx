@@ -1,5 +1,4 @@
-import {Input} from '../input/input.tsx';
-import {Field} from './field.tsx';
+import {Input, Field} from '@earendil-works/elanor-react';
 
 export function FieldExample(): React.JSX.Element {
   return (
