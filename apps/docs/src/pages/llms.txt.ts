@@ -14,7 +14,7 @@ Each area has a small index that lists what exists. Fetch the index first, then 
 - [Token index](/api/tokens/index.json): the brands, each with its own token index.
 - \`/api/tokens/<brand>/index.json\`: every token group with its token names; semantic tokens include a description of when to use them.
 - \`/api/tokens/<brand>/groups/<group>.json\`: all tokens in a group, such as \`semantic.color.text\`.
-- \`/api/tokens/<brand>/tokens/<token.path>.json\`: one token.
+- \`/api/tokens/<brand>/<token.path>.json\`: one token.
 
 A token has its light and dark value as CSS and as a W3C DTCG value, its CSS variable, its description, and what it aliases. Colors also include \`hex\`; key colors used in print include CMYK builds under \`extensions["com.earendil-works.print"]\`. Prefer \`semantic.*\` tokens; \`primitive.*\` tokens are the palette they alias.
 

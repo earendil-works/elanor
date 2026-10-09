@@ -1,8 +1,8 @@
 import type {APIRoute, GetStaticPaths} from 'astro';
 
-import {type ApiToken, json, loadTokens, tokenBrands} from '../../../../../lib/api.ts';
+import {type ApiToken, json, loadTokens, tokenBrands} from '../../../../lib/api.ts';
 
-// One file per token, e.g. /api/tokens/radius/tokens/semantic.color.text.primary.json
+// One file per token, e.g. /api/tokens/radius/semantic.color.text.primary.json
 export const getStaticPaths = (async () => {
   const paths = [];
   for (const brand of await tokenBrands()) {

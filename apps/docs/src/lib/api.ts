@@ -62,7 +62,7 @@ export interface ApiTokenGroup {
   tokens: ApiToken[];
 }
 
-const tokenUrl = (brand: string, path: string) => `/api/tokens/${brand}/tokens/${path}.json`;
+const tokenUrl = (brand: string, path: string) => `/api/tokens/${brand}/${path}.json`;
 const groupUrl = (brand: string, path: string) => `/api/tokens/${brand}/groups/${path}.json`;
 
 /** The brands the design-tokens package builds, from its catalogues. */
