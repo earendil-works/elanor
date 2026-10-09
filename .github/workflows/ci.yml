@@ -1,4 +1,4 @@
-name: Checks
+name: Validate and deploy
 
 on:
   push:
@@ -52,16 +52,9 @@ jobs:
           # Upload source maps only from trusted main-branch builds, never PRs.
           SENTRY_AUTH_TOKEN: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && secrets.SENTRY_AUTH_TOKEN || '' }}
 
-      # Publishing is paused. Configure the CLOUDFLARE_API_TOKEN repository secret
-      # and the Worker's OAuth/session secrets in Cloudflare, then uncomment this step.
-      # - name: Deploy docs to Cloudflare
-      #   if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      #   run: |
-      #     if [ -z "$CLOUDFLARE_API_TOKEN" ]; then
-      #       echo '::error::Configure the CLOUDFLARE_API_TOKEN GitHub Actions secret.'
-      #       exit 1
-      #     fi
-      #     pnpm exec wrangler deploy --config wrangler.jsonc
-      #   env:
-      #     CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-      #     WRANGLER_SEND_METRICS: 'false'
+      - name: Deploy docs to Cloudflare
+        if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+        run: pnpm exec wrangler deploy --config wrangler.jsonc
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          WRANGLER_SEND_METRICS: 'false'
