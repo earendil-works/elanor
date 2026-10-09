@@ -2,7 +2,7 @@
   box-sizing: border-box;
 }
 
-body {
+.docs-layout {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
   grid-template-rows: auto 1fr;
@@ -17,7 +17,7 @@ body {
   padding: var(--semantic-dimension-space-padding-x-large);
 }
 
-body > aside {
+.docs-layout > aside {
   display: none;
   position: sticky;
   inset-block-start: 0;
@@ -116,12 +116,12 @@ body > aside {
 }
 
 @media (width >= 64rem /* token: semantic.dimension.breakpoint.medium */) {
-  body {
+  .docs-layout {
     grid-template-columns: max-content minmax(0, 1fr);
     grid-template-rows: auto;
   }
 
-  body > aside {
+  .docs-layout > aside {
     display: block;
   }
 

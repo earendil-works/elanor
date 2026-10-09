@@ -25,6 +25,18 @@ export function DocsSideNavigation({
 }: DocsSideNavigationProps): React.JSX.Element {
   return (
     <SideNavigationRoot aria-label="Documentation">
+      <SideNavigationList>
+        <SideNavigationItem>
+          <SideNavigationLink
+            href="/"
+            active={current === '/'}
+            onClick={onNavigate}
+            data-astro-reload
+          >
+            Home
+          </SideNavigationLink>
+        </SideNavigationItem>
+      </SideNavigationList>
       {sections.map((section) => (
         <SideNavigationGroup key={section.label}>
           <SideNavigationGroupLabel>{section.label}</SideNavigationGroupLabel>
@@ -33,6 +45,7 @@ export function DocsSideNavigation({
               <SideNavigationItem key={link.href}>
                 <SideNavigationLink
                   href={link.href}
+                  data-astro-reload={link.href.startsWith('/auth/') || undefined}
                   active={link.href === current}
                   onClick={onNavigate}
                 >

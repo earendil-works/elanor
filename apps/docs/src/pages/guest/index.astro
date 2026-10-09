@@ -1,0 +1,9 @@
+---
+// Internal build variant; the Worker serves this at / for signed-out visitors.
+import HomeLayout from '../../layouts/home-layout.astro';
+import {DocsHome} from '../../components/docs-home.tsx';
+---
+
+<HomeLayout>
+  <DocsHome signedIn={false} />
+</HomeLayout>

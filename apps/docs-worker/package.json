@@ -1,0 +1,17 @@
+{
+  "name": "@earendil-works/elanor-docs-worker",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "check": "pnpm run lint && pnpm run check:types",
+    "lint": "oxlint src --max-warnings 0 --report-unused-disable-directives",
+    "check:types": "pnpm run types && tsc --noEmit",
+    "types": "wrangler types worker.generated.d.ts --config ../../wrangler.jsonc --env-interface WorkerEnv --strict-vars false"
+  },
+  "dependencies": {
+    "hono": "4.13.12",
+    "jose": "6.2.12",
+    "typebox": "1.3.34"
+  }
+}

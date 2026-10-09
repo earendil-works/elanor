@@ -1,56 +1,8 @@
 ---
-import {readFile} from 'node:fs/promises';
-import {resolve} from 'node:path';
-import {Heading, Link, Text} from '@earendil-works/elanor-react';
 import DocsLayout from '../../layouts/docs-layout.astro';
-import {BrandLogos} from '../../components/brand-logos.tsx';
-import {HeadSnippet} from '../../components/head-snippet.tsx';
-import {loadGuidelines} from '../../lib/api.ts';
-import {type LogoManifest, logosDist} from '../../lib/packages.ts';
-
-const manifest = JSON.parse(await readFile(resolve(logosDist, 'manifest.json'), 'utf8')) as LogoManifest;
-const headTags = new Map(
-  await Promise.all(
-    manifest.brands.map(async (brand) => [brand.id, brand.favicons?.html ? await readFile(resolve(logosDist, brand.favicons.html), 'utf8') : undefined] as const),
-  ),
-);
-
-// The company guidelines as data, composed under this page's own heading.
-const guidelines = await loadGuidelines();
+import BrandContent from '../../components/brand-content.astro';
 ---
 
 <DocsLayout title="Logos" current="/brand/" wide>
-  <div class="page grid-page">
-    <Heading level={1} size={1}>Logos</Heading>
-    <Text>
-      Use the supplied artwork unchanged, with one grid unit of clear space around it. See the <Link href="#guidelines">brand guidelines</Link>.
-    </Text>
-    {
-      manifest.brands.map((brand) => {
-        const tags = headTags.get(brand.id);
-        return (
-          <BrandLogos brand={brand} pressKit={manifest.pressKits?.[brand.id]}>
-            {tags ? <HeadSnippet client:visible code={tags} /> : null}
-          </BrandLogos>
-        );
-      })
-    }
-    <section aria-labelledby="guidelines">
-      <Heading level={2} size={2} id="guidelines">Brand guidelines</Heading>
-      <article class="prose">
-        <Fragment set:html={guidelines.intro.html} />
-        {
-          guidelines.sections.map((section) => (
-            <>
-              <h3 id={section.id}>{section.title}</h3>
-              <Fragment set:html={section.html} />
-              {section.images.map((image) => (
-                <img src={image.url} alt={image.alt} width={image.width} />
-              ))}
-            </>
-          ))
-        }
-      </article>
-    </section>
-  </div>
+  <BrandContent />
 </DocsLayout>

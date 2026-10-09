@@ -1,0 +1,30 @@
+---
+import '@earendil-works/design-tokens/radius.css';
+import '@earendil-works/elanor-fonts/earendil.css';
+import '@earendil-works/elanor-fonts/commit-mono.css';
+---
+
+<!doctype html>
+<html lang="en" data-color-scheme="light">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex, nofollow" />
+    <title>Elanor — Design system</title>
+  </head>
+  <body>
+    <slot />
+  </body>
+</html>
+
+<style>
+  :global(body) {
+    margin: 0;
+  }
+
+  :global(*),
+  :global(*::before),
+  :global(*::after) {
+    box-sizing: border-box;
+  }
+</style>

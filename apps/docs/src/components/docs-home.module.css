@@ -1,0 +1,102 @@
+/* Scope overrides above shared component styles regardless of CSS chunk order. */
+.home {
+  .container {
+    max-inline-size: var(--semantic-dimension-breakpoint-small);
+  }
+
+  .header {
+    padding-block: var(--semantic-dimension-space-padding-x-large);
+    border-block-end: var(--semantic-dimension-border-width-default) solid
+      var(--semantic-color-border-secondary);
+  }
+
+  .identity {
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-heading-app-5);
+    text-decoration: none;
+  }
+
+  .main {
+    padding-block: var(--semantic-dimension-space-padding-xxxx-large);
+  }
+
+  .description {
+    color: var(--semantic-color-text-secondary);
+    font: var(--semantic-typography-prose-primary);
+    text-wrap: pretty;
+  }
+
+  .destinations {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .resourceLink {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--semantic-dimension-space-gap-large);
+    padding-block: var(--semantic-dimension-space-padding-xx-large);
+    color: var(--semantic-color-text-primary);
+    text-decoration: none;
+  }
+
+  .resourceText {
+    min-inline-size: 0;
+  }
+
+  .resourceTitle {
+    font: var(--semantic-typography-heading-app-6);
+  }
+
+  .arrow {
+    flex: none;
+    inline-size: var(--semantic-dimension-size-x-small);
+    block-size: var(--semantic-dimension-size-x-small);
+    font: var(--semantic-typography-heading-app-6);
+    margin-block-start: calc((1lh - var(--semantic-dimension-size-x-small)) / 2);
+    color: var(--semantic-color-icon-secondary);
+  }
+
+  @media (hover: hover) {
+    .resourceLink:hover .resourceTitle {
+      text-decoration: underline;
+      text-underline-position: under;
+    }
+
+    .resourceLink:hover .arrow {
+      color: var(--semantic-color-icon-primary);
+    }
+  }
+
+  .resourceLink:active .resourceTitle {
+    text-decoration: underline;
+  }
+
+  .skipLink {
+    position: absolute;
+    inset-block-start: var(--semantic-dimension-space-padding-small);
+    inset-inline-start: var(--semantic-dimension-space-padding-x-large);
+    z-index: var(--semantic-number-layer-overlay);
+    padding: var(--semantic-dimension-space-padding-medium);
+    background: var(--semantic-color-background-canvas);
+  }
+
+  .skipLink:not(:focus) {
+    /* Hidden without introducing another focus target or changing document flow. */
+    clip-path: inset(50%);
+  }
+
+  @media (pointer: coarse) {
+    .signOut {
+      min-block-size: var(--semantic-dimension-size-x-large);
+    }
+  }
+
+  @media (min-width: 48rem /* token: semantic.dimension.breakpoint.small */) {
+    .main {
+      padding-block: calc(var(--semantic-dimension-space-padding-xxxx-large) * 2);
+    }
+  }
+}

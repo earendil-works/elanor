@@ -1,3 +1,8 @@
 ---
-return Astro.redirect('/components/layout/');
+import HomeLayout from '../layouts/home-layout.astro';
+import {DocsHome} from '../components/docs-home.tsx';
 ---
+
+<HomeLayout>
+  <DocsHome signedIn />
+</HomeLayout>

@@ -1,0 +1,30 @@
+{
+  "$schema": "./node_modules/wrangler/config-schema.json",
+  "name": "elanor-docs",
+  "account_id": "67c0d357268b0fca6e0b465bb9d01b84",
+  "main": "./apps/docs-worker/src/index.ts",
+  "compatibility_date": "2026-10-07",
+  // Only the custom domain is enabled. The Worker gates every asset.
+  "workers_dev": false,
+  "preview_urls": false,
+  "routes": [{"pattern": "elanor.earendil.com", "custom_domain": true}],
+  // Preserve additional dashboard variables; OAuth secrets stay in Cloudflare.
+  "keep_vars": true,
+  "vars": {
+    "BASE_URL": "https://elanor.earendil.com",
+  },
+  // Redact OAuth queries from request metadata attached to application logs.
+  "observability": {
+    "enabled": true,
+    "redact_query_string": true,
+    "logs": {"enabled": true, "invocation_logs": false},
+    "traces": {"enabled": false},
+  },
+  "assets": {
+    "directory": "./apps/docs/dist",
+    "binding": "ASSETS",
+    "run_worker_first": true,
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page",
+  },
+}

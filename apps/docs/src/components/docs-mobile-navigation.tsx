@@ -45,7 +45,9 @@ export function DocsMobileNavigation({
     <Drawer.Root swipeDirection="left" actionsRef={actionsRef}>
       <TopNavigation.Root className="docs-mobile-header">
         <TopNavigation.Identity>
-          <Link href="/">Elanor</Link>
+          <Link href="/" data-astro-reload>
+            Elanor
+          </Link>
         </TopNavigation.Identity>
         <TopNavigation.Actions>
           <Drawer.Trigger ref={triggerRef} render={<IconButton aria-label="Open navigation" />}>
