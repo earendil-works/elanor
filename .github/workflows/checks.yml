@@ -45,3 +45,6 @@ jobs:
 
       - name: Build workspace packages
         run: pnpm run build
+        env:
+          # Upload source maps only from trusted main-branch builds, never PRs.
+          SENTRY_AUTH_TOKEN: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' && secrets.SENTRY_AUTH_TOKEN || '' }}

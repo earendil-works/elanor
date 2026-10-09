@@ -1,3 +1,4 @@
+import {sentry} from '@sentry/hono/cloudflare';
 import {Hono} from 'hono';
 import {deleteCookie, getSignedCookie, setSignedCookie} from 'hono/cookie';
 import {Check} from 'typebox/value';
@@ -21,6 +22,7 @@ import {
   type AuthConfig,
   type Bindings,
 } from './auth.js';
+import {sentryOptions} from './telemetry.js';
 
 const app = new Hono<{Bindings: Bindings; Variables: {auth: AuthConfig}}>();
 
@@ -34,6 +36,8 @@ function isPageNavigation(request: Request): boolean {
     request.headers.get('sec-fetch-dest') === 'document'
   );
 }
+
+app.use(sentry(app, sentryOptions));
 
 app.use('*', async (c, next) => {
   await next();

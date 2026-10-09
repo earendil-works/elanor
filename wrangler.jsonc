@@ -4,6 +4,8 @@
   "account_id": "67c0d357268b0fca6e0b465bb9d01b84",
   "main": "./apps/docs-worker/src/index.ts",
   "compatibility_date": "2026-10-07",
+  "compatibility_flags": ["nodejs_compat"],
+  "version_metadata": {"binding": "CF_VERSION_METADATA"},
   // Only the custom domain is enabled. The Worker gates every asset.
   "workers_dev": false,
   "preview_urls": false,
@@ -12,6 +14,8 @@
   "keep_vars": true,
   "vars": {
     "BASE_URL": "https://elanor.earendil.com",
+    "SENTRY_ENVIRONMENT": "production",
+    "SENTRY_DSN": "https://c568c9a32a5ff90cea621cefbf102713@o4510178388869120.ingest.us.sentry.io/4512225263091712",
   },
   // Redact OAuth queries from request metadata attached to application logs.
   "observability": {

@@ -10,6 +10,8 @@
     "types": "wrangler types worker.generated.d.ts --config ../../wrangler.jsonc --env-interface WorkerEnv --strict-vars false"
   },
   "dependencies": {
+    "@sentry/cloudflare": "11.2.0",
+    "@sentry/hono": "11.2.0",
     "hono": "4.13.12",
     "jose": "6.2.12",
     "typebox": "1.3.34"
