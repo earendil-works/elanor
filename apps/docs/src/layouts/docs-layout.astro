@@ -1,12 +1,11 @@
 ---
 import '@earendil-works/design-tokens/radius.css';
-import '@earendil-works/elanor-strokes/pencil/radius.scoped.css';
 import '../styles/docs.css';
 import '../styles/fonts.css';
 import {getCollection} from 'astro:content';
 import {ClientRouter} from 'astro:transitions';
-import {DocsSideNavigation, type DocsNavigationSection} from '../components/docs-side-navigation.tsx';
-import {StrokeStyleToggle} from '../components/stroke-style-toggle.tsx';
+import type {DocsNavigationSection} from '../components/docs-side-navigation.tsx';
+import {DocsNavigationSurfacePreview} from '../components/surface-previews.tsx';
 
 interface Props {
   title: string;
@@ -51,7 +50,7 @@ const sections: DocsNavigationSection[] = [
     <meta name="viewport" content="width=device-width" />
     <title>{title}</title>
     <script is:inline>
-      // Apply the stroke style before the first paint (see stroke-style-toggle.tsx).
+      // Restore the docs preference before React appearance bridges hydrate.
       // ?strokes=pencil or ?strokes=plain in the URL sets it, for sharing links.
       const requested = new URLSearchParams(location.search).get('strokes');
       if (requested === 'pencil' || requested === 'plain') localStorage.setItem('elanor-docs-strokes', requested);
@@ -62,8 +61,7 @@ const sections: DocsNavigationSection[] = [
   <body>
     <aside>
       <div data-docs-swap="navigation" class="navigation">
-        <StrokeStyleToggle client:load />
-        <DocsSideNavigation sections={sections} current={current} />
+        <DocsNavigationSurfacePreview sections={sections} current={current} client:load />
       </div>
     </aside>
     <ContentTag data-docs-swap="content">

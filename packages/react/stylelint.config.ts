@@ -12,9 +12,8 @@ export default createStrictConfig({
     '--active-tab-top',
     '--active-tab-width',
     '--active-tab-height',
-    // The outline contract, which stroke styles from @earendil-works/elanor-strokes implement.
-    '--outline-*',
-    // The mark contract, for drawn checks, dashes, and dots.
-    '--mark-*',
+    // Public surface colors shared with optional, consumer-owned skins.
+    '--outline-color',
+    '--outline-focus-color',
   ],
 });

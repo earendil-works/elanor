@@ -1,9 +1,5 @@
 import {useState} from 'react';
-import {Dropdown} from '../dropdown/dropdown.tsx';
-import {Search} from '../search/search.tsx';
-import {Stack} from '../stack/stack.tsx';
-import {Text} from '../text/text.tsx';
-import {SearchAndFilterBar} from './search-and-filter-bar.tsx';
+import {Dropdown, Search, SearchAndFilterBar, Stack, Text} from '@earendil-works/elanor-react';
 
 const members = [
   {name: 'Alex Morgan', status: 'Active', role: 'Admin', group: 'Engineering', twoFactor: 'Enabled'},

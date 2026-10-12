@@ -1,6 +1,7 @@
-import {CodeSnippet, CopyButton, Heading, Link, Search, Stack} from '@earendil-works/elanor-react';
+import {CodeSnippet, CopyButton, Heading, Link, Search, Stack, Text} from '@earendil-works/elanor-react';
 import {useDeferredValue, useEffect, useMemo, useRef, useState} from 'react';
 import styles from './icon-browser.module.css';
+import {DocsAppearance} from './docs-appearance.tsx';
 
 type IndexEntry = readonly [name: string, tags: string, component: string];
 
@@ -27,6 +28,18 @@ function search(index: readonly IndexEntry[], query: string): readonly IndexEntr
     if (score > 0) scored.push([entry, score]);
   }
   return scored.sort((a, b) => b[1] - a[1] || a[0][0].localeCompare(b[0][0])).map(([entry]) => entry);
+}
+
+export function IconsContent(): React.JSX.Element {
+  return (
+    <DocsAppearance>
+      <div className="page grid-page">
+        <Heading level={1} size={1}>Icons</Heading>
+        <Text>Material Symbols with a hand-drawn boil. Select an icon for its React import and SVG.</Text>
+        <IconBrowser />
+      </div>
+    </DocsAppearance>
+  );
 }
 
 export function IconBrowser(): React.JSX.Element {

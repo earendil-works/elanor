@@ -1,7 +1,5 @@
 import {CloseIcon} from '@earendil-works/elanor-icons-react';
-import {Button} from '../button/button.tsx';
-import {IconButton} from '../icon-button/icon-button.tsx';
-import {Modal} from './modal.tsx';
+import {Button, IconButton, Modal} from '@earendil-works/elanor-react';
 import styles from './modal.example.module.css';
 
 export function ModalExample(): React.JSX.Element {

@@ -3,7 +3,7 @@ import {KeyboardArrowDownIcon} from '@earendil-works/elanor-icons-react';
 import {forwardRef, type ReactNode, type Ref, type RefAttributes} from 'react';
 import {Menu} from '../menu/menu.tsx';
 import styles from './project-switcher.module.css';
-import outline from '../utils/outline.module.css';
+import {useSurfaceClassName} from '../appearance/appearance.tsx';
 import {classes, mergeClassName} from '../utils/class-names.ts';
 
 export interface ProjectSwitcherTriggerProps<Payload = unknown>
@@ -16,14 +16,16 @@ export const ProjectSwitcherTrigger = forwardRef(function ProjectSwitcherTrigger
   {children, indicator = <KeyboardArrowDownIcon aria-hidden="true" />, className, ...props}: ProjectSwitcherTriggerProps<Payload>,
   ref: Ref<HTMLButtonElement>,
 ) {
+  const surfaceClassName = useSurfaceClassName();
   return (
     <BaseMenu.Trigger
       data-outline="box-small"
       data-outline-band="none"
+      data-outline-focus="self"
       {...props}
       ref={ref}
       className={mergeClassName<BaseMenu.Trigger.State>(
-        classes(styles.trigger, outline.outline),
+        classes(styles.trigger, surfaceClassName),
         className,
       )}
     >

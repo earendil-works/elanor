@@ -3,7 +3,7 @@ import {KeyboardArrowDownIcon, SearchIcon} from '@earendil-works/elanor-icons-re
 import {createContext, forwardRef, useContext} from 'react';
 import styles from './searchable-dropdown.module.css';
 import mark from '../utils/mark.module.css';
-import outline from '../utils/outline.module.css';
+import {useIndicatorClassName, useSurfaceClassName} from '../appearance/appearance.tsx';
 import {classes, mergeClassName} from '../utils/class-names.ts';
 
 export type {
@@ -90,12 +90,14 @@ export const SearchableDropdownLabel = forwardRef<HTMLDivElement, SearchableDrop
 
 export const SearchableDropdownTrigger = forwardRef<HTMLButtonElement, SearchableDropdownTriggerProps>(
   function SearchableDropdownTrigger({className, ...props}, ref) {
+    const surfaceClassName = useSurfaceClassName();
     return (
       <BaseCombobox.Trigger
         data-outline="box-small"
+        data-outline-focus="self"
         {...props}
         ref={ref}
-        className={mergeClassName<BaseCombobox.Trigger.State>(classes(styles.trigger, outline.outline), className)}
+        className={mergeClassName<BaseCombobox.Trigger.State>(classes(styles.trigger, surfaceClassName), className)}
       />
     );
   },
@@ -117,13 +119,14 @@ export const SearchableDropdownIcon = forwardRef<HTMLSpanElement, SearchableDrop
 
 export const SearchableDropdownPopup = forwardRef<HTMLDivElement, SearchableDropdownPopupProps>(
   function SearchableDropdownPopup({className, ...props}, ref) {
+    const surfaceClassName = useSurfaceClassName();
     return (
       <BaseCombobox.Popup
         data-outline="box-small"
         data-outline-focus="none"
         {...props}
         ref={ref}
-        className={mergeClassName<BaseCombobox.Popup.State>(classes(styles.popup, outline.outline), className)}
+        className={mergeClassName<BaseCombobox.Popup.State>(classes(styles.popup, surfaceClassName), className)}
       />
     );
   },
@@ -131,13 +134,15 @@ export const SearchableDropdownPopup = forwardRef<HTMLDivElement, SearchableDrop
 
 export const SearchableDropdownInputGroup = forwardRef<HTMLDivElement, SearchableDropdownInputGroupProps>(
   function SearchableDropdownInputGroup({className, children, ...props}, ref) {
+    const surfaceClassName = useSurfaceClassName();
     return (
       <BaseCombobox.InputGroup
         data-outline="line"
         data-outline-edge="block-end"
+        data-outline-focus="control"
         {...props}
         ref={ref}
-        className={mergeClassName<BaseCombobox.InputGroup.State>(styles.inputGroup, className)}
+        className={mergeClassName<BaseCombobox.InputGroup.State>(classes(styles.inputGroup, surfaceClassName), className)}
       >
         <span className={styles.searchIcon} aria-hidden="true">
           <SearchIcon />
@@ -156,6 +161,7 @@ export const SearchableDropdownInput = forwardRef<HTMLInputElement, SearchableDr
 
     return (
       <BaseCombobox.Input
+        data-surface-control=""
         {...props}
         ref={ref}
         type={type}
@@ -169,6 +175,7 @@ export const SearchableDropdownList = forwardRef<HTMLDivElement, SearchableDropd
   function SearchableDropdownList({className, ...props}, ref) {
     return (
       <BaseCombobox.List
+        data-surface-content=""
         {...props}
         ref={ref}
         className={mergeClassName<BaseCombobox.List.State>(styles.list, className)}
@@ -179,11 +186,15 @@ export const SearchableDropdownList = forwardRef<HTMLDivElement, SearchableDropd
 
 export const SearchableDropdownItem = forwardRef<HTMLDivElement, SearchableDropdownItemProps>(
   function SearchableDropdownItem({className, ...props}, ref) {
+    const surfaceClassName = useSurfaceClassName();
     return (
       <BaseCombobox.Item
+        data-outline="box-small"
+        data-outline-band="none"
+        data-outline-focus="none"
         {...props}
         ref={ref}
-        className={mergeClassName<BaseCombobox.Item.State>(styles.item, className)}
+        className={mergeClassName<BaseCombobox.Item.State>(classes(styles.item, surfaceClassName), className)}
       />
     );
   },
@@ -191,19 +202,34 @@ export const SearchableDropdownItem = forwardRef<HTMLDivElement, SearchableDropd
 
 export const SearchableDropdownItemIndicator = forwardRef<HTMLSpanElement, SearchableDropdownItemIndicatorProps>(
   function SearchableDropdownItemIndicator({className, children = null, ...props}, ref) {
+    const surfaceClassName = useSurfaceClassName();
+    const indicatorClassName = useIndicatorClassName();
     const multiple = useContext(MultipleContext);
+    // A render override owns indicator content, even when it only replaces the element.
+    // Supply the default glyph only when neither children nor render provides custom content.
+    const isDefaultMark = children === null && props.render === undefined;
 
     return (
       <span
-        className={classes(styles.indicatorFrame, multiple && styles.indicatorFrameMultiple, outline.outline)}
+        className={classes(styles.indicatorFrame, multiple && styles.indicatorFrameMultiple, surfaceClassName)}
         data-outline={multiple ? 'box-small' : 'circle-x-small'}
+        data-outline-focus="none"
       >
         <BaseCombobox.ItemIndicator
           {...props}
           ref={ref}
           className={mergeClassName<BaseCombobox.ItemIndicator.State>(styles.itemIndicator, className)}
         >
-          {children ?? <span className={multiple ? classes(styles.itemCheck, mark.check) : classes(styles.itemDot, mark.dot)} />}
+          {isDefaultMark ? (
+            <span
+              data-indicator={multiple ? 'check' : 'dot'}
+              className={classes(
+                multiple ? styles.itemCheck : styles.itemDot,
+                multiple ? mark.check : mark.dot,
+                indicatorClassName,
+              )}
+            />
+          ) : children}
         </BaseCombobox.ItemIndicator>
       </span>
     );
@@ -224,13 +250,15 @@ export const SearchableDropdownGroupLabel = forwardRef<HTMLDivElement, Searchabl
 
 export const SearchableDropdownSeparator = forwardRef<HTMLDivElement, SearchableDropdownSeparatorProps>(
   function SearchableDropdownSeparator({className, ...props}, ref) {
+    const surfaceClassName = useSurfaceClassName();
     return (
       <BaseCombobox.Separator
         data-outline="line"
+        data-outline-focus="none"
         {...props}
         ref={ref}
         orientation="horizontal"
-        className={mergeClassName<BaseCombobox.Separator.State>(styles.separator, className)}
+        className={mergeClassName<BaseCombobox.Separator.State>(classes(styles.separator, surfaceClassName), className)}
       />
     );
   },

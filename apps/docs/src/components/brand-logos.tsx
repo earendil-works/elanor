@@ -2,6 +2,8 @@ import {Heading, Link, Stack, Text} from '@earendil-works/elanor-react';
 import type {ReactNode} from 'react';
 import type {LogoAsset, LogoBrand} from '../lib/packages.ts';
 import styles from './brand-logos.module.css';
+import {DocsAppearance} from './docs-appearance.tsx';
+import {HeadSnippet} from './head-snippet.tsx';
 
 const kindLabels: Record<LogoAsset['kind'], string> = {
   logo: 'Symbol',
@@ -46,6 +48,38 @@ function describeIcon(key: string): {label: string; use: string; masked?: boolea
   const appIcon = /^icon(\d+)$/.exec(key);
   if (appIcon) return {label: `App icon, ${appIcon[1]} px`, use: 'Web app manifest'};
   throw new Error(`No description for the ${key} favicon; add it to iconDescriptions`);
+}
+
+interface BrandContentProps {
+  readonly brands: readonly {
+    readonly brand: LogoBrand;
+    readonly pressKit?: string | undefined;
+    readonly headTags?: string | undefined;
+  }[];
+  /** Static guideline article HTML from Astro; contains no independent React roots. */
+  readonly children: ReactNode;
+}
+
+export function BrandContent({brands, children}: BrandContentProps): React.JSX.Element {
+  return (
+    <DocsAppearance>
+      <div className="page grid-page">
+        <Heading level={1} size={1}>Logos</Heading>
+        <Text>
+          Use the supplied artwork unchanged, with one grid unit of clear space around it. See the <Link href="#guidelines">brand guidelines</Link>.
+        </Text>
+        {brands.map(({brand, pressKit, headTags}) => (
+          <BrandLogos key={brand.id} brand={brand} pressKit={pressKit}>
+            {headTags ? <HeadSnippet code={headTags} /> : null}
+          </BrandLogos>
+        ))}
+        <section aria-labelledby="guidelines">
+          <Heading level={2} size={2} id="guidelines">Brand guidelines</Heading>
+          {children}
+        </section>
+      </div>
+    </DocsAppearance>
+  );
 }
 
 interface BrandLogosProps {

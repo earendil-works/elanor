@@ -1,7 +1,8 @@
 import {Separator as BaseSeparator} from '@base-ui/react/separator';
 import {forwardRef} from 'react';
 import styles from './separator.module.css';
-import {mergeClassName} from '../utils/class-names.ts';
+import {useSurfaceClassName} from '../appearance/appearance.tsx';
+import {classes, mergeClassName} from '../utils/class-names.ts';
 
 export type {SeparatorState} from '@base-ui/react/separator';
 
@@ -11,12 +12,14 @@ export const Separator = forwardRef<HTMLDivElement, SeparatorProps>(function Sep
   {className, ...props},
   ref,
 ) {
+  const surfaceClassName = useSurfaceClassName();
   return (
     <BaseSeparator
       data-outline={props.orientation === 'vertical' ? 'line-vertical' : 'line'}
+      data-outline-focus="self"
       {...props}
       ref={ref}
-      className={mergeClassName<BaseSeparator.State>(styles.root, className)}
+      className={mergeClassName<BaseSeparator.State>(classes(styles.root, surfaceClassName), className)}
     />
   );
 });

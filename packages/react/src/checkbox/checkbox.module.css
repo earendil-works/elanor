@@ -18,6 +18,9 @@
 }
 
 .box {
+  border: var(--semantic-dimension-border-width-default) solid var(--outline-color);
+  border-radius: var(--semantic-dimension-radius-small);
+  --outline-focus-color: var(--semantic-color-focus-ring);
   position: absolute;
   inset: 0;
   z-index: var(--semantic-number-layer-background);
@@ -57,7 +60,7 @@
 }
 
 .root:focus-visible > .box {
-  outline: var(--outline-plain-focus, var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring));
+  outline: var(--semantic-dimension-border-width-large) solid var(--outline-focus-color);
   outline-offset: calc(-1 * var(--semantic-dimension-border-width-large));
 }
 
@@ -92,7 +95,7 @@
   }
 
   .root:focus-visible > .box {
-    outline-color: Highlight;
+    --outline-focus-color: Highlight;
   }
 
   .indicator {

@@ -3,7 +3,7 @@ import {KeyboardArrowDownIcon} from '@earendil-works/elanor-icons-react';
 import {createContext, forwardRef, useContext} from 'react';
 import styles from './dropdown.module.css';
 import mark from '../utils/mark.module.css';
-import outline from '../utils/outline.module.css';
+import {useIndicatorClassName, useSurfaceClassName} from '../appearance/appearance.tsx';
 import {classes, mergeClassName} from '../utils/class-names.ts';
 
 export type {
@@ -65,12 +65,14 @@ export const DropdownLabel = forwardRef<HTMLDivElement, DropdownLabelProps>(
 
 export const DropdownTrigger = forwardRef<HTMLButtonElement, DropdownTriggerProps>(
   function DropdownTrigger({className, ...props}, ref) {
+    const surfaceClassName = useSurfaceClassName();
     return (
       <BaseSelect.Trigger
         data-outline="box-small"
+        data-outline-focus="self"
         {...props}
         ref={ref}
-        className={mergeClassName<BaseSelect.Trigger.State>(classes(styles.trigger, outline.outline), className)}
+        className={mergeClassName<BaseSelect.Trigger.State>(classes(styles.trigger, surfaceClassName), className)}
       />
     );
   },
@@ -105,13 +107,14 @@ export const DropdownPositioner = forwardRef<HTMLDivElement, DropdownPositionerP
 
 export const DropdownPopup = forwardRef<HTMLDivElement, DropdownPopupProps>(
   function DropdownPopup({className, ...props}, ref) {
+    const surfaceClassName = useSurfaceClassName();
     return (
       <BaseSelect.Popup
         data-outline="box-small"
         data-outline-focus="none"
         {...props}
         ref={ref}
-        className={mergeClassName<BaseSelect.Popup.State>(classes(styles.popup, outline.outline), className)}
+        className={mergeClassName<BaseSelect.Popup.State>(classes(styles.popup, surfaceClassName), className)}
       />
     );
   },
@@ -121,6 +124,7 @@ export const DropdownList = forwardRef<HTMLDivElement, DropdownListProps>(
   function DropdownList({className, ...props}, ref) {
     return (
       <BaseSelect.List
+        data-surface-content=""
         {...props}
         ref={ref}
         className={mergeClassName<BaseSelect.List.State>(styles.list, className)}
@@ -131,11 +135,15 @@ export const DropdownList = forwardRef<HTMLDivElement, DropdownListProps>(
 
 export const DropdownItem = forwardRef<HTMLElement, DropdownItemProps>(
   function DropdownItem({className, ...props}, ref) {
+    const surfaceClassName = useSurfaceClassName();
     return (
       <BaseSelect.Item
+        data-outline="box-small"
+        data-outline-band="none"
+        data-outline-focus="none"
         {...props}
         ref={ref}
-        className={mergeClassName<BaseSelect.Item.State>(styles.item, className)}
+        className={mergeClassName<BaseSelect.Item.State>(classes(styles.item, surfaceClassName), className)}
       />
     );
   },
@@ -143,19 +151,34 @@ export const DropdownItem = forwardRef<HTMLElement, DropdownItemProps>(
 
 export const DropdownItemIndicator = forwardRef<HTMLSpanElement, DropdownItemIndicatorProps>(
   function DropdownItemIndicator({className, children = null, ...props}, ref) {
+    const surfaceClassName = useSurfaceClassName();
+    const indicatorClassName = useIndicatorClassName();
     const multiple = useContext(MultipleContext);
+    // A render override owns indicator content, even when it only replaces the element.
+    // Supply the default glyph only when neither children nor render provides custom content.
+    const isDefaultMark = children === null && props.render === undefined;
 
     return (
       <span
-        className={classes(styles.indicatorFrame, multiple && styles.indicatorFrameMultiple, outline.outline)}
+        className={classes(styles.indicatorFrame, multiple && styles.indicatorFrameMultiple, surfaceClassName)}
         data-outline={multiple ? 'box-small' : 'circle-x-small'}
+        data-outline-focus="none"
       >
         <BaseSelect.ItemIndicator
           {...props}
           ref={ref}
           className={mergeClassName<BaseSelect.ItemIndicator.State>(styles.itemIndicator, className)}
         >
-          {children ?? <span className={multiple ? classes(styles.itemCheck, mark.check) : classes(styles.itemDot, mark.dot)} />}
+          {isDefaultMark ? (
+            <span
+              data-indicator={multiple ? 'check' : 'dot'}
+              className={classes(
+                multiple ? styles.itemCheck : styles.itemDot,
+                multiple ? mark.check : mark.dot,
+                indicatorClassName,
+              )}
+            />
+          ) : children}
         </BaseSelect.ItemIndicator>
       </span>
     );
@@ -176,13 +199,15 @@ export const DropdownGroupLabel = forwardRef<HTMLDivElement, DropdownGroupLabelP
 
 export const DropdownSeparator = forwardRef<HTMLDivElement, DropdownSeparatorProps>(
   function DropdownSeparator({className, ...props}, ref) {
+    const surfaceClassName = useSurfaceClassName();
     return (
       <BaseSelect.Separator
         data-outline="line"
+        data-outline-focus="none"
         {...props}
         ref={ref}
         orientation="horizontal"
-        className={mergeClassName<BaseSelect.Separator.State>(styles.separator, className)}
+        className={mergeClassName<BaseSelect.Separator.State>(classes(styles.separator, surfaceClassName), className)}
       />
     );
   },

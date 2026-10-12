@@ -1,7 +1,7 @@
 import {Menu as BaseMenu} from '@base-ui/react/menu';
-import {forwardRef, type ReactNode} from 'react';
+import {forwardRef, type ComponentPropsWithRef, type ReactNode} from 'react';
 import styles from './menu.module.css';
-import outline from '../utils/outline.module.css';
+import {useSurfaceClassName} from '../appearance/appearance.tsx';
 import {Separator, type SeparatorProps} from '../separator/separator.tsx';
 import {classes, mergeClassName} from '../utils/class-names.ts';
 
@@ -24,26 +24,30 @@ export type {
 
 export type MenuHandle<Payload = unknown> = BaseMenu.Handle<Payload>;
 
-export type MenuPopupProps = BaseMenu.Popup.Props;
+export interface MenuPopupProps extends BaseMenu.Popup.Props {
+  /** The inner scroll container; the popup ref/style/className remain on the surface. */
+  readonly bodyProps?: Omit<ComponentPropsWithRef<'div'>, 'children' | 'dangerouslySetInnerHTML'>;
+}
 export type MenuGroupProps = BaseMenu.Group.Props;
 export type MenuGroupLabelProps = BaseMenu.GroupLabel.Props;
 
 export const MenuPositioner = BaseMenu.Positioner;
 
 export const MenuPopup = forwardRef<HTMLDivElement, MenuPopupProps>(function MenuPopup(
-  {className, children, ...props},
+  {className, bodyProps, children, ...props},
   ref,
 ) {
+  const surfaceClassName = useSurfaceClassName();
   return (
     <BaseMenu.Popup
       data-outline="box-small"
       data-outline-focus="none"
       {...props}
       ref={ref}
-      className={mergeClassName<BaseMenu.Popup.State>(classes(styles.popup, outline.outline), className)}
+      className={mergeClassName<BaseMenu.Popup.State>(classes(styles.popup, surfaceClassName), className)}
     >
-      {/* Content scrolls inside, so the popup itself can carry the outline. */}
-      <div className={styles.body}>{children}</div>
+      {/* Content scrolls inside, independently of the popup surface. */}
+      <div data-surface-content="" {...bodyProps} className={classes(styles.body, bodyProps?.className)}>{children}</div>
     </BaseMenu.Popup>
   );
 });
@@ -72,13 +76,14 @@ export const MenuItem = forwardRef<HTMLElement, MenuItemProps>(function MenuItem
   {children, icon, endAdornment, className, ...props},
   ref,
 ) {
+  const surfaceClassName = useSurfaceClassName();
   return (
     <BaseMenu.Item
       data-outline="box-small"
       data-outline-focus="none"
       {...props}
       ref={ref}
-      className={mergeClassName<BaseMenu.Item.State>(classes(styles.item, outline.outline), className)}
+      className={mergeClassName<BaseMenu.Item.State>(classes(styles.item, surfaceClassName), className)}
     >
       <MenuItemContent icon={icon} endAdornment={endAdornment}>
         {children}
@@ -95,13 +100,14 @@ export const MenuLinkItem = forwardRef<Element, MenuLinkItemProps>(function Menu
   {children, icon, endAdornment, className, ...props},
   ref,
 ) {
+  const surfaceClassName = useSurfaceClassName();
   return (
     <BaseMenu.LinkItem
       data-outline="box-small"
       data-outline-focus="none"
       {...props}
       ref={ref}
-      className={mergeClassName<BaseMenu.LinkItem.State>(classes(styles.item, outline.outline), className)}
+      className={mergeClassName<BaseMenu.LinkItem.State>(classes(styles.item, surfaceClassName), className)}
     >
       <MenuItemContent icon={icon} endAdornment={endAdornment}>
         {children}

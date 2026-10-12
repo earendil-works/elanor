@@ -16,17 +16,18 @@
 }
 
 .rule {
+  --outline-focus-color: var(--semantic-color-focus-ring);
   position: absolute;
   inset-block: 0;
   inset-inline-start: calc((var(--semantic-dimension-size-x-small) - var(--semantic-dimension-border-width-default)) / 2);
   inline-size: var(--semantic-dimension-border-width-default);
   --outline-color: var(--semantic-color-border-secondary);
-  background-color: var(--outline-plain-fill, var(--outline-color));
+  background-color: var(--outline-color);
   pointer-events: none;
 }
 
 @media (forced-colors: active) {
   .rule {
-    background-color: var(--outline-plain-fill, CanvasText);
+    --outline-color: CanvasText;
   }
 }

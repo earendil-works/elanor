@@ -1,7 +1,7 @@
 import {Dialog as BaseDialog} from '@base-ui/react/dialog';
-import {forwardRef, type HTMLAttributes} from 'react';
+import {forwardRef, type ComponentPropsWithRef, type HTMLAttributes} from 'react';
 import styles from './modal.module.css';
-import outline from '../utils/outline.module.css';
+import {useSurfaceClassName} from '../appearance/appearance.tsx';
 import {classes, mergeClassName} from '../utils/class-names.ts';
 
 export type {
@@ -23,7 +23,10 @@ export type ModalHandle<Payload = unknown> = BaseDialog.Handle<Payload>;
 
 export type ModalBackdropProps = BaseDialog.Backdrop.Props;
 export type ModalViewportProps = BaseDialog.Viewport.Props;
-export type ModalPopupProps = BaseDialog.Popup.Props;
+export interface ModalPopupProps extends BaseDialog.Popup.Props {
+  /** The inner scroll container; the popup ref/style/className remain on the surface. */
+  readonly bodyProps?: Omit<ComponentPropsWithRef<'div'>, 'children' | 'dangerouslySetInnerHTML'>;
+}
 export type ModalTitleProps = BaseDialog.Title.Props;
 export type ModalDescriptionProps = BaseDialog.Description.Props;
 
@@ -52,19 +55,20 @@ export const ModalViewport = forwardRef<HTMLDivElement, ModalViewportProps>(
 );
 
 export const ModalPopup = forwardRef<HTMLDivElement, ModalPopupProps>(function ModalPopup(
-  {className, children, ...props},
+  {className, bodyProps, children, ...props},
   ref,
 ) {
+  const surfaceClassName = useSurfaceClassName();
   return (
     <BaseDialog.Popup
       data-outline="box-small"
       data-outline-focus="none"
       {...props}
       ref={ref}
-      className={mergeClassName<BaseDialog.Popup.State>(classes(styles.popup, outline.outline), className)}
+      className={mergeClassName<BaseDialog.Popup.State>(classes(styles.popup, surfaceClassName), className)}
     >
-      {/* Content scrolls inside, so the popup itself can carry the outline. */}
-      <div className={styles.body}>{children}</div>
+      {/* Content scrolls inside, independently of the popup surface. */}
+      <div data-surface-content="" {...bodyProps} className={classes(styles.body, bodyProps?.className)}>{children}</div>
     </BaseDialog.Popup>
   );
 });

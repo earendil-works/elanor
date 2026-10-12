@@ -23,3 +23,9 @@ import {Button} from '@earendil-works/elanor-react';
 
 - [Components and examples](https://github.com/earendil-works/elanor/tree/main/packages/react/src)
 - [Application setup](https://github.com/earendil-works/elanor/blob/main/packages/react/docs/application-setup.md)
+
+## Appearance
+
+`AppearanceProvider` accepts optional `surfaceClassName` and `indicatorClassName` values. Omitted/null values select ordinary rendering; nested providers replace both selections. Scope follows React ancestry, including portals.
+
+For pencil styling, use the optional [React strokes adapter](../strokes/react/README.md).

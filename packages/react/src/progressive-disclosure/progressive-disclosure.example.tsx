@@ -1,7 +1,4 @@
-import {Button} from '../button/button.tsx';
-import {Field} from '../field/field.tsx';
-import {Input} from '../input/input.tsx';
-import {ProgressiveDisclosure} from './progressive-disclosure.tsx';
+import {Button, Field, Input, ProgressiveDisclosure} from '@earendil-works/elanor-react';
 
 export function ProgressiveDisclosureExample(): React.JSX.Element {
   return (

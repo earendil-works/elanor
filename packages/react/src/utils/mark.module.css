@@ -1,11 +1,5 @@
-/*
- * The mark contract: a mark inside a control (a check, a dash, a dot) is an
- * element its component paints with a background, masked with the mark's shape.
- * A brand's stylesheet can provide drawn marks in --mark-check, --mark-dash, and
- * --mark-dot; without one, these plain marks show. The plain check and dash are
- * drawn in a 16-unit square with a 2-unit line, the x-small size and the medium
- * border width; the plain dot is the element's own round shape.
- */
+/* Ordinary default indicators. Optional skins target the explicit indicator part,
+   not inherited custom properties. Caller-supplied indicator children are untouched. */
 .check,
 .dash,
 .dot {
@@ -15,18 +9,17 @@
 }
 
 .check {
-  mask-image: var(--mark-check, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.3 6.7 11.5 12.5 4.8' fill='none' stroke='black' stroke-width='2'/%3E%3C/svg%3E"));
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M3.5 8.3 6.7 11.5 12.5 4.8' fill='none' stroke='black' stroke-width='2'/%3E%3C/svg%3E");
 }
 
 .dash {
-  mask-image: var(--mark-dash, url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8h8' fill='none' stroke='black' stroke-width='2'/%3E%3C/svg%3E"));
+  mask-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3E%3Cpath d='M4 8h8' fill='none' stroke='black' stroke-width='2'/%3E%3C/svg%3E");
 }
 
 .dot {
-  mask-image: var(--mark-dot, none);
+  mask-image: none;
 }
 
-/* The mark keeps the background its control sets, rather than a forced one. */
 @media (forced-colors: active) {
   .check,
   .dash,

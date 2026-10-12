@@ -1,7 +1,8 @@
 import {Collapsible as BaseCollapsible} from '@base-ui/react/collapsible';
 import {forwardRef} from 'react';
 import styles from './progressive-disclosure.module.css';
-import {mergeClassName} from '../utils/class-names.ts';
+import {useSurfaceClassName} from '../appearance/appearance.tsx';
+import {classes, mergeClassName} from '../utils/class-names.ts';
 
 export type {
   CollapsibleRootState as ProgressiveDisclosureRootState,
@@ -29,13 +30,14 @@ export const ProgressiveDisclosureRoot = forwardRef<HTMLDivElement, ProgressiveD
 
 export const ProgressiveDisclosurePanel = forwardRef<HTMLDivElement, ProgressiveDisclosurePanelProps>(
   function ProgressiveDisclosurePanel({className, children, ...props}, ref) {
+    const surfaceClassName = useSurfaceClassName();
     return (
       <BaseCollapsible.Panel
         {...props}
         ref={ref}
         className={mergeClassName<BaseCollapsible.Panel.State>(styles.panel, className)}
       >
-        <span className={styles.rule} data-outline="line-vertical" aria-hidden="true" />
+        <span className={classes(styles.rule, surfaceClassName)} data-outline="line-vertical" data-outline-focus="none" aria-hidden="true" />
         {children}
       </BaseCollapsible.Panel>
     );

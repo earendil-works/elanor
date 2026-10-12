@@ -3,6 +3,7 @@ packages:
   - packages/*
   - packages/icons/react
   - packages/logos/react
+  - packages/strokes/react
 
 allowBuilds:
   esbuild: false

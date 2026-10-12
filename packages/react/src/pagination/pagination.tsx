@@ -1,6 +1,6 @@
 import {forwardRef, type AnchorHTMLAttributes, type HTMLAttributes} from 'react';
 import styles from './pagination.module.css';
-import outline from '../utils/outline.module.css';
+import {useSurfaceClassName} from '../appearance/appearance.tsx';
 import {classes} from '../utils/class-names.ts';
 
 export interface PaginationProps extends HTMLAttributes<HTMLElement> {
@@ -25,9 +25,11 @@ export interface PaginationLinkProps extends AnchorHTMLAttributes<HTMLAnchorElem
 
 export const PaginationLink = forwardRef<HTMLAnchorElement, PaginationLinkProps>(
   function PaginationLink({disabled = false, className, tabIndex, href, onClick, onAuxClick, ...props}, ref) {
+    const surfaceClassName = useSurfaceClassName();
     return (
       <a
         data-outline="box-small"
+        data-outline-focus="self"
         data-outline-band="none"
         {...props}
         ref={ref}
@@ -51,7 +53,7 @@ export const PaginationLink = forwardRef<HTMLAnchorElement, PaginationLinkProps>
           }
           onAuxClick?.(event);
         }}
-        className={classes(styles.link, outline.outline, className)}
+        className={classes(styles.link, surfaceClassName, className)}
       />
     );
   },

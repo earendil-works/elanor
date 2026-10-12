@@ -2,7 +2,7 @@ import {Toggle} from '@base-ui/react/toggle';
 import {ToggleGroup as BaseToggleGroup} from '@base-ui/react/toggle-group';
 import {forwardRef, type Ref, type RefAttributes} from 'react';
 import styles from './segmented-control.module.css';
-import outline from '../utils/outline.module.css';
+import {useSurfaceClassName} from '../appearance/appearance.tsx';
 import {classes, mergeClassName} from '../utils/class-names.ts';
 
 export type SegmentedControlProps<Value extends string = string> = BaseToggleGroup.Props<Value> & {
@@ -36,13 +36,15 @@ export const SegmentedControl = forwardRef(function SegmentedControl<Value exten
 
 export const SegmentedControlItem = forwardRef<HTMLButtonElement, SegmentedControlItemProps>(
   function SegmentedControlItem({className, type = 'button', ...props}, ref) {
+    const surfaceClassName = useSurfaceClassName();
     return (
       <Toggle
         data-outline="box-small"
+        data-outline-focus="self"
         {...props}
         ref={ref}
         type={type}
-        className={mergeClassName<Toggle.State>(classes(styles.item, outline.outline), className)}
+        className={mergeClassName<Toggle.State>(classes(styles.item, surfaceClassName), className)}
       />
     );
   },

@@ -1,0 +1,17 @@
+import {Link, TopNavigation} from '@earendil-works/elanor-react';
+
+export function TopNavigationExample(): React.JSX.Element {
+  return (
+    <TopNavigation.Root>
+      <TopNavigation.Identity><Link href="/">Elanor</Link></TopNavigation.Identity>
+      <TopNavigation.Navigation>
+        <nav aria-label="Component shortcuts">
+          <Link href="/components/button">Buttons</Link>
+        </nav>
+      </TopNavigation.Navigation>
+      <TopNavigation.Actions>
+        <Link href="https://github.com/earendil-works/elanor">Source code</Link>
+      </TopNavigation.Actions>
+    </TopNavigation.Root>
+  );
+}

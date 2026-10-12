@@ -1,15 +1,9 @@
-import {Card, Heading, Link, Stack, Text} from '@earendil-works/elanor-react';
+import {CardSummarySurfacePreview as CardSummaryExample, CardContentSurfacePreview as CardContentExample} from '@elanor-docs/surface-previews.tsx';
 
 ## Summary
 
-<Card label="Active projects" value="12" description="Across three teams" />
+<CardSummaryExample client:load />
 
 ## Custom content
 
-<Card>
-  <Stack gap="small">
-    <Heading level={2}>Workspace settings</Heading>
-    <Text>Group related controls with a label and supporting description.</Text>
-    <Link href="/components/field">Explore form fields</Link>
-  </Stack>
-</Card>
+<CardContentExample client:load />

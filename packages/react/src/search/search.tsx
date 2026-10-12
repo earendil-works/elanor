@@ -2,7 +2,7 @@ import {Input as BaseInput} from '@base-ui/react/input';
 import {SearchIcon} from '@earendil-works/elanor-icons-react';
 import {forwardRef, type ReactNode} from 'react';
 import styles from './search.module.css';
-import outline from '../utils/outline.module.css';
+import {useSurfaceClassName} from '../appearance/appearance.tsx';
 import {classes, mergeClassName} from '../utils/class-names.ts';
 
 const inputTypes = ['text', 'search'] as const;
@@ -18,16 +18,18 @@ export const Search = forwardRef<HTMLInputElement, SearchProps>(function Search(
   {icon, endAdornment, rootClassName, className, type = 'search', ...props},
   ref,
 ) {
+  const surfaceClassName = useSurfaceClassName();
   if (!inputTypes.includes(type)) {
     throw new TypeError(`Search does not support type="${type}". Use one of: ${inputTypes.join(', ')}.`);
   }
 
   return (
-    <span className={classes(styles.root, outline.outline, rootClassName)} data-outline="box-small">
+    <span className={classes(styles.root, surfaceClassName, rootClassName)} data-outline="box-small" data-outline-focus="control">
       <span className={styles.icon} aria-hidden="true">
         {icon ?? <SearchIcon />}
       </span>
       <BaseInput
+        data-surface-control=""
         {...props}
         ref={ref}
         type={type}

@@ -1,6 +1,4 @@
-import {Heading} from '../heading/heading.tsx';
-import {Text} from '../text/text.tsx';
-import {Stack} from './stack.tsx';
+import {Heading, Stack, Text} from '@earendil-works/elanor-react';
 
 const statusStyle = {
   padding: 'var(--semantic-dimension-space-padding-small)',

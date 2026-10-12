@@ -1,5 +1,9 @@
-/* The frame draws the field and its outline; textareas can't host the outline layer. */
+/* The frame owns the visible surface independently of the native control. */
 .frame {
+  position: relative;
+  border: var(--semantic-dimension-border-width-default) solid var(--outline-color);
+  border-radius: var(--semantic-dimension-radius-small);
+  --outline-focus-color: var(--semantic-color-focus-ring);
   box-sizing: border-box;
   display: inline-grid;
   inline-size: 100%;
@@ -22,7 +26,7 @@
 }
 
 .frame:has(> .textarea:focus-visible) {
-  outline: var(--outline-plain-focus, var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring));
+  outline: var(--semantic-dimension-border-width-large) solid var(--outline-focus-color);
   outline-offset: calc(-1 * var(--semantic-dimension-border-width-large));
 }
 
@@ -61,11 +65,11 @@
 
 @media (forced-colors: active) {
   .frame {
-    outline: var(--outline-plain-focus, var(--semantic-dimension-border-width-default) solid ButtonBorder);
+    outline: var(--semantic-dimension-border-width-default) solid ButtonBorder;
     outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
   }
 
   .frame:has(> .textarea:focus-visible) {
-    outline-color: Highlight;
+    --outline-focus-color: Highlight;
   }
 }

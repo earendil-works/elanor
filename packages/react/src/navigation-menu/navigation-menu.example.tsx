@@ -1,4 +1,4 @@
-import {NavigationMenu} from './navigation-menu.tsx';
+import {NavigationMenu} from '@earendil-works/elanor-react';
 
 export function NavigationMenuExample(): React.JSX.Element {
   return (

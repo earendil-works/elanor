@@ -5,6 +5,7 @@ import {brushes, type StrokeStyle, styles} from "../config.js";
 import {maskSvg, normalizeBrush} from "./lib/geometry.js";
 import {readBrush} from "./lib/path.js";
 import {marksFor, OVERLAP, type Shape, shapesFor} from "./lib/shapes.js";
+import {enhanceSurfaces, surfaceCss} from "./lib/surface-css.js";
 
 /*
  * Strokes implement the outline contract of the Elanor components: an element
@@ -170,7 +171,8 @@ for (const [styleName, style] of Object.entries(styles)) {
     await mkdir(assetDirectory, {recursive: true});
 
     const css = [baseCss(bands)];
-    const manifest: Array<{name: string; kind: string; size: Shape["size"]}> = [];
+    const surfaceRules: string[] = [];
+    const manifest: Array<{name: string; kind: Shape["kind"]; size: Shape["size"]}> = [];
     for (const shape of shapesFor(style, strip, pixels)) {
       manifest.push({name: shape.name, kind: shape.kind, size: shape.size});
       const thicknesses = shape.kind === "line" ? (["default"] as const) : (["default", "focus"] as const);
@@ -219,6 +221,29 @@ for (const [styleName, style] of Object.entries(styles)) {
           .map((line) => `  ${line}`)
           .join("\n")}\n}`,
       );
+      // Consumer skin geometry is local to each pseudo-element, never inherited by children.
+      {
+        const surface = `.elanor-pencil-surface[data-outline="${shape.name}"]`;
+        const declarations = [
+          ...geometry(shape, drawnGeometry.default!, bands.default, ""),
+          ...(shape.kind === "line" ? [] : geometry(shape, drawnGeometry.focus!, bands.focus, "focus-")),
+          ...imageDeclarations(0),
+        ];
+        surfaceRules.push(`${surface}::after {\n  ${declarations.join("\n  ")}\n}`);
+        if (shape.kind === "line") {
+          const band = rem(bands.default);
+          const edges = shape.name.endsWith("vertical")
+            ? {"inline-start": `inset-inline-end: calc(100% - ${band})`, "inline-end": `inset-inline-start: calc(100% - ${band})`}
+            : {"block-start": `inset-block-end: calc(100% - ${band})`, "block-end": `inset-block-start: calc(100% - ${band})`};
+          for (const [edge, declaration] of Object.entries(edges)) {
+            surfaceRules.push(`${surface}[data-outline-edge="${edge}"]::after { inset: 0; ${declaration}; }`);
+          }
+        }
+        for (let variant = 1; variant < style.variants; variant += 1) {
+          surfaceRules.push(`${surface}[data-stroke-variant="${variant}"]::after, ${surface}:not([data-stroke-variant]):nth-child(${style.variants}n + ${variant + 1})::after {\n  ${imageDeclarations(variant).join("\n  ")}\n}`);
+        }
+      }
+
       // Siblings cycle through the variants unless one is chosen with data-stroke-variant.
       for (let variant = 1; variant < style.variants; variant += 1) {
         css.push(
@@ -239,6 +264,12 @@ for (const [styleName, style] of Object.entries(styles)) {
       `/* Drawn marks: components paint a mark in a color and mask it with var(--mark-<name>, <their plain mark>). */\n${scope} {\n${markDeclarations}\n}\n`;
 
     const text = `${css.join("\n\n")}\n`;
+    const indicators = marks.map(({name, layers, size}) => {
+      const selector = `.elanor-pencil-indicator[data-indicator="${name}"]`;
+      const indeterminate = name === "dash" ? ', .elanor-pencil-indicator[data-indicator="check"][data-indeterminate]' : '';
+      return `${selector}${indeterminate} { mask-image: url("data:image/svg+xml,${svgData(maskSvg(layers, [0, 0, size, size], 0.05))}"); }`;
+    });
+    await writeFile(resolve(styleDirectory, `${brand}.surface.css`), enhanceSurfaces(surfaceCss(rem(bands.default), manifest), surfaceRules, indicators));
     await writeFile(resolve(styleDirectory, `${brand}.css`), `${text}\n${marksCss(":where(:root)")}`);
     // The scoped copy applies only inside [data-strokes="<style>"], so pages can switch styles.
     const scope = `:where([data-strokes="${styleName}"])`;

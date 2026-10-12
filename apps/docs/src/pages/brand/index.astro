@@ -1,10 +1,8 @@
 ---
 import {readFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
-import {Heading, Link, Text} from '@earendil-works/elanor-react';
 import DocsLayout from '../../layouts/docs-layout.astro';
-import {BrandLogos} from '../../components/brand-logos.tsx';
-import {HeadSnippet} from '../../components/head-snippet.tsx';
+import {BrandContent} from '../../components/brand-logos.tsx';
 import {loadGuidelines} from '../../lib/api.ts';
 import {type LogoManifest, logosDist} from '../../lib/packages.ts';
 
@@ -15,42 +13,31 @@ const headTags = new Map(
   ),
 );
 
+const brands = manifest.brands.map((brand) => ({
+  brand,
+  pressKit: manifest.pressKits?.[brand.id],
+  headTags: headTags.get(brand.id),
+}));
+
 // The company guidelines as data, composed under this page's own heading.
 const guidelines = await loadGuidelines();
 ---
 
 <DocsLayout title="Logos" current="/brand/" wide>
-  <div class="page grid-page">
-    <Heading level={1} size={1}>Logos</Heading>
-    <Text>
-      Use the supplied artwork unchanged, with one grid unit of clear space around it. See the <Link href="#guidelines">brand guidelines</Link>.
-    </Text>
-    {
-      manifest.brands.map((brand) => {
-        const tags = headTags.get(brand.id);
-        return (
-          <BrandLogos brand={brand} pressKit={manifest.pressKits?.[brand.id]}>
-            {tags ? <HeadSnippet client:visible code={tags} /> : null}
-          </BrandLogos>
-        );
-      })
-    }
-    <section aria-labelledby="guidelines">
-      <Heading level={2} size={2} id="guidelines">Brand guidelines</Heading>
-      <article class="prose">
-        <Fragment set:html={guidelines.intro.html} />
-        {
-          guidelines.sections.map((section) => (
-            <>
-              <h3 id={section.id}>{section.title}</h3>
-              <Fragment set:html={section.html} />
-              {section.images.map((image) => (
-                <img src={image.url} alt={image.alt} width={image.width} />
-              ))}
-            </>
-          ))
-        }
-      </article>
-    </section>
-  </div>
+  <BrandContent brands={brands} client:load>
+    <article class="prose">
+      <Fragment set:html={guidelines.intro.html} />
+      {
+        guidelines.sections.map((section) => (
+          <>
+            <h3 id={section.id}>{section.title}</h3>
+            <Fragment set:html={section.html} />
+            {section.images.map((image) => (
+              <img src={image.url} alt={image.alt} width={image.width} />
+            ))}
+          </>
+        ))
+      }
+    </article>
+  </BrandContent>
 </DocsLayout>
