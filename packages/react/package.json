@@ -19,6 +19,16 @@
     },
     "./elanor.min.css": "./dist/elanor.min.css"
   },
+  "publishConfig": {
+    "exports": {
+      ".": {
+        "types": "./dist/index.d.ts",
+        "import": "./dist/index.js",
+        "default": "./dist/index.js"
+      },
+      "./elanor.min.css": "./dist/elanor.min.css"
+    }
+  },
   "scripts": {
     "clean": "rm -rf dist",
     "build": "pnpm run generate:css:check && pnpm run clean && rollup --config && tsc -p tsconfig.json --emitDeclarationOnly",
