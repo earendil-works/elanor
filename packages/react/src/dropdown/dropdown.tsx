@@ -42,9 +42,9 @@ export interface DropdownSeparatorProps extends Omit<BaseSelect.Separator.Props,
   readonly orientation?: 'horizontal';
 }
 
-const MultipleContext = createContext(false);
+const MultipleContext = /* @__PURE__ */ createContext(false);
 
-function DropdownRoot<Value, Multiple extends boolean | undefined = false>(
+export function DropdownRoot<Value, Multiple extends boolean | undefined = false>(
   props: DropdownRootProps<Value, Multiple>,
 ): React.JSX.Element {
   return (
@@ -173,21 +173,3 @@ export function DropdownSeparator({ref, className, ...props}: DropdownSeparatorP
     />
   );
 }
-
-export const Dropdown = {
-  Root: DropdownRoot,
-  Label: DropdownLabel,
-  Trigger: DropdownTrigger,
-  Value: BaseSelect.Value,
-  Icon: DropdownIcon,
-  Portal: BaseSelect.Portal,
-  Positioner: DropdownPositioner,
-  Popup: DropdownPopup,
-  List: DropdownList,
-  Item: DropdownItem,
-  ItemIndicator: DropdownItemIndicator,
-  ItemText: BaseSelect.ItemText,
-  Group: BaseSelect.Group,
-  GroupLabel: DropdownGroupLabel,
-  Separator: DropdownSeparator,
-} as const;

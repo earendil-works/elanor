@@ -4,12 +4,12 @@ import {classes} from '../utils/class-names.ts';
 
 import styles from './pagination.module.css';
 
-export interface PaginationProps extends HTMLAttributes<HTMLElement> {
+export interface PaginationRootProps extends HTMLAttributes<HTMLElement> {
   readonly ref?: Ref<HTMLElement> | undefined;
   readonly summary?: string;
 }
 
-export function Pagination({ref, summary, children, className, ...props}: PaginationProps) {
+export function Pagination({ref, summary, children, className, ...props}: PaginationRootProps) {
   return (
     <nav
       {...props}

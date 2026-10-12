@@ -43,9 +43,3 @@ export function ProgressiveDisclosurePanel({
     />
   );
 }
-
-export const ProgressiveDisclosure = {
-  Root: ProgressiveDisclosureRoot,
-  Trigger: BaseCollapsible.Trigger,
-  Panel: ProgressiveDisclosurePanel,
-} as const;

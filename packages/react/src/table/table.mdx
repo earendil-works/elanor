@@ -1,35 +1,25 @@
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableCellPrimary,
-  TableCellSecondary,
-  TableContainer,
-  TableHead,
-  TableHeaderCell,
-  TableRow,
-} from '@earendil-works/elanor-react';
+import {Table} from '@earendil-works/elanor-react';
 
-<TableContainer>
-  <Table aria-label="Projects">
-    <TableHead>
-      <TableRow>
-        <TableHeaderCell scope="col">Name</TableHeaderCell>
-        <TableHeaderCell scope="col">Status</TableHeaderCell>
-      </TableRow>
-    </TableHead>
-    <TableBody>
-      <TableRow>
-        <TableCell>
-          <TableCellPrimary>Project Alpha</TableCellPrimary>
-          <TableCellSecondary>Production environment</TableCellSecondary>
-        </TableCell>
-        <TableCell>Active</TableCell>
-      </TableRow>
-      <TableRow>
-        <TableCell>Project Beta</TableCell>
-        <TableCell>Draft</TableCell>
-      </TableRow>
-    </TableBody>
-  </Table>
-</TableContainer>
+<Table.Container>
+  <Table.Root aria-label="Projects">
+    <Table.Head>
+      <Table.Row>
+        <Table.HeaderCell scope="col">Name</Table.HeaderCell>
+        <Table.HeaderCell scope="col">Status</Table.HeaderCell>
+      </Table.Row>
+    </Table.Head>
+    <Table.Body>
+      <Table.Row>
+        <Table.Cell>
+          <Table.CellPrimary>Project Alpha</Table.CellPrimary>
+          <Table.CellSecondary>Production environment</Table.CellSecondary>
+        </Table.Cell>
+        <Table.Cell>Active</Table.Cell>
+      </Table.Row>
+      <Table.Row>
+        <Table.Cell>Project Beta</Table.Cell>
+        <Table.Cell>Draft</Table.Cell>
+      </Table.Row>
+    </Table.Body>
+  </Table.Root>
+</Table.Container>

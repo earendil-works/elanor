@@ -2,7 +2,6 @@ import {Menu as BaseMenu} from '@base-ui/react/menu';
 import {KeyboardArrowDownIcon} from '@earendil-works/elanor-icons-react';
 import type {ReactNode} from 'react';
 
-import {Menu} from '../menu/index.ts';
 import {mergeClassName} from '../utils/class-names.ts';
 
 import styles from './project-switcher.module.css';
@@ -33,16 +32,3 @@ export function ProjectSwitcherTrigger<Payload = unknown>({
     </BaseMenu.Trigger>
   );
 }
-
-export const ProjectSwitcher = {
-  Root: Menu.Root,
-  Trigger: ProjectSwitcherTrigger,
-  Portal: Menu.Portal,
-  Positioner: Menu.Positioner,
-  Popup: Menu.Popup,
-  Item: Menu.Item,
-  LinkItem: Menu.LinkItem,
-  Group: Menu.Group,
-  GroupLabel: Menu.GroupLabel,
-  Separator: Menu.Separator,
-} as const;

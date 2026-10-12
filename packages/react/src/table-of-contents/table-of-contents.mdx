@@ -1,26 +1,19 @@
-import {
-  Heading,
-  Stack,
-  TableOfContents,
-  TableOfContentsItem,
-  TableOfContentsLink,
-  Text,
-} from '@earendil-works/elanor-react';
+import {Heading, Stack, TableOfContents, Text} from '@earendil-works/elanor-react';
 
 <Stack gap="large">
-  <TableOfContents style={{maxInlineSize: '24ch'}}>
-    <TableOfContentsItem>
-      <TableOfContentsLink href="#overview">Overview</TableOfContentsLink>
-    </TableOfContentsItem>
-    <TableOfContentsItem>
-      <TableOfContentsLink href="#usage">Usage</TableOfContentsLink>
-    </TableOfContentsItem>
-    <TableOfContentsItem>
-      <TableOfContentsLink href="#project-access">
+  <TableOfContents.Root style={{maxInlineSize: '24ch'}}>
+    <TableOfContents.Item>
+      <TableOfContents.Link href="#overview">Overview</TableOfContents.Link>
+    </TableOfContents.Item>
+    <TableOfContents.Item>
+      <TableOfContents.Link href="#usage">Usage</TableOfContents.Link>
+    </TableOfContents.Item>
+    <TableOfContents.Item>
+      <TableOfContents.Link href="#project-access">
         Managing project access and team permissions
-      </TableOfContentsLink>
-    </TableOfContentsItem>
-  </TableOfContents>
+      </TableOfContents.Link>
+    </TableOfContents.Item>
+  </TableOfContents.Root>
   <section id="overview" aria-labelledby="overview-title">
     <Heading level={2} id="overview-title">
       Overview

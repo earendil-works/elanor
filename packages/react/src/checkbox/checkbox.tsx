@@ -37,8 +37,3 @@ export function CheckboxIndicator({ref, className, children, ...props}: Checkbox
     </BaseCheckbox.Indicator>
   );
 }
-
-export const Checkbox = {
-  Root: CheckboxRoot,
-  Indicator: CheckboxIndicator,
-} as const;

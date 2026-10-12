@@ -1,4 +1,4 @@
-import {Stack, Text, SegmentedControl, SegmentedControlItem} from '@earendil-works/elanor-react';
+import {Stack, Text, SegmentedControl} from '@earendil-works/elanor-react';
 import {useState} from 'react';
 
 export function SegmentedControlExample(): React.JSX.Element {
@@ -6,16 +6,16 @@ export function SegmentedControlExample(): React.JSX.Element {
 
   return (
     <Stack gap="small" align="start">
-      <SegmentedControl
+      <SegmentedControl.Root
         aria-label="Billing period"
         value={period}
         onValueChange={(next) => {
           if (next.length > 0) setPeriod(next);
         }}
       >
-        <SegmentedControlItem value="monthly">Monthly</SegmentedControlItem>
-        <SegmentedControlItem value="yearly">Yearly</SegmentedControlItem>
-      </SegmentedControl>
+        <SegmentedControl.Item value="monthly">Monthly</SegmentedControl.Item>
+        <SegmentedControl.Item value="yearly">Yearly</SegmentedControl.Item>
+      </SegmentedControl.Root>
       <Text role="status">{period[0] === 'yearly' ? '$120 per year' : '$12 per month'}</Text>
     </Stack>
   );

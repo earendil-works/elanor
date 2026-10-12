@@ -14,7 +14,7 @@ export type GridGap = 'xxSmall' | 'xSmall' | 'small' | 'medium' | 'large' | 'xLa
 const breakpoints = ['base', 'xSmall', 'small', 'medium', 'large', 'xLarge'] as const;
 type TrackCounts = Record<GridBreakpoint, GridColumns>;
 // Only track counts travel through context. CSS owns all width-dependent layout.
-const GridContext = createContext<TrackCounts | null>(null);
+const GridContext = /* @__PURE__ */ createContext<TrackCounts | null>(null);
 
 function useTrackCounts(): TrackCounts {
   const counts = useContext(GridContext);
@@ -119,5 +119,3 @@ export function GridSubgrid({ref, span = 'full', render, className, ...props}: G
   });
   return <GridContext.Provider value={tracks}>{element}</GridContext.Provider>;
 }
-
-export const Grid = {Root: GridRoot, Item: GridItem, Subgrid: GridSubgrid} as const;

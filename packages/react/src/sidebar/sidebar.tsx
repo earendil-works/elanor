@@ -4,7 +4,7 @@ import {useRender} from '@base-ui/react/use-render';
 import {DockToLeftIcon} from '@earendil-works/elanor-icons-react';
 import {createContext, useContext, useState, type ReactNode} from 'react';
 
-import {ScrollArea} from '../scroll-area/scroll-area.tsx';
+import * as ScrollArea from '../scroll-area/index.ts';
 import {classes, mergeClassName} from '../utils/class-names.ts';
 import {CompactTooltip} from './compact-tooltip.tsx';
 
@@ -33,7 +33,7 @@ interface SidebarContextValue {
   readonly setCollapsed: (collapsed: boolean, details: SidebarChangeEventDetails) => void;
 }
 
-const SidebarContext = createContext<SidebarContextValue | null>(null);
+const SidebarContext = /* @__PURE__ */ createContext<SidebarContextValue | null>(null);
 
 function useSidebarContext() {
   const context = useContext(SidebarContext);
@@ -164,11 +164,3 @@ export function SidebarFooter({ref, render, className, ...props}: SidebarFooterP
     props: {...props, className: classes(styles.footer, className)},
   });
 }
-
-export const Sidebar = {
-  Root: SidebarRoot,
-  Trigger: SidebarTrigger,
-  Header: SidebarHeader,
-  Content: SidebarContent,
-  Footer: SidebarFooter,
-} as const;

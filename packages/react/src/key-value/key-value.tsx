@@ -36,10 +36,3 @@ export function KeyValueKey({ref, children, className, ...props}: KeyValueKeyPro
 export function KeyValueValue({ref, className, ...props}: KeyValueValueProps) {
   return <dd {...props} ref={ref} className={classes(styles.value, className)} />;
 }
-
-export const KeyValue = {
-  Inline: KeyValueInline,
-  Grid: KeyValueGrid,
-  Key: KeyValueKey,
-  Value: KeyValueValue,
-} as const;

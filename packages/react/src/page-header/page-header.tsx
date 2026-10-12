@@ -6,11 +6,11 @@ import {classes} from '../utils/class-names.ts';
 
 import styles from './page-header.module.css';
 
-export interface PageHeaderProps extends HTMLAttributes<HTMLElement> {
+export interface PageHeaderRootProps extends HTMLAttributes<HTMLElement> {
   readonly ref?: Ref<HTMLElement> | undefined;
 }
 
-export function PageHeaderRoot({ref, className, ...props}: PageHeaderProps) {
+export function PageHeaderRoot({ref, className, ...props}: PageHeaderRootProps) {
   return <header {...props} ref={ref} className={classes(styles.header, className)} />;
 }
 
@@ -43,11 +43,3 @@ export interface PageHeaderActionsProps extends HTMLAttributes<HTMLDivElement> {
 export function PageHeaderActions({ref, className, ...props}: PageHeaderActionsProps) {
   return <div {...props} ref={ref} className={classes(styles.actions, className)} />;
 }
-
-export const PageHeader = {
-  Root: PageHeaderRoot,
-  Row: PageHeaderRow,
-  Title: PageHeaderTitle,
-  Description: PageHeaderDescription,
-  Actions: PageHeaderActions,
-} as const;

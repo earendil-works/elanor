@@ -34,8 +34,3 @@ export function SwitchThumb({ref, className, ...props}: SwitchThumbProps) {
     />
   );
 }
-
-export const Switch = {
-  Root: SwitchRoot,
-  Thumb: SwitchThumb,
-} as const;

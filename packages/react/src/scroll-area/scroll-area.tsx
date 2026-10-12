@@ -68,12 +68,3 @@ export function ScrollAreaThumb({ref, className, ...props}: ScrollAreaThumbProps
     />
   );
 }
-
-export const ScrollArea = {
-  Root: ScrollAreaRoot,
-  Viewport: ScrollAreaViewport,
-  Content: ScrollAreaContent,
-  Scrollbar: ScrollAreaScrollbar,
-  Thumb: ScrollAreaThumb,
-  Corner: BaseScrollArea.Corner,
-} as const;

@@ -5,11 +5,11 @@ import {classes} from '../utils/class-names.ts';
 
 import styles from './empty-state.module.css';
 
-export interface EmptyStateProps extends HTMLAttributes<HTMLDivElement> {
+export interface EmptyStateRootProps extends HTMLAttributes<HTMLDivElement> {
   readonly ref?: Ref<HTMLDivElement> | undefined;
 }
 
-export function EmptyStateRoot({ref, className, ...props}: EmptyStateProps) {
+export function EmptyStateRoot({ref, className, ...props}: EmptyStateRootProps) {
   return <div {...props} ref={ref} className={classes(styles.root, className)} />;
 }
 
@@ -61,13 +61,3 @@ export interface EmptyStateActionsProps extends HTMLAttributes<HTMLDivElement> {
 export function EmptyStateActions({ref, className, ...props}: EmptyStateActionsProps) {
   return <div {...props} ref={ref} className={classes(styles.actions, className)} />;
 }
-
-export const EmptyState = {
-  Root: EmptyStateRoot,
-  Illustration: EmptyStateIllustration,
-  Body: EmptyStateBody,
-  Copy: EmptyStateCopy,
-  Title: EmptyStateTitle,
-  Description: EmptyStateDescription,
-  Actions: EmptyStateActions,
-} as const;

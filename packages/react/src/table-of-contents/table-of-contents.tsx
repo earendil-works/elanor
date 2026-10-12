@@ -4,7 +4,7 @@ import {classes} from '../utils/class-names.ts';
 
 import styles from './table-of-contents.module.css';
 
-export interface TableOfContentsProps extends Omit<HTMLAttributes<HTMLElement>, 'title'> {
+export interface TableOfContentsRootProps extends Omit<HTMLAttributes<HTMLElement>, 'title'> {
   readonly ref?: Ref<HTMLElement> | undefined;
   readonly title?: ReactNode;
 }
@@ -15,7 +15,7 @@ export function TableOfContents({
   children,
   className,
   ...props
-}: TableOfContentsProps) {
+}: TableOfContentsRootProps) {
   return (
     <nav
       {...props}

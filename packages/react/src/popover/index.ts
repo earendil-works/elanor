@@ -1,35 +1,14 @@
 import {Popover as BasePopover} from '@base-ui/react/popover';
 
-import {PopoverDescription, PopoverPopup, PopoverTitle} from './popover.tsx';
-
-// Keep utilities outside the component-only Fast Refresh boundary.
-export const Popover = {
-  Root: BasePopover.Root,
-  Trigger: BasePopover.Trigger,
-  Portal: BasePopover.Portal,
-  Positioner: BasePopover.Positioner,
-  Popup: PopoverPopup,
-  Title: PopoverTitle,
-  Description: PopoverDescription,
-  Close: BasePopover.Close,
-  createHandle: BasePopover.createHandle,
-} as const;
-
-export {PopoverDescription, PopoverPopup, PopoverTitle};
-export type {
-  PopoverCloseProps,
-  PopoverDescriptionProps,
-  PopoverHandle,
-  PopoverPopupProps,
-  PopoverPopupState,
-  PopoverPortalProps,
-  PopoverPositionerProps,
-  PopoverPositionerState,
-  PopoverRootActions,
-  PopoverRootChangeEventDetails,
-  PopoverRootChangeEventReason,
-  PopoverRootProps,
-  PopoverTitleProps,
-  PopoverTriggerProps,
-  PopoverTriggerState,
+export {
+  PopoverPopup as Popup,
+  PopoverTitle as Title,
+  PopoverDescription as Description,
 } from './popover.tsx';
+
+export const Root = BasePopover.Root;
+export const Trigger = BasePopover.Trigger;
+export const Portal = BasePopover.Portal;
+export const Positioner = BasePopover.Positioner;
+export const Close = BasePopover.Close;
+export const createHandle = BasePopover.createHandle;

@@ -62,12 +62,3 @@ export function FieldError({ref, className, ...props}: FieldErrorProps) {
     />
   );
 }
-
-export const Field = {
-  Root: FieldRoot,
-  Label: FieldLabel,
-  Description: FieldDescription,
-  Error: FieldError,
-  Item: BaseField.Item,
-  Validity: BaseField.Validity,
-} as const;

@@ -4,11 +4,11 @@ import {classes} from '../utils/class-names.ts';
 
 import styles from './top-navigation.module.css';
 
-export interface TopNavigationProps extends HTMLAttributes<HTMLElement> {
+export interface TopNavigationRootProps extends HTMLAttributes<HTMLElement> {
   readonly ref?: Ref<HTMLElement> | undefined;
 }
 
-export function TopNavigationRoot({ref, className, ...props}: TopNavigationProps) {
+export function TopNavigationRoot({ref, className, ...props}: TopNavigationRootProps) {
   return <header {...props} ref={ref} className={classes(styles.root, className)} />;
 }
 
@@ -35,10 +35,3 @@ export interface TopNavigationActionsProps extends HTMLAttributes<HTMLDivElement
 export function TopNavigationActions({ref, className, ...props}: TopNavigationActionsProps) {
   return <div {...props} ref={ref} className={classes(styles.actions, className)} />;
 }
-
-export const TopNavigation = {
-  Root: TopNavigationRoot,
-  Identity: TopNavigationIdentity,
-  Navigation: TopNavigationNavigation,
-  Actions: TopNavigationActions,
-} as const;

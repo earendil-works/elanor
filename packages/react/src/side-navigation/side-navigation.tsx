@@ -19,7 +19,7 @@ export interface SideNavigationRootProps extends HTMLAttributes<HTMLElement> {
   readonly variant?: SideNavigationVariant;
 }
 
-const CompactContext = createContext(false);
+const CompactContext = /* @__PURE__ */ createContext(false);
 
 export function SideNavigationRoot({
   ref,
@@ -151,12 +151,3 @@ export function SideNavigationLink({
     </CompactTooltip>
   );
 }
-
-export const SideNavigation = {
-  Root: SideNavigationRoot,
-  Group: SideNavigationGroup,
-  GroupLabel: SideNavigationGroupLabel,
-  List: SideNavigationList,
-  Item: SideNavigationItem,
-  Link: SideNavigationLink,
-} as const;

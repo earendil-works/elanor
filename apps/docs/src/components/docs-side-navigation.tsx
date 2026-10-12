@@ -1,11 +1,4 @@
-import {
-  SideNavigationGroup,
-  SideNavigationGroupLabel,
-  SideNavigationItem,
-  SideNavigationLink,
-  SideNavigationList,
-  SideNavigationRoot,
-} from '@earendil-works/elanor-react';
+import {SideNavigation} from '@earendil-works/elanor-react';
 
 export interface DocsNavigationSection {
   readonly label: string;
@@ -24,38 +17,38 @@ export function DocsSideNavigation({
   onNavigate,
 }: DocsSideNavigationProps): React.JSX.Element {
   return (
-    <SideNavigationRoot aria-label="Documentation">
-      <SideNavigationList>
-        <SideNavigationItem>
-          <SideNavigationLink
+    <SideNavigation.Root aria-label="Documentation">
+      <SideNavigation.List>
+        <SideNavigation.Item>
+          <SideNavigation.Link
             href="/"
             active={current === '/'}
             onClick={onNavigate}
             data-astro-reload
           >
             Home
-          </SideNavigationLink>
-        </SideNavigationItem>
-      </SideNavigationList>
+          </SideNavigation.Link>
+        </SideNavigation.Item>
+      </SideNavigation.List>
       {sections.map((section) => (
-        <SideNavigationGroup key={section.label}>
-          <SideNavigationGroupLabel>{section.label}</SideNavigationGroupLabel>
-          <SideNavigationList>
+        <SideNavigation.Group key={section.label}>
+          <SideNavigation.GroupLabel>{section.label}</SideNavigation.GroupLabel>
+          <SideNavigation.List>
             {section.links.map((link) => (
-              <SideNavigationItem key={link.href}>
-                <SideNavigationLink
+              <SideNavigation.Item key={link.href}>
+                <SideNavigation.Link
                   href={link.href}
                   data-astro-reload={link.href.startsWith('/auth/') || undefined}
                   active={link.href === current}
                   onClick={onNavigate}
                 >
                   {link.label}
-                </SideNavigationLink>
-              </SideNavigationItem>
+                </SideNavigation.Link>
+              </SideNavigation.Item>
             ))}
-          </SideNavigationList>
-        </SideNavigationGroup>
+          </SideNavigation.List>
+        </SideNavigation.Group>
       ))}
-    </SideNavigationRoot>
+    </SideNavigation.Root>
   );
 }

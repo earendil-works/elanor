@@ -68,12 +68,3 @@ export function LayoutFooter({ref, render, ...props}: LayoutFooterProps) {
     props: mergeProps<'footer'>({className: styles.footer}, props),
   });
 }
-
-export const Layout = {
-  Root: LayoutRoot,
-  Header: LayoutHeader,
-  Body: LayoutBody,
-  Aside: LayoutAside,
-  Main: LayoutMain,
-  Footer: LayoutFooter,
-} as const;

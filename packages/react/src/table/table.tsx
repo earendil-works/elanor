@@ -18,11 +18,11 @@ export function TableContainer({ref, className, ...props}: TableContainerProps) 
   return <div {...props} ref={ref} className={classes(styles.container, className)} />;
 }
 
-export interface TableProps extends TableHTMLAttributes<HTMLTableElement> {
+export interface TableRootProps extends TableHTMLAttributes<HTMLTableElement> {
   readonly ref?: Ref<HTMLTableElement> | undefined;
 }
 
-export function Table({ref, className, ...props}: TableProps) {
+export function Table({ref, className, ...props}: TableRootProps) {
   return <table {...props} ref={ref} className={classes(styles.table, className)} />;
 }
 

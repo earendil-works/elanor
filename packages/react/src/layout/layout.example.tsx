@@ -5,8 +5,6 @@ import {
   Page,
   SideNavigation,
   TableOfContents,
-  TableOfContentsItem,
-  TableOfContentsLink,
   Text,
   Layout,
 } from '@earendil-works/elanor-react';
@@ -67,14 +65,14 @@ export function LayoutExample() {
           aria-label="Page outline"
           style={{padding: 'var(--semantic-dimension-space-padding-medium)'}}
         >
-          <TableOfContents>
-            <TableOfContentsItem>
-              <TableOfContentsLink href="#layout-overview">Page composition</TableOfContentsLink>
-            </TableOfContentsItem>
-            <TableOfContentsItem>
-              <TableOfContentsLink href="#layout-details">Content ownership</TableOfContentsLink>
-            </TableOfContentsItem>
-          </TableOfContents>
+          <TableOfContents.Root>
+            <TableOfContents.Item>
+              <TableOfContents.Link href="#layout-overview">Page composition</TableOfContents.Link>
+            </TableOfContents.Item>
+            <TableOfContents.Item>
+              <TableOfContents.Link href="#layout-details">Content ownership</TableOfContents.Link>
+            </TableOfContents.Item>
+          </TableOfContents.Root>
         </Layout.Aside>
       </Container>
       <Layout.Footer>

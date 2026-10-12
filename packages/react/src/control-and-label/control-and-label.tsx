@@ -1,7 +1,7 @@
 import {Field as BaseField} from '@base-ui/react/field';
 import type {ReactNode} from 'react';
 
-import {Field} from '../field/field.tsx';
+import * as Field from '../field/index.ts';
 
 export interface ControlAndLabelProps extends Omit<BaseField.Root.Props, 'children'> {
   readonly label: ReactNode;

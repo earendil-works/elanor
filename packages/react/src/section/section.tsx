@@ -1,6 +1,7 @@
 import type {HTMLAttributes, Ref} from 'react';
 
-import {Grid, type GridItemProps} from '../grid/grid.tsx';
+import type {GridItemProps} from '../grid/grid.tsx';
+import * as Grid from '../grid/index.ts';
 import {Separator, type SeparatorProps} from '../separator/separator.tsx';
 import {classes, mergeClassName} from '../utils/class-names.ts';
 
@@ -46,9 +47,3 @@ export function SectionSeparator({ref, span = 'full', ...props}: SectionSeparato
     </Grid.Root>
   );
 }
-
-export const Section = {
-  Root: SectionRoot,
-  Content: SectionContent,
-  Separator: SectionSeparator,
-} as const;

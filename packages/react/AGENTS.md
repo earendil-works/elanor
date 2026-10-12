@@ -16,8 +16,11 @@ For Base UI changes, consult [the documentation index](https://base-ui.com/llms.
 
 - Within a component, import implementation files directly, never its own barrel. Across components, use their local entry point when present, otherwise a direct file. Never import the package-wide entry point from library implementations. Examples and documentation are exempt.
 - Keep runtime dependencies between components acyclic.
-- Keep one public entry point, `src/index.ts`, with explicit value and type exports. No `export *`. Avoid per-directory barrels by default; allow them when a distinct architectural or tooling need justifies a local entry point, such as separating namespace assembly from a component-only Fast Refresh boundary.
-- Keep internal paths out of the package export map.
+- Expose JavaScript and types through the package root (`src/index.ts`); keep component subpaths private.
+- Use explicit value and type exports. For compounds, export named parts from a local `index.ts` barrel and re-export it with `export * as Name` from the package root. Do not use wildcard re-exports (`export * from`) or assemble runtime compound objects.
+- Expose compound parts only through their namespace, not prefixed component aliases at the package root. Keep public prop and event types as named type exports.
+- Preserve native ESM namespaces in build output. Member-level tree-shaking depends on the consumer's bundler.
+- Mark side-effect-free module-level context creation calls with `/* @__PURE__ */` and preserve these annotations in build output.
 - Give implemented public components and parts named props types and use those types in their declarations. Derive Base UI-backed types rather than copying contracts.
 - Export supporting types for retained public APIs; don't mirror upstream internals or export empty state aliases.
 

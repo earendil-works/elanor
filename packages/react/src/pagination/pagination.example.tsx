@@ -1,10 +1,4 @@
-import {
-  Pagination,
-  PaginationLink,
-  PaginationSeparator,
-  Stack,
-  Text,
-} from '@earendil-works/elanor-react';
+import {Pagination, Stack, Text} from '@earendil-works/elanor-react';
 import {useState} from 'react';
 
 const projects = [
@@ -32,8 +26,8 @@ export function PaginationExample() {
           <li key={project}>{project}</li>
         ))}
       </ul>
-      <Pagination summary={`Page ${page} of ${pageCount}`} aria-label="Project pages">
-        <PaginationLink
+      <Pagination.Root summary={`Page ${page} of ${pageCount}`} aria-label="Project pages">
+        <Pagination.Link
           href="#"
           disabled={page === 1}
           onClick={(event) => {
@@ -42,9 +36,9 @@ export function PaginationExample() {
           }}
         >
           Previous
-        </PaginationLink>
-        <PaginationSeparator />
-        <PaginationLink
+        </Pagination.Link>
+        <Pagination.Separator />
+        <Pagination.Link
           href="#"
           disabled={page === pageCount}
           onClick={(event) => {
@@ -53,8 +47,8 @@ export function PaginationExample() {
           }}
         >
           Next
-        </PaginationLink>
-      </Pagination>
+        </Pagination.Link>
+      </Pagination.Root>
     </Stack>
   );
 }

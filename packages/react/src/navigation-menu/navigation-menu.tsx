@@ -37,8 +37,7 @@ export type NavigationMenuIconProps = BaseNavigationMenu.Icon.Props;
 export type NavigationMenuPopupProps = BaseNavigationMenu.Popup.Props;
 export type NavigationMenuContentProps = BaseNavigationMenu.Content.Props;
 
-// Preserve Base UI's value generic across forwardRef.
-function NavigationMenuRoot<Value = any>({ref, ...props}: NavigationMenuRootProps<Value>) {
+export function NavigationMenuRoot<Value = any>({ref, ...props}: NavigationMenuRootProps<Value>) {
   return <BaseNavigationMenu.Root {...props} ref={ref} orientation="horizontal" />;
 }
 
@@ -115,17 +114,3 @@ export function NavigationMenuContent({ref, className, ...props}: NavigationMenu
     />
   );
 }
-
-export const NavigationMenu = {
-  Root: NavigationMenuRoot,
-  List: NavigationMenuList,
-  Item: NavigationMenuItem,
-  Link: NavigationMenuLink,
-  Trigger: NavigationMenuTrigger,
-  Icon: NavigationMenuIcon,
-  Content: NavigationMenuContent,
-  Portal: BaseNavigationMenu.Portal,
-  Positioner: NavigationMenuPositioner,
-  Popup: NavigationMenuPopup,
-  Viewport: BaseNavigationMenu.Viewport,
-} as const;

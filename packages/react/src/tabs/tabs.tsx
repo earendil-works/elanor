@@ -24,7 +24,7 @@ export type TabsTabProps = ComponentPropsWithRef<typeof BaseTabs.Tab>;
 export type TabsIndicatorProps = BaseTabs.Indicator.Props;
 export type TabsPanelProps = BaseTabs.Panel.Props;
 
-function TabsRoot({ref, ...props}: TabsRootProps) {
+export function TabsRoot({ref, ...props}: TabsRootProps) {
   return <BaseTabs.Root {...props} ref={ref} orientation="horizontal" />;
 }
 
@@ -67,11 +67,3 @@ export function TabsPanel({ref, className, ...props}: TabsPanelProps) {
     />
   );
 }
-
-export const Tabs = {
-  Root: TabsRoot,
-  List: TabsList,
-  Tab: TabsTab,
-  Indicator: TabsIndicator,
-  Panel: TabsPanel,
-} as const;

@@ -1,5 +1,4 @@
 import {Radio as BaseRadio, type RadioRootProps} from '@base-ui/react/radio';
-import {RadioGroup as BaseRadioGroup} from '@base-ui/react/radio-group';
 
 import {mergeClassName} from '../utils/class-names.ts';
 
@@ -39,9 +38,3 @@ export function RadioIndicator({ref, className, ...props}: RadioIndicatorProps) 
     />
   );
 }
-
-export const Radio = {
-  Group: BaseRadioGroup,
-  Root: RadioRoot,
-  Indicator: RadioIndicator,
-} as const;

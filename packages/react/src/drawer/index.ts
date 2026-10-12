@@ -1,49 +1,16 @@
 import {Drawer as BaseDrawer} from '@base-ui/react/drawer';
 
-import {
-  DrawerBackdrop,
-  DrawerViewport,
-  DrawerPopup,
-  DrawerTitle,
-  DrawerDescription,
+export {
+  DrawerBackdrop as Backdrop,
+  DrawerViewport as Viewport,
+  DrawerPopup as Popup,
+  DrawerTitle as Title,
+  DrawerDescription as Description,
 } from './drawer.tsx';
 
-export const Drawer = {
-  Root: BaseDrawer.Root,
-  Trigger: BaseDrawer.Trigger,
-  Portal: BaseDrawer.Portal,
-  Backdrop: DrawerBackdrop,
-  Viewport: DrawerViewport,
-  Popup: DrawerPopup,
-  Title: DrawerTitle,
-  Description: DrawerDescription,
-  Content: BaseDrawer.Content,
-  Close: BaseDrawer.Close,
-  createHandle: BaseDrawer.createHandle,
-} as const;
-
-export {DrawerBackdrop, DrawerViewport, DrawerPopup, DrawerTitle, DrawerDescription};
-export type {
-  DrawerRootProps,
-  DrawerRootActions,
-  DrawerRootChangeEventReason,
-  DrawerRootChangeEventDetails,
-  DrawerRootSnapPointChangeEventReason,
-  DrawerRootSnapPointChangeEventDetails,
-  DrawerTriggerProps,
-  DrawerTriggerState,
-  DrawerPortalProps,
-  DrawerCloseProps,
-  DrawerCloseState,
-  DrawerContentProps,
-  DrawerHandle,
-  DrawerSnapPoint,
-  DrawerBackdropProps,
-  DrawerBackdropState,
-  DrawerViewportProps,
-  DrawerViewportState,
-  DrawerPopupProps,
-  DrawerPopupState,
-  DrawerTitleProps,
-  DrawerDescriptionProps,
-} from './drawer.tsx';
+export const Root = BaseDrawer.Root;
+export const Trigger = BaseDrawer.Trigger;
+export const Portal = BaseDrawer.Portal;
+export const Content = BaseDrawer.Content;
+export const Close = BaseDrawer.Close;
+export const createHandle = BaseDrawer.createHandle;

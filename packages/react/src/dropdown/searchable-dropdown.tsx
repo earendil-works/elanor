@@ -67,7 +67,7 @@ export interface SearchableDropdownSeparatorProps extends Omit<
 }
 export type SearchableDropdownEmptyProps = BaseCombobox.Empty.Props;
 
-const MultipleContext = createContext(false);
+const MultipleContext = /* @__PURE__ */ createContext(false);
 
 export function SearchableDropdownRoot<
   Value,

@@ -5,10 +5,11 @@ import {mergeClassName} from '../utils/class-names.ts';
 
 import styles from './segmented-control.module.css';
 
-export type SegmentedControlProps<Value extends string = string> = BaseToggleGroup.Props<Value> & {
-  readonly orientation?: 'horizontal';
-  readonly multiple?: false;
-};
+export type SegmentedControlRootProps<Value extends string = string> =
+  BaseToggleGroup.Props<Value> & {
+    readonly orientation?: 'horizontal';
+    readonly multiple?: false;
+  };
 export type SegmentedControlState = BaseToggleGroup.State;
 export type SegmentedControlChangeEventDetails = BaseToggleGroup.ChangeEventDetails;
 export type SegmentedControlChangeEventReason = BaseToggleGroup.ChangeEventReason;
@@ -21,7 +22,7 @@ export function SegmentedControl<Value extends string = string>({
   ref,
   className,
   ...props
-}: SegmentedControlProps<Value>): React.JSX.Element {
+}: SegmentedControlRootProps<Value>): React.JSX.Element {
   return (
     <BaseToggleGroup<Value>
       {...props}

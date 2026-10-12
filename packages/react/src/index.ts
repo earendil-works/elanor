@@ -1,4 +1,32 @@
-export {Grid, GridRoot, GridItem, GridSubgrid} from './grid/grid.tsx';
+export * as Checkbox from './checkbox/index.ts';
+export * as Drawer from './drawer/index.ts';
+export * as Dropdown from './dropdown/index.ts';
+export * as SearchableDropdown from './dropdown/searchable-dropdown/index.ts';
+export * as EmptyState from './empty-state/index.ts';
+export * as Field from './field/index.ts';
+export * as Grid from './grid/index.ts';
+export * as KeyValue from './key-value/index.ts';
+export * as Layout from './layout/index.ts';
+export * as Menu from './menu/index.ts';
+export * as Modal from './modal/index.ts';
+export * as NavigationMenu from './navigation-menu/index.ts';
+export * as PageHeader from './page-header/index.ts';
+export * as Pagination from './pagination/index.ts';
+export * as Popover from './popover/index.ts';
+export * as ProgressiveDisclosure from './progressive-disclosure/index.ts';
+export * as ProjectSwitcher from './project-switcher/index.ts';
+export * as Radio from './radio/index.ts';
+export * as ScrollArea from './scroll-area/index.ts';
+export * as Section from './section/index.ts';
+export * as SegmentedControl from './segmented-control/index.ts';
+export * as SideNavigation from './side-navigation/index.ts';
+export * as Sidebar from './sidebar/index.ts';
+export * as Switch from './switch/index.ts';
+export * as Table from './table/index.ts';
+export * as TableOfContents from './table-of-contents/index.ts';
+export * as Tabs from './tabs/index.ts';
+export * as TopNavigation from './top-navigation/index.ts';
+
 export type {
   GridRootProps,
   GridItemProps,
@@ -10,15 +38,6 @@ export type {
   GridGap,
 } from './grid/grid.tsx';
 
-export {
-  Layout,
-  LayoutRoot,
-  LayoutHeader,
-  LayoutBody,
-  LayoutAside,
-  LayoutMain,
-  LayoutFooter,
-} from './layout/layout.tsx';
 export type {
   LayoutRootProps,
   LayoutHeaderProps,
@@ -31,14 +50,6 @@ export type {
 export {Container} from './container/container.tsx';
 export type {ContainerProps, ContainerWidth} from './container/container.tsx';
 
-export {
-  Sidebar,
-  SidebarRoot,
-  SidebarTrigger,
-  SidebarHeader,
-  SidebarContent,
-  SidebarFooter,
-} from './sidebar/sidebar.tsx';
 export type {
   SidebarRootProps,
   SidebarTriggerProps,
@@ -51,14 +62,6 @@ export type {
   SidebarTriggerState,
 } from './sidebar/sidebar.tsx';
 
-export {
-  ScrollArea,
-  ScrollAreaRoot,
-  ScrollAreaViewport,
-  ScrollAreaContent,
-  ScrollAreaScrollbar,
-  ScrollAreaThumb,
-} from './scroll-area/scroll-area.tsx';
 export type {
   ScrollAreaRootProps,
   ScrollAreaRootState,
@@ -85,7 +88,6 @@ export type {
 export {Card} from './card/card.tsx';
 export type {CardProps} from './card/card.tsx';
 
-export {Checkbox, CheckboxIndicator, CheckboxRoot} from './checkbox/checkbox.tsx';
 export type {
   CheckboxIndicatorProps,
   CheckboxIndicatorState,
@@ -101,16 +103,6 @@ export type {CodeSnippetProps} from './code-snippet/code-snippet.tsx';
 export {CopyButton} from './copy-button/copy-button.tsx';
 export type {CopyButtonProps} from './copy-button/copy-button.tsx';
 
-export {
-  Menu,
-  MenuGroup,
-  MenuGroupLabel,
-  MenuItem,
-  MenuLinkItem,
-  MenuPopup,
-  MenuPositioner,
-  MenuSeparator,
-} from './menu/index.ts';
 export type {
   MenuGroupLabelProps,
   MenuGroupProps,
@@ -133,24 +125,11 @@ export type {
   MenuTriggerState,
   MenuViewportProps,
   MenuViewportState,
-} from './menu/index.ts';
+} from './menu/menu.tsx';
 
 export {ControlAndLabel} from './control-and-label/control-and-label.tsx';
 export type {ControlAndLabelProps} from './control-and-label/control-and-label.tsx';
 
-export {
-  Dropdown,
-  DropdownGroupLabel,
-  DropdownIcon,
-  DropdownItem,
-  DropdownItemIndicator,
-  DropdownLabel,
-  DropdownList,
-  DropdownPopup,
-  DropdownPositioner,
-  DropdownSeparator,
-  DropdownTrigger,
-} from './dropdown/index.ts';
 export type {
   DropdownGroupLabelProps,
   DropdownGroupProps,
@@ -179,29 +158,18 @@ export type {
   DropdownTriggerState,
   DropdownValueProps,
   DropdownValueState,
-} from './dropdown/index.ts';
+} from './dropdown/dropdown.tsx';
 
-export {
-  EmptyState,
-  EmptyStateActions,
-  EmptyStateBody,
-  EmptyStateCopy,
-  EmptyStateDescription,
-  EmptyStateIllustration,
-  EmptyStateRoot,
-  EmptyStateTitle,
-} from './empty-state/empty-state.tsx';
 export type {
   EmptyStateActionsProps,
   EmptyStateBodyProps,
   EmptyStateCopyProps,
   EmptyStateDescriptionProps,
   EmptyStateIllustrationProps,
-  EmptyStateProps,
+  EmptyStateRootProps,
   EmptyStateTitleProps,
 } from './empty-state/empty-state.tsx';
 
-export {Field, FieldDescription, FieldError, FieldLabel, FieldRoot} from './field/field.tsx';
 export type {
   FieldDescriptionProps,
   FieldDescriptionState,
@@ -234,13 +202,6 @@ export type {
   InputType,
 } from './input/input.tsx';
 
-export {
-  KeyValue,
-  KeyValueGrid,
-  KeyValueInline,
-  KeyValueKey,
-  KeyValueValue,
-} from './key-value/key-value.tsx';
 export type {
   KeyValueGridProps,
   KeyValueInlineProps,
@@ -251,16 +212,6 @@ export type {
 export {Link} from './link/link.tsx';
 export type {LinkProps} from './link/link.tsx';
 
-export {
-  Modal,
-  ModalActions,
-  ModalBackdrop,
-  ModalBody,
-  ModalDescription,
-  ModalPopup,
-  ModalTitle,
-  ModalViewport,
-} from './modal/index.ts';
 export type {
   ModalActionsProps,
   ModalBackdropProps,
@@ -282,19 +233,8 @@ export type {
   ModalTriggerState,
   ModalViewportProps,
   ModalViewportState,
-} from './modal/index.ts';
+} from './modal/modal.tsx';
 
-export {
-  NavigationMenu,
-  NavigationMenuContent,
-  NavigationMenuIcon,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-  NavigationMenuPopup,
-  NavigationMenuPositioner,
-  NavigationMenuTrigger,
-} from './navigation-menu/navigation-menu.tsx';
 export type {
   NavigationMenuContentProps,
   NavigationMenuContentState,
@@ -320,18 +260,10 @@ export type {
   NavigationMenuViewportProps,
 } from './navigation-menu/navigation-menu.tsx';
 
-export {
-  PageHeader,
-  PageHeaderActions,
-  PageHeaderDescription,
-  PageHeaderRoot,
-  PageHeaderRow,
-  PageHeaderTitle,
-} from './page-header/page-header.tsx';
 export type {
   PageHeaderActionsProps,
   PageHeaderDescriptionProps,
-  PageHeaderProps,
+  PageHeaderRootProps,
   PageHeaderRowProps,
   PageHeaderTitleProps,
 } from './page-header/page-header.tsx';
@@ -339,14 +271,12 @@ export type {
 export {Page} from './page/page.tsx';
 export type {PageProps} from './page/page.tsx';
 
-export {Pagination, PaginationLink, PaginationSeparator} from './pagination/pagination.tsx';
 export type {
   PaginationLinkProps,
-  PaginationProps,
+  PaginationRootProps,
   PaginationSeparatorProps,
 } from './pagination/pagination.tsx';
 
-export {Popover, PopoverDescription, PopoverPopup, PopoverTitle} from './popover/index.ts';
 export type {
   PopoverCloseProps,
   PopoverDescriptionProps,
@@ -363,13 +293,8 @@ export type {
   PopoverTitleProps,
   PopoverTriggerProps,
   PopoverTriggerState,
-} from './popover/index.ts';
+} from './popover/popover.tsx';
 
-export {
-  ProgressiveDisclosure,
-  ProgressiveDisclosurePanel,
-  ProgressiveDisclosureRoot,
-} from './progressive-disclosure/progressive-disclosure.tsx';
 export type {
   ProgressiveDisclosurePanelProps,
   ProgressiveDisclosurePanelState,
@@ -381,10 +306,8 @@ export type {
   ProgressiveDisclosureTriggerState,
 } from './progressive-disclosure/progressive-disclosure.tsx';
 
-export {ProjectSwitcher, ProjectSwitcherTrigger} from './project-switcher/project-switcher.tsx';
 export type {ProjectSwitcherTriggerProps} from './project-switcher/project-switcher.tsx';
 
-export {Radio, RadioIndicator, RadioRoot} from './radio/radio.tsx';
 export type {
   RadioGroupChangeEventDetails,
   RadioGroupChangeEventReason,
@@ -402,22 +325,6 @@ export type {SearchAndFilterBarProps} from './search-and-filter-bar/search-and-f
 export {Search} from './search/search.tsx';
 export type {SearchProps} from './search/search.tsx';
 
-export {
-  SearchableDropdown,
-  SearchableDropdownEmpty,
-  SearchableDropdownGroupLabel,
-  SearchableDropdownIcon,
-  SearchableDropdownInput,
-  SearchableDropdownInputGroup,
-  SearchableDropdownItem,
-  SearchableDropdownItemIndicator,
-  SearchableDropdownLabel,
-  SearchableDropdownList,
-  SearchableDropdownPopup,
-  SearchableDropdownSeparator,
-  SearchableDropdownStatus,
-  SearchableDropdownTrigger,
-} from './dropdown/index.ts';
 export type {
   CreateSearchableDropdownItemsOptions,
   SearchableDropdownCollectionProps,
@@ -459,16 +366,14 @@ export type {
   SearchableDropdownTriggerProps,
   SearchableDropdownTriggerState,
   SearchableDropdownValueProps,
-} from './dropdown/index.ts';
+} from './dropdown/searchable-dropdown.tsx';
 
-export {Section, SectionContent, SectionRoot, SectionSeparator} from './section/section.tsx';
 export type {
   SectionContentProps,
   SectionRootProps,
   SectionSeparatorProps,
 } from './section/section.tsx';
 
-export {SegmentedControl, SegmentedControlItem} from './segmented-control/segmented-control.tsx';
 export type {
   SegmentedControlChangeEventDetails,
   SegmentedControlChangeEventReason,
@@ -476,7 +381,7 @@ export type {
   SegmentedControlItemChangeEventReason,
   SegmentedControlItemProps,
   SegmentedControlItemState,
-  SegmentedControlProps,
+  SegmentedControlRootProps,
   SegmentedControlState,
 } from './segmented-control/segmented-control.tsx';
 
@@ -486,15 +391,6 @@ export type {SelectionControlAndLabelProps} from './selection-control-label/sele
 export {Separator} from './separator/separator.tsx';
 export type {SeparatorProps, SeparatorState} from './separator/separator.tsx';
 
-export {
-  SideNavigation,
-  SideNavigationGroup,
-  SideNavigationGroupLabel,
-  SideNavigationItem,
-  SideNavigationLink,
-  SideNavigationList,
-  SideNavigationRoot,
-} from './side-navigation/side-navigation.tsx';
 export type {
   SideNavigationGroupLabelProps,
   SideNavigationGroupProps,
@@ -511,7 +407,6 @@ export type {SocialLoginProps} from './social-login/social-login.tsx';
 export {Stack} from './stack/stack.tsx';
 export type {StackAlign, StackDirection, StackGap, StackProps, StackWrap} from './stack/stack.tsx';
 
-export {Switch, SwitchRoot, SwitchThumb} from './switch/switch.tsx';
 export type {
   SwitchRootChangeEventDetails,
   SwitchRootChangeEventReason,
@@ -521,28 +416,12 @@ export type {
   SwitchThumbState,
 } from './switch/switch.tsx';
 
-export {
-  TableOfContents,
-  TableOfContentsItem,
-  TableOfContentsLink,
-} from './table-of-contents/table-of-contents.tsx';
 export type {
   TableOfContentsItemProps,
   TableOfContentsLinkProps,
-  TableOfContentsProps,
+  TableOfContentsRootProps,
 } from './table-of-contents/table-of-contents.tsx';
 
-export {
-  Table,
-  TableBody,
-  TableCell,
-  TableCellPrimary,
-  TableCellSecondary,
-  TableContainer,
-  TableHead,
-  TableHeaderCell,
-  TableRow,
-} from './table/table.tsx';
 export type {
   TableBodyProps,
   TableCellPrimaryProps,
@@ -551,11 +430,10 @@ export type {
   TableContainerProps,
   TableHeadProps,
   TableHeaderCellProps,
-  TableProps,
+  TableRootProps,
   TableRowProps,
 } from './table/table.tsx';
 
-export {Tabs, TabsIndicator, TabsList, TabsPanel, TabsTab} from './tabs/tabs.tsx';
 export type {
   TabsIndicatorProps,
   TabsIndicatorState,
@@ -577,31 +455,16 @@ export type {TextAreaProps} from './text-area/text-area.tsx';
 export {Text} from './text/text.tsx';
 export type {TextProps} from './text/text.tsx';
 
-export {
-  TopNavigation,
-  TopNavigationActions,
-  TopNavigationIdentity,
-  TopNavigationNavigation,
-  TopNavigationRoot,
-} from './top-navigation/top-navigation.tsx';
 export type {
   TopNavigationActionsProps,
   TopNavigationIdentityProps,
   TopNavigationNavigationProps,
-  TopNavigationProps,
+  TopNavigationRootProps,
 } from './top-navigation/top-navigation.tsx';
 
 export {DirectionProvider, useDirection} from '@base-ui/react/direction-provider';
 export type {DirectionProviderProps, TextDirection} from '@base-ui/react/direction-provider';
 
-export {
-  Drawer,
-  DrawerBackdrop,
-  DrawerViewport,
-  DrawerPopup,
-  DrawerTitle,
-  DrawerDescription,
-} from './drawer/index.ts';
 export type {
   DrawerRootProps,
   DrawerRootActions,
@@ -625,4 +488,4 @@ export type {
   DrawerPopupState,
   DrawerTitleProps,
   DrawerDescriptionProps,
-} from './drawer/index.ts';
+} from './drawer/drawer.tsx';
