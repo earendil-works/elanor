@@ -1,5 +1,4 @@
 import {Button as BaseButton} from '@base-ui/react/button';
-import {forwardRef} from 'react';
 
 import {mergeClassName} from '../utils/class-names.ts';
 
@@ -7,10 +6,13 @@ import styles from './icon-button.module.css';
 
 export interface IconButtonProps extends BaseButton.Props {}
 
-export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(function IconButton(
-  {disabled = false, type = 'button', className, ...props},
+export function IconButton({
   ref,
-) {
+  disabled = false,
+  type = 'button',
+  className,
+  ...props
+}: IconButtonProps) {
   return (
     <BaseButton
       {...props}
@@ -20,4 +22,4 @@ export const IconButton = forwardRef<HTMLButtonElement, IconButtonProps>(functio
       className={mergeClassName<BaseButton.State>(styles.root, className)}
     />
   );
-});
+}

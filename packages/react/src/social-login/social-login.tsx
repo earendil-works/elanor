@@ -1,5 +1,5 @@
 import {Button as BaseButton} from '@base-ui/react/button';
-import {forwardRef, type ReactNode} from 'react';
+import type {ReactNode} from 'react';
 
 import {mergeClassName} from '../utils/class-names.ts';
 
@@ -9,10 +9,14 @@ export interface SocialLoginProps extends BaseButton.Props {
   readonly icon?: ReactNode;
 }
 
-export const SocialLogin = forwardRef<HTMLButtonElement, SocialLoginProps>(function SocialLogin(
-  {icon, children, className, type = 'button', ...props},
+export function SocialLogin({
   ref,
-) {
+  icon,
+  children,
+  className,
+  type = 'button',
+  ...props
+}: SocialLoginProps) {
   return (
     <BaseButton
       {...props}
@@ -24,4 +28,4 @@ export const SocialLogin = forwardRef<HTMLButtonElement, SocialLoginProps>(funct
       <span className={styles.label}>{children}</span>
     </BaseButton>
   );
-});
+}

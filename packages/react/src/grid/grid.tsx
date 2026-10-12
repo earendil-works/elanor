@@ -1,5 +1,5 @@
 import {useRender} from '@base-ui/react/use-render';
-import {createContext, forwardRef, useContext} from 'react';
+import {createContext, useContext} from 'react';
 
 import {classes} from '../utils/class-names.ts';
 
@@ -56,10 +56,14 @@ export interface GridRootProps extends useRender.ComponentProps<'div'> {
   readonly gap?: GridGap;
 }
 
-export const GridRoot = forwardRef<HTMLDivElement, GridRootProps>(function GridRoot(
-  {columns = 12, gap = 'medium', render, className, ...props},
+export function GridRoot({
   ref,
-) {
+  columns = 12,
+  gap = 'medium',
+  render,
+  className,
+  ...props
+}: GridRootProps) {
   if (!Number.isInteger(columns) || columns < 1 || columns > 12) {
     throw new RangeError('Grid columns must be an integer from 1 to 12.');
   }
@@ -83,16 +87,13 @@ export const GridRoot = forwardRef<HTMLDivElement, GridRootProps>(function GridR
     xLarge: columns,
   };
   return <GridContext.Provider value={counts}>{element}</GridContext.Provider>;
-});
+}
 
 export interface GridItemProps extends useRender.ComponentProps<'div'> {
   readonly span?: GridResponsiveSpan;
 }
 
-export const GridItem = forwardRef<HTMLDivElement, GridItemProps>(function GridItem(
-  {span = 'full', render, className, ...props},
-  ref,
-) {
+export function GridItem({ref, span = 'full', render, className, ...props}: GridItemProps) {
   const {spans} = resolveSpans(span, useTrackCounts());
   return useRender({
     defaultTagName: 'div',
@@ -100,14 +101,11 @@ export const GridItem = forwardRef<HTMLDivElement, GridItemProps>(function GridI
     ref,
     props: {...props, ...spanAttributes(spans), className: classes(styles.item, className)},
   });
-});
+}
 
 export interface GridSubgridProps extends GridItemProps {}
 
-export const GridSubgrid = forwardRef<HTMLDivElement, GridSubgridProps>(function GridSubgrid(
-  {span = 'full', render, className, ...props},
-  ref,
-) {
+export function GridSubgrid({ref, span = 'full', render, className, ...props}: GridSubgridProps) {
   const {spans, tracks} = resolveSpans(span, useTrackCounts());
   const element = useRender({
     defaultTagName: 'div',
@@ -120,6 +118,6 @@ export const GridSubgrid = forwardRef<HTMLDivElement, GridSubgridProps>(function
     },
   });
   return <GridContext.Provider value={tracks}>{element}</GridContext.Provider>;
-});
+}
 
 export const Grid = {Root: GridRoot, Item: GridItem, Subgrid: GridSubgrid} as const;

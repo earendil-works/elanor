@@ -28,6 +28,7 @@ For Base UI changes, consult [the documentation index](https://base-ui.com/llms.
 
 ## Component contracts and accessibility
 
+- Target React 19. For components that support refs, accept `ref` as a prop with the underlying element or component's ref type; don't introduce `forwardRef` wrappers.
 - Preserve supported refs, event details, and controlled/uncontrolled behavior when wrapping Base UI.
 - Restrict an upstream capability only for a concrete Elanor requirement, with matching types and runtime handling.
 - Use semantic elements and preserve accessible names, label associations, keyboard behavior, and focus management. Don't replace native or Base UI behavior with custom handlers unnecessarily.

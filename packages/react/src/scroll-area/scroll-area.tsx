@@ -1,5 +1,4 @@
 import {ScrollArea as BaseScrollArea} from '@base-ui/react/scroll-area';
-import {forwardRef} from 'react';
 
 import {mergeClassName} from '../utils/class-names.ts';
 
@@ -20,65 +19,55 @@ export type ScrollAreaContentProps = BaseScrollArea.Content.Props;
 export type ScrollAreaScrollbarProps = BaseScrollArea.Scrollbar.Props;
 export type ScrollAreaThumbProps = BaseScrollArea.Thumb.Props;
 
-export const ScrollAreaRoot = forwardRef<HTMLDivElement, ScrollAreaRootProps>(
-  function ScrollAreaRoot({className, ...props}, ref) {
-    return (
-      <BaseScrollArea.Root
-        {...props}
-        ref={ref}
-        className={mergeClassName<BaseScrollArea.Root.State>(styles.root, className)}
-      />
-    );
-  },
-);
+export function ScrollAreaRoot({ref, className, ...props}: ScrollAreaRootProps) {
+  return (
+    <BaseScrollArea.Root
+      {...props}
+      ref={ref}
+      className={mergeClassName<BaseScrollArea.Root.State>(styles.root, className)}
+    />
+  );
+}
 
-export const ScrollAreaViewport = forwardRef<HTMLDivElement, ScrollAreaViewportProps>(
-  function ScrollAreaViewport({className, ...props}, ref) {
-    return (
-      <BaseScrollArea.Viewport
-        {...props}
-        ref={ref}
-        className={mergeClassName<BaseScrollArea.Viewport.State>(styles.viewport, className)}
-      />
-    );
-  },
-);
+export function ScrollAreaViewport({ref, className, ...props}: ScrollAreaViewportProps) {
+  return (
+    <BaseScrollArea.Viewport
+      {...props}
+      ref={ref}
+      className={mergeClassName<BaseScrollArea.Viewport.State>(styles.viewport, className)}
+    />
+  );
+}
 
-export const ScrollAreaContent = forwardRef<HTMLDivElement, ScrollAreaContentProps>(
-  function ScrollAreaContent({className, ...props}, ref) {
-    return (
-      <BaseScrollArea.Content
-        {...props}
-        ref={ref}
-        className={mergeClassName<BaseScrollArea.Content.State>(styles.content, className)}
-      />
-    );
-  },
-);
+export function ScrollAreaContent({ref, className, ...props}: ScrollAreaContentProps) {
+  return (
+    <BaseScrollArea.Content
+      {...props}
+      ref={ref}
+      className={mergeClassName<BaseScrollArea.Content.State>(styles.content, className)}
+    />
+  );
+}
 
-export const ScrollAreaScrollbar = forwardRef<HTMLDivElement, ScrollAreaScrollbarProps>(
-  function ScrollAreaScrollbar({className, ...props}, ref) {
-    return (
-      <BaseScrollArea.Scrollbar
-        {...props}
-        ref={ref}
-        className={mergeClassName<BaseScrollArea.Scrollbar.State>(styles.scrollbar, className)}
-      />
-    );
-  },
-);
+export function ScrollAreaScrollbar({ref, className, ...props}: ScrollAreaScrollbarProps) {
+  return (
+    <BaseScrollArea.Scrollbar
+      {...props}
+      ref={ref}
+      className={mergeClassName<BaseScrollArea.Scrollbar.State>(styles.scrollbar, className)}
+    />
+  );
+}
 
-export const ScrollAreaThumb = forwardRef<HTMLDivElement, ScrollAreaThumbProps>(
-  function ScrollAreaThumb({className, ...props}, ref) {
-    return (
-      <BaseScrollArea.Thumb
-        {...props}
-        ref={ref}
-        className={mergeClassName<BaseScrollArea.Thumb.State>(styles.thumb, className)}
-      />
-    );
-  },
-);
+export function ScrollAreaThumb({ref, className, ...props}: ScrollAreaThumbProps) {
+  return (
+    <BaseScrollArea.Thumb
+      {...props}
+      ref={ref}
+      className={mergeClassName<BaseScrollArea.Thumb.State>(styles.thumb, className)}
+    />
+  );
+}
 
 export const ScrollArea = {
   Root: ScrollAreaRoot,

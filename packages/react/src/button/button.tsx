@@ -1,5 +1,5 @@
 import {Button as BaseButton} from '@base-ui/react/button';
-import {forwardRef, type ReactNode} from 'react';
+import type {ReactNode} from 'react';
 
 import {mergeClassName} from '../utils/class-names.ts';
 
@@ -22,22 +22,20 @@ export interface ButtonProps extends BaseButton.Props {
   readonly pending?: boolean;
 }
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
-  {
-    hierarchy,
-    semantic,
-    density,
-    iconStart,
-    iconEnd,
-    pending = false,
-    disabled = false,
-    focusableWhenDisabled = false,
-    type = 'button',
-    className,
-    ...props
-  },
+export function Button({
   ref,
-) {
+  hierarchy,
+  semantic,
+  density,
+  iconStart,
+  iconEnd,
+  pending = false,
+  disabled = false,
+  focusableWhenDisabled = false,
+  type = 'button',
+  className,
+  ...props
+}: ButtonProps) {
   const contentProps =
     iconStart || iconEnd
       ? {
@@ -76,4 +74,4 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       className={mergeClassName<BaseButton.State>(styles.root, className)}
     />
   );
-});
+}

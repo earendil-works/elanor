@@ -8,7 +8,7 @@ React components built with Base UI and CSS Modules.
 pnpm add @earendil-works/elanor-react react react-dom
 ```
 
-Requires React 18–19. Styles are precompiled; consumers do not need CSS Modules support.
+Requires React 19. Styles are precompiled; consumers do not need CSS Modules support.
 
 ## Usage
 

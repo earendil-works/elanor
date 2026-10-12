@@ -1,15 +1,14 @@
-import {forwardRef, type HTMLAttributes} from 'react';
+import type {HTMLAttributes, Ref} from 'react';
 
 import {classes} from '../utils/class-names.ts';
 
 import styles from './page.module.css';
 
-export interface PageProps extends HTMLAttributes<HTMLDivElement> {}
+export interface PageProps extends HTMLAttributes<HTMLDivElement> {
+  readonly ref?: Ref<HTMLDivElement> | undefined;
+}
 
 // Layout.Main owns the main landmark; Page groups content inside it.
-export const Page = forwardRef<HTMLDivElement, PageProps>(function Page(
-  {className, ...props},
-  ref,
-) {
+export function Page({ref, className, ...props}: PageProps) {
   return <div {...props} ref={ref} className={classes(styles.page, className)} />;
-});
+}

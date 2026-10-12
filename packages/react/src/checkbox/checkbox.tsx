@@ -1,6 +1,6 @@
 import {Checkbox as BaseCheckbox} from '@base-ui/react/checkbox';
 import {CheckIcon} from '@earendil-works/elanor-icons-react';
-import {forwardRef} from 'react';
+import type {ComponentPropsWithRef} from 'react';
 
 import {mergeClassName} from '../utils/class-names.ts';
 
@@ -13,13 +13,10 @@ export type {
   CheckboxIndicatorState,
 } from '@base-ui/react/checkbox';
 
-export type CheckboxRootProps = BaseCheckbox.Root.Props;
+export type CheckboxRootProps = ComponentPropsWithRef<typeof BaseCheckbox.Root>;
 export type CheckboxIndicatorProps = BaseCheckbox.Indicator.Props;
 
-export const CheckboxRoot = forwardRef<HTMLElement, CheckboxRootProps>(function CheckboxRoot(
-  {className, ...props},
-  ref,
-) {
+export function CheckboxRoot({ref, className, ...props}: CheckboxRootProps) {
   return (
     <BaseCheckbox.Root
       {...props}
@@ -27,21 +24,19 @@ export const CheckboxRoot = forwardRef<HTMLElement, CheckboxRootProps>(function 
       className={mergeClassName<BaseCheckbox.Root.State>(styles.root, className)}
     />
   );
-});
+}
 
-export const CheckboxIndicator = forwardRef<HTMLSpanElement, CheckboxIndicatorProps>(
-  function CheckboxIndicator({className, children, ...props}, ref) {
-    return (
-      <BaseCheckbox.Indicator
-        {...props}
-        ref={ref}
-        className={mergeClassName<BaseCheckbox.Indicator.State>(styles.indicator, className)}
-      >
-        {children ?? <CheckIcon className={styles.check} aria-hidden="true" />}
-      </BaseCheckbox.Indicator>
-    );
-  },
-);
+export function CheckboxIndicator({ref, className, children, ...props}: CheckboxIndicatorProps) {
+  return (
+    <BaseCheckbox.Indicator
+      {...props}
+      ref={ref}
+      className={mergeClassName<BaseCheckbox.Indicator.State>(styles.indicator, className)}
+    >
+      {children ?? <CheckIcon className={styles.check} aria-hidden="true" />}
+    </BaseCheckbox.Indicator>
+  );
+}
 
 export const Checkbox = {
   Root: CheckboxRoot,

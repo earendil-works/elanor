@@ -1,5 +1,4 @@
 import {Popover as BasePopover} from '@base-ui/react/popover';
-import {forwardRef} from 'react';
 
 import {mergeClassName} from '../utils/class-names.ts';
 
@@ -25,10 +24,7 @@ export type PopoverPopupProps = BasePopover.Popup.Props;
 export type PopoverTitleProps = BasePopover.Title.Props;
 export type PopoverDescriptionProps = BasePopover.Description.Props;
 
-export const PopoverPopup = forwardRef<HTMLDivElement, PopoverPopupProps>(function PopoverPopup(
-  {className, ...props},
-  ref,
-) {
+export function PopoverPopup({ref, className, ...props}: PopoverPopupProps) {
   return (
     <BasePopover.Popup
       {...props}
@@ -36,12 +32,9 @@ export const PopoverPopup = forwardRef<HTMLDivElement, PopoverPopupProps>(functi
       className={mergeClassName<BasePopover.Popup.State>(styles.popup, className)}
     />
   );
-});
+}
 
-export const PopoverTitle = forwardRef<HTMLHeadingElement, PopoverTitleProps>(function PopoverTitle(
-  {className, ...props},
-  ref,
-) {
+export function PopoverTitle({ref, className, ...props}: PopoverTitleProps) {
   return (
     <BasePopover.Title
       {...props}
@@ -49,16 +42,14 @@ export const PopoverTitle = forwardRef<HTMLHeadingElement, PopoverTitleProps>(fu
       className={mergeClassName<BasePopover.Title.State>(styles.title, className)}
     />
   );
-});
+}
 
-export const PopoverDescription = forwardRef<HTMLParagraphElement, PopoverDescriptionProps>(
-  function PopoverDescription({className, ...props}, ref) {
-    return (
-      <BasePopover.Description
-        {...props}
-        ref={ref}
-        className={mergeClassName<BasePopover.Description.State>(styles.description, className)}
-      />
-    );
-  },
-);
+export function PopoverDescription({ref, className, ...props}: PopoverDescriptionProps) {
+  return (
+    <BasePopover.Description
+      {...props}
+      ref={ref}
+      className={mergeClassName<BasePopover.Description.State>(styles.description, className)}
+    />
+  );
+}

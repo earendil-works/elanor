@@ -1,5 +1,4 @@
 import {Collapsible as BaseCollapsible} from '@base-ui/react/collapsible';
-import {forwardRef} from 'react';
 
 import {mergeClassName} from '../utils/class-names.ts';
 
@@ -17,22 +16,25 @@ export type {
 export type ProgressiveDisclosureRootProps = BaseCollapsible.Root.Props;
 export type ProgressiveDisclosurePanelProps = BaseCollapsible.Panel.Props;
 
-export const ProgressiveDisclosureRoot = forwardRef<HTMLDivElement, ProgressiveDisclosureRootProps>(
-  function ProgressiveDisclosureRoot({className, ...props}, ref) {
-    return (
-      <BaseCollapsible.Root
-        {...props}
-        ref={ref}
-        className={mergeClassName<BaseCollapsible.Root.State>(styles.root, className)}
-      />
-    );
-  },
-);
+export function ProgressiveDisclosureRoot({
+  ref,
+  className,
+  ...props
+}: ProgressiveDisclosureRootProps) {
+  return (
+    <BaseCollapsible.Root
+      {...props}
+      ref={ref}
+      className={mergeClassName<BaseCollapsible.Root.State>(styles.root, className)}
+    />
+  );
+}
 
-export const ProgressiveDisclosurePanel = forwardRef<
-  HTMLDivElement,
-  ProgressiveDisclosurePanelProps
->(function ProgressiveDisclosurePanel({className, ...props}, ref) {
+export function ProgressiveDisclosurePanel({
+  ref,
+  className,
+  ...props
+}: ProgressiveDisclosurePanelProps) {
   return (
     <BaseCollapsible.Panel
       {...props}
@@ -40,7 +42,7 @@ export const ProgressiveDisclosurePanel = forwardRef<
       className={mergeClassName<BaseCollapsible.Panel.State>(styles.panel, className)}
     />
   );
-});
+}
 
 export const ProgressiveDisclosure = {
   Root: ProgressiveDisclosureRoot,

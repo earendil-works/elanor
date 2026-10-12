@@ -1,10 +1,11 @@
-import {forwardRef, type HTMLAttributes, type ReactNode} from 'react';
+import type {HTMLAttributes, ReactNode, Ref} from 'react';
 
 import {classes} from '../utils/class-names.ts';
 
 import styles from './card.module.css';
 
 export interface CardProps extends Omit<HTMLAttributes<HTMLDivElement>, 'children'> {
+  readonly ref?: Ref<HTMLDivElement> | undefined;
   readonly label?: ReactNode;
   readonly value?: ReactNode;
   readonly description?: ReactNode;
@@ -12,10 +13,16 @@ export interface CardProps extends Omit<HTMLAttributes<HTMLDivElement>, 'childre
   readonly children?: ReactNode;
 }
 
-export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
-  {label, value, description, padded = true, children, className, ...props},
+export function Card({
   ref,
-) {
+  label,
+  value,
+  description,
+  padded = true,
+  children,
+  className,
+  ...props
+}: CardProps) {
   return (
     <div {...props} ref={ref} className={classes(styles.root, padded && styles.padded, className)}>
       {children ?? (
@@ -31,4 +38,4 @@ export const Card = forwardRef<HTMLDivElement, CardProps>(function Card(
       )}
     </div>
   );
-});
+}

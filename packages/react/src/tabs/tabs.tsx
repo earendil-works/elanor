@@ -1,5 +1,5 @@
 import {Tabs as BaseTabs} from '@base-ui/react/tabs';
-import {forwardRef} from 'react';
+import type {ComponentPropsWithRef} from 'react';
 
 import {mergeClassName} from '../utils/class-names.ts';
 
@@ -20,18 +20,15 @@ export interface TabsRootProps extends Omit<BaseTabs.Root.Props, 'orientation'> 
 }
 
 export type TabsListProps = BaseTabs.List.Props;
-export type TabsTabProps = BaseTabs.Tab.Props;
+export type TabsTabProps = ComponentPropsWithRef<typeof BaseTabs.Tab>;
 export type TabsIndicatorProps = BaseTabs.Indicator.Props;
 export type TabsPanelProps = BaseTabs.Panel.Props;
 
-const TabsRoot = forwardRef<HTMLDivElement, TabsRootProps>(function TabsRoot(props, ref) {
+function TabsRoot({ref, ...props}: TabsRootProps) {
   return <BaseTabs.Root {...props} ref={ref} orientation="horizontal" />;
-});
+}
 
-export const TabsList = forwardRef<HTMLDivElement, TabsListProps>(function TabsList(
-  {className, ...props},
-  ref,
-) {
+export function TabsList({ref, className, ...props}: TabsListProps) {
   return (
     <BaseTabs.List
       {...props}
@@ -39,12 +36,9 @@ export const TabsList = forwardRef<HTMLDivElement, TabsListProps>(function TabsL
       className={mergeClassName<BaseTabs.List.State>(styles.list, className)}
     />
   );
-});
+}
 
-export const TabsTab = forwardRef<HTMLElement, TabsTabProps>(function TabsTab(
-  {className, ...props},
-  ref,
-) {
+export function TabsTab({ref, className, ...props}: TabsTabProps) {
   return (
     <BaseTabs.Tab
       {...props}
@@ -52,12 +46,9 @@ export const TabsTab = forwardRef<HTMLElement, TabsTabProps>(function TabsTab(
       className={mergeClassName<BaseTabs.Tab.State>(styles.tab, className)}
     />
   );
-});
+}
 
-export const TabsIndicator = forwardRef<HTMLSpanElement, TabsIndicatorProps>(function TabsIndicator(
-  {className, ...props},
-  ref,
-) {
+export function TabsIndicator({ref, className, ...props}: TabsIndicatorProps) {
   return (
     <BaseTabs.Indicator
       {...props}
@@ -65,12 +56,9 @@ export const TabsIndicator = forwardRef<HTMLSpanElement, TabsIndicatorProps>(fun
       className={mergeClassName<BaseTabs.Indicator.State>(styles.indicator, className)}
     />
   );
-});
+}
 
-export const TabsPanel = forwardRef<HTMLDivElement, TabsPanelProps>(function TabsPanel(
-  {className, ...props},
-  ref,
-) {
+export function TabsPanel({ref, className, ...props}: TabsPanelProps) {
   return (
     <BaseTabs.Panel
       {...props}
@@ -78,7 +66,7 @@ export const TabsPanel = forwardRef<HTMLDivElement, TabsPanelProps>(function Tab
       className={mergeClassName<BaseTabs.Panel.State>(styles.panel, className)}
     />
   );
-});
+}
 
 export const Tabs = {
   Root: TabsRoot,

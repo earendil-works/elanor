@@ -1,90 +1,84 @@
-import {
-  forwardRef,
-  type HTMLAttributes,
-  type TableHTMLAttributes,
-  type TdHTMLAttributes,
-  type ThHTMLAttributes,
+import type {
+  HTMLAttributes,
+  TableHTMLAttributes,
+  TdHTMLAttributes,
+  ThHTMLAttributes,
+  Ref,
 } from 'react';
 
 import {classes} from '../utils/class-names.ts';
 
 import styles from './table.module.css';
 
-export interface TableContainerProps extends HTMLAttributes<HTMLDivElement> {}
+export interface TableContainerProps extends HTMLAttributes<HTMLDivElement> {
+  readonly ref?: Ref<HTMLDivElement> | undefined;
+}
 
-export const TableContainer = forwardRef<HTMLDivElement, TableContainerProps>(
-  function TableContainer({className, ...props}, ref) {
-    return <div {...props} ref={ref} className={classes(styles.container, className)} />;
-  },
-);
+export function TableContainer({ref, className, ...props}: TableContainerProps) {
+  return <div {...props} ref={ref} className={classes(styles.container, className)} />;
+}
 
-export interface TableProps extends TableHTMLAttributes<HTMLTableElement> {}
+export interface TableProps extends TableHTMLAttributes<HTMLTableElement> {
+  readonly ref?: Ref<HTMLTableElement> | undefined;
+}
 
-export const Table = forwardRef<HTMLTableElement, TableProps>(function Table(
-  {className, ...props},
-  ref,
-) {
+export function Table({ref, className, ...props}: TableProps) {
   return <table {...props} ref={ref} className={classes(styles.table, className)} />;
-});
+}
 
-export interface TableHeadProps extends HTMLAttributes<HTMLTableSectionElement> {}
+export interface TableHeadProps extends HTMLAttributes<HTMLTableSectionElement> {
+  readonly ref?: Ref<HTMLTableSectionElement> | undefined;
+}
 
-export const TableHead = forwardRef<HTMLTableSectionElement, TableHeadProps>(
-  function TableHead(props, ref) {
-    return <thead {...props} ref={ref} />;
-  },
-);
+export function TableHead({ref, ...props}: TableHeadProps) {
+  return <thead {...props} ref={ref} />;
+}
 
-export interface TableBodyProps extends HTMLAttributes<HTMLTableSectionElement> {}
+export interface TableBodyProps extends HTMLAttributes<HTMLTableSectionElement> {
+  readonly ref?: Ref<HTMLTableSectionElement> | undefined;
+}
 
-export const TableBody = forwardRef<HTMLTableSectionElement, TableBodyProps>(
-  function TableBody(props, ref) {
-    return <tbody {...props} ref={ref} />;
-  },
-);
+export function TableBody({ref, ...props}: TableBodyProps) {
+  return <tbody {...props} ref={ref} />;
+}
 
-export interface TableRowProps extends HTMLAttributes<HTMLTableRowElement> {}
+export interface TableRowProps extends HTMLAttributes<HTMLTableRowElement> {
+  readonly ref?: Ref<HTMLTableRowElement> | undefined;
+}
 
-export const TableRow = forwardRef<HTMLTableRowElement, TableRowProps>(function TableRow(
-  {className, ...props},
-  ref,
-) {
+export function TableRow({ref, className, ...props}: TableRowProps) {
   return <tr {...props} ref={ref} className={classes(styles.row, className)} />;
-});
+}
 
-export interface TableHeaderCellProps extends ThHTMLAttributes<HTMLTableCellElement> {}
+export interface TableHeaderCellProps extends ThHTMLAttributes<HTMLTableCellElement> {
+  readonly ref?: Ref<HTMLTableCellElement> | undefined;
+}
 
-export const TableHeaderCell = forwardRef<HTMLTableCellElement, TableHeaderCellProps>(
-  function TableHeaderCell({className, ...props}, ref) {
-    return (
-      <th {...props} ref={ref} className={classes(styles.cell, styles.headerCell, className)} />
-    );
-  },
-);
+export function TableHeaderCell({ref, className, ...props}: TableHeaderCellProps) {
+  return <th {...props} ref={ref} className={classes(styles.cell, styles.headerCell, className)} />;
+}
 
 export interface TableCellProps extends Omit<TdHTMLAttributes<HTMLTableCellElement>, 'align'> {
+  readonly ref?: Ref<HTMLTableCellElement> | undefined;
   readonly align?: 'start' | 'center' | 'end';
 }
 
-export const TableCell = forwardRef<HTMLTableCellElement, TableCellProps>(function TableCell(
-  {align = 'start', className, ...props},
-  ref,
-) {
+export function TableCell({ref, align = 'start', className, ...props}: TableCellProps) {
   return <td {...props} ref={ref} data-align={align} className={classes(styles.cell, className)} />;
-});
+}
 
-export interface TableCellPrimaryProps extends HTMLAttributes<HTMLSpanElement> {}
+export interface TableCellPrimaryProps extends HTMLAttributes<HTMLSpanElement> {
+  readonly ref?: Ref<HTMLSpanElement> | undefined;
+}
 
-export const TableCellPrimary = forwardRef<HTMLSpanElement, TableCellPrimaryProps>(
-  function TableCellPrimary({className, ...props}, ref) {
-    return <span {...props} ref={ref} className={classes(styles.primary, className)} />;
-  },
-);
+export function TableCellPrimary({ref, className, ...props}: TableCellPrimaryProps) {
+  return <span {...props} ref={ref} className={classes(styles.primary, className)} />;
+}
 
-export interface TableCellSecondaryProps extends HTMLAttributes<HTMLSpanElement> {}
+export interface TableCellSecondaryProps extends HTMLAttributes<HTMLSpanElement> {
+  readonly ref?: Ref<HTMLSpanElement> | undefined;
+}
 
-export const TableCellSecondary = forwardRef<HTMLSpanElement, TableCellSecondaryProps>(
-  function TableCellSecondary({className, ...props}, ref) {
-    return <span {...props} ref={ref} className={classes(styles.secondary, className)} />;
-  },
-);
+export function TableCellSecondary({ref, className, ...props}: TableCellSecondaryProps) {
+  return <span {...props} ref={ref} className={classes(styles.secondary, className)} />;
+}

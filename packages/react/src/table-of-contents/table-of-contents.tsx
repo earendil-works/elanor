@@ -1,53 +1,63 @@
-import {forwardRef, type AnchorHTMLAttributes, type HTMLAttributes, type ReactNode} from 'react';
+import type {AnchorHTMLAttributes, HTMLAttributes, ReactNode, Ref} from 'react';
 
 import {classes} from '../utils/class-names.ts';
 
 import styles from './table-of-contents.module.css';
 
 export interface TableOfContentsProps extends Omit<HTMLAttributes<HTMLElement>, 'title'> {
+  readonly ref?: Ref<HTMLElement> | undefined;
   readonly title?: ReactNode;
 }
 
-export const TableOfContents = forwardRef<HTMLElement, TableOfContentsProps>(
-  function TableOfContents({title = 'On this page', children, className, ...props}, ref) {
-    return (
-      <nav
-        {...props}
-        ref={ref}
-        aria-label={props['aria-label'] ?? 'Table of contents'}
-        className={classes(styles.root, className)}
-      >
-        <div className={styles.title}>{title}</div>
-        <ol className={styles.list}>{children}</ol>
-      </nav>
-    );
-  },
-);
+export function TableOfContents({
+  ref,
+  title = 'On this page',
+  children,
+  className,
+  ...props
+}: TableOfContentsProps) {
+  return (
+    <nav
+      {...props}
+      ref={ref}
+      aria-label={props['aria-label'] ?? 'Table of contents'}
+      className={classes(styles.root, className)}
+    >
+      <div className={styles.title}>{title}</div>
+      <ol className={styles.list}>{children}</ol>
+    </nav>
+  );
+}
 
-export interface TableOfContentsItemProps extends HTMLAttributes<HTMLLIElement> {}
+export interface TableOfContentsItemProps extends HTMLAttributes<HTMLLIElement> {
+  readonly ref?: Ref<HTMLLIElement> | undefined;
+}
 
-export const TableOfContentsItem = forwardRef<HTMLLIElement, TableOfContentsItemProps>(
-  function TableOfContentsItem({className, ...props}, ref) {
-    return <li {...props} ref={ref} className={classes(styles.item, className)} />;
-  },
-);
+export function TableOfContentsItem({ref, className, ...props}: TableOfContentsItemProps) {
+  return <li {...props} ref={ref} className={classes(styles.item, className)} />;
+}
 
 export interface TableOfContentsLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
+  readonly ref?: Ref<HTMLAnchorElement> | undefined;
   readonly active?: boolean;
 }
 
-export const TableOfContentsLink = forwardRef<HTMLAnchorElement, TableOfContentsLinkProps>(
-  function TableOfContentsLink({active = false, children, className, ...props}, ref) {
-    return (
-      <a
-        {...props}
-        ref={ref}
-        aria-current={active ? 'location' : props['aria-current']}
-        data-active={active ? '' : undefined}
-        className={classes(styles.link, className)}
-      >
-        <span className={styles.label}>{children}</span>
-      </a>
-    );
-  },
-);
+export function TableOfContentsLink({
+  ref,
+  active = false,
+  children,
+  className,
+  ...props
+}: TableOfContentsLinkProps) {
+  return (
+    <a
+      {...props}
+      ref={ref}
+      aria-current={active ? 'location' : props['aria-current']}
+      data-active={active ? '' : undefined}
+      className={classes(styles.link, className)}
+    >
+      <span className={styles.label}>{children}</span>
+    </a>
+  );
+}

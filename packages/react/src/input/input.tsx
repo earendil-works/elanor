@@ -1,5 +1,4 @@
 import {Input as BaseInput} from '@base-ui/react/input';
-import {forwardRef} from 'react';
 
 import {mergeClassName} from '../utils/class-names.ts';
 
@@ -19,10 +18,7 @@ export interface InputProps extends Omit<BaseInput.Props, 'type'> {
   readonly type?: InputType;
 }
 
-export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
-  {className, type = 'text', ...props},
-  ref,
-) {
+export function Input({ref, className, type = 'text', ...props}: InputProps) {
   if (!inputTypes.includes(type)) {
     throw new TypeError(
       `Input does not support type="${type}". Use one of: ${inputTypes.join(', ')}.`,
@@ -37,4 +33,4 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
       className={mergeClassName<BaseInput.State>(styles.control, className)}
     />
   );
-});
+}

@@ -1,5 +1,5 @@
 import {CheckIcon, ContentCopyIcon} from '@earendil-works/elanor-icons-react';
-import {forwardRef, useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 
 import {IconButton, type IconButtonProps} from '../icon-button/icon-button.tsx';
 
@@ -13,22 +13,20 @@ export interface CopyButtonProps extends Omit<IconButtonProps, 'value'> {
   readonly onCopyError?: (error: Error) => void;
 }
 
-export const CopyButton = forwardRef<HTMLButtonElement, CopyButtonProps>(function CopyButton(
-  {
-    value,
-    copiedLabel = 'Copied.',
-    errorLabel = 'Could not copy. Try again or copy manually.',
-    onCopySuccess,
-    onCopyError,
-    onClick,
-    disabled,
-    children,
-    'aria-label': label = 'Copy',
-    title,
-    ...props
-  },
+export function CopyButton({
   ref,
-) {
+  value,
+  copiedLabel = 'Copied.',
+  errorLabel = 'Could not copy. Try again or copy manually.',
+  onCopySuccess,
+  onCopyError,
+  onClick,
+  disabled,
+  children,
+  'aria-label': label = 'Copy',
+  title,
+  ...props
+}: CopyButtonProps) {
   const [status, setStatus] = useState<'idle' | 'copied' | 'error'>('idle');
 
   useEffect(() => {
@@ -74,4 +72,4 @@ export const CopyButton = forwardRef<HTMLButtonElement, CopyButtonProps>(functio
       </span>
     </>
   );
-});
+}

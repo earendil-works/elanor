@@ -1,6 +1,5 @@
 import {NavigationMenu as BaseNavigationMenu} from '@base-ui/react/navigation-menu';
 import {KeyboardArrowDownIcon} from '@earendil-works/elanor-icons-react';
-import {forwardRef} from 'react';
 
 import {mergeClassName} from '../utils/class-names.ts';
 
@@ -39,102 +38,83 @@ export type NavigationMenuPopupProps = BaseNavigationMenu.Popup.Props;
 export type NavigationMenuContentProps = BaseNavigationMenu.Content.Props;
 
 // Preserve Base UI's value generic across forwardRef.
-const NavigationMenuRoot = forwardRef<HTMLElement, NavigationMenuRootProps<unknown>>(
-  function NavigationMenuRoot(props, ref) {
-    return <BaseNavigationMenu.Root {...props} ref={ref} orientation="horizontal" />;
-  },
-) as <Value = any>(props: NavigationMenuRootProps<Value>) => React.JSX.Element;
+function NavigationMenuRoot<Value = any>({ref, ...props}: NavigationMenuRootProps<Value>) {
+  return <BaseNavigationMenu.Root {...props} ref={ref} orientation="horizontal" />;
+}
 
-export const NavigationMenuList = forwardRef<HTMLUListElement, NavigationMenuListProps>(
-  function NavigationMenuList({className, ...props}, ref) {
-    return (
-      <BaseNavigationMenu.List
-        {...props}
-        ref={ref}
-        className={mergeClassName<BaseNavigationMenu.List.State>(styles.list, className)}
-      />
-    );
-  },
-);
+export function NavigationMenuList({ref, className, ...props}: NavigationMenuListProps) {
+  return (
+    <BaseNavigationMenu.List
+      {...props}
+      ref={ref}
+      className={mergeClassName<BaseNavigationMenu.List.State>(styles.list, className)}
+    />
+  );
+}
 
-export const NavigationMenuItem = forwardRef<HTMLLIElement, NavigationMenuItemProps>(
-  function NavigationMenuItem({className, ...props}, ref) {
-    return (
-      <BaseNavigationMenu.Item
-        {...props}
-        ref={ref}
-        className={mergeClassName<BaseNavigationMenu.Item.State>(styles.listItem, className)}
-      />
-    );
-  },
-);
+export function NavigationMenuItem({ref, className, ...props}: NavigationMenuItemProps) {
+  return (
+    <BaseNavigationMenu.Item
+      {...props}
+      ref={ref}
+      className={mergeClassName<BaseNavigationMenu.Item.State>(styles.listItem, className)}
+    />
+  );
+}
 
-export const NavigationMenuLink = forwardRef<HTMLAnchorElement, NavigationMenuLinkProps>(
-  function NavigationMenuLink({className, ...props}, ref) {
-    return (
-      <BaseNavigationMenu.Link
-        {...props}
-        ref={ref}
-        className={mergeClassName<BaseNavigationMenu.Link.State>(styles.navigationItem, className)}
-      />
-    );
-  },
-);
+export function NavigationMenuLink({ref, className, ...props}: NavigationMenuLinkProps) {
+  return (
+    <BaseNavigationMenu.Link
+      {...props}
+      ref={ref}
+      className={mergeClassName<BaseNavigationMenu.Link.State>(styles.navigationItem, className)}
+    />
+  );
+}
 
-export const NavigationMenuTrigger = forwardRef<HTMLButtonElement, NavigationMenuTriggerProps>(
-  function NavigationMenuTrigger({className, ...props}, ref) {
-    return (
-      <BaseNavigationMenu.Trigger
-        {...props}
-        ref={ref}
-        className={mergeClassName<BaseNavigationMenu.Trigger.State>(
-          styles.navigationItem,
-          className,
-        )}
-      />
-    );
-  },
-);
+export function NavigationMenuTrigger({ref, className, ...props}: NavigationMenuTriggerProps) {
+  return (
+    <BaseNavigationMenu.Trigger
+      {...props}
+      ref={ref}
+      className={mergeClassName<BaseNavigationMenu.Trigger.State>(styles.navigationItem, className)}
+    />
+  );
+}
 
-export const NavigationMenuIcon = forwardRef<HTMLSpanElement, NavigationMenuIconProps>(
-  function NavigationMenuIcon({className, children, ...props}, ref) {
-    return (
-      <BaseNavigationMenu.Icon
-        {...props}
-        ref={ref}
-        className={mergeClassName<BaseNavigationMenu.Icon.State>(styles.icon, className)}
-      >
-        {children ?? <KeyboardArrowDownIcon />}
-      </BaseNavigationMenu.Icon>
-    );
-  },
-);
+export function NavigationMenuIcon({ref, className, children, ...props}: NavigationMenuIconProps) {
+  return (
+    <BaseNavigationMenu.Icon
+      {...props}
+      ref={ref}
+      className={mergeClassName<BaseNavigationMenu.Icon.State>(styles.icon, className)}
+    >
+      {children ?? <KeyboardArrowDownIcon />}
+    </BaseNavigationMenu.Icon>
+  );
+}
 
 export const NavigationMenuPositioner = BaseNavigationMenu.Positioner;
 
-export const NavigationMenuPopup = forwardRef<HTMLElement, NavigationMenuPopupProps>(
-  function NavigationMenuPopup({className, ...props}, ref) {
-    return (
-      <BaseNavigationMenu.Popup
-        {...props}
-        ref={ref}
-        className={mergeClassName<BaseNavigationMenu.Popup.State>(styles.popup, className)}
-      />
-    );
-  },
-);
+export function NavigationMenuPopup({ref, className, ...props}: NavigationMenuPopupProps) {
+  return (
+    <BaseNavigationMenu.Popup
+      {...props}
+      ref={ref}
+      className={mergeClassName<BaseNavigationMenu.Popup.State>(styles.popup, className)}
+    />
+  );
+}
 
-export const NavigationMenuContent = forwardRef<HTMLDivElement, NavigationMenuContentProps>(
-  function NavigationMenuContent({className, ...props}, ref) {
-    return (
-      <BaseNavigationMenu.Content
-        {...props}
-        ref={ref}
-        className={mergeClassName<BaseNavigationMenu.Content.State>(styles.content, className)}
-      />
-    );
-  },
-);
+export function NavigationMenuContent({ref, className, ...props}: NavigationMenuContentProps) {
+  return (
+    <BaseNavigationMenu.Content
+      {...props}
+      ref={ref}
+      className={mergeClassName<BaseNavigationMenu.Content.State>(styles.content, className)}
+    />
+  );
+}
 
 export const NavigationMenu = {
   Root: NavigationMenuRoot,

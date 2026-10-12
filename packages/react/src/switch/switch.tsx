@@ -1,5 +1,5 @@
 import {Switch as BaseSwitch} from '@base-ui/react/switch';
-import {forwardRef} from 'react';
+import type {ComponentPropsWithRef} from 'react';
 
 import {mergeClassName} from '../utils/class-names.ts';
 
@@ -12,13 +12,10 @@ export type {
   SwitchThumbState,
 } from '@base-ui/react/switch';
 
-export type SwitchRootProps = BaseSwitch.Root.Props;
+export type SwitchRootProps = ComponentPropsWithRef<typeof BaseSwitch.Root>;
 export type SwitchThumbProps = BaseSwitch.Thumb.Props;
 
-export const SwitchRoot = forwardRef<HTMLElement, SwitchRootProps>(function SwitchRoot(
-  {className, ...props},
-  ref,
-) {
+export function SwitchRoot({ref, className, ...props}: SwitchRootProps) {
   return (
     <BaseSwitch.Root
       {...props}
@@ -26,12 +23,9 @@ export const SwitchRoot = forwardRef<HTMLElement, SwitchRootProps>(function Swit
       className={mergeClassName<BaseSwitch.Root.State>(styles.root, className)}
     />
   );
-});
+}
 
-export const SwitchThumb = forwardRef<HTMLSpanElement, SwitchThumbProps>(function SwitchThumb(
-  {className, ...props},
-  ref,
-) {
+export function SwitchThumb({ref, className, ...props}: SwitchThumbProps) {
   return (
     <BaseSwitch.Thumb
       {...props}
@@ -39,7 +33,7 @@ export const SwitchThumb = forwardRef<HTMLSpanElement, SwitchThumbProps>(functio
       className={mergeClassName<BaseSwitch.Thumb.State>(styles.thumb, className)}
     />
   );
-});
+}
 
 export const Switch = {
   Root: SwitchRoot,

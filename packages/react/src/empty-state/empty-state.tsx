@@ -1,68 +1,66 @@
-import {createElement, forwardRef, type HTMLAttributes} from 'react';
+import {createElement, type HTMLAttributes, type Ref} from 'react';
 
 import type {HeadingLevel} from '../heading/heading.tsx';
 import {classes} from '../utils/class-names.ts';
 
 import styles from './empty-state.module.css';
 
-export interface EmptyStateProps extends HTMLAttributes<HTMLDivElement> {}
+export interface EmptyStateProps extends HTMLAttributes<HTMLDivElement> {
+  readonly ref?: Ref<HTMLDivElement> | undefined;
+}
 
-export const EmptyStateRoot = forwardRef<HTMLDivElement, EmptyStateProps>(function EmptyStateRoot(
-  {className, ...props},
-  ref,
-) {
+export function EmptyStateRoot({ref, className, ...props}: EmptyStateProps) {
   return <div {...props} ref={ref} className={classes(styles.root, className)} />;
-});
+}
 
-export interface EmptyStateIllustrationProps extends HTMLAttributes<HTMLDivElement> {}
+export interface EmptyStateIllustrationProps extends HTMLAttributes<HTMLDivElement> {
+  readonly ref?: Ref<HTMLDivElement> | undefined;
+}
 
-export const EmptyStateIllustration = forwardRef<HTMLDivElement, EmptyStateIllustrationProps>(
-  function EmptyStateIllustration({className, ...props}, ref) {
-    return <div {...props} ref={ref} className={classes(styles.illustration, className)} />;
-  },
-);
+export function EmptyStateIllustration({ref, className, ...props}: EmptyStateIllustrationProps) {
+  return <div {...props} ref={ref} className={classes(styles.illustration, className)} />;
+}
 
-export interface EmptyStateBodyProps extends HTMLAttributes<HTMLDivElement> {}
+export interface EmptyStateBodyProps extends HTMLAttributes<HTMLDivElement> {
+  readonly ref?: Ref<HTMLDivElement> | undefined;
+}
 
-export const EmptyStateBody = forwardRef<HTMLDivElement, EmptyStateBodyProps>(
-  function EmptyStateBody({className, ...props}, ref) {
-    return <div {...props} ref={ref} className={classes(styles.body, className)} />;
-  },
-);
+export function EmptyStateBody({ref, className, ...props}: EmptyStateBodyProps) {
+  return <div {...props} ref={ref} className={classes(styles.body, className)} />;
+}
 
-export interface EmptyStateCopyProps extends HTMLAttributes<HTMLDivElement> {}
+export interface EmptyStateCopyProps extends HTMLAttributes<HTMLDivElement> {
+  readonly ref?: Ref<HTMLDivElement> | undefined;
+}
 
-export const EmptyStateCopy = forwardRef<HTMLDivElement, EmptyStateCopyProps>(
-  function EmptyStateCopy({className, ...props}, ref) {
-    return <div {...props} ref={ref} className={classes(styles.copy, className)} />;
-  },
-);
+export function EmptyStateCopy({ref, className, ...props}: EmptyStateCopyProps) {
+  return <div {...props} ref={ref} className={classes(styles.copy, className)} />;
+}
 
 export interface EmptyStateTitleProps extends HTMLAttributes<HTMLHeadingElement> {
+  readonly ref?: Ref<HTMLHeadingElement> | undefined;
   readonly level: HeadingLevel;
 }
 
-export const EmptyStateTitle = forwardRef<HTMLHeadingElement, EmptyStateTitleProps>(
-  function EmptyStateTitle({level, className, ...props}, ref) {
-    return createElement(`h${level}`, {...props, ref, className: classes(styles.title, className)});
-  },
-);
+export function EmptyStateTitle({ref, level, className, ...props}: EmptyStateTitleProps) {
+  return createElement(`h${level}`, {...props, ref, className: classes(styles.title, className)});
+}
 
-export interface EmptyStateDescriptionProps extends HTMLAttributes<HTMLParagraphElement> {}
+export interface EmptyStateDescriptionProps extends HTMLAttributes<HTMLParagraphElement> {
+  readonly ref?: Ref<HTMLParagraphElement> | undefined;
+}
 
-export const EmptyStateDescription = forwardRef<HTMLParagraphElement, EmptyStateDescriptionProps>(
-  function EmptyStateDescription({className, ...props}, ref) {
-    return <p {...props} ref={ref} className={classes(styles.description, className)} />;
-  },
-);
+export function EmptyStateDescription({ref, className, ...props}: EmptyStateDescriptionProps) {
+  return <p {...props} ref={ref} className={classes(styles.description, className)} />;
+}
 
-export interface EmptyStateActionsProps extends HTMLAttributes<HTMLDivElement> {}
+export interface EmptyStateActionsProps extends HTMLAttributes<HTMLDivElement> {
+  readonly ref?: Ref<HTMLDivElement> | undefined;
+}
 
-export const EmptyStateActions = forwardRef<HTMLDivElement, EmptyStateActionsProps>(
-  function EmptyStateActions({className, ...props}, ref) {
-    return <div {...props} ref={ref} className={classes(styles.actions, className)} />;
-  },
-);
+export function EmptyStateActions({ref, className, ...props}: EmptyStateActionsProps) {
+  return <div {...props} ref={ref} className={classes(styles.actions, className)} />;
+}
 
 export const EmptyState = {
   Root: EmptyStateRoot,

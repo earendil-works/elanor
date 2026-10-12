@@ -1,6 +1,6 @@
 import {Input as BaseInput} from '@base-ui/react/input';
 import {SearchIcon} from '@earendil-works/elanor-icons-react';
-import {forwardRef, type ReactNode} from 'react';
+import type {ReactNode} from 'react';
 
 import {classes, mergeClassName} from '../utils/class-names.ts';
 
@@ -15,10 +15,15 @@ export interface SearchProps extends Omit<BaseInput.Props, 'type'> {
   readonly rootClassName?: string;
 }
 
-export const Search = forwardRef<HTMLInputElement, SearchProps>(function Search(
-  {icon, endAdornment, rootClassName, className, type = 'search', ...props},
+export function Search({
   ref,
-) {
+  icon,
+  endAdornment,
+  rootClassName,
+  className,
+  type = 'search',
+  ...props
+}: SearchProps) {
   if (!inputTypes.includes(type)) {
     throw new TypeError(
       `Search does not support type="${type}". Use one of: ${inputTypes.join(', ')}.`,
@@ -39,4 +44,4 @@ export const Search = forwardRef<HTMLInputElement, SearchProps>(function Search(
       {endAdornment ? <span className={styles.adornment}>{endAdornment}</span> : null}
     </span>
   );
-});
+}

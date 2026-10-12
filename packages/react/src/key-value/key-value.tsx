@@ -1,44 +1,41 @@
-import {forwardRef, type ComponentPropsWithoutRef} from 'react';
+import type {ComponentPropsWithoutRef, Ref} from 'react';
 
 import {classes} from '../utils/class-names.ts';
 
 import styles from './key-value.module.css';
 
-export interface KeyValueInlineProps extends ComponentPropsWithoutRef<'dl'> {}
-export interface KeyValueGridProps extends ComponentPropsWithoutRef<'dl'> {}
-export interface KeyValueKeyProps extends ComponentPropsWithoutRef<'dt'> {}
-export interface KeyValueValueProps extends ComponentPropsWithoutRef<'dd'> {}
+export interface KeyValueInlineProps extends ComponentPropsWithoutRef<'dl'> {
+  readonly ref?: Ref<HTMLDListElement> | undefined;
+}
+export interface KeyValueGridProps extends ComponentPropsWithoutRef<'dl'> {
+  readonly ref?: Ref<HTMLDListElement> | undefined;
+}
+export interface KeyValueKeyProps extends ComponentPropsWithoutRef<'dt'> {
+  readonly ref?: Ref<HTMLElement> | undefined;
+}
+export interface KeyValueValueProps extends ComponentPropsWithoutRef<'dd'> {
+  readonly ref?: Ref<HTMLElement> | undefined;
+}
 
-export const KeyValueInline = forwardRef<HTMLDListElement, KeyValueInlineProps>(
-  function KeyValueInline({className, ...props}, ref) {
-    return <dl {...props} ref={ref} className={classes(styles.inline, className)} />;
-  },
-);
+export function KeyValueInline({ref, className, ...props}: KeyValueInlineProps) {
+  return <dl {...props} ref={ref} className={classes(styles.inline, className)} />;
+}
 
-export const KeyValueGrid = forwardRef<HTMLDListElement, KeyValueGridProps>(function KeyValueGrid(
-  {className, ...props},
-  ref,
-) {
+export function KeyValueGrid({ref, className, ...props}: KeyValueGridProps) {
   return <dl {...props} ref={ref} className={classes(styles.grid, className)} />;
-});
+}
 
-export const KeyValueKey = forwardRef<HTMLElement, KeyValueKeyProps>(function KeyValueKey(
-  {children, className, ...props},
-  ref,
-) {
+export function KeyValueKey({ref, children, className, ...props}: KeyValueKeyProps) {
   return (
     <dt {...props} ref={ref} className={classes(styles.key, className)}>
       {children}:
     </dt>
   );
-});
+}
 
-export const KeyValueValue = forwardRef<HTMLElement, KeyValueValueProps>(function KeyValueValue(
-  {className, ...props},
-  ref,
-) {
+export function KeyValueValue({ref, className, ...props}: KeyValueValueProps) {
   return <dd {...props} ref={ref} className={classes(styles.value, className)} />;
-});
+}
 
 export const KeyValue = {
   Inline: KeyValueInline,

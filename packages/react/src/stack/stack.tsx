@@ -1,4 +1,4 @@
-import {forwardRef, type HTMLAttributes} from 'react';
+import type {HTMLAttributes, Ref} from 'react';
 
 import {classes} from '../utils/class-names.ts';
 
@@ -10,6 +10,7 @@ export type StackAlign = 'start' | 'center' | 'end' | 'stretch';
 export type StackWrap = 'wrap' | 'nowrap';
 
 export interface StackProps extends HTMLAttributes<HTMLDivElement> {
+  readonly ref?: Ref<HTMLDivElement> | undefined;
   readonly direction?: StackDirection;
   readonly gap?: StackGap;
   readonly align?: StackAlign;
@@ -33,10 +34,15 @@ const alignClasses: Readonly<Record<StackAlign, string | undefined>> = {
   stretch: styles.alignStretch,
 };
 
-export const Stack = forwardRef<HTMLDivElement, StackProps>(function Stack(
-  {direction = 'column', gap = 'medium', align = 'start', wrap = 'nowrap', className, ...props},
+export function Stack({
   ref,
-) {
+  direction = 'column',
+  gap = 'medium',
+  align = 'start',
+  wrap = 'nowrap',
+  className,
+  ...props
+}: StackProps) {
   return (
     <div
       {...props}
@@ -51,4 +57,4 @@ export const Stack = forwardRef<HTMLDivElement, StackProps>(function Stack(
       )}
     />
   );
-});
+}

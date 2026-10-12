@@ -1,12 +1,12 @@
 import {Field as BaseField} from '@base-ui/react/field';
-import {forwardRef, type ComponentPropsWithoutRef} from 'react';
+import type {ComponentPropsWithRef} from 'react';
 
 import {mergeClassName} from '../utils/class-names.ts';
 
 import styles from './text-area.module.css';
 
 export interface TextAreaProps extends Omit<
-  ComponentPropsWithoutRef<'textarea'>,
+  ComponentPropsWithRef<'textarea'>,
   'className' | 'style'
 > {
   readonly className?: BaseField.Control.Props['className'];
@@ -14,23 +14,21 @@ export interface TextAreaProps extends Omit<
   readonly onValueChange?: BaseField.Control.Props['onValueChange'];
 }
 
-export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(function TextArea(
-  {
-    className,
-    style,
-    value,
-    defaultValue,
-    onValueChange,
-    id,
-    name,
-    disabled,
-    autoFocus,
-    'aria-describedby': ariaDescribedBy,
-    'aria-invalid': ariaInvalid,
-    ...props
-  },
+export function TextArea({
   ref,
-) {
+  className,
+  style,
+  value,
+  defaultValue,
+  onValueChange,
+  id,
+  name,
+  disabled,
+  autoFocus,
+  'aria-describedby': ariaDescribedBy,
+  'aria-invalid': ariaInvalid,
+  ...props
+}: TextAreaProps) {
   return (
     <BaseField.Control
       id={id}
@@ -49,4 +47,4 @@ export const TextArea = forwardRef<HTMLTextAreaElement, TextAreaProps>(function 
       className={mergeClassName<BaseField.Control.State>(styles.textarea, className)}
     />
   );
-});
+}

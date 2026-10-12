@@ -1,6 +1,5 @@
 import {Toggle} from '@base-ui/react/toggle';
 import {ToggleGroup as BaseToggleGroup} from '@base-ui/react/toggle-group';
-import {forwardRef, type Ref, type RefAttributes} from 'react';
 
 import {mergeClassName} from '../utils/class-names.ts';
 
@@ -18,10 +17,11 @@ export type SegmentedControlItemState = Toggle.State;
 export type SegmentedControlItemChangeEventDetails = Toggle.ChangeEventDetails;
 export type SegmentedControlItemChangeEventReason = Toggle.ChangeEventReason;
 
-export const SegmentedControl = forwardRef(function SegmentedControl<Value extends string = string>(
-  {className, ...props}: SegmentedControlProps<Value>,
-  ref: Ref<HTMLDivElement>,
-): React.JSX.Element {
+export function SegmentedControl<Value extends string = string>({
+  ref,
+  className,
+  ...props
+}: SegmentedControlProps<Value>): React.JSX.Element {
   return (
     <BaseToggleGroup<Value>
       {...props}
@@ -31,19 +31,20 @@ export const SegmentedControl = forwardRef(function SegmentedControl<Value exten
       className={mergeClassName<BaseToggleGroup.State>(styles.root, className)}
     />
   );
-}) as <Value extends string = string>(
-  props: SegmentedControlProps<Value> & RefAttributes<HTMLDivElement>,
-) => React.JSX.Element;
+}
 
-export const SegmentedControlItem = forwardRef<HTMLButtonElement, SegmentedControlItemProps>(
-  function SegmentedControlItem({className, type = 'button', ...props}, ref) {
-    return (
-      <Toggle
-        {...props}
-        ref={ref}
-        type={type}
-        className={mergeClassName<Toggle.State>(styles.item, className)}
-      />
-    );
-  },
-);
+export function SegmentedControlItem({
+  ref,
+  className,
+  type = 'button',
+  ...props
+}: SegmentedControlItemProps) {
+  return (
+    <Toggle
+      {...props}
+      ref={ref}
+      type={type}
+      className={mergeClassName<Toggle.State>(styles.item, className)}
+    />
+  );
+}

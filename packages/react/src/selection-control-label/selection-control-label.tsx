@@ -1,4 +1,4 @@
-import {forwardRef, type LabelHTMLAttributes, type ReactNode} from 'react';
+import type {LabelHTMLAttributes, ReactNode, Ref} from 'react';
 
 import {classes} from '../utils/class-names.ts';
 
@@ -8,19 +8,24 @@ export interface SelectionControlAndLabelProps extends Omit<
   LabelHTMLAttributes<HTMLLabelElement>,
   'children'
 > {
+  readonly ref?: Ref<HTMLLabelElement> | undefined;
   readonly control: ReactNode;
   readonly children: ReactNode;
 }
 
-export const SelectionControlAndLabel = forwardRef<HTMLLabelElement, SelectionControlAndLabelProps>(
-  function SelectionControlAndLabel({control, children, className, ...props}, ref) {
-    return (
-      <label {...props} ref={ref} className={classes(styles.root, className)}>
-        <span className={styles.control}>{control}</span>
-        <span className={styles.content}>
-          <span className={styles.label}>{children}</span>
-        </span>
-      </label>
-    );
-  },
-);
+export function SelectionControlAndLabel({
+  ref,
+  control,
+  children,
+  className,
+  ...props
+}: SelectionControlAndLabelProps) {
+  return (
+    <label {...props} ref={ref} className={classes(styles.root, className)}>
+      <span className={styles.control}>{control}</span>
+      <span className={styles.content}>
+        <span className={styles.label}>{children}</span>
+      </span>
+    </label>
+  );
+}

@@ -1,6 +1,5 @@
 import {mergeProps} from '@base-ui/react/merge-props';
 import {useRender} from '@base-ui/react/use-render';
-import {forwardRef} from 'react';
 
 import {classes} from '../utils/class-names.ts';
 
@@ -13,10 +12,7 @@ export interface ContainerProps extends useRender.ComponentProps<'div'> {
   readonly width?: ContainerWidth;
 }
 
-export const Container = forwardRef<HTMLDivElement, ContainerProps>(function Container(
-  {width = 'capped', render, ...props},
-  ref,
-) {
+export function Container({ref, width = 'capped', render, ...props}: ContainerProps) {
   return useRender({
     defaultTagName: 'div',
     render,
@@ -28,4 +24,4 @@ export const Container = forwardRef<HTMLDivElement, ContainerProps>(function Con
       props,
     ),
   });
-});
+}

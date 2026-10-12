@@ -1,5 +1,5 @@
 import {Field as BaseField} from '@base-ui/react/field';
-import {forwardRef} from 'react';
+import type {ComponentPropsWithRef} from 'react';
 
 import {mergeClassName} from '../utils/class-names.ts';
 
@@ -19,14 +19,11 @@ export type {
 } from '@base-ui/react/field';
 
 export type FieldRootProps = BaseField.Root.Props;
-export type FieldLabelProps = BaseField.Label.Props;
+export type FieldLabelProps = ComponentPropsWithRef<typeof BaseField.Label>;
 export type FieldDescriptionProps = BaseField.Description.Props;
 export type FieldErrorProps = BaseField.Error.Props;
 
-export const FieldRoot = forwardRef<HTMLDivElement, FieldRootProps>(function FieldRoot(
-  {className, ...props},
-  ref,
-) {
+export function FieldRoot({ref, className, ...props}: FieldRootProps) {
   return (
     <BaseField.Root
       {...props}
@@ -34,12 +31,9 @@ export const FieldRoot = forwardRef<HTMLDivElement, FieldRootProps>(function Fie
       className={mergeClassName<BaseField.Root.State>(styles.root, className)}
     />
   );
-});
+}
 
-export const FieldLabel = forwardRef<HTMLElement, FieldLabelProps>(function FieldLabel(
-  {className, ...props},
-  ref,
-) {
+export function FieldLabel({ref, className, ...props}: FieldLabelProps) {
   return (
     <BaseField.Label
       {...props}
@@ -47,24 +41,19 @@ export const FieldLabel = forwardRef<HTMLElement, FieldLabelProps>(function Fiel
       className={mergeClassName<BaseField.Label.State>(styles.label, className)}
     />
   );
-});
+}
 
-export const FieldDescription = forwardRef<HTMLParagraphElement, FieldDescriptionProps>(
-  function FieldDescription({className, ...props}, ref) {
-    return (
-      <BaseField.Description
-        {...props}
-        ref={ref}
-        className={mergeClassName<BaseField.Description.State>(styles.description, className)}
-      />
-    );
-  },
-);
+export function FieldDescription({ref, className, ...props}: FieldDescriptionProps) {
+  return (
+    <BaseField.Description
+      {...props}
+      ref={ref}
+      className={mergeClassName<BaseField.Description.State>(styles.description, className)}
+    />
+  );
+}
 
-export const FieldError = forwardRef<HTMLDivElement, FieldErrorProps>(function FieldError(
-  {className, ...props},
-  ref,
-) {
+export function FieldError({ref, className, ...props}: FieldErrorProps) {
   return (
     <BaseField.Error
       {...props}
@@ -72,7 +61,7 @@ export const FieldError = forwardRef<HTMLDivElement, FieldErrorProps>(function F
       className={mergeClassName<BaseField.Error.State>(styles.error, className)}
     />
   );
-});
+}
 
 export const Field = {
   Root: FieldRoot,
