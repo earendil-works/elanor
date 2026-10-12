@@ -5,6 +5,7 @@ packages:
   - packages/logos/react
 
 allowBuilds:
+  '@swc/core': false # Use pnpm-managed native binaries, not the npm fallback installer.
   esbuild: false
   sharp: true
   workerd: false
