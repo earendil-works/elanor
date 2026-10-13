@@ -4,7 +4,7 @@
   font: var(--semantic-typography-ui-primary);
 }
 
-.paragraph {
+.text:where(p) {
   box-sizing: border-box;
   min-inline-size: 0;
   overflow-wrap: anywhere;

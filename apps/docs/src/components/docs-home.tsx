@@ -85,14 +85,14 @@ export function DocsHome({signedIn}: {readonly signedIn: boolean}) {
                     >
                       <Stack gap="small" className={styles.resourceText}>
                         <Text
-                          as="span"
+                          render={<span />}
                           id={`${destination.id}-title`}
                           className={styles.resourceTitle}
                         >
                           {destination.title}
                         </Text>
                         <Text
-                          as="span"
+                          render={<span />}
                           id={`${destination.id}-description`}
                           className={styles.description}
                         >

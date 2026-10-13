@@ -97,7 +97,7 @@ export function SearchAndFilterBarExample(): React.JSX.Element {
       >
         {matchingMembers.map((member) => (
           <li key={member.name}>
-            <Text as="span">
+            <Text render={<span />}>
               {member.name} — {member.role}
             </Text>
           </li>

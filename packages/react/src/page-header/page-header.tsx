@@ -33,7 +33,7 @@ export interface PageHeaderDescriptionProps extends HTMLAttributes<HTMLParagraph
 }
 
 export function PageHeaderDescription({ref, ...props}: PageHeaderDescriptionProps) {
-  return <Text {...props} as="p" ref={ref} />;
+  return <Text {...props} ref={ref} />;
 }
 
 export interface PageHeaderActionsProps extends HTMLAttributes<HTMLDivElement> {

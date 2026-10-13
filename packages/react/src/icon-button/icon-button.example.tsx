@@ -15,7 +15,7 @@ export function IconButtonExample() {
       >
         {visible ? <VisibilityOffIcon /> : <VisibilityIcon />}
       </IconButton>
-      <Text as="span" id="workspace-tip" hidden={!visible}>
+      <Text render={<span />} id="workspace-tip" hidden={!visible}>
         Tip: give each project a descriptive name.
       </Text>
     </Stack>

@@ -1,27 +1,15 @@
-import {createElement, type ComponentPropsWithRef} from 'react';
-
-import {classes} from '../utils/class-names.ts';
+import {mergeProps} from '@base-ui/react/merge-props';
+import {useRender} from '@base-ui/react/use-render';
 
 import styles from './text.module.css';
 
-type ParagraphProps = ComponentPropsWithRef<'p'> & {
-  readonly as?: 'p';
-};
+export interface TextProps extends useRender.ComponentProps<'p'> {}
 
-type SpanProps = ComponentPropsWithRef<'span'> & {
-  readonly as: 'span';
-};
-
-export type TextProps = ParagraphProps | SpanProps;
-
-export function Text({ref, as = 'p', className, ...props}: TextProps): React.JSX.Element {
-  if (as !== 'p' && as !== 'span') {
-    throw new TypeError(`Text does not support as="${as}". Use "p" or "span".`);
-  }
-
-  return createElement(as, {
-    ...props,
+export function Text({ref, render, ...props}: TextProps) {
+  return useRender({
+    defaultTagName: 'p',
+    render,
     ref,
-    className: classes(styles.text, as === 'p' && styles.paragraph, className),
+    props: mergeProps<'p'>({className: styles.text}, props),
   });
 }

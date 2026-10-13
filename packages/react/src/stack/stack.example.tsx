@@ -20,10 +20,10 @@ export function StackExample(): React.JSX.Element {
         <section key={label}>
           <Heading level={2}>{label}</Heading>
           <Stack direction={direction} align={align} gap="small" role="group" aria-label={label}>
-            <Text as="span" style={statusStyle}>
+            <Text render={<span />} style={statusStyle}>
               Draft
             </Text>
-            <Text as="span" style={statusStyle}>
+            <Text render={<span />} style={statusStyle}>
               Ready for review
               <br />2 comments
             </Text>
@@ -38,13 +38,13 @@ export function StackExample(): React.JSX.Element {
           role="group"
           aria-label="Column: auto gap"
         >
-          <Text as="span" style={statusStyle}>
+          <Text render={<span />} style={statusStyle}>
             Draft
           </Text>
-          <Text as="span" style={statusStyle}>
+          <Text render={<span />} style={statusStyle}>
             Review
           </Text>
-          <Text as="span" style={statusStyle}>
+          <Text render={<span />} style={statusStyle}>
             Ready
           </Text>
         </Stack>
@@ -52,13 +52,13 @@ export function StackExample(): React.JSX.Element {
       <section style={{inlineSize: '100%'}}>
         <Heading level={2}>Row: auto gap</Heading>
         <Stack direction="row" gap="auto" role="group" aria-label="Row: auto gap">
-          <Text as="span" style={statusStyle}>
+          <Text render={<span />} style={statusStyle}>
             Draft
           </Text>
-          <Text as="span" style={statusStyle}>
+          <Text render={<span />} style={statusStyle}>
             Review
           </Text>
-          <Text as="span" style={statusStyle}>
+          <Text render={<span />} style={statusStyle}>
             Ready
           </Text>
         </Stack>
