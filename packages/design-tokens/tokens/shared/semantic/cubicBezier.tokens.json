@@ -1,0 +1,22 @@
+{
+  "$schema": "https://designtokens.org/schemas/2025.10/format.json",
+  "semantic": {
+    "cubicBezier": {
+      "$type": "cubicBezier",
+      "motion": {
+        "enterExit": {
+          "$value": "{primitive.cubicBezier.easeOut}"
+        },
+        "state": {
+          "$value": "{primitive.cubicBezier.easeInOut}"
+        },
+        "navigation": {
+          "$value": "{primitive.cubicBezier.emphasized}"
+        },
+        "drawer": {
+          "$value": "{primitive.cubicBezier.drawer}"
+        }
+      }
+    }
+  }
+}

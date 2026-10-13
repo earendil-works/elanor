@@ -1,0 +1,13 @@
+{
+  "$schema": "https://designtokens.org/schemas/2025.10/format.json",
+  "primitive": {
+    "duration": {
+      "$type": "duration",
+      "100": {"$value": {"value": 100, "unit": "ms"}},
+      "150": {"$value": {"value": 150, "unit": "ms"}},
+      "350": {"$value": {"value": 350, "unit": "ms"}},
+      "400": {"$value": {"value": 400, "unit": "ms"}},
+      "450": {"$value": {"value": 450, "unit": "ms"}}
+    }
+  }
+}

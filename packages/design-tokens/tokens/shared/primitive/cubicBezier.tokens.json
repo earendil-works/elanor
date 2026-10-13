@@ -1,0 +1,12 @@
+{
+  "$schema": "https://designtokens.org/schemas/2025.10/format.json",
+  "primitive": {
+    "cubicBezier": {
+      "$type": "cubicBezier",
+      "easeOut": {"$value": [0, 0, 0.58, 1]},
+      "easeInOut": {"$value": [0.42, 0, 0.58, 1]},
+      "emphasized": {"$value": [0.22, 1, 0.36, 1]},
+      "drawer": {"$value": [0.32, 0.72, 0, 1]}
+    }
+  }
+}

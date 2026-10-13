@@ -4,6 +4,20 @@
   "primitive": {
     "number": {
       "$type": "number",
+      "scale": {
+        "900": {
+          "$value": 0.9
+        },
+        "950": {
+          "$value": 0.95
+        },
+        "980": {
+          "$value": 0.98
+        },
+        "1000": {
+          "$value": 1
+        }
+      },
       "lineHeight": {
         "100": {
           "$value": 1.2,
@@ -158,6 +172,9 @@
               "source": "recipes/shared/primitive/opacity.json"
             }
           }
+        },
+        "1000": {
+          "$value": 1
         },
         "$description": "Opacity scale where 0 is fully transparent and 1000 is fully opaque."
       }

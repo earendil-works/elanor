@@ -6,9 +6,26 @@
       "$description": "Choose unitless values by their intended interface role instead of consuming primitive scale steps directly.",
       "opacity": {
         "$description": "Use opacity roles to communicate interface states consistently.",
+        "visible": {
+          "$value": "{primitive.number.opacity.1000}"
+        },
         "disabled": {
           "$value": "{primitive.number.opacity.400}",
           "$description": "Use as the opacity for disabled elements that remain visible but unavailable for interaction."
+        }
+      },
+      "scale": {
+        "rest": {
+          "$value": "{primitive.number.scale.1000}"
+        },
+        "popup": {
+          "$value": "{primitive.number.scale.980}"
+        },
+        "combobox": {
+          "$value": "{primitive.number.scale.950}"
+        },
+        "navigation": {
+          "$value": "{primitive.number.scale.900}"
         }
       },
       "layer": {
