@@ -48,7 +48,8 @@
 
 .indicator {
   position: absolute;
-  left: var(--active-tab-left);
+  left: 0;
+  translate: var(--active-tab-left) 0;
   inset-block-end: calc(-1 * var(--semantic-dimension-border-width-default));
   inline-size: var(--active-tab-width);
   block-size: var(--semantic-dimension-border-width-default);
@@ -81,4 +82,12 @@
   border-radius: var(--semantic-dimension-radius-small);
   outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
   outline-offset: var(--semantic-dimension-border-width-medium);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .indicator {
+    transition:
+      translate var(--semantic-duration-motion-standard) var(--semantic-cubic-bezier-motion-state),
+      inline-size var(--semantic-duration-motion-standard) var(--semantic-cubic-bezier-motion-state);
+  }
 }

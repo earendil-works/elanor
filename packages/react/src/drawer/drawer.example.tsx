@@ -56,3 +56,52 @@ export function DrawerExample(): React.JSX.Element {
     </Drawer.Root>
   );
 }
+
+export function DrawerStackExample(): React.JSX.Element {
+  return (
+    <Drawer.Root>
+      <Drawer.Trigger render={<Button hierarchy="secondary" />}>Open stacked sheets</Drawer.Trigger>
+      <Drawer.Portal>
+        <Drawer.Backdrop />
+        <Drawer.Viewport>
+          <Drawer.Popup data-stacked>
+            <Drawer.Content>
+              <Stack gap="large" align="stretch">
+                <Drawer.Title>Project settings</Drawer.Title>
+                <Drawer.Description>
+                  Open a nested sheet to preview the stack treatment.
+                </Drawer.Description>
+                <Drawer.Root>
+                  <Drawer.Trigger render={<Button />}>Sharing settings</Drawer.Trigger>
+                  <Drawer.Portal>
+                    <Drawer.Backdrop />
+                    <Drawer.Viewport>
+                      <Drawer.Popup data-stacked>
+                        <Drawer.Content>
+                          <Stack gap="large" align="stretch">
+                            <Drawer.Title>Sharing settings</Drawer.Title>
+                            <Drawer.Description>
+                              The parent sheet follows this sheet's height and swipe progress. Swipe
+                              down to return, or use the close button. Closing this sheet restores
+                              focus to its trigger without closing the parent.
+                            </Drawer.Description>
+                            <Drawer.Close render={<Button />}>
+                              Back to project settings
+                            </Drawer.Close>
+                          </Stack>
+                        </Drawer.Content>
+                      </Drawer.Popup>
+                    </Drawer.Viewport>
+                  </Drawer.Portal>
+                </Drawer.Root>
+                <Drawer.Close render={<Button hierarchy="secondary" />}>
+                  Close settings
+                </Drawer.Close>
+              </Stack>
+            </Drawer.Content>
+          </Drawer.Popup>
+        </Drawer.Viewport>
+      </Drawer.Portal>
+    </Drawer.Root>
+  );
+}

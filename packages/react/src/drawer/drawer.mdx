@@ -1,4 +1,4 @@
-import {DrawerExample} from './drawer.example.tsx';
+import {DrawerExample, DrawerStackExample} from './drawer.example.tsx';
 
 Base UI Drawer supplies modal focus management, scroll locking and swipe dismissal.
 Use `swipeDirection="left"` or `"right"` for side panels; the default is a bottom sheet.
@@ -35,8 +35,13 @@ supports this without duplicating Drawer state. Controlled `open`, `onOpenChange
 and cancellable event details remain available.
 
 Popup scrolls within the viewport. Compose Content to preserve mouse text selection;
-use `data-base-ui-swipe-ignore` on controls that need their own gestures. Styling adds
-no timed transitions; direct swipe movement follows the pointer.
+use `data-base-ui-swipe-ignore` on controls that need their own gestures.
+
+## Nested bottom sheets
+
+<DrawerStackExample client:load />
+
+## Application overlay placement
 
 The host owns overlay stacking through `Drawer.Portal` styling. With elevated headers,
 give that portal `position: fixed`, `inset: 0` and `z-index: var(--semantic-number-layer-overlay)`.

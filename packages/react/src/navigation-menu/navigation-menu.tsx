@@ -13,8 +13,6 @@ export type {
   NavigationMenuTriggerState,
   NavigationMenuPortalProps,
   NavigationMenuPositionerState,
-  NavigationMenuPositionerProps,
-  NavigationMenuViewportProps,
   NavigationMenuListState,
   NavigationMenuContentState,
   NavigationMenuPopupState,
@@ -93,7 +91,32 @@ export function NavigationMenuIcon({ref, className, children, ...props}: Navigat
   );
 }
 
-export const NavigationMenuPositioner = BaseNavigationMenu.Positioner;
+export type NavigationMenuPositionerProps = BaseNavigationMenu.Positioner.Props;
+export type NavigationMenuViewportProps = BaseNavigationMenu.Viewport.Props;
+
+export function NavigationMenuPositioner({
+  ref,
+  className,
+  ...props
+}: NavigationMenuPositionerProps) {
+  return (
+    <BaseNavigationMenu.Positioner
+      {...props}
+      ref={ref}
+      className={mergeClassName<BaseNavigationMenu.Positioner.State>(styles.positioner, className)}
+    />
+  );
+}
+
+export function NavigationMenuViewport({ref, className, ...props}: NavigationMenuViewportProps) {
+  return (
+    <BaseNavigationMenu.Viewport
+      {...props}
+      ref={ref}
+      className={mergeClassName<BaseNavigationMenu.Viewport.State>(styles.viewport, className)}
+    />
+  );
+}
 
 export function NavigationMenuPopup({ref, className, ...props}: NavigationMenuPopupProps) {
   return (

@@ -22,6 +22,25 @@ export function NavigationMenuExample(): React.JSX.Element {
             </Stack>
           </NavigationMenu.Content>
         </NavigationMenu.Item>
+        <NavigationMenu.Item>
+          <NavigationMenu.Trigger>
+            Guides
+            <NavigationMenu.Icon />
+          </NavigationMenu.Trigger>
+          <NavigationMenu.Content>
+            <Stack gap="xxSmall">
+              <NavigationMenu.Link href="/components/drawer/">
+                Drawer gestures and nesting
+              </NavigationMenu.Link>
+              <NavigationMenu.Link href="/components/sidebar/">
+                Responsive sidebar composition
+              </NavigationMenu.Link>
+              <NavigationMenu.Link href="/components/layout/">
+                Application layout
+              </NavigationMenu.Link>
+            </Stack>
+          </NavigationMenu.Content>
+        </NavigationMenu.Item>
       </NavigationMenu.List>
       <NavigationMenu.Portal>
         <NavigationMenu.Positioner align="start">

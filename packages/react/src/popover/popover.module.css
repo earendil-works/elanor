@@ -32,3 +32,22 @@
   color: var(--semantic-color-text-secondary);
   font: var(--semantic-typography-ui-secondary);
 }
+
+@media (prefers-reduced-motion: no-preference) {
+  .popup {
+    transform-origin: var(--transform-origin);
+    transition:
+      transform var(--semantic-duration-motion-quick) var(--semantic-cubic-bezier-motion-enter-exit),
+      opacity var(--semantic-duration-motion-quick) var(--semantic-cubic-bezier-motion-enter-exit);
+  }
+
+  .popup[data-starting-style],
+  .popup[data-ending-style] {
+    opacity: 0;
+    transform: scale(var(--semantic-number-scale-popup));
+  }
+
+  .popup[data-instant] {
+    transition: none;
+  }
+}

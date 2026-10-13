@@ -57,10 +57,10 @@
 }
 
 .root[data-checked] .thumb {
-  inset-inline-start: auto;
-  inset-inline-end: calc(
+  inset-inline-start: calc(
     (100% - var(--semantic-dimension-size-medium)) / 2 +
-      var(--semantic-dimension-space-padding-xx-small)
+      var(--semantic-dimension-space-padding-xx-small) + var(--semantic-dimension-size-medium) -
+      var(--semantic-dimension-size-x-small)
   );
 }
 
@@ -79,5 +79,17 @@
   .thumb {
     background: ButtonText;
     forced-color-adjust: none;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .root::before {
+    transition: background-color var(--semantic-duration-motion-standard)
+      var(--semantic-cubic-bezier-motion-state);
+  }
+
+  .thumb {
+    transition: inset-inline-start var(--semantic-duration-motion-standard)
+      var(--semantic-cubic-bezier-motion-state);
   }
 }

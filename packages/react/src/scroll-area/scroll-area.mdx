@@ -63,11 +63,6 @@ signals remaining content using `data-overflow-y-end`. Keyboard focus and
 forced-colors mode replace the fade with a boundary line; forced-colors also keeps
 the scrollbar visible. Its header and footer remain outside the scroll area.
 
-We do not consume Base UI's geometry CSS variables in our styles. Its internals
-own that geometry, so the existing token-lint allowlist stays unchanged. No animation
-or reduced-motion exception is needed. Focus rings and scrollbar colors have
-forced-colors treatments.
-
 ## Choosing a scroll region
 
 Sidebar's middle navigation is an appropriate bounded region. A long docs TOC or

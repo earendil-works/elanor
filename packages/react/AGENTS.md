@@ -43,19 +43,7 @@ For Base UI changes, consult [the documentation index](https://base-ui.com/llms.
 - Prefer logical properties and flexible layouts. Handle narrow containers, RTL, and long content without hiding meaningful content.
 - Keep selectors scoped; avoid global overrides and specificity escalation.
 - When adding motion, respect reduced-motion preferences and list transitioned properties explicitly—no `transition: all`.
-- When linting, use the design-token plugin's strict configuration for the target brand. Allow only these Base UI runtime variables through `allowCustomProperties`:
-
-```ts
-[
-  '--anchor-width',
-  '--available-width',
-  '--available-height',
-  '--active-tab-left',
-  '--active-tab-top',
-  '--active-tab-width',
-  '--active-tab-height',
-];
-```
+- Use the design-token plugin's strict configuration for the target brand. `stylelint.config.mjs` defines allowed Base UI runtime variables.
 
 ## Validation
 

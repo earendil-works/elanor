@@ -276,3 +276,24 @@
     outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
   }
 }
+
+@media (prefers-reduced-motion: no-preference) {
+  .popup {
+    transform-origin: var(--transform-origin);
+    transition:
+      transform var(--semantic-duration-motion-quick) var(--semantic-cubic-bezier-motion-enter-exit),
+      opacity var(--semantic-duration-motion-quick) var(--semantic-cubic-bezier-motion-enter-exit);
+  }
+
+  .popup[data-starting-style],
+  .popup[data-ending-style] {
+    opacity: 0;
+    transform: scale(var(--semantic-number-scale-popup));
+  }
+
+  .popup[data-side='none'] {
+    transition: none;
+    transform: none;
+    opacity: var(--semantic-number-opacity-visible);
+  }
+}

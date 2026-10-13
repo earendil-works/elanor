@@ -64,3 +64,13 @@
     background: Highlight;
   }
 }
+
+@media (prefers-reduced-motion: no-preference) {
+  .scrollbar {
+    transition: opacity var(--semantic-duration-motion-standard);
+  }
+
+  .scrollbar[data-scrolling] {
+    transition: none;
+  }
+}

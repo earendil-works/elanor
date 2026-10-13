@@ -10,7 +10,6 @@
 }
 
 .panel:not([hidden]) {
-  padding-block-start: var(--semantic-dimension-space-padding-medium);
   /* stylelint-disable design-tokens/token-property-compatibility -- Structural inset: half the 16px lane plus half the 2px rule, then the 16px gap. */
   padding-inline-start: calc(
     (var(--semantic-dimension-size-x-small) + var(--semantic-dimension-border-width-default)) / 2 +
@@ -20,6 +19,12 @@
 }
 
 .panel:not([hidden])::before {
+  display: block;
+  padding-block-start: var(--semantic-dimension-space-padding-medium);
+  content: '';
+}
+
+.panel:not([hidden])::after {
   position: absolute;
   inset-block: 0;
   inset-inline-start: calc(
@@ -32,7 +37,26 @@
 }
 
 @media (forced-colors: active) {
-  .panel::before {
+  .panel::after {
     border-inline-start-color: CanvasText;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .panel {
+    height: var(--collapsible-panel-height);
+    transition: height var(--semantic-duration-motion-standard)
+      var(--semantic-cubic-bezier-motion-enter-exit);
+  }
+
+  .panel[data-height-transition],
+  .panel[data-starting-style],
+  .panel[data-ending-style] {
+    overflow: hidden;
+  }
+
+  .panel[data-starting-style],
+  .panel[data-ending-style] {
+    height: 0;
   }
 }

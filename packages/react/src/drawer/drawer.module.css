@@ -3,6 +3,7 @@
   inset: 0;
   min-block-size: 100dvh;
   background: var(--semantic-color-background-backdrop);
+  opacity: calc(var(--semantic-number-opacity-visible) - var(--drawer-swipe-progress));
 }
 
 @supports (-webkit-touch-callout: none) {
@@ -39,7 +40,6 @@
   overflow-wrap: anywhere;
   pointer-events: auto;
   touch-action: auto;
-  /* stylelint-disable-next-line design-tokens/no-non-token-custom-properties -- Base UI owns live gesture and snap-point geometry, not design tokens. */
   transform: translateY(calc(var(--drawer-snap-point-offset) + var(--drawer-swipe-movement-y)));
 }
 
@@ -56,7 +56,6 @@
     calc(100% - var(--semantic-dimension-size-x-large))
   );
   block-size: 100%;
-  /* stylelint-disable-next-line design-tokens/no-non-token-custom-properties -- Base UI owns live gesture geometry. */
   transform: translateX(var(--drawer-swipe-movement-x));
 }
 
@@ -94,10 +93,99 @@
 @media (forced-colors: active) {
   .backdrop {
     background: Canvas;
-    opacity: var(--semantic-number-opacity-disabled);
+    opacity: calc(
+      var(--semantic-number-opacity-disabled) *
+        (var(--semantic-number-opacity-visible) - var(--drawer-swipe-progress))
+    );
   }
 
   .popup {
     border-color: CanvasText;
+  }
+}
+
+/* stylelint-disable design-tokens/no-non-token-custom-properties -- Locally derived Base UI stack geometry. */
+.popup[data-stacked][data-swipe-direction='down'] {
+  --stack-progress: clamp(0, var(--drawer-swipe-progress), 1);
+  --stack-scale: clamp(0, calc(1 - (var(--nested-drawers) - var(--stack-progress)) * 0.05), 1);
+  --stack-peek: max(
+    0px,
+    calc(
+      (var(--nested-drawers) - var(--stack-progress)) * var(--semantic-dimension-space-gap-medium)
+    )
+  );
+  --stack-height: var(--drawer-frontmost-height, var(--drawer-height, 0px));
+
+  height: var(--drawer-height, auto);
+  transform-origin: bottom center;
+  transform: translateY(
+      calc(
+        var(--drawer-snap-point-offset) + var(--drawer-swipe-movement-y) - var(--stack-peek) -
+          (var(--semantic-number-scale-rest) - var(--stack-scale)) * var(--stack-height)
+      )
+    )
+    scale(var(--stack-scale));
+}
+
+.popup[data-stacked][data-nested-drawer-open][data-swipe-direction='down'] {
+  height: var(--drawer-frontmost-height, var(--drawer-height));
+  overflow: hidden;
+}
+/* stylelint-enable design-tokens/no-non-token-custom-properties */
+
+@media (prefers-reduced-motion: no-preference) {
+  .backdrop {
+    transition: opacity var(--semantic-duration-motion-drawer)
+      var(--semantic-cubic-bezier-motion-drawer);
+  }
+
+  .popup {
+    transition:
+      transform var(--semantic-duration-motion-drawer) var(--semantic-cubic-bezier-motion-drawer),
+      height var(--semantic-duration-motion-drawer) var(--semantic-cubic-bezier-motion-drawer),
+      opacity var(--semantic-duration-motion-drawer) var(--semantic-cubic-bezier-motion-drawer);
+  }
+
+  .popup[data-swiping],
+  .popup[data-nested-drawer-swiping],
+  .backdrop[data-swiping] {
+    transition: none;
+  }
+
+  .backdrop[data-starting-style],
+  .backdrop[data-ending-style] {
+    opacity: 0;
+  }
+
+  .popup[data-swipe-direction='down']:is([data-starting-style], [data-ending-style]) {
+    transform: translateY(100%);
+  }
+
+  .popup[data-swipe-direction='up']:is([data-starting-style], [data-ending-style]) {
+    transform: translateY(-100%);
+  }
+
+  .popup[data-swipe-direction='left']:is([data-starting-style], [data-ending-style]) {
+    transform: translateX(-100%);
+  }
+
+  .popup[data-swipe-direction='right']:is([data-starting-style], [data-ending-style]) {
+    transform: translateX(100%);
+  }
+
+  .popup[data-ending-style] {
+    transition:
+      transform calc(var(--drawer-swipe-strength) * var(--semantic-duration-motion-drawer-release))
+        var(--semantic-cubic-bezier-motion-drawer),
+      opacity calc(var(--drawer-swipe-strength) * var(--semantic-duration-motion-drawer-release))
+        var(--semantic-cubic-bezier-motion-drawer);
+    /* stylelint-disable-next-line design-tokens/no-hardcoded-token-values -- Detect exits even when the swipe has reached its endpoint. */
+    opacity: 0.9999;
+  }
+
+  .backdrop[data-ending-style] {
+    transition: opacity
+      calc(var(--drawer-swipe-strength) * var(--semantic-duration-motion-drawer-release))
+      var(--semantic-cubic-bezier-motion-drawer);
   }
 }
