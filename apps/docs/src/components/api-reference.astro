@@ -39,10 +39,12 @@ const parts = orderedApi(page, body);
                       <code>{prop.name}</code>
                       {prop.required && <span class="required">required</span>}
                     </th>
-                    <td>
+                    <td data-label="Type">
                       <code>{prop.type}</code>
                     </td>
-                    <td>{prop.defaultValue ? <code>{prop.defaultValue}</code> : '—'}</td>
+                    <td data-label="Default" data-empty={prop.defaultValue ? undefined : ''}>
+                      {prop.defaultValue ? <code>{prop.defaultValue}</code> : '—'}
+                    </td>
                     <td set:html={prop.description ? inlineHtml(prop.description) : ''} />
                   </tr>
                 ))}
@@ -58,7 +60,12 @@ const parts = orderedApi(page, body);
 
 <style>
   .api {
+    container-type: inline-size;
     inline-size: 100%;
+  }
+
+  .api code {
+    overflow-wrap: anywhere;
   }
 
   .api th[scope='row'] {
@@ -77,5 +84,41 @@ const parts = orderedApi(page, body);
     padding-inline-end: var(--semantic-dimension-space-padding-medium);
     text-align: start;
     vertical-align: top;
+  }
+
+  /* Narrow screens: one block per prop instead of a table wider than the screen.
+     Container queries can't use var(), so the threshold is the token's resolved value. */
+  @container (width < 40rem /* token: semantic.dimension.breakpoint.xSmall */) {
+    .api :is(table, tbody, tr, th, td) {
+      display: block;
+    }
+
+    .api thead {
+      position: absolute;
+      inline-size: var(--semantic-dimension-border-width-small);
+      block-size: var(--semantic-dimension-border-width-small);
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    .api tr {
+      padding-block: var(--semantic-dimension-space-padding-medium);
+      border-block-end: var(--semantic-dimension-border-width-small) solid
+        var(--semantic-color-border-secondary);
+    }
+
+    .api :is(td, th) {
+      padding-inline-end: 0;
+    }
+
+    .api td[data-label]::before {
+      content: attr(data-label) ': ';
+      color: var(--semantic-color-text-secondary);
+    }
+
+    .api td[data-empty] {
+      display: none;
+    }
   }
 </style>
