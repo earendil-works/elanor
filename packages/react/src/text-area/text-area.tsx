@@ -11,6 +11,7 @@ export interface TextAreaProps extends Omit<
 > {
   readonly className?: BaseField.Control.Props['className'];
   readonly style?: BaseField.Control.Props['style'];
+  /** Called with the new value on each change. */
   readonly onValueChange?: BaseField.Control.Props['onValueChange'];
 }
 

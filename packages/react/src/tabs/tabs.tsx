@@ -16,6 +16,7 @@ export type {
 } from '@base-ui/react/tabs';
 
 export interface TabsRootProps extends Omit<BaseTabs.Root.Props, 'orientation'> {
+  /** Only horizontal is supported. */
   readonly orientation?: 'horizontal';
 }
 

@@ -22,9 +22,13 @@ export interface SidebarRootProps extends Omit<
   useRender.ComponentProps<'div', SidebarState>,
   'children'
 > {
+  /** Collapsed state, when controlled. */
   readonly collapsed?: boolean;
+  /** Initial collapsed state, when uncontrolled. */
   readonly defaultCollapsed?: boolean;
+  /** Called when the trigger toggles the sidebar. `details.cancel()` keeps the current state. */
   readonly onCollapsedChange?: (collapsed: boolean, details: SidebarChangeEventDetails) => void;
+  /** Regions, or a function that receives `{collapsed}` and returns them. */
   readonly children?: ReactNode | ((state: SidebarState) => ReactNode);
 }
 

@@ -6,6 +6,7 @@ import styles from './pagination.module.css';
 
 export interface PaginationRootProps extends HTMLAttributes<HTMLElement> {
   readonly ref?: Ref<HTMLElement> | undefined;
+  /** Position text before the links, such as "Page 2 of 5". */
   readonly summary?: string;
 }
 
@@ -25,6 +26,7 @@ export function Pagination({ref, summary, children, className, ...props}: Pagina
 
 export interface PaginationLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   readonly ref?: Ref<HTMLAnchorElement> | undefined;
+  /** Removes `href` and the tab stop, such as for Previous on the first page. */
   readonly disabled?: boolean;
 }
 

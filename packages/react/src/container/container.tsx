@@ -8,7 +8,7 @@ import styles from './container.module.css';
 export type ContainerWidth = 'capped' | 'full';
 
 export interface ContainerProps extends useRender.ComponentProps<'div'> {
-  /** The content cap is independent of any surrounding side regions. */
+  /** `capped` limits content to 1216px; `full` removes the cap. Both keep the gutters. */
   readonly width?: ContainerWidth;
 }
 

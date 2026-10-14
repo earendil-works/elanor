@@ -60,6 +60,7 @@ export function TableHeaderCell({ref, className, ...props}: TableHeaderCellProps
 
 export interface TableCellProps extends Omit<TdHTMLAttributes<HTMLTableCellElement>, 'align'> {
   readonly ref?: Ref<HTMLTableCellElement> | undefined;
+  /** Inline alignment of the cell content. Use `end` for numbers. */
   readonly align?: 'start' | 'center' | 'end';
 }
 

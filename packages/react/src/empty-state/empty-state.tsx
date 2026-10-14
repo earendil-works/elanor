@@ -39,6 +39,7 @@ export function EmptyStateCopy({ref, className, ...props}: EmptyStateCopyProps) 
 
 export interface EmptyStateTitleProps extends HTMLAttributes<HTMLHeadingElement> {
   readonly ref?: Ref<HTMLHeadingElement> | undefined;
+  /** Heading level. Follow the page outline. */
   readonly level: HeadingLevel;
 }
 

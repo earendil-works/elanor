@@ -24,7 +24,9 @@ export function SectionContent({ref, className, ...props}: SectionContentProps) 
 }
 
 export interface SectionSeparatorProps extends Omit<SeparatorProps, 'orientation'> {
+  /** Grid tracks the line spans, out of 12. Accepts container breakpoint keys, like `Grid.Item`. */
   readonly span?: GridItemProps['span'];
+  /** Only horizontal is supported. */
   readonly orientation?: 'horizontal';
 }
 

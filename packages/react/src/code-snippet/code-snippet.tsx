@@ -6,7 +6,9 @@ import styles from './code-snippet.module.css';
 
 export interface CodeSnippetProps extends Omit<HTMLAttributes<HTMLPreElement>, 'children'> {
   readonly ref?: Ref<HTMLPreElement> | undefined;
+  /** The code, rendered inside `<code>`. */
   readonly children?: ReactNode;
+  /** Controls at the end of the snippet, such as a copy button. */
   readonly actions?: ReactNode;
 }
 

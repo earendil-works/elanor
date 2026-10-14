@@ -6,6 +6,7 @@ import styles from './table-of-contents.module.css';
 
 export interface TableOfContentsRootProps extends Omit<HTMLAttributes<HTMLElement>, 'title'> {
   readonly ref?: Ref<HTMLElement> | undefined;
+  /** Visible heading above the links. */
   readonly title?: ReactNode;
 }
 
@@ -39,6 +40,7 @@ export function TableOfContentsItem({ref, className, ...props}: TableOfContentsI
 
 export interface TableOfContentsLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   readonly ref?: Ref<HTMLAnchorElement> | undefined;
+  /** Marks the section in view and sets `aria-current="location"`. */
   readonly active?: boolean;
 }
 

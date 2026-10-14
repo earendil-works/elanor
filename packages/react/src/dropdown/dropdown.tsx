@@ -39,6 +39,7 @@ export type DropdownItemProps = ComponentPropsWithRef<typeof BaseSelect.Item>;
 export type DropdownItemIndicatorProps = BaseSelect.ItemIndicator.Props;
 export type DropdownGroupLabelProps = BaseSelect.GroupLabel.Props;
 export interface DropdownSeparatorProps extends Omit<BaseSelect.Separator.Props, 'orientation'> {
+  /** Only horizontal is supported. */
   readonly orientation?: 'horizontal';
 }
 

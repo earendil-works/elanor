@@ -9,7 +9,9 @@ export type HeadingSize = 1 | 2 | 3;
 
 export interface HeadingProps extends HTMLAttributes<HTMLHeadingElement> {
   readonly ref?: Ref<HTMLHeadingElement> | undefined;
+  /** Heading level. Follow the page outline; `level` doesn't change the size. */
   readonly level: HeadingLevel;
+  /** Visual size, from `1` (largest) to `3`. */
   readonly size?: HeadingSize;
 }
 

@@ -4,9 +4,13 @@ import type {ReactNode} from 'react';
 import * as Field from '../field/index.ts';
 
 export interface ControlAndLabelProps extends Omit<BaseField.Root.Props, 'children'> {
+  /** Visible label, associated with the control. */
   readonly label: ReactNode;
+  /** The control, such as `Input` or `TextArea`. */
   readonly children: ReactNode;
+  /** Help text below the control. */
   readonly description?: ReactNode;
+  /** Message shown when the control fails native validation. */
   readonly error?: ReactNode;
 }
 

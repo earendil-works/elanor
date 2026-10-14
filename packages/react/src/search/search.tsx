@@ -10,8 +10,11 @@ const inputTypes = ['text', 'search'] as const;
 
 export interface SearchProps extends Omit<BaseInput.Props, 'type'> {
   readonly type?: (typeof inputTypes)[number];
+  /** Decorative icon before the input. Defaults to a search icon. */
   readonly icon?: ReactNode;
+  /** Content after the input, such as a clear button. */
   readonly endAdornment?: ReactNode;
+  /** Class name for the outer wrapper; `className` styles the input. */
   readonly rootClassName?: string;
 }
 

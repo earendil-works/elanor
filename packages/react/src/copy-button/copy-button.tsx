@@ -6,8 +6,11 @@ import {IconButton, type IconButtonProps} from '../icon-button/icon-button.tsx';
 import styles from './copy-button.module.css';
 
 export interface CopyButtonProps extends Omit<IconButtonProps, 'value'> {
+  /** Text written to the clipboard. */
   readonly value: string;
+  /** Announced after a successful copy. */
   readonly copiedLabel?: string;
+  /** Announced when copying fails. */
   readonly errorLabel?: string;
   readonly onCopySuccess?: () => void;
   readonly onCopyError?: (error: Error) => void;

@@ -40,6 +40,7 @@ export type SearchableDropdownRootProps<
   Multiple extends boolean | undefined = false,
   Item = Value,
 > = BaseCombobox.Root.Props<Value, Multiple, Item> & {
+  /** Only list navigation is supported; grid layouts are not. */
   readonly grid?: false;
 };
 
@@ -63,6 +64,7 @@ export interface SearchableDropdownSeparatorProps extends Omit<
   BaseCombobox.Separator.Props,
   'orientation'
 > {
+  /** Only horizontal is supported. */
   readonly orientation?: 'horizontal';
 }
 export type SearchableDropdownEmptyProps = BaseCombobox.Empty.Props;

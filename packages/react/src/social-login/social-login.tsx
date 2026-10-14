@@ -6,6 +6,7 @@ import {mergeClassName} from '../utils/class-names.ts';
 import styles from './social-login.module.css';
 
 export interface SocialLoginProps extends BaseButton.Props {
+  /** The provider's logo, before the label. */
   readonly icon?: ReactNode;
 }
 

@@ -42,8 +42,11 @@ export function MenuPopup({ref, className, ...props}: MenuPopupProps) {
 }
 
 interface MenuItemContentProps {
+  /** The item label. */
   readonly children?: ReactNode;
+  /** Decorative icon before the label. */
   readonly icon?: ReactNode;
+  /** Content after the label, such as an icon. */
   readonly endAdornment?: ReactNode;
 }
 
@@ -119,6 +122,7 @@ export function MenuGroupLabel({ref, className, ...props}: MenuGroupLabelProps) 
 }
 
 export interface MenuSeparatorProps extends Omit<SeparatorProps, 'orientation'> {
+  /** Only horizontal is supported. */
   readonly orientation?: 'horizontal';
 }
 

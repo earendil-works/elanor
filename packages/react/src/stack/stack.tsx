@@ -11,9 +11,13 @@ export type StackWrap = 'wrap' | 'nowrap';
 
 export interface StackProps extends HTMLAttributes<HTMLDivElement> {
   readonly ref?: Ref<HTMLDivElement> | undefined;
+  /** Main axis: `column` stacks vertically, `row` horizontally. */
   readonly direction?: StackDirection;
+  /** Space between children. `auto` puts all free space between them. */
   readonly gap?: StackGap;
+  /** Cross-axis alignment. `stretch` makes children fill the cross axis. */
   readonly align?: StackAlign;
+  /** Whether children wrap onto new lines when space runs out. */
   readonly wrap?: StackWrap;
 }
 

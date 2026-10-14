@@ -10,7 +10,9 @@ export interface ProjectSwitcherTriggerProps<Payload = unknown> extends Omit<
   BaseMenu.Trigger.Props<Payload>,
   'children'
 > {
+  /** The current project name. */
   readonly children?: ReactNode;
+  /** Icon after the name. Pass `null` to hide it. */
   readonly indicator?: ReactNode;
 }
 

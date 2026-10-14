@@ -15,6 +15,7 @@ const inputTypes = ['text', 'email', 'password', 'tel', 'url'] as const;
 export type InputType = (typeof inputTypes)[number];
 
 export interface InputProps extends Omit<BaseInput.Props, 'type'> {
+  /** Text-like input types. Other types throw; use Search for `search`. */
   readonly type?: InputType;
 }
 

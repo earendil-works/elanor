@@ -24,6 +24,7 @@ export interface NavigationMenuRootProps<Value = any> extends Omit<
   BaseNavigationMenu.Root.Props<Value>,
   'orientation'
 > {
+  /** Only horizontal is supported. */
   readonly orientation?: 'horizontal';
 }
 

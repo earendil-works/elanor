@@ -16,6 +16,10 @@ export type SideNavigationVariant = 'default' | 'compact';
 
 export interface SideNavigationRootProps extends HTMLAttributes<HTMLElement> {
   readonly ref?: Ref<HTMLElement> | undefined;
+  /**
+   * `compact` shows only each link's icon or `compactContent`, with the label in a tooltip.
+   * Every link then needs one of them.
+   */
   readonly variant?: SideNavigationVariant;
 }
 
@@ -85,10 +89,13 @@ export function SideNavigationItem({ref, className, ...props}: SideNavigationIte
 
 export interface SideNavigationLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   readonly ref?: Ref<HTMLAnchorElement> | undefined;
+  /** Marks the current page and sets `aria-current="page"`. */
   readonly active?: boolean;
+  /** Decorative icon before the label. */
   readonly iconStart?: ReactNode;
+  /** Decorative icon after the label. */
   readonly iconEnd?: ReactNode;
-  /** Decorative, non-interactive alternative to an icon in compact navigation. */
+  /** Decorative content shown instead of the icon in compact navigation, such as initials. */
   readonly compactContent?: ReactNode;
 }
 

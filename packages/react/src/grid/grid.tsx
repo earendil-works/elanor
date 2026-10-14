@@ -52,7 +52,9 @@ function spanAttributes(spans: Record<GridBreakpoint, GridSpan>) {
 }
 
 export interface GridRootProps extends useRender.ComponentProps<'div'> {
+  /** Number of equal tracks. */
   readonly columns?: GridColumns;
+  /** Space between tracks. */
   readonly gap?: GridGap;
 }
 
@@ -90,6 +92,10 @@ export function GridRoot({
 }
 
 export interface GridItemProps extends useRender.ComponentProps<'div'> {
+  /**
+   * Tracks to span, or `full` for a full row. Key by container breakpoint, such as
+   * `{base: 'full', small: 6}`; each value applies until the next key.
+   */
   readonly span?: GridResponsiveSpan;
 }
 

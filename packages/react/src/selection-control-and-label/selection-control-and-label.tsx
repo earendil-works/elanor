@@ -9,7 +9,9 @@ export interface SelectionControlAndLabelProps extends Omit<
   'children'
 > {
   readonly ref?: Ref<HTMLLabelElement> | undefined;
+  /** A Checkbox, Radio, or Switch. */
   readonly control: ReactNode;
+  /** The label text. */
   readonly children: ReactNode;
 }
 

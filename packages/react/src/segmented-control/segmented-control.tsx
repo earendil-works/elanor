@@ -7,7 +7,9 @@ import styles from './segmented-control.module.css';
 
 export type SegmentedControlRootProps<Value extends string = string> =
   BaseToggleGroup.Props<Value> & {
+    /** Only horizontal is supported. */
     readonly orientation?: 'horizontal';
+    /** One item is pressed at a time. */
     readonly multiple?: false;
   };
 export type SegmentedControlState = BaseToggleGroup.State;
