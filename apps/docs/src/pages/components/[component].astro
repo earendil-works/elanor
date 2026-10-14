@@ -22,7 +22,11 @@ const {entry} = Astro.props;
 const {Content} = await render(entry);
 ---
 
-<DocsLayout title={componentName(entry.id)} current={`/components/${entry.id}/`}>
+<DocsLayout
+  title={componentName(entry.id)}
+  current={`/components/${entry.id}/`}
+  markdown={`/components/${entry.id}.md`}
+>
   <Content components={{Demo}} />
   <ApiReference page={entry.id} body={entry.body ?? ''} />
 </DocsLayout>

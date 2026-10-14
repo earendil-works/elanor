@@ -25,6 +25,8 @@ Tokens include light/dark CSS and DTCG values, CSS variables, descriptions, and 
 
 React components from \`@earendil-works/elanor-react\`. Each page has usage, example source, and props. Set up the app first with [application setup](https://github.com/earendil-works/elanor/blob/main/packages/react/docs/application-setup.md).
 
+Full Base UI index: [base-ui.com/llms.txt](https://base-ui.com/llms.txt).
+
 ${components.map(componentIndexLine).join('\n')}
 
 ## Icons
