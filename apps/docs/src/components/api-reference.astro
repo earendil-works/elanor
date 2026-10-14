@@ -1,0 +1,81 @@
+---
+import {inlineHtml, orderedApi, partSummary} from '../lib/component-api.ts';
+
+interface Props {
+  /** Component directory, such as `button`. */
+  page: string;
+  /** Page MDX, used to order parts as the page introduces them. */
+  body: string;
+}
+
+const {page, body} = Astro.props;
+const parts = orderedApi(page, body);
+---
+
+{
+  parts.length > 0 && (
+    <section class="api" aria-labelledby="api">
+      <h2 id="api">API</h2>
+      {parts.map((part) => (
+        <>
+          <h3 id={`api-${part.name.toLowerCase().replace('.', '-')}`}>
+            <code>{part.name}</code>
+          </h3>
+          {part.description && <p set:html={inlineHtml(part.description)} />}
+          {part.props.length > 0 && (
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Prop</th>
+                  <th scope="col">Type</th>
+                  <th scope="col">Default</th>
+                  <th scope="col">Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                {part.props.map((prop) => (
+                  <tr>
+                    <th scope="row">
+                      <code>{prop.name}</code>
+                      {prop.required && <span class="required">required</span>}
+                    </th>
+                    <td>
+                      <code>{prop.type}</code>
+                    </td>
+                    <td>{prop.defaultValue ? <code>{prop.defaultValue}</code> : '—'}</td>
+                    <td set:html={prop.description ? inlineHtml(prop.description) : ''} />
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+          <p set:html={inlineHtml(partSummary(part))} />
+        </>
+      ))}
+    </section>
+  )
+}
+
+<style>
+  .api {
+    inline-size: 100%;
+  }
+
+  .api th[scope='row'] {
+    white-space: nowrap;
+  }
+
+  .required {
+    display: block;
+    color: var(--semantic-color-text-secondary);
+    font: var(--semantic-typography-ui-tertiary);
+  }
+
+  .api td,
+  .api th {
+    padding-block: var(--semantic-dimension-space-padding-xx-small);
+    padding-inline-end: var(--semantic-dimension-space-padding-medium);
+    text-align: start;
+    vertical-align: top;
+  }
+</style>

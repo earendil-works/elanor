@@ -4,6 +4,7 @@ import react from '@astrojs/react';
 import sentry from '@sentry/astro';
 import {defineConfig} from 'astro/config';
 
+import {demos} from './plugins/demos.ts';
 import {iconImports} from './plugins/icon-imports.ts';
 import {publicAssets} from './plugins/public-assets.ts';
 
@@ -29,7 +30,7 @@ export default defineConfig({
     publicAssets(),
   ],
   vite: {
-    plugins: [iconImports()],
+    plugins: [demos(), iconImports()],
     resolve: {
       conditions:
         process.env.NODE_ENV === 'development'

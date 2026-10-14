@@ -57,6 +57,13 @@
   overflow-x: auto;
 }
 
+/* Code blocks written in MDX, such as usage snippets. */
+.preview > pre.astro-code {
+  padding: var(--semantic-dimension-space-padding-x-large);
+  border-radius: var(--semantic-dimension-radius-medium);
+  font: var(--semantic-typography-code-secondary);
+}
+
 /* MDX tables have no wrapper; scroll the table locally, not the page. */
 .preview > table,
 .prose table {

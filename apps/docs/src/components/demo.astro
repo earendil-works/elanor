@@ -1,0 +1,89 @@
+---
+import {CopyButton} from '@earendil-works/elanor-react';
+import {Code} from 'astro:components';
+
+interface Props {
+  /** The example and the local files it imports, added by the `demos` Vite plugin. */
+  files: {name: string; code: string}[];
+}
+
+const {files} = Astro.props;
+const language = (name: string) => (name.endsWith('.css') ? 'css' : 'tsx');
+---
+
+<div class="demo">
+  <div class="demo-preview">
+    <slot />
+  </div>
+  <details class="demo-source">
+    <summary>Code</summary>
+    {
+      files.map((file) => (
+        <div class="demo-file">
+          <div class="demo-file-header">
+            <span>{file.name}</span>
+            <CopyButton value={file.code} aria-label={`Copy ${file.name}`} client:visible />
+          </div>
+          <Code code={file.code.trimEnd()} lang={language(file.name)} />
+        </div>
+      ))
+    }
+  </details>
+</div>
+
+<style>
+  .demo {
+    inline-size: 100%;
+    min-inline-size: 0;
+    margin-block: var(--semantic-dimension-space-gap-medium);
+    border: var(--semantic-dimension-border-width-default) solid
+      var(--semantic-color-border-secondary);
+    border-radius: var(--semantic-dimension-radius-medium);
+  }
+
+  /* Normal block flow, as on an application page. */
+  .demo-preview {
+    display: flow-root;
+    min-inline-size: 0;
+    padding: var(--semantic-dimension-space-padding-xx-large);
+    background: var(--semantic-color-background-surface);
+    border-start-start-radius: inherit;
+    border-start-end-radius: inherit;
+  }
+
+  .demo-source {
+    border-block-start: var(--semantic-dimension-border-width-default) solid
+      var(--semantic-color-border-secondary);
+  }
+
+  .demo-source > summary {
+    padding-block: var(--semantic-dimension-space-padding-small);
+    padding-inline: var(--semantic-dimension-space-padding-x-large);
+    font: var(--semantic-typography-ui-secondary);
+    cursor: pointer;
+  }
+
+  .demo-file-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--semantic-dimension-space-gap-small);
+    padding-block: var(--semantic-dimension-space-padding-xx-small);
+    padding-inline: var(--semantic-dimension-space-padding-x-large);
+    border-block-start: var(--semantic-dimension-border-width-default) solid
+      var(--semantic-color-border-secondary);
+    font: var(--semantic-typography-code-secondary);
+  }
+
+  .demo-file :global(pre) {
+    margin: 0;
+    padding: var(--semantic-dimension-space-padding-x-large);
+    overflow-x: auto;
+    font: var(--semantic-typography-code-secondary);
+  }
+
+  .demo-file:last-child :global(pre) {
+    border-end-start-radius: var(--semantic-dimension-radius-medium);
+    border-end-end-radius: var(--semantic-dimension-radius-medium);
+  }
+</style>
