@@ -1,4 +1,4 @@
-// Generates the per-brand logo modules from the artwork built by @earendil-works/elanor-logos.
+// Generates per-brand and per-variant modules from @earendil-works/elanor-logos artwork.
 // The component they use, src/create-logo.tsx, is compiled by tsc afterwards.
 import {mkdir, readFile, rm, writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
@@ -48,21 +48,59 @@ await mkdir(outputDirectory, {recursive: true});
 
 const exports: string[] = [];
 for (const [brand, {colors, kinds}] of Object.entries(brands)) {
-  const componentName = `${brand.charAt(0).toUpperCase()}${brand.slice(1)}Logo`;
-  const data = {
-    colors,
-    monochrome: colors[monochromeToken],
-    // Keyed by the `lockup` prop; the symbol alone is "logo".
-    kinds: Object.fromEntries(
-      Object.values(kinds).map(({lockup, color, monochrome}) => [
-        lockup ?? 'logo',
-        {color, monochrome},
-      ]),
-    ),
-  };
+  const prefix = `${brand.charAt(0).toUpperCase()}${brand.slice(1)}`;
+  const componentName = `${prefix}Logo`;
+  const brandName = JSON.stringify(names[brand] ?? brand);
+  const imports: string[] = [];
+  const kindEntries: string[] = [];
+  await mkdir(resolve(outputDirectory, brand), {recursive: true});
+
+  for (const {lockup, color, monochrome} of Object.values(kinds)) {
+    const variant = lockup ? `lockup-${lockup}` : 'symbol';
+    const suffix = lockup ? `Lockup${lockup.charAt(0).toUpperCase()}${lockup.slice(1)}` : 'Symbol';
+    for (const [treatment, artwork] of Object.entries({color, monochrome})) {
+      const isMonochrome = treatment === 'monochrome';
+      const subpath = `${variant}${isMonochrome ? '-monochrome' : ''}`;
+      const exportName = `${prefix}${suffix}${isMonochrome ? 'Monochrome' : ''}`;
+      const paths = artwork.paths.map((path) => ({
+        ...path,
+        token: isMonochrome ? monochromeToken : path.token,
+      }));
+      const data = {
+        colors: Object.fromEntries(
+          [...new Set(paths.map(({token}) => token))].map((token) => {
+            const color = colors[token];
+            if (!color) throw new Error(`${brand}/${subpath} has no color for ${token}`);
+            return [token, color];
+          }),
+        ),
+        artwork: {...artwork, paths},
+      };
+      const stem = resolve(outputDirectory, brand, subpath);
+      await writeFile(`${stem}.artwork.js`, `export const data = ${JSON.stringify(data)};\n`);
+      await writeFile(
+        `${stem}.artwork.d.ts`,
+        'import type {LogoVariantData} from "../create-logo.js";\nexport declare const data: LogoVariantData;\n',
+      );
+      await writeFile(
+        `${stem}.js`,
+        `import {createLogoVariant} from "../create-logo.js";\nimport {data} from "./${subpath}.artwork.js";\n\nexport const ${exportName} = /*#__PURE__*/ createLogoVariant(${JSON.stringify(exportName)}, ${brandName}, data);\n`,
+      );
+      await writeFile(
+        `${stem}.d.ts`,
+        `import type {LogoVariantComponent} from "../create-logo.js";\nexport declare const ${exportName}: LogoVariantComponent;\n`,
+      );
+      imports.push(
+        `import {data as ${suffix}${treatment}} from "./${brand}/${subpath}.artwork.js";`,
+      );
+    }
+    kindEntries.push(
+      `${JSON.stringify(lockup ?? 'logo')}: {color: ${suffix}color, monochrome: ${suffix}monochrome}`,
+    );
+  }
   await writeFile(
     resolve(outputDirectory, `${brand}.js`),
-    `import {createLogo} from "./create-logo.js";\n\nexport const ${componentName} = /*#__PURE__*/ createLogo(${JSON.stringify(componentName)}, ${JSON.stringify(names[brand] ?? brand)}, ${JSON.stringify(data)});\n`,
+    `import {createLogo} from "./create-logo.js";\n${imports.join('\n')}\n\nexport const ${componentName} = /*#__PURE__*/ createLogo(${JSON.stringify(componentName)}, ${brandName}, {kinds: {${kindEntries.join(',')}}});\n`,
   );
   await writeFile(
     resolve(outputDirectory, `${brand}.d.ts`),

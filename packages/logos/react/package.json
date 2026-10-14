@@ -14,9 +14,117 @@
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
     },
-    "./*": {
-      "types": "./dist/*.d.ts",
-      "import": "./dist/*.js"
+    "./earendil": {
+      "types": "./dist/earendil.d.ts",
+      "import": "./dist/earendil.js"
+    },
+    "./earendil/symbol": {
+      "types": "./dist/earendil/symbol.d.ts",
+      "import": "./dist/earendil/symbol.js"
+    },
+    "./earendil/symbol-monochrome": {
+      "types": "./dist/earendil/symbol-monochrome.d.ts",
+      "import": "./dist/earendil/symbol-monochrome.js"
+    },
+    "./earendil/lockup-horizontal": {
+      "types": "./dist/earendil/lockup-horizontal.d.ts",
+      "import": "./dist/earendil/lockup-horizontal.js"
+    },
+    "./earendil/lockup-horizontal-monochrome": {
+      "types": "./dist/earendil/lockup-horizontal-monochrome.d.ts",
+      "import": "./dist/earendil/lockup-horizontal-monochrome.js"
+    },
+    "./earendil/lockup-vertical": {
+      "types": "./dist/earendil/lockup-vertical.d.ts",
+      "import": "./dist/earendil/lockup-vertical.js"
+    },
+    "./earendil/lockup-vertical-monochrome": {
+      "types": "./dist/earendil/lockup-vertical-monochrome.d.ts",
+      "import": "./dist/earendil/lockup-vertical-monochrome.js"
+    },
+    "./pi": {
+      "types": "./dist/pi.d.ts",
+      "import": "./dist/pi.js"
+    },
+    "./pi/symbol": {
+      "types": "./dist/pi/symbol.d.ts",
+      "import": "./dist/pi/symbol.js"
+    },
+    "./pi/symbol-monochrome": {
+      "types": "./dist/pi/symbol-monochrome.d.ts",
+      "import": "./dist/pi/symbol-monochrome.js"
+    },
+    "./pi/lockup-horizontal": {
+      "types": "./dist/pi/lockup-horizontal.d.ts",
+      "import": "./dist/pi/lockup-horizontal.js"
+    },
+    "./pi/lockup-horizontal-monochrome": {
+      "types": "./dist/pi/lockup-horizontal-monochrome.d.ts",
+      "import": "./dist/pi/lockup-horizontal-monochrome.js"
+    },
+    "./pi/lockup-vertical": {
+      "types": "./dist/pi/lockup-vertical.d.ts",
+      "import": "./dist/pi/lockup-vertical.js"
+    },
+    "./pi/lockup-vertical-monochrome": {
+      "types": "./dist/pi/lockup-vertical-monochrome.d.ts",
+      "import": "./dist/pi/lockup-vertical-monochrome.js"
+    },
+    "./radius": {
+      "types": "./dist/radius.d.ts",
+      "import": "./dist/radius.js"
+    },
+    "./radius/symbol": {
+      "types": "./dist/radius/symbol.d.ts",
+      "import": "./dist/radius/symbol.js"
+    },
+    "./radius/symbol-monochrome": {
+      "types": "./dist/radius/symbol-monochrome.d.ts",
+      "import": "./dist/radius/symbol-monochrome.js"
+    },
+    "./radius/lockup-horizontal": {
+      "types": "./dist/radius/lockup-horizontal.d.ts",
+      "import": "./dist/radius/lockup-horizontal.js"
+    },
+    "./radius/lockup-horizontal-monochrome": {
+      "types": "./dist/radius/lockup-horizontal-monochrome.d.ts",
+      "import": "./dist/radius/lockup-horizontal-monochrome.js"
+    },
+    "./radius/lockup-vertical": {
+      "types": "./dist/radius/lockup-vertical.d.ts",
+      "import": "./dist/radius/lockup-vertical.js"
+    },
+    "./radius/lockup-vertical-monochrome": {
+      "types": "./dist/radius/lockup-vertical-monochrome.d.ts",
+      "import": "./dist/radius/lockup-vertical-monochrome.js"
+    },
+    "./lefos": {
+      "types": "./dist/lefos.d.ts",
+      "import": "./dist/lefos.js"
+    },
+    "./lefos/symbol": {
+      "types": "./dist/lefos/symbol.d.ts",
+      "import": "./dist/lefos/symbol.js"
+    },
+    "./lefos/symbol-monochrome": {
+      "types": "./dist/lefos/symbol-monochrome.d.ts",
+      "import": "./dist/lefos/symbol-monochrome.js"
+    },
+    "./lefos/lockup-horizontal": {
+      "types": "./dist/lefos/lockup-horizontal.d.ts",
+      "import": "./dist/lefos/lockup-horizontal.js"
+    },
+    "./lefos/lockup-horizontal-monochrome": {
+      "types": "./dist/lefos/lockup-horizontal-monochrome.d.ts",
+      "import": "./dist/lefos/lockup-horizontal-monochrome.js"
+    },
+    "./lefos/lockup-vertical": {
+      "types": "./dist/lefos/lockup-vertical.d.ts",
+      "import": "./dist/lefos/lockup-vertical.js"
+    },
+    "./lefos/lockup-vertical-monochrome": {
+      "types": "./dist/lefos/lockup-vertical-monochrome.d.ts",
+      "import": "./dist/lefos/lockup-vertical-monochrome.js"
     }
   },
   "scripts": {
