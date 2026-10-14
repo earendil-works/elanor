@@ -38,6 +38,7 @@ const elements: Record<string, string> = {
   HTMLAnchorElement: 'a',
   HTMLButtonElement: 'button',
   HTMLDivElement: 'div',
+  HTMLFormElement: 'form',
   HTMLHRElement: 'hr',
   HTMLInputElement: 'input',
   HTMLLIElement: 'li',
