@@ -26,10 +26,17 @@ export function CheckboxRoot({ref, className, ...props}: CheckboxRootProps) {
   );
 }
 
-export function CheckboxIndicator({ref, className, children, ...props}: CheckboxIndicatorProps) {
+export function CheckboxIndicator({
+  ref,
+  className,
+  children,
+  keepMounted = true,
+  ...props
+}: CheckboxIndicatorProps) {
   return (
     <BaseCheckbox.Indicator
       {...props}
+      keepMounted={keepMounted}
       ref={ref}
       className={mergeClassName<BaseCheckbox.Indicator.State>(styles.indicator, className)}
     >
