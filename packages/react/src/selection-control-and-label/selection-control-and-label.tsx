@@ -2,7 +2,7 @@ import type {LabelHTMLAttributes, ReactNode, Ref} from 'react';
 
 import {classes} from '../utils/class-names.ts';
 
-import styles from './selection-control-label.module.css';
+import styles from './selection-control-and-label.module.css';
 
 export interface SelectionControlAndLabelProps extends Omit<
   LabelHTMLAttributes<HTMLLabelElement>,

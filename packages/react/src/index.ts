@@ -385,8 +385,8 @@ export type {
   SegmentedControlState,
 } from './segmented-control/segmented-control.tsx';
 
-export {SelectionControlAndLabel} from './selection-control-label/selection-control-label.tsx';
-export type {SelectionControlAndLabelProps} from './selection-control-label/selection-control-label.tsx';
+export {SelectionControlAndLabel} from './selection-control-and-label/selection-control-and-label.tsx';
+export type {SelectionControlAndLabelProps} from './selection-control-and-label/selection-control-and-label.tsx';
 
 export {Separator} from './separator/separator.tsx';
 export type {SeparatorProps, SeparatorState} from './separator/separator.tsx';
