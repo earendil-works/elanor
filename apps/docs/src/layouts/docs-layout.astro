@@ -8,6 +8,7 @@ import {getCollection} from 'astro:content';
 import {ClientRouter} from 'astro:transitions';
 import {DocsSideNavigation, type DocsNavigationSection} from '../components/docs-side-navigation.tsx';
 import {DocsMobileNavigation} from '../components/docs-mobile-navigation.tsx';
+import {componentName} from '../lib/component-name.ts';
 
 interface Props {
   title: string;
@@ -28,13 +29,6 @@ const widePreview = [
   '/components/sidebar/',
 ].includes(current);
 const entries = audience === 'internal' ? await getCollection('components') : [];
-
-function componentName(component: string): string {
-  return component
-    .split('-')
-    .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
-    .join(' ');
-}
 
 const sections: DocsNavigationSection[] = [
   {

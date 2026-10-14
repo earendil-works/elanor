@@ -1,10 +1,10 @@
 import {SidebarExample, ControlledSidebarExample} from './sidebar.example.tsx';
 
-# Desktop sidebar
+# Sidebar
 
-A locally controlled desktop sidebar, not an application state provider. It stays interactive when collapsed. Compose [Drawer](/components/drawer/) with SideNavigation for mobile navigation; keep its open state separate from desktop collapse.
-
-See the [responsive navigation recipe](/components/top-navigation/#responsive-navigation) for desktop Sidebar and mobile Drawer sharing destinations and selection.
+A desktop sidebar that stays interactive when collapsed. For mobile, compose
+[Drawer](/components/drawer/) with SideNavigation and keep drawer open state
+separate from collapse. See the [responsive recipe](/components/top-navigation/#responsive-navigation).
 
 <h2 id="sidebar-examples">Interactive examples</h2>
 
@@ -12,19 +12,12 @@ See the [responsive navigation recipe](/components/top-navigation/#responsive-na
 
 <SidebarExample client:load />
 
-The example follows the Figma structure: brand and toggle, project switcher,
-separator, grouped navigation, and a separated account footer. The brand row is
-24px high; text replaces the Radius logo.
-
 ### Controlled state, cancellation, and retained focus
 
 <ControlledSidebarExample client:load />
 
-These are hydrated React examples inside the existing Astro documentation preview.
-They add no separate demo application or testing infrastructure. Use Tab to reach
-the compact links and Escape to dismiss their tooltips. In the controlled example,
-“Focus Home and toggle from owner” focuses the link before changing state so its
-retained DOM identity and focus can be inspected directly.
+Tab reaches compact links; Escape dismisses tooltips. “Focus Home and toggle from
+owner” demonstrates focus staying on a link through collapse.
 
 ## Composition
 
@@ -86,22 +79,17 @@ import {HomeIcon, SettingsIcon} from '@earendil-works/elanor-icons-react';
 </Layout.Body>;
 ```
 
-The root defaults to a `div`. Compose it with `Layout.Aside` to get one aside,
-rather than nested landmarks. Header, Content, and Footer are optional `div`
-regions, not additional landmark elements. Put the persistent Trigger outside
-Content so long navigation cannot scroll it out of reach.
+Root, Header, Content, and Footer default to `div`. Compose Root with
+`Layout.Aside` for one aside landmark. Keep Trigger outside Content so it cannot
+scroll out of reach.
 
-Content uses a Base UI Scroll Area internally. Its `ref`, `render`, `className`,
-`style`, native attributes, and scroll events target the **scrollable viewport**,
-not its outer sizing frame. Content children sit in a measured inner container;
-do not depend on them being direct DOM children of the viewport. The outer frame
-fills the remaining sidebar height, leaving Header and Footer stationary.
+Content uses Base UI Scroll Area. Its props, ref, and scroll events target the
+**scrollable viewport**, not the sizing frame. Children sit in a measured inner
+container, not directly in the viewport. Header and Footer remain stationary.
 
-Root's children callback and the `render(props, state)` callbacks on Root,
-Header, Content, and Footer receive `{collapsed: boolean}`. The `render`
-callback must spread its props and forward its ref. These parts expose
-`data-collapsed` only while collapsed. Ordinary `className` and `style` props
-are available.
+Root's children callback and each region's `render(props, state)` receive
+`{collapsed: boolean}`. Render callbacks must spread props and forward refs.
+These parts accept `className` and `style`, and expose `data-collapsed` when collapsed.
 
 ## State and toggle
 
@@ -119,82 +107,56 @@ const [collapsed, setCollapsed] = useState(false);
 </Sidebar.Root>;
 ```
 
-Omit `collapsed` for local state; `defaultCollapsed` defaults to false.
-Do not switch between controlled and uncontrolled modes. No storage, routing,
-breakpoint detection, global shortcut, or public state provider is installed.
+Omit `collapsed` for local state; `defaultCollapsed` defaults to false. Do not
+switch between controlled and uncontrolled modes. Persistence, routing, and
+breakpoints belong to the application.
 
-`onCollapsedChange(next, details)` retains Base UI Toggle's event details,
-including `event` and `cancel()`. A controlled owner must also refrain from
-updating its own state when vetoing a change.
+`onCollapsedChange(next, details)` provides Base UI Toggle's `event` and `cancel()`.
+A controlled owner vetoing a change must also avoid updating its own state.
 
-Trigger is a Base UI Toggle with a default icon and stable accessible name
-“Collapse sidebar”. `aria-pressed=true` means the collapse option is on.
-It deliberately does not describe navigation as a hidden disclosure panel.
-Its Base UI render/className/style callbacks receive `{pressed, disabled}`;
-`data-pressed` and `data-disabled` expose its state. Trigger does not duplicate
-`data-pressed` as `data-collapsed`; the other Sidebar parts retain `data-collapsed`.
-Pass a localized stable `aria-label` to override the default; use the same label
-in both states. Its tooltip supplements, rather than supplies, its name.
-Keep Trigger mounted, and do not place it inside a ToggleGroup.
+Trigger is a Base UI Toggle named “Collapse sidebar”; `aria-pressed=true` means
+collapsed, not hidden navigation. Its `render`/`className`/`style` callbacks receive
+`{pressed, disabled}`. It exposes `data-pressed` and `data-disabled`, not
+`data-collapsed`. Override `aria-label` for localization, keeping it stable across
+states; the tooltip is supplementary. Keep Trigger mounted and outside ToggleGroup.
 
 ## Explicit compact content
 
-Choose `SideNavigation.Root variant={collapsed ? 'compact' : 'default'}`
-explicitly. Sidebar does not inspect children or automatically collapse arbitrary
-content. Each compact Link requires `iconStart`, `iconEnd`, or `compactContent`
-(in that priority after explicit compactContent). Supply these in **both** states.
-Do not conditionally replace the entire navigation tree.
+Set `SideNavigation.Root variant={collapsed ? 'compact' : 'default'}` explicitly.
+Each Link needs `compactContent`, `iconStart`, or `iconEnd` (in that priority),
+supplied in **both** states. Do not replace the navigation tree on collapse.
 
-Compact content must be decorative, non-interactive, and fit the rail. A string
-or number label becomes the independent `aria-label`; rich label children require
-an explicit nonempty `aria-label`. Invalid compact links throw a descriptive error
-rather than silently removing a destination. The original label remains mounted
-and visually hidden. Link elements, hrefs, refs, tab order, and `aria-current`
-remain stable across collapse. Group labels also remain in the accessibility tree.
-Base UI handles hover/keyboard-focus hints, Escape dismissal, and touch suppression;
-tooltip wrappers remain mounted even when hints are disabled in expanded mode.
-One internal Tooltip.Provider groups the sidebar's hints: after the first hint
-opens, nearby hints can appear immediately instead of repeating the hover delay.
+Compact content must be decorative, non-interactive, and fit the rail. String or
+number labels supply `aria-label`; rich labels require an explicit nonempty
+`aria-label`. Invalid compact links throw. Link elements, hrefs, refs, tab order,
+and `aria-current` stay stable. Link and group labels remain in the accessibility
+tree, visually hidden. Never put focusable descendants in hidden labels.
 
-Branding, project switchers, and account controls need consumer-owned compact
-representations. Prefer one persistent named button/link and replace only its
-decorative contents. If an expanded-only control must unmount, intentionally move
-focus to a persistent control first. Never put focusable descendants inside
-visually hidden label content.
+Base UI supplies hover/focus tooltips, Escape dismissal, and touch suppression.
+Tooltip wrappers stay mounted; an internal provider shares the hover delay.
+
+Provide compact branding, project switchers, and account controls yourself.
+Keep named controls mounted and replace only decorative contents. Before
+unmounting an expanded-only control, move focus to a persistent control.
 
 ## Sizing and scrolling
 
-Expanded width is `semantic.dimension.size.sidebar` (210px with Radius tokens),
-including the 4px end divider. The 8px inline insets leave 190px for content;
-24px block insets and 16px gaps separate Header, Content, and Footer. Header uses
-16px gaps and Footer uses 8px gaps. These insets belong to Root, not each region.
-Collapsed width is `semantic.dimension.size.xLarge` (48px). Its 6px inline insets
-leave 32px for controls after the 4px divider.
-The trigger is 16px square, with an 8px end inset when expanded;
-compact navigation targets remain 32px high.
-Override widths with normal CSS or inline styles,
-not custom component variables. Root has a viewport-height cap; Content owns
-one native scroll viewport with a custom vertical scrollbar. Header/Footer remain
-outside that scroll area. The scrollbar appears only while scrolling or dragging,
-not on hover, and hides again using Base UI's scrolling state. A bottom fade appears
-only while more content remains below; it disappears at the end. A subtle top line
-indicates content above. The fade cannot intercept clicks and is replaced by a
-boundary line during keyboard focus so focused links and outlines stay clear.
-In forced-colors mode, boundary lines replace the fade and the scrollbar stays
-visible whenever content overflows. No extra public scrollbar configuration is added to Sidebar;
-use standalone ScrollArea composition for a different scrolling arrangement.
+Widths are `semantic.dimension.size.sidebar` (210px) expanded
+and `semantic.dimension.size.xLarge` (48px) collapsed, including the 4px divider.
+Root owns insets; compact navigation targets are 32px high. Override sizes with CSS
+or inline styles.
 
-When a sticky header reduces the available height, give Root a matching
-`maxBlockSize` through normal styling (or the Layout.Aside render element's style).
-Its default cap is `100dvh`. The parent layout controls sticky positioning.
-For very short viewports, keep fixed header/footer contents small enough to fit.
-Provide a definite `blockSize` if the sidebar should fill available height even
-with short content.
+Content's vertical scrollbar appears while scrolling or dragging, not on hover.
+A bottom fade and top line indicate remaining content. The fade does not intercept
+clicks; keyboard focus replaces it with a line to keep links and outlines clear.
+Forced-colors mode uses lines and keeps the scrollbar visible while overflowing.
+Use standalone ScrollArea for other scrolling arrangements.
 
-Set the same initial collapsed value on server and client. Base UI's DirectionProvider should match
-the document direction for logical tooltip placement in RTL.
+Root is capped at `100dvh`. Adjust `maxBlockSize` for sticky headers; the parent
+layout controls stickiness. Keep fixed header/footer content small enough for
+short viewports. Set `blockSize` to fill height even with short content.
 
-This is desktop navigation. On narrow/touch layouts, keep destinations visible
-and offer the persistent toggle; do not rely on tooltips to explain unfamiliar
-icons. Text-only docs navigation remains standalone SideNavigation without a
-Sidebar.Trigger or compact variant.
+Match initial collapse state on server and client. For RTL, match Base UI's
+DirectionProvider to document direction. On narrow/touch layouts, keep destinations
+and the toggle available; do not rely on tooltips to explain icons. Text-only docs
+navigation should stay expanded, using SideNavigation without Sidebar.Trigger.

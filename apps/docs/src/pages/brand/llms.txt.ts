@@ -45,7 +45,7 @@ ${assets}
   const names = manifest.brands.map((brand) => brand.name);
   return text(`# Brand: logos and guidelines
 
-> Every logo file for ${names.slice(0, -1).join(', ')}, and ${names.at(-1)}, followed by the brand guidelines, which explain how to choose, size, and place them. Use only these files.
+> Logos and usage rules for ${names.slice(0, -1).join(', ')}, and ${names.at(-1)}. Use only the supplied artwork.
 
 ## Files
 

@@ -1,12 +1,12 @@
 # `@earendil-works/elanor-fonts`
 
-Self-hosted font files and `@font-face` declarations. No JavaScript, tokens or global typography rules.
+Self-hosted Earendil and Commit Mono fonts with `@font-face` CSS.
 
 ```sh
 pnpm add @earendil-works/elanor-fonts
 ```
 
-Import the required families once at the application entry:
+Import once at the application entry:
 
 ```ts
 import '@earendil-works/elanor-fonts/earendil.css';
@@ -18,8 +18,8 @@ import '@earendil-works/elanor-fonts/commit-mono.css';
 | `earendil.css`    | `Earendil`    | 400, 700      | normal, italic |
 | `commit-mono.css` | `Commit Mono` | 300, 400, 700 | normal         |
 
-CSS uses relative URLs and `font-display: swap`. Bundlers must support CSS asset URLs. Without a bundler, serve the CSS and adjacent `files/` directory together.
+CSS uses relative URLs and `font-display: swap`. Without a bundler, serve the CSS and `files/` directory together.
 
-Raw assets are exported as `@earendil-works/elanor-fonts/files/<filename>` for custom loading or preloading. No conversion or build step is required; the existing WOFF2 and OpenType files are preserved.
+For preloading or custom CSS, import `@earendil-works/elanor-fonts/files/<filename>`.
 
-Both families use SIL OFL 1.1. Copyright notices and complete licenses are in `licenses/earendil.txt` and `licenses/commit-mono.txt`; include them when redistributing the fonts.
+Both families use SIL OFL 1.1. Include `licenses/earendil.txt` and `licenses/commit-mono.txt` when redistributing them.

@@ -205,7 +205,7 @@ function ExampleContents({
                 iconStart={<PersonIcon />}
                 iconEnd={<LogoutIcon />}
               >
-                max@earendil.com
+                alex@example.com
               </SideNavigation.Link>
             </SideNavigation.Item>
           </SideNavigation.List>

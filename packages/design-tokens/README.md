@@ -1,104 +1,52 @@
 # Design Tokens
 
-`@earendil-works/design-tokens` provides shared and brand-specific W3C DTCG design tokens for Earendil products, built with Terrazzo.
+`@earendil-works/design-tokens` provides shared and brand-specific W3C DTCG tokens, built with Terrazzo.
 
-## Requirements
+## Use
 
-- Node.js 24 or newer
-- pnpm 12.8.2
-
-## Generate primitive tokens
-
-The generator turns JSON recipes into primitive DTCG tokens, calculating consistent scales for colors, dimensions, and typography. Edit recipes rather than hand-calculating generated values.
-
-```bash
-pnpm tokens:generate
-```
-
-Recipes and generator code live under [`generation/`](generation), with shared settings in [`generation/config.json`](generation/config.json). Recipe paths mirror their output under `tokens/`.
-
-See [`docs/token-generation.md`](docs/token-generation.md) for details and [`docs/color-palette.md`](docs/color-palette.md) for the palette rationale and contrast audit.
-
-## Validate tokens
-
-```bash
-pnpm tokens:check
-```
-
-This type-checks the TypeScript tooling, checks generated token sources, validates every token and resolver against the vendored DTCG 2025.10 schemas, checks all required resting-state semantic color contrast pairs, and runs Terrazzo's cross-file checks for every brand. Run the contrast check alone with `pnpm tokens:check:contrast`. The root `pnpm check` runs these checks alongside the other workspace packages.
-
-The official schemas are committed under [`schemas/dtcg/2025.10/`](schemas/dtcg/2025.10), so regular checks are deterministic and offline. To refresh them explicitly:
-
-```bash
-pnpm tokens:schemas:update
-```
-
-Review and commit the schema and checksum manifest changes together. See [`schemas/dtcg/NOTICE.md`](schemas/dtcg/NOTICE.md) for provenance and licensing.
-
-## Build tokens
-
-```bash
-pnpm tokens:build
-```
-
-This builds all token brands; `pnpm build` builds the entire workspace. Brand-specific builds are also available as `pnpm tokens:build:radius`, `pnpm tokens:build:pi`, `pnpm tokens:build:earendil`, and `pnpm tokens:build:lefos`.
-
-Consumers import exactly one brand stylesheet through the package export:
+Import exactly one brand stylesheet:
 
 ```css
 @import '@earendil-works/design-tokens/radius.css';
 ```
 
-Equivalent entry points exist for `pi.css`, `earendil.css`, and `lefos.css`. Package names and CSS entry points are unchanged by the repository migration.
+Other entry points: `pi.css`, `earendil.css`, `lefos.css`.
 
-Generated files are written to `packages/design-tokens/dist/<brand>/` for Radius, Pi, Earendil, and Lefos. Each brand output contains:
+Light semantic colors are the default. Dark overrides apply automatically through `prefers-color-scheme: dark`.
 
-- `tokens.css`
-- `tokens.catalog.json`, a versioned catalogue of every CSS custom property with its resolved CSS and DTCG values per color scheme, alias target, and `$extensions` such as print builds. Linting and build tools use it; it is exported as `@earendil-works/design-tokens/<brand>.catalog.json`
-- Figma-compatible JSON files from `terrazzo-plugin-figma-json`
+To check your CSS against the tokens, use the [Stylelint plugin](../stylelint-plugin-design-tokens/README.md). It rejects hardcoded values and unknown custom properties, checks that tokens suit their CSS properties, and requires semantic tokens outside foundation files.
 
-In `tokens.css`, primitive tokens, mode-independent semantic tokens, and the default light semantic colors are emitted under `:root`, which declares `color-scheme: light dark`. Only dark `semantic.color.*` overrides are emitted inside the `prefers-color-scheme: dark` media query, preventing invariant tokens from being duplicated for each mode.
+## Develop
 
-## Lint token consumers
-
-The reusable Stylelint plugin lives in [`../stylelint-plugin-design-tokens`](../stylelint-plugin-design-tokens). It validates a consumer against the generated catalogue for the selected `radius`, `pi`, `earendil`, or `lefos` brand, rejects hardcoded tokenizable values and unknown custom properties, checks token type and semantic-role compatibility, and prefers semantic tokens in application CSS.
+Run commands from the repository root.
 
 ```bash
-pnpm stylelint:test
-pnpm stylelint:build
+pnpm tokens:generate       # Compile recipes into primitive tokens
+pnpm tokens:check          # Type-check tooling, check generation, validate tokens
+pnpm tokens:check:contrast # Check semantic color contrast only
+pnpm tokens:build          # Build all brands
 ```
 
-See the [plugin policy and setup guide](../stylelint-plugin-design-tokens/README.md), including exclusions, integration allowlists, and CSS Modules behavior.
+For one brand, use `pnpm tokens:build:radius`, `pnpm tokens:build:pi`, `pnpm tokens:build:earendil`, or `pnpm tokens:build:lefos`.
 
-## Source structure
+Edit [recipes](generation/recipes), not generated values. Shared settings live in [`generation/config.json`](generation/config.json); recipe paths mirror their output under `tokens/`.
 
-```text
-tokens/
-├── shared/
-│   ├── primitive/
-│   │   ├── color.tokens.json
-│   │   ├── dimension.tokens.json
-│   │   ├── fontFamily.tokens.json
-│   │   ├── fontWeight.tokens.json
-│   │   └── number.tokens.json
-│   └── semantic/
-│       ├── color/
-│       │   ├── light.tokens.json
-│       │   └── dark.tokens.json
-│       ├── dimension.tokens.json
-│       ├── number.tokens.json
-│       ├── fontFamily.tokens.json
-│       └── typography.tokens.json
-├── radius/
-├── pi/
-├── earendil/
-├── lefos/
-├── radius.resolver.json
-├── pi.resolver.json
-├── earendil.resolver.json
-└── lefos.resolver.json
-```
+`tokens:check` checks for stale generated sources, validates tokens and resolvers against DTCG 2025.10, checks required resting-state contrast pairs, and runs Terrazzo's cross-file checks for every brand. The root `pnpm check` includes these checks.
 
-Each brand resolver loads the shared primitive and mode-independent semantic files, followed by the light or dark semantic color context. Radius currently uses this shared baseline unchanged; its resolver and CSS entry point remain the stable brand boundary. Add a brand override only when its value actually differs, then load it after the shared source. Do not copy shared values into brand files: identical overrides create two editable definitions of the same decision and can silently drift. Branding changes stay in this package without changing component CSS.
+Validation uses the vendored [DTCG schemas](schemas/dtcg/2025.10/) offline. To refresh them, run `pnpm tokens:schemas:update`, then review and commit the schemas and checksum manifest together. See the [schema notice](schemas/dtcg/NOTICE.md) for provenance and licensing.
 
-See [`docs/token-structure.md`](docs/token-structure.md) for organization and overrides, [`docs/token-naming.md`](docs/token-naming.md) for naming, and [`docs/token-descriptions.md`](docs/token-descriptions.md) for description guidance.
+### Output
+
+Each `dist/<brand>/` contains:
+
+- `tokens.css`: primitives, mode-independent semantics, and light semantic colors under `:root` with `color-scheme: light dark`; dark `semantic.color.*` overrides in `prefers-color-scheme: dark`.
+- `tokens.catalog.json`: CSS custom properties with resolved CSS/DTCG values per color scheme, alias targets, and `$extensions` (including print builds). Exported as `@earendil-works/design-tokens/<brand>.catalog.json` for linting and build tools.
+- Figma-compatible JSON from `terrazzo-plugin-figma-json`.
+
+### Guides
+
+- [File structure and brand overrides](docs/token-structure.md)
+- [Naming](docs/token-naming.md)
+- [Descriptions](docs/token-descriptions.md)
+- [Generation](docs/token-generation.md)
+- [Color palette and contrast](docs/color-palette.md)

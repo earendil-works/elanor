@@ -1,40 +1,28 @@
 # Elanor
 
-The design system monorepo for Earendil products, containing shared UI components, design tokens, token tooling, and documentation.
+Earendil's design system. It provides UI building blocks; applications supply routing, state, and their brand stylesheet.
 
-## Apps
+| Package                                                                 | npm name                                                             | Contents                                               |
+| ----------------------------------------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------ |
+| [React](./packages/react/README.md)                                     | `@earendil-works/elanor-react`                                       | Components built with Base UI and CSS Modules          |
+| [Fonts](./packages/fonts/README.md)                                     | `@earendil-works/elanor-fonts`                                       | Earendil and Commit Mono                               |
+| [Icons](./packages/icons/README.md)                                     | `@earendil-works/elanor-icons`, `@earendil-works/elanor-icons-react` | Material Symbols with a hand-drawn boil, SVG and React |
+| [Logos](./packages/logos/README.md)                                     | `@earendil-works/elanor-logos`, `@earendil-works/elanor-logos-react` | Brand artwork, SVG and React                           |
+| [Design tokens](./packages/design-tokens/README.md)                     | `@earendil-works/design-tokens`                                      | Shared and brand-specific tokens, CSS exports          |
+| [Stylelint plugin](./packages/stylelint-plugin-design-tokens/README.md) | `@earendil-works/stylelint-plugin-design-tokens`                     | Token usage rules                                      |
 
-- [`apps/docs`](./apps/docs): Astro documentation site for the React components.
-
-## Packages
-
-- [`packages/react`](./packages/react/README.md): `@earendil-works/elanor-react`, built with Base UI and CSS Modules.
-- [`packages/fonts`](./packages/fonts/README.md): `@earendil-works/elanor-fonts`, self-hosted Earendil and Commit Mono fonts.
-- [`packages/icons`](./packages/icons/README.md): `@earendil-works/elanor-icons` and `@earendil-works/elanor-icons-react`, boiled Material Symbols as SVG files and React components.
-- [`packages/logos`](./packages/logos/README.md): `@earendil-works/elanor-logos` and `@earendil-works/elanor-logos-react`, brand logos as SVG files and React components.
-- [`packages/design-tokens`](./packages/design-tokens/README.md): `@earendil-works/design-tokens`, shared and brand-specific DTCG tokens, generation tooling, and CSS exports.
-- [`packages/stylelint-plugin-design-tokens`](./packages/stylelint-plugin-design-tokens/README.md): `@earendil-works/stylelint-plugin-design-tokens`, rules for consuming the generated token catalogues.
-
-Products provide application state, routing, and lifecycle, and select a brand stylesheet from the token package.
+The [docs app](./apps/docs) runs on Astro.
 
 ## Development
 
-Requirements: Node.js 24 or newer and pnpm 12.8.2.
-
-The docs use Astro 7 and Vite 8. Library and tooling packages use TypeScript 7;
-the docs keep TypeScript 6 because `@astrojs/check` does not yet support TypeScript 7.
-
-Package releases must be at least seven days old, enforced by `pnpm-workspace.yaml`.
+Requires Node.js ≥24 and pnpm 12.8.2. pnpm only installs dependency versions published at least seven days ago (`pnpm-workspace.yaml`).
 
 ```sh
 pnpm install --frozen-lockfile
-pnpm check
+pnpm check  # formatting, lint, types, tokens
 pnpm test
-pnpm build
+pnpm build  # packages and docs
+pnpm dev    # docs dev server
 ```
 
-- `pnpm lint` runs all linters; `pnpm lint:oxlint` and `pnpm lint:stylelint` run each tool separately.
-- `pnpm format` formats files; `pnpm format:check` checks formatting.
-- `pnpm check` runs formatting, lint, type and token checks.
-- `pnpm test` runs package tests.
-- `pnpm build` builds every package, including all four token brands.
+Use `pnpm format` to format files, or `pnpm lint` to run only linters.

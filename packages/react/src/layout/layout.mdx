@@ -2,9 +2,8 @@ import {LayoutExample} from './layout.example.tsx';
 
 # Layout
 
-Neutral page regions with ordinary children. Layout does not own routing, navigation
-state, content grids, or header measurements. All six parts accept `render`, `ref`,
-`className`, `style`, and native element props.
+Page regions with document scrolling. All parts accept `render`, `ref`, `className`,
+`style`, and native props. Routing and navigation state belong to the application.
 
 | Part     | Default element | Responsibility                                             |
 | -------- | --------------- | ---------------------------------------------------------- |
@@ -21,23 +20,19 @@ main landmark. A simple header/main/footer page needs no `Body`.
 
 ## Docs recipe
 
-This live recipe supplies this documentation page's only main landmark. The
-preview reduces Root's viewport-height minimum; omit that override in a page.
-Text-only navigation stays expanded: no collapse control or destinations hidden
-on small screens. The left navigation precedes Main and the TOC follows it in
-source order, including when stacked.
+Navigation, Main, and TOC stay in source order when stacked; navigation remains
+visible. The preview reduces Root's minimum height; omit that override in a page.
 
 <LayoutExample />
 
-The outer Container centers Body; the inner Container caps the reading region
-using the existing `size.content.small` token. Both side regions default to
-`size.sidebar`. These are recipe choices, not a separate exported DocsLayout.
+The outer Container centers Body; the inner one caps reading width at
+`semantic.dimension.size.content.small`. Side regions default to
+`semantic.dimension.size.sidebar`.
 
 ## App recipe
 
-A side region sits **outside** the main content grid. Its width never consumes
-columns. Container centers content in the remaining area and caps its content at
-1216px; removing Aside gives Main more room without removing that cap.
+Keep sidebars **outside** the content Grid. Container centers content in the
+remaining space, capped at `semantic.dimension.size.content.large` (1216px).
 
 ```tsx
 import {Container, Layout, Page, SideNavigation, Stack} from '@earendil-works/elanor-react';
@@ -77,18 +72,16 @@ import {Container, Layout, Page, SideNavigation, Stack} from '@earendil-works/el
 </Layout.Root>;
 ```
 
-Replace the contents of Aside with your own branding, navigation, and account
-controls. This recipe deliberately does not require Sidebar's collapse API.
-Render-compatible side components can compose onto `Layout.Aside` rather than
-adding another aside wrapper. Keep their width independent of content Grid.
+To use another component as the aside, pass `<Layout.Aside />` to its `render` prop
+instead of wrapping it, e.g. `<Sidebar.Root render={<Layout.Aside aria-label="…" />}>`.
+This avoids nested landmarks.
 
 ## Top navigation recipe
 
 See [top navigation recipes](/components/top-navigation/) for inline, centered, stacked and responsive arrangements.
 
-Zero asides, no Body, one main. `render` puts TopNavigation and Layout.Header on
-one header element instead of nesting landmarks. Capped sections and uncapped
-sections can alternate inside Main.
+`render` combines TopNavigation and Layout.Header into one header landmark.
+Without asides, omit Body.
 
 ```tsx
 import {Container, Layout, Link, Stack, TopNavigation} from '@earendil-works/elanor-react';
@@ -131,24 +124,17 @@ import {Container, Layout, Link, Stack, TopNavigation} from '@earendil-works/ela
 
 ## Sticky regions and narrow screens
 
-At `semantic.dimension.breakpoint.medium` (currently 64rem), Body becomes a row
-and Aside becomes sticky at the block-start edge. A long Aside scrolls within
-`100dvh`. Below that shared viewport breakpoint, regions stack in source order,
-Aside is normal-flow, and all navigation remains reachable in the document.
-This is not mobile overlay navigation. Edit `src/layout/layout.module.css` directly;
-see [Maintaining the CSS](/components/grid/#maintaining-the-css) for breakpoint synchronization.
+At `semantic.dimension.breakpoint.medium` (64rem), Body becomes a row and Aside
+becomes sticky at block-start, scrolling within `100dvh`. Below it, regions stack
+in source order with normal-flow asides—not mobile overlays. For breakpoint edits,
+see [Maintaining the CSS](/components/grid/#maintaining-the-css).
 
-Root and Body intentionally do not clip content or create a scroll container.
-Do not add `overflow: hidden`, `overflow: auto`, or containment to their ancestors
-unless you intend to change the sticky scrollport. Aside has no built-in padding;
-the recipes add a semantic padding token to leave room around focus indicators.
-When composing another component onto Aside, let that component own its insets.
-Keep scrollable content keyboard-reachable, including when substituting
-noninteractive content.
+Avoid ancestor overflow or containment that changes the sticky scrollport.
+Aside has no padding: leave room for focus indicators and keep scrollable content
+keyboard-reachable, including noninteractive content. Composed components can
+supply their own insets.
 
-Header stickiness is an ordinary styling choice. When both header and aside are
-sticky, explicitly budget the header's block size and Aside's available height.
-There is no automatic measurement or private layout custom property. For example:
+For a sticky header, set its height and adjust Aside's offset and available height:
 
 ```tsx
 <Layout.Header className={styles.stickyHeader}>...</Layout.Header>
@@ -178,15 +164,9 @@ There is no automatic measurement or private layout custom property. For example
 }
 ```
 
-This recipe budgets 48px using an existing size token; it does not assert every
-header is that tall. Match **both** values to your actual header. If a header can
-wrap or grow, leave it in normal flow rather than guessing its height. Include
-appropriate `scroll-margin-block-start` on anchor targets in a sticky-header app.
-Use ordinary `style={{insetBlockStart: ..., maxBlockSize: ...}}` for a known offset
-when it applies at every viewport, or responsive classes as above. To opt an
-Aside out of stickiness entirely, set `position: 'static'`, `maxBlockSize: 'none'`,
-and `overflow: 'visible'` through `style`.
+This example uses a 48px header. Match both offsets to the actual height; leave
+headers that wrap or grow in normal flow. Set `scroll-margin-block-start` on anchor
+targets so the header does not obscure them.
 
-These are maintained recipes to copy and adapt, not exported application layout
-components. Product state, persistence, portal placement, and routing remain
-application-owned.
+To disable Aside stickiness, set `position: 'static'`, `maxBlockSize: 'none'`, and
+`overflow: 'visible'` through `style`.

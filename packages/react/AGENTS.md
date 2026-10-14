@@ -11,6 +11,7 @@ For Base UI changes, consult [the documentation index](https://base-ui.com/llms.
 - Co-locate CSS Modules. Components without their own styles do not need an empty stylesheet.
 - Keep compound parts together, such as `Modal.Root` and `Modal.Popup` in `modal/`.
 - Put non-component helpers in `utils/` with descriptive filenames, such as `class-names.ts`.
+- Put live docs examples in `.example.tsx` files. Astro MDX JSX is not a React element and cannot be passed to Base UI's `render` prop.
 
 ## Imports and exports
 

@@ -1,6 +1,6 @@
 # {{title}} brand guidelines
 
-These guidelines explain how to refer to {{names}} and how to use the logos in this kit. For a use not covered here, contact [brand@earendil.com](mailto:brand@earendil.com) with a description or visual mockup.
+Logo and naming rules for {{names}}. For uses not covered here, email [brand@earendil.com](mailto:brand@earendil.com).
 
 ## Names and relationship
 
@@ -10,34 +10,34 @@ These guidelines explain how to refer to {{names}} and how to use the logos in t
 
 ## Choosing a logo
 
-- **Symbol + wordmark (`logo-wordmark-horizontal/`, `logo-wordmark-vertical/`):** Preferred when introducing the company or product, or when its name should be immediately clear. Use the vertical lockup where the horizontal one does not fit.
-- **Symbol alone (`logo/`):** Use in compact spaces, such as an app icon, avatar, or favicon, or alongside other brands' symbols when the brand is clear from context.
+- **Symbol + wordmark (`logo-wordmark-horizontal/`, `logo-wordmark-vertical/`):** Use when the name needs to be visible. Choose vertical when horizontal does not fit.
+- **Symbol (`logo/`):** Use for app icons, avatars, favicons, next to other brands' symbols, or where context identifies the brand.
 
-Use the supplied artwork as a complete asset. Do not separate the lettering from a lockup, change its proportions, or rebuild it in another typeface. Do not create new lockups.
+Keep lockups intact. Do not separate the lettering, change proportions or typefaces, or create new lockups.
 
 ## Choosing a file
 
-Use SVG for screens and anything that scales, and PNG where SVG is not supported. For print, use the CMYK PDFs made for coated or uncoated paper. White prints as unprinted paper; on dark stock, print it with white ink.
+Use SVG for screens, PNG where SVG is unsupported, and CMYK PDFs for print. Choose the coated or uncoated paper profile. White areas print as bare paper; on dark stock, print them with white ink.
 
 ## Color and backgrounds
 
-Prefer the standard logos in `on-light/` and `on-dark/`. Choose the version intended for the background and ensure it remains clearly visible.
+Choose `on-light/` or `on-dark/` to match the background, with enough contrast to keep the logo visible.
 
-Use `monochrome-on-light/` or `monochrome-on-dark/` when a one-color treatment is necessary, such as for single-ink printing, engraving, or a layout that requires all logos to be monochrome.
+Use `monochrome-on-light/` or `monochrome-on-dark/` only when one color is required, such as single-ink printing, engraving, or a layout where all logos are monochrome.
 
-Use the colors already present in the supplied artwork; do not recolor the marks. To place a logo on a solid background, use the brand's background color for the treatment and keep the clear space.
+Do not recolor logos. For solid backgrounds, use the brand's background color for that treatment and keep the clear space.
 
 ## Clear space
 
-Every symbol is drawn in a frame of the same width. **One grid unit is one-quarter of that frame's width.**
+All symbol frames have the same width. **One grid unit is one-quarter of that width.**
 
-Leave at least **one grid unit of clear space around the supplied logo asset**. This applies to symbol-only logos and to lockups alike; measure from the outer edge of the entire asset, not just the symbol. At a rendered height _h_, one grid unit is _h_ × {{gridUnit}} ÷ the asset's height in its SVG `viewBox`.
+Leave **at least one grid unit around the entire asset**, including the wordmark. At rendered height _h_, one grid unit is _h_ × {{gridUnit}} ÷ the SVG `viewBox` height.
 
 {{clearSpace}}
 
 ## Size and integrity
 
-Use a size at which the symbol remains recognizable and the wordmark, when used, remains legible. If a lockup becomes too small to read, use its symbol alone where the surrounding context identifies it. Do not stretch, rotate, crop, add effects to, rearrange, or redraw the artwork.
+Keep symbols recognizable and wordmarks legible. If a lockup is too small to read, use the symbol where context identifies it. Do not stretch, rotate, crop, add effects to, rearrange, or redraw the artwork.
 
 ## Third-party use
 

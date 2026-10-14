@@ -1,55 +1,39 @@
 # Primitive Token Generation
 
-Primitive token files are compiled from recipes.
-
 ```text
 Recipe JSON -> TypeScript generator -> DTCG token files by type -> Terrazzo
 ```
 
-## Purpose
-
-Primitive scales follow repeatable rules. Calculating them in code keeps every value aligned with its rule. It also avoids copying calculated values into token files by hand.
-
-Recipes contain scale-specific design choices. `packages/design-tokens/generation/config.json` contains repository-wide generation settings. Generators contain calculation rules. Generated files use the standard DTCG format required by resolvers, validation, Terrazzo, and other token tools.
-
-This structure provides:
-
-- repeatable values
-- small and reviewable configuration changes
-- reusable calculation logic
-- automatic recipe validation
-- checks for stale generated output
+Edit recipes for design choices and generators for calculation rules, not generated values. Recipes are validated; checks detect stale output.
 
 ## Parts
 
-`packages/design-tokens/generation/config.json` contains global design inputs shared by every recipe. Its `pixelsPerRem` value is the single baseline used whenever a generator converts pixels to rem.
+Paths below are relative to `packages/design-tokens/`:
 
-`packages/design-tokens/generation/recipes/` contains scale-specific design inputs.
+| Path                         | Purpose                                                      |
+| ---------------------------- | ------------------------------------------------------------ |
+| `generation/config.json`     | Shared settings; `pixelsPerRem` is the pixel-to-rem baseline |
+| `generation/recipes/`        | Scale-specific inputs                                        |
+| `generation/schemas/`        | Config and recipe schemas                                    |
+| `generation/src/generators/` | Calculation rules                                            |
+| `tokens/**/primitive/`       | Generated output, alongside manual leaves                    |
 
-`packages/design-tokens/generation/schemas/` contains schemas for the global configuration and recipes.
-
-`packages/design-tokens/generation/src/generators/` contains calculation rules.
-
-Recipe paths mirror the token tree. For example, `packages/design-tokens/generation/recipes/shared/primitive/dimension.json` generates into `packages/design-tokens/tokens/shared/primitive/dimension.tokens.json`. The runner derives output files from the recipe path plus each patch's DTCG type, so no manifest registration is needed.
-
-Generated DTCG tokens are written under `packages/design-tokens/tokens/**/primitive/`. Edit a recipe or generator to change a generator-owned token. Other token leaves in the same files may be authored manually.
+Recipe paths mirror the token tree: `generation/recipes/shared/primitive/dimension.json` writes to `tokens/shared/primitive/dimension.tokens.json`. Output paths follow the recipe directory and each patch's DTCG type; no manifest registration is needed.
 
 ## Output files by DTCG type
 
-Generators return typed patches. Each patch identifies its DTCG type, destination path, and generated token subtree. The generation runner declares that type as a `$type` on the group named after the DTCG type (for example `primitive.dimension`), stamps every generated token with its recipe source, and applies the patch to `<type>.tokens.json` in the mirrored output directory derived from the recipe path. The document root never carries a `$type`: resolver sources merge into shared group trees where a root type would clash with sibling files, and the last merged source would silently win. If two recipes produce identical or structurally overlapping token leaf paths, or a group already declares a conflicting type, generation fails instead of silently overriding one of them.
+Generators return patches containing a DTCG type, destination path, and token subtree. The runner writes each patch to `<type>.tokens.json`, declaring `$type` on the typed group (for example `primitive.dimension`), never the document root. Root types would collide when resolver sources merge, with the last source silently winning.
 
-For example, the typography generator writes:
+Namespaces and files follow DTCG types, not recipe categories. Typography therefore writes:
 
-- font size dimensions to `primitive.dimension.fontSize` in `dimension.tokens.json`
-- line height numbers to `primitive.number.lineHeight` in `number.tokens.json`
+- `primitive.dimension.fontSize` to `dimension.tokens.json`
+- `primitive.number.lineHeight` to `number.tokens.json`
 
-This rule applies to every generator, so both token namespaces and output files describe DTCG types rather than the recipe or design category that produced them.
+Identical or structurally overlapping generated paths, token/group collisions, and conflicting group types fail generation.
 
 ## Generated and manual tokens
 
-The generation runner reads an existing type file before applying generated patches. It recursively merges group structures, adds new generated token leaves, and replaces a token wholesale when the generator emits the same path again. Existing paths that are absent from the incoming patch remain in place until the ownership sweep. A token/group structural collision is rejected rather than deleting descendants implicitly.
-
-Every generated token carries source-only ownership metadata:
+The runner merges existing groups, adds generated leaves, and replaces matching generated leaves wholesale. It marks each generated leaf with source-only ownership metadata:
 
 ```json
 "100": {
@@ -62,28 +46,28 @@ Every generated token carries source-only ownership metadata:
 }
 ```
 
-`source` is the recipe path relative to `packages/design-tokens/generation/`. The runner, rather than individual generators, adds this marker.
+`source` is relative to `generation/`. The runner, not the generator, adds it. After applying patches, the runner sweeps all token files: marked leaves whose source/path was not emitted are deleted, including output from moved or deleted recipes. Unmarked manual leaves survive.
 
-During generation, the runner records every token leaf emitted by each recipe into each output file. It then reconciles all token files and deletes a marked leaf when its source and path were not emitted in the current run. This removes steps omitted from a recipe as well as output left behind by a moved or deleted recipe. Unmarked manual tokens are preserved.
+Ownership applies to leaves, not groups. Manual tokens may share a group but not a generated path. Remove `com.earendil-works.generation` when copying a generated token into a manual one, or the runner may replace or remove it.
 
-The generators currently emit leaves under these paths:
+Generated paths:
 
-- typography font sizes: `primitive.dimension.fontSize.<step>`
-- typography line heights: `primitive.number.lineHeight.<step>`
-- dimensions: `primitive.dimension.<step>`
-- breakpoints: `primitive.dimension.breakpoint.<step>`
-- border widths: `primitive.dimension.borderWidth.<step>`
-- border radii: `primitive.dimension.radius.<step>` and `primitive.dimension.radius.full`
-- opacity: `primitive.number.opacity.<step>`
-- colors: `primitive.color.<name>` for key colors (the group's `$root` when the color also has a scale) and `primitive.color.<name>.<step>`
+| Scale        | Path                                                                                 |
+| ------------ | ------------------------------------------------------------------------------------ |
+| Font size    | `primitive.dimension.fontSize.<step>`                                                |
+| Line height  | `primitive.number.lineHeight.<step>`                                                 |
+| Dimension    | `primitive.dimension.<step>`                                                         |
+| Breakpoint   | `primitive.dimension.breakpoint.<step>`                                              |
+| Border width | `primitive.dimension.borderWidth.<step>`                                             |
+| Radius       | `primitive.dimension.radius.<step>`, `primitive.dimension.radius.full`               |
+| Opacity      | `primitive.number.opacity.<step>`                                                    |
+| Color        | `primitive.color.<name>` (key; `$root` when scaled), `primitive.color.<name>.<step>` |
 
-Ownership is attached to token leaves, not whole parent groups. A generated leaf must be changed through its recipe or generator because the next run replaces it. An unmarked manual token can coexist in the same groups as generated tokens as long as it does not use a generated path. For example, `primitive.dimension.spacing` can remain beside generated dimension steps and typography font sizes.
-
-When copying a generated token to create a manual token, remove `com.earendil-works.generation` from the copy; otherwise the runner will continue treating it as generated and may replace or remove it.
+Recipes select steps; omitting one never shifts another step's position or value.
 
 ## Typographic scale
 
-The typography generator implements the classical scale with these fixed rules:
+Based on Spencer Mortensen's [typographic scale](https://spencermortensen.com/articles/typographic-scale/):
 
 ```text
 f0 = 12px
@@ -92,11 +76,7 @@ n = 5
 fi = f0 * r^(i / n)
 ```
 
-The formula is inspired by Spencer Mortensen's [typographic scale](https://spencermortensen.com/articles/typographic-scale/).
-
-Token `100` represents scale index `-1`. Every increase of `100` advances one note. This makes token `100` round to `10px`. Token `1700` is index `15`, which equals `96px`.
-
-The recipe selects which scale steps to output. Omitting a step does not change the position or value of any other step.
+Token `100` is index `-1` (rounded to `10px`); each `100` advances one note. Token `1700` is index `15` (`96px`).
 
 ```json
 {
@@ -112,28 +92,22 @@ The recipe selects which scale steps to output. Omitting a step does not change 
 }
 ```
 
-Font sizes are rounded to whole pixels and converted to rem. Line heights begin with the rounded font size multiplied by `lineHeight.multiplier`, then snap to the nearest multiple of the grid selected from `lineHeight.gridTiers`. Tiers must start at `0px` and be ordered by `minFontSizePx`; the highest matching tier is used. The snapped line height is never allowed to be smaller than the font size.
+Font sizes round to whole pixels, then convert to rem. Line heights multiply the rounded size by `lineHeight.multiplier` and snap to the nearest grid multiple, never below the font size. `gridTiers` must start at `0px`, ordered by `minFontSizePx`; the highest matching tier wins.
 
 ### Why line heights snap to a grid
 
-The system's primary layout grid is 8px. Snapping line boxes to that grid gives text a predictable vertical rhythm and helps text blocks align with surrounding elements whose dimensions and spacing also follow the 8px grid. Grid snapping turns an otherwise fractional result such as `28.8px` into an intentional layout value such as `32px`.
+Grid-aligned line boxes support the layout's 8px vertical rhythm. Below `24px`, a 4px half-grid avoids excessive changes in leading; larger type uses the full 8px grid (for example, `28.8px` snaps to `32px`).
 
-An 8px interval is too coarse for small type: moving a small line box to the next 8px boundary can add or remove too much leading relative to its font size. Font sizes below `24px` therefore use a 4px half-grid, which provides finer typographic control while remaining related to the main 8px grid. Starting at `24px`, line boxes use the full 8px grid, where the larger type can accommodate the coarser interval and each generated line height aligns directly with the layout grid.
-
-The snapped pixel value is divided by the font size to produce a unitless DTCG number ratio, rounded to six decimal places. This allows the token to be referenced by a DTCG typography composite while preserving the intended pixel-grid relationship at the globally configured `pixelsPerRem` base. Grid-aligned line height supports vertical alignment, but a complete component must also account for padding, borders, and other dimensions.
+The snapped height divided by font size becomes a unitless DTCG ratio, rounded to six decimals, for typography composites. Alignment assumes the configured `pixelsPerRem` base; components must still account for padding and borders.
 
 ## Dimension scale
-
-The dimension generator implements a linear 8px scale with these fixed rules:
 
 ```text
 base = 8px
 px = step / 200 * base
 ```
 
-Token `200` represents the `8px` base. Every increase of `200` adds another `8px`, so token `400` is `16px` and token `3200` is `128px`. Steps are integer multiples of `25`, so each step lands on a whole pixel: token `25` is `1px` and token `200` is `8px`.
-
-The recipe selects which scale steps to output. Omitting a step does not change the position or value of any other step.
+Steps must be integer multiples of `25` (one pixel). Token `200` is `8px`, `400` is `16px`, and `3200` is `128px`.
 
 ```json
 {
@@ -142,18 +116,14 @@ The recipe selects which scale steps to output. Omitting a step does not change 
 }
 ```
 
-Pixel sizes are converted to rem using the global `pixelsPerRem` value in `packages/design-tokens/generation/config.json`. With the configured value of `16`, every whole-pixel step becomes an exact multiple of `0.0625rem`; this scale's 1px minimum interval is `0.0625rem`.
+Values convert to rem using `pixelsPerRem`; at the configured `16`, each pixel is exactly `0.0625rem`.
 
 ## Breakpoint scale
-
-The breakpoint generator implements a linear 16rem scale with these fixed rules:
 
 ```text
 base = 16rem
 rem = step / 100 * base
 ```
-
-Token `100` represents `16rem`, and every increase of `100` adds another `16rem`. Intermediate steps follow the same formula, so token `250` is `40rem`. The recipe selects only the positions used by the shared breakpoint scale:
 
 ```json
 {
@@ -162,19 +132,15 @@ Token `100` represents `16rem`, and every increase of `100` adds another `16rem`
 }
 ```
 
-Those steps produce `40rem`, `48rem`, `64rem`, `80rem`, and `96rem`, matching Tailwind's default breakpoint values. Breakpoints remain in rem so viewport thresholds respond to the user's configured default font size. The generated primitive values live under `primitive.dimension.breakpoint`; semantic aliases provide the consumer-facing T-shirt names.
+These produce `40rem`, `48rem`, `64rem`, `80rem`, and `96rem`, matching Tailwind defaults. Rem thresholds respond to the user's default font size. Semantic aliases supply T-shirt names.
 
 ## Border width scale
-
-The border-width generator implements a doubling scale with these fixed rules:
 
 ```text
 base = 1px
 px = base * 2^((step - 100) / 100)
 ```
 
-Token `100` is `1px`, token `200` is `2px`, and token `300` is `4px`. The recipe selects steps in ascending increments of `100`, so omitting a step does not change another step's value:
-
 ```json
 {
   "path": ["primitive"],
@@ -182,19 +148,15 @@ Token `100` is `1px`, token `200` is `2px`, and token `300` is `4px`. The recipe
 }
 ```
 
-Border widths remain in pixel units because each value represents an intentional stroke width rather than a layout dimension.
+Steps ascend in increments of `100`, producing `1px`, `2px`, and `4px`. Widths stay in pixels as intentional stroke sizes, not layout dimensions.
 
 ## Border radius scale
-
-The radius generator implements a doubling scale with these fixed rules:
 
 ```text
 base = 3px
 px = base * 2^((step - 100) / 100)
 ```
 
-Token `100` is `3px`, token `200` is `6px`, and token `300` is `12px`. The recipe selects numeric steps in ascending increments of `100`, so omitting a step does not change another step's value:
-
 ```json
 {
   "path": ["primitive"],
@@ -202,19 +164,17 @@ Token `100` is `3px`, token `200` is `6px`, and token `300` is `12px`. The recip
 }
 ```
 
-The calculated pixel sizes are converted to rem using the global `pixelsPerRem` value. With the configured 16px base, tokens `100`, `200`, and `300` are emitted as `0.1875rem`, `0.375rem`, and `0.75rem`.
+Steps ascend in increments of `100`, producing `3px`, `6px`, and `12px`. At `pixelsPerRem: 16`, these emit as `0.1875rem`, `0.375rem`, and `0.75rem`.
 
-The generator also always emits `primitive.dimension.radius.full` as `100rem`. This intentionally large, whole-rem value produces pills for rectangular elements and circles for typical UI elements without depending on a particular component size.
+The generator always emits `primitive.dimension.radius.full` as `100rem`: oversized for pills and typical UI circles without tying the value to a component size.
 
 ## Opacity scale
-
-The opacity generator implements a normalized 0–1000 scale with this fixed rule:
 
 ```text
 value = step / 1000
 ```
 
-Token `0` is fully transparent, token `1000` is fully opaque, token `150` is 15% opacity with a DTCG number value of `0.15`, and token `400` is 40% opacity with a value of `0.4`. The recipe selects only the opacity steps needed by semantic tokens:
+`0` is transparent, `1000` opaque, `150` is `0.15`, and `400` is `0.4`. Add only steps needed by semantic tokens:
 
 ```json
 {
@@ -223,28 +183,24 @@ Token `0` is fully transparent, token `1000` is fully opaque, token `150` is 15%
 }
 ```
 
-Generated values live under `primitive.number.opacity` in `number.tokens.json`. Add a required step to the opacity recipe rather than editing the generated token file, and do not populate unused opacity values speculatively.
-
 ## Color scale
-
-The color generator implements OKHSL color scales with these fixed rules:
 
 ```text
 lightness = 1 - step / 1000
 saturation = min + (max - min) * bellCurve(step / 1000)
 ```
 
-Token `0` maps to white and token `1000` to black. Lightness decreases linearly along the scale, so token `500` has OKHSL lightness `0.5`. Core palette steps are multiples of `100`, with optional `25` and `50` near-white steps for subtle structural backgrounds. All other intermediate color steps are reserved for interactive states and are derived from configured core positions; resting semantic colors must not reference them.
+OKHSL lightness falls linearly from pure white (`0`) to pure black (`1000`). These endpoints are not emitted; omit them from `steps`. Brand `black` and `white` are separate key colors. The reserved name `transparent` is always emitted with black components and zero alpha.
 
-Steps `0` and `1000` are the pure white and pure black ends of the calculation, but they are not emitted; recipes should omit them. The brand `black` and `white` are ordinary key colors in the recipe. The generator always emits `transparent`, a constant rather than a design choice, so its name is reserved. It uses black components with zero alpha.
+Core steps are multiples of `100`, plus optional near-white `25` and `50` for structural backgrounds. Other intermediate steps are generated for interactions only; resting semantic colors must not reference them.
 
-Saturation follows a Gaussian bell curve centered on the middle of the scale. The curve is normalized so it reaches exactly `max` at step `500` and exactly `min` at both ends. This keeps near-white and near-black steps close to neutral while mid-tones carry the most saturation.
+The normalized Gaussian saturation curve reaches `max` at `500` and `min` at both endpoints, keeping extremes quieter than mid-tones.
 
-Each color in the recipe has a name and a key color, and optionally a scale:
+Each recipe color has a `name` and:
 
-- `key` is the color's defining value, in the same shape as a DTCG color value: `{ "colorSpace": "oklch", "components": [lightness, chroma, hue] }`. It must lie within sRGB. The generator emits it exactly as `primitive.color.<name>`, deriving only the hex fallback. When the color has a scale, the key becomes the scale group's `$root`.
-- `saturation` holds the `min` and `max` of the bell curve and turns the color into a scale. The scale keeps the key's hue throughout, because OKLCH and OKHSL share hue angles.
-- `print` holds CMYK builds of the key per print profile, emitted in the key token's `com.earendil-works.print` extension.
+- `key`: an in-sRGB DTCG OKLCH value, emitted unchanged as `primitive.color.<name>` with a derived hex fallback. For scaled colors, it becomes the group's `$root`.
+- Optional `saturation`: `min` and `max` enable a scale that keeps the key's hue (shared by OKLCH and OKHSL).
+- Optional `print`: CMYK builds by profile, emitted in `com.earendil-works.print` on the key token.
 
 ```json
 {
@@ -270,34 +226,23 @@ Each color in the recipe has a name and a key color, and optionally a scale:
 }
 ```
 
-Interaction steps are generated for every configured color family. `lighterFrom` subtracts the configured distance from each source position, while `darkerFrom` adds it. Hover uses one distance and active uses two, so a distance of `40` derives `360` and `320` toward the lighter end from core step `400`. Source positions `0` and `1000` may be used as scale ends even though they are not emitted. Derived values must remain strictly between them. Interaction names are recipe-only generation inputs: output remains part of the ordinary numeric primitive scale, and semantic aliases assign hover or active intent.
+For each color family, `lighterFrom` subtracts distance and `darkerFrom` adds it: once for hover, twice for active. Distance `40` from `400` yields `360` and `320` toward lighter values. Sources may include `0` and `1000`, but derived steps must remain strictly between them. Output names stay numeric; semantic aliases assign interaction intent.
 
-Colors are calculated in OKHSL with colorjs.io and emitted as DTCG color tokens with `colorSpace` `oklch`. Lightness and chroma components are rounded to four decimal places and hue to two. Achromatic colors have a powerless hue; the generator retains their rounded input hue as a numeric compatibility value because Terrazzo 2.4's Color.js adapter does not translate the otherwise-valid DTCG `none` keyword before gamut conversion. The numeric hue does not affect colors with zero chroma. Every token also carries a 6-digit `hex` fallback derived from the rounded OKLCH components, so the fallback always describes the same color. OKHSL maps onto the sRGB gamut by construction, so the fallback never requires gamut mapping.
+colorjs.io calculates OKHSL and emits DTCG `oklch`, rounding lightness/chroma to four decimals and hue to two. Achromatic colors retain numeric input hue because Terrazzo 2.4's Color.js adapter cannot convert DTCG `none`; hue has no effect at zero chroma. Six-digit `hex` fallbacks derive from rounded components. OKHSL stays within sRGB, so no gamut mapping is needed.
 
 ## Commands
 
-Generate all configured primitive files:
+From the repository root:
 
 ```bash
-pnpm tokens:generate
+pnpm tokens:generate       # Generate primitive files
+pnpm tokens:generate:check # Check committed output against recipes
 ```
 
-Check that committed files match their recipes:
-
-```bash
-pnpm tokens:generate:check
-```
-
-Run these commands from the Elanor UI repository root. `pnpm tokens:check` runs the generation check before DTCG and Terrazzo validation; `pnpm check` includes these checks alongside the other workspace packages.
+`pnpm tokens:check` runs generation checks before DTCG and Terrazzo validation. Root `pnpm check` includes them.
 
 ## Adding a brand scale
 
-Add a brand recipe under the mirrored path in `packages/design-tokens/generation/recipes/`, for example:
+Add a mirrored recipe, for example `generation/recipes/radius/primitive/typography.json`. It generates `dimension.tokens.json` and `number.tokens.json` under `tokens/radius/primitive/`.
 
-```text
-packages/design-tokens/generation/recipes/radius/primitive/typography.json
-```
-
-That recipe will generate into the matching brand primitive token files under `packages/design-tokens/tokens/radius/primitive/`, such as `dimension.tokens.json` and `number.tokens.json`.
-
-Register the generated token files after their shared equivalents in the brand resolver. Matching token paths will override the shared scale.
+Register generated files after their shared equivalents in the brand resolver; matching paths override the shared scale.

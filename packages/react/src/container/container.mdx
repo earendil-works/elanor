@@ -2,9 +2,8 @@ import {ContainerExample} from './container.example.tsx';
 
 # Container
 
-Centers content, adds inline gutters, and applies an optional width cap. It renders
-a `div`, not a main landmark. Use it inside `Layout.Main`, around a section, or
-independently of Layout and Grid.
+Centers content with inline gutters and an optional width cap. Renders a `div`,
+not a main landmark.
 
 <ContainerExample />
 
@@ -14,15 +13,15 @@ independently of Layout and Grid.
 | ------- | -------------------- | ---------- |
 | `width` | `'capped'`, `'full'` | `'capped'` |
 
-The default content area is at most `semantic.dimension.size.content.large`
-(currently 76rem / 1216px). It has `space.padding.xLarge` gutters (currently 16px)
-on each side, so its maximum outer width is currently 1248px. It shrinks to fit a
-narrower parent. There is no block padding; sections own their vertical rhythm.
+Content is capped at `semantic.dimension.size.content.large` (76rem / 1216px),
+with `semantic.dimension.space.padding.xLarge` gutters (16px): 1248px maximum outer
+width. Container shrinks to fit its parent and adds no block padding.
 
-`width="full"` removes the cap but preserves gutters. For truly edge-to-edge
-content, omit Container or explicitly set `paddingInline: 0`. A Grid that spans
-all its tracks still respects its Container's cap; use an uncapped Container to
-give the Grid more available width.
+A Grid inside Container is also capped, even when it spans all tracks; use
+`width="full"` to give it more room.
+
+`width="full"` removes the cap but preserves gutters. For edge-to-edge content,
+omit Container, or combine `width="full"` with `style={{paddingInline: 0}}`.
 
 ```tsx
 import {Container, Layout} from '@earendil-works/elanor-react';
@@ -33,11 +32,10 @@ import {Container, Layout} from '@earendil-works/elanor-react';
 </Layout.Main>;
 ```
 
-## Ordinary styling and composition
+## Styling
 
 Native props, `ref`, `className`, and `style` pass through. Base UI's `render`
-contract supports an element or render function and merges props and refs.
-Container does not inspect or clone its children to impose page structure.
+accepts an element or render function and merges props and refs.
 
 ```tsx
 <Container
@@ -49,9 +47,8 @@ Container does not inspect or clone its children to impose page structure.
 </Container>
 ```
 
-Container uses border-box sizing. A `maxInlineSize` override limits the **outer**
-box, including padding. When changing gutters while preserving a precise content
-cap, update the outer maximum too:
+`maxInlineSize` includes padding (border-box). To change gutters without changing
+the content cap, update the outer maximum too:
 
 ```css
 .wideGutters {
@@ -63,6 +60,5 @@ cap, update the outer maximum too:
 }
 ```
 
-Logical properties work in RTL. Long tables, code, and other intrinsically wide
-children should provide their own wrapping or accessible overflow handling;
-Container never clips them.
+Logical properties support RTL. Wide children need their own wrapping or
+accessible overflow handling; Container does not clip them.

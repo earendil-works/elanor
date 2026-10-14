@@ -1,30 +1,26 @@
 # `@earendil-works/elanor-logos`
 
-Earendil, Pi, Radius, and Lefos logos as SVG files, built from clean sources and the logo color tokens. React components live in [`@earendil-works/elanor-logos-react`](./react/README.md).
+Earendil, Pi, Radius, and Lefos logos as SVG files, plus PNGs, print PDFs, favicons, and press kits. For React, use [`@earendil-works/elanor-logos-react`](./react/README.md).
 
-## Sources
+## Use
 
-`sources/<brand>/` holds each brand's `mark`, optional `mark-monochrome` (brands without one use their mark), `wordmark`, and `wordmark-small`, transferred from the Figma logo components. A source contains only paths; each fill links to a logo token, for example `fill="{semantic.color.logo.symbol.1}"`. The build replaces the links with color values, so outputs are plain SVGs.
+Every file in `dist/` is exported by path. Build the package first.
 
-[`config.ts`](./config.ts) defines the source parts, brands, color treatments, logo tokens, clear space, and lockup rules. Lockups are composed like the Figma auto layout, and each lockup rule adds a `logo-wordmark-<lockup>` asset kind. Paths are only moved into place, with exact decimal arithmetic, so geometry is unchanged.
-
-## Exports
-
-[`exports.config.ts`](./exports.config.ts) lists everything else the build produces as export plugins with their options: PNGs, CMYK print PDFs, favicons and web app icons, avatars, email-signature images, brand guidelines, and press kits. Each plugin lives in [`scripts/exports/`](./scripts/exports/) and receives a shared context with the composed assets, per-brand tokens, and the manifest. Plugins run in the listed order. To add a kind of output, add a plugin and list it in the config.
-
-Each export writes to its own folder in `dist/`, such as `favicons/<brand>/` or `print/<brand>/<profile>/`. Press kits contain only the logos: each brand's `kits/<brand>/` folder (`logo/`, `logo-wordmark-horizontal/`, and `logo-wordmark-vertical/`, by color treatment) plus the kit's guidelines.
-
-Brand guidelines are generated per press kit from [`guidelines/template.md`](./guidelines/template.md) and a short description of each brand in [`guidelines/brands/`](./guidelines/brands/). Product kits get their own guidelines; the Earendil kit gets a company document covering every brand. Each document comes with a clear-space illustration drawn from the built artwork and the grid in `config.ts`, so it stays current when logos or tokens change. The same content is also written as data to `guidelines/<kit>.json`: the title, the intro, and each section with its Markdown, HTML, and images, so the docs and design API can compose the guidelines without parsing Markdown.
-
-```sh
-pnpm build   # svg/, manifest.json, artwork.json, every export (e.g. kits/<brand>/, favicons/<brand>/, press-kits/*.zip), and the lib/ tooling
-pnpm check   # sources are clean and link to existing logo tokens
-pnpm test
+```ts
+import logoUrl from '@earendil-works/elanor-logos/svg/radius/radius-logo-on-light.svg';
 ```
 
-## Favicons for a website
+SVG names follow `<brand>-logo[-wordmark-<horizontal|vertical>][-monochrome]-on-<light|dark>.svg`. Before placing a logo, read the brand guidelines in `dist/guidelines/<brand>/BRAND-GUIDELINES.md`.
 
-`elanor-logos favicons` copies a brand's favicon set into a site's public folder and prints the `<head>` tags. In a workspace package, add `"@earendil-works/elanor-logos": "workspace:*"` to its dev dependencies and run it before each build:
+## Website favicons
+
+`elanor-logos favicons` copies a brand's favicon set into your public folder and prints the `<head>` tags. It copies from this package's `dist/`, so build this package first:
+
+```sh
+pnpm --filter @earendil-works/elanor-logos build
+```
+
+Then add `"@earendil-works/elanor-logos": "workspace:*"` to your app's dev dependencies and copy favicons before each build:
 
 ```jsonc
 "scripts": {
@@ -33,6 +29,8 @@ pnpm test
 }
 ```
 
+Paste the printed tags into your `<head>`. The URLs include the package version so browsers fetch new favicons; paste the new tags when the version changes. Ignore the copied files in Git.
+
 ```html
 <link rel="icon" href="/favicon.ico?v=0.1.0" sizes="32x32" />
 <link rel="icon" href="/favicon.svg?v=0.1.0" type="image/svg+xml" />
@@ -40,7 +38,7 @@ pnpm test
 <link rel="manifest" href="/site.webmanifest?v=0.1.0" />
 ```
 
-The command copies from this package's build, so build it first (`pnpm --filter @earendil-works/elanor-logos build`); before that, it exits with a message saying so. The copied files are build output, so ignore them in Git. Favicon URLs carry the package version, because browsers cache favicons for a long time; update the tags when the version changes. Use `--base /path/` for a site served below the domain root, and `--head <file>` to write the tags to a file instead of printing them. Frameworks that render `<head>` themselves can use the same functions from JavaScript:
+Use `--base /path/` for subdirectory hosting and `--head <file>` to save the tags. The JavaScript API provides the same operations:
 
 ```ts
 import {copyFavicons, faviconHead} from '@earendil-works/elanor-logos';
@@ -48,3 +46,19 @@ import {copyFavicons, faviconHead} from '@earendil-works/elanor-logos';
 await copyFavicons('pi', 'public');
 const tags = await faviconHead('pi', {base: '/'});
 ```
+
+## Develop
+
+```sh
+pnpm build   # dist/ artwork and exports, plus lib/ (CLI and favicon API)
+pnpm check   # source geometry and token references
+pnpm test
+```
+
+- `sources/<brand>/`: path-only SVGs from Figma: `mark`, optional `mark-monochrome`, `wordmark`, and `wordmark-small`. Fills reference tokens, e.g. `fill="{semantic.color.logo.symbol.1}"`.
+- [`config.ts`](./config.ts): brands, colors, clear space, and lockups. The build resolves colors and positions paths without changing their geometry.
+- [`exports.config.ts`](./exports.config.ts): ordered [plugins](./scripts/exports/) for PNGs, CMYK PDFs, favicons, avatars, email signatures, guidelines, and press kits. Each receives the assets, brand tokens, and manifest.
+
+Press kits contain each brand's `logo/`, `logo-wordmark-horizontal/`, and `logo-wordmark-vertical/` folders, grouped by color treatment, plus guidelines.
+
+Guidelines combine the [template](./guidelines/template.md), [brand descriptions](./guidelines/brands/), and generated clear-space illustrations. Product kits cover one brand; the Earendil kit covers all brands. `guidelines/<kit>.json` exposes the title, intro, and sections as Markdown, HTML, and images for the docs and API.

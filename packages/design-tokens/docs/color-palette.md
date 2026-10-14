@@ -1,14 +1,12 @@
 # Shared color palette
 
-The shared primitive palette is based on the four colors from our logos, plus a compatible green for positive semantics and the tint-free Graphite neutral.
+The shared palette uses four logo colors, a compatible positive green, and tint-free Graphite.
 
 ## Palette model
 
-Every color starts from a key color, authored in OKLCH in the color recipe. The key is emitted exactly as the family's own token, `primitive.color.<family>` (the group's `$root`), and the family's scale is generated around it.
+Each OKLCH key is emitted unchanged as `primitive.color.<family>` (`$root` for scaled families). Scales keep its hue, decrease OKHSL lightness linearly, and use bell-curve saturation for quieter extremes. Output is rounded DTCG OKLCH with matching hex fallbacks; see [generation details](token-generation.md#color-scale).
 
-Each family keeps its key's hue across the whole scale (OKLCH and OKHSL share hue angles), so a family never drifts from its key color. OKHSL lightness decreases linearly from step `0` to `1000`, while saturation follows the generator's bell curve so near-white and near-black shades remain quieter than the middle steps. Tokens are emitted as rounded DTCG OKLCH colors with matching hex fallbacks.
-
-The core steps are `25`, `50`, and `100` through `900`. Step `25` provides the near-white light canvas. Other non-hundred steps are generated exclusively for hover and active states; resting semantic colors use only hundred steps or the structural `25` and `50` exceptions.
+Resting colors use core steps `100`–`900` by hundreds, plus structural `25` (light canvas) and `50`. Other intermediate steps are for hover/active only.
 
 | Family           | Key       |     Hue | Saturation min–max | Purpose                                                                    |
 | ---------------- | --------- | ------: | -----------------: | -------------------------------------------------------------------------- |
@@ -19,11 +17,11 @@ The core steps are `25`, `50`, and `100` through `900`. Step `25` provides the n
 | `turquoiseGreen` | `#6AB98E` | 158.68° |             10–76% | Compatible green; positive and success states                              |
 | `graphite`       | `#6E6E6E` |       – |                 0% | Logo wordmark; neutral content and light structural backgrounds            |
 
-Hex values are the derived fallbacks of the OKLCH keys and match the logo artwork exactly.
+Key hex fallbacks match the logo artwork exactly.
 
 ## Standalone colors
 
-Colors without a scale have only a key, emitted as `primitive.color.<name>`. They are the brand black and white, used by both the logos and the UI. They are deliberately not pure black and white: scales are still calculated between pure white (step `0`) and pure black (step `1000`), so `graphite.25` is slightly lighter than `white` and `graphite.960` slightly darker than `black`.
+Brand black and white are key-only `primitive.color.<name>` tokens for logos and UI, not pure endpoints. Scales calculate between pure white (`0`) and black (`1000`), so `graphite.25` is lighter than `white` and `graphite.960` darker than `black`.
 
 | Token   | Key (OKLCH L C H) | Hex       |
 | ------- | ----------------- | --------- |
@@ -32,7 +30,7 @@ Colors without a scale have only a key, emitted as `primitive.color.<name>`. The
 
 ## Print builds
 
-Key colors used in print carry CMYK builds in the `com.earendil-works.print` extension, authored as `print` in the recipe.
+Recipe `print` values become CMYK builds in `com.earendil-works.print`:
 
 | Token          | CMYK, PSO Coated v3 | CMYK, PSO Uncoated v3 |
 | -------------- | ------------------- | --------------------- |
@@ -44,11 +42,11 @@ Key colors used in print carry CMYK builds in the `com.earendil-works.print` ext
 | `black`        | 0 0 0 100           | 0 0 0 100             |
 | `white`        | 0 0 0 0             | 0 0 0 0               |
 
-They were converted with LittleCMS from sRGB using relative colorimetric intent with black-point compensation (coated colors land within ΔE2000 1.5; uncoated paper cannot reach the saturated colors). Neutrals use black ink only, matched to the same lightness. `white` prints no ink, so it knocks out to the paper; use a white ink spot color instead when printing on dark stock. Treat them as best-effort values until checked against a printed proof.
+Converted from sRGB with LittleCMS, relative colorimetric intent, and black-point compensation. Coated colors are within ΔE2000 1.5; uncoated paper cannot reach the saturated colors. Neutrals use lightness-matched black ink only. `white` means no ink (paper knockout); use white spot ink on dark stock. Verify these best-effort values with a printed proof.
 
 ## Logo colors
 
-Semantic `semantic.color.logo.*` tokens map key colors onto logo roles per color scheme: `symbol.1`–`4` use the four logo family keys, `wordmark` and `earendil` use the `graphite` key (light) or `white` (dark), and `monochrome` uses `black` or `white`. Use them only for logo artwork.
+Use `semantic.color.logo.*` only for logo artwork: `symbol.1`–`4` use the four logo keys; `wordmark` and `earendil` use `graphite` in light mode and `white` in dark; `monochrome` uses `black`/`white`.
 
 ## Semantic mapping
 
@@ -60,7 +58,7 @@ Semantic `semantic.color.logo.*` tokens map key colors onto logo roles per color
 | Negative                                          | `coralRed`       |
 | Positive                                          | `turquoiseGreen` |
 
-`calamineBlue` serves as a supporting primitive brand accent and has no semantic status role.
+`calamineBlue` is a supporting brand accent without a semantic status role.
 
 Structural backgrounds use different families by theme:
 
@@ -69,15 +67,22 @@ Structural backgrounds use different families by theme:
 | Light | `graphite.25` (`#F8F8F8`)      | `graphite.50` (`#F1F1F1`)      |
 | Dark  | `cerulianBlue.900` (`#10171B`) | `cerulianBlue.800` (`#1E313B`) |
 
-The default primary fill uses `cerulianBlue`; `fill.primary.information` intentionally uses the same values for explicit informational intent, while `fill.primary.neutral` provides an equally prominent Graphite alternative. Ghost fills mirror the same default, neutral, information, negative, and positive intent structure. All use consistent resting and interaction steps: `600/640/680` or `40/80` in light mode, and `400/360/320` or `960/920` in dark mode. Semantic aliases retain role-based names, so consumers do not depend on these primitive family decisions.
+Primary and ghost fills each have default, neutral, information, negative, and positive variants; default and information intentionally use the same Cerulian Blue steps. Every variant uses these steps of its family:
+
+| Fill    | Light rest / hover / active | Dark rest / hover / active  |
+| ------- | --------------------------- | --------------------------- |
+| Primary | `600` / `640` / `680`       | `400` / `360` / `320`       |
+| Ghost   | transparent / `40` / `80`   | transparent / `960` / `920` |
+
+Consumers use [semantic fill roles](token-naming.md#color-fill-roles), not family names.
 
 ## Contrast audit
 
-The semantic mappings are checked against the project's required WCAG 2.1 resting-state pairs:
+Required WCAG 2.1 resting-state pairs:
 
 - ordinary text and content on canvas, surface, primary fills, and secondary fills at **4.5:1**;
 - meaningful borders, focus rings, selected fills, indicators, and switch knobs at **3:1**.
 
-All 178 required resting-state pairs pass. The weakest relative pass is the dark selected fill against the dark surface at **3.07:1**, against a required **3:1**.
+All 178 pairs pass. The smallest margin is dark selected fill on dark surface: **3.07:1** against **3:1** required. Run `pnpm tokens:check:contrast` to recheck.
 
-Hover and active states are excluded from contrast conformance under the current project policy. Secondary borders, secondary fills against their surrounding surface, and transparent ghost fills can remain below 3:1 when they are decorative or lower-prominence treatments and are not the only cue identifying a control or communicating state.
+Project policy excludes hover/active states from conformance checks. Secondary borders, secondary fills against their surroundings, and transparent ghost fills may fall below 3:1 only when decorative or lower-prominence and not the sole cue for a control or state.

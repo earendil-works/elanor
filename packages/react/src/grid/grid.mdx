@@ -1,7 +1,8 @@
 import {GridExample} from './grid.example.tsx';
 
-Grid divides its available width into equal CSS Grid tracks. It does not set a page
-width or manage navigation. Wrap it in `Container` when content needs a centered cap.
+# Grid
+
+Grid divides available width into equal tracks. Wrap it in `Container` for a centered width cap.
 
 <GridExample client:load />
 
@@ -22,8 +23,8 @@ import {Grid, Card} from '@earendil-works/elanor-react';
   gap scale: `xxSmall`, `xSmall`, `small`, `medium` (default), `large`, `xLarge`.
 - `Grid.Item`: `span` is 1–12 or `full` (default), optionally keyed by breakpoint.
   Omitted `base` means `full`; each value persists until the next specified key.
-  Numeric spans are clamped to their grid's available columns, preventing implicit
-  extra tracks. `full` explicitly starts a full row with `grid-column: 1 / -1`.
+  Numeric spans are clamped to available columns. `full` starts a full row with
+  `grid-column: 1 / -1`.
 - `Grid.Subgrid`: accepts the same `span` prop. It occupies parent tracks **and**
   exposes those tracks to its children. Its default column gap follows its parent.
   Rows are independent and content-driven; custom row sizing is ordinary CSS.
@@ -41,14 +42,9 @@ import {Grid, Card} from '@earendil-works/elanor-react';
 | `large`  | 80rem               |
 | `xLarge` | 96rem               |
 
-These are the existing shared breakpoint tokens, resolved into CSS during source
-generation. They query the nearest `Grid.Root`, **not the viewport**. A sidebar
-collapse can therefore change card spans without any React resize observer.
-
-Subgrid descendants intentionally query the owning `Grid.Root`: applying size
-containment to a subgrid breaks shared tracks in some browser engines. To respond
-to a nested region's own width, put an independent `Grid.Root` in a `Grid.Item`.
-Nested Roots reset both the query boundary and the column count.
+Breakpoints query the nearest `Grid.Root`, **not the viewport**, including inside
+subgrids. For a nested region's own width, put another `Grid.Root` in a `Grid.Item`;
+it resets the query boundary and column count.
 
 A default capped `Container` has 76rem of content, so `large` and `xLarge` apply only
 when the cap is overridden or removed. Use CSS for application-specific thresholds.
@@ -68,16 +64,13 @@ when the cap is overridden or removed. Use CSS for application-specific threshol
 </Grid.Root>
 ```
 
-Grid items and subgrids must be inside a Root and be **DOM children** of the grid
-they occupy. React fragments/components are fine if they introduce no extra DOM
-wrapper. Ordinary DOM children still work with native CSS Grid placement, but do
-not receive `Grid.Item`'s full-width default or span clamping.
+Items and subgrids must be inside a Root and be **DOM children** of their grid;
+fragments and components must not add wrappers. Ordinary DOM children use native
+CSS Grid placement without `Grid.Item`'s full-width default or span clamping.
 
-Do not change `grid-template-columns` or `grid-column` through custom CSS if you
-also rely on the built-in span clamping: it derives track counts from the public
-`columns` and `span` props. Use those props together, or own placement entirely in
-CSS. Layout preserves source order; row APIs, dense packing, and JavaScript
-fallbacks are intentionally omitted.
+Span clamping uses `columns` and `span`, not custom `grid-template-columns` or
+`grid-column`. Use the props together or handle placement entirely in CSS.
+Grid preserves source order.
 
 ## Maintaining the CSS
 

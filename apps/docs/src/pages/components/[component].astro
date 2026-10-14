@@ -1,6 +1,7 @@
 ---
 import {getCollection, render, type CollectionEntry} from 'astro:content';
 import DocsLayout from '../../layouts/docs-layout.astro';
+import {componentName} from '../../lib/component-name.ts';
 
 interface Props {
   entry: CollectionEntry<'components'>;
@@ -19,6 +20,6 @@ const {entry} = Astro.props;
 const {Content} = await render(entry);
 ---
 
-<DocsLayout title={entry.id} current={`/components/${entry.id}/`}>
+<DocsLayout title={componentName(entry.id)} current={`/components/${entry.id}/`}>
   <Content />
 </DocsLayout>
