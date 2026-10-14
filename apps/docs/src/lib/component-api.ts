@@ -24,7 +24,7 @@ export interface ApiPart {
   readonly baseUi?: {readonly name: string; readonly url: string} | undefined;
   /** Default HTML element as inline Markdown, such as `` `<div>` ``. */
   readonly element?: string | undefined;
-  /** Supports Base UI's `render` prop without wrapping a Base UI component. */
+  /** Accepts Base UI's `render` prop without a `baseUi` link that documents it. */
   readonly render: boolean;
 }
 
@@ -170,20 +170,29 @@ function readPart(checker: ts.TypeChecker, name: string, exported: ts.Symbol): A
   const declaredInBaseUi = /@base-ui\/react\//.test(declaration.getSourceFile().fileName);
   const usesBaseUi = declaredInBaseUi || baseUiParts.size > 0 || hasBaseUiProps(propsType);
 
+  const baseUi =
+    usesBaseUi && component
+      ? {
+          name: [pascal(component), baseUiPart && pascal(baseUiPart)].filter(Boolean).join('.'),
+          url: `https://base-ui.com/react/components/${component}${baseUiPart ? `#${baseUiPart.replaceAll('-', '')}` : ''}`,
+        }
+      : undefined;
+
   return {
     name,
     description: isOwn(declaration) ? jsDocText(declaration) : undefined,
     props,
-    baseUi:
-      usesBaseUi && component
-        ? {
-            name: [pascal(component), baseUiPart && pascal(baseUiPart)].filter(Boolean).join('.'),
-            url: `https://base-ui.com/react/components/${component}${baseUiPart ? `#${baseUiPart.replaceAll('-', '')}` : ''}`,
-          }
-        : undefined,
+    baseUi,
     element: jsxElement(implementation) ?? element,
-    render: !usesBaseUi && fileImports.includes('use-render'),
+    render: !baseUi && hasBaseUiRender(propsType),
   };
+}
+
+/** True when props include Base UI's `render` prop, not an unrelated prop of that name. */
+function hasBaseUiRender(type: ts.Type): boolean {
+  return (type.getProperty('render')?.declarations ?? []).some((node) =>
+    /@base-ui\/react\//.test(node.getSourceFile().fileName),
+  );
 }
 
 /** True when props include Base UI's generic component props, such as `render`. */
