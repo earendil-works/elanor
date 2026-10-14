@@ -1,5 +1,6 @@
 import {readFile} from "node:fs/promises";
-import {resolve} from "node:path";
+import {basename, resolve} from "node:path";
+import {marked} from "marked";
 import {type BrandId, brands, clearSpace, gridUnit, type LogoKind} from "../../config.js";
 import {packageDirectory, pathElements} from "../lib/compose.js";
 import {svgToPng} from "../lib/raster.js";
@@ -22,18 +23,42 @@ export interface GuidelinesOptions {
   };
 }
 
+/** An image in the guidelines; `path` is relative to dist/. */
+export interface GuidelinesImage {
+  path: string;
+  alt: string;
+  width: number;
+}
+
+export interface GuidelinesSection {
+  id: string;
+  title: string;
+  markdown: string;
+  html: string;
+  /** Images shown after the section's text. */
+  images: GuidelinesImage[];
+}
+
+/** The guidelines as data, so consumers compose them under their own headings without parsing Markdown. */
+export interface GuidelinesData {
+  title: string;
+  intro: {markdown: string; html: string};
+  sections: GuidelinesSection[];
+}
+
 /**
  * Brand guidelines per document, from guidelines/template.md and a short
  * description per brand in guidelines/brands/<brand>.md, plus a clear-space
  * illustration drawn from the built artwork. Writes
- * guidelines/<document>/BRAND-GUIDELINES.md and clear-space.png.
+ * guidelines/<document>/BRAND-GUIDELINES.md and clear-space.png for the press
+ * kit, and guidelines/<document>.json with the same content as data.
  */
 export function guidelines(options: GuidelinesOptions): ExportPlugin {
   return {
     name: "guidelines",
     async run(context) {
       const template = await readFile(resolve(guidelinesDirectory, "template.md"), "utf8");
-      const documents: Record<string, {document: string; clearSpace: string}> = {};
+      const documents: Record<string, {document: string; data: string; clearSpace: string}> = {};
       for (const [document, covered] of Object.entries(options.documents) as Array<[BrandId, BrandId[]]>) {
         const names = covered.map((brand) => brands[brand].name);
         const directory = `guidelines/${document}`;
@@ -47,22 +72,77 @@ export function guidelines(options: GuidelinesOptions): ExportPlugin {
             .join("\n\n"),
           writeNames: `Write the ${names.length === 1 ? "name" : "names"} as ${list(names.map((name) => `**${name}**`))} in prose.`,
           kitFiles: list(context.plugins.flatMap((plugin) => (plugin.kitContents ? [plugin.kitContents] : []))),
-          // An HTML image, so Markdown renderers show it as is rather than processing it.
-          clearSpace: `<img src="clear-space.png" alt="${list(names)} logos with one grid unit of clear space on every side" width="800">`,
         };
-        const markdown = template.replace(/\{\{(\w+)\}\}/g, (_, key: string) => {
-          const value = values[key];
-          if (value === undefined) throw new Error(`guidelines/template.md: unknown placeholder {{${key}}}`);
-          return value;
-        });
+        const clearSpaceImage: GuidelinesImage = {
+          path: `${directory}/clear-space.png`,
+          alt: `${list(names)} logos with one grid unit of clear space on every side`,
+          width: 800,
+        };
+        const fill = (images: Record<string, string>) =>
+          template.replace(/\{\{(\w+)\}\}/g, (_, key: string) => {
+            const value = values[key] ?? images[key];
+            if (value === undefined) throw new Error(`guidelines/template.md: unknown placeholder {{${key}}}`);
+            return value;
+          });
+        // The press-kit document shows the image beside itself, as HTML so Markdown renderers show it as is.
+        const markdown = fill({clearSpace: `<img src="${basename(clearSpaceImage.path)}" alt="${clearSpaceImage.alt}" width="${clearSpaceImage.width}">`});
+        const data = guidelinesData(fill({clearSpace: imageMarker("clearSpace")}), {clearSpace: clearSpaceImage});
         documents[document] = {
           document: await context.write(`${directory}/BRAND-GUIDELINES.md`, markdown),
-          clearSpace: await context.write(`${directory}/clear-space.png`, await svgToPng(image)),
+          data: await context.write(`guidelines/${document}.json`, `${JSON.stringify(data, null, 2)}\n`),
+          clearSpace: await context.write(clearSpaceImage.path, await svgToPng(image)),
         };
       }
       context.manifest.guidelines = documents;
     },
   };
+}
+
+const imageMarker = (key: string) => `<!-- image:${key} -->`;
+
+/**
+ * Splits the filled template into its title, intro, and sections. The template is the only Markdown this
+ * parses, so its shape is checked strictly: one `#` title, then `##` sections, and image placeholders on
+ * their own lines.
+ */
+export function guidelinesData(source: string, images: Record<string, GuidelinesImage>): GuidelinesData {
+  const fail = (problem: string): never => {
+    throw new Error(`guidelines/template.md: ${problem}`);
+  };
+  const [titleLine = "", ...lines] = source.trimEnd().split("\n");
+  if (!titleLine.startsWith("# ")) fail("must start with a # title");
+  const html = (markdown: string) => marked.parse(markdown, {async: false});
+
+  const blocks: Array<{title?: string; lines: string[]}> = [{lines: []}];
+  for (const line of lines) {
+    if (line.startsWith("```")) fail("code blocks are not supported");
+    if (line.startsWith("## ")) blocks.push({title: line.slice(3).trim(), lines: []});
+    else if (line.startsWith("#")) fail(`only ## section headings may follow the title, found "${line}"`);
+    else blocks.at(-1)!.lines.push(line);
+  }
+  const [intro, ...sectionBlocks] = blocks;
+  const ids = new Set<string>();
+  const sections = sectionBlocks.map(({title = "", lines: sectionLines}) => {
+    const id = title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+    if (ids.has(id)) fail(`two sections are titled "${title}"`);
+    ids.add(id);
+    const sectionImages: GuidelinesImage[] = [];
+    const text = sectionLines.filter((line) => {
+      const key = /^<!-- image:(\w+) -->$/.exec(line.trim())?.[1];
+      if (!key) return true;
+      const image = images[key];
+      if (!image) fail(`unknown image ${key}`);
+      sectionImages.push(image!);
+      return false;
+    });
+    const markdown = text.join("\n").trim();
+    if (!markdown) fail(`section "${title}" is empty`);
+    return {id, title, markdown, html: html(markdown), images: sectionImages};
+  });
+  if (sections.length === 0) fail("has no ## sections");
+  const introMarkdown = intro!.lines.join("\n").trim();
+  if (introMarkdown.includes("<!-- image:")) fail("images must be inside a section");
+  return {title: titleLine.slice(2).trim(), intro: {markdown: introMarkdown, html: html(introMarkdown)}, sections};
 }
 
 function list(items: string[]): string {

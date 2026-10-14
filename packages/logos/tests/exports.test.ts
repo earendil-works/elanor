@@ -3,6 +3,7 @@ import {resolve} from "node:path";
 import {unzipSync} from "fflate";
 import {describe, expect, test} from "vitest";
 import {createIco, createZip} from "../scripts/lib/containers.js";
+import {type GuidelinesData, guidelinesData} from "../scripts/exports/guidelines.js";
 import {createPdf, pathOperators} from "../scripts/lib/pdf.js";
 
 const dist = resolve(import.meta.dirname, "../dist");
@@ -32,6 +33,32 @@ describe("containers", () => {
       const start = ico.readUInt32LE(entry + 12);
       expect(ico.subarray(start, start + png.length).equals(png)).toBe(true);
     }
+  });
+});
+
+describe("guidelines template structure", () => {
+  const image = {path: "guidelines/x/clear-space.png", alt: "Clear space", width: 800};
+
+  test("splits the title, intro, and sections, and moves images out of the text", () => {
+    const data = guidelinesData("# Title\n\nIntro.\n\n## First part\n\nText.\n\n<!-- image:clearSpace -->\n\n## Second\n\nMore.", {clearSpace: image});
+    expect(data.title).toBe("Title");
+    expect(data.intro.markdown).toBe("Intro.");
+    expect(data.sections.map(({id, markdown, images}) => ({id, markdown, images}))).toEqual([
+      {id: "first-part", markdown: "Text.", images: [image]},
+      {id: "second", markdown: "More.", images: []},
+    ]);
+  });
+
+  test.each([
+    ["Title\n\n## A\n\nText.", /must start with a # title/],
+    ["# Title\n\n## A\n\n### Deeper\n\nText.", /only ## section headings/],
+    ["# Title\n\n## A\n\n```\ncode\n```", /code blocks are not supported/],
+    ["# Title\n\n## A\n\nText.\n\n## A\n\nText.", /two sections are titled "A"/],
+    ["# Title\n\n## A\n\n## B\n\nText.", /section "A" is empty/],
+    ["# Title\n\nIntro only.", /has no ## sections/],
+    ["# Title\n\n## A\n\n<!-- image:missing -->\n\nText.", /unknown image missing/],
+  ])("rejects %j", (source, message) => {
+    expect(() => guidelinesData(source, {clearSpace: image})).toThrow(message);
   });
 });
 
@@ -106,6 +133,19 @@ describe("built exports", () => {
     // Press kits contain only the guidelines and the logos.
     const folders = new Set(kit.filter((path) => path.split("/").length > 2).map((path) => path.split("/").slice(1, 3).join("/")));
     expect([...folders].sort()).toEqual(["radius/logo", "radius/logo-wordmark-horizontal", "radius/logo-wordmark-vertical"]);
+  });
+
+  test("the guidelines are also written as data, matching the press-kit document", async () => {
+    const markdown = await readFile(resolve(dist, "guidelines/earendil/BRAND-GUIDELINES.md"), "utf8");
+    const data = JSON.parse(await readFile(resolve(dist, "guidelines/earendil.json"), "utf8")) as GuidelinesData;
+    expect(markdown.startsWith(`# ${data.title}\n`)).toBe(true);
+    expect(data.sections.map((section) => section.title)).toEqual([...markdown.matchAll(/^## (.+)$/gm)].map((match) => match[1]));
+    for (const section of data.sections) {
+      expect(section.markdown).not.toMatch(/^#/m);
+      expect(section.html).toMatch(/^<p>|^<ul>/);
+    }
+    const clearSpace = data.sections.find((section) => section.id === "clear-space")!;
+    expect(clearSpace.images).toEqual([expect.objectContaining({path: "guidelines/earendil/clear-space.png", width: 800})]);
   });
 
   test("favicons are monochrome, and the SVG favicon switches to white in dark mode", async () => {

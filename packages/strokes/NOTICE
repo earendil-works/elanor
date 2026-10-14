@@ -1,0 +1,5 @@
+Elanor strokes
+
+sources/noir.svg is the "Figma Noir" brush from svg-brush
+(https://github.com/Citizen-Codex/svg-brush), licensed under the MIT License.
+The build crops, evens out, and reshapes it into the masks in dist/.
