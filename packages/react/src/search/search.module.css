@@ -78,6 +78,12 @@
   font: var(--semantic-typography-ui-primary);
 }
 
+/* Hide the built-in clear button so browsers match and a custom one isn't doubled. */
+.input::-webkit-search-cancel-button,
+.input::-webkit-search-decoration {
+  appearance: none;
+}
+
 .input::placeholder {
   color: var(--semantic-color-text-secondary);
 }
