@@ -1,0 +1,38 @@
+import {
+  Heading,
+  Stack,
+  TableOfContents,
+  TableOfContentsItem,
+  TableOfContentsLink,
+  Text,
+} from '@earendil-works/elanor-react';
+
+export function TableOfContentsExample(): React.JSX.Element {
+  return (
+    <Stack gap="large">
+      <TableOfContents style={{maxInlineSize: '24ch'}}>
+        <TableOfContentsItem>
+          <TableOfContentsLink href="#overview">Overview</TableOfContentsLink>
+        </TableOfContentsItem>
+        <TableOfContentsItem>
+          <TableOfContentsLink href="#usage">Usage</TableOfContentsLink>
+        </TableOfContentsItem>
+        <TableOfContentsItem>
+          <TableOfContentsLink href="#project-access">Managing project access and team permissions</TableOfContentsLink>
+        </TableOfContentsItem>
+      </TableOfContents>
+      <section id="overview" aria-labelledby="overview-title">
+        <Heading level={2} id="overview-title">Overview</Heading>
+        <Text>Use the links above to jump to a section of this project guide.</Text>
+      </section>
+      <section id="usage" aria-labelledby="usage-title">
+        <Heading level={2} id="usage-title">Usage</Heading>
+        <Text>Choose a project before creating or sharing artifacts.</Text>
+      </section>
+      <section id="project-access" aria-labelledby="project-access-title">
+        <Heading level={2} id="project-access-title">Managing project access and team permissions</Heading>
+        <Text>Invite collaborators and assign permissions for the work they need to do.</Text>
+      </section>
+    </Stack>
+  );
+}

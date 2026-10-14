@@ -16,6 +16,10 @@
 }
 
 .track {
+  box-sizing: border-box;
+  border: var(--semantic-dimension-border-width-default) solid var(--outline-color);
+  border-radius: var(--semantic-dimension-radius-full);
+  --outline-focus-color: var(--semantic-color-focus-ring);
   position: absolute;
   z-index: var(--semantic-number-layer-background);
   inset-inline-start: calc((100% - var(--semantic-dimension-size-medium)) / 2);
@@ -36,7 +40,7 @@
 }
 
 .root:focus-visible > .track {
-  outline: var(--outline-plain-focus, var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring));
+  outline: var(--semantic-dimension-border-width-large) solid var(--outline-focus-color);
   outline-offset: calc(-1 * var(--semantic-dimension-border-width-large));
 }
 
@@ -72,7 +76,7 @@
   }
 
   .root:focus-visible > .track {
-    outline: var(--semantic-dimension-border-width-large) solid Highlight;
+    --outline-focus-color: Highlight;
   }
 
   .thumb {

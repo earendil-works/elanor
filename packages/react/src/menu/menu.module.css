@@ -1,5 +1,9 @@
 .popup {
+  position: relative;
   box-sizing: border-box;
+  border: var(--semantic-dimension-border-width-default) solid var(--outline-color);
+  border-radius: var(--semantic-dimension-radius-small);
+  --outline-focus-color: var(--semantic-color-focus-ring);
   display: flex;
   flex-direction: column;
   min-inline-size: 0;
@@ -22,7 +26,11 @@
 }
 
 .item {
+  position: relative;
   box-sizing: border-box;
+  border: var(--semantic-dimension-border-width-default) solid var(--outline-color);
+  border-radius: var(--semantic-dimension-radius-small);
+  --outline-focus-color: var(--semantic-color-focus-ring);
   display: flex;
   align-items: center;
   /* Icon-to-text spacing comes from the label padding. */
@@ -108,7 +116,7 @@
 
 @media (forced-colors: active) {
   .popup {
-    outline: var(--outline-plain-focus, var(--semantic-dimension-border-width-default) solid CanvasText);
+    outline: var(--semantic-dimension-border-width-default) solid CanvasText;
     outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
   }
 

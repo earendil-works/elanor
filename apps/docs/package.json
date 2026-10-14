@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
+    "test:pencil": "playwright test --config playwright.pencil.config.ts",
     "build": "astro build",
     "check": "pnpm run check:types && pnpm run lint",
     "check:types": "astro check",
@@ -20,11 +21,13 @@
     "@earendil-works/elanor-logos": "workspace:*",
     "@earendil-works/elanor-react": "workspace:*",
     "@earendil-works/elanor-strokes": "workspace:*",
+    "@earendil-works/elanor-strokes-react": "workspace:*",
     "astro": "^5.0.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0"
   },
   "devDependencies": {
+    "@playwright/test": "1.58.2",
     "@astrojs/check": "^0.9.0",
     "@earendil-works/stylelint-plugin-design-tokens": "workspace:*",
     "@types/react": "^19.0.0",

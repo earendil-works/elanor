@@ -1,4 +1,7 @@
 .root {
+  --outline-focus-color: var(--semantic-color-focus-ring);
+  border: var(--semantic-dimension-border-width-default) solid var(--outline-color);
+  border-radius: var(--semantic-dimension-radius-small);
   box-sizing: border-box;
   display: flex;
   align-items: center;

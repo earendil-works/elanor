@@ -1,15 +1,9 @@
-import {Heading, Section, Text} from '@earendil-works/elanor-react';
+import {SectionSeparatedSurfacePreview as SectionSeparatedExample, SectionUnseparatedSurfacePreview as SectionUnseparatedExample} from '@elanor-docs/surface-previews.tsx';
 
 ## With separator
 
-<Section aria-labelledby="members-heading">
-  <Heading level={2} id="members-heading">Members</Heading>
-  <Text>Invite collaborators and assign workspace roles.</Text>
-</Section>
+<SectionSeparatedExample client:load />
 
 ## Without separator
 
-<Section separated={false} aria-labelledby="access-heading">
-  <Heading level={2} id="access-heading">Project access</Heading>
-  <Text>Choose which projects each team can access.</Text>
-</Section>
+<SectionUnseparatedExample client:load />

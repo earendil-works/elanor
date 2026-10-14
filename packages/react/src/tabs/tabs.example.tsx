@@ -1,4 +1,4 @@
-import {Tabs} from './tabs.tsx';
+import {Tabs} from '@earendil-works/elanor-react';
 
 export function TabsExample(): React.JSX.Element {
   return (

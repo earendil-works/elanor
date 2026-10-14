@@ -1,3 +1,6 @@
+export {AppearanceProvider, useIndicatorClassName, useSurfaceClassName} from './appearance/appearance.tsx';
+export type {AppearanceProviderProps} from './appearance/appearance.tsx';
+
 export {
   AppLayout,
   AppLayoutBody,

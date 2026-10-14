@@ -1,4 +1,5 @@
 .navigationItem {
+  --outline-focus-color: var(--semantic-color-focus-ring);
   position: relative;
   box-sizing: border-box;
   display: inline-flex;
@@ -10,9 +11,9 @@
   border: 0;
   outline: 0;
   background-color: var(--semantic-color-background-fill-ghost-neutral);
-  /* The underline is the item's bottom outline. */
+  /* The underline is the item's bottom surface edge. */
   --outline-color: transparent;
-  box-shadow: inset 0 calc(-1 * var(--semantic-dimension-border-width-default)) 0 var(--outline-plain-border, var(--outline-color));
+  box-shadow: inset 0 calc(-1 * var(--semantic-dimension-border-width-default)) 0 var(--outline-color);
   color: var(--semantic-color-text-primary);
   font: var(--semantic-typography-ui-primary);
   text-decoration: none;
@@ -32,7 +33,7 @@
 }
 
 .navigationItem:focus-visible {
-  outline: var(--outline-plain-focus, var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring));
+  outline: var(--semantic-dimension-border-width-large) solid var(--outline-focus-color);
   outline-offset: calc(-1 * var(--semantic-dimension-border-width-large));
 }
 
@@ -72,7 +73,11 @@
 }
 
 .popup {
+  position: relative;
   box-sizing: border-box;
+  border: var(--semantic-dimension-border-width-default) solid var(--outline-color);
+  border-radius: var(--semantic-dimension-radius-small);
+  --outline-focus-color: var(--semantic-color-focus-ring);
   display: flex;
   flex-direction: column;
   max-inline-size: var(--available-width);
@@ -101,7 +106,7 @@
   }
 
   .popup {
-    outline: var(--outline-plain-focus, var(--semantic-dimension-border-width-default) solid CanvasText);
+    outline: var(--semantic-dimension-border-width-default) solid CanvasText;
     outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
     background-color: Canvas;
   }

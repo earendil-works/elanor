@@ -1,13 +1,16 @@
 .root {
   position: relative;
   box-sizing: border-box;
+  border: var(--semantic-dimension-border-width-default) solid var(--outline-color);
+  border-radius: var(--semantic-dimension-radius-small);
+  --outline-focus-color: var(--semantic-color-focus-ring);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: var(--semantic-dimension-space-control-gap-small);
   padding-block: calc(var(--semantic-dimension-space-control-padding-block-small) - var(--semantic-dimension-border-width-default));
   padding-inline: calc(var(--semantic-dimension-space-control-padding-inline-small) - var(--semantic-dimension-border-width-default));
-  /* Outline contract: states set --outline-color; a stroke style replaces the plain paint. */
+  /* State colors are public hooks; plain rendering is complete without a skin. */
   --outline-color: transparent;
   font: var(--semantic-typography-ui-primary);
   white-space: nowrap;
@@ -55,7 +58,7 @@
   block-size: 100%;
 }
 
-/* ::after is reserved for the outline layer. */
+/* Expanded hit target for compact buttons. */
 .root[data-density='compact']::before {
   position: absolute;
   inset-block: calc(-1 * (var(--semantic-dimension-space-control-padding-block-small) + var(--semantic-dimension-border-width-default)));
@@ -207,7 +210,7 @@
 }
 
 .root:focus-visible {
-  outline: var(--outline-plain-focus, var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring));
+  outline: var(--semantic-dimension-border-width-large) solid var(--outline-focus-color);
   outline-offset: calc(-1 * var(--semantic-dimension-border-width-large));
 }
 
@@ -218,7 +221,7 @@
 
 @media (forced-colors: active) {
   .root {
-    outline: var(--outline-plain-focus, var(--semantic-dimension-border-width-default) solid ButtonBorder);
+    outline: var(--semantic-dimension-border-width-default) solid ButtonBorder;
     outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
   }
 

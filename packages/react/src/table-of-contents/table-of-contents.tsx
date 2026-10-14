@@ -1,6 +1,6 @@
 import {forwardRef, type AnchorHTMLAttributes, type HTMLAttributes, type ReactNode} from 'react';
 import styles from './table-of-contents.module.css';
-import outline from '../utils/outline.module.css';
+import {useSurfaceClassName} from '../appearance/appearance.tsx';
 import {classes} from '../utils/class-names.ts';
 
 export interface TableOfContentsProps extends Omit<HTMLAttributes<HTMLElement>, 'title'> {
@@ -32,15 +32,17 @@ export interface TableOfContentsLinkProps extends AnchorHTMLAttributes<HTMLAncho
 
 export const TableOfContentsLink = forwardRef<HTMLAnchorElement, TableOfContentsLinkProps>(
   function TableOfContentsLink({active = false, children, dangerouslySetInnerHTML, className, ...props}, ref) {
+    const surfaceClassName = useSurfaceClassName();
     return (
       <a
         data-outline="box-small"
+        data-outline-focus="self"
         data-outline-band="none"
         {...props}
         ref={ref}
         aria-current={active ? 'location' : props['aria-current']}
         data-active={active ? '' : undefined}
-        className={classes(styles.link, outline.outline, className)}
+        className={classes(styles.link, surfaceClassName, className)}
       >
         <span className={styles.label} dangerouslySetInnerHTML={dangerouslySetInnerHTML}>{children}</span>
       </a>

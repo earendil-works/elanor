@@ -1,7 +1,7 @@
 import {Tabs as BaseTabs} from '@base-ui/react/tabs';
 import {forwardRef} from 'react';
 import styles from './tabs.module.css';
-import outline from '../utils/outline.module.css';
+import {useSurfaceClassName} from '../appearance/appearance.tsx';
 import {classes, mergeClassName} from '../utils/class-names.ts';
 
 export type {
@@ -29,13 +29,15 @@ const TabsRoot = forwardRef<HTMLDivElement, TabsRootProps>(function TabsRoot(pro
 
 export const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
   function TabsList({className, ...props}, ref) {
+    const surfaceClassName = useSurfaceClassName();
     return (
       <BaseTabs.List
         data-outline="line"
+        data-outline-focus="self"
         data-outline-edge="block-end"
         {...props}
         ref={ref}
-        className={mergeClassName<BaseTabs.List.State>(styles.list, className)}
+        className={mergeClassName<BaseTabs.List.State>(classes(styles.list, surfaceClassName), className)}
       />
     );
   },
@@ -43,13 +45,15 @@ export const TabsList = forwardRef<HTMLDivElement, TabsListProps>(
 
 export const TabsTab = forwardRef<HTMLElement, TabsTabProps>(
   function TabsTab({className, ...props}, ref) {
+    const surfaceClassName = useSurfaceClassName();
     return (
       <BaseTabs.Tab
         data-outline="box-small"
+        data-outline-focus="self"
         data-outline-band="none"
         {...props}
         ref={ref}
-        className={mergeClassName<BaseTabs.Tab.State>(classes(styles.tab, outline.outline), className)}
+        className={mergeClassName<BaseTabs.Tab.State>(classes(styles.tab, surfaceClassName), className)}
       />
     );
   },
@@ -57,12 +61,14 @@ export const TabsTab = forwardRef<HTMLElement, TabsTabProps>(
 
 export const TabsIndicator = forwardRef<HTMLSpanElement, TabsIndicatorProps>(
   function TabsIndicator({className, ...props}, ref) {
+    const surfaceClassName = useSurfaceClassName();
     return (
       <BaseTabs.Indicator
         data-outline="line"
+        data-outline-focus="none"
         {...props}
         ref={ref}
-        className={mergeClassName<BaseTabs.Indicator.State>(styles.indicator, className)}
+        className={mergeClassName<BaseTabs.Indicator.State>(classes(styles.indicator, surfaceClassName), className)}
       />
     );
   },
@@ -70,13 +76,15 @@ export const TabsIndicator = forwardRef<HTMLSpanElement, TabsIndicatorProps>(
 
 export const TabsPanel = forwardRef<HTMLDivElement, TabsPanelProps>(
   function TabsPanel({className, ...props}, ref) {
+    const surfaceClassName = useSurfaceClassName();
     return (
       <BaseTabs.Panel
         data-outline="box-small"
+        data-outline-focus="self"
         data-outline-band="none"
         {...props}
         ref={ref}
-        className={mergeClassName<BaseTabs.Panel.State>(classes(styles.panel, outline.outline), className)}
+        className={mergeClassName<BaseTabs.Panel.State>(classes(styles.panel, surfaceClassName), className)}
       />
     );
   },

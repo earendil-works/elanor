@@ -1,4 +1,5 @@
 .navigationItem {
+  --outline-focus-color: var(--semantic-color-focus-ring);
   position: relative;
   box-sizing: border-box;
   display: inline-flex;
@@ -12,7 +13,7 @@
   background-color: var(--semantic-color-background-fill-ghost-neutral);
   /* The underline is the item's bottom outline. */
   --outline-color: transparent;
-  box-shadow: inset 0 calc(-1 * var(--semantic-dimension-border-width-default)) 0 var(--outline-plain-border, var(--outline-color));
+  box-shadow: inset 0 calc(-1 * var(--semantic-dimension-border-width-default)) 0 var(--outline-color);
   color: var(--semantic-color-text-primary);
   font: var(--semantic-typography-ui-primary);
   text-decoration: none;
@@ -32,7 +33,7 @@
 }
 
 .navigationItem:focus-visible {
-  outline: var(--outline-plain-focus, var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring));
+  outline: var(--semantic-dimension-border-width-large) solid var(--outline-focus-color);
   outline-offset: calc(-1 * var(--semantic-dimension-border-width-large));
 }
 

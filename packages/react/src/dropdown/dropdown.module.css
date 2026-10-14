@@ -4,7 +4,11 @@
 }
 
 .trigger {
+  position: relative;
   box-sizing: border-box;
+  border: var(--semantic-dimension-border-width-default) solid var(--outline-color);
+  border-radius: var(--semantic-dimension-radius-small);
+  --outline-focus-color: var(--semantic-color-focus-ring);
   display: inline-flex;
   align-items: center;
   justify-content: space-between;
@@ -38,7 +42,7 @@
 }
 
 .trigger:focus-visible {
-  outline: var(--outline-plain-focus, var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring));
+  outline: var(--semantic-dimension-border-width-large) solid var(--outline-focus-color);
   outline-offset: calc(-1 * var(--semantic-dimension-border-width-large));
 }
 
@@ -69,7 +73,11 @@
 }
 
 .popup {
+  position: relative;
   box-sizing: border-box;
+  border: var(--semantic-dimension-border-width-default) solid var(--outline-color);
+  border-radius: var(--semantic-dimension-radius-small);
+  --outline-focus-color: var(--semantic-color-focus-ring);
   min-inline-size: min(var(--anchor-width), var(--available-width));
   max-inline-size: var(--available-width);
   max-block-size: var(--available-height);
@@ -95,6 +103,9 @@
 }
 
 .item {
+  position: relative;
+  --outline-color: transparent;
+  --outline-focus-color: var(--semantic-color-focus-ring);
   box-sizing: border-box;
   display: flex;
   flex: none;
@@ -114,10 +125,12 @@
 }
 
 .item[data-highlighted] {
+  --outline-color: var(--semantic-color-background-fill-ghost-neutral-hover);
   background-color: var(--semantic-color-background-fill-ghost-neutral-hover);
 }
 
 .item[data-selected] {
+  --outline-color: var(--semantic-color-background-fill-ghost-neutral-active);
   background-color: var(--semantic-color-background-fill-ghost-neutral-active);
 }
 
@@ -127,6 +140,10 @@
 
 .indicatorFrame {
   position: relative;
+  box-sizing: border-box;
+  border: var(--semantic-dimension-border-width-default) solid var(--outline-color);
+  border-radius: var(--semantic-dimension-radius-full);
+  --outline-focus-color: var(--semantic-color-focus-ring);
   display: inline-flex;
   flex: none;
   align-self: flex-start;
@@ -145,6 +162,7 @@
 }
 
 .indicatorFrameMultiple {
+  border-radius: var(--semantic-dimension-radius-small);
   background-color: var(--semantic-color-background-checkbox);
   color: var(--semantic-color-icon-checkbox-indicator);
 }
@@ -198,10 +216,12 @@
 }
 
 .separator {
+  position: relative;
+  --outline-focus-color: var(--semantic-color-focus-ring);
   block-size: var(--semantic-dimension-border-width-small);
   margin-block: var(--semantic-dimension-space-gap-x-small);
   --outline-color: var(--semantic-color-border-secondary);
-  background-color: var(--outline-plain-fill, var(--outline-color));
+  background-color: var(--outline-color);
 }
 
 @media (forced-colors: active) {
@@ -220,11 +240,11 @@
   }
 
   .popup {
-    outline: var(--outline-plain-focus, var(--semantic-dimension-border-width-default) solid ButtonBorder);
+    outline: var(--semantic-dimension-border-width-default) solid ButtonBorder;
   }
 
   .trigger {
-    outline: var(--outline-plain-focus, var(--semantic-dimension-border-width-default) solid ButtonBorder);
+    outline: var(--semantic-dimension-border-width-default) solid ButtonBorder;
     outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
   }
 
@@ -234,6 +254,7 @@
   }
 
   .trigger:focus-visible {
+    --outline-focus-color: Highlight;
     outline-color: Highlight;
   }
 

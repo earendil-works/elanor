@@ -1,13 +1,17 @@
 # `@earendil-works/elanor-strokes`
 
-Brush stroke outlines as CSS and vector masks, for brands whose look uses them. Each style is built per brand; import the brand's build after its design tokens:
+Brush stroke outlines as CSS and vector masks, built per brand. For Elanor React components, use the [React adapter](react/README.md).
+
+## Standalone stylesheets
+
+Import the brand's build after its design tokens. Do not combine these stylesheets with the React adapter.
 
 ```css
 @import '@earendil-works/design-tokens/radius.css';
 @import '@earendil-works/elanor-strokes/pencil/radius.css';
 ```
 
-Strokes implement the outline contract the Elanor components follow, so components need no stroke-specific code:
+These stylesheets target outline attributes and require component styles implementing the contract below:
 
 ```html
 <button data-outline="box-small">Save</button>
@@ -30,6 +34,6 @@ Strokes implement the outline contract the Elanor components follow, so componen
 [`config.ts`](./config.ts) defines brushes and styles: the source brush and how it is evened out, the brands a style is built for, the bands and their overlap with the background, variants, seed, pressure variation, which tokens size each shape, and the marks.
 
 ```sh
-pnpm build   # dist/<style>/<brand>.css, .scoped.css, .json, and dist/<style>/<brand>/*.svg
+pnpm build   # dist/<style>/<brand>.css, .scoped.css, .surface.css, .json, and dist/<style>/<brand>/*.svg
 pnpm test
 ```

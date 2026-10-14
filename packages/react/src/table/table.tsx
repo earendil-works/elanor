@@ -1,5 +1,6 @@
 import {forwardRef, type HTMLAttributes, type TableHTMLAttributes, type TdHTMLAttributes, type ThHTMLAttributes} from 'react';
 import styles from './table.module.css';
+import {useSurfaceClassName} from '../appearance/appearance.tsx';
 import {classes} from '../utils/class-names.ts';
 
 export interface TableContainerProps extends HTMLAttributes<HTMLDivElement> {}
@@ -39,7 +40,8 @@ export interface TableRowProps extends HTMLAttributes<HTMLTableRowElement> {}
 
 export const TableRow = forwardRef<HTMLTableRowElement, TableRowProps>(
   function TableRow({className, ...props}, ref) {
-    return <tr data-outline="line" data-outline-edge="block-end" {...props} ref={ref} className={classes(styles.row, className)} />;
+    const surfaceClassName = useSurfaceClassName();
+    return <tr data-outline="line" data-outline-focus="self" data-outline-edge="block-end" {...props} ref={ref} className={classes(styles.row, surfaceClassName, className)} />;
   },
 );
 

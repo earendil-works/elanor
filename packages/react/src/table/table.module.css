@@ -11,12 +11,17 @@
   font: var(--semantic-typography-ui-primary);
 }
 
+.row {
+  --outline-focus-color: var(--semantic-color-focus-ring);
+  --outline-color: transparent;
+}
+
 /* Rows keep a real border: box-shadows don't paint on table rows everywhere. */
 thead > .row,
 .row:not(:last-child) {
   --outline-color: var(--semantic-color-border-secondary);
   border-block-end: var(--semantic-dimension-border-width-small) solid
-    var(--outline-plain-fill, var(--outline-color));
+    var(--outline-color);
 }
 
 tbody > .row:last-child {

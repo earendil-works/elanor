@@ -1,0 +1,26 @@
+import {Heading, KeyValue, Stack} from '@earendil-works/elanor-react';
+
+export function KeyValueExample(): React.JSX.Element {
+  return (
+    <Stack gap="large" align="start">
+      <Stack gap="small" align="start">
+        <Heading level={2}>Inline</Heading>
+        <KeyValue.Inline>
+          <KeyValue.Key>Status</KeyValue.Key>
+          <KeyValue.Value>Active</KeyValue.Value>
+        </KeyValue.Inline>
+      </Stack>
+      <Stack gap="small" align="start">
+        <Heading level={2}>Grid</Heading>
+        <KeyValue.Grid>
+          <KeyValue.Key>Status</KeyValue.Key>
+          <KeyValue.Value>Active</KeyValue.Value>
+          <KeyValue.Key>Owner</KeyValue.Key>
+          <KeyValue.Value>Alex Morgan</KeyValue.Value>
+          <KeyValue.Key>Created</KeyValue.Key>
+          <KeyValue.Value><time dateTime="2026-09-21">21 September 2026</time></KeyValue.Value>
+        </KeyValue.Grid>
+      </Stack>
+    </Stack>
+  );
+}

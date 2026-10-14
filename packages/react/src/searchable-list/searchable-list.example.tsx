@@ -1,6 +1,5 @@
 import {useState} from 'react';
-import {SearchableDropdown} from '../dropdown/searchable-dropdown.tsx';
-import {Stack} from '../stack/stack.tsx';
+import {SearchableDropdown, Stack} from '@earendil-works/elanor-react';
 
 const projects = ['Alpha', 'Beta', 'Gamma'];
 

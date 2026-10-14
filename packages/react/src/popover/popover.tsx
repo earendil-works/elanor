@@ -1,7 +1,7 @@
 import {Popover as BasePopover} from '@base-ui/react/popover';
-import {forwardRef} from 'react';
+import {forwardRef, type ComponentPropsWithRef} from 'react';
 import styles from './popover.module.css';
-import outline from '../utils/outline.module.css';
+import {useSurfaceClassName} from '../appearance/appearance.tsx';
 import {classes, mergeClassName} from '../utils/class-names.ts';
 
 export type {
@@ -20,22 +20,25 @@ export type {
 
 export type PopoverHandle<Payload = unknown> = BasePopover.Handle<Payload>;
 
-export type PopoverPopupProps = BasePopover.Popup.Props;
+export interface PopoverPopupProps extends BasePopover.Popup.Props {
+  /** The inner scroll container; the popup ref/style/className remain on the surface. */
+  readonly bodyProps?: Omit<ComponentPropsWithRef<'div'>, 'children' | 'dangerouslySetInnerHTML'>;
+}
 export type PopoverTitleProps = BasePopover.Title.Props;
 export type PopoverDescriptionProps = BasePopover.Description.Props;
 
 export const PopoverPopup = forwardRef<HTMLDivElement, PopoverPopupProps>(
-  function PopoverPopup({className, children, ...props}, ref) {
+  function PopoverPopup({className, bodyProps, children, ...props}, ref) {
+    const surfaceClassName = useSurfaceClassName();
     return (
       <BasePopover.Popup
         data-outline="box-small"
         data-outline-focus="none"
         {...props}
         ref={ref}
-        className={mergeClassName<BasePopover.Popup.State>(classes(styles.popup, outline.outline), className)}
+        className={mergeClassName<BasePopover.Popup.State>(classes(styles.popup, surfaceClassName), className)}
       >
-        {/* Content scrolls inside, so the popup itself can carry the outline. */}
-        <div className={styles.body}>{children}</div>
+        <div data-surface-content="" {...bodyProps} className={classes(styles.body, bodyProps?.className)}>{children}</div>
       </BasePopover.Popup>
     );
   },

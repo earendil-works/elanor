@@ -1,8 +1,8 @@
 import {NavigationMenu as BaseNavigationMenu} from '@base-ui/react/navigation-menu';
 import {KeyboardArrowDownIcon} from '@earendil-works/elanor-icons-react';
-import {forwardRef} from 'react';
+import {forwardRef, type ComponentPropsWithRef} from 'react';
 import styles from './navigation-menu.module.css';
-import outline from '../utils/outline.module.css';
+import {useSurfaceClassName} from '../appearance/appearance.tsx';
 import {classes, mergeClassName} from '../utils/class-names.ts';
 
 export type {
@@ -32,7 +32,10 @@ export type NavigationMenuItemProps = BaseNavigationMenu.Item.Props;
 export type NavigationMenuLinkProps = BaseNavigationMenu.Link.Props;
 export type NavigationMenuTriggerProps = BaseNavigationMenu.Trigger.Props;
 export type NavigationMenuIconProps = BaseNavigationMenu.Icon.Props;
-export type NavigationMenuPopupProps = BaseNavigationMenu.Popup.Props;
+export interface NavigationMenuPopupProps extends BaseNavigationMenu.Popup.Props {
+  /** The inner scroll container; the popup ref/style/className remain on the surface. */
+  readonly bodyProps?: Omit<ComponentPropsWithRef<'div'>, 'children' | 'dangerouslySetInnerHTML'>;
+}
 export type NavigationMenuContentProps = BaseNavigationMenu.Content.Props;
 
 // Preserve Base UI's value generic across forwardRef.
@@ -68,13 +71,15 @@ export const NavigationMenuItem = forwardRef<HTMLLIElement, NavigationMenuItemPr
 
 export const NavigationMenuLink = forwardRef<HTMLAnchorElement, NavigationMenuLinkProps>(
   function NavigationMenuLink({className, ...props}, ref) {
+    const surfaceClassName = useSurfaceClassName();
     return (
       <BaseNavigationMenu.Link
         data-outline="line"
         data-outline-edge="block-end"
+        data-outline-focus="self"
         {...props}
         ref={ref}
-        className={mergeClassName<BaseNavigationMenu.Link.State>(styles.navigationItem, className)}
+        className={mergeClassName<BaseNavigationMenu.Link.State>(classes(styles.navigationItem, surfaceClassName), className)}
       />
     );
   },
@@ -84,14 +89,16 @@ export const NavigationMenuTrigger = forwardRef<
   HTMLButtonElement,
   NavigationMenuTriggerProps
 >(function NavigationMenuTrigger({className, ...props}, ref) {
+  const surfaceClassName = useSurfaceClassName();
   return (
     <BaseNavigationMenu.Trigger
       data-outline="line"
       data-outline-edge="block-end"
+      data-outline-focus="self"
       {...props}
       ref={ref}
       className={mergeClassName<BaseNavigationMenu.Trigger.State>(
-        styles.navigationItem,
+        classes(styles.navigationItem, surfaceClassName),
         className,
       )}
     />
@@ -115,17 +122,18 @@ export const NavigationMenuIcon = forwardRef<HTMLSpanElement, NavigationMenuIcon
 export const NavigationMenuPositioner = BaseNavigationMenu.Positioner;
 
 export const NavigationMenuPopup = forwardRef<HTMLElement, NavigationMenuPopupProps>(
-  function NavigationMenuPopup({className, children, ...props}, ref) {
+  function NavigationMenuPopup({className, bodyProps, children, ...props}, ref) {
+    const surfaceClassName = useSurfaceClassName();
     return (
       <BaseNavigationMenu.Popup
         data-outline="box-small"
         data-outline-focus="none"
         {...props}
         ref={ref}
-        className={mergeClassName<BaseNavigationMenu.Popup.State>(classes(styles.popup, outline.outline), className)}
+        className={mergeClassName<BaseNavigationMenu.Popup.State>(classes(styles.popup, surfaceClassName), className)}
       >
-        {/* Content scrolls inside, so the popup itself can carry the outline. */}
-        <div className={styles.body}>{children}</div>
+        {/* Content scrolls inside, independently of the popup surface. */}
+        <div data-surface-content="" {...bodyProps} className={classes(styles.body, bodyProps?.className)}>{children}</div>
       </BaseNavigationMenu.Popup>
     );
   },

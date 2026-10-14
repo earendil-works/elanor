@@ -5,7 +5,7 @@ import {
   type ReactNode,
 } from 'react';
 import styles from './side-navigation.module.css';
-import outline from '../utils/outline.module.css';
+import {useSurfaceClassName} from '../appearance/appearance.tsx';
 import {classes} from '../utils/class-names.ts';
 
 export interface SideNavigationRootProps extends HTMLAttributes<HTMLElement> {}
@@ -59,14 +59,16 @@ export const SideNavigationLink = forwardRef<HTMLAnchorElement, SideNavigationLi
     {active = false, iconStart, iconEnd, children, className, ...props},
     ref,
   ) {
+    const surfaceClassName = useSurfaceClassName();
     return (
       <a
         data-outline="box-small"
+        data-outline-focus="self"
         {...props}
         ref={ref}
         aria-current={active ? 'page' : props['aria-current']}
         data-active={active ? '' : undefined}
-        className={classes(styles.link, outline.outline, className)}
+        className={classes(styles.link, surfaceClassName, className)}
       >
         {iconStart ? <span className={styles.icon}>{iconStart}</span> : null}
         <span className={styles.label}>{children}</span>
