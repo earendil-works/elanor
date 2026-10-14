@@ -187,6 +187,15 @@ export type {
   FieldValidityState,
 } from './field/field.tsx';
 
+export {Form} from './form/form.tsx';
+export type {
+  FormActions,
+  FormProps,
+  FormSubmitEventDetails,
+  FormSubmitEventReason,
+  FormValidationMode,
+} from './form/form.tsx';
+
 export {Heading} from './heading/heading.tsx';
 export type {HeadingLevel, HeadingProps, HeadingSize} from './heading/heading.tsx';
 

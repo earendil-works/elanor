@@ -1,0 +1,28 @@
+# Form
+
+Validates its [Fields](/components/field/) together on submit and focuses the first invalid one. It adds no layout; arrange its content with [Grid](/components/grid/) and [Stack](/components/stack/).
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Button, Field, Form, Input} from '@earendil-works/elanor-react';
+
+<Form onFormSubmit={(values) => save(values)}>
+  <Field.Root name="email">
+    <Field.Label>Email</Field.Label>
+    <Input type="email" required />
+    <Field.Error />
+  </Field.Root>
+  <Button type="submit">Save</Button>
+</Form>;
+```
+
+`onFormSubmit` receives the values keyed by field `name` and replaces the native submit. For a native submission, use `onSubmit` or `action`.
+
+## Server errors
+
+Pass errors from the server to `errors`, keyed by field `name`. Each shows in the field's `Field.Error` until the value changes. In the demo, alex@example.com is taken.
+
+<Demo example="./examples/server-errors.tsx" />
