@@ -14,7 +14,7 @@ For Base UI changes, consult [the documentation index](https://base-ui.com/llms.
 
 ## Docs pages
 
-Each component directory has a `<component>.mdx` page and an `examples/` directory. The docs site renders the page at `/components/<component>/`.
+Each component directory has a `<component>.mdx` page and an `examples/` directory. The docs site renders the page at `/components/<component>/` and as Markdown for agents at `/components/<component>.md`.
 
 - Start with an H1 (the directory name in sentence case) and a one-paragraph description: what it is and when to use it, with alternatives.
 - Then a hero demo (`examples/demo.tsx`), `## Usage` with the import and a minimal snippet or anatomy, and one `##` section per variant or state. Add notes only where needed.

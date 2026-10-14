@@ -1,9 +1,12 @@
 import type {APIRoute} from 'astro';
+import {getCollection} from 'astro:content';
 
 import {text, tokenBrands} from '../lib/api.ts';
+import {componentIndexLine} from '../lib/component-docs.ts';
 
-export const GET: APIRoute = async () =>
-  text(`# Elanor
+export const GET: APIRoute = async () => {
+  const components = (await getCollection('components')).sort((a, b) => a.id.localeCompare(b.id));
+  return text(`# Elanor
 
 > Earendil's design system: tokens for ${(await tokenBrands()).join(', ')}, React components, icons, and logos.
 
@@ -17,6 +20,12 @@ All endpoints serve static files. Start with an index, then fetch individual res
 - \`/api/tokens/<brand>/<token.path>.json\`: a token.
 
 Tokens include light/dark CSS and DTCG values, CSS variables, descriptions, and aliases. Colors include \`hex\`; print colors include CMYK under \`extensions["com.earendil-works.print"]\`. Use \`semantic.*\` tokens in components; \`primitive.*\` defines the palette.
+
+## Components
+
+React components from \`@earendil-works/elanor-react\`. Each page has usage, example source, and props. Set up the app first with [application setup](https://github.com/earendil-works/elanor/blob/main/packages/react/docs/application-setup.md).
+
+${components.map(componentIndexLine).join('\n')}
 
 ## Icons
 
@@ -38,3 +47,4 @@ Tokens include light/dark CSS and DTCG values, CSS variables, descriptions, and 
 - [API index](/api/index.json): the indexes above as JSON.
 - [Icon browser](/icons/) and [logo page](/brand/): HTML pages for people.
 `);
+};
