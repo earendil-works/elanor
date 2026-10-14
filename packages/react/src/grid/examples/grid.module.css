@@ -3,3 +3,10 @@
   border-radius: var(--semantic-dimension-radius-small);
   background: var(--semantic-color-background-fill-secondary);
 }
+
+/* Marks each subgrid row as one element in this demo. */
+.row {
+  padding-block: var(--semantic-dimension-space-padding-small);
+  border-radius: var(--semantic-dimension-radius-small);
+  background: var(--semantic-color-background-fill-secondary);
+}

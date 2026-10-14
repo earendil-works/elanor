@@ -36,6 +36,6 @@ Identity and actions on one row, navigation on the row below.
 
 On desktop, destinations are in a [Sidebar](/components/sidebar/) and resources in the header. Below `semantic.dimension.breakpoint.medium`, both move into a [Drawer](/components/drawer/). They share the current selection; the sidebar's collapsed state stays separate from the drawer's open state.
 
-The drawer closes when the window grows past the breakpoint, rather than being hidden by CSS. Try it: open the drawer on a narrow window, then widen it. The demo keeps selection in local state; an application uses its router.
+The drawer closes when the window grows past the breakpoint, rather than being hidden by CSS. Try it: open the drawer on a narrow window, then widen it. The demo keeps selection in local state and opens the drawer inside its frame with Portal's `container`; an application uses its router and lets the drawer cover the viewport.
 
 <Demo example="./examples/responsive.tsx" />

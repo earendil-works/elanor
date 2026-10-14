@@ -1,4 +1,7 @@
+/* A row at every width, so the demo shows the sidebar even on small screens.
+   In an application, render Sidebar.Root as Layout.Aside instead. */
 .frame {
+  display: flex;
   border: var(--semantic-dimension-border-width-default) solid
     var(--semantic-color-border-secondary);
   border-radius: var(--semantic-dimension-radius-small);
@@ -9,5 +12,7 @@
 }
 
 .main {
+  flex: 1;
+  min-inline-size: 0;
   padding: var(--semantic-dimension-space-padding-x-large);
 }

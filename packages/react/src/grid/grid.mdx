@@ -40,9 +40,9 @@ Spans larger than `columns` are clamped to the column count.
 
 <Demo example="./examples/columns.tsx" />
 
-## Shared tracks
+## Subgrid
 
-`Grid.Subgrid` takes parent tracks and passes them to its children, so they align with the rest of the grid. Rows stay independent.
+Use `Grid.Subgrid` when one element, such as a list row or a card, must place its children on the parent's columns. Below, each project row is one element with its own background, and its cells line up with the header. Subgrid shares columns only; rows stay independent.
 
 <Demo example="./examples/subgrid.tsx" />
 

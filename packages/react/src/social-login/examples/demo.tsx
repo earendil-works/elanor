@@ -1,19 +1,25 @@
-import {Stack, Text, SocialLogin} from '@earendil-works/elanor-react';
+import {Grid, Stack, Text, SocialLogin} from '@earendil-works/elanor-react';
 import {useState} from 'react';
 
 export default function SocialLoginDemo() {
   const [message, setMessage] = useState('Demo only. No account will be connected.');
 
   return (
-    <Stack gap="small">
-      <SocialLogin
-        icon={<GoogleIcon />}
-        onClick={() => setMessage('Google sign-in selected. This example does not authenticate.')}
-      >
-        Continue with Google
-      </SocialLogin>
-      <Text role="status">{message}</Text>
-    </Stack>
+    <Grid.Root>
+      <Grid.Item span={{base: 'full', xSmall: 6, medium: 4}}>
+        <Stack gap="small">
+          <SocialLogin
+            icon={<GoogleIcon />}
+            onClick={() =>
+              setMessage('Google sign-in selected. This example does not authenticate.')
+            }
+          >
+            Continue with Google
+          </SocialLogin>
+          <Text role="status">{message}</Text>
+        </Stack>
+      </Grid.Item>
+    </Grid.Root>
   );
 }
 
