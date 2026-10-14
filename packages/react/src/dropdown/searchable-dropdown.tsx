@@ -2,6 +2,8 @@ import {Combobox as BaseCombobox} from '@base-ui/react/combobox';
 import {KeyboardArrowDownIcon, SearchIcon} from '@earendil-works/elanor-icons-react';
 import {createContext, forwardRef, useContext} from 'react';
 import styles from './searchable-dropdown.module.css';
+import mark from '../utils/mark.module.css';
+import outline from '../utils/outline.module.css';
 import {classes, mergeClassName} from '../utils/class-names.ts';
 
 export type {
@@ -90,9 +92,10 @@ export const SearchableDropdownTrigger = forwardRef<HTMLButtonElement, Searchabl
   function SearchableDropdownTrigger({className, ...props}, ref) {
     return (
       <BaseCombobox.Trigger
+        data-outline="box-small"
         {...props}
         ref={ref}
-        className={mergeClassName<BaseCombobox.Trigger.State>(styles.trigger, className)}
+        className={mergeClassName<BaseCombobox.Trigger.State>(classes(styles.trigger, outline.outline), className)}
       />
     );
   },
@@ -116,9 +119,11 @@ export const SearchableDropdownPopup = forwardRef<HTMLDivElement, SearchableDrop
   function SearchableDropdownPopup({className, ...props}, ref) {
     return (
       <BaseCombobox.Popup
+        data-outline="box-small"
+        data-outline-focus="none"
         {...props}
         ref={ref}
-        className={mergeClassName<BaseCombobox.Popup.State>(styles.popup, className)}
+        className={mergeClassName<BaseCombobox.Popup.State>(classes(styles.popup, outline.outline), className)}
       />
     );
   },
@@ -128,6 +133,8 @@ export const SearchableDropdownInputGroup = forwardRef<HTMLDivElement, Searchabl
   function SearchableDropdownInputGroup({className, children, ...props}, ref) {
     return (
       <BaseCombobox.InputGroup
+        data-outline="line"
+        data-outline-edge="block-end"
         {...props}
         ref={ref}
         className={mergeClassName<BaseCombobox.InputGroup.State>(styles.inputGroup, className)}
@@ -187,13 +194,16 @@ export const SearchableDropdownItemIndicator = forwardRef<HTMLSpanElement, Searc
     const multiple = useContext(MultipleContext);
 
     return (
-      <span className={classes(styles.indicatorFrame, multiple && styles.indicatorFrameMultiple)}>
+      <span
+        className={classes(styles.indicatorFrame, multiple && styles.indicatorFrameMultiple, outline.outline)}
+        data-outline={multiple ? 'box-small' : 'circle-x-small'}
+      >
         <BaseCombobox.ItemIndicator
           {...props}
           ref={ref}
           className={mergeClassName<BaseCombobox.ItemIndicator.State>(styles.itemIndicator, className)}
         >
-          {children}
+          {children ?? <span className={multiple ? classes(styles.itemCheck, mark.check) : classes(styles.itemDot, mark.dot)} />}
         </BaseCombobox.ItemIndicator>
       </span>
     );
@@ -216,6 +226,7 @@ export const SearchableDropdownSeparator = forwardRef<HTMLDivElement, Searchable
   function SearchableDropdownSeparator({className, ...props}, ref) {
     return (
       <BaseCombobox.Separator
+        data-outline="line"
         {...props}
         ref={ref}
         orientation="horizontal"

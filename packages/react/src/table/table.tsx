@@ -39,7 +39,7 @@ export interface TableRowProps extends HTMLAttributes<HTMLTableRowElement> {}
 
 export const TableRow = forwardRef<HTMLTableRowElement, TableRowProps>(
   function TableRow({className, ...props}, ref) {
-    return <tr {...props} ref={ref} className={classes(styles.row, className)} />;
+    return <tr data-outline="line" data-outline-edge="block-end" {...props} ref={ref} className={classes(styles.row, className)} />;
   },
 );
 

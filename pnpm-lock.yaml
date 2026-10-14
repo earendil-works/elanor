@@ -38,6 +38,9 @@ importers:
       '@earendil-works/elanor-react':
         specifier: workspace:*
         version: link:../../packages/react
+      '@earendil-works/elanor-strokes':
+        specifier: workspace:*
+        version: link:../../packages/strokes
       astro:
         specifier: ^5.0.0
         version: 5.18.2(@types/node@24.13.3)(lightningcss@1.33.0)(rollup@4.63.3)(tsx@4.23.1)(typescript@5.9.3)(yaml@2.9.0)

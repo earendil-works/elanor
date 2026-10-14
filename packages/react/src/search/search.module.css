@@ -6,32 +6,30 @@
   block-size: var(--semantic-dimension-size-small);
   min-inline-size: 0;
   padding-inline: calc(var(--semantic-dimension-space-control-padding-inline-small) - var(--semantic-dimension-border-width-default));
-  border: var(--semantic-dimension-border-width-default) solid
-    var(--semantic-color-background-fill-secondary);
-  border-radius: var(--semantic-dimension-radius-small);
-  background: var(--semantic-color-background-fill-secondary);
+  background-color: var(--semantic-color-background-fill-secondary);
+  --outline-color: var(--semantic-color-background-fill-secondary);
   color: var(--semantic-color-text-primary);
 }
 
 @media (hover: hover) {
   .root:where(:hover:not(:has(.input:disabled, .input[data-disabled]))) {
-    border-color: var(--semantic-color-background-fill-secondary-hover);
-    background: var(--semantic-color-background-fill-secondary-hover);
+    --outline-color: var(--semantic-color-background-fill-secondary-hover);
+    background-color: var(--semantic-color-background-fill-secondary-hover);
   }
 }
 
 .root:where(:focus-within:not(:has(.input:disabled, .input[data-disabled]))) {
-  border-color: var(--semantic-color-focus-ring);
-  background: var(--semantic-color-background-fill-secondary);
+  --outline-color: var(--semantic-color-focus-ring);
+  background-color: var(--semantic-color-background-fill-secondary);
 }
 
 .root:has(.input:focus-visible) {
-  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
-  outline-offset: var(--semantic-dimension-border-width-medium);
+  outline: var(--outline-plain-focus, var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring));
+  outline-offset: calc(-1 * var(--semantic-dimension-border-width-large));
 }
 
 .root:where(:has(.input[data-invalid], .input[aria-invalid='true'])) {
-  border-color: var(--semantic-color-focus-ring-negative);
+  --outline-color: var(--semantic-color-focus-ring-negative);
 }
 
 .root:where(:has(.input:disabled, .input[data-disabled])) {
@@ -70,7 +68,7 @@
   padding: 0;
   border: 0;
   outline: 0;
-  background: transparent;
+  background-color: transparent;
   color: inherit;
   font: var(--semantic-typography-ui-primary);
 }
@@ -86,7 +84,8 @@
 
 @media (forced-colors: active) {
   .root {
-    border-color: ButtonBorder;
+    outline: var(--outline-plain-focus, var(--semantic-dimension-border-width-default) solid ButtonBorder);
+    outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
   }
 
   .root:has(.input:focus-visible) {

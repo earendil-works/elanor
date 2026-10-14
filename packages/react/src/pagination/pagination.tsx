@@ -1,5 +1,6 @@
 import {forwardRef, type AnchorHTMLAttributes, type HTMLAttributes} from 'react';
 import styles from './pagination.module.css';
+import outline from '../utils/outline.module.css';
 import {classes} from '../utils/class-names.ts';
 
 export interface PaginationProps extends HTMLAttributes<HTMLElement> {
@@ -26,6 +27,8 @@ export const PaginationLink = forwardRef<HTMLAnchorElement, PaginationLinkProps>
   function PaginationLink({disabled = false, className, tabIndex, href, onClick, onAuxClick, ...props}, ref) {
     return (
       <a
+        data-outline="box-small"
+        data-outline-band="none"
         {...props}
         ref={ref}
         href={disabled ? undefined : href}
@@ -48,7 +51,7 @@ export const PaginationLink = forwardRef<HTMLAnchorElement, PaginationLinkProps>
           }
           onAuxClick?.(event);
         }}
-        className={classes(styles.link, className)}
+        className={classes(styles.link, outline.outline, className)}
       />
     );
   },

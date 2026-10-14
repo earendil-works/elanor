@@ -11,6 +11,8 @@ export const NavigationItem = forwardRef<HTMLAnchorElement, NavigationItemProps>
   function NavigationItem({active = false, indicator, className, children, ...props}, ref) {
     return (
       <a
+        data-outline="line"
+        data-outline-edge="block-end"
         {...props}
         ref={ref}
         aria-current={active ? 'page' : props['aria-current']}

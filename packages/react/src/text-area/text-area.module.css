@@ -1,13 +1,49 @@
+/* The frame draws the field and its outline; textareas can't host the outline layer. */
+.frame {
+  box-sizing: border-box;
+  display: inline-grid;
+  inline-size: 100%;
+  min-inline-size: 0;
+  vertical-align: bottom;
+  background-color: var(--semantic-color-background-fill-secondary);
+  --outline-color: var(--semantic-color-background-fill-secondary);
+}
+
+@media (hover: hover) {
+  .frame:where(:has(> .textarea:hover:not(:disabled, [data-disabled]))) {
+    background-color: var(--semantic-color-background-fill-secondary-hover);
+    --outline-color: var(--semantic-color-background-fill-secondary-hover);
+  }
+}
+
+.frame:where(:has(> .textarea:focus)) {
+  background-color: var(--semantic-color-background-fill-secondary);
+  --outline-color: var(--semantic-color-focus-ring);
+}
+
+.frame:has(> .textarea:focus-visible) {
+  outline: var(--outline-plain-focus, var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring));
+  outline-offset: calc(-1 * var(--semantic-dimension-border-width-large));
+}
+
+.frame:where(:has(> .textarea:is([data-invalid], [aria-invalid='true']))) {
+  --outline-color: var(--semantic-color-focus-ring-negative);
+}
+
+.frame:where(:has(> .textarea:is(:disabled, [data-disabled]))) {
+  opacity: var(--semantic-number-opacity-disabled);
+}
+
 .textarea {
   box-sizing: border-box;
   inline-size: 100%;
-  min-block-size: calc(var(--semantic-dimension-size-small) * 3);
+  /* The field sits inside the frame's band, so the frame keeps three control heights. */
+  min-block-size: calc(var(--semantic-dimension-size-small) * 3 - 2 * var(--semantic-dimension-border-width-default));
   padding-block: calc(var(--semantic-dimension-space-control-padding-block-small) - var(--semantic-dimension-border-width-default));
   padding-inline: calc(var(--semantic-dimension-space-control-padding-inline-small) - var(--semantic-dimension-border-width-default));
-  border: var(--semantic-dimension-border-width-default) solid
-    var(--semantic-color-background-fill-secondary);
-  border-radius: var(--semantic-dimension-radius-small);
-  background: var(--semantic-color-background-fill-secondary);
+  border: 0;
+  outline: 0;
+  background-color: transparent;
   color: var(--semantic-color-text-primary);
   font: var(--semantic-typography-ui-primary);
   touch-action: manipulation;
@@ -18,39 +54,18 @@
   color: var(--semantic-color-text-secondary);
 }
 
-@media (hover: hover) {
-  .textarea:where(:hover:not(:disabled, [data-disabled])) {
-    border-color: var(--semantic-color-background-fill-secondary-hover);
-    background: var(--semantic-color-background-fill-secondary-hover);
-  }
-}
-
-.textarea:where(:focus) {
-  border-color: var(--semantic-color-focus-ring);
-  background: var(--semantic-color-background-fill-secondary);
-}
-
-.textarea:focus-visible {
-  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
-  outline-offset: var(--semantic-dimension-border-width-medium);
-}
-
-.textarea:where([data-invalid], [aria-invalid='true']) {
-  border-color: var(--semantic-color-focus-ring-negative);
-}
-
 .textarea:disabled,
 .textarea[data-disabled] {
   cursor: not-allowed;
-  opacity: var(--semantic-number-opacity-disabled);
 }
 
 @media (forced-colors: active) {
-  .textarea {
-    border-color: ButtonBorder;
+  .frame {
+    outline: var(--outline-plain-focus, var(--semantic-dimension-border-width-default) solid ButtonBorder);
+    outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
   }
 
-  .textarea:focus-visible {
+  .frame:has(> .textarea:focus-visible) {
     outline-color: Highlight;
   }
 }

@@ -5,6 +5,7 @@ import {
   type ReactNode,
 } from 'react';
 import styles from './side-navigation.module.css';
+import outline from '../utils/outline.module.css';
 import {classes} from '../utils/class-names.ts';
 
 export interface SideNavigationRootProps extends HTMLAttributes<HTMLElement> {}
@@ -60,11 +61,12 @@ export const SideNavigationLink = forwardRef<HTMLAnchorElement, SideNavigationLi
   ) {
     return (
       <a
+        data-outline="box-small"
         {...props}
         ref={ref}
         aria-current={active ? 'page' : props['aria-current']}
         data-active={active ? '' : undefined}
-        className={classes(styles.link, className)}
+        className={classes(styles.link, outline.outline, className)}
       >
         {iconStart ? <span className={styles.icon}>{iconStart}</span> : null}
         <span className={styles.label}>{children}</span>

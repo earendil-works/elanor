@@ -6,7 +6,7 @@
   flex-direction: column;
   min-block-size: 100dvh;
   overflow: clip;
-  background: var(--semantic-color-background-canvas);
+  background-color: var(--semantic-color-background-canvas);
   color: var(--semantic-color-text-primary);
   font: var(--semantic-typography-ui-primary);
 }

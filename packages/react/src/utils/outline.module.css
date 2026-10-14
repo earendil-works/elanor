@@ -1,0 +1,34 @@
+/*
+ * The outline contract: an element's data-outline role names the shape of its
+ * outline and sets its corner radius, so the plain border, the focus ring, and
+ * a stroke style always share one shape. Lines have no corners.
+ */
+.outline[data-outline='box-small'] {
+  border-radius: var(--semantic-dimension-radius-small);
+}
+
+.outline[data-outline='box-medium'] {
+  border-radius: var(--semantic-dimension-radius-medium);
+}
+
+.outline[data-outline='box-large'] {
+  border-radius: var(--semantic-dimension-radius-large);
+}
+
+.outline:is([data-outline^='pill'], [data-outline^='circle']) {
+  border-radius: var(--semantic-dimension-radius-full);
+}
+
+/*
+ * Shapes own a border band inside their size, which the plain border or a
+ * stroke style paints. The plain border covers the background beneath it; a
+ * stroke style stops the background at the band (--outline-background-clip),
+ * so a stroke in the background's color still draws the edge. Padding
+ * subtracts the band. Outlines that only ever show focus opt out with
+ * data-outline-band="none".
+ */
+.outline:is([data-outline^='box'], [data-outline^='pill'], [data-outline^='circle']):not([data-outline-band='none']) {
+  box-sizing: border-box;
+  border: var(--semantic-dimension-border-width-default) solid var(--outline-plain-border, var(--outline-color));
+  background-clip: var(--outline-background-clip, border-box);
+}

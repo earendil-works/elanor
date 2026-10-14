@@ -4,12 +4,15 @@ export function classes(...values: ReadonlyArray<string | false | null | undefin
   return values.filter((value): value is string => typeof value === 'string' && value.length > 0).join(' ');
 }
 
+const resolve = <State,>(className: StatefulClassName<State> | undefined, state: State) =>
+  typeof className === 'function' ? className(state) : className;
+
 export function mergeClassName<State>(
-  componentClassName: string | undefined,
+  componentClassName: StatefulClassName<State> | undefined,
   className: StatefulClassName<State> | undefined,
 ): StatefulClassName<State> | undefined {
-  if (typeof className === 'function') {
-    return (state) => classes(componentClassName, className(state));
+  if (typeof componentClassName === 'function' || typeof className === 'function') {
+    return (state) => classes(resolve(componentClassName, state), resolve(className, state));
   }
   return classes(componentClassName, className) || undefined;
 }

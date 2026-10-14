@@ -13,6 +13,7 @@ export const Separator = forwardRef<HTMLDivElement, SeparatorProps>(function Sep
 ) {
   return (
     <BaseSeparator
+      data-outline={props.orientation === 'vertical' ? 'line-vertical' : 'line'}
       {...props}
       ref={ref}
       className={mergeClassName<BaseSeparator.State>(styles.root, className)}

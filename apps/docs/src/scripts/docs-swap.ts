@@ -26,3 +26,8 @@ document.addEventListener('astro:before-swap', (event) => {
     document.querySelector('.astro-route-announcer')?.remove();
   };
 });
+
+// Swapping copies the new page's root attributes, which drops the stroke style.
+document.addEventListener('astro:after-swap', () => {
+  if (localStorage.getItem('elanor-docs-strokes') === 'pencil') document.documentElement.dataset.strokes = 'pencil';
+});

@@ -15,18 +15,18 @@
   padding-inline-start: calc((var(--semantic-dimension-size-x-small) + var(--semantic-dimension-border-width-default)) / 2 + var(--semantic-dimension-space-gap-medium));
 }
 
-.panel:not([hidden])::before {
+.rule {
   position: absolute;
   inset-block: 0;
   inset-inline-start: calc((var(--semantic-dimension-size-x-small) - var(--semantic-dimension-border-width-default)) / 2);
-  border-inline-start: var(--semantic-dimension-border-width-default) solid
-    var(--semantic-color-border-secondary);
-  content: '';
+  inline-size: var(--semantic-dimension-border-width-default);
+  --outline-color: var(--semantic-color-border-secondary);
+  background-color: var(--outline-plain-fill, var(--outline-color));
   pointer-events: none;
 }
 
 @media (forced-colors: active) {
-  .panel::before {
-    border-inline-start-color: CanvasText;
+  .rule {
+    background-color: var(--outline-plain-fill, CanvasText);
   }
 }

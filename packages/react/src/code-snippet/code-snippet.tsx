@@ -1,5 +1,6 @@
 import {forwardRef, type HTMLAttributes, type ReactNode} from 'react';
 import styles from './code-snippet.module.css';
+import outline from '../utils/outline.module.css';
 import {classes} from '../utils/class-names.ts';
 
 export interface CodeSnippetProps extends Omit<HTMLAttributes<HTMLPreElement>, 'children'> {
@@ -12,7 +13,7 @@ export const CodeSnippet = forwardRef<HTMLPreElement, CodeSnippetProps>(function
   ref,
 ) {
   return (
-    <pre {...props} ref={ref} className={classes(styles.root, className)}>
+    <pre data-outline="box-small" {...props} ref={ref} className={classes(styles.root, outline.outline, className)}>
       <code className={styles.code}>{children}</code>
       {actions ? <span className={styles.actions}>{actions}</span> : null}
     </pre>

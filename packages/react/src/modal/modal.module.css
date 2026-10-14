@@ -2,7 +2,7 @@
   position: fixed;
   inset: 0;
   min-block-size: 100dvh;
-  background: var(--semantic-color-background-backdrop);
+  background-color: var(--semantic-color-background-backdrop);
 }
 
 @supports (-webkit-touch-callout: none) {
@@ -23,18 +23,24 @@
 
 .popup {
   box-sizing: border-box;
-  display: grid;
-  gap: var(--semantic-dimension-space-gap-large);
+  display: flex;
+  flex-direction: column;
   inline-size: min(var(--semantic-dimension-breakpoint-small), 100%);
   max-block-size: calc(100dvh - 2 * var(--semantic-dimension-space-padding-medium));
-  overflow: auto;
-  padding: calc(var(--semantic-dimension-space-padding-xxx-large) - var(--semantic-dimension-border-width-default));
-  border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-background-canvas);
-  border-radius: var(--semantic-dimension-radius-small);
-  background: var(--semantic-color-background-canvas);
+  background-color: var(--semantic-color-background-canvas);
+  --outline-color: var(--semantic-color-background-canvas);
   color: var(--semantic-color-text-primary);
   font: var(--semantic-typography-ui-primary);
   pointer-events: auto;
+}
+
+.body {
+  display: grid;
+  gap: var(--semantic-dimension-space-gap-large);
+  min-block-size: 0;
+  overflow: auto;
+  padding: calc(var(--semantic-dimension-space-padding-xxx-large) - var(--semantic-dimension-border-width-default));
+  border-radius: inherit;
 }
 
 .title {
@@ -63,11 +69,12 @@
 
 @media (forced-colors: active) {
   .backdrop {
-    background: Canvas;
+    background-color: Canvas;
     opacity: var(--semantic-number-opacity-disabled);
   }
 
   .popup {
-    border-color: CanvasText;
+    outline: var(--outline-plain-focus, var(--semantic-dimension-border-width-default) solid CanvasText);
+    outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
   }
 }

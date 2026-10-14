@@ -2,6 +2,7 @@ import {Input as BaseInput} from '@base-ui/react/input';
 import {SearchIcon} from '@earendil-works/elanor-icons-react';
 import {forwardRef, type ReactNode} from 'react';
 import styles from './search.module.css';
+import outline from '../utils/outline.module.css';
 import {classes, mergeClassName} from '../utils/class-names.ts';
 
 const inputTypes = ['text', 'search'] as const;
@@ -22,7 +23,7 @@ export const Search = forwardRef<HTMLInputElement, SearchProps>(function Search(
   }
 
   return (
-    <span className={classes(styles.root, rootClassName)}>
+    <span className={classes(styles.root, outline.outline, rootClassName)} data-outline="box-small">
       <span className={styles.icon} aria-hidden="true">
         {icon ?? <SearchIcon />}
       </span>

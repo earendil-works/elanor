@@ -14,10 +14,8 @@
   min-inline-size: 0;
   padding-block: calc(var(--semantic-dimension-space-control-padding-block-small) - var(--semantic-dimension-border-width-default));
   padding-inline: calc(var(--semantic-dimension-space-control-padding-inline-small) - var(--semantic-dimension-border-width-default));
-  border: var(--semantic-dimension-border-width-default) solid
-    var(--semantic-color-background-fill-secondary);
-  border-radius: var(--semantic-dimension-radius-small);
-  background: var(--semantic-color-background-fill-secondary);
+  background-color: var(--semantic-color-background-fill-secondary);
+  --outline-color: var(--semantic-color-background-fill-secondary);
   color: var(--semantic-color-text-primary);
   font: var(--semantic-typography-ui-primary);
   text-align: start;
@@ -26,26 +24,26 @@
 }
 
 .trigger:where(:hover:not(:disabled, [data-disabled])) {
-  border-color: var(--semantic-color-background-fill-secondary-hover);
-  background: var(--semantic-color-background-fill-secondary-hover);
+  --outline-color: var(--semantic-color-background-fill-secondary-hover);
+  background-color: var(--semantic-color-background-fill-secondary-hover);
 }
 
 .trigger:where([data-popup-open]) {
-  border-color: var(--semantic-color-focus-ring);
-  background: var(--semantic-color-background-fill-secondary);
+  --outline-color: var(--semantic-color-focus-ring);
+  background-color: var(--semantic-color-background-fill-secondary);
 }
 
 .trigger:where(:focus-visible) {
-  border-color: var(--semantic-color-focus-ring);
+  --outline-color: var(--semantic-color-focus-ring);
 }
 
 .trigger:focus-visible {
-  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
-  outline-offset: var(--semantic-dimension-border-width-medium);
+  outline: var(--outline-plain-focus, var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring));
+  outline-offset: calc(-1 * var(--semantic-dimension-border-width-large));
 }
 
 .trigger:where([data-invalid], [aria-invalid='true']) {
-  border-color: var(--semantic-color-focus-ring-negative);
+  --outline-color: var(--semantic-color-focus-ring-negative);
 }
 
 .trigger[data-disabled] {
@@ -75,14 +73,9 @@
   min-inline-size: min(var(--anchor-width), var(--available-width));
   max-inline-size: var(--available-width);
   max-block-size: var(--available-height);
-  overflow: hidden;
-  border: 0;
-  border-radius: var(--semantic-dimension-radius-small);
-  /* stylelint-disable-next-line design-tokens/token-property-compatibility -- This inset outline is the panel's canvas stroke, not a focus ring. */
-  outline: var(--semantic-dimension-border-width-default) solid var(--semantic-color-background-canvas);
-  outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
+  --outline-color: var(--semantic-color-background-canvas);
+  background-color: var(--semantic-color-background-canvas);
   box-shadow: var(--semantic-shadow-popup);
-  background: var(--semantic-color-background-canvas);
   color: var(--semantic-color-text-primary);
   font: var(--semantic-typography-ui-primary);
 }
@@ -96,6 +89,7 @@
   max-block-size: var(--available-height);
   overflow: auto;
   overscroll-behavior: contain;
+  border-radius: inherit;
   padding: 0;
   outline: 0;
 }
@@ -120,11 +114,11 @@
 }
 
 .item[data-highlighted] {
-  background: var(--semantic-color-background-fill-ghost-neutral-hover);
+  background-color: var(--semantic-color-background-fill-ghost-neutral-hover);
 }
 
 .item[data-selected] {
-  background: var(--semantic-color-background-fill-ghost-neutral-active);
+  background-color: var(--semantic-color-background-fill-ghost-neutral-active);
 }
 
 .item[data-disabled] {
@@ -133,7 +127,6 @@
 
 .indicatorFrame {
   position: relative;
-  isolation: isolate;
   display: inline-flex;
   flex: none;
   align-self: flex-start;
@@ -141,39 +134,24 @@
   justify-content: center;
   inline-size: var(--semantic-dimension-size-x-small);
   block-size: var(--semantic-dimension-size-x-small);
-  border-radius: var(--semantic-dimension-radius-full);
+  background-color: var(--semantic-color-background-radio);
   color: var(--semantic-color-icon-radio-indicator);
+  --outline-color: var(--semantic-color-border-primary);
 }
 
-.indicatorFrame::before {
-  position: absolute;
-  inset: calc(var(--semantic-dimension-border-width-default) / 2);
-  z-index: var(--semantic-number-layer-background);
-  box-sizing: border-box;
-  border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-primary);
-  border-radius: inherit;
-  background: var(--semantic-color-background-radio);
-  content: '';
-  pointer-events: none;
-}
-
-.indicatorFrame:has(> [data-selected])::before {
-  border-color: var(--semantic-color-background-radio-selected);
-  background: var(--semantic-color-background-radio-selected);
+.indicatorFrame:has(> [data-selected]) {
+  --outline-color: var(--semantic-color-background-radio-selected);
+  background-color: var(--semantic-color-background-radio-selected);
 }
 
 .indicatorFrameMultiple {
-  border-radius: var(--semantic-dimension-radius-small);
+  background-color: var(--semantic-color-background-checkbox);
   color: var(--semantic-color-icon-checkbox-indicator);
 }
 
-.indicatorFrameMultiple::before {
-  background: var(--semantic-color-background-checkbox);
-}
-
-.indicatorFrameMultiple:has(> [data-selected])::before {
-  border-color: var(--semantic-color-background-checkbox-selected);
-  background: var(--semantic-color-background-checkbox-selected);
+.indicatorFrameMultiple:has(> [data-selected]) {
+  --outline-color: var(--semantic-color-background-checkbox-selected);
+  background-color: var(--semantic-color-background-checkbox-selected);
 }
 
 .itemIndicator {
@@ -187,27 +165,23 @@
   color: inherit;
 }
 
-.itemIndicator:empty::after {
-  position: absolute;
-  inset: 0;
-  box-sizing: border-box;
-  inline-size: 37.5%;
-  block-size: 37.5%;
-  margin: auto;
-  border-radius: var(--semantic-dimension-radius-full);
-  background: currentcolor;
-  content: '';
+/* The default marks: a check fills the indicator, a dot sits in its middle. */
+.itemCheck,
+.itemDot {
+  flex: none;
+  background-color: currentcolor;
   pointer-events: none;
 }
 
-.indicatorFrameMultiple > .itemIndicator:empty::after {
-  block-size: 50%;
-  border-radius: 0;
-  background: transparent;
-  /* Physical edges keep the check nondirectional in both LTR and RTL. */
-  border-right: var(--semantic-dimension-border-width-medium) solid currentcolor;
-  border-bottom: var(--semantic-dimension-border-width-medium) solid currentcolor;
-  transform: translateY(calc(-1 * var(--semantic-dimension-space-padding-xxx-small))) rotate(45deg);
+.itemCheck {
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.itemDot {
+  inline-size: 37.5%;
+  block-size: 37.5%;
+  border-radius: var(--semantic-dimension-radius-full);
 }
 
 .itemIndicator:not([data-selected]) {
@@ -226,18 +200,19 @@
 .separator {
   block-size: var(--semantic-dimension-border-width-small);
   margin-block: var(--semantic-dimension-space-gap-x-small);
-  background: var(--semantic-color-border-secondary);
+  --outline-color: var(--semantic-color-border-secondary);
+  background-color: var(--outline-plain-fill, var(--outline-color));
 }
 
 @media (forced-colors: active) {
-  .indicatorFrame::before {
-    border-color: ButtonBorder;
-    background: Canvas;
+  .indicatorFrame {
+    --outline-color: ButtonBorder;
+    background-color: Canvas;
   }
 
-  .indicatorFrame:has(> [data-selected])::before {
-    border-color: Highlight;
-    background: Highlight;
+  .indicatorFrame:has(> [data-selected]) {
+    --outline-color: Highlight;
+    background-color: Highlight;
   }
 
   .itemIndicator {
@@ -245,12 +220,12 @@
   }
 
   .popup {
-    outline-color: ButtonBorder;
-    outline-offset: 0;
+    outline: var(--outline-plain-focus, var(--semantic-dimension-border-width-default) solid ButtonBorder);
   }
 
   .trigger {
-    border-color: ButtonBorder;
+    outline: var(--outline-plain-focus, var(--semantic-dimension-border-width-default) solid ButtonBorder);
+    outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
   }
 
   .trigger:where([data-popup-open]) {

@@ -3,7 +3,10 @@
   display: flex;
   gap: var(--semantic-dimension-space-control-gap-x-large);
   min-inline-size: 0;
-  border-block-end: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-secondary);
+  /* stylelint-disable-next-line design-tokens/token-property-compatibility -- The bottom line is paint, so its width is kept as padding. */
+  padding-block-end: var(--semantic-dimension-border-width-default);
+  --outline-color: var(--semantic-color-border-secondary);
+  box-shadow: inset 0 calc(-1 * var(--semantic-dimension-border-width-default)) 0 var(--outline-plain-border, var(--outline-color));
 }
 
 .tab {
@@ -16,25 +19,26 @@
   padding-inline: 0;
   border: 0;
   outline: 0;
-  background: transparent;
+  background-color: transparent;
+  --outline-color: transparent;
   color: var(--semantic-color-text-primary);
   font: var(--semantic-typography-ui-primary);
   cursor: pointer;
 }
 
-.tab:hover:not([data-disabled], [data-active])::after {
+/* ::after is reserved for the outline layer. */
+.tab:hover:not([data-disabled], [data-active])::before {
   position: absolute;
   inset-inline: 0;
   inset-block-end: calc(-1 * var(--semantic-dimension-border-width-default));
   block-size: var(--semantic-dimension-border-width-default);
-  background: var(--semantic-color-border-primary);
+  background-color: var(--semantic-color-border-primary);
   content: '';
 }
 
 .tab:focus-visible {
-  border-radius: var(--semantic-dimension-radius-small);
-  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
-  outline-offset: var(--semantic-dimension-border-width-medium);
+  outline: var(--outline-plain-focus, var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring));
+  outline-offset: calc(-1 * var(--semantic-dimension-border-width-large));
 }
 
 .tab[data-disabled] {
@@ -45,10 +49,11 @@
 .indicator {
   position: absolute;
   left: var(--active-tab-left);
-  inset-block-end: calc(-1 * var(--semantic-dimension-border-width-default));
+  inset-block-end: 0;
   inline-size: var(--active-tab-width);
   block-size: var(--semantic-dimension-border-width-default);
-  background: var(--semantic-color-border-primary);
+  --outline-color: var(--semantic-color-border-primary);
+  background-color: var(--outline-plain-fill, var(--outline-color));
   pointer-events: none;
 }
 
@@ -60,9 +65,13 @@
 }
 
 @media (forced-colors: active) {
-  .indicator,
-  .tab:hover:not([data-disabled], [data-active])::after {
-    background: Highlight;
+  .indicator {
+    background-color: var(--outline-plain-fill, Highlight);
+    forced-color-adjust: none;
+  }
+
+  .tab:hover:not([data-disabled], [data-active])::before {
+    background-color: Highlight;
     forced-color-adjust: none;
   }
 }
@@ -71,10 +80,10 @@
   min-inline-size: 0;
   padding-block-start: var(--semantic-dimension-space-padding-medium);
   outline: 0;
+  --outline-color: transparent;
 }
 
 .panel:focus-visible {
-  border-radius: var(--semantic-dimension-radius-small);
-  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
-  outline-offset: var(--semantic-dimension-border-width-medium);
+  outline: var(--outline-plain-focus, var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring));
+  outline-offset: calc(-1 * var(--semantic-dimension-border-width-large));
 }

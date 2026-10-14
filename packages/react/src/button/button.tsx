@@ -1,7 +1,8 @@
 import {Button as BaseButton} from '@base-ui/react/button';
 import {forwardRef, type ReactNode} from 'react';
 import styles from './button.module.css';
-import {mergeClassName} from '../utils/class-names.ts';
+import outline from '../utils/outline.module.css';
+import {classes, mergeClassName} from '../utils/class-names.ts';
 
 export type {ButtonState} from '@base-ui/react/button';
 
@@ -50,6 +51,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
 
   return (
     <BaseButton
+      data-outline="box-small"
       {...props}
       {...contentProps}
       ref={ref}
@@ -62,7 +64,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       data-icon-end={iconEnd ? '' : undefined}
       data-hierarchy={hierarchy ?? 'primary'}
       data-semantic={semantic ?? 'neutral'}
-      className={mergeClassName<BaseButton.State>(styles.root, className)}
+      className={mergeClassName<BaseButton.State>(classes(styles.root, outline.outline), className)}
     />
   );
 });

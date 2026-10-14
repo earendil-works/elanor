@@ -2,7 +2,8 @@ import {NavigationMenu as BaseNavigationMenu} from '@base-ui/react/navigation-me
 import {KeyboardArrowDownIcon} from '@earendil-works/elanor-icons-react';
 import {forwardRef} from 'react';
 import styles from './navigation-menu.module.css';
-import {mergeClassName} from '../utils/class-names.ts';
+import outline from '../utils/outline.module.css';
+import {classes, mergeClassName} from '../utils/class-names.ts';
 
 export type {
   NavigationMenuRootState,
@@ -69,6 +70,8 @@ export const NavigationMenuLink = forwardRef<HTMLAnchorElement, NavigationMenuLi
   function NavigationMenuLink({className, ...props}, ref) {
     return (
       <BaseNavigationMenu.Link
+        data-outline="line"
+        data-outline-edge="block-end"
         {...props}
         ref={ref}
         className={mergeClassName<BaseNavigationMenu.Link.State>(styles.navigationItem, className)}
@@ -83,6 +86,8 @@ export const NavigationMenuTrigger = forwardRef<
 >(function NavigationMenuTrigger({className, ...props}, ref) {
   return (
     <BaseNavigationMenu.Trigger
+      data-outline="line"
+      data-outline-edge="block-end"
       {...props}
       ref={ref}
       className={mergeClassName<BaseNavigationMenu.Trigger.State>(
@@ -110,13 +115,18 @@ export const NavigationMenuIcon = forwardRef<HTMLSpanElement, NavigationMenuIcon
 export const NavigationMenuPositioner = BaseNavigationMenu.Positioner;
 
 export const NavigationMenuPopup = forwardRef<HTMLElement, NavigationMenuPopupProps>(
-  function NavigationMenuPopup({className, ...props}, ref) {
+  function NavigationMenuPopup({className, children, ...props}, ref) {
     return (
       <BaseNavigationMenu.Popup
+        data-outline="box-small"
+        data-outline-focus="none"
         {...props}
         ref={ref}
-        className={mergeClassName<BaseNavigationMenu.Popup.State>(styles.popup, className)}
-      />
+        className={mergeClassName<BaseNavigationMenu.Popup.State>(classes(styles.popup, outline.outline), className)}
+      >
+        {/* Content scrolls inside, so the popup itself can carry the outline. */}
+        <div className={styles.body}>{children}</div>
+      </BaseNavigationMenu.Popup>
     );
   },
 );
