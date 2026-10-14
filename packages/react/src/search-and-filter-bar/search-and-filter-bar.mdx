@@ -1,8 +1,17 @@
-import {SearchAndFilterBarExample} from './search-and-filter-bar.example.tsx';
-
 # Search and filter bar
 
-Filter members by name, status, role, group, and two-factor authentication.
-Filtering runs locally; controls reflow to fit the available width.
+Places a search input and filter controls in one row above a list or table. Controls wrap to fit the available width.
 
-<SearchAndFilterBarExample client:load />
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Search, SearchAndFilterBar} from '@earendil-works/elanor-react';
+
+<SearchAndFilterBar role="search" aria-label="Member search and filters" search={<Search />}>
+  {/* Filter controls, such as Dropdowns */}
+</SearchAndFilterBar>;
+```
+
+The bar only arranges its contents; the application filters the data. Give it `role="search"` and an `aria-label`, and announce the number of results in a status region.

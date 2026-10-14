@@ -1,0 +1,9 @@
+.header {
+  padding-block: var(--semantic-dimension-space-padding-xx-large);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--semantic-dimension-space-gap-medium);
+}

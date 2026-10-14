@@ -1,5 +1,21 @@
-import {TabsExample} from './tabs.example.tsx';
-
 # Tabs
 
-<TabsExample client:load />
+Switches between panels of related content in the same place, such as the sections of a record. Only one panel is visible at a time. To switch a setting instead of content, use [Segmented control](/components/segmented-control/).
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Tabs} from '@earendil-works/elanor-react';
+
+<Tabs.Root defaultValue="overview">
+  <Tabs.List aria-label="Project details">
+    <Tabs.Tab value="overview">Overview</Tabs.Tab>
+    <Tabs.Indicator />
+  </Tabs.List>
+  <Tabs.Panel value="overview" />
+</Tabs.Root>;
+```
+
+Each Tab's `value` matches a Panel. Name the List with `aria-label`. Arrow keys move between tabs. `Tabs.Indicator` underlines the active tab.

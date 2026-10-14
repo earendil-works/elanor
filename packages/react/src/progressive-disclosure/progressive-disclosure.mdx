@@ -1,7 +1,24 @@
-import {ProgressiveDisclosureExample} from './progressive-disclosure.example.tsx';
-
 # Progressive disclosure
 
-Edit the field, close the panel, then reopen it. `keepMounted` preserves the value.
+A button that shows and hides a panel of secondary content, such as advanced options. Keeps the default view short.
 
-<ProgressiveDisclosureExample client:load />
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {ProgressiveDisclosure} from '@earendil-works/elanor-react';
+
+<ProgressiveDisclosure.Root>
+  <ProgressiveDisclosure.Trigger />
+  <ProgressiveDisclosure.Panel />
+</ProgressiveDisclosure.Root>;
+```
+
+`defaultOpen` starts the panel open; `open` and `onOpenChange` control it.
+
+## Keep content mounted
+
+A closed panel unmounts its content, so unsaved input is lost. `keepMounted` keeps it: edit the field, close the panel, and reopen it.
+
+<Demo example="./examples/keep-mounted.tsx" />

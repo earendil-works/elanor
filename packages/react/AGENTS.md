@@ -11,7 +11,17 @@ For Base UI changes, consult [the documentation index](https://base-ui.com/llms.
 - Co-locate CSS Modules. Components without their own styles do not need an empty stylesheet.
 - Keep compound parts together, such as `Modal.Root` and `Modal.Popup` in `modal/`.
 - Put non-component helpers in `utils/` with descriptive filenames, such as `class-names.ts`.
-- Put live docs examples in `.example.tsx` files. Astro MDX JSX is not a React element and cannot be passed to Base UI's `render` prop.
+
+## Docs pages
+
+Each component directory has a `<component>.mdx` page and an `examples/` directory. The docs site renders the page at `/components/<component>/`.
+
+- Start with an H1 (the directory name in sentence case) and a one-paragraph description: what it is and when to use it, with alternatives.
+- Then a hero demo (`examples/demo.tsx`), `## Usage` with the import and a minimal snippet or anatomy, and one `##` section per variant or state. Add notes only where needed.
+- Don't write an API section. It's generated from the props types; document props with JSDoc on Elanor's declarations, and parts with JSDoc on the component.
+- Write live previews as `<Demo example="./examples/<name>.tsx" />` on one line. MDX contains no other JSX or imports; use code fences for code that can't render on a page.
+- Each example file default-exports one component and imports from `@earendil-works/elanor-react`, like application code. Show one concept per demo. Local imports, such as a CSS Module, appear in the demo's code panel.
+- Demo links use `href="#"`. Headings inside demos use `level={2}` in the hero and `level={3}` under a `##` section.
 
 ## Imports and exports
 

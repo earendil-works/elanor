@@ -1,5 +1,18 @@
-import {SegmentedControlExample} from './segmented-control.example.tsx';
-
 # Segmented control
 
-<SegmentedControlExample client:load />
+A row of buttons for switching between two to five related options, such as views or periods. Exactly one is pressed. To show different panels, use [Tabs](/components/tabs/).
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {SegmentedControl} from '@earendil-works/elanor-react';
+
+<SegmentedControl.Root aria-label="Billing period" defaultValue={['monthly']}>
+  <SegmentedControl.Item value="monthly">Monthly</SegmentedControl.Item>
+  <SegmentedControl.Item value="yearly">Yearly</SegmentedControl.Item>
+</SegmentedControl.Root>;
+```
+
+The value is an array with one item, as in Base UI Toggle Group. Pressing the selected item would clear it; ignore empty values in `onValueChange` to keep one selected, as the demo does.

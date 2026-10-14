@@ -1,17 +1,19 @@
-import {Card, Heading, Link, Stack, Text} from '@earendil-works/elanor-react';
-
 # Card
 
-## Summary
+A padded block that groups related content, such as a summary metric or a set of settings. It has no border or background of its own.
 
-<Card label="Active projects" value="12" description="Across three teams" />
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Card} from '@earendil-works/elanor-react';
+
+<Card label="Active projects" value="12" description="Across three teams" />;
+```
+
+`label`, `value`, and `description` lay out a summary metric. Children replace that layout.
 
 ## Custom content
 
-<Card>
-  <Stack gap="small">
-    <Heading level={2}>Workspace settings</Heading>
-    <Text>Group related controls with a label and supporting description.</Text>
-    <Link href="/components/field">Explore form fields</Link>
-  </Stack>
-</Card>
+<Demo example="./examples/custom-content.tsx" />

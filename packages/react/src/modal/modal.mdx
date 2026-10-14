@@ -1,7 +1,32 @@
-import {ModalExample} from './modal.example.tsx';
-
 # Modal
 
-Compose `Modal.Close` with an `IconButton` or a `Button` to dismiss the modal.
+A dialog that opens on top of the page and blocks it until closed. Use it for focused tasks and confirmations; for supporting content next to the trigger, use [Popover](/components/popover/).
 
-<ModalExample client:load />
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Modal} from '@earendil-works/elanor-react';
+
+<Modal.Root>
+  <Modal.Trigger />
+  <Modal.Portal>
+    <Modal.Backdrop />
+    <Modal.Viewport>
+      <Modal.Popup>
+        <Modal.Title />
+        <Modal.Description />
+        <Modal.Body />
+        <Modal.Actions>
+          <Modal.Close />
+        </Modal.Actions>
+      </Modal.Popup>
+    </Modal.Viewport>
+  </Modal.Portal>
+</Modal.Root>;
+```
+
+The modal moves focus inside, keeps it there, and returns it to the trigger on close. Escape and clicking the backdrop close it.
+
+`Modal.Close` closes the modal; render it as a [Button](/components/button/) or an [Icon button](/components/icon-button/). Title and Description name and describe the dialog for screen readers.

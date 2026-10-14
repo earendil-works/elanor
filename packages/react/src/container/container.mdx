@@ -1,54 +1,36 @@
-import {ContainerExample} from './container.example.tsx';
-
 # Container
 
-Centers content with inline gutters and an optional width cap. Renders a `div`,
-not a main landmark.
+Centers page content with inline gutters and a maximum width. Use it inside `Layout.Main` or any region that needs a centered column.
 
-<ContainerExample />
+<Demo example="./examples/demo.tsx" />
 
-## Width and gutters
-
-| Prop    | Values               | Default    |
-| ------- | -------------------- | ---------- |
-| `width` | `'capped'`, `'full'` | `'capped'` |
-
-Content is capped at `semantic.dimension.size.content.large` (76rem / 1216px),
-with `semantic.dimension.space.padding.xLarge` gutters (16px): 1248px maximum outer
-width. Container shrinks to fit its parent and adds no block padding.
-
-A Grid inside Container is also capped, even when it spans all tracks; use
-`width="full"` to give it more room.
-
-`width="full"` removes the cap but preserves gutters. For edge-to-edge content,
-omit Container, or combine `width="full"` with `style={{paddingInline: 0}}`.
+## Usage
 
 ```tsx
-import {Container, Layout} from '@earendil-works/elanor-react';
+import {Container} from '@earendil-works/elanor-react';
 
-<Layout.Main>
-  <Container>Centered, capped content</Container>
-  <Container width="full">Uncapped content with gutters</Container>
-</Layout.Main>;
+<Container>Page content</Container>;
 ```
 
-## Styling
+Content is capped at `semantic.dimension.size.content.large` (1216px) with `semantic.dimension.space.padding.xLarge` gutters (16px). Container fills its parent up to that cap, so it also centers in the space left beside a sidebar. It adds no block padding and renders a `div`, not a landmark.
 
-Native props, `ref`, `className`, and `style` pass through. Base UI's `render`
-accepts an element or render function and merges props and refs.
+## Full width
+
+`width="full"` removes the cap and keeps the gutters. The difference shows only in parents wider than 1216px, so there is no live preview. A [Grid](/components/grid/) inside a capped Container is capped too; use `width="full"` to give it more room.
 
 ```tsx
-<Container
-  render={<section aria-labelledby="reading-title" />}
-  style={{maxInlineSize: 'var(--semantic-dimension-size-content-small)'}}
->
-  <h2 id="reading-title">A compact reading region</h2>
-  <p>Application content.</p>
-</Container>
+<Container width="full">{/* Uncapped content */}</Container>
 ```
 
-`maxInlineSize` includes padding (border-box). To change gutters without changing
-the content cap, update the outer maximum too:
+For edge-to-edge content, omit Container, or combine `width="full"` with `style={{paddingInline: 0}}`.
+
+## Custom element and width
+
+`render` changes the element. `maxInlineSize` includes the gutters (`box-sizing: border-box`).
+
+<Demo example="./examples/custom-element.tsx" />
+
+To change the gutters without changing the content cap, adjust the maximum width too:
 
 ```css
 .wideGutters {
@@ -60,5 +42,4 @@ the content cap, update the outer maximum too:
 }
 ```
 
-Logical properties support RTL. Wide children need their own wrapping or
-accessible overflow handling; Container does not clip them.
+Container does not clip wide children; give them their own wrapping or scrolling.

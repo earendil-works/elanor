@@ -1,5 +1,17 @@
-import {SocialLoginExample} from './social-login.example.tsx';
-
 # Social login
 
-<SocialLoginExample client:load />
+A full-width button for signing in with an identity provider, such as Google. Supply the provider's logo; Elanor doesn't include provider artwork.
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {SocialLogin} from '@earendil-works/elanor-react';
+
+<SocialLogin icon={<GoogleIcon />} onClick={signInWithGoogle}>
+  Continue with Google
+</SocialLogin>;
+```
+
+Follow each provider's brand rules for the logo and wording.

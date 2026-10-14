@@ -1,5 +1,30 @@
-import {InputExample} from './input.example.tsx';
-
 # Input
 
-<InputExample client:load />
+A single-line text field. Always pair it with a visible label, using [Field](/components/field/) or [Control and label](/components/control-and-label/).
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Field, Input} from '@earendil-works/elanor-react';
+
+<Field.Root name="email">
+  <Field.Label>Email</Field.Label>
+  <Input type="email" />
+</Field.Root>;
+```
+
+`type` accepts `text`, `email`, `password`, `tel`, and `url`. For search, use [Search](/components/search/); for multiple lines, use [Text area](/components/text-area/).
+
+## Read-only
+
+Read-only values can be focused, selected, and copied, and are submitted with the form.
+
+<Demo example="./examples/read-only.tsx" />
+
+## Disabled
+
+Disabled inputs can't be focused and aren't submitted. Set `disabled` on `Field.Root` to disable the label too.
+
+<Demo example="./examples/disabled.tsx" />

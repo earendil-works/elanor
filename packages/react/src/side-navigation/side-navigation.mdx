@@ -1,35 +1,40 @@
-import {SideNavigation} from '@earendil-works/elanor-react';
-
 # Side navigation
 
-<SideNavigation.Root aria-label="Related components">
+A vertical list of links between the main areas of an app or documentation site, optionally in labeled groups. For a collapsible app sidebar, put it in a [Sidebar](/components/sidebar/).
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {SideNavigation} from '@earendil-works/elanor-react';
+
+<SideNavigation.Root aria-label="Workspace">
   <SideNavigation.Group>
-    <SideNavigation.GroupLabel>Navigation</SideNavigation.GroupLabel>
+    <SideNavigation.GroupLabel />
     <SideNavigation.List>
       <SideNavigation.Item>
-        <SideNavigation.Link href="/components/side-navigation" active>
-          Side navigation
-        </SideNavigation.Link>
-      </SideNavigation.Item>
-      <SideNavigation.Item>
-        <SideNavigation.Link href="/components/tabs">Tabs</SideNavigation.Link>
+        <SideNavigation.Link href="/projects" active />
       </SideNavigation.Item>
     </SideNavigation.List>
   </SideNavigation.Group>
-</SideNavigation.Root>
+</SideNavigation.Root>;
+```
 
-## Compact application navigation
+Root renders a `nav`. `active` marks the current page with `aria-current="page"`. Groups are optional.
 
-Text-only documentation navigation above stays expanded. Application sidebars can
-explicitly select `variant="compact"` on Root. Supply `iconStart`, `iconEnd`, or
-decorative `compactContent` on every Link in both presentations. Rich label
-children require an explicit `aria-label`; plain text labels are named automatically.
+## Icons
 
-See [Sidebar](/components/sidebar/) for a hydrated collapse example, controlled
-state, cancellation, and retained keyboard focus. Changing Root's variant does not
-replace links, their label spans, or their tooltip trigger wrappers. Group labels
-and link text are visually hidden, not removed from the accessibility tree.
+`iconStart` and `iconEnd` add decorative icons; the label names the link.
 
-Root exposes `data-variant="default" | "compact"`. Links and group labels expose
-`data-compact` in compact mode; active links retain `aria-current="page"` and
-`data-active`. Tooltip labels supplement independently accessible link names.
+<Demo example="./examples/icons.tsx" />
+
+## Compact
+
+`variant="compact"` shows only icons, with each label in a tooltip on hover and focus. Every link needs `iconStart`, `iconEnd`, or `compactContent`, such as initials; otherwise it throws. Labels and group labels stay available to screen readers.
+
+Links with plain text are named from their text; give links with rich content an `aria-label`. Keep text-only documentation navigation expanded.
+
+<Demo example="./examples/compact.tsx" />
+
+Switching `variant` keeps the same links, so focus and tab order are preserved. [Sidebar](/components/sidebar/) switches it when the sidebar collapses.

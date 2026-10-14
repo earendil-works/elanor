@@ -1,5 +1,25 @@
-import {SwitchExample} from './switch.example.tsx';
-
 # Switch
 
-<SwitchExample client:load />
+Turns a setting on or off, taking effect immediately. For choices that apply when a form is submitted, use [Checkbox](/components/checkbox/).
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {SelectionControlAndLabel, Switch} from '@earendil-works/elanor-react';
+
+<SelectionControlAndLabel
+  control={
+    <Switch.Root>
+      <Switch.Thumb />
+    </Switch.Root>
+  }
+>
+  Desktop notifications
+</SelectionControlAndLabel>;
+```
+
+## Disabled
+
+<Demo example="./examples/disabled.tsx" />

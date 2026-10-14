@@ -1,5 +1,33 @@
-import {CheckboxExample} from './checkbox.example.tsx';
-
 # Checkbox
 
-<CheckboxExample client:load />
+A control for turning an option on or off, or for selecting several items from a list. For one choice from a set, use [Radio](/components/radio/); for a setting that applies immediately, use [Switch](/components/switch/).
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Checkbox, SelectionControlAndLabel} from '@earendil-works/elanor-react';
+
+<SelectionControlAndLabel
+  control={
+    <Checkbox.Root>
+      <Checkbox.Indicator />
+    </Checkbox.Root>
+  }
+>
+  Include archived projects
+</SelectionControlAndLabel>;
+```
+
+[Selection control and label](/components/selection-control-and-label/) makes the whole label clickable.
+
+## Indeterminate
+
+Set `indeterminate` on a parent checkbox when only some of its children are checked.
+
+<Demo example="./examples/indeterminate.tsx" />
+
+## Disabled
+
+<Demo example="./examples/disabled.tsx" />

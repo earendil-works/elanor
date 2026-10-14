@@ -22,7 +22,7 @@
   "overrides": [
     {
       "files": ["src/**/*.{js,jsx,ts,tsx,mjs,cjs,mts,cts}"],
-      "excludeFiles": ["src/**/*.example.tsx"],
+      "excludeFiles": ["src/*/examples/**"],
       "rules": {
         "eslint/no-restricted-imports": [
           "error",

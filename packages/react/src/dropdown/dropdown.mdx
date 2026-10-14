@@ -1,35 +1,56 @@
-import {
-  DropdownExample,
-  DropdownRadioExample,
-  DropdownMultipleExample,
-} from './dropdown.example.tsx';
-import {SearchableDropdownExample} from './searchable-dropdown.example.tsx';
-
 # Dropdown
 
-## Single selection
+A button that opens a list of options to choose from, like a native select. Use it for one or more choices from a known list; add search when the list is long.
 
-The panel opens below the trigger, aligned to its leading edge, and repositions
-when space is limited. Set `Positioner alignItemWithTrigger` to opt into overlapping
-the trigger with the selected item.
+<Demo example="./examples/demo.tsx" />
 
-<DropdownExample client:load />
+## Usage
 
-## With radio indicators
+```tsx
+import {Dropdown} from '@earendil-works/elanor-react';
 
-Use `ItemIndicator` inside the matching Dropdown root. Its refs and styles target
-the inner mark; the decorative frame remains while the part is composed.
+<Dropdown.Root>
+  <Dropdown.Label />
+  <Dropdown.Trigger>
+    <Dropdown.Value />
+    <Dropdown.Icon />
+  </Dropdown.Trigger>
+  <Dropdown.Portal>
+    <Dropdown.Positioner>
+      <Dropdown.Popup>
+        <Dropdown.List>
+          <Dropdown.Item />
+        </Dropdown.List>
+      </Dropdown.Popup>
+    </Dropdown.Positioner>
+  </Dropdown.Portal>
+</Dropdown.Root>;
+```
 
-<DropdownRadioExample client:load />
+`Value` shows the selected value. When values differ from their labels, pass `items` to Root, such as `items={[{value: 'alpha', label: 'Alpha'}]}`.
+
+The popup opens below the trigger, aligned to its start edge, and repositions when space is limited. Set `alignItemWithTrigger` on Positioner to overlap the trigger with the selected item instead.
+
+## Item indicator
+
+`ItemIndicator` marks the selected item. Put the label next to it in `ItemText`.
+
+<Demo example="./examples/item-indicator.tsx" />
 
 ## Multiple selection
 
-<DropdownMultipleExample client:load />
+With `multiple`, the value is an array and `ItemIndicator` shows a checkbox.
+
+<Demo example="./examples/multiple.tsx" />
+
+## Groups
+
+`Group`, `GroupLabel`, and `Separator` divide long lists.
+
+<Demo example="./examples/groups.tsx" />
 
 ## Searchable
 
-Keep `Status` mounted outside the popup so selection feedback can be announced.
+`SearchableDropdown` adds a filter input to the popup. Keep `Status` outside the popup so screen readers announce the selection after it closes. For a list that is always visible, see [Searchable list](/components/searchable-list/).
 
-<SearchableDropdownExample client:load />
-
-For an always-visible search and results list, see the [Searchable list example](/components/searchable-list/).
+<Demo example="./examples/searchable.tsx" />

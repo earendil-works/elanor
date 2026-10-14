@@ -1,5 +1,28 @@
-import {IconButtonExample} from './icon-button.example.tsx';
-
 # Icon button
 
-<IconButtonExample client:load />
+A button that shows only an icon, for compact or frequently repeated actions. When space allows, prefer a [Button](/components/button/) with a visible label.
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {SettingsIcon} from '@earendil-works/elanor-icons-react';
+import {IconButton} from '@earendil-works/elanor-react';
+
+<IconButton aria-label="Workspace settings">
+  <SettingsIcon />
+</IconButton>;
+```
+
+Icons are decorative by default, so the button needs an `aria-label`.
+
+## Changing the label
+
+When the action changes, update the icon and `aria-label` together.
+
+<Demo example="./examples/toggle.tsx" />
+
+## Disabled
+
+<Demo example="./examples/disabled.tsx" />

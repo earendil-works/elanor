@@ -1,5 +1,26 @@
-import {PopoverExample} from './popover.example.tsx';
-
 # Popover
 
-<PopoverExample client:load />
+A small panel anchored to its trigger, for extra information or a few controls. The page stays usable while it's open. For a task that needs full attention, use [Modal](/components/modal/).
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Popover} from '@earendil-works/elanor-react';
+
+<Popover.Root>
+  <Popover.Trigger />
+  <Popover.Portal>
+    <Popover.Positioner>
+      <Popover.Popup>
+        <Popover.Title />
+        <Popover.Description />
+        <Popover.Close />
+      </Popover.Popup>
+    </Popover.Positioner>
+  </Popover.Portal>
+</Popover.Root>;
+```
+
+The trigger opens the popover on click. Escape, clicking outside, or `Popover.Close` closes it and returns focus to the trigger.

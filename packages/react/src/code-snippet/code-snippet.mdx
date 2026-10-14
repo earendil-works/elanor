@@ -1,10 +1,19 @@
-import {CodeSnippet} from '@earendil-works/elanor-react';
-import {CodeSnippetCopyExample} from './code-snippet.example.tsx';
-
 # Code snippet
 
-<CodeSnippet>pnpm install</CodeSnippet>
+Shows a short piece of code or a command, such as an install step. Long lines scroll horizontally.
 
-## With copy action
+<Demo example="./examples/demo.tsx" />
 
-<CodeSnippetCopyExample client:load />
+## Usage
+
+```tsx
+import {CodeSnippet} from '@earendil-works/elanor-react';
+
+<CodeSnippet>pnpm install</CodeSnippet>;
+```
+
+## Copy action
+
+Pass a [Copy button](/components/copy-button/) to `actions`.
+
+<Demo example="./examples/copy.tsx" />

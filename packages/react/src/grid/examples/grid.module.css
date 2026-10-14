@@ -1,0 +1,5 @@
+/* Shows the cell boundaries in these demos. */
+.cell {
+  border-radius: var(--semantic-dimension-radius-small);
+  background: var(--semantic-color-background-fill-secondary);
+}

@@ -3,6 +3,6 @@
   "compilerOptions": {
     "customConditions": ["source"]
   },
-  "include": [".astro/types.d.ts", "**/*", "../../packages/react/src/**/*.example.tsx"],
+  "include": [".astro/types.d.ts", "**/*", "../../packages/react/src/*/examples/*.tsx"],
   "exclude": ["dist"]
 }

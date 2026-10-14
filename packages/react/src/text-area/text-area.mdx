@@ -1,5 +1,18 @@
-import {TextAreaExample} from './text-area.example.tsx';
-
 # Text area
 
-<TextAreaExample client:load />
+A multi-line text field for longer input, such as descriptions or comments. Pair it with a visible label, using [Field](/components/field/) or [Control and label](/components/control-and-label/).
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Field, TextArea} from '@earendil-works/elanor-react';
+
+<Field.Root name="description">
+  <Field.Label>Project description</Field.Label>
+  <TextArea rows={4} />
+</Field.Root>;
+```
+
+`rows` sets the initial height. State a `maxLength` in the description, as the demo does.

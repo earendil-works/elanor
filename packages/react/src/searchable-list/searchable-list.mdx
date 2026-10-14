@@ -1,7 +1,24 @@
-import {SearchableListExample} from './searchable-list.example.tsx';
-
 # Searchable list
 
-An always-visible list composed from `SearchableDropdown` parts using `Root inline open`, without a popup.
+A filter input above a list that is always visible, for picking one item from many without a popup. It's a composition of [SearchableDropdown](/components/dropdown/#searchable) parts, not a separate component.
 
-<SearchableListExample inputId="searchable-list-project" client:load />
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+`inline` and `open` on `SearchableDropdown.Root` render the list in place instead of in a popup. Leave out Trigger, Portal, Positioner, and Popup.
+
+```tsx
+<SearchableDropdown.Root inline open items={projects}>
+  <SearchableDropdown.InputGroup>
+    <SearchableDropdown.Input />
+  </SearchableDropdown.InputGroup>
+  <SearchableDropdown.Empty />
+  <SearchableDropdown.List>
+    {(item) => <SearchableDropdown.Item value={item} />}
+  </SearchableDropdown.List>
+  <SearchableDropdown.Status />
+</SearchableDropdown.Root>
+```
+
+See the [Dropdown API](/components/dropdown/#api) for the parts.

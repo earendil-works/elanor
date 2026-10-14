@@ -1,162 +1,56 @@
-import {SidebarExample, ControlledSidebarExample} from './sidebar.example.tsx';
-
 # Sidebar
 
-A desktop sidebar that stays interactive when collapsed. For mobile, compose
-[Drawer](/components/drawer/) with SideNavigation and keep drawer open state
-separate from collapse. See the [responsive recipe](/components/top-navigation/#responsive-navigation).
+A desktop app sidebar that collapses to a rail of icons and stays usable when collapsed. On small screens, show the same destinations in a [Drawer](/components/drawer/) instead; see the [responsive navigation recipe](/components/top-navigation/#responsive-navigation).
 
-<h2 id="sidebar-examples">Interactive examples</h2>
+<Demo example="./examples/demo.tsx" />
 
-### Application sidebar
-
-<SidebarExample client:load />
-
-### Controlled state, cancellation, and retained focus
-
-<ControlledSidebarExample client:load />
-
-Tab reaches compact links; Escape dismisses tooltips. “Focus Home and toggle from
-owner” demonstrates focus staying on a link through collapse.
-
-## Composition
+## Usage
 
 ```tsx
-import {Layout, Sidebar, SideNavigation, Stack} from '@earendil-works/elanor-react';
-import {HomeIcon, SettingsIcon} from '@earendil-works/elanor-icons-react';
+import {Layout, SideNavigation, Sidebar} from '@earendil-works/elanor-react';
 
-<Layout.Body>
-  <Sidebar.Root render={<Layout.Aside aria-label="Application sidebar" />}>
-    {({collapsed}) => (
-      <>
-        <Sidebar.Header>
-          <Stack
-            direction={collapsed ? 'column' : 'row'}
-            gap={collapsed ? 'small' : 'auto'}
-            align="center"
-            style={{inlineSize: '100%'}}
-          >
-            <a href="/" aria-label="Acme workspace">
-              {collapsed ? 'A' : 'Acme workspace'}
-            </a>
-            <Sidebar.Trigger />
-          </Stack>
-        </Sidebar.Header>
-        <Sidebar.Content>
-          <SideNavigation.Root aria-label="Application" variant={collapsed ? 'compact' : 'default'}>
-            <SideNavigation.Group>
-              <SideNavigation.GroupLabel>Workspace</SideNavigation.GroupLabel>
-              <SideNavigation.List>
-                <SideNavigation.Item>
-                  <SideNavigation.Link href="/" active iconStart={<HomeIcon />}>
-                    Home
-                  </SideNavigation.Link>
-                </SideNavigation.Item>
-                <SideNavigation.Item>
-                  <SideNavigation.Link href="/settings" iconStart={<SettingsIcon />}>
-                    Settings
-                  </SideNavigation.Link>
-                </SideNavigation.Item>
-              </SideNavigation.List>
-            </SideNavigation.Group>
-          </SideNavigation.Root>
-        </Sidebar.Content>
-        <Sidebar.Footer>
-          <SideNavigation.Root aria-label="Account" variant={collapsed ? 'compact' : 'default'}>
-            <SideNavigation.List>
-              <SideNavigation.Item>
-                <SideNavigation.Link href="/account" compactContent="AB">
-                  Alex Brown
-                </SideNavigation.Link>
-              </SideNavigation.Item>
-            </SideNavigation.List>
-          </SideNavigation.Root>
-        </Sidebar.Footer>
-      </>
-    )}
-  </Sidebar.Root>
-  <Layout.Main>{/* Main content, independently capped by Container */}</Layout.Main>
-</Layout.Body>;
-```
-
-Root, Header, Content, and Footer default to `div`. Compose Root with
-`Layout.Aside` for one aside landmark. Keep Trigger outside Content so it cannot
-scroll out of reach.
-
-Content uses Base UI Scroll Area. Its props, ref, and scroll events target the
-**scrollable viewport**, not the sizing frame. Children sit in a measured inner
-container, not directly in the viewport. Header and Footer remain stationary.
-
-Root's children callback and each region's `render(props, state)` receive
-`{collapsed: boolean}`. Render callbacks must spread props and forward refs.
-These parts accept `className` and `style`, and expose `data-collapsed` when collapsed.
-
-## State and toggle
-
-```tsx
-const [collapsed, setCollapsed] = useState(false);
-
-<Sidebar.Root
-  collapsed={collapsed}
-  onCollapsedChange={(next, details) => {
-    // Optional: details.cancel() vetoes the change.
-    setCollapsed(next);
-  }}
->
-  {/* Compose regions as above. */}
+<Sidebar.Root render={<Layout.Aside aria-label="Workspace sidebar" />}>
+  {({collapsed}) => (
+    <>
+      <Sidebar.Header>
+        <Sidebar.Trigger />
+      </Sidebar.Header>
+      <Sidebar.Content>
+        <SideNavigation.Root variant={collapsed ? 'compact' : 'default'} />
+      </Sidebar.Content>
+      <Sidebar.Footer />
+    </>
+  )}
 </Sidebar.Root>;
 ```
 
-Omit `collapsed` for local state; `defaultCollapsed` defaults to false. Do not
-switch between controlled and uncontrolled modes. Persistence, routing, and
-breakpoints belong to the application.
+- **Root** renders a `div`; render it as `Layout.Aside` for a single aside landmark. Its children can be a function that receives `{collapsed}`.
+- **Header** and **Footer** stay in place. Keep Trigger in the Header so it can't scroll out of reach.
+- **Content** scrolls. Its `ref`, props, and scroll events go to the scrolling element.
+- Every region exposes `data-collapsed` while collapsed, and its `render` and `className` callbacks receive `{collapsed}`.
 
-`onCollapsedChange(next, details)` provides Base UI Toggle's `event` and `cancel()`.
-A controlled owner vetoing a change must also avoid updating its own state.
+## Compact content
 
-Trigger is a Base UI Toggle named “Collapse sidebar”; `aria-pressed=true` means
-collapsed, not hidden navigation. Its `render`/`className`/`style` callbacks receive
-`{pressed, disabled}`. It exposes `data-pressed` and `data-disabled`, not
-`data-collapsed`. Override `aria-label` for localization, keeping it stable across
-states; the tooltip is supplementary. Keep Trigger mounted and outside ToggleGroup.
+Set `variant={collapsed ? 'compact' : 'default'}` on each [Side navigation](/components/side-navigation/), and give every link an icon or `compactContent` in both states. Don't swap in a different navigation tree when collapsing; the same links keep focus, tab order, and `aria-current`.
 
-## Explicit compact content
+Collapsed links show their label in a tooltip on hover and focus. Branding, project switchers, and account controls need their own compact form: keep the same control mounted and change only its decorative content. Before removing a control that only exists when expanded, move focus to one that persists.
 
-Set `SideNavigation.Root variant={collapsed ? 'compact' : 'default'}` explicitly.
-Each Link needs `compactContent`, `iconStart`, or `iconEnd` (in that priority),
-supplied in **both** states. Do not replace the navigation tree on collapse.
+## Controlled
 
-Compact content must be decorative, non-interactive, and fit the rail. String or
-number labels supply `aria-label`; rich labels require an explicit nonempty
-`aria-label`. Invalid compact links throw. Link elements, hrefs, refs, tab order,
-and `aria-current` stay stable. Link and group labels remain in the accessibility
-tree, visually hidden. Never put focusable descendants in hidden labels.
+Pass `collapsed` and `onCollapsedChange` to control the state, for example to persist it. `details.cancel()` in `onCollapsedChange` keeps the current state; a controlled owner that cancels must not update its own state either. Don't switch between controlled and uncontrolled.
 
-Base UI supplies hover/focus tooltips, Escape dismissal, and touch suppression.
-Tooltip wrappers stay mounted; an internal provider shares the hover delay.
+<Demo example="./examples/controlled.tsx" />
 
-Provide compact branding, project switchers, and account controls yourself.
-Keep named controls mounted and replace only decorative contents. Before
-unmounting an expanded-only control, move focus to a persistent control.
+## Trigger
 
-## Sizing and scrolling
+The trigger is a Base UI Toggle named "Collapse sidebar". `aria-pressed="true"` means collapsed. For other languages, override `aria-label` with one label that stays the same in both states; the tooltip only supplements it. It exposes `data-pressed`, not `data-collapsed`.
 
-Widths are `semantic.dimension.size.sidebar` (210px) expanded
-and `semantic.dimension.size.xLarge` (48px) collapsed, including the 4px divider.
-Root owns insets; compact navigation targets are 32px high. Override sizes with CSS
-or inline styles.
+## Size and scrolling
 
-Content's vertical scrollbar appears while scrolling or dragging, not on hover.
-A bottom fade and top line indicate remaining content. The fade does not intercept
-clicks; keyboard focus replaces it with a line to keep links and outlines clear.
-Forced-colors mode uses lines and keeps the scrollbar visible while overflowing.
-Use standalone ScrollArea for other scrolling arrangements.
+The sidebar is `semantic.dimension.size.sidebar` (210px) wide when expanded and `semantic.dimension.size.xLarge` (48px) when collapsed, including its 4px divider. Override the widths with CSS.
 
-Root is capped at `100dvh`. Adjust `maxBlockSize` for sticky headers; the parent
-layout controls stickiness. Keep fixed header/footer content small enough for
-short viewports. Set `blockSize` to fill height even with short content.
+Root is at most `100dvh` tall; reduce `maxBlockSize` below a sticky header. Set `blockSize` to fill the height even with little content.
 
-Match initial collapse state on server and client. For RTL, match Base UI's
-DirectionProvider to document direction. On narrow/touch layouts, keep destinations
-and the toggle available; do not rely on tooltips to explain icons. Text-only docs
-navigation should stay expanded, using SideNavigation without Sidebar.Trigger.
+The Content scrollbar appears while scrolling, not on hover. A fade at the bottom and a line at the top show there is more content; keyboard focus replaces the fade with a line so links stay visible.
+
+Render the same collapsed state on the server and the client. For right-to-left layouts, set Base UI's `DirectionProvider` to the document direction. On touch screens, don't rely on tooltips to explain icons.

@@ -1,47 +1,30 @@
-import {SectionExample} from './section.example.tsx';
-
 # Section
 
-Groups content with an optional separator, spaced by
-`semantic.dimension.space.gap.large` (24px).
-No built-in border, trailing padding, or width cap.
+A named part of a page, with an optional separator line `semantic.dimension.space.gap.large` (24px) below its content. Section adds no border, padding, or width cap.
 
-<SectionExample client:load />
+<Demo example="./examples/demo.tsx" />
 
 ## Usage
 
 ```tsx
-import {Heading, Section, Stack, Text} from '@earendil-works/elanor-react';
+import {Heading, Section} from '@earendil-works/elanor-react';
 
 <Section.Root aria-labelledby="members-heading">
   <Section.Content>
-    <Stack gap="small">
-      <Heading level={2} id="members-heading">
-        Members
-      </Heading>
-      <Text>Invite collaborators and assign workspace roles.</Text>
-    </Stack>
+    <Heading level={2} id="members-heading">
+      Members
+    </Heading>
   </Section.Content>
-  <Section.Separator span={{base: 'full', small: 6}} />
+  <Section.Separator />
 </Section.Root>;
 ```
 
-- `Section.Root` renders a `section`. Name it with a heading and `aria-labelledby`.
-- `Section.Content` renders a `div`; use Stack or Grid inside for layout.
-- `Section.Separator` adds a horizontal rule in an independent twelve-column Grid
-  with default gutters. Omit it for no rule or extra bottom space.
+Root renders a `section`; name it with its heading through `aria-labelledby`. Content renders a `div`; lay out its children with [Stack](/components/stack/) or [Grid](/components/grid/). Leave out Separator for no line.
 
 ## Separator span
 
-`Section.Separator` accepts `span`: 1–12 or `full` (default), optionally keyed by
-container breakpoint. Its Grid measures its own width, not the viewport or parent
-tracks. To align content, use an equally wide twelve-column Grid with default
-gutters inside Content. For custom or shared tracks, compose standalone Separator
-and [Grid](/components/grid/) parts instead.
+The separator sits in its own 12-column grid with default gutters. `span` sets how many tracks it covers, optionally per container breakpoint. To align content with a shorter line, use a 12-column Grid with default gutters inside Content, as in this demo.
 
-## Props
+The separator's grid measures its own width, not the parent's tracks. For shared tracks, compose [Separator](/components/separator/) and Grid yourself.
 
-Root and Content accept native props, `className`, `style`, and refs to their
-`section` and `div`. Separator forwards props and refs to the line, not its Grid
-wrapper, including Base UI `render` and stateful `className`/`style` callbacks.
-Section separators are horizontal-only; standalone Separator supports both axes.
+<Demo example="./examples/separator-span.tsx" />

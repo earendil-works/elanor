@@ -1,5 +1,49 @@
-import {ButtonExample} from './button.example.tsx';
-
 # Button
 
-<ButtonExample client:load />
+Triggers an action, such as saving a form or opening a dialog. For navigation, use [Link](/components/link/).
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Button} from '@earendil-works/elanor-react';
+
+<Button onClick={save}>Save changes</Button>;
+```
+
+Button renders `type="button"` by default. Set `type="submit"` to submit a form.
+
+## Hierarchy
+
+Use one primary button per view for the main action. Use secondary and tertiary for supporting actions.
+
+<Demo example="./examples/hierarchy.tsx" />
+
+## Semantic
+
+`negative` marks destructive actions; `positive` marks confirming ones. Combine with any hierarchy.
+
+<Demo example="./examples/semantic.tsx" />
+
+## Density
+
+Use `compact` in dense layouts, such as toolbars and table rows. The touch target keeps the default height.
+
+<Demo example="./examples/density.tsx" />
+
+## Icons
+
+`iconStart` and `iconEnd` add decorative icons; the label names the button. For an icon without a label, use [Icon button](/components/icon-button/).
+
+<Demo example="./examples/icons.tsx" />
+
+## Pending
+
+`pending` disables the button while an action runs, keeps it focusable, and sets `aria-busy`.
+
+<Demo example="./examples/pending.tsx" />
+
+## Disabled
+
+<Demo example="./examples/disabled.tsx" />

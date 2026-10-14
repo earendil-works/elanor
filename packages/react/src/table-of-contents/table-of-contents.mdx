@@ -1,37 +1,25 @@
-import {Heading, Stack, TableOfContents, Text} from '@earendil-works/elanor-react';
-
 # Table of contents
 
-<Stack gap="large">
-  <TableOfContents.Root style={{maxInlineSize: '24ch'}}>
-    <TableOfContents.Item>
-      <TableOfContents.Link href="#overview">Overview</TableOfContents.Link>
-    </TableOfContents.Item>
-    <TableOfContents.Item>
-      <TableOfContents.Link href="#usage">Usage</TableOfContents.Link>
-    </TableOfContents.Item>
-    <TableOfContents.Item>
-      <TableOfContents.Link href="#project-access">
-        Managing project access and team permissions
-      </TableOfContents.Link>
-    </TableOfContents.Item>
-  </TableOfContents.Root>
-  <section id="overview" aria-labelledby="overview-title">
-    <Heading level={2} id="overview-title">
-      Overview
-    </Heading>
-    <Text>Use the links above to jump to a section of this project guide.</Text>
-  </section>
-  <section id="usage" aria-labelledby="usage-title">
-    <Heading level={2} id="usage-title">
-      Usage
-    </Heading>
-    <Text>Choose a project before creating or sharing artifacts.</Text>
-  </section>
-  <section id="project-access" aria-labelledby="project-access-title">
-    <Heading level={2} id="project-access-title">
-      Managing project access and team permissions
-    </Heading>
-    <Text>Invite collaborators and assign permissions for the work they need to do.</Text>
-  </section>
-</Stack>
+Links to the sections of the current page, usually in a side region of a long page.
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {TableOfContents} from '@earendil-works/elanor-react';
+
+<TableOfContents.Root>
+  <TableOfContents.Item>
+    <TableOfContents.Link href="#usage">Usage</TableOfContents.Link>
+  </TableOfContents.Item>
+</TableOfContents.Root>;
+```
+
+The demo links point to sections of this page. Root renders a `nav` named "Table of contents" with an ordered list. The visible title defaults to "On this page"; change it with `title`.
+
+## Current section
+
+`active` marks the section in view with `aria-current="location"`. The application decides which section is current, for example with an `IntersectionObserver`.
+
+<Demo example="./examples/active.tsx" />

@@ -1,22 +1,24 @@
-import {FolderOpenIcon} from '@earendil-works/elanor-icons-react';
-import {EmptyState, Link} from '@earendil-works/elanor-react';
-
 # Empty state
 
-`EmptyState.Copy` limits the title and description to 30rem (480px at the default
-root font size). Narrower containers take precedence.
+Explains why a view has no content and what to do next, such as an empty list or a search without results.
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {EmptyState} from '@earendil-works/elanor-react';
 
 <EmptyState.Root>
-  <EmptyState.Illustration>
-    <FolderOpenIcon size={64} aria-hidden="true" />
-  </EmptyState.Illustration>
+  <EmptyState.Illustration />
   <EmptyState.Body>
     <EmptyState.Copy>
-      <EmptyState.Title level={2}>No saved views</EmptyState.Title>
-      <EmptyState.Description>Use filters to find the members you need.</EmptyState.Description>
+      <EmptyState.Title level={2} />
+      <EmptyState.Description />
     </EmptyState.Copy>
-    <EmptyState.Actions>
-      <Link href="/components/search-and-filter-bar">Explore member filters</Link>
-    </EmptyState.Actions>
+    <EmptyState.Actions />
   </EmptyState.Body>
-</EmptyState.Root>
+</EmptyState.Root>;
+```
+
+Set the title's `level` to fit the page outline. Illustration and Actions are optional. Copy limits the title and description to 30rem (480px at the default font size), or less in narrower containers.

@@ -1,51 +1,47 @@
-import {DrawerExample, DrawerStackExample} from './drawer.example.tsx';
-
 # Drawer
 
-Base UI Drawer supplies modal focus management, scroll locking and swipe dismissal.
-Use `swipeDirection="left"` or `"right"` for side panels; the default is a bottom sheet.
-Directions are physical, including in RTL.
+A modal panel that slides in from a screen edge, such as a bottom sheet or mobile navigation. It traps focus, locks page scrolling, and can be swiped away.
 
-<DrawerExample client:load />
+<Demo example="./examples/demo.tsx" />
+
+## Usage
 
 ```tsx
-<Drawer.Root swipeDirection="left">
-  <Drawer.Trigger render={<IconButton aria-label="Open navigation" />}>
-    <MenuIcon />
-  </Drawer.Trigger>
+import {Drawer} from '@earendil-works/elanor-react';
+
+<Drawer.Root>
+  <Drawer.Trigger />
   <Drawer.Portal>
     <Drawer.Backdrop />
     <Drawer.Viewport>
       <Drawer.Popup>
         <Drawer.Content>
-          <Drawer.Title>Navigation</Drawer.Title>
-          <Drawer.Close render={<IconButton aria-label="Close navigation" />}>
-            <CloseIcon />
-          </Drawer.Close>
-          <SideNavigation.Root>{/* Shared destinations */}</SideNavigation.Root>
+          <Drawer.Title />
+          <Drawer.Description />
+          <Drawer.Close />
         </Drawer.Content>
       </Drawer.Popup>
     </Drawer.Viewport>
   </Drawer.Portal>
-</Drawer.Root>
+</Drawer.Root>;
 ```
 
-Keep mobile `open` separate from [Sidebar](/components/sidebar/) `collapsed`.
-The application owns breakpoints and routing: close the drawer when navigating or
-returning to desktop, rather than CSS-hiding an open modal. `actionsRef.close()`
-supports this without duplicating Drawer state. Controlled `open`, `onOpenChange`
-and cancellable event details remain available.
+Popup scrolls within the viewport. Content keeps text selectable with a mouse; add `data-base-ui-swipe-ignore` to controls that handle their own gestures.
 
-Popup scrolls within the viewport. Compose Content to preserve mouse text selection;
-use `data-base-ui-swipe-ignore` on controls that need their own gestures.
+## Side panel
 
-## Nested bottom sheets
+`swipeDirection="left"` or `"right"` turns the drawer into a side panel; the default, `"down"`, is a bottom sheet. Directions are physical, so they don't flip in right-to-left layouts.
 
-<DrawerStackExample client:load />
+Close the drawer when the user navigates, with `actionsRef.current.close()` or controlled `open`. Don't hide an open drawer with CSS at a breakpoint; close it instead. Keep its `open` state separate from [Sidebar](/components/sidebar/)'s `collapsed`.
 
-## Application overlay placement
+<Demo example="./examples/side-panel.tsx" />
 
-The host owns overlay stacking through `Drawer.Portal` styling. With elevated headers,
-give that portal `position: fixed`, `inset: 0` and `z-index: var(--semantic-number-layer-overlay)`.
-Viewport bounds are required because the iOS backdrop is absolutely positioned.
-Leave its backdrop, viewport and nested popups on their automatic layers.
+## Nested sheets
+
+Nest a Drawer inside a Popup to stack bottom sheets. With `data-stacked` on each Popup, parent sheets shrink behind the open sheet. Closing a nested sheet returns focus to its trigger.
+
+<Demo example="./examples/nested.tsx" />
+
+## Overlay placement
+
+The application decides how overlays stack. With an elevated header, give `Drawer.Portal` `position: fixed`, `inset: 0`, and `z-index: var(--semantic-number-layer-overlay)`. Leave the backdrop, viewport, and nested popups on their default layers.

@@ -1,55 +1,41 @@
-import {CodeSnippet} from '../code-snippet/code-snippet.tsx';
-import {
-  TopNavigationExample,
-  CenteredTopNavigationExample,
-  StackedTopNavigationExample,
-} from './top-navigation.example.tsx';
-import {ResponsiveNavigationExample} from './responsive-navigation.example.tsx';
-import layoutsSource from './top-navigation.example.tsx?raw';
-import responsiveSource from './responsive-navigation.example.tsx?raw';
-import recipeStyles from './top-navigation.example.module.css?raw';
-
 # Top navigation
 
-Recipes composed from `TopNavigation` parts. They are application-owned compositions, not component variants; copy the arrangement and styles you need.
+The header bar of a site or app, with regions for identity, navigation, and actions. Arrange the regions with your own CSS; this page has recipes to start from.
 
-## Inline
+<Demo example="./examples/demo.tsx" />
 
-Identity, links and actions share a row and wrap when needed.
+## Usage
 
-<TopNavigationExample client:load />
+```tsx
+import {TopNavigation} from '@earendil-works/elanor-react';
+
+<TopNavigation.Root>
+  <TopNavigation.Identity />
+  <TopNavigation.Navigation />
+  <TopNavigation.Actions />
+</TopNavigation.Root>;
+```
+
+Root renders a `header`; the regions render `div`s. Put links inside a `nav` with an `aria-label`, or use [Navigation menu](/components/navigation-menu/) for submenus. In a [Layout](/components/layout/), merge Root into the header with `<Layout.Header render={<TopNavigation.Root />}>`.
+
+By default, the regions share one row, with free space between them, and wrap when space runs out. The navigation sits centered only when identity and actions have the same width; in the demo above, it is pushed left.
 
 ## Centered
 
-Equal side tracks keep navigation centered despite unequal identity/action widths. In narrow containers, links move to their own row.
+Equal side columns keep the navigation centered, whatever the widths of identity and actions. Compare it with the demo at the top of the page. In narrow containers, the links move to their own row.
 
-<CenteredTopNavigationExample client:load />
+<Demo example="./examples/centered.tsx" />
 
 ## Stacked
 
-Identity and actions above a separate navigation row.
+Identity and actions on one row, navigation on the row below.
 
-<StackedTopNavigationExample client:load />
+<Demo example="./examples/stacked.tsx" />
 
 ## Responsive navigation
 
-Desktop [Sidebar](/components/sidebar/) and inline resources become a mobile [Drawer](/components/drawer/) below `semantic.dimension.breakpoint.medium`. Both share destinations and selection; desktop collapse stays independent. Try resizing with the drawer open.
+On desktop, destinations are in a [Sidebar](/components/sidebar/) and resources in the header. Below `semantic.dimension.breakpoint.medium`, both move into a [Drawer](/components/drawer/). They share the current selection; the sidebar's collapsed state stays separate from the drawer's open state.
 
-<ResponsiveNavigationExample client:load />
+The drawer closes when the window grows past the breakpoint, rather than being hidden by CSS. Try it: open the drawer on a narrow window, then widen it. The demo keeps selection in local state; an application uses its router.
 
-<details>
-  <summary>Inline, centered and stacked source</summary>
-  <CodeSnippet>{layoutsSource}</CodeSnippet>
-</details>
-
-<details>
-  <summary>Responsive composition source</summary>
-  <CodeSnippet>{responsiveSource}</CodeSnippet>
-</details>
-
-<details>
-  <summary>Recipe styles</summary>
-  <CodeSnippet>{recipeStyles}</CodeSnippet>
-</details>
-
-The responsive example uses local selection in place of routing. Applications own links, breakpoints and modal cleanup. [Navigation Menu](/components/navigation-menu/) supplies submenu behavior when needed.
+<Demo example="./examples/responsive.tsx" />

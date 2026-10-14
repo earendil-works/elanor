@@ -1,18 +1,21 @@
-import {Link, PageHeader} from '@earendil-works/elanor-react';
-
 # Page header
 
-This page already has an H1, so the preview uses `level={2}`. Give your page title `level={1}`.
+The title area at the top of a page, with an optional description and page-level actions.
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {PageHeader} from '@earendil-works/elanor-react';
 
 <PageHeader.Root>
   <PageHeader.Row>
-    <PageHeader.Title level={2}>Component library</PageHeader.Title>
-    <PageHeader.Actions>
-      <Link href="/components/button">Buttons</Link>
-      <Link href="/components/input">Inputs</Link>
-    </PageHeader.Actions>
+    <PageHeader.Title level={1} />
+    <PageHeader.Actions />
   </PageHeader.Row>
-  <PageHeader.Description>
-    Explore controls, navigation, and layouts for your application.
-  </PageHeader.Description>
-</PageHeader.Root>
+  <PageHeader.Description />
+</PageHeader.Root>;
+```
+
+The title always uses heading size 1. Give it `level={1}`; the demo uses `level={2}` because this page already has an H1. Actions wrap below the title when space runs out.

@@ -1,0 +1,43 @@
+.frame {
+  container: navigation / inline-size;
+}
+
+.header {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding-block: var(--semantic-dimension-space-padding-xx-large);
+}
+
+.navigation {
+  grid-column: 1 / -1;
+  grid-row: 2;
+  justify-content: center;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--semantic-dimension-space-gap-medium);
+}
+
+.actions {
+  grid-column: 2;
+  grid-row: 1;
+  justify-self: end;
+}
+
+/* Container queries can't use var(), so the threshold is the token's resolved value. */
+@container navigation (width >= 40rem /* token: semantic.dimension.breakpoint.xSmall */) {
+  .header {
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+  }
+
+  .navigation {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .actions {
+    grid-column: 3;
+  }
+}

@@ -1,0 +1,57 @@
+.application {
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  block-size: var(--semantic-dimension-size-content-small);
+  min-block-size: 0;
+  border: var(--semantic-dimension-border-width-default) solid
+    var(--semantic-color-border-secondary);
+}
+
+.header {
+  padding: var(--semantic-dimension-space-padding-large);
+  border-block-end: var(--semantic-dimension-border-width-default) solid
+    var(--semantic-color-border-secondary);
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--semantic-dimension-space-gap-medium);
+}
+
+.body {
+  min-block-size: 0;
+}
+
+.content {
+  overflow: auto;
+  padding: var(--semantic-dimension-space-padding-x-large);
+}
+
+/* Anchor the Drawer to the viewport above the application. */
+.overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--semantic-number-layer-overlay);
+}
+
+.desktopOnly {
+  display: none;
+}
+
+/* Media queries can't use var(), so the threshold is the token's resolved value. */
+@media (width >= 64rem /* token: semantic.dimension.breakpoint.medium */) {
+  .desktopOnly {
+    display: flex;
+  }
+
+  .sidebar {
+    position: static;
+    block-size: 100%;
+    max-block-size: 100%;
+  }
+
+  .mobileOnly {
+    display: none;
+  }
+}

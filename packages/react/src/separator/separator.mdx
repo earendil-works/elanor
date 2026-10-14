@@ -1,16 +1,19 @@
-import {Separator, Stack, Text} from '@earendil-works/elanor-react';
-import {VerticalSeparatorExample} from './separator.example.tsx';
-
 # Separator
 
-## Horizontal
+A thin line that divides groups of content. Screen readers announce it as a separator.
 
-<Stack gap="medium" style={{inlineSize: '100%'}}>
-  <Text>Account settings</Text>
-  <Separator />
-  <Text>Workspace settings</Text>
-</Stack>
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Separator} from '@earendil-works/elanor-react';
+
+<Separator />;
+```
 
 ## Vertical
 
-<VerticalSeparatorExample />
+`orientation="vertical"` divides items in a row. The parent needs a height for the line to fill.
+
+<Demo example="./examples/vertical.tsx" />

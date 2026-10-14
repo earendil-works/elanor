@@ -1,5 +1,21 @@
-import {SearchExample} from './search.example.tsx';
-
 # Search
 
-<SearchExample client:load />
+A text input for search queries, with a search icon. Use it to filter a list or start a search.
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Search} from '@earendil-works/elanor-react';
+
+<Search aria-label="Search projects" placeholder="Search projects" />;
+```
+
+The placeholder isn't a label; name the input with `aria-label` or a visible [Field](/components/field/) label. `className` styles the input and `rootClassName` the wrapper.
+
+## Filtering with a clear button
+
+`endAdornment` places content after the input, such as a clear button. Return focus to the input after clearing, and announce the result count in a status region.
+
+<Demo example="./examples/filter.tsx" />

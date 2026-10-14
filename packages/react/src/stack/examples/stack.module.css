@@ -1,0 +1,5 @@
+.item {
+  padding: var(--semantic-dimension-space-padding-small);
+  border-radius: var(--semantic-dimension-radius-small);
+  background: var(--semantic-color-background-fill-secondary);
+}

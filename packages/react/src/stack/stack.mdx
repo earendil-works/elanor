@@ -1,8 +1,33 @@
-import {StackExample} from './stack.example.tsx';
-
 # Stack
 
-Stacks align children to the cross-axis start by default. Use `align="stretch"`
-when children should fill the available cross-axis space.
+Lays out children in a column or a row with even spacing from the gap scale. Use it for most one-dimensional layouts; for columns that align across rows, use [Grid](/components/grid/).
 
-<StackExample />
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Stack} from '@earendil-works/elanor-react';
+
+<Stack gap="small">{/* Children */}</Stack>;
+```
+
+Stack renders a flex `div`. It defaults to a column with `medium` gap and aligns children to the start of the cross axis.
+
+## Row
+
+`direction="row"` lays children out horizontally. Add `wrap="wrap"` so they wrap instead of overflowing.
+
+<Demo example="./examples/row.tsx" />
+
+## Stretch
+
+Children keep their own width by default. `align="stretch"` makes them fill the cross axis.
+
+<Demo example="./examples/align.tsx" />
+
+## Space between
+
+`gap="auto"` puts all free space between the children, pushing them to the ends.
+
+<Demo example="./examples/gap-auto.tsx" />

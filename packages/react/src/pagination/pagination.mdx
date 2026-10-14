@@ -1,5 +1,19 @@
-import {PaginationExample} from './pagination.example.tsx';
-
 # Pagination
 
-<PaginationExample client:load />
+Previous and next links for moving through a long list in pages, with an optional position summary.
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Pagination} from '@earendil-works/elanor-react';
+
+<Pagination.Root summary="Page 2 of 5">
+  <Pagination.Link href="?page=1">Previous</Pagination.Link>
+  <Pagination.Separator />
+  <Pagination.Link href="?page=3">Next</Pagination.Link>
+</Pagination.Root>;
+```
+
+Root renders a `nav` named "Pagination"; pass `aria-label` to name it after the list, such as "Project pages". Use real `href`s so pages can be bookmarked; `disabled` turns off the link at either end. Announce the visible range in a status region, as the demo does.

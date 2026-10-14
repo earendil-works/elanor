@@ -1,13 +1,19 @@
-import {Card, Heading, Page, Text} from '@earendil-works/elanor-react';
-
 # Page
 
-This page already has an H1, so the preview uses `level={2}`. Give your page title `level={1}`.
+Stacks a page's content with consistent spacing (`semantic.dimension.space.gap.large`, 24px). It renders a `div`, not a landmark.
 
-<Page>
-  <Heading level={2} size={1}>
-    Workspace overview
-  </Heading>
-  <Text>Review your team's projects and recent activity.</Text>
-  <Card label="Active projects" value="12" description="Across three teams" />
-</Page>
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Container, Layout, Page} from '@earendil-works/elanor-react';
+
+<Layout.Main>
+  <Container>
+    <Page>{/* Page header, sections, and content */}</Page>
+  </Container>
+</Layout.Main>;
+```
+
+[Layout.Main](/components/layout/) provides the main landmark and [Container](/components/container/) the width; Page only spaces its children. Give the page title `level={1}`; the demo uses `level={2}` because this page already has an H1.

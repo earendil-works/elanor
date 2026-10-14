@@ -1,5 +1,31 @@
-import {RadioExample} from './radio.example.tsx';
-
 # Radio
 
-<RadioExample client:load />
+A set of options where exactly one can be selected. For two to five visible options, use Radio; for longer lists, use [Dropdown](/components/dropdown/).
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Radio, SelectionControlAndLabel} from '@earendil-works/elanor-react';
+
+<Radio.Group aria-label="Email digest frequency">
+  <SelectionControlAndLabel
+    control={
+      <Radio.Root value="daily">
+        <Radio.Indicator />
+      </Radio.Root>
+    }
+  >
+    Daily
+  </SelectionControlAndLabel>
+</Radio.Group>;
+```
+
+Name the group with `aria-label` or `aria-labelledby`. Arrow keys move between options.
+
+## Disabled
+
+Disable a single option with `disabled` on `Radio.Root`, or the whole group on `Radio.Group`.
+
+<Demo example="./examples/disabled.tsx" />

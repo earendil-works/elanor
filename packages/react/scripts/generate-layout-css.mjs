@@ -15,7 +15,8 @@ const annotation = /\/\*\s*token:/g;
 for (const path of [
   'src/grid/grid.module.css',
   'src/layout/layout.module.css',
-  'src/top-navigation/top-navigation.example.module.css',
+  'src/top-navigation/examples/centered.module.css',
+  'src/top-navigation/examples/responsive.module.css',
   '../../apps/docs/src/styles/docs.css',
   '../../apps/docs/src/components/brand-logos.module.css',
 ]) {

@@ -1,0 +1,19 @@
+.header {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  padding-block: var(--semantic-dimension-space-padding-xx-large);
+}
+
+.actions {
+  justify-self: end;
+}
+
+.navigation {
+  grid-column: 1 / -1;
+}
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--semantic-dimension-space-gap-medium);
+}

@@ -10,5 +10,5 @@
     "rewriteRelativeImportExtensions": true
   },
   "include": ["src"],
-  "exclude": ["src/**/*.example.tsx"]
+  "exclude": ["src/*/examples"]
 }

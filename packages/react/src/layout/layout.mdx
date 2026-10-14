@@ -1,152 +1,90 @@
-import {LayoutExample} from './layout.example.tsx';
-
 # Layout
 
-Page regions with document scrolling. All parts accept `render`, `ref`, `className`,
-`style`, and native props. Routing and navigation state belong to the application.
+Arranges a page into header, side regions, main content, and footer, with the document as the scroll container. Routing and navigation state stay in the application.
 
-| Part     | Default element | Responsibility                                             |
-| -------- | --------------- | ---------------------------------------------------------- |
-| `Root`   | `div`           | Isolated, unclipped page frame; document scrolling         |
-| `Header` | `header`        | Optional top region; non-sticky by default                 |
-| `Body`   | `div`           | Groups zero, one, or two asides with flexible main content |
-| `Aside`  | `aside`         | Supporting region; sticky and scrollable on wide screens   |
-| `Main`   | `main`          | Flexible main landmark, without a content-width cap        |
-| `Footer` | `footer`        | Optional bottom region                                     |
+<Demo example="./examples/demo.tsx" />
 
-Use one `Main` per document. When embedding a layout inside an existing main,
-use `Layout.Main render={<div />}` instead. `Page` is a content group, not another
-main landmark. A simple header/main/footer page needs no `Body`.
-
-## Docs recipe
-
-Navigation, Main, and TOC stay in source order when stacked; navigation remains
-visible. The preview reduces Root's minimum height; omit that override in a page.
-
-<LayoutExample />
-
-The outer Container centers Body; the inner one caps reading width at
-`semantic.dimension.size.content.small`. Side regions default to
-`semantic.dimension.size.sidebar`.
-
-## App recipe
-
-Keep sidebars **outside** the content Grid. Container centers content in the
-remaining space, capped at `semantic.dimension.size.content.large` (1216px).
+## Usage
 
 ```tsx
-import {Container, Layout, Page, SideNavigation, Stack} from '@earendil-works/elanor-react';
+import {Layout} from '@earendil-works/elanor-react';
 
 <Layout.Root>
+  <Layout.Header />
   <Layout.Body>
-    <Layout.Aside
-      aria-label="Workspace"
-      style={{padding: 'var(--semantic-dimension-space-padding-medium)'}}
-    >
-      <Stack>
-        <a href="/">Workspace</a>
-        <SideNavigation.Root aria-label="Application">
-          <SideNavigation.List>
-            <SideNavigation.Item>
-              <SideNavigation.Link href="/projects" active>
-                Projects
-              </SideNavigation.Link>
-            </SideNavigation.Item>
-            <SideNavigation.Item>
-              <SideNavigation.Link href="/settings">Settings</SideNavigation.Link>
-            </SideNavigation.Item>
-          </SideNavigation.List>
-        </SideNavigation.Root>
-        <a href="/account">Account</a>
-      </Stack>
-    </Layout.Aside>
+    <Layout.Aside aria-label="Sections" />
+    <Layout.Main />
+    <Layout.Aside aria-label="On this page" />
+  </Layout.Body>
+  <Layout.Footer />
+</Layout.Root>;
+```
+
+Use one `Main` per document. Inside an existing main landmark, use `<Layout.Main render={<div />}>`. A page without asides doesn't need `Body`.
+
+In the demo, the outer Container centers Body and the inner one caps the reading width at `semantic.dimension.size.content.small`. Asides are `semantic.dimension.size.sidebar` wide by default.
+
+## Application layout
+
+Put sidebars outside the content Grid. [Container](/components/container/) then centers content in the remaining space, capped at `semantic.dimension.size.content.large` (1216px).
+
+To use another component as the aside, pass Aside to its `render` prop instead of wrapping it, so there is one landmark: `<Sidebar.Root render={<Layout.Aside aria-label="Workspace" />}>`. See [Sidebar](/components/sidebar/).
+
+```tsx
+<Layout.Root>
+  <Layout.Body>
+    <Sidebar.Root render={<Layout.Aside aria-label="Workspace" />}>
+      {/* Sidebar regions */}
+    </Sidebar.Root>
     <Layout.Main>
       <Container>
-        <Page>
-          <h1>Projects</h1>
-          {/* A Grid may go here; it fills this Container independently. */}
-        </Page>
+        <Page>{/* Page content, such as a Grid */}</Page>
       </Container>
     </Layout.Main>
   </Layout.Body>
-</Layout.Root>;
+</Layout.Root>
 ```
 
-To use another component as the aside, pass `<Layout.Aside />` to its `render` prop
-instead of wrapping it, e.g. `<Sidebar.Root render={<Layout.Aside aria-label="…" />}>`.
-This avoids nested landmarks.
+## Header with top navigation
 
-## Top navigation recipe
-
-See [top navigation recipes](/components/top-navigation/) for inline, centered, stacked and responsive arrangements.
-
-`render` combines TopNavigation and Layout.Header into one header landmark.
-Without asides, omit Body.
+`render` merges [Top navigation](/components/top-navigation/) and Header into one header landmark.
 
 ```tsx
-import {Container, Layout, Link, Stack, TopNavigation} from '@earendil-works/elanor-react';
-
 <Layout.Root>
-  <Layout.Header
-    render={<TopNavigation.Root />}
-    style={{paddingBlock: 'var(--semantic-dimension-space-padding-xx-large)'}}
-  >
-    <Container>
-      <Stack direction="row" align="center" gap="auto" wrap="wrap">
-        <TopNavigation.Identity>
-          <Link href="/">Elanor</Link>
-        </TopNavigation.Identity>
-        <TopNavigation.Navigation>
-          <nav aria-label="Primary">
-            <Link href="/about">About</Link>
-          </nav>
-        </TopNavigation.Navigation>
-        <TopNavigation.Actions>
-          <Link href="/login">Sign in</Link>
-        </TopNavigation.Actions>
-      </Stack>
-    </Container>
+  <Layout.Header render={<TopNavigation.Root />}>
+    <Container>{/* Identity, navigation, and actions */}</Container>
   </Layout.Header>
   <Layout.Main>
-    <Container render={<section aria-labelledby="intro" />}>
-      <h1 id="intro">Build with Elanor</h1>
-      <p>Your product content.</p>
-    </Container>
-    <Container width="full" render={<section aria-label="Showcase" />}>
-      Full-width content retains gutters. Omit Container for a truly full-bleed region.
-    </Container>
+    <Container>{/* Page content */}</Container>
   </Layout.Main>
   <Layout.Footer>
-    <Container>Your footer content</Container>
+    <Container>{/* Footer content */}</Container>
   </Layout.Footer>
-</Layout.Root>;
+</Layout.Root>
 ```
 
-## Sticky regions and narrow screens
+## Narrow screens and sticky asides
 
-At `semantic.dimension.breakpoint.medium` (64rem), Body becomes a row and Aside
-becomes sticky at block-start, scrolling within `100dvh`. Below it, regions stack
-in source order with normal-flow asides—not mobile overlays. For breakpoint edits,
-see [Maintaining the CSS](/components/grid/#maintaining-the-css).
+From `semantic.dimension.breakpoint.medium` (64rem), Body is a row and each Aside sticks to the top, scrolling within `100dvh`. Below it, regions stack in source order; asides are not turned into overlays. For a mobile navigation overlay, use [Drawer](/components/drawer/).
 
-Avoid ancestor overflow or containment that changes the sticky scrollport.
-Aside has no padding: leave room for focus indicators and keep scrollable content
-keyboard-reachable, including noninteractive content. Composed components can
-supply their own insets.
+Ancestors with `overflow` or `contain` change the sticky scroll container; avoid them. Aside has no padding, so leave room for focus outlines.
 
-For a sticky header, set its height and adjust Aside's offset and available height:
+To disable stickiness, set `position: 'static'`, `maxBlockSize: 'none'`, and `overflow: 'visible'` on Aside.
+
+## Sticky header
+
+Give the header a fixed height on wide screens, then offset the asides by the same amount:
 
 ```tsx
-<Layout.Header className={styles.stickyHeader}>...</Layout.Header>
+<Layout.Header className={styles.stickyHeader}>…</Layout.Header>
 <Layout.Body>
-  <Layout.Aside className={styles.belowHeader}>...</Layout.Aside>
-  <Layout.Main>...</Layout.Main>
+  <Layout.Aside className={styles.belowHeader}>…</Layout.Aside>
+  <Layout.Main>…</Layout.Main>
 </Layout.Body>
 ```
 
 ```css
-/* Application CSS Module. Enable the fixed-size recipe only on wide screens.
-   Resolve this condition from semantic.dimension.breakpoint.medium in your build. */
+/* 64rem is semantic.dimension.breakpoint.medium; media queries can't use CSS variables. */
 @media (min-width: 64rem) {
   .stickyHeader {
     position: sticky;
@@ -164,9 +102,4 @@ For a sticky header, set its height and adjust Aside's offset and available heig
 }
 ```
 
-This example uses a 48px header. Match both offsets to the actual height; leave
-headers that wrap or grow in normal flow. Set `scroll-margin-block-start` on anchor
-targets so the header does not obscure them.
-
-To disable Aside stickiness, set `position: 'static'`, `maxBlockSize: 'none'`, and
-`overflow: 'visible'` through `style`.
+Keep headers that wrap or grow in normal flow. Set `scroll-margin-block-start` on anchor targets so the header doesn't cover them.

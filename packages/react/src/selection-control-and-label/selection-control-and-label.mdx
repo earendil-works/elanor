@@ -1,5 +1,29 @@
-import {SelectionControlLabelExample} from './selection-control-and-label.example.tsx';
-
 # Selection control and label
 
-<SelectionControlLabelExample client:load />
+Places a [Checkbox](/components/checkbox/), [Radio](/components/radio/), or [Switch](/components/switch/) next to its label and makes the label clickable. For text inputs, use [Control and label](/components/control-and-label/).
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Checkbox, SelectionControlAndLabel} from '@earendil-works/elanor-react';
+
+<SelectionControlAndLabel
+  control={
+    <Checkbox.Root>
+      <Checkbox.Indicator />
+    </Checkbox.Root>
+  }
+>
+  Email notifications
+</SelectionControlAndLabel>;
+```
+
+It renders a `<label>` around the control, so clicking the text toggles it. Disabling the control dims the label too.
+
+## Long labels
+
+Long labels wrap; the control stays aligned with the first line.
+
+<Demo example="./examples/long-label.tsx" />

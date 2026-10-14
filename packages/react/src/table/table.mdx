@@ -1,27 +1,34 @@
-import {Table} from '@earendil-works/elanor-react';
-
 # Table
+
+Shows data in rows and columns for comparing records. For a single record's details, use [Key value](/components/key-value/).
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Table} from '@earendil-works/elanor-react';
 
 <Table.Container>
   <Table.Root aria-label="Projects">
     <Table.Head>
       <Table.Row>
-        <Table.HeaderCell scope="col">Name</Table.HeaderCell>
-        <Table.HeaderCell scope="col">Status</Table.HeaderCell>
+        <Table.HeaderCell scope="col" />
       </Table.Row>
     </Table.Head>
     <Table.Body>
       <Table.Row>
-        <Table.Cell>
-          <Table.CellPrimary>Project Alpha</Table.CellPrimary>
-          <Table.CellSecondary>Production environment</Table.CellSecondary>
-        </Table.Cell>
-        <Table.Cell>Active</Table.Cell>
-      </Table.Row>
-      <Table.Row>
-        <Table.Cell>Project Beta</Table.Cell>
-        <Table.Cell>Draft</Table.Cell>
+        <Table.Cell />
       </Table.Row>
     </Table.Body>
   </Table.Root>
-</Table.Container>
+</Table.Container>;
+```
+
+The parts render native table elements. Container scrolls wide tables horizontally. Name the table with `aria-label` or a caption, and set `scope` on header cells. Align numbers with `align="end"`.
+
+## Two-line cells
+
+`CellPrimary` and `CellSecondary` stack a main value over supporting text in one cell.
+
+<Demo example="./examples/two-line-cells.tsx" />

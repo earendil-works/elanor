@@ -1,9 +1,27 @@
-import {NavigationMenuExample} from './navigation-menu.example.tsx';
-
 # Navigation menu
 
-Use `NavigationMenu.Link` for an anchor and `NavigationMenu.Trigger` for a button that opens a submenu. Both use the Navigation Item appearance. `NavigationMenu.Item` is their list-item container.
+A horizontal list of links for site or app navigation, with optional submenus. For a header that combines it with branding and actions, see [Top navigation](/components/top-navigation/).
 
-The More trigger opens a submenu. See [Top Navigation](/components/top-navigation/) for the header composition.
+<Demo example="./examples/demo.tsx" />
 
-<NavigationMenuExample client:load />
+## Usage
+
+```tsx
+import {NavigationMenu} from '@earendil-works/elanor-react';
+
+<NavigationMenu.Root aria-label="Main">
+  <NavigationMenu.List>
+    <NavigationMenu.Item>
+      <NavigationMenu.Link href="/" active />
+    </NavigationMenu.Item>
+  </NavigationMenu.List>
+</NavigationMenu.Root>;
+```
+
+`active` marks the current page with `aria-current="page"`. Give Root an `aria-label` when the page has more than one navigation landmark.
+
+## Submenus
+
+`NavigationMenu.Trigger` opens the item's `Content` in a shared popup. Add the Portal, Positioner, Popup, and Viewport parts once, after the List.
+
+<Demo example="./examples/submenu.tsx" />

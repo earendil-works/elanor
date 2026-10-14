@@ -1,0 +1,19 @@
+import {Button, Popover} from '@earendil-works/elanor-react';
+
+export default function PopoverDemo() {
+  return (
+    <Popover.Root>
+      <Popover.Trigger render={<Button hierarchy="secondary" />}>Usage limits</Popover.Trigger>
+      <Popover.Portal>
+        <Popover.Positioner>
+          <Popover.Popup>
+            <Popover.Title>Monthly usage</Popover.Title>
+            <Popover.Description>
+              Usage resets on the first day of each month. Unused credits don't carry over.
+            </Popover.Description>
+          </Popover.Popup>
+        </Popover.Positioner>
+      </Popover.Portal>
+    </Popover.Root>
+  );
+}

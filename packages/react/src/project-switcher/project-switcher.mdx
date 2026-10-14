@@ -1,7 +1,27 @@
-import {ProjectSwitcherExample} from './project-switcher.example.tsx';
-
 # Project switcher
 
-The trigger includes a downward chevron. Pass `indicator={null}` to omit it, or supply a custom icon.
+Shows the current project and opens a menu to switch to another or create one. Place it at the top of a [Sidebar](/components/sidebar/) or [Top navigation](/components/top-navigation/).
 
-<ProjectSwitcherExample client:load />
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {ProjectSwitcher} from '@earendil-works/elanor-react';
+
+<ProjectSwitcher.Root>
+  <ProjectSwitcher.Trigger>Website redesign</ProjectSwitcher.Trigger>
+  <ProjectSwitcher.Portal>
+    <ProjectSwitcher.Positioner align="start">
+      <ProjectSwitcher.Popup>
+        <ProjectSwitcher.Group>
+          <ProjectSwitcher.GroupLabel />
+          <ProjectSwitcher.Item />
+        </ProjectSwitcher.Group>
+      </ProjectSwitcher.Popup>
+    </ProjectSwitcher.Positioner>
+  </ProjectSwitcher.Portal>
+</ProjectSwitcher.Root>;
+```
+
+Apart from Trigger, the parts are the [Menu](/components/menu/) parts. The trigger ends with a chevron; pass `indicator={null}` to hide it or another icon to replace it.

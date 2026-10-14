@@ -1,10 +1,17 @@
-import {CopyButton} from '@earendil-works/elanor-react';
-
 # Copy button
 
-<p>
-  <code>pnpm install</code>{' '}
-  <CopyButton value="pnpm install" aria-label="Copy install command" client:load />
-</p>
+An icon button that copies a value to the clipboard and confirms the result. Use it next to IDs, keys, and commands.
 
-Clipboard access requires HTTPS or localhost.
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {CopyButton} from '@earendil-works/elanor-react';
+
+<CopyButton value="workspace-2048" aria-label="Copy workspace ID" />;
+```
+
+Name the button after what it copies. On success, the icon changes to a check for two seconds; screen readers hear `copiedLabel`, or `errorLabel` if copying fails. Clipboard access requires HTTPS or localhost.
+
+For code, pass a Copy button to [Code snippet](/components/code-snippet/)'s `actions`.

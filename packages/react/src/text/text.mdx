@@ -1,21 +1,19 @@
-import {Text} from '@earendil-works/elanor-react';
-import {TextInlineExample} from './text.example.tsx';
-
 # Text
 
-Text renders a paragraph by default. Use `render={<span />}` for inline text;
-put element-specific attributes and refs on the rendered element.
+Body text in the UI typeface. Renders a paragraph by default.
 
-## Paragraph
+<Demo example="./examples/demo.tsx" />
 
-<Text>Keep your team's projects, shared documents, and decisions in one place.</Text>
+## Usage
+
+```tsx
+import {Text} from '@earendil-works/elanor-react';
+
+<Text>Keep your team's projects in one place.</Text>;
+```
 
 ## Inline
 
-<TextInlineExample />
+Use `render={<span />}` inside other text. Put element-specific attributes and refs on the rendered element.
 
-```tsx
-<p>
-  Project visibility: <Text render={<span />}>Private</Text>
-</p>
-```
+<Demo example="./examples/inline.tsx" />

@@ -1,20 +1,17 @@
-import {ScrollAreaExample} from './scroll-area.example.tsx';
-
 # Scroll area
 
-Native scrolling with Base UI's draggable scrollbars, overflow state, and keyboard
-focus handling. Use for bounded regions, not document scrolling or virtualization.
+A bounded region with native scrolling and custom scrollbars, such as a long list inside a panel. Not for page scrolling or virtualized lists.
 
-<ScrollAreaExample client:load />
+<Demo example="./examples/demo.tsx" />
 
-## Composition
+## Usage
 
 ```tsx
 import {ScrollArea} from '@earendil-works/elanor-react';
 
-<ScrollArea.Root style={{blockSize: 'var(--semantic-dimension-size-content-small)'}}>
+<ScrollArea.Root>
   <ScrollArea.Viewport role="region" aria-label="Release notes">
-    <ScrollArea.Content>{/* Your content */}</ScrollArea.Content>
+    <ScrollArea.Content />
   </ScrollArea.Viewport>
   <ScrollArea.Scrollbar>
     <ScrollArea.Thumb />
@@ -22,37 +19,36 @@ import {ScrollArea} from '@earendil-works/elanor-react';
 </ScrollArea.Root>;
 ```
 
-- **Root** needs a bounded block size or a constrained flex/grid parent's height.
-- **Viewport** is the scrollable element: put `ref`, `onScroll`, accessible naming,
-  and imperative scroll calls here. Base UI adds a tab stop only while content
-  overflows. Do not override `tabIndex` unless intentionally changing that policy.
-- **Content** is measured as content changes. It has semantic padding by default.
-  For single-axis content that must shrink/truncate rather than grow horizontally,
-  override Base UI's default fit-content minimum with `style={{minWidth: 0}}`.
-- **Scrollbar / Thumb** render only when needed by default. Scrollbar defaults
-  to vertical; add `orientation="horizontal"` and **Corner** for both axes.
-  Custom scrollbars overlay the viewport; retain content padding so they do not
-  cover meaningful content or focus indicators.
+- **Root** needs a bounded height, set directly or by a flex or grid parent.
+- **Viewport** is the element that scrolls. Name it, and put `ref`, `onScroll`, and scroll calls here. It's focusable only while content overflows, so keyboard users can scroll it.
+- **Content** has padding by default, so scrollbars don't cover text or focus outlines. Add `style={{minWidth: 0}}` when content should shrink or truncate instead of growing wider.
+- **Scrollbar** appears only when content overflows.
 
-Base UI props, stateful `className`/`style` callbacks, `render`, and refs pass
-through. Set DOM `dir` and Base UI's `DirectionProvider` together for RTL.
+For right-to-left layouts, set `dir` on the element and `DirectionProvider` to the same direction.
 
-## State attributes
+## Both axes
 
-Style with Base UI's state attributes:
+Add a horizontal Scrollbar and a Corner where the two scrollbars meet.
 
-| Attribute                                      | Meaning                                               |
-| ---------------------------------------------- | ----------------------------------------------------- |
-| `data-has-overflow-x`, `data-has-overflow-y`   | Content exceeds the viewport                          |
-| `data-overflow-y-start`, `data-overflow-y-end` | More content above/below                              |
-| `data-overflow-x-start`, `data-overflow-x-end` | More content at an inline edge                        |
-| `data-scrolling`                               | Currently scrolling                                   |
-| `data-hovering`                                | Pointer is over the scroll area; exposed on Scrollbar |
-| `data-orientation`                             | Scrollbar/Thumb axis                                  |
+<Demo example="./examples/both-axes.tsx" />
 
-Thumb styling uses `data-hovering` and `data-scrolling`. Scrollbars stay visible
-while content overflows; [Sidebar](/components/sidebar/#sizing-and-scrolling)
-uses different visibility and overflow indicators.
+## Scrolling from code
 
-Keep the viewport mounted when surrounding UI changes. Avoid nesting it around
-an existing `overflow: auto` container.
+Call scroll methods on the Viewport.
+
+<Demo example="./examples/scroll-from-code.tsx" />
+
+## Styling states
+
+Style the parts with Base UI state attributes:
+
+| Attribute                                      | Meaning                                  |
+| ---------------------------------------------- | ---------------------------------------- |
+| `data-has-overflow-x`, `data-has-overflow-y`   | Content is larger than the viewport      |
+| `data-overflow-y-start`, `data-overflow-y-end` | More content above or below              |
+| `data-overflow-x-start`, `data-overflow-x-end` | More content at an inline edge           |
+| `data-scrolling`                               | Scrolling is in progress                 |
+| `data-hovering`                                | The pointer is over the area (Scrollbar) |
+| `data-orientation`                             | Scrollbar and Thumb axis                 |
+
+Don't wrap an element that already has `overflow: auto`. [Sidebar](/components/sidebar/) uses its own scrollbar visibility and overflow cues.
