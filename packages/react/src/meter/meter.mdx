@@ -1,0 +1,39 @@
+# Meter
+
+Shows a measurement within a known range, such as storage or budget used. It doesn't show task progress.
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Meter} from '@earendil-works/elanor-react';
+
+<Meter.Root value={24}>
+  <Meter.Label>Storage used</Meter.Label>
+  <Meter.Value />
+  <Meter.Track>
+    <Meter.Indicator />
+  </Meter.Track>
+</Meter.Root>;
+```
+
+Meter adds no layout; arrange its parts with [Stack](/components/stack/). Without a visible label, name the meter with `aria-label` on `Meter.Root`.
+
+## Semantic
+
+`warning` and `negative` flag a value near or past a limit. Choose the thresholds in your application.
+
+<Demo example="./examples/semantic.tsx" />
+
+## Thickness
+
+The track is `semantic.dimension.size.xxSmall` (8px) tall. For a thin meter, give `Meter.Track` a class that sets `block-size` to `semantic.dimension.size.xxxSmall` (4px); the indicator follows.
+
+<Demo example="./examples/thickness.tsx" />
+
+## Custom range
+
+`value` is a percentage by default; set `min` and `max` for other ranges. `format` formats the value, and `getAriaValueText` gives screen readers the same text.
+
+<Demo example="./examples/custom-range.tsx" />

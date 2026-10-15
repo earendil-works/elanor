@@ -8,6 +8,7 @@ export * as Grid from './grid/index.ts';
 export * as KeyValue from './key-value/index.ts';
 export * as Layout from './layout/index.ts';
 export * as Menu from './menu/index.ts';
+export * as Meter from './meter/index.ts';
 export * as Modal from './modal/index.ts';
 export * as NavigationMenu from './navigation-menu/index.ts';
 export * as PageHeader from './page-header/index.ts';
@@ -126,6 +127,15 @@ export type {
   MenuViewportProps,
   MenuViewportState,
 } from './menu/menu.tsx';
+
+export type {
+  MeterIndicatorProps,
+  MeterLabelProps,
+  MeterRootProps,
+  MeterSemantic,
+  MeterTrackProps,
+  MeterValueProps,
+} from './meter/meter.tsx';
 
 export {ControlAndLabel} from './control-and-label/control-and-label.tsx';
 export type {ControlAndLabelProps} from './control-and-label/control-and-label.tsx';
