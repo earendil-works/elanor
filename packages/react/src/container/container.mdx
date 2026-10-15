@@ -14,6 +14,8 @@ import {Container} from '@earendil-works/elanor-react';
 
 Content is capped at `semantic.dimension.size.maxWidth.content.large` (1216px) with `semantic.dimension.space.padding.xLarge` gutters (16px). Container fills its parent up to that cap, so it also centers in the space left beside a sidebar. It adds no block padding and renders a `div`, not a landmark.
 
+The gutters grow into the device's safe areas, so content stays clear of a notch or rounded corners when a phone is in landscape. Safe areas only apply when the page opts into them with `viewport-fit=cover` in its viewport meta tag; otherwise they are zero and the gutters stay 16px.
+
 ## Full width
 
 `width="full"` removes the cap and keeps the gutters. The difference shows only in parents wider than 1216px, so there is no live preview. A [Grid](/components/grid/) inside a capped Container is capped too; use `width="full"` to give it more room.
