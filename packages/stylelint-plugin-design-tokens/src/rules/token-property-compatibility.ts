@@ -103,6 +103,19 @@ const DEFAULT_ROLES: Record<string, string[]> = {
   'outline-width': ['semantic.dimension.borderWidth.'],
   fill: ['semantic.color.icon.'],
   stroke: ['semantic.color.icon.'],
+  'box-shadow': [
+    'semantic.shadow.',
+    'semantic.dimension.borderWidth.',
+    'semantic.color.border.',
+    'semantic.color.background.',
+    'semantic.color.focusRing.',
+  ],
+  width: ['semantic.dimension.size.', 'semantic.dimension.borderWidth.'],
+  height: ['semantic.dimension.size.', 'semantic.dimension.borderWidth.'],
+  'inline-size': ['semantic.dimension.size.', 'semantic.dimension.borderWidth.'],
+  'block-size': ['semantic.dimension.size.', 'semantic.dimension.borderWidth.'],
+  'min-*': ['semantic.dimension.size.', 'semantic.dimension.borderWidth.'],
+  'max-*': ['semantic.dimension.size.', 'semantic.dimension.borderWidth.'],
   'z-index': ['semantic.number.layer.'],
   opacity: ['semantic.number.opacity.'],
   scale: ['semantic.number.scale.'],
@@ -115,11 +128,16 @@ const DEFAULT_ROLES: Record<string, string[]> = {
   'animation-duration': ['semantic.transition.'],
   'animation-delay': ['semantic.transition.'],
   'animation-timing-function': ['semantic.transition.'],
+  'margin*': ['semantic.dimension.space.', 'semantic.dimension.size.'],
   'padding*': ['semantic.dimension.space.padding.', 'semantic.dimension.space.control.padding.'],
   gap: ['semantic.dimension.space.gap.', 'semantic.dimension.space.control.gap.'],
   'row-gap': ['semantic.dimension.space.gap.', 'semantic.dimension.space.control.gap.'],
   'column-gap': ['semantic.dimension.space.gap.', 'semantic.dimension.space.control.gap.'],
 };
+
+/** Sizes, which may also use spacing tokens inside `calc()` to adjust another value. */
+const SIZE_PROPERTY = /^(?:(?:min|max)-)?(?:width|height|inline-size|block-size)$/;
+const SIZE_CALC_ROLES = ['semantic.dimension.space.'];
 
 /**
  * Roles for tokens of one type inside transform functions: distances in a
@@ -206,26 +224,34 @@ function compensatedBorderOperands(
   return operands;
 }
 
+/** Where a value node sits: its nearest transform function with roles, and whether it is inside `calc()`. */
+interface NodeContext {
+  transformFunction: string | undefined;
+  inCalc: boolean;
+}
+
 /**
- * Walks value nodes, passing each node the nearest enclosing transform function
- * that has its own roles (such as `translateY` around a `calc()`).
+ * Walks value nodes, passing each node its context.
  *
  * @param nodes The nodes to walk.
- * @param transformFunction The enclosing transform function name, lowercased.
+ * @param context The context of the nodes.
  * @param visit The callback for each node.
  */
-function walkWithTransformFunction(
+function walkWithContext(
   nodes: Node[],
-  transformFunction: string | undefined,
-  visit: (node: Node, transformFunction: string | undefined) => void,
+  context: NodeContext,
+  visit: (node: Node, context: NodeContext) => void,
 ): void {
   for (const node of nodes) {
-    visit(node, transformFunction);
+    visit(node, context);
     if (node.type !== 'function') continue;
     const name = node.value.toLowerCase();
-    walkWithTransformFunction(
+    walkWithContext(
       node.nodes,
-      name in TRANSFORM_FUNCTION_ROLES ? name : transformFunction,
+      {
+        transformFunction: name in TRANSFORM_FUNCTION_ROLES ? name : context.transformFunction,
+        inCalc: context.inCalc || name === 'calc',
+      },
       visit,
     );
   }
@@ -257,51 +283,64 @@ export const rule: Rule<true, RuleOptions> = (primary, options) => (root, result
     const property = declaration.prop.toLowerCase();
     const expectedTypes = valuesFor(property, typeMap);
     const propertyRoles = valuesFor(property, roleMap);
+    // A configured role for this size replaces the defaults, including the calc() exception.
+    const sizeCalcApplies =
+      SIZE_PROPERTY.test(property) &&
+      valuesFor(property, options.semanticRoles ?? {}) === undefined;
     const parsed = valueParser(declaration.value);
     const compensatedBorders =
       /^padding(?:-(?:top|right|bottom|left|(?:block|inline)(?:-start|-end)?))?$/.test(property)
         ? compensatedBorderOperands(parsed.nodes, catalogue.tokensByVariable)
         : new Set<Node>();
 
-    walkWithTransformFunction(parsed.nodes, undefined, (node, transformFunction) => {
-      if (node.type !== 'function' || node.value.toLowerCase() !== 'var') return;
-      const variable = node.nodes.find(
-        (child) => child.type === 'word' && child.value.startsWith('--'),
-      )?.value;
-      if (!variable) return;
-      const token = catalogue.tokensByVariable.get(variable);
-      if (!token) return;
-      const functionRoles =
-        property === 'transform' && transformFunction
-          ? transformFunctionRoles[transformFunction]
-          : undefined;
-      const expectedRoles =
-        functionRoles && functionRoles.type === token.type ? functionRoles.roles : propertyRoles;
-      if (expectedTypes && !expectedTypes.includes(token.type)) {
-        report(
-          result,
-          ruleName,
-          declaration,
-          `Token "${variable}" has type "${token.type}", which is incompatible with "${property}" (expected ${expectedTypes.join(', ')}).`,
-          variable,
-        );
-        return;
-      }
-      if (
-        token.tier === 'semantic' &&
-        expectedRoles &&
-        !compensatedBorders.has(node) &&
-        !expectedRoles.some((prefix) => matchesRolePrefix(rolePath(token), prefix))
-      ) {
-        report(
-          result,
-          ruleName,
-          declaration,
-          `Semantic token "${variable}" has the wrong role for "${property}" (expected ${expectedRoles.join(' or ')}).`,
-          variable,
-        );
-      }
-    });
+    walkWithContext(
+      parsed.nodes,
+      {transformFunction: undefined, inCalc: false},
+      (node, {transformFunction, inCalc}) => {
+        if (node.type !== 'function' || node.value.toLowerCase() !== 'var') return;
+        const variable = node.nodes.find(
+          (child) => child.type === 'word' && child.value.startsWith('--'),
+        )?.value;
+        if (!variable) return;
+        const token = catalogue.tokensByVariable.get(variable);
+        if (!token) return;
+        const functionRoles =
+          property === 'transform' && transformFunction
+            ? transformFunctionRoles[transformFunction]
+            : undefined;
+        // Spacing may adjust a size inside calc(), such as subtracting an inset.
+        const sizeRoles =
+          propertyRoles && inCalc && sizeCalcApplies
+            ? [...propertyRoles, ...SIZE_CALC_ROLES]
+            : propertyRoles;
+        const expectedRoles =
+          functionRoles && functionRoles.type === token.type ? functionRoles.roles : sizeRoles;
+        if (expectedTypes && !expectedTypes.includes(token.type)) {
+          report(
+            result,
+            ruleName,
+            declaration,
+            `Token "${variable}" has type "${token.type}", which is incompatible with "${property}" (expected ${expectedTypes.join(', ')}).`,
+            variable,
+          );
+          return;
+        }
+        if (
+          token.tier === 'semantic' &&
+          expectedRoles &&
+          !compensatedBorders.has(node) &&
+          !expectedRoles.some((prefix) => matchesRolePrefix(rolePath(token), prefix))
+        ) {
+          report(
+            result,
+            ruleName,
+            declaration,
+            `Semantic token "${variable}" has the wrong role for "${property}" (expected ${expectedRoles.join(' or ')}).`,
+            variable,
+          );
+        }
+      },
+    );
   });
 };
 

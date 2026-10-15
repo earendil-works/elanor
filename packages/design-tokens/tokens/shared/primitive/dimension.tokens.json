@@ -212,6 +212,28 @@
           }
         }
       },
+      "16000": {
+        "$value": {
+          "value": 40,
+          "unit": "rem"
+        },
+        "$extensions": {
+          "com.earendil-works.generation": {
+            "source": "recipes/shared/primitive/dimension.json"
+          }
+        }
+      },
+      "19200": {
+        "$value": {
+          "value": 48,
+          "unit": "rem"
+        },
+        "$extensions": {
+          "com.earendil-works.generation": {
+            "source": "recipes/shared/primitive/dimension.json"
+          }
+        }
+      },
       "30400": {
         "$value": {
           "value": 76,

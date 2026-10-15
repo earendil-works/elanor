@@ -1,7 +1,7 @@
 /* Scope overrides above shared component styles regardless of CSS chunk order. */
 .home {
   .container {
-    max-inline-size: var(--semantic-dimension-breakpoint-small);
+    max-inline-size: var(--semantic-dimension-size-content-medium);
   }
 
   .header {
