@@ -14,7 +14,7 @@ import {KeyboardKey, KeyboardShortcut} from '@earendil-works/elanor-react';
 </KeyboardShortcut>;
 ```
 
-Both render `kbd`, nested as HTML recommends for key combinations. Write the separator as text between the keys; it shows in `semantic.color.text.secondary`. Keys use `semantic.typography.code.secondary` on `semantic.color.background.surface`, with a thicker bottom border as their depth edge.
+Both render `kbd`, nested as HTML recommends for key combinations. Write the separator as text between the keys; it shows in `semantic.color.text.secondary`. Keys use `semantic.typography.code.secondary` on `semantic.color.background.surface`, with a thicker bottom border as their depth edge. Pressing a key pushes it in by `semantic.dimension.travel.keyboardKey`, the depth of that edge.
 
 Write key names as text, such as `Shift`, `Ctrl`, and `Esc`. Symbols such as ⌘ and ⇧ are specific to one platform and vary between fonts.
 

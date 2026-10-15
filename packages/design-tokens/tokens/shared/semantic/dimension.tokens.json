@@ -309,6 +309,10 @@
         "popup": {
           "$value": "{primitive.dimension.100}",
           "$description": "Use for the distance popups slide as they open and close."
+        },
+        "keyboardKey": {
+          "$value": "{primitive.dimension.25}",
+          "$description": "Use for the distance a keyboard key moves down while pressed, as deep as its bottom edge is thicker than its other borders."
         }
       }
     }
