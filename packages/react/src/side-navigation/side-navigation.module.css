@@ -55,7 +55,8 @@
     padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
     border-radius: var(--semantic-dimension-radius-small);
     background: var(--semantic-color-background-fill-ghost-neutral);
-    color: var(--semantic-color-text-primary);
+    /* Items are secondary; the current page and its section are primary. */
+    color: var(--semantic-color-text-secondary);
     text-decoration: none;
   }
 
@@ -67,9 +68,12 @@
     }
   }
 
-  .link:active,
+  /* No pressed fill: it matched the current-page fill, so a click flashed current, hover,
+     current. The current page stands out by its fill, color, and weight. */
   .link[data-active] {
     background: var(--semantic-color-background-fill-ghost-neutral-active);
+    color: var(--semantic-color-text-primary);
+    font-weight: var(--semantic-font-weight-ui-selected);
     box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
       var(--semantic-color-background-fill-ghost-neutral-active);
   }
@@ -86,7 +90,7 @@
     justify-content: center;
     inline-size: var(--semantic-dimension-size-icon);
     block-size: var(--semantic-dimension-size-icon);
-    color: var(--semantic-color-icon-primary);
+    color: var(--semantic-color-icon-secondary);
   }
 
   .icon > svg,
@@ -96,12 +100,77 @@
     block-size: 100%;
   }
 
+  /* Long labels wrap to two lines, then truncate. */
   .label {
+    display: -webkit-box;
     flex: 1;
     min-inline-size: 0;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  .collapsible {
+    min-inline-size: 0;
+    interpolate-size: allow-keywords;
+  }
+
+  /* Sections animate open and closed: the content grows from zero height and fades in. The clip
+     margin keeps the links' focus rings visible: 6px, the ring (border.width.large) plus its
+     offset (border.width.medium), as one token because Chrome computes a calc() here as 0px.
+     Browsers without ::details-content or interpolate-size open instantly. Reduced motion makes
+     the movement instant through the tokens. */
+  .collapsible::details-content {
+    overflow: clip;
+    overflow-clip-margin: var(--semantic-dimension-space-padding-small);
+    transition:
+      block-size var(--semantic-transition-movement-disclosure),
+      opacity var(--semantic-transition-fade),
+      content-visibility var(--semantic-transition-movement-disclosure-duration) allow-discrete;
+  }
+
+  .collapsible:not([open])::details-content {
+    block-size: 0;
+    opacity: var(--semantic-number-opacity-hidden);
+  }
+
+  .trigger {
+    list-style: none;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .trigger::-webkit-details-marker {
+    display: none;
+  }
+
+  .chevron {
+    transition: rotate var(--semantic-transition-movement-disclosure);
+  }
+
+  .collapsible:not([open]) > .trigger .chevron {
+    rotate: -90deg;
+  }
+
+  /* Padding, not margin: a margin would collapse out of the closed section. */
+  .collapsible > .list {
+    padding-block-start: var(--semantic-dimension-space-padding-medium);
+  }
+
+  /* Nested links indent only their text, so fills keep the full row width: 16px past the
+     section title's text. */
+  .collapsible > .list .link {
+    padding-inline-start: calc(
+      var(--semantic-dimension-space-control-padding-inline-small) +
+        var(--semantic-dimension-space-padding-x-large)
+    );
+  }
+
+  /* A section that contains the current page is marked like the page itself. */
+  .collapsible:has(.link[data-active]) > .trigger {
+    color: var(--semantic-color-text-primary);
+    font-weight: var(--semantic-font-weight-ui-selected);
   }
 
   .link[data-compact] {

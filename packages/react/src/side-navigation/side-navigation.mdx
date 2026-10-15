@@ -21,7 +21,13 @@ import {SideNavigation} from '@earendil-works/elanor-react';
 </SideNavigation.Root>;
 ```
 
-Root renders a `nav`. `active` marks the current page with `aria-current="page"`. Groups are optional.
+Root renders a `nav`. `active` marks the current page with `aria-current="page"`: it gets the active fill and `semantic.color.text.primary` at `semantic.fontWeight.ui.selected`; other links are `semantic.color.text.secondary`. Groups are optional. Long labels wrap to two lines, then truncate.
+
+## Sections
+
+`Collapsible` holds a section that opens and closes, with a `CollapsibleTrigger` as its title and a `List` of links. It's a native `details` element, so it works before and without JavaScript. Pass `open` to the section that contains the current page; its title is marked like the current page. Nested links indent their text by `semantic.dimension.space.padding.xLarge`. Sections open and close with `semantic.transition.movement.disclosure`, instantly when the reader prefers reduced motion.
+
+<Demo example="./examples/sections.tsx" />
 
 ## Icons
 

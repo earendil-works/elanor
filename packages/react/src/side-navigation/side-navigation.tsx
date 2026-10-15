@@ -1,7 +1,9 @@
+import {KeyboardArrowDownIcon} from '@earendil-works/elanor-icons-react';
 import {
   createContext,
   useContext,
   type AnchorHTMLAttributes,
+  type DetailsHTMLAttributes,
   type HTMLAttributes,
   type ReactNode,
   type Ref,
@@ -156,5 +158,43 @@ export function SideNavigationLink({
         ) : null}
       </a>
     </CompactTooltip>
+  );
+}
+
+export interface SideNavigationCollapsibleProps extends DetailsHTMLAttributes<HTMLDetailsElement> {
+  readonly ref?: Ref<HTMLDetailsElement> | undefined;
+}
+
+/**
+ * A section of links that opens and closes, on a native `details` element, so it works before
+ * and without JavaScript. Put a `CollapsibleTrigger` and a `List` inside, in an `Item`. Pass
+ * `open` for the section that contains the current page.
+ */
+export function SideNavigationCollapsible({
+  ref,
+  className,
+  ...props
+}: SideNavigationCollapsibleProps) {
+  return <details {...props} ref={ref} className={classes(styles.collapsible, className)} />;
+}
+
+export interface SideNavigationCollapsibleTriggerProps extends HTMLAttributes<HTMLElement> {
+  readonly ref?: Ref<HTMLElement> | undefined;
+}
+
+/** The section's title, a `summary` styled like a link with a chevron at the end. */
+export function SideNavigationCollapsibleTrigger({
+  ref,
+  children,
+  className,
+  ...props
+}: SideNavigationCollapsibleTriggerProps) {
+  return (
+    <summary {...props} ref={ref} className={classes(styles.link, styles.trigger, className)}>
+      <span className={styles.label}>{children}</span>
+      <span className={classes(styles.icon, styles.chevron)} aria-hidden="true">
+        <KeyboardArrowDownIcon />
+      </span>
+    </summary>
   );
 }
