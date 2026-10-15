@@ -141,16 +141,32 @@ export async function composeArtwork(
 
 type Scheme = 'light' | 'dark';
 
+/** A token's value in one modifier context of the design-tokens catalogue. */
+interface CatalogValue {
+  value: unknown;
+  aliasOf?: string;
+}
+
 /** Design tokens by path, read from the design-tokens catalogue. */
 export interface TokenCatalog {
   tokens: Record<
     string,
-    {
-      values: Record<Scheme, unknown>;
-      aliasOf?: Record<Scheme, string | null>;
+    CatalogValue & {
+      /** Values that differ from the default color scheme, e.g. `contexts.colorScheme.dark`. */
+      contexts?: Record<string, Record<string, CatalogValue>>;
       extensions?: Record<string, unknown>;
     }
   >;
+}
+
+/** A token's value in a color scheme; the catalogue lists only values that differ from the default. */
+export function tokenInScheme(
+  tokens: TokenCatalog,
+  token: string,
+  scheme: Scheme,
+): CatalogValue | undefined {
+  const entry = tokens.tokens[token];
+  return entry?.contexts?.colorScheme?.[scheme] ?? entry;
 }
 
 const catalogs = new Map<BrandId, Promise<TokenCatalog>>();
@@ -180,7 +196,7 @@ export async function brandBackground(brand: BrandId, scheme: Scheme): Promise<s
 }
 
 export function tokenHex(tokens: TokenCatalog, token: string, scheme: Scheme): string {
-  const hex = (tokens.tokens[token]?.values[scheme] as {hex?: string} | undefined)?.hex;
+  const hex = (tokenInScheme(tokens, token, scheme)?.value as {hex?: string} | undefined)?.hex;
   if (!hex)
     throw new Error(
       `Token ${token} has no ${scheme} hex value; build @earendil-works/design-tokens first`,

@@ -1,13 +1,49 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://earendil.works/schemas/design-token-catalogue/v1.json",
-  "title": "Design token catalogue v1",
+  "$id": "https://earendil.works/schemas/design-token-catalogue/v2.json",
+  "title": "Design token catalogue v2",
   "type": "object",
   "additionalProperties": false,
-  "required": ["schemaVersion", "brand", "tokens"],
+  "required": ["schemaVersion", "brand", "modifiers", "tokens"],
   "properties": {
-    "schemaVersion": {"const": 1},
-    "brand": {"type": "string", "minLength": 1},
+    "schemaVersion": {
+      "const": 2
+    },
+    "brand": {
+      "type": "string",
+      "minLength": 1
+    },
+    "modifiers": {
+      "description": "The resolver modifiers: each one's default context, all contexts, and how the CSS output switches on each non-default context.",
+      "type": "object",
+      "additionalProperties": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["default", "contexts", "css"],
+        "properties": {
+          "default": {
+            "type": "string",
+            "minLength": 1
+          },
+          "contexts": {
+            "type": "array",
+            "minItems": 2,
+            "items": {
+              "type": "string",
+              "minLength": 1
+            },
+            "uniqueItems": true
+          },
+          "css": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
     "tokens": {
       "type": "array",
       "items": {
@@ -20,50 +56,94 @@
           "tier",
           "description",
           "deprecated",
-          "modes",
-          "values"
+          "css",
+          "value"
         ],
         "properties": {
-          "path": {"type": "string", "minLength": 1},
-          "cssVariable": {"type": "string", "pattern": "^--[A-Za-z0-9_-]+$"},
-          "type": {"type": "string", "minLength": 1},
-          "tier": {"enum": ["primitive", "semantic", "component"]},
-          "description": {"type": "string"},
-          "deprecated": {"oneOf": [{"type": "boolean"}, {"type": "string", "minLength": 1}]},
-          "modes": {
-            "type": "object",
-            "additionalProperties": false,
-            "required": ["light", "dark"],
-            "properties": {
-              "light": {"type": "string", "minLength": 1},
-              "dark": {"type": "string", "minLength": 1}
-            }
+          "path": {
+            "type": "string",
+            "minLength": 1
           },
-          "values": {
-            "description": "Resolved DTCG $value per color scheme.",
-            "type": "object",
-            "additionalProperties": false,
-            "required": ["light", "dark"],
-            "properties": {
-              "light": {},
-              "dark": {}
-            }
+          "cssVariable": {
+            "type": "string",
+            "pattern": "^--[A-Za-z0-9_-]+$"
+          },
+          "type": {
+            "type": "string",
+            "minLength": 1
+          },
+          "tier": {
+            "enum": ["primitive", "semantic", "component"]
+          },
+          "description": {
+            "type": "string"
+          },
+          "deprecated": {
+            "oneOf": [
+              {
+                "type": "boolean"
+              },
+              {
+                "type": "string",
+                "minLength": 1
+              }
+            ]
+          },
+          "css": {
+            "description": "Resolved CSS value with every modifier at its default context.",
+            "type": "string",
+            "minLength": 1
+          },
+          "value": {
+            "description": "Resolved DTCG $value with every modifier at its default context."
           },
           "aliasOf": {
-            "description": "The token each color scheme's value ultimately aliases.",
+            "description": "The token the default value ultimately aliases, when it is an alias.",
+            "type": "string",
+            "minLength": 1
+          },
+          "contexts": {
+            "description": "Values that differ from the default, by modifier and context.",
             "type": "object",
-            "additionalProperties": false,
-            "required": ["light", "dark"],
-            "properties": {
-              "light": {"type": ["string", "null"]},
-              "dark": {"type": ["string", "null"]}
+            "minProperties": 1,
+            "additionalProperties": {
+              "type": "object",
+              "minProperties": 1,
+              "additionalProperties": {
+                "$ref": "#/$defs/contextValue"
+              }
             }
           },
           "extensions": {
             "description": "The token's $extensions, such as com.earendil-works.print CMYK builds.",
             "type": "object"
           },
-          "sourceToken": {"type": "string", "minLength": 1}
+          "sourceToken": {
+            "type": "string",
+            "minLength": 1
+          }
+        }
+      }
+    }
+  },
+  "$defs": {
+    "contextValue": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["css", "value"],
+      "properties": {
+        "css": {
+          "description": "Resolved CSS value.",
+          "type": "string",
+          "minLength": 1
+        },
+        "value": {
+          "description": "Resolved DTCG $value."
+        },
+        "aliasOf": {
+          "description": "The token the value ultimately aliases, when it is an alias.",
+          "type": "string",
+          "minLength": 1
         }
       }
     }

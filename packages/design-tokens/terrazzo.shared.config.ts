@@ -44,6 +44,16 @@ function prepareDarkColorSchemeCss(contents: string): string {
 }
 
 /**
+ * How the CSS output switches on each non-default modifier context, recorded
+ * in the token catalogue. Keep these in step with `cssPermutations`.
+ */
+export const contextActivation: Record<string, Record<string, string>> = {
+  colorScheme: {
+    dark: '@media (prefers-color-scheme: dark) on :root without data-color-scheme, or :root[data-color-scheme="dark"]',
+  },
+};
+
+/**
  * Shared resolver permutations for every brand CSS build.
  *
  * Foundations, mode-independent semantic tokens, and the default light

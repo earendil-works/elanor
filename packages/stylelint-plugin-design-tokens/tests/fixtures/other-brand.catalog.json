@@ -1,6 +1,9 @@
 {
-  "schemaVersion": 1,
+  "schemaVersion": 2,
   "brand": "other-brand",
+  "modifiers": {
+    "colorScheme": {"default": "light", "contexts": ["light", "dark"], "css": {"dark": "Fixture."}}
+  },
   "tokens": [
     {
       "path": "semantic.color.background.canvas",
@@ -9,7 +12,9 @@
       "tier": "semantic",
       "description": "Fixture token.",
       "deprecated": false,
-      "modes": {"light": "white", "dark": "black"}
+      "css": "white",
+      "value": "white",
+      "contexts": {"colorScheme": {"dark": {"css": "black", "value": "black"}}}
     }
   ]
 }
