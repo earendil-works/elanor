@@ -1,0 +1,21 @@
+# Blockquote
+
+A quotation from another source, set apart from the surrounding text by an indent and a large opening quotation mark.
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Blockquote, Text} from '@earendil-works/elanor-react';
+
+<Blockquote>
+  <Text />
+</Blockquote>;
+```
+
+Blockquote renders a `blockquote` indented by `semantic.dimension.space.padding.xxLarge` (24px), with an opening quotation mark in `semantic.color.icon.secondary` hanging in the indent, level with the first line. The mark is decorative and hidden from screen readers. Blockquote sets no type of its own: put [Text](/components/text/) or other blocks inside.
+
+## Source
+
+Name the source in the text around the quotation, or in a `figcaption` when the quotation sits in a `figure`. Put a source URL in `cite`; browsers don't show it.

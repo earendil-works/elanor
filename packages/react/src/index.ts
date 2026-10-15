@@ -78,6 +78,9 @@ export type {
   ScrollAreaCornerProps,
 } from './scroll-area/scroll-area.tsx';
 
+export {Blockquote} from './blockquote/blockquote.tsx';
+export type {BlockquoteProps} from './blockquote/blockquote.tsx';
+
 export {Button} from './button/button.tsx';
 export type {
   ButtonDensity,
