@@ -66,8 +66,7 @@
   display: flex;
   min-inline-size: 0;
   inline-size: 100%;
-  /* stylelint-disable-next-line design-tokens/token-property-compatibility -- Docs reading width; a content-size token for it is pending. */
-  max-inline-size: var(--semantic-dimension-breakpoint-small);
+  max-inline-size: var(--semantic-dimension-size-content-medium);
   flex-direction: column;
   gap: var(--semantic-dimension-space-gap-small);
 }

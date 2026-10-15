@@ -76,6 +76,10 @@
             "$value": "{primitive.dimension.12000}",
             "$description": "Use as a maximum inline size for compact content regions."
           },
+          "medium": {
+            "$value": "{primitive.dimension.19200}",
+            "$description": "Use as a maximum inline size for a single column of page content, such as documentation text with its examples."
+          },
           "large": {
             "$value": "{primitive.dimension.30400}",
             "$description": "Use as a maximum inline size for broad page content, excluding surrounding gutters and side regions."
