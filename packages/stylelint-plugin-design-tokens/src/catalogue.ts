@@ -8,7 +8,7 @@ export interface CatalogueToken {
   tier: string;
   description: string;
   deprecated: boolean | string;
-  modes: Record<string, string>;
+  css: string;
   sourceToken?: string;
 }
 
@@ -38,8 +38,8 @@ export function loadCatalogue(filename: string): LoadedCatalogue {
   if (cached) return cached;
 
   const catalogue = JSON.parse(readFileSync(absolutePath, 'utf8')) as TokenCatalogue;
-  if (catalogue.schemaVersion !== 1 || !Array.isArray(catalogue.tokens)) {
-    throw new Error(`Unsupported token catalogue at ${absolutePath}. Expected schemaVersion 1.`);
+  if (catalogue.schemaVersion !== 2 || !Array.isArray(catalogue.tokens)) {
+    throw new Error(`Unsupported token catalogue at ${absolutePath}. Expected schemaVersion 2.`);
   }
 
   const loaded: LoadedCatalogue = {

@@ -82,16 +82,12 @@ describe('generated catalogue', () => {
         cssVariable: string;
         type: string;
         tier: string;
-        modes: {light: string; dark: string};
+        css: string;
       }>;
     };
     const emitted = new Set([...css.matchAll(/^\s*(--[\w-]+):/gm)].map((match) => match[1]));
     expect(new Set(data.tokens.map((token) => token.cssVariable))).toEqual(emitted);
-    expect(
-      data.tokens.every(
-        (token) => token.type && token.tier && token.modes.light && token.modes.dark,
-      ),
-    ).toBe(true);
+    expect(data.tokens.every((token) => token.type && token.tier && token.css)).toBe(true);
   });
 });
 

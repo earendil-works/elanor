@@ -1,4 +1,5 @@
 import {logoTokens} from '../../config.js';
+import {tokenInScheme} from '../lib/compose.js';
 import {createPdf} from '../lib/pdf.js';
 import type {AssetSelector, ExportPlugin} from './plugin.js';
 
@@ -22,7 +23,7 @@ export function print(options: PrintOptions): ExportPlugin {
         for (const [profile, outputCondition] of Object.entries(options.profiles)) {
           const paths = asset.source.paths.map(({d, token, fillRule}) => {
             const linked = asset.treatment.monochrome ? logoTokens.monochrome : token;
-            const primitive = tokens.tokens[linked]?.aliasOf?.[asset.treatment.scheme];
+            const primitive = tokenInScheme(tokens, linked, asset.treatment.scheme)?.aliasOf;
             const print = primitive
               ? tokens.tokens[primitive]?.extensions?.[PRINT_EXTENSION_KEY]
               : undefined;

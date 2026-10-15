@@ -1,31 +1,53 @@
-import type {BuildHookOptions, Plugin, TokenTransformed} from '@terrazzo/parser';
+import type {
+  BuildHookOptions,
+  Plugin,
+  TokenNormalizedSet,
+  TokenTransformed,
+} from '@terrazzo/parser';
 
-export const CATALOGUE_SCHEMA_VERSION = 1;
+import {contextActivation} from '../terrazzo.shared.config';
+
+export const CATALOGUE_SCHEMA_VERSION = 2;
 const GENERATION_EXTENSION_KEY = 'com.earendil-works.generation';
 
-type ColorScheme = 'light' | 'dark';
+/** A token's value in one modifier context. */
+export interface CatalogueContextValue {
+  /** Resolved CSS value. */
+  css: string;
+  /** Resolved DTCG `$value`, e.g. a color with its `hex`. */
+  value: unknown;
+  /** The token the value ultimately aliases, when it is an alias. */
+  aliasOf?: string;
+}
 
-export interface CatalogueEntry {
+export interface CatalogueEntry extends CatalogueContextValue {
   path: string;
   cssVariable: string;
   type: string;
   tier: string;
   description: string;
   deprecated: boolean | string;
-  /** Resolved CSS value per color scheme. */
-  modes: Record<ColorScheme, string>;
-  /** Resolved DTCG `$value` per color scheme, e.g. a color with its `hex`. */
-  values: Record<ColorScheme, unknown>;
-  /** The token each scheme's value ultimately aliases, when it is an alias. */
-  aliasOf?: Record<ColorScheme, string | null>;
+  /**
+   * Values that differ from the default (`css`, `value`, `aliasOf`, with every
+   * modifier at its default context), by modifier and context.
+   */
+  contexts?: Record<string, Record<string, CatalogueContextValue>>;
   /** The token's `$extensions`, such as print builds of key colors. */
   extensions?: Record<string, unknown>;
   sourceToken?: string;
 }
 
+export interface CatalogueModifier {
+  default: string;
+  contexts: string[];
+  /** How the CSS output switches on each non-default context. */
+  css: Record<string, string>;
+}
+
 export interface TokenCatalogue {
   schemaVersion: number;
   brand: string;
+  modifiers: Record<string, CatalogueModifier>;
   tokens: CatalogueEntry[];
 }
 
@@ -138,19 +160,52 @@ function resolveValue(
   });
 }
 
-function modeVariables(
+function contextVariables(
   transforms: TokenTransformed[],
+  base: ReadonlyMap<string, ReturnType<typeof cssVariablesFor>[number]> = new Map(),
 ): Map<string, ReturnType<typeof cssVariablesFor>[number]> {
-  const result = new Map<string, ReturnType<typeof cssVariablesFor>[number]>();
+  const result = new Map(base);
   for (const transform of transforms) {
     for (const variable of cssVariablesFor(transform)) result.set(variable.name, variable);
   }
   return result;
 }
 
-function resolvedModeValues(variables: ReadonlyMap<string, {value: string}>): Map<string, string> {
+function resolvedContextValues(
+  variables: ReadonlyMap<string, {value: string}>,
+): Map<string, string> {
   const raw = new Map([...variables].map(([name, variable]) => [name, variable.value]));
   return new Map([...raw].map(([name, value]) => [name, resolveValue(value, raw)]));
+}
+
+/** CSS variables, resolved CSS values, and resolved tokens for one resolver input. */
+interface ContextState {
+  variables: Map<string, ReturnType<typeof cssVariablesFor>[number]>;
+  values: Map<string, string>;
+  resolved: TokenNormalizedSet;
+}
+
+function contextState(
+  options: BuildHookOptions,
+  input: Record<string, string>,
+  base?: ContextState,
+): ContextState {
+  // A non-default CSS permutation contains only the tokens it overrides. Merge
+  // it over the complete default set to model the cascade.
+  const variables = contextVariables(transformsFor(options, input), base?.variables);
+  return {
+    variables,
+    values: resolvedContextValues(variables),
+    resolved: options.resolver.apply(input),
+  };
+}
+
+function sameValue(a: CatalogueContextValue, b: CatalogueContextValue): boolean {
+  return (
+    a.css === b.css &&
+    a.aliasOf === b.aliasOf &&
+    JSON.stringify(a.value) === JSON.stringify(b.value)
+  );
 }
 
 export function cataloguePlugin(brand: string): Plugin {
@@ -158,38 +213,50 @@ export function cataloguePlugin(brand: string): Plugin {
     name: '@earendil-works/token-catalogue',
     enforce: 'post',
     build(options): void {
-      const lightTransforms = transformsFor(options, {colorScheme: 'light'});
-      const darkTransforms = transformsFor(options, {colorScheme: 'dark'});
-      const lightVariables = modeVariables(lightTransforms);
-      // The CSS dark permutation intentionally contains only semantic color
-      // overrides. Merge it over the complete light set to model the cascade.
-      const darkVariables = new Map(lightVariables);
-      for (const [name, variable] of modeVariables(darkTransforms))
-        darkVariables.set(name, variable);
-      const lightValues = resolvedModeValues(lightVariables);
-      const darkValues = resolvedModeValues(darkVariables);
-      const resolved = {
-        light: options.resolver.apply({colorScheme: 'light'}),
-        dark: options.resolver.apply({colorScheme: 'dark'}),
-      };
+      const modifiers: Record<string, CatalogueModifier> = {};
+      for (const modifier of Object.values(options.resolver.source.modifiers ?? {})) {
+        if (!modifier.default) throw new Error(`Modifier ${modifier.name} has no default context.`);
+        const contexts = Object.keys(modifier.contexts);
+        const css: Record<string, string> = {};
+        for (const context of contexts) {
+          if (context === modifier.default) continue;
+          const note = contextActivation[modifier.name]?.[context];
+          if (!note)
+            throw new Error(
+              `Missing CSS activation note for ${modifier.name}.${context} in terrazzo.shared.config.ts.`,
+            );
+          css[context] = note;
+        }
+        modifiers[modifier.name] = {default: modifier.default, contexts, css};
+      }
+
+      const defaults = Object.fromEntries(
+        Object.entries(modifiers).map(([name, modifier]) => [name, modifier.default]),
+      );
+      const defaultTransforms = transformsFor(options, defaults);
+      const defaultState = contextState(options, defaults);
+      const contextStates = Object.entries(modifiers).flatMap(([name, modifier]) =>
+        Object.keys(modifier.css).map((context) => ({
+          modifier: name,
+          context,
+          state: contextState(options, {...defaults, [name]: context}, defaultState),
+        })),
+      );
 
       const tokens: CatalogueEntry[] = [];
-      for (const [cssVariable, variable] of [...lightVariables].sort(([a], [b]) =>
+      for (const [cssVariable, variable] of [...defaultState.variables].sort(([a], [b]) =>
         a.localeCompare(b),
       )) {
-        const darkVariable = darkVariables.get(cssVariable);
-        if (!darkVariable) throw new Error(`Missing dark-mode value for ${cssVariable}.`);
-
         // Prefer the transform whose localID is exactly this custom property.
         // Only composite subproperties (e.g. `--…-font-size` emitted by a
         // typography composite) fall back to a prefix match, using the longest
         // matching localID so nested composites win over their parents.
-        const exactTransform = lightTransforms.find(
+        const exactTransform = defaultTransforms.find(
           (candidate) => cssVariable === candidate.localID,
         );
         const prefixTransform = exactTransform
           ? undefined
-          : lightTransforms
+          : defaultTransforms
               .filter(
                 (candidate) => candidate.localID && cssVariable.startsWith(`${candidate.localID}-`),
               )
@@ -202,23 +269,33 @@ export function cataloguePlugin(brand: string): Plugin {
         // composite value; aliases and extensions describe whole tokens only.
         const subvalue =
           variable.path === token.id ? undefined : variable.path.slice(token.id.length + 1);
-        const resolvedToken = (scheme: ColorScheme) => {
-          const entry = resolved[scheme][token.id];
-          if (!entry) throw new Error(`Missing ${scheme} resolver value for ${token.id}.`);
-          return entry;
+        const valueIn = (state: ContextState): CatalogueContextValue => {
+          const resolved = state.resolved[token.id];
+          if (!resolved) throw new Error(`Missing resolver value for ${token.id}.`);
+          const css = state.values.get(cssVariable) ?? state.variables.get(cssVariable)?.value;
+          if (css === undefined) throw new Error(`Missing CSS value for ${cssVariable}.`);
+          const value =
+            subvalue === undefined
+              ? resolved.$value
+              : (resolved.$value as Record<string, unknown>)[subvalue];
+          const aliasOf = subvalue === undefined ? resolved.aliasOf : undefined;
+          return {css, value, ...(aliasOf ? {aliasOf} : {})};
         };
-        const dtcgValue = (scheme: ColorScheme): unknown => {
-          const value = resolvedToken(scheme).$value;
-          return subvalue === undefined ? value : (value as Record<string, unknown>)[subvalue];
-        };
-        // A token that is not an alias has no aliasOf; null records that explicitly.
-        const aliasOf =
-          subvalue === undefined
-            ? {
-                light: resolvedToken('light').aliasOf ?? null,
-                dark: resolvedToken('dark').aliasOf ?? null,
-              }
-            : {light: null, dark: null};
+
+        const base = valueIn(defaultState);
+        const contexts: Record<string, Record<string, CatalogueContextValue>> = {};
+        for (const {modifier, context, state} of contextStates) {
+          const value = valueIn(state);
+          if (sameValue(value, base)) continue;
+          contexts[modifier] = {...contexts[modifier], [context]: value};
+        }
+        // Contexts are recorded per modifier, so a value that depends on a
+        // combination of modifiers cannot be represented yet.
+        if (Object.keys(contexts).length > 1)
+          throw new Error(
+            `${variable.path} varies under more than one modifier (${Object.keys(contexts).join(', ')}); the catalogue models modifiers independently.`,
+          );
+
         const extensions: Record<string, unknown> =
           subvalue === undefined ? {...token.$extensions} : {};
         delete extensions[GENERATION_EXTENSION_KEY];
@@ -230,12 +307,8 @@ export function cataloguePlugin(brand: string): Plugin {
           tier: tierFor(token.id),
           description: token.$description ?? '',
           deprecated: token.$deprecated ?? false,
-          modes: {
-            light: lightValues.get(cssVariable) ?? variable.value,
-            dark: darkValues.get(cssVariable) ?? darkVariable.value,
-          },
-          values: {light: dtcgValue('light'), dark: dtcgValue('dark')},
-          ...(aliasOf.light || aliasOf.dark ? {aliasOf} : {}),
+          ...base,
+          ...(Object.keys(contexts).length > 0 ? {contexts} : {}),
           ...(Object.keys(extensions).length > 0 ? {extensions} : {}),
           ...(variable.path === token.id ? {} : {sourceToken: token.id}),
         });
@@ -251,6 +324,7 @@ export function cataloguePlugin(brand: string): Plugin {
       const catalogue: TokenCatalogue = {
         schemaVersion: CATALOGUE_SCHEMA_VERSION,
         brand,
+        modifiers,
         tokens,
       };
 

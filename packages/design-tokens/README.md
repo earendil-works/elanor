@@ -40,7 +40,7 @@ Validation uses the vendored [DTCG schemas](schemas/dtcg/2025.10/) offline. To r
 Each `dist/<brand>/` contains:
 
 - `tokens.css`: primitives, mode-independent semantics, and light semantic colors under `:root` with `color-scheme: light dark`; dark `semantic.color.*` overrides in `prefers-color-scheme: dark`.
-- `tokens.catalog.json`: CSS custom properties with resolved CSS/DTCG values per color scheme, alias targets, and `$extensions` (including print builds). Exported as `@earendil-works/design-tokens/<brand>.catalog.json` for linting and build tools.
+- `tokens.catalog.json`: CSS custom properties with resolved CSS/DTCG values and alias targets with every modifier at its default context, the values that differ per modifier context (such as `contexts.colorScheme.dark`), each modifier's contexts and how the CSS switches them on, and `$extensions` (including print builds). Exported as `@earendil-works/design-tokens/<brand>.catalog.json` for linting and build tools.
 - Figma-compatible JSON from `terrazzo-plugin-figma-json`.
 
 ### Guides

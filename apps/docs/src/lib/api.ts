@@ -25,33 +25,51 @@ const tokensDist = resolve(
   '..',
 );
 
-type Scheme = 'light' | 'dark';
-
 // Tokens
 
-interface CatalogueFile {
-  tokens: Array<{
-    path: string;
-    cssVariable: string;
-    type: string;
-    description: string;
-    modes: Record<Scheme, string>;
-    values: Record<Scheme, unknown>;
-    aliasOf?: Record<Scheme, string | null>;
-    extensions?: Record<string, unknown>;
-    sourceToken?: string;
-  }>;
+/** A token's value in one modifier context. */
+interface CatalogueValue {
+  css: string;
+  value: unknown;
+  aliasOf?: string;
 }
 
-export interface ApiToken {
+interface CatalogueModifier {
+  default: string;
+  contexts: string[];
+  css: Record<string, string>;
+}
+
+interface CatalogueFile {
+  modifiers: Record<string, CatalogueModifier>;
+  tokens: Array<
+    CatalogueValue & {
+      path: string;
+      cssVariable: string;
+      type: string;
+      description: string;
+      contexts?: Record<string, Record<string, CatalogueValue>>;
+      extensions?: Record<string, unknown>;
+      sourceToken?: string;
+    }
+  >;
+}
+
+/** A token's resolved DTCG value, its CSS, a hex value for colors, and the token it aliases. */
+export interface ApiTokenValue {
+  value: unknown;
+  css: string;
+  hex?: string;
+  aliasOf?: string;
+}
+
+export interface ApiToken extends ApiTokenValue {
   path: string;
   type: string;
   description: string;
   cssVariable: string;
-  /** Per color scheme: the resolved DTCG value, its CSS, and a hex value for colors. */
-  light: {value: unknown; css: string; hex?: string};
-  dark: {value: unknown; css: string; hex?: string};
-  aliasOf?: Record<Scheme, string | null>;
+  /** Values that differ from the default (every modifier at its default context), by modifier and context. */
+  contexts?: Record<string, Record<string, ApiTokenValue>>;
   extensions?: Record<string, unknown>;
   url: string;
 }
@@ -74,31 +92,45 @@ export async function tokenBrands(): Promise<string[]> {
     .sort();
 }
 
-export async function loadTokens(brand: string): Promise<ApiToken[]> {
-  const catalogue = JSON.parse(
+async function loadCatalogue(brand: string): Promise<CatalogueFile> {
+  return JSON.parse(
     await readFile(resolve(tokensDist, brand, 'tokens.catalog.json'), 'utf8'),
   ) as CatalogueFile;
+}
+
+export async function loadTokens(brand: string): Promise<ApiToken[]> {
+  const catalogue = await loadCatalogue(brand);
+  const apiValue = (type: string, {css, value, aliasOf}: CatalogueValue): ApiTokenValue => {
+    const hex = type === 'color' ? (value as {hex?: string}).hex : undefined;
+    return {value, css, ...(hex ? {hex} : {}), ...(aliasOf ? {aliasOf} : {})};
+  };
   // Composite subproperties (e.g. a typography token's font size) are part of their token's value.
   return catalogue.tokens
     .filter((token) => !token.sourceToken)
-    .map((token) => {
-      const mode = (scheme: Scheme) => {
-        const value = token.values[scheme];
-        const hex = token.type === 'color' ? (value as {hex?: string}).hex : undefined;
-        return {value, css: token.modes[scheme], ...(hex ? {hex} : {})};
-      };
-      return {
-        path: token.path,
-        type: token.type,
-        description: token.description,
-        cssVariable: token.cssVariable,
-        light: mode('light'),
-        dark: mode('dark'),
-        ...(token.aliasOf ? {aliasOf: token.aliasOf} : {}),
-        ...(token.extensions ? {extensions: token.extensions} : {}),
-        url: tokenUrl(brand, token.path),
-      };
-    })
+    .map((token) => ({
+      path: token.path,
+      type: token.type,
+      description: token.description,
+      cssVariable: token.cssVariable,
+      ...apiValue(token.type, token),
+      ...(token.contexts
+        ? {
+            contexts: Object.fromEntries(
+              Object.entries(token.contexts).map(([modifier, contexts]) => [
+                modifier,
+                Object.fromEntries(
+                  Object.entries(contexts).map(([context, value]) => [
+                    context,
+                    apiValue(token.type, value),
+                  ]),
+                ),
+              ]),
+            ),
+          }
+        : {}),
+      ...(token.extensions ? {extensions: token.extensions} : {}),
+      url: tokenUrl(brand, token.path),
+    }))
     .sort((a, b) => (a.path < b.path ? -1 : a.path > b.path ? 1 : 0));
 }
 
@@ -129,7 +161,8 @@ export async function loadTokenGroups(brand: string): Promise<ApiTokenGroup[]> {
 export async function tokenIndex(brand: string) {
   return {
     brand,
-    colorSchemes: ['light', 'dark'],
+    /** Each modifier's default and contexts, and how the CSS switches on each non-default context. */
+    modifiers: (await loadCatalogue(brand)).modifiers,
     groupUrl: groupUrl(brand, '{group}'),
     tokenUrl: tokenUrl(brand, '{path}'),
     groups: (await loadTokenGroups(brand)).map((group) => ({
