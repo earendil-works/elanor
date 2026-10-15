@@ -3,8 +3,11 @@
   display: inline-flex;
   align-items: center;
   gap: var(--semantic-dimension-space-control-gap-large);
-  block-size: var(--semantic-dimension-size-small);
   min-inline-size: 0;
+  padding-block: calc(
+    var(--semantic-dimension-space-control-padding-block-small) -
+      var(--semantic-dimension-border-width-default)
+  );
   padding-inline: calc(
     var(--semantic-dimension-space-control-padding-inline-small) -
       var(--semantic-dimension-border-width-default)

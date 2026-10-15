@@ -5,8 +5,7 @@
   justify-content: flex-start;
   gap: var(--semantic-dimension-space-gap-small);
   inline-size: 100%;
-  block-size: var(--semantic-dimension-size-medium);
-  padding-block: var(--semantic-dimension-space-padding-medium);
+  padding-block: var(--semantic-dimension-space-control-padding-block-medium);
   padding-inline: var(--semantic-dimension-space-padding-x-large);
   border: 0;
   border-radius: var(--semantic-dimension-radius-small);

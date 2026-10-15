@@ -10,7 +10,6 @@
   justify-content: space-between;
   gap: var(--semantic-dimension-space-control-gap-large);
   inline-size: 100%;
-  min-block-size: var(--semantic-dimension-size-small);
   min-inline-size: 0;
   padding-block: calc(
     var(--semantic-dimension-space-control-padding-block-small) -
@@ -114,7 +113,6 @@
   flex: none;
   align-items: center;
   gap: var(--semantic-dimension-space-control-gap-small);
-  min-block-size: var(--semantic-dimension-size-small);
   padding-block: var(--semantic-dimension-space-control-padding-block-small);
   padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
   border-radius: var(--semantic-dimension-radius-small);

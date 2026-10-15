@@ -1,7 +1,6 @@
 .textarea {
   box-sizing: border-box;
   inline-size: 100%;
-  min-block-size: calc(var(--semantic-dimension-size-small) * 3);
   padding-block: calc(
     var(--semantic-dimension-space-control-padding-block-small) -
       var(--semantic-dimension-border-width-default)
