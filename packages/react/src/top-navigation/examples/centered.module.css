@@ -5,6 +5,8 @@
 .header {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* Two rows in narrow containers: opt out of the bar's fixed height. */
+  block-size: auto;
   padding-block: var(--semantic-dimension-space-padding-xx-large);
 }
 
@@ -30,6 +32,7 @@
 @container navigation (width >= 40rem /* token: semantic.dimension.breakpoint.xSmall */) {
   .header {
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    block-size: var(--semantic-dimension-size-top-navigation);
     padding-block: 0;
   }
 

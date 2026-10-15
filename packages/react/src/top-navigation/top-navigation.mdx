@@ -22,7 +22,9 @@ By default, the regions share one row, with free space between them, and wrap wh
 
 ## Height
 
-Root is at least `semantic.dimension.size.topNavigation` (64px) tall and centers its content, so a one-row bar needs no block padding. Rows that wrap share that height while they fit, then make it taller, as in the recipes below on narrow screens. With `box-sizing: border-box`, a bottom border you add counts toward the 64px. Derive sticky offsets and scroll padding below the bar from the same token:
+Root is `semantic.dimension.size.topNavigation` (64px) tall and centers its content, so the bar needs no block padding. With `box-sizing: border-box`, a bottom border you add counts toward the 64px. The height is fixed so that offsets below the bar can come from the same token: a sticky header and the page's scroll padding, so anchor jumps and focused elements stay clear of it. The token is in rem, so the bar grows with the user's font size.
+
+Keep the bar to one row: on narrow screens, move links into a [Drawer](/components/drawer/) or a menu, as in [Responsive navigation](#responsive-navigation). Layouts that need more rows, like the stacked and centered recipes below, set `block-size: auto`; derive offsets for such headers from their measured height instead of the token.
 
 ```css
 .header {
