@@ -7,7 +7,7 @@
     "dev": "astro dev",
     "build": "astro build",
     "check": "pnpm run lint && pnpm run check:types",
-    "check:prepare": "pnpm --filter @earendil-works/elanor-icons-boiled-react... run build",
+    "check:prepare": "pnpm --filter @earendil-works/elanor-icons-boiled-react... --filter @earendil-works/elanor-shiki-theme run build",
     "check:types": "pnpm run check:prepare && astro check",
     "lint": "pnpm run lint:oxlint && pnpm run lint:stylelint",
     "lint:oxlint": "oxlint . --max-warnings 0 --report-unused-disable-directives",

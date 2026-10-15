@@ -1,3 +1,5 @@
+import type {ThemeRegistration} from 'shiki';
+
 /**
  * A Shiki theme whose colors are the `semantic.color.text.code` tokens on
  * `semantic.color.background.fill.secondary`, as CSS variables, so one theme
@@ -96,4 +98,4 @@ export default {
       },
     },
   ],
-};
+} satisfies ThemeRegistration;

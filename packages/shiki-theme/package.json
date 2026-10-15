@@ -3,18 +3,26 @@
   "version": "0.1.0",
   "description": "A Shiki theme that colors code with Elanor's code syntax tokens.",
   "license": "ISC",
+  "private": true,
   "type": "module",
   "sideEffects": false,
   "files": [
-    "index.js",
-    "index.d.ts",
+    "dist",
     "README.md"
   ],
   "exports": {
     ".": {
-      "types": "./index.d.ts",
-      "default": "./index.js"
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
     }
   },
-  "private": true
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.build.json",
+    "prepack": "pnpm run build",
+    "check": "tsc -p tsconfig.json --noEmit"
+  },
+  "devDependencies": {
+    "shiki": "^4.4.3",
+    "typescript": "^7.0.2"
+  }
 }

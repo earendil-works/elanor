@@ -8,4 +8,4 @@ import elanorTheme from '@earendil-works/elanor-shiki-theme';
 const html = await codeToHtml(code, {lang: 'tsx', theme: elanorTheme});
 ```
 
-The theme has no dependency on Shiki; its type declaration matches Shiki's theme shape.
+The theme is checked against Shiki's `ThemeRegistration` type at build time; Shiki is not a runtime dependency.
