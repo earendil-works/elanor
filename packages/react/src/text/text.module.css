@@ -1,12 +1,13 @@
 .text {
   margin: 0;
   color: var(--semantic-color-text-primary);
-  font: var(--semantic-typography-ui-primary);
+  font: var(--semantic-typography-primary);
 }
 
 .text:where(p) {
   box-sizing: border-box;
   min-inline-size: 0;
+  max-inline-size: var(--semantic-dimension-size-max-width-text);
   overflow-wrap: anywhere;
   text-wrap: pretty;
 }

@@ -1,6 +1,6 @@
 .root {
   color: var(--semantic-color-text-link);
-  font: var(--semantic-typography-ui-primary);
+  font: var(--semantic-typography-primary);
   text-decoration: underline;
   text-decoration-thickness: from-font;
   text-underline-position: from-font;
