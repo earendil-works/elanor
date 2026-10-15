@@ -6,9 +6,9 @@ import {pipelineConfigs} from '../config.js';
 import {validateMetadata} from './lib/metadata.js';
 import {processSvg} from './lib/pipeline.js';
 
-// Builds one icon package: the plain icons for @earendil-works/elanor-icons, or
-// with `boiled` the boiled icons for @earendil-works/elanor-icons-boiled. The
-// output goes to dist/ in the package that runs the build.
+// Builds one icon package: `plain` for @earendil-works/elanor-icons (plain/), or
+// `boiled` for @earendil-works/elanor-icons-boiled (boiled/). The output goes to
+// dist/ in the package that runs the build.
 const variant = process.argv[2] ?? 'plain';
 if (!(variant in pipelineConfigs)) throw new Error(`Unknown icon variant ${variant}`);
 const config = pipelineConfigs[variant as keyof typeof pipelineConfigs];

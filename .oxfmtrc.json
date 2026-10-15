@@ -27,6 +27,8 @@
     "packages/design-tokens/tokens/shared/primitive/dimension.tokens.json",
     "packages/design-tokens/tokens/shared/primitive/number.tokens.json",
     "packages/icons/sources/**",
-    "packages/icons/provenance.json"
+    "packages/icons/provenance.json",
+    "packages/icons/plain/provenance.json",
+    "packages/icons/boiled/provenance.json"
   ]
 }

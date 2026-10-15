@@ -22,7 +22,7 @@
     "./metadata.json": "./dist/metadata.json"
   },
   "scripts": {
-    "build": "tsx ../icons/scripts/build.ts boiled",
+    "build": "tsx ../scripts/build.ts boiled",
     "prepack": "pnpm run build"
   },
   "devDependencies": {

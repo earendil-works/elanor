@@ -1,12 +1,13 @@
-// Generates the per-icon modules from the built SVGs of an icon package:
-// @earendil-works/elanor-icons by default, or the package directory given as the
-// first argument (@earendil-works/elanor-icons-boiled for the boiled icons). The
-// output goes to dist/ in the package that runs the build. The component the
-// modules use, src/create-icon.tsx, is compiled by tsc afterwards.
+// Generates the per-icon modules of a React icon package from the built SVGs of
+// the icon package given as the first argument (plain/ or boiled/). The output
+// goes to dist/ in the package that runs the build. The component the modules
+// use, src/create-icon.tsx, is compiled by the React package's tsc afterwards.
 import {copyFile, mkdir, readdir, readFile, rm, writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 
-const iconsDirectory = resolve(process.argv[2] ?? resolve(import.meta.dirname, '..'));
+const iconsArgument = process.argv[2];
+if (!iconsArgument) throw new Error('Usage: node build-react.ts <icon package directory>');
+const iconsDirectory = resolve(iconsArgument);
 const svgDirectory = resolve(iconsDirectory, 'dist/svg');
 const outputDirectory = resolve(process.cwd(), 'dist');
 const svgPattern = /^<!-- (.+) -->\n<svg [^>]*viewBox="([^"]+)"><path d="([^"]+)"\/><\/svg>/;

@@ -2,7 +2,9 @@
   "extends": "../../tsconfig.base.json",
   "compilerOptions": {
     "noEmit": true,
-    "types": ["node", "vitest/globals"]
+    "erasableSyntaxOnly": true,
+    "jsx": "react-jsx",
+    "types": ["node", "react", "vitest/globals"]
   },
-  "include": ["config.ts", "scripts/**/*.ts", "tests/**/*.ts"]
+  "include": ["config.ts", "scripts/**/*.ts", "src", "tests/**/*.ts"]
 }

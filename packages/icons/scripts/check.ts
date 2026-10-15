@@ -43,13 +43,15 @@ if (
   throw new Error('provenance.json does not describe a pinned regular, unfilled 20px source');
 }
 
-// The boiled package publishes the same license and source revision.
-for (const file of ['LICENSE', 'provenance.json']) {
-  const [own, boiled] = await Promise.all([
-    readFile(resolve(packageDirectory, file), 'utf8'),
-    readFile(resolve(packageDirectory, '../icons-boiled', file), 'utf8'),
-  ]);
-  if (own !== boiled) throw new Error(`../icons-boiled/${file} differs from ${file}; copy it over`);
+// Both published packages carry the same license and source revision.
+for (const variant of ['plain', 'boiled']) {
+  for (const file of ['LICENSE', 'provenance.json']) {
+    const [own, copy] = await Promise.all([
+      readFile(resolve(packageDirectory, file), 'utf8'),
+      readFile(resolve(packageDirectory, variant, file), 'utf8'),
+    ]);
+    if (own !== copy) throw new Error(`${variant}/${file} differs from ${file}; copy it over`);
+  }
 }
 
 console.log(`Checked ${files.length} vendored SVGs.`);
