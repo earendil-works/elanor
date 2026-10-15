@@ -1,6 +1,6 @@
 # Blockquote
 
-A quotation from another source, set apart from the surrounding text by an indent and a rule.
+A quotation from another source, set apart from the surrounding text by an indent and a large opening quotation mark.
 
 <Demo example="./examples/demo.tsx" />
 
@@ -14,7 +14,7 @@ import {Blockquote, Text} from '@earendil-works/elanor-react';
 </Blockquote>;
 ```
 
-Blockquote renders a `blockquote` with a `semantic.dimension.borderWidth.medium` rule in `semantic.color.border.primary` and a `semantic.dimension.space.padding.xxLarge` (24px) indent. It sets no type of its own: put [Text](/components/text/) or other blocks inside.
+Blockquote renders a `blockquote` indented by `semantic.dimension.space.padding.xxLarge` (24px), with an opening quotation mark in `semantic.color.icon.secondary` hanging in the indent, level with the first line. The mark is decorative and hidden from screen readers. Blockquote sets no type of its own: put [Text](/components/text/) or other blocks inside.
 
 ## Source
 

@@ -1,14 +1,19 @@
 .root {
+  position: relative;
   box-sizing: border-box;
   min-inline-size: 0;
   margin: 0;
   padding-inline-start: var(--semantic-dimension-space-padding-xx-large);
-  border-inline-start: var(--semantic-dimension-border-width-medium) solid
-    var(--semantic-color-border-primary);
 }
 
-@media (forced-colors: active) {
-  .root {
-    border-inline-start-color: CanvasText;
-  }
+/* A large opening quotation mark hangs in the indent, level with the first line. It is
+   decorative, so the empty alternative text keeps screen readers from announcing it. */
+.root::before {
+  content: '\201C' / '';
+  position: absolute;
+  /* Lifts the mark from the middle of its line box to the first line's cap height. */
+  inset-block-start: -0.18em;
+  inset-inline-start: -0.05em;
+  color: var(--semantic-color-icon-secondary);
+  font: var(--semantic-typography-heading-marketing-2);
 }
