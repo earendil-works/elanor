@@ -1,6 +1,8 @@
 # Text
 
-Body text in the UI typeface. Renders a paragraph by default.
+Body text. Renders a paragraph by default.
+
+Text uses `semantic.typography.primary`, the UI style by default and the prose style inside long-form content (`data-text-context="prose"`). Paragraphs stop at `semantic.dimension.size.maxWidth.text` (52rem) so lines stay readable in wide layouts; inline text has no limit.
 
 <Demo example="./examples/demo.tsx" />
 
@@ -17,3 +19,9 @@ import {Text} from '@earendil-works/elanor-react';
 Use `render={<span />}` inside other text. Put element-specific attributes and refs on the rendered element.
 
 <Demo example="./examples/inline.tsx" />
+
+## Long-form content
+
+Inside an element with `data-text-context="prose"`, Text and [Link](/components/link/) switch to the prose style.
+
+<Demo example="./examples/prose.tsx" />
