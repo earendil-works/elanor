@@ -17,3 +17,9 @@ import {LinkedHeading} from '@earendil-works/elanor-react';
 Linked heading takes Heading's props plus a required `id` and `linkLabel`. The button follows the heading's last word, `semantic.dimension.space.gap.small` away. Pressing it copies the heading's absolute URL and moves the page to the heading, so the address bar shows the link too.
 
 With a mouse, the button shows on hover, on keyboard focus, and while it confirms a copy. Touch screens always show it, as a 48px target.
+
+## In long-form content
+
+Inside [Prose](/components/prose/), a linked heading gets the same space as a plain heading of its level.
+
+<Demo example="./examples/prose.tsx" />
