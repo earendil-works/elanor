@@ -184,7 +184,7 @@ export function IconBrowser(): React.JSX.Element {
               style={{maskImage: `url(/api/icons/${selected[0]}.svg)`}}
               aria-hidden="true"
             />
-            <Heading level={2} size={3}>
+            <Heading level={2} size={6}>
               {selected[0]}
             </Heading>
             <CodeSnippet

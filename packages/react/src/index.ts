@@ -207,7 +207,7 @@ export type {
 } from './form/form.tsx';
 
 export {Heading} from './heading/heading.tsx';
-export type {HeadingLevel, HeadingProps, HeadingSize} from './heading/heading.tsx';
+export type {HeadingLevel, HeadingProps, HeadingSize, HeadingVariant} from './heading/heading.tsx';
 
 export {IconButton} from './icon-button/icon-button.tsx';
 export type {IconButtonProps} from './icon-button/icon-button.tsx';
