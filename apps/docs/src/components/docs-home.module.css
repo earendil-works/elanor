@@ -1,6 +1,7 @@
 /* Scope overrides above shared component styles regardless of CSS chunk order. */
 .home {
   .container {
+    /* stylelint-disable-next-line design-tokens/token-property-compatibility -- Docs reading width; a content-size token for it is pending. */
     max-inline-size: var(--semantic-dimension-breakpoint-small);
   }
 

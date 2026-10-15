@@ -31,11 +31,11 @@
 }
 
 .scrollbar[data-orientation='vertical'] {
-  inline-size: var(--semantic-dimension-space-gap-small);
+  inline-size: var(--semantic-dimension-size-xx-small);
 }
 
 .scrollbar[data-orientation='horizontal'] {
-  block-size: var(--semantic-dimension-space-gap-small);
+  block-size: var(--semantic-dimension-size-xx-small);
 }
 
 .thumb {

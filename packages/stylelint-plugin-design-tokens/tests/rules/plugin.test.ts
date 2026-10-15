@@ -332,6 +332,51 @@ describe(tokenPropertyCompatibilityName, () => {
   });
 });
 
+describe(`${tokenPropertyCompatibilityName} for spacing, sizes, and shadows`, () => {
+  it('accepts spacing and sizes in margins, sizes with spacing in calc(), and border-like shadows', async () => {
+    expect(
+      await lint(
+        `.a {
+        margin-block: var(--semantic-dimension-space-gap-small) calc((var(--semantic-dimension-size-small) - 1lh) / 2);
+        inline-size: calc(var(--semantic-dimension-size-x-small) - 2 * var(--semantic-dimension-space-padding-xx-small));
+        max-block-size: calc(100dvh - 2 * var(--semantic-dimension-space-padding-medium));
+        block-size: var(--semantic-dimension-border-width-small);
+        max-inline-size: min(var(--semantic-dimension-size-modal), 100%);
+        box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default) var(--semantic-color-border-primary), var(--semantic-shadow-popup);
+      }`,
+        tokenPropertyCompatibilityName,
+      ),
+    ).toHaveLength(0);
+  });
+
+  it('rejects radii in margins, spacing and breakpoints as sizes, and spacing in shadows', async () => {
+    const warnings = await lint(
+      `.a {
+      margin: var(--semantic-dimension-radius-default);
+      inline-size: var(--semantic-dimension-space-gap-small);
+      max-inline-size: min(var(--semantic-dimension-breakpoint-small), 100%);
+      box-shadow: 0 0 var(--semantic-dimension-space-gap-small) var(--semantic-color-border-primary);
+    }`,
+      tokenPropertyCompatibilityName,
+    );
+    const text = warnings.map((warning) => warning.text).join('\n');
+    expect(text).toContain('wrong role for "margin"');
+    expect(text).toContain('wrong role for "inline-size"');
+    expect(text).toContain('wrong role for "max-inline-size"');
+    expect(text).toContain('wrong role for "box-shadow"');
+    expect(warnings).toHaveLength(4);
+  });
+
+  it('lets a configured size role replace the calc() exception', async () => {
+    const warnings = await lint(
+      `.a { inline-size: calc(var(--semantic-dimension-size-small) - var(--semantic-dimension-space-gap-small)); }`,
+      tokenPropertyCompatibilityName,
+      {semanticRoles: {'inline-size': ['semantic.dimension.size.']}},
+    );
+    expect(warnings).toHaveLength(1);
+  });
+});
+
 describe(`${tokenPropertyCompatibilityName} for motion`, () => {
   it('accepts transition tokens and their parts, scales, and travel', async () => {
     expect(

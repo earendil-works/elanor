@@ -85,6 +85,14 @@
           "$value": "{primitive.dimension.5250}",
           "$description": "Use as the default inline size for expanded side navigation and supporting page regions, independently of the main content grid."
         },
+        "modal": {
+          "$value": "{primitive.dimension.19200}",
+          "$description": "Component token for the inline size of a modal dialog, which shrinks to fit narrower windows."
+        },
+        "popover": {
+          "$value": "{primitive.dimension.16000}",
+          "$description": "Component token for the maximum inline size of a popover, which shrinks to the space available beside its trigger."
+        },
         "xxxSmall": {
           "$value": "{primitive.dimension.100}",
           "$description": "Use for the thinnest bounded elements, such as a thin meter track."

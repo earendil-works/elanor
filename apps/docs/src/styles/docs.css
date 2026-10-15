@@ -33,6 +33,7 @@
   flex-direction: column;
   align-items: flex-start;
   inline-size: 100%;
+  /* stylelint-disable-next-line design-tokens/token-property-compatibility -- Docs reading width; a content-size token for it is pending. */
   max-inline-size: var(--semantic-dimension-breakpoint-small);
 }
 
@@ -79,6 +80,7 @@
 
 .wide {
   inline-size: 100%;
+  /* stylelint-disable-next-line design-tokens/token-property-compatibility -- Docs page width; a content-size token for it is pending. */
   max-inline-size: var(--semantic-dimension-breakpoint-x-large);
 }
 
@@ -95,6 +97,7 @@
 }
 
 .prose {
+  /* stylelint-disable-next-line design-tokens/token-property-compatibility -- Docs reading width; a content-size token for it is pending. */
   max-inline-size: var(--semantic-dimension-breakpoint-small);
   font: var(--semantic-typography-prose-primary);
 }
