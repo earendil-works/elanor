@@ -74,9 +74,11 @@ The first category selects the type vocabulary:
 | `semantic`  | `dimension`    | `borderWidth`, `breakpoint`, `radius`, `size`, `space`, `travel` |
 | `semantic`  | `number`       | `opacity`, `layer`, `scale`                                      |
 | `semantic`  | `fontFamily`   | `prose`, `ui`, `code`                                            |
-| `semantic`  | `fontWeight`   | `ui`                                                             |
+| `semantic`  | `fontWeight`   | `emphasis`, `ui`                                                 |
 | `semantic`  | `typography`   | `code`, `heading`, `prose`, `ui`                                 |
 | `semantic`  | `transition`   | `feedback`, `fade`, `movement`                                   |
+
+`semantic.fontWeight.emphasis` stands directly under its category because it applies in any text context, while `fontWeight.ui.*` is for interface text.
 
 Omitted primitive categories have no `type`; continue with the next applicable part. Document new controlled values here before use. Do not add synonyms such as both `background` and `surface` as types.
 

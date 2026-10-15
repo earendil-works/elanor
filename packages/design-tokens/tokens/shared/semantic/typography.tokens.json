@@ -193,6 +193,18 @@
             "lineHeight": "{primitive.number.lineHeight.100}"
           },
           "$description": "Use for the lowest-priority interface text, such as compact metadata or supplemental labels. Do not use when the primary or secondary UI style provides sufficient hierarchy."
+        },
+        "searchDialog": {
+          "input": {
+            "$value": {
+              "fontFamily": "{semantic.fontFamily.ui}",
+              "fontSize": "{primitive.dimension.fontSize.500}",
+              "fontWeight": "{primitive.fontWeight.normal}",
+              "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
+              "lineHeight": "{primitive.number.lineHeight.500}"
+            },
+            "$description": "Component token for the search dialog's field, the dialog's main input. Larger than the primary UI style, so the query reads as the dialog's heading. Do not use for other fields."
+          }
         }
       },
       "code": {
