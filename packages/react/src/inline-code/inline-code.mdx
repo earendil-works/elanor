@@ -1,0 +1,21 @@
+# Inline code
+
+Code, file names, and commands within running text. For code on its own lines, use [Code snippet](/components/code-snippet/).
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {InlineCode} from '@earendil-works/elanor-react';
+
+<InlineCode>pnpm install</InlineCode>;
+```
+
+Inline code uses `semantic.typography.code.primary` and `semantic.color.text.code` on the `semantic.color.background.fill.secondary` fill, like Code snippet. Long identifiers wrap instead of widening narrow columns.
+
+## Program output
+
+Use `render={<samp />}` for output from a program, such as an error message.
+
+<Demo example="./examples/output.tsx" />

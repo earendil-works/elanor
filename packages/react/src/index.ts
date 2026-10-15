@@ -212,6 +212,9 @@ export type {HeadingLevel, HeadingProps, HeadingSize, HeadingVariant} from './he
 export {IconButton} from './icon-button/icon-button.tsx';
 export type {IconButtonProps} from './icon-button/icon-button.tsx';
 
+export {InlineCode} from './inline-code/inline-code.tsx';
+export type {InlineCodeProps} from './inline-code/inline-code.tsx';
+
 export {Input} from './input/input.tsx';
 export type {
   InputChangeEventDetails,
