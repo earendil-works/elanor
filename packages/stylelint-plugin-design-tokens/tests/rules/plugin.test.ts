@@ -200,7 +200,7 @@ describe(noHardcodedTokenValuesName, () => {
   it('preserves structural values, layout fractions, transparent, and unitless zero', async () => {
     expect(
       await lint(
-        `.a { margin: 0 auto; width: 50%; grid-template-columns: 1fr 2fr; color: currentColor; background: transparent; border: 0 none; z-index: 0; }`,
+        `.a { margin: 0 auto; width: 50%; grid-template-columns: 1fr 2fr; color: currentColor; background: transparent; border: 0 none; z-index: 0; scale: 0; }`,
         noHardcodedTokenValuesName,
       ),
     ).toHaveLength(0);
@@ -349,6 +349,20 @@ describe(`${tokenPropertyCompatibilityName} for motion`, () => {
     ).toHaveLength(0);
   });
 
+  it('lets a configured transform role replace the roles inside transform functions', async () => {
+    expect(
+      await lint(
+        `.a { transform: translateX(var(--semantic-dimension-space-gap-small)) scale(var(--semantic-number-opacity-visible)); }`,
+        tokenPropertyCompatibilityName,
+        {
+          semanticRoles: {
+            transform: ['semantic.dimension.space.gap.', 'semantic.number.opacity.'],
+          },
+        },
+      ),
+    ).toHaveLength(0);
+  });
+
   it('rejects other tokens for transitions, scales, and translations', async () => {
     const warnings = await lint(
       `.a {
@@ -388,7 +402,9 @@ describe(transitionTypeCompatibilityName, () => {
         transition-duration: var(--semantic-transition-movement-drawer-duration), var(--semantic-transition-fade-duration);
         transition-timing-function: var(--semantic-transition-movement-drawer-timing-function), var(--semantic-transition-fade-timing-function);
       }
-      .c { transition: none; }`,
+      .c { transition: none; }
+      .d { transition: --semantic-number-scale-rest var(--semantic-transition-fade); }
+      .e { transition-property: --semantic-number-scale-rest; transition-duration: var(--semantic-transition-fade-duration); }`,
         transitionTypeCompatibilityName,
       ),
     ).toHaveLength(0);
@@ -401,7 +417,9 @@ describe(transitionTypeCompatibilityName, () => {
         transform var(--semantic-transition-fade),
         height calc(2 * var(--semantic-transition-feedback-duration)) var(--semantic-transition-feedback-timing-function),
         opacity var(--semantic-transition-movement-popup),
-        color var(--semantic-transition-fade);
+        color var(--semantic-transition-fade),
+        margin-block-start var(--semantic-transition-fade),
+        padding var(--semantic-transition-feedback);
     }
     .b { transition: var(--semantic-transition-fade); }
     .c { transition-property: all; transition-duration: var(--semantic-transition-fade-duration); }
@@ -417,8 +435,10 @@ describe(transitionTypeCompatibilityName, () => {
     expect(text).toContain('"opacity" needs a semantic.transition.fade token');
     expect(text).toContain('"color" needs a semantic.transition.feedback token');
     expect(text).toContain('"inline-size" needs a semantic.transition.movement.* token');
+    expect(text).toContain('"margin-block-start" needs a semantic.transition.movement.* token');
+    expect(text).toContain('"padding" needs a semantic.transition.movement.* token');
     expect(text.match(/Do not transition "all"/g)).toHaveLength(2);
-    expect(warnings).toHaveLength(8);
+    expect(warnings).toHaveLength(10);
   });
 });
 

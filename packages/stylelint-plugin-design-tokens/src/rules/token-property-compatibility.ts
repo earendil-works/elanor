@@ -245,6 +245,12 @@ export const rule: Rule<true, RuleOptions> = (primary, options) => (root, result
   const catalogue = getCatalogue(options);
   const typeMap = {...DEFAULT_TYPES, ...(options.propertyTypes ?? {})};
   const roleMap = {...DEFAULT_ROLES, ...(options.semanticRoles ?? {})};
+  // A configured `transform` role replaces the defaults, including the roles
+  // inside translate and scale functions.
+  const transformFunctionRoles =
+    valuesFor('transform', options.semanticRoles ?? {}) === undefined
+      ? TRANSFORM_FUNCTION_ROLES
+      : {};
 
   root.walkDecls((declaration) => {
     if (declaration.prop.startsWith('--')) return;
@@ -267,7 +273,7 @@ export const rule: Rule<true, RuleOptions> = (primary, options) => (root, result
       if (!token) return;
       const functionRoles =
         property === 'transform' && transformFunction
-          ? TRANSFORM_FUNCTION_ROLES[transformFunction]
+          ? transformFunctionRoles[transformFunction]
           : undefined;
       const expectedRoles =
         functionRoles && functionRoles.type === token.type ? functionRoles.roles : propertyRoles;

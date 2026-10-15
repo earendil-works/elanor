@@ -27,7 +27,8 @@ const NAMED_COLORS = new Set([
   'pink',
 ]);
 const DIMENSION = /^[-+]?(?:\d*\.)?\d+(px|rem)$/i;
-const TIME = /^[-+]?(?:\d*\.)?\d+m?s$/i;
+/** A CSS time literal, such as `150ms` or `0.3s`. */
+export const TIME = /^[-+]?(?:\d*\.)?\d+m?s$/i;
 const EASING_KEYWORDS = /^(?:ease|ease-in|ease-out|ease-in-out|linear)$/i;
 const EASING_FUNCTIONS = new Set(['cubic-bezier', 'linear']);
 const NUMBER = /^[-+]?(?:\d*\.)?\d+$/;
@@ -121,13 +122,13 @@ function isNumberProperty(property: string): boolean {
 
 /**
  * Checks whether a zero is a design value rather than structural absence: the
- * transparent end of a fade, or a scale that shrinks to nothing.
+ * transparent end of a fade, which `opacity.hidden` represents.
  *
  * @param property The normalized CSS property name.
  * @returns Whether unitless zero should be inspected for the property.
  */
 function isZeroTokenized(property: string): boolean {
-  return property === 'opacity' || property === 'scale';
+  return property === 'opacity';
 }
 
 /**

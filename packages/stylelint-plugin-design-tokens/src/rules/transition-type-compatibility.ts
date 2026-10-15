@@ -1,10 +1,11 @@
-import type {Container, Declaration} from 'postcss';
+import type {AtRule, Declaration, Rule as PostcssRule} from 'postcss';
 import valueParser, {type Node} from 'postcss-value-parser';
 import type {Rule} from 'stylelint';
 
 import type {LoadedCatalogue} from '../catalogue.js';
 import type {RuleOptions} from '../options.js';
 import {getCatalogue, isFoundation, isIgnored} from '../options.js';
+import {TIME} from '../value-parser.js';
 import {matchesRolePrefix, report, rolePath} from './shared.js';
 
 export const ruleName = 'design-tokens/transition-type-compatibility';
@@ -20,7 +21,7 @@ const TRANSITION_ROLE = 'semantic.transition.';
 const PROPERTY_ROLES: Array<{pattern: RegExp; role: string}> = [
   {
     pattern:
-      /^(?:transform|translate|scale|rotate|inset(?:-.+)?|top|right|bottom|left|(?:min-|max-)?(?:width|height|inline-size|block-size)|grid-template-.+)$/,
+      /^(?:transform|translate|scale|rotate|inset(?:-.+)?|top|right|bottom|left|(?:min-|max-)?(?:width|height|inline-size|block-size)|margin(?:-.+)?|padding(?:-.+)?|grid-template-.+)$/,
     role: 'semantic.transition.movement.',
   },
   {pattern: /^opacity$/, role: 'semantic.transition.fade'},
@@ -34,7 +35,6 @@ const PROPERTY_ROLES: Array<{pattern: RegExp; role: string}> = [
 
 const NON_PROPERTY_WORDS =
   /^(?:none|all|ease|ease-in|ease-out|ease-in-out|linear|step-start|step-end|normal|allow-discrete|inherit|initial|unset|revert|revert-layer)$/i;
-const TIME = /^[-+]?(?:\d*\.)?\d+m?s$/i;
 
 /**
  * Splits a comma-separated value into its top-level items.
@@ -58,14 +58,13 @@ function items(value: string): Node[][] {
  * @returns The property, `all` when the item names none, or `none`.
  */
 function shorthandProperty(nodes: Node[]): string {
+  // Only top-level words can name the property: `var()` references are
+  // functions, so a `--name` word is a registered custom property.
   const word = nodes.find(
     (node) =>
-      node.type === 'word' &&
-      !node.value.startsWith('--') &&
-      !TIME.test(node.value) &&
-      !NON_PROPERTY_WORDS.test(node.value),
+      node.type === 'word' && !TIME.test(node.value) && !NON_PROPERTY_WORDS.test(node.value),
   );
-  if (word) return word.value.toLowerCase();
+  if (word) return word.value.startsWith('--') ? word.value : word.value.toLowerCase();
   return nodes.some((node) => node.type === 'word' && node.value.toLowerCase() === 'none')
     ? 'none'
     : 'all';
@@ -132,13 +131,12 @@ export const rule: Rule<true, RuleOptions> = (primary, options) => (root, result
 
   // Longhands pair properties with durations, delays, and easings by position,
   // repeating the shorter lists as CSS does.
-  root.walk((node) => {
-    if (!('nodes' in node) || !node.nodes) return;
+  const checkLonghands = (container: PostcssRule | AtRule): void => {
     const declarations = new Map<string, Declaration>();
-    for (const child of (node as Container).nodes ?? []) {
+    container.each((child) => {
       if (child.type === 'decl' && /^transition-/i.test(child.prop))
         declarations.set(child.prop.toLowerCase(), child);
-    }
+    });
     const propertyDeclaration = declarations.get('transition-property');
     if (!propertyDeclaration) return;
     const properties = items(propertyDeclaration.value).map(shorthandProperty);
@@ -154,7 +152,9 @@ export const rule: Rule<true, RuleOptions> = (primary, options) => (root, result
       for (const {declaration, values} of timings)
         check(declaration, property, values[index % values.length] ?? []);
     });
-  });
+  };
+  root.walkRules(checkLonghands);
+  root.walkAtRules(checkLonghands);
 };
 
 rule.ruleName = ruleName;
