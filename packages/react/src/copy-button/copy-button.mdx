@@ -15,3 +15,15 @@ import {CopyButton} from '@earendil-works/elanor-react';
 Name the button after what it copies. On success, the icon changes to a check for two seconds; screen readers hear `copiedLabel`, or `errorLabel` if copying fails. Clipboard access requires HTTPS or localhost.
 
 For code, pass a Copy button to [Code snippet](/components/code-snippet/)'s `actions`.
+
+## Value from the browser
+
+When the value depends on the page, such as an absolute URL, pass a function to `value`; it runs when the button is pressed. Pass `icon` to show another icon before copying; the check still confirms the copy. [Linked heading](/components/linked-heading/) uses both to copy a heading's link.
+
+```tsx
+<CopyButton
+  value={() => new URL('#billing', window.location.href).href}
+  icon={<LinkIcon />}
+  aria-label="Copy link to Billing"
+/>
+```

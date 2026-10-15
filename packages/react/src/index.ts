@@ -250,6 +250,9 @@ export type {
 export {Link} from './link/link.tsx';
 export type {LinkProps} from './link/link.tsx';
 
+export {LinkedHeading} from './linked-heading/linked-heading.tsx';
+export type {LinkedHeadingProps} from './linked-heading/linked-heading.tsx';
+
 export type {ListItemProps, ListRootProps} from './list/list.tsx';
 
 export type {

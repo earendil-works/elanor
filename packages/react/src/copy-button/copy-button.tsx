@@ -1,13 +1,18 @@
 import {CheckIcon, ContentCopyIcon} from '@earendil-works/elanor-icons-react';
-import {useEffect, useState} from 'react';
+import {useEffect, useState, type ReactNode} from 'react';
 
 import {IconButton, type IconButtonProps} from '../icon-button/icon-button.tsx';
 
 import styles from './copy-button.module.css';
 
 export interface CopyButtonProps extends Omit<IconButtonProps, 'value'> {
-  /** Text written to the clipboard. */
-  readonly value: string;
+  /**
+   * Text written to the clipboard, or a function that returns it when the button is pressed, for
+   * values only known in the browser, such as an absolute URL.
+   */
+  readonly value: string | (() => string);
+  /** Icon shown before copying; a check replaces it after a copy. Defaults to the copy icon. */
+  readonly icon?: ReactNode;
   /** Announced after a successful copy. */
   readonly copiedLabel?: string;
   /** Announced when copying fails. */
@@ -19,6 +24,7 @@ export interface CopyButtonProps extends Omit<IconButtonProps, 'value'> {
 export function CopyButton({
   ref,
   value,
+  icon = <ContentCopyIcon />,
   copiedLabel = 'Copied.',
   errorLabel = 'Could not copy. Try again or copy manually.',
   onCopySuccess,
@@ -40,7 +46,7 @@ export function CopyButton({
 
   async function copy(): Promise<void> {
     try {
-      await navigator.clipboard.writeText(value);
+      await navigator.clipboard.writeText(typeof value === 'function' ? value() : value);
     } catch (error) {
       setStatus('error');
       onCopyError?.(error instanceof Error ? error : new Error(String(error)));
@@ -68,7 +74,7 @@ export function CopyButton({
           }
         }}
       >
-        {children ?? (status === 'copied' ? <CheckIcon /> : <ContentCopyIcon />)}
+        {children ?? (status === 'copied' ? <CheckIcon /> : icon)}
       </IconButton>
       <span role="status" className={styles.status}>
         {feedback}
