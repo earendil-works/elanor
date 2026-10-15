@@ -24,6 +24,13 @@
   font: var(--semantic-typography-code-secondary);
   text-align: center;
   white-space: nowrap;
+  cursor: pointer;
+}
+
+/* Pressing a key pushes the cap in by its bottom edge; keys in a combination press individually. */
+.key:active {
+  border-block-end-width: var(--semantic-dimension-border-width-small);
+  translate: 0 var(--semantic-dimension-travel-keyboard-key);
 }
 
 @media (forced-colors: active) {
