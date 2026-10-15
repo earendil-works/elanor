@@ -91,6 +91,17 @@
           }
         }
       },
+      "500": {
+        "$value": {
+          "value": 1.25,
+          "unit": "rem"
+        },
+        "$extensions": {
+          "com.earendil-works.generation": {
+            "source": "recipes/shared/primitive/dimension.json"
+          }
+        }
+      },
       "600": {
         "$value": {
           "value": 1.5,

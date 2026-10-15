@@ -52,10 +52,10 @@
 
   .arrow {
     flex: none;
-    inline-size: var(--semantic-dimension-size-x-small);
-    block-size: var(--semantic-dimension-size-x-small);
+    inline-size: var(--semantic-dimension-size-icon);
+    block-size: var(--semantic-dimension-size-icon);
     font: var(--semantic-typography-heading-app-6);
-    margin-block-start: calc((1lh - var(--semantic-dimension-size-x-small)) / 2);
+    margin-block-start: calc((1lh - var(--semantic-dimension-size-icon)) / 2);
     color: var(--semantic-color-icon-secondary);
   }
 

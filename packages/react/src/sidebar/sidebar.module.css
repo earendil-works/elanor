@@ -109,8 +109,8 @@
   flex: none;
   align-items: center;
   justify-content: center;
-  inline-size: var(--semantic-dimension-size-x-small);
-  block-size: var(--semantic-dimension-size-x-small);
+  inline-size: var(--semantic-dimension-size-icon);
+  block-size: var(--semantic-dimension-size-icon);
   max-inline-size: 100%;
   margin-inline-end: var(--semantic-dimension-space-padding-medium);
   padding: 0;
@@ -128,8 +128,8 @@
 
 .trigger > svg,
 .trigger > img {
-  inline-size: var(--semantic-dimension-size-x-small);
-  block-size: var(--semantic-dimension-size-x-small);
+  inline-size: var(--semantic-dimension-size-icon);
+  block-size: var(--semantic-dimension-size-icon);
 }
 
 @media (hover: hover) {
