@@ -177,6 +177,49 @@
           "$value": 1
         },
         "$description": "Opacity scale where 0 is fully transparent and 1000 is fully opaque."
+      },
+      "layer": {
+        "1": {
+          "$value": 1,
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/layer.json"
+            }
+          }
+        },
+        "10": {
+          "$value": 10,
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/layer.json"
+            }
+          }
+        },
+        "100": {
+          "$value": 100,
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/layer.json"
+            }
+          }
+        },
+        "1000": {
+          "$value": 1000,
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/layer.json"
+            }
+          }
+        },
+        "below": {
+          "$value": -1,
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/layer.json"
+            }
+          }
+        },
+        "$description": "Stacking-level scale where each step is its own z-index value and `below` is -1. Steps grow by a factor of ten so new levels fit between existing ones."
       }
     }
   }

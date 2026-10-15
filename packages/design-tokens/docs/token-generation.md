@@ -61,6 +61,7 @@ Generated paths:
 | Border width | `primitive.dimension.borderWidth.<step>`                                             |
 | Radius       | `primitive.dimension.radius.<step>`, `primitive.dimension.radius.full`               |
 | Opacity      | `primitive.number.opacity.<step>`                                                    |
+| Layer        | `primitive.number.layer.<step>`, `primitive.number.layer.below`                      |
 | Color        | `primitive.color.<name>` (key; `$root` when scaled), `primitive.color.<name>.<step>` |
 
 Recipes select steps; omitting one never shifts another step's position or value.
@@ -182,6 +183,24 @@ value = step / 1000
   "steps": [150, 400]
 }
 ```
+
+## Layer scale
+
+```text
+value = step
+below = -1
+```
+
+Each step is its own z-index value, like opacity's direct mapping. Factor-of-ten steps leave room for new levels between existing ones:
+
+```json
+{
+  "path": ["primitive"],
+  "steps": [1, 10, 100, 1000]
+}
+```
+
+The generator always emits `primitive.number.layer.below` (`-1`) for content behind its siblings.
 
 ## Color scale
 

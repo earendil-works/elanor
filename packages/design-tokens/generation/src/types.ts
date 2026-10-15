@@ -8,6 +8,7 @@ export type GeneratorName =
   | 'breakpoint'
   | 'color'
   | 'dimension'
+  | 'layer'
   | 'opacity'
   | 'radius'
   | 'typography';
@@ -57,6 +58,12 @@ export interface DimensionRecipe {
 }
 
 export interface RadiusRecipe {
+  $schema?: string;
+  path: string[];
+  steps: number[];
+}
+
+export interface LayerRecipe {
   $schema?: string;
   path: string[];
   steps: number[];

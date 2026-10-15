@@ -29,14 +29,26 @@
         }
       },
       "layer": {
-        "$description": "Use these stacking levels for the small set of shared application layers.",
+        "$description": "Choose a stacking level by the relationship it expresses. Popups that use Base UI portals, native popovers, or `<dialog>` are layered automatically; do not give them a layer.",
         "background": {
-          "$value": -1,
+          "$value": "{primitive.number.layer.below}",
           "$description": "Use for decorative content placed behind other content within an isolated component or application stacking context."
         },
+        "raised": {
+          "$value": "{primitive.number.layer.1}",
+          "$description": "Use to lift an element above its siblings within the same stacking context, such as a control overlapping a field or text above a decorative bleed."
+        },
+        "floating": {
+          "$value": "{primitive.number.layer.10}",
+          "$description": "Use for panels anchored in the page that scroll with it, such as a compact table of contents opened in place. They stay below sticky page chrome."
+        },
+        "sticky": {
+          "$value": "{primitive.number.layer.100}",
+          "$description": "Use for sticky or fixed page chrome that content scrolls under, such as a sticky header or a fixed side navigation."
+        },
         "overlay": {
-          "$value": 1000,
-          "$description": "Use when a host application needs an explicit overlay layer above its content. Keep document-ordered portal families, including Base UI nested popups, on a consistent automatic layer instead of assigning this value to individual parts."
+          "$value": "{primitive.number.layer.1000}",
+          "$description": "Use when a host application needs an explicit overlay layer above its content, such as a skip link. Keep document-ordered portal families, including Base UI nested popups, on a consistent automatic layer instead of assigning this value to individual parts."
         }
       }
     }

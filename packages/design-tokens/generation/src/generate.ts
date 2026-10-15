@@ -18,6 +18,7 @@ import {generateBorderWidthTokens} from './generators/borderWidth';
 import {generateBreakpointTokens} from './generators/breakpoint';
 import {generateColorTokens} from './generators/color';
 import {generateDimensionTokens} from './generators/dimension';
+import {generateLayerTokens} from './generators/layer';
 import {generateOpacityTokens} from './generators/opacity';
 import {generateRadiusTokens} from './generators/radius';
 import {generateTypographyTokens} from './generators/typography';
@@ -32,6 +33,7 @@ import type {
   GeneratorName,
   JsonObject,
   JsonValue,
+  LayerRecipe,
   OpacityRecipe,
   RadiusRecipe,
   TypographyRecipe,
@@ -160,6 +162,7 @@ async function loadValidators(): Promise<ValidationContext> {
     'breakpoint',
     'color',
     'dimension',
+    'layer',
     'opacity',
     'radius',
     'typography',
@@ -254,6 +257,7 @@ function generatorForRecipe(
     'breakpoint',
     'color',
     'dimension',
+    'layer',
     'opacity',
     'radius',
     'typography',
@@ -345,6 +349,8 @@ function generateRecipe(loaded: LoadedRecipe, config: GenerationConfig): Generat
       return generateColorTokens(loaded.recipe as ColorRecipe);
     case 'dimension':
       return generateDimensionTokens(loaded.recipe as DimensionRecipe, config);
+    case 'layer':
+      return generateLayerTokens(loaded.recipe as LayerRecipe);
     case 'opacity':
       return generateOpacityTokens(loaded.recipe as OpacityRecipe);
     case 'radius':
