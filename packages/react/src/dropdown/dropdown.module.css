@@ -215,8 +215,9 @@
   /* Physical edges keep the check nondirectional in both LTR and RTL. */
   border-right: var(--semantic-dimension-border-width-medium) solid currentcolor;
   border-bottom: var(--semantic-dimension-border-width-medium) solid currentcolor;
-  /* stylelint-disable-next-line design-tokens/token-property-compatibility -- Static optical offset of the check mark, not motion. */
-  transform: translateY(calc(-1 * var(--semantic-dimension-space-padding-xxx-small))) rotate(45deg);
+  /* Center the rotated check optically: raise it by half its stroke. */
+  inset-block-end: var(--semantic-dimension-border-width-medium);
+  transform: rotate(45deg);
 }
 
 .itemIndicator:not([data-selected]) {
