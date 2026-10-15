@@ -1,0 +1,5 @@
+{
+  "$schema": "../../../schemas/layer.recipe.schema.json",
+  "path": ["primitive"],
+  "steps": [1, 10, 100, 1000]
+}

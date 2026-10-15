@@ -56,9 +56,9 @@ Examples:
 - `semantic.number.opacity.disabled` aliases `{primitive.number.opacity.400}`.
 - `semantic.color.background.slider.track` names a component part.
 
-Brandable values use aliases, allowing theme and brand changes without component changes. The exception is `semantic.number.layer`: structural stacking constants may be literal numbers; do not create duplicate primitives just to alias them.
+Brandable values use aliases, allowing theme and brand changes without component changes.
 
-Layer tokens express stacking relationships, not an ever-increasing z-index scale. `background` puts decoration behind content in an isolated stacking context. Use `overlay` only when the host needs an explicit overlay layer, not on individual parts of a document-ordered portal family. Base UI popups use portal order above an isolated application root, including popups inside modals.
+Layer tokens express stacking relationships, not an ever-increasing z-index scale. They alias `primitive.number.layer`. In ascending order: `background` puts decoration behind content in an isolated stacking context; `raised` lifts an element above its siblings; `floating` is for panels anchored in the page that scroll with it; `sticky` is for sticky or fixed page chrome that content scrolls under. Native popovers and dialogs use the browser's top layer and get no layer token. Use `overlay` only when the host needs an explicit overlay layer, not on individual parts of a document-ordered portal family. Base UI popups use portal order above an isolated application root, including popups inside modals.
 
 Roles describe intent, not a single CSS property: icons may use `color`/`currentColor`, borders may paint separator backgrounds, and filled-control borders may use fill tokens. Do not duplicate aliases for these uses. Do not use spacing to size an unrelated element just because values match; use size roles and CSS calculations for dependent geometry. Arithmetic signs and ratios are structural, not tokens.
 

@@ -69,7 +69,7 @@ The first category selects the type vocabulary:
 | Layer       | First category | Allowed types                                            |
 | ----------- | -------------- | -------------------------------------------------------- |
 | `primitive` | `dimension`    | `borderWidth`, `breakpoint`, `fontSize`, `letterSpacing` |
-| `primitive` | `number`       | `lineHeight`, `opacity`                                  |
+| `primitive` | `number`       | `layer`, `lineHeight`, `opacity`                         |
 | `semantic`  | `color`        | `background`, `border`, `focusRing`, `icon`, `text`      |
 | `semantic`  | `dimension`    | `borderWidth`, `breakpoint`, `radius`, `size`, `space`   |
 | `semantic`  | `number`       | `opacity`, `layer`                                       |
@@ -167,7 +167,7 @@ semantic.color.text.code.type
 
 ### Magic-number scales
 
-Primitive numeric steps identify positions, not usage or literal units. Usually spaced by `100`, they leave room for intermediate steps; `0` may mean absence. Define generated intermediate steps in recipes, never by hand. Opacity is the normalized-value exception below.
+Primitive numeric steps identify positions, not usage or literal units. Usually spaced by `100`, they leave room for intermediate steps; `0` may mean absence. Define generated intermediate steps in recipes, never by hand. Opacity and layer are the direct-value exceptions below.
 
 A numeric step occupies one `state` part and cannot combine with another state:
 
@@ -214,6 +214,10 @@ For contextual alpha, keep the primitive opaque. Compose the semantic color usin
 ### Opacity scale
 
 `primitive.number.opacity.<step>` maps directly to a normalized value (`150` is `0.15`); see the [formula](token-generation.md#opacity-scale). Add only steps required by semantic tokens.
+
+### Layer scale
+
+`primitive.number.layer.<step>` is its own z-index value (`100` stacks at `100`); see the [formula](token-generation.md#layer-scale). `primitive.number.layer.below` is `-1`: a negative step cannot be a name, because CSS custom property names drop the minus sign, so `-1` and `1` would collide.
 
 ### Ordered categorical color scale
 
