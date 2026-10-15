@@ -1,0 +1,25 @@
+# Keyboard shortcut
+
+Shows keys to press, on their own or as a combination. Use it in running text, tooltips, and menus that list shortcuts.
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {KeyboardKey, KeyboardShortcut} from '@earendil-works/elanor-react';
+
+<KeyboardShortcut>
+  <KeyboardKey>Ctrl</KeyboardKey>+<KeyboardKey>K</KeyboardKey>
+</KeyboardShortcut>;
+```
+
+Both render `kbd`, nested as HTML recommends for key combinations. Write the separator as text between the keys; it shows in `semantic.color.text.secondary`. Keys use `semantic.typography.code.secondary` on `semantic.color.background.surface`, with a thicker bottom border as their depth edge.
+
+Write key names as text, such as `Shift`, `Ctrl`, and `Esc`. Symbols such as ⌘ and ⇧ are specific to one platform and vary between fonts.
+
+## Single key
+
+Use KeyboardKey on its own for one key. Single characters get square keys.
+
+<Demo example="./examples/single-key.tsx" />
