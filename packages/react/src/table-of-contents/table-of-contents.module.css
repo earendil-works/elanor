@@ -34,7 +34,6 @@
 .link {
   display: flex;
   align-items: center;
-  min-block-size: var(--semantic-dimension-size-small);
   padding-block: var(--semantic-dimension-space-control-padding-block-small);
   color: inherit;
   font: var(--semantic-typography-ui-primary);

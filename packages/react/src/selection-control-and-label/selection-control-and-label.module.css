@@ -1,7 +1,6 @@
 .root {
   display: inline-flex;
   align-items: flex-start;
-  min-block-size: var(--semantic-dimension-size-small);
   gap: var(--semantic-dimension-space-gap-small);
   min-inline-size: 0;
   color: var(--semantic-color-text-primary);
@@ -11,7 +10,6 @@
 .control {
   display: inline-flex;
   flex: none;
-  min-block-size: var(--semantic-dimension-size-x-small);
   align-items: center;
 }
 

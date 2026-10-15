@@ -18,7 +18,6 @@ thead > .row,
 }
 
 .cell {
-  min-block-size: var(--semantic-dimension-size-medium);
   padding-block: var(--semantic-dimension-space-padding-medium);
   padding-inline: var(--semantic-dimension-space-padding-large);
   text-align: start;

@@ -4,7 +4,6 @@
   align-items: center;
   justify-content: center;
   gap: var(--semantic-dimension-space-control-gap-medium);
-  min-block-size: var(--semantic-dimension-size-small);
   min-inline-size: 0;
   margin: 0;
   padding-block: var(--semantic-dimension-space-control-padding-block-small);

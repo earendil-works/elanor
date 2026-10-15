@@ -11,7 +11,6 @@
   position: relative;
   box-sizing: border-box;
   min-inline-size: var(--semantic-dimension-size-small);
-  min-block-size: var(--semantic-dimension-size-small);
   padding-block-start: var(--semantic-dimension-space-control-padding-block-large);
   padding-block-end: calc(
     var(--semantic-dimension-space-control-padding-block-large) -
