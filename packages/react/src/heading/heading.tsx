@@ -5,17 +5,17 @@ import {classes} from '../utils/class-names.ts';
 import styles from './heading.module.css';
 
 export type HeadingLevel = 1 | 2 | 3 | 4 | 5 | 6;
-export type HeadingSize = 1 | 2 | 3;
+export type HeadingSize = 1 | 2 | 3 | 4 | 5 | 6;
 
 export interface HeadingProps extends HTMLAttributes<HTMLHeadingElement> {
   readonly ref?: Ref<HTMLHeadingElement> | undefined;
   /** Heading level. Follow the page outline; `level` doesn't change the size. */
   readonly level: HeadingLevel;
-  /** Visual size, from `1` (largest) to `3`. */
+  /** Visual size, from `1` (largest) to `6`, one per `semantic.typography.heading.app` style. */
   readonly size?: HeadingSize;
 }
 
-export function Heading({ref, level, size = 3, className, ...props}: HeadingProps) {
+export function Heading({ref, level, size = 6, className, ...props}: HeadingProps) {
   return createElement(`h${level}`, {
     ...props,
     ref,

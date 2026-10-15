@@ -12,11 +12,26 @@
 }
 
 .heading2 {
+  font: var(--semantic-typography-heading-app-2);
+  letter-spacing: var(--semantic-typography-heading-app-2-letter-spacing);
+}
+
+.heading3 {
+  font: var(--semantic-typography-heading-app-3);
+  letter-spacing: var(--semantic-typography-heading-app-3-letter-spacing);
+}
+
+.heading4 {
   font: var(--semantic-typography-heading-app-4);
   letter-spacing: var(--semantic-typography-heading-app-4-letter-spacing);
 }
 
-.heading3 {
+.heading5 {
+  font: var(--semantic-typography-heading-app-5);
+  letter-spacing: var(--semantic-typography-heading-app-5-letter-spacing);
+}
+
+.heading6 {
   font: var(--semantic-typography-heading-app-6);
   letter-spacing: var(--semantic-typography-heading-app-6-letter-spacing);
 }

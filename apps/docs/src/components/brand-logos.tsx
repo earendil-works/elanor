@@ -70,7 +70,7 @@ export function BrandLogos({brand, pressKit, children}: BrandLogosProps): React.
   return (
     <section className={styles.brand} aria-labelledby={`brand-${brand.id}`}>
       <Stack direction="row" align="center" gap="large" wrap="wrap">
-        <Heading level={2} size={2} id={`brand-${brand.id}`}>
+        <Heading level={2} size={4} id={`brand-${brand.id}`}>
           {brand.name}
         </Heading>
         {pressKit ? (
@@ -82,7 +82,7 @@ export function BrandLogos({brand, pressKit, children}: BrandLogosProps): React.
 
       {kinds.map((kind) => (
         <Stack key={kind} gap="small">
-          <Heading level={3} size={3}>
+          <Heading level={3} size={6}>
             {kindLabels[kind]}
           </Heading>
           <ul className={styles.grid}>
@@ -123,7 +123,7 @@ export function BrandLogos({brand, pressKit, children}: BrandLogosProps): React.
 
       {avatarTreatments.length > 0 ? (
         <Stack gap="small">
-          <Heading level={3} size={3}>
+          <Heading level={3} size={6}>
             Profile pictures
           </Heading>
           <ul className={styles.grid}>
@@ -156,7 +156,7 @@ export function BrandLogos({brand, pressKit, children}: BrandLogosProps): React.
 
       {icons.length > 0 ? (
         <Stack gap="small">
-          <Heading level={3} size={3}>
+          <Heading level={3} size={6}>
             Favicons and app icons
           </Heading>
           <ul className={styles.grid}>

@@ -18,6 +18,6 @@ Give each page one `level={1}` heading and don't skip levels. The demos on this 
 
 ## Size
 
-Sizes go from `1`, the largest, to `3`, the default. Choose the size for the visual hierarchy, independently of the level.
+Sizes go from `1`, the largest, to `6`, the default, one per `semantic.typography.heading.app` style (36, 32, 28, 24, 21, and 18px). Choose the size for the visual hierarchy, independently of the level: a card's `level={3}` heading usually stays at the default. Where the level already reflects the hierarchy, as in headings rendered from Markdown, pass `size={level}`.
 
 <Demo example="./examples/sizes.tsx" />

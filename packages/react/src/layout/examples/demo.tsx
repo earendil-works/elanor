@@ -40,7 +40,7 @@ export default function LayoutDemo() {
             style={{maxInlineSize: 'var(--semantic-dimension-size-max-width-content-small)'}}
           >
             <Page>
-              <Heading level={2} size={2} id="first-week">
+              <Heading level={2} size={4} id="first-week">
                 Your first week
               </Heading>
               <Text>Meet your team, set up your accounts, and pick a starter project.</Text>
