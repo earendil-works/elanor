@@ -7,8 +7,7 @@
   );
   min-inline-size: 0;
   margin-inline: auto;
-  padding-inline: var(--semantic-dimension-space-padding-x-large);
-  /* Keep content out of the device's safe areas, such as a notch in landscape. Safe areas are
+  /* Gutters that grow into the device's safe areas, such as a notch in landscape. Safe areas are
      physical, so these sides are too; logical sides would swap them in right-to-left text. */
   padding-left: max(var(--semantic-dimension-space-padding-x-large), env(safe-area-inset-left));
   padding-right: max(var(--semantic-dimension-space-padding-x-large), env(safe-area-inset-right));
