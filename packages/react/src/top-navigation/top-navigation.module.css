@@ -6,6 +6,7 @@
   justify-content: space-between;
   gap: var(--semantic-dimension-space-gap-small);
   inline-size: 100%;
+  min-block-size: var(--semantic-dimension-size-top-navigation);
   color: var(--semantic-color-text-primary);
   font: var(--semantic-typography-ui-primary);
 }

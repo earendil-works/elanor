@@ -4,7 +4,7 @@ import styles from './top-navigation.module.css';
 
 export default function TopNavigationDemo() {
   return (
-    <TopNavigation.Root className={styles.header}>
+    <TopNavigation.Root>
       <TopNavigation.Identity>
         <Link href="#">Acme</Link>
       </TopNavigation.Identity>

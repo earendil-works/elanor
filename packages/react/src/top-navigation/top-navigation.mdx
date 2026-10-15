@@ -20,6 +20,25 @@ Root renders a `header`; the regions render `div`s. Put links inside a `nav` wit
 
 By default, the regions share one row, with free space between them, and wrap when space runs out. The navigation sits centered only when identity and actions have the same width; in the demo above, it is pushed left.
 
+## Height
+
+Root is at least `semantic.dimension.size.topNavigation` (64px) tall and centers its content, so a one-row bar needs no block padding. Rows that wrap share that height while they fit, then make it taller, as in the recipes below on narrow screens. With `box-sizing: border-box`, a bottom border you add counts toward the 64px. Derive sticky offsets and scroll padding below the bar from the same token:
+
+```css
+.header {
+  position: sticky;
+  inset-block-start: 0;
+  z-index: var(--semantic-number-layer-sticky);
+  border-block-end: var(--semantic-dimension-border-width-small) solid
+    var(--semantic-color-border-secondary);
+  background: var(--semantic-color-background-canvas);
+}
+
+html {
+  scroll-padding-block-start: var(--semantic-dimension-size-top-navigation);
+}
+```
+
 ## Centered
 
 Equal side columns keep the navigation centered, whatever the widths of identity and actions. Compare it with the demo at the top of the page. In narrow containers, the links move to their own row.

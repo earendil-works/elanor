@@ -30,6 +30,7 @@
 @container navigation (width >= 40rem /* token: semantic.dimension.breakpoint.xSmall */) {
   .header {
     grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    padding-block: 0;
   }
 
   .navigation {
