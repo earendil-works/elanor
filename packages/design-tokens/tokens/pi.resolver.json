@@ -38,6 +38,14 @@
       },
       "default": "light"
     },
+    "textContext": {
+      "description": "Selects running-text styles for the surrounding content: UI by default, prose inside long-form content.",
+      "contexts": {
+        "ui": [{"$ref": "./shared/semantic/typography/ui.tokens.json"}],
+        "prose": [{"$ref": "./shared/semantic/typography/prose.tokens.json"}]
+      },
+      "default": "ui"
+    },
     "motion": {
       "description": "Makes transitions that move content instant when the reader prefers reduced motion.",
       "contexts": {
@@ -51,6 +59,7 @@
     {"$ref": "#/sets/shared-primitive"},
     {"$ref": "#/sets/shared-semantic"},
     {"$ref": "#/modifiers/colorScheme"},
+    {"$ref": "#/modifiers/textContext"},
     {"$ref": "#/modifiers/motion"}
   ]
 }

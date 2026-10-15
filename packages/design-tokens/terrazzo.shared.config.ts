@@ -2,6 +2,10 @@ import type {Permutation} from '@terrazzo/plugin-css';
 
 const SEMANTIC_COLOR_TOKEN_PATTERN = 'semantic.color.**';
 const MOVEMENT_TRANSITION_TOKEN_PATTERN = 'semantic.transition.movement.**';
+const CONTEXTUAL_TYPOGRAPHY_TOKEN_PATTERNS = [
+  'semantic.typography.primary',
+  'semantic.typography.secondary',
+];
 const TRANSITION_PARTS = {
   duration: 'duration',
   delay: 'delay',
@@ -74,6 +78,19 @@ function prepareDarkColorSchemeCss(contents: string): string {
 }
 
 /**
+ * Wraps prose text-context declarations for elements that opt into prose.
+ *
+ * Context-dependent typography resolves to UI styles at the root; any element
+ * with `data-text-context="prose"` redefines it for its subtree.
+ *
+ * @param contents The declarations emitted by the CSS plugin.
+ * @returns A CSS rule scoped to the prose text context.
+ */
+function prepareProseTextContextCss(contents: string): string {
+  return `[data-text-context="prose"] {\n${indentDeclarations(contents)}\n}`;
+}
+
+/**
  * Wraps reduced-motion declarations in the reduced-motion media query.
  *
  * Transitions that move content resolve to their default timing at the root
@@ -94,6 +111,9 @@ export const contextActivation: Record<string, Record<string, string>> = {
   colorScheme: {
     dark: '@media (prefers-color-scheme: dark) on :root without data-color-scheme, or :root[data-color-scheme="dark"]',
   },
+  textContext: {
+    prose: '[data-text-context="prose"] on the element that contains long-form content',
+  },
   motion: {
     reduced: '@media (prefers-reduced-motion: reduce) on :root',
   },
@@ -105,7 +125,9 @@ export const contextActivation: Record<string, Record<string, string>> = {
  * Foundations, mode-independent semantic tokens, and the default light
  * semantic colors are emitted at the root. Dark semantic colors are emitted
  * for both the system preference and an explicit `data-color-scheme` override.
- * Transitions that move content are redefined as instant under
+ * Context-dependent typography defaults to the UI context at the root and is
+ * redefined under `data-text-context="prose"`. Transitions that move content
+ * are redefined as instant under
  * `prefers-reduced-motion: reduce`.
  */
 export const cssPermutations: Permutation[] = [
@@ -118,6 +140,12 @@ export const cssPermutations: Permutation[] = [
     input: {colorScheme: 'dark'},
     include: [SEMANTIC_COLOR_TOKEN_PATTERN],
     prepare: prepareDarkColorSchemeCss,
+    transform: transformTransitionParts,
+  },
+  {
+    input: {textContext: 'prose'},
+    include: CONTEXTUAL_TYPOGRAPHY_TOKEN_PATTERNS,
+    prepare: prepareProseTextContextCss,
     transform: transformTransitionParts,
   },
   {
