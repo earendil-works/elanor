@@ -1,6 +1,6 @@
 # Code snippet
 
-Shows a short piece of code or a command, such as an install step. Long lines scroll horizontally.
+Shows code or a command, such as an install step or an example, on one or more lines. Long lines scroll horizontally. For code within running text, use [Inline code](/components/inline-code/).
 
 <Demo example="./examples/demo.tsx" />
 
@@ -12,8 +12,16 @@ import {CodeSnippet} from '@earendil-works/elanor-react';
 <CodeSnippet>pnpm install</CodeSnippet>;
 ```
 
+Code uses `semantic.typography.code.primary` in `semantic.color.text.code` on the `semantic.color.background.fill.secondary` fill, aligned to the start.
+
 ## Copy action
 
-Pass a [Copy button](/components/copy-button/) to `actions`.
+Pass a [Copy button](/components/copy-button/) to `actions`. With a mouse, the action shows on hover, on keyboard focus, and while it reports a copy; on touch screens it always shows and grows to a 48px target.
 
 <Demo example="./examples/copy.tsx" />
+
+## Multiple lines
+
+Code keeps its line breaks. Actions stay on the first line.
+
+<Demo example="./examples/multi-line.tsx" />
