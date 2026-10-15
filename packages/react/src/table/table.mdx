@@ -25,7 +25,9 @@ import {Table} from '@earendil-works/elanor-react';
 </Table.Container>;
 ```
 
-The parts render native table elements. Container scrolls wide tables horizontally. Name the table with `aria-label` or a caption, and set `scope` on header cells. Align numbers with `align="end"`.
+The parts render native table elements. Container scrolls wide tables horizontally. Name the table with `aria-label` or a caption, and set `scope` on header cells. Align numbers with `align="end"` on both the header cell and the column's cells, so the header lines up with its values.
+
+Cells align to the top, so short cells line up with the first line of taller ones. Table text uses `semantic.typography.primary`, the UI style by default and the prose style inside long-form content (`data-text-context="prose"`), like [Text](/components/text/).
 
 ## Two-line cells
 

@@ -8,7 +8,7 @@
   border-spacing: 0;
   border-collapse: collapse;
   color: var(--semantic-color-text-primary);
-  font: var(--semantic-typography-ui-primary);
+  font: var(--semantic-typography-primary);
 }
 
 thead > .row,
@@ -21,7 +21,7 @@ thead > .row,
   padding-block: var(--semantic-dimension-space-padding-medium);
   padding-inline: var(--semantic-dimension-space-padding-large);
   text-align: start;
-  vertical-align: middle;
+  vertical-align: top;
 }
 
 .cell:first-child {
@@ -51,7 +51,7 @@ thead > .row,
 
 .secondary {
   color: var(--semantic-color-text-secondary);
-  font: var(--semantic-typography-ui-primary);
+  font: var(--semantic-typography-primary);
 }
 
 .primary + .secondary {

@@ -50,12 +50,24 @@ export function TableRow({ref, className, ...props}: TableRowProps) {
   return <tr {...props} ref={ref} className={classes(styles.row, className)} />;
 }
 
-export interface TableHeaderCellProps extends ThHTMLAttributes<HTMLTableCellElement> {
+export interface TableHeaderCellProps extends Omit<
+  ThHTMLAttributes<HTMLTableCellElement>,
+  'align'
+> {
   readonly ref?: Ref<HTMLTableCellElement> | undefined;
+  /** Inline alignment of the header text. Match the column's cells. */
+  readonly align?: 'start' | 'center' | 'end';
 }
 
-export function TableHeaderCell({ref, className, ...props}: TableHeaderCellProps) {
-  return <th {...props} ref={ref} className={classes(styles.cell, styles.headerCell, className)} />;
+export function TableHeaderCell({ref, align = 'start', className, ...props}: TableHeaderCellProps) {
+  return (
+    <th
+      {...props}
+      ref={ref}
+      data-align={align}
+      className={classes(styles.cell, styles.headerCell, className)}
+    />
+  );
 }
 
 export interface TableCellProps extends Omit<TdHTMLAttributes<HTMLTableCellElement>, 'align'> {

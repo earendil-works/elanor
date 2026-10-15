@@ -14,7 +14,9 @@ export default function TableDemo() {
           <Table.Row>
             <Table.HeaderCell scope="col">Name</Table.HeaderCell>
             <Table.HeaderCell scope="col">Status</Table.HeaderCell>
-            <Table.HeaderCell scope="col">Open tasks</Table.HeaderCell>
+            <Table.HeaderCell scope="col" align="end">
+              Open tasks
+            </Table.HeaderCell>
           </Table.Row>
         </Table.Head>
         <Table.Body>
