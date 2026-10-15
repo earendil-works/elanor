@@ -1,6 +1,6 @@
 # Shared color palette
 
-The shared palette uses four logo colors, a compatible positive green, and tint-free Graphite.
+The shared palette uses four logo colors, a compatible positive green, a violet for code syntax, and tint-free Graphite.
 
 ## Palette model
 
@@ -8,16 +8,17 @@ Each OKLCH key is emitted unchanged as `primitive.color.<family>` (`$root` for s
 
 Resting colors use core steps `100`–`900` by hundreds, plus structural `25` (light canvas) and `50`. Other intermediate steps are for hover/active only.
 
-| Family           | Key       |     Hue | Saturation min–max | Purpose                                                                    |
-| ---------------- | --------- | ------: | -----------------: | -------------------------------------------------------------------------- |
-| `cerulianBlue`   | `#4D9ABF` | 231.49° |             10–68% | Logo color; information, selection, links, and dark structural backgrounds |
-| `coralRed`       | `#F08F88` |     25° |             10–92% | Logo color; negative and destructive states                                |
-| `creamYellow`    | `#F1BE58` |  82.36° |            50–100% | Logo color; warning and attention states                                   |
-| `calamineBlue`   | `#83CCD2` | 202.43° |             10–72% | Logo color; supporting accent                                              |
-| `turquoiseGreen` | `#6AB98E` | 158.68° |             10–76% | Compatible green; positive and success states                              |
-| `graphite`       | `#6E6E6E` |       – |                 0% | Logo wordmark; neutral content and light structural backgrounds            |
+| Family           | Key       |     Hue | Saturation min–max | Purpose                                                   |
+| ---------------- | --------- | ------: | -----------------: | --------------------------------------------------------- |
+| `cerulianBlue`   | `#4D9ABF` | 231.49° |             10–68% | Logo color; information, selection, and links             |
+| `coralRed`       | `#F08F88` |     25° |             10–92% | Logo color; negative and destructive states               |
+| `creamYellow`    | `#F1BE58` |  82.36° |            50–100% | Logo color; warning and attention states                  |
+| `calamineBlue`   | `#83CCD2` | 202.43° |             10–72% | Logo color; supporting accent                             |
+| `turquoiseGreen` | `#6AB98E` | 158.68° |             10–76% | Compatible green; positive and success states             |
+| `amethystViolet` | `#A798D6` |    295° |             10–72% | Code syntax: types, classes, and built-ins                |
+| `graphite`       | `#6E6E6E` |       – |                 0% | Logo wordmark; neutral content and structural backgrounds |
 
-Key hex fallbacks match the logo artwork exactly.
+Logo key hex fallbacks match the logo artwork exactly.
 
 ## Standalone colors
 
@@ -58,7 +59,7 @@ Use `semantic.color.logo.*` only for logo artwork: `symbol.1`–`4` use the four
 | Negative                                          | `coralRed`       |
 | Positive                                          | `turquoiseGreen` |
 
-`calamineBlue` is a supporting brand accent without a semantic status role.
+`calamineBlue` is a supporting brand accent without a semantic status role. `amethystViolet` is used only for code syntax.
 
 Structural backgrounds are neutral Graphite in both themes:
 
@@ -81,8 +82,9 @@ Consumers use [semantic fill roles](token-naming.md#color-fill-roles), not famil
 Required WCAG 2.1 resting-state pairs:
 
 - ordinary text and content on canvas, surface, primary fills, and secondary fills at **4.5:1**;
+- source code text (`semantic.color.text.code` and its roles) on the secondary fill at **4.5:1**;
 - meaningful borders, focus rings, selected fills, indicators, and switch knobs at **3:1**.
 
-All 178 pairs pass. The smallest margin is dark selected fill on dark surface: **3.09:1** against **3:1** required. Run `pnpm tokens:check:contrast` to recheck.
+All 196 pairs pass. The smallest margin is dark selected fill on dark surface: **3.09:1** against **3:1** required. Run `pnpm tokens:check:contrast` to recheck.
 
 Project policy excludes hover/active states from conformance checks. Secondary borders, secondary fills against their surroundings, and transparent ghost fills may fall below 3:1 only when decorative or lower-prominence and not the sole cue for a control or state.

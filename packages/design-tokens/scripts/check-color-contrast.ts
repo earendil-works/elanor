@@ -317,9 +317,21 @@ function createRules(paths: readonly string[]): ContrastRule[] {
       category: 'text/page',
       threshold: REQUIRED_TEXT_CONTRAST,
       pairs: everyCombination(
-        under(paths, 'semantic.color.text', (relative) => !relative.startsWith('on')),
+        under(
+          paths,
+          'semantic.color.text',
+          (relative) => !relative.startsWith('on') && !relative.startsWith('code'),
+        ),
         page,
       ),
+    },
+    {
+      // Code snippets and inline code set source code on the secondary fill.
+      category: 'text/code-on-secondary-fill',
+      threshold: REQUIRED_TEXT_CONTRAST,
+      pairs: everyCombination(under(paths, 'semantic.color.text.code'), [
+        requirePath(pathSet, 'semantic.color.background.fill.secondary'),
+      ]),
     },
     {
       category: 'icon/page',

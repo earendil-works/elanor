@@ -145,6 +145,24 @@ Checkbox/radio bases alias `fill.ghost.neutral`; selected variants and slider pr
 
 Append `hover`/`active` only for changes, such as `background.checkbox.hover` or `background.radio.selected.hover`. Switch tracks and selected checkbox fills have no interaction variants.
 
+## Code text roles
+
+Syntax highlighting uses `semantic.color.text.code`. Its `$root` colors plain source code; child roles name syntax categories, not hues:
+
+```text
+semantic.color.text.code
+semantic.color.text.code.comment
+semantic.color.text.code.punctuation
+semantic.color.text.code.keyword
+semantic.color.text.code.function
+semantic.color.text.code.variable
+semantic.color.text.code.string
+semantic.color.text.code.number
+semantic.color.text.code.type
+```
+
+`punctuation` also covers operators, `keyword` tag names, `variable` parameters, properties, and attribute names, `number` literals such as `true`, `false`, and `null`, and `type` classes and built-ins. Code sits on the secondary fill used by code snippets and inline code, so every role must meet text contrast against it in both color schemes.
+
 ## Scale naming
 
 ### Magic-number scales
