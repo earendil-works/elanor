@@ -17,11 +17,16 @@ import {
   rule as tokenPropertyCompatibility,
   ruleName as tokenPropertyCompatibilityName,
 } from './rules/token-property-compatibility.js';
+import {
+  rule as transitionTypeCompatibility,
+  ruleName as transitionTypeCompatibilityName,
+} from './rules/transition-type-compatibility.js';
 
 const plugin = [
   {ruleName: noNonTokenCustomPropertiesName, rule: noNonTokenCustomProperties},
   {ruleName: noHardcodedTokenValuesName, rule: noHardcodedTokenValues},
   {ruleName: tokenPropertyCompatibilityName, rule: tokenPropertyCompatibility},
+  {ruleName: transitionTypeCompatibilityName, rule: transitionTypeCompatibility},
   {ruleName: preferSemanticTokenName, rule: preferSemanticToken},
 ];
 
@@ -47,6 +52,7 @@ export function createStrictConfig(options: StrictConfigOptions): Config {
       [noNonTokenCustomPropertiesName]: [true, ruleOptions],
       [noHardcodedTokenValuesName]: [true, ruleOptions],
       [tokenPropertyCompatibilityName]: [true, ruleOptions],
+      [transitionTypeCompatibilityName]: [true, ruleOptions],
       [preferSemanticTokenName]: [true, ruleOptions],
     },
   };
@@ -57,6 +63,7 @@ export {
   noNonTokenCustomPropertiesName,
   preferSemanticTokenName,
   tokenPropertyCompatibilityName,
+  transitionTypeCompatibilityName,
 };
 
 export default plugin;

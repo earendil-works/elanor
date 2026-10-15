@@ -27,6 +27,10 @@ const NAMED_COLORS = new Set([
   'pink',
 ]);
 const DIMENSION = /^[-+]?(?:\d*\.)?\d+(px|rem)$/i;
+/** A CSS time literal, such as `150ms` or `0.3s`. */
+export const TIME = /^[-+]?(?:\d*\.)?\d+m?s$/i;
+const EASING_KEYWORDS = /^(?:ease|ease-in|ease-out|ease-in-out|linear)$/i;
+const EASING_FUNCTIONS = new Set(['cubic-bezier', 'linear']);
 const NUMBER = /^[-+]?(?:\d*\.)?\d+$/;
 const FONT_WEIGHT_KEYWORDS = /^(?:normal|bold|bolder|lighter)$/;
 const GENERIC_FONT_FAMILIES =
@@ -42,7 +46,14 @@ export interface LiteralPolicy {
 
 export interface LiteralValue {
   value: string;
-  category: 'color' | 'dimension' | 'fontFamily' | 'fontWeight' | 'number';
+  category:
+    | 'color'
+    | 'cubicBezier'
+    | 'dimension'
+    | 'duration'
+    | 'fontFamily'
+    | 'fontWeight'
+    | 'number';
 }
 
 /**
@@ -91,7 +102,7 @@ function isColorProperty(property: string): boolean {
  */
 function isDimensionProperty(property: string): boolean {
   return (
-    /^(?:margin|padding|gap|row-gap|column-gap|inset|top|right|bottom|left|width|height|min-width|max-width|min-height|max-height|border-radius|border-width|outline-width|outline-offset|scroll-margin|scroll-padding|grid-template|transform|flex-basis|font-size|letter-spacing|box-shadow|text-shadow)(?:-|$)/.test(
+    /^(?:margin|padding|gap|row-gap|column-gap|inset|top|right|bottom|left|width|height|min-width|max-width|min-height|max-height|border-radius|border-width|outline-width|outline-offset|scroll-margin|scroll-padding|grid-template|transform|translate|flex-basis|font-size|letter-spacing|box-shadow|text-shadow)(?:-|$)/.test(
       property,
     ) ||
     /^(?:min-|max-)?(?:inline-size|block-size)$/.test(property) ||
@@ -106,7 +117,38 @@ function isDimensionProperty(property: string): boolean {
  * @returns Whether number literals should be inspected for the property.
  */
 function isNumberProperty(property: string): boolean {
-  return /^(?:opacity|line-height|transform|z-index|aspect-ratio)$/.test(property);
+  return /^(?:opacity|line-height|transform|scale|z-index|aspect-ratio)$/.test(property);
+}
+
+/**
+ * Checks whether a zero is a design value rather than structural absence: the
+ * transparent end of a fade, which `opacity.hidden` represents.
+ *
+ * @param property The normalized CSS property name.
+ * @returns Whether unitless zero should be inspected for the property.
+ */
+function isZeroTokenized(property: string): boolean {
+  return property === 'opacity';
+}
+
+/**
+ * Checks whether a CSS property can contain a tokenizable duration.
+ *
+ * @param property The normalized CSS property name.
+ * @returns Whether time literals should be inspected for the property.
+ */
+function isDurationProperty(property: string): boolean {
+  return /^(?:transition|animation)(?:-(?:duration|delay))?$/.test(property);
+}
+
+/**
+ * Checks whether a CSS property can contain a tokenizable easing curve.
+ *
+ * @param property The normalized CSS property name.
+ * @returns Whether easing keywords and functions should be inspected for the property.
+ */
+function isEasingProperty(property: string): boolean {
+  return /^(?:transition|animation)(?:-timing-function)?$/.test(property);
 }
 
 /**
@@ -129,6 +171,13 @@ function literalFromNode(
   ) {
     return {value: valueParser.stringify(node), category: 'color'};
   }
+  if (
+    node.type === 'function' &&
+    EASING_FUNCTIONS.has(node.value.toLowerCase()) &&
+    isEasingProperty(property)
+  ) {
+    return {value: valueParser.stringify(node), category: 'cubicBezier'};
+  }
   if (node.type === 'string' && property === 'font-family') {
     return {value: node.value, category: 'fontFamily'};
   }
@@ -141,6 +190,12 @@ function literalFromNode(
   ) {
     return {value: word, category: 'color'};
   }
+  if (isDurationProperty(property) && TIME.test(word)) {
+    return {value: word, category: 'duration'};
+  }
+  if (isEasingProperty(property) && EASING_KEYWORDS.test(word)) {
+    return {value: word, category: 'cubicBezier'};
+  }
   if (isDimensionProperty(property) && DIMENSION.test(word)) {
     return {value: word, category: 'dimension'};
   }
@@ -148,7 +203,8 @@ function literalFromNode(
     return {value: word, category: 'fontWeight'};
   }
   if (isNumberProperty(property) && NUMBER.test(word)) {
-    if (policy.allowUnitlessZero && Number(word) === 0) return undefined;
+    if (policy.allowUnitlessZero && Number(word) === 0 && !isZeroTokenized(property))
+      return undefined;
     return {value: word, category: 'number'};
   }
   if (property === 'font-family' && !GENERIC_FONT_FAMILIES.test(word)) {
@@ -268,7 +324,13 @@ export function tokenizableLiterals(
       seen.add(key);
       literals.push(literal);
     }
-    if (node.type === 'function' && COLOR_FUNCTIONS.has(node.value.toLowerCase())) return false;
+    if (
+      node.type === 'function' &&
+      (COLOR_FUNCTIONS.has(node.value.toLowerCase()) ||
+        (EASING_FUNCTIONS.has(node.value.toLowerCase()) &&
+          isEasingProperty(property.toLowerCase())))
+    )
+      return false;
     return undefined;
   });
   return literals;
