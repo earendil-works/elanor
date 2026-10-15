@@ -1,10 +1,12 @@
-.section {
-  display: flex;
-  flex-direction: column;
-  gap: var(--semantic-dimension-space-gap-large);
-  min-inline-size: 0;
-}
+@layer elanor.components {
+  .section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-gap-large);
+    min-inline-size: 0;
+  }
 
-.content {
-  min-inline-size: 0;
+  .content {
+    min-inline-size: 0;
+  }
 }

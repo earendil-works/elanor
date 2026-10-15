@@ -1,24 +1,26 @@
-.root {
-  box-sizing: border-box;
-  min-inline-size: 0;
-  margin: 0;
-  padding: 0;
-  padding-inline-start: var(--semantic-dimension-space-padding-xx-large);
-  color: var(--semantic-color-text-primary);
-  font: var(--semantic-typography-primary);
-}
+@layer elanor.components {
+  .root {
+    box-sizing: border-box;
+    min-inline-size: 0;
+    margin: 0;
+    padding: 0;
+    padding-inline-start: var(--semantic-dimension-space-padding-xx-large);
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-primary);
+  }
 
-.item {
-  min-inline-size: 0;
-  overflow-wrap: anywhere;
-}
+  .item {
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
 
-.item + .item,
-.item > .root {
-  margin-block-start: var(--semantic-dimension-space-gap-small);
-}
+  .item + .item,
+  .item > .root {
+    margin-block-start: var(--semantic-dimension-space-gap-small);
+  }
 
-.item::marker {
-  color: var(--semantic-color-text-secondary);
-  font-variant-numeric: tabular-nums;
+  .item::marker {
+    color: var(--semantic-color-text-secondary);
+    font-variant-numeric: tabular-nums;
+  }
 }

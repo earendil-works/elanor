@@ -1,43 +1,45 @@
-.root {
-  box-sizing: border-box;
-  display: inline-flex;
-  gap: var(--semantic-dimension-space-control-gap-large);
-  min-inline-size: 0;
-  padding: var(--semantic-dimension-space-padding-xx-small);
-  border-radius: var(--semantic-dimension-radius-small);
-  background: var(--semantic-color-background-fill-secondary);
-}
+@layer elanor.components {
+  .root {
+    box-sizing: border-box;
+    display: inline-flex;
+    gap: var(--semantic-dimension-space-control-gap-large);
+    min-inline-size: 0;
+    padding: var(--semantic-dimension-space-padding-xx-small);
+    border-radius: var(--semantic-dimension-radius-small);
+    background: var(--semantic-color-background-fill-secondary);
+  }
 
-.item {
-  box-sizing: border-box;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding-block: var(--semantic-dimension-space-padding-xx-small);
-  padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
-  border: 0;
-  border-radius: var(--semantic-dimension-radius-small);
-  background: var(--semantic-color-background-fill-secondary);
-  box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
-    var(--semantic-color-background-fill-secondary);
-  color: var(--semantic-color-text-on-secondary-fill);
-  font: var(--semantic-typography-ui-primary);
-  cursor: pointer;
-}
+  .item {
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding-block: var(--semantic-dimension-space-padding-xx-small);
+    padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
+    border: 0;
+    border-radius: var(--semantic-dimension-radius-small);
+    background: var(--semantic-color-background-fill-secondary);
+    box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+      var(--semantic-color-background-fill-secondary);
+    color: var(--semantic-color-text-on-secondary-fill);
+    font: var(--semantic-typography-ui-primary);
+    cursor: pointer;
+  }
 
-.item[data-pressed] {
-  background: var(--semantic-color-background-canvas);
-  box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
-    var(--semantic-color-background-canvas);
-  color: var(--semantic-color-text-primary);
-}
+  .item[data-pressed] {
+    background: var(--semantic-color-background-canvas);
+    box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+      var(--semantic-color-background-canvas);
+    color: var(--semantic-color-text-primary);
+  }
 
-.item:focus-visible {
-  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
-  outline-offset: var(--semantic-dimension-border-width-medium);
-}
+  .item:focus-visible {
+    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline-offset: var(--semantic-dimension-border-width-medium);
+  }
 
-.item[data-disabled] {
-  cursor: not-allowed;
-  opacity: var(--semantic-number-opacity-disabled);
+  .item[data-disabled] {
+    cursor: not-allowed;
+    opacity: var(--semantic-number-opacity-disabled);
+  }
 }

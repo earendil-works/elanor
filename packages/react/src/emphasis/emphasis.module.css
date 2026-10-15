@@ -1,3 +1,5 @@
-.root {
-  font-style: italic;
+@layer elanor.components {
+  .root {
+    font-style: italic;
+  }
 }

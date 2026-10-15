@@ -1,15 +1,17 @@
-.root {
-  padding-inline: var(--semantic-dimension-space-control-padding-inline-x-small);
-  border-radius: var(--semantic-dimension-radius-small);
-  background: var(--semantic-color-background-fill-secondary);
-  color: var(--semantic-color-text-code);
-  font: var(--semantic-typography-code-primary);
-  /* Long identifiers break instead of widening narrow columns, such as in tables. */
-  overflow-wrap: break-word;
-}
-
-@media (forced-colors: active) {
+@layer elanor.components {
   .root {
-    outline: var(--semantic-dimension-border-width-small) solid CanvasText;
+    padding-inline: var(--semantic-dimension-space-control-padding-inline-x-small);
+    border-radius: var(--semantic-dimension-radius-small);
+    background: var(--semantic-color-background-fill-secondary);
+    color: var(--semantic-color-text-code);
+    font: var(--semantic-typography-code-primary);
+    /* Long identifiers break instead of widening narrow columns, such as in tables. */
+    overflow-wrap: break-word;
+  }
+
+  @media (forced-colors: active) {
+    .root {
+      outline: var(--semantic-dimension-border-width-small) solid CanvasText;
+    }
   }
 }

@@ -1,74 +1,76 @@
-.root {
-  box-sizing: border-box;
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: minmax(0, 1fr);
-  min-inline-size: 0;
-  min-block-size: 0;
-}
+@layer elanor.components {
+  .root {
+    box-sizing: border-box;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    min-inline-size: 0;
+    min-block-size: 0;
+  }
 
-.viewport {
-  box-sizing: border-box;
-  min-inline-size: 0;
-  min-block-size: 0;
-  border-radius: inherit;
-}
+  .viewport {
+    box-sizing: border-box;
+    min-inline-size: 0;
+    min-block-size: 0;
+    border-radius: inherit;
+  }
 
-.viewport:focus-visible {
-  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
-  outline-offset: calc(-1 * var(--semantic-dimension-border-width-large));
-}
-
-:where(.content) {
-  box-sizing: border-box;
-  padding: var(--semantic-dimension-space-padding-large);
-}
-
-.scrollbar {
-  box-sizing: border-box;
-  display: flex;
-  padding: var(--semantic-dimension-space-padding-xx-small);
-}
-
-.scrollbar[data-orientation='vertical'] {
-  inline-size: var(--semantic-dimension-size-xx-small);
-}
-
-.scrollbar[data-orientation='horizontal'] {
-  block-size: var(--semantic-dimension-size-xx-small);
-}
-
-.thumb {
-  inline-size: 100%;
-  block-size: 100%;
-  border-radius: var(--semantic-dimension-radius-full);
-  background: var(--semantic-color-border-primary);
-}
-
-.scrollbar[data-hovering] .thumb,
-.thumb[data-scrolling] {
-  background: var(--semantic-color-background-fill-primary);
-}
-
-@media (forced-colors: active) {
   .viewport:focus-visible {
-    outline-color: Highlight;
+    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline-offset: calc(-1 * var(--semantic-dimension-border-width-large));
+  }
+
+  :where(.content) {
+    box-sizing: border-box;
+    padding: var(--semantic-dimension-space-padding-large);
+  }
+
+  .scrollbar {
+    box-sizing: border-box;
+    display: flex;
+    padding: var(--semantic-dimension-space-padding-xx-small);
+  }
+
+  .scrollbar[data-orientation='vertical'] {
+    inline-size: var(--semantic-dimension-size-xx-small);
+  }
+
+  .scrollbar[data-orientation='horizontal'] {
+    block-size: var(--semantic-dimension-size-xx-small);
   }
 
   .thumb {
-    background: ButtonText;
+    inline-size: 100%;
+    block-size: 100%;
+    border-radius: var(--semantic-dimension-radius-full);
+    background: var(--semantic-color-border-primary);
   }
 
   .scrollbar[data-hovering] .thumb,
   .thumb[data-scrolling] {
-    background: Highlight;
+    background: var(--semantic-color-background-fill-primary);
   }
-}
 
-.scrollbar {
-  transition: opacity var(--semantic-transition-fade);
-}
+  @media (forced-colors: active) {
+    .viewport:focus-visible {
+      outline-color: Highlight;
+    }
 
-.scrollbar[data-scrolling] {
-  transition: none;
+    .thumb {
+      background: ButtonText;
+    }
+
+    .scrollbar[data-hovering] .thumb,
+    .thumb[data-scrolling] {
+      background: Highlight;
+    }
+  }
+
+  .scrollbar {
+    transition: opacity var(--semantic-transition-fade);
+  }
+
+  .scrollbar[data-scrolling] {
+    transition: none;
+  }
 }

@@ -1,21 +1,23 @@
-.root {
-  flex: none;
-  border: 0;
-  background: var(--semantic-color-border-secondary);
-}
-
-.root[data-orientation='horizontal'] {
-  inline-size: 100%;
-  block-size: var(--semantic-dimension-border-width-default);
-}
-
-.root[data-orientation='vertical'] {
-  inline-size: var(--semantic-dimension-border-width-default);
-  block-size: 100%;
-}
-
-@media (forced-colors: active) {
+@layer elanor.components {
   .root {
-    background: CanvasText;
+    flex: none;
+    border: 0;
+    background: var(--semantic-color-border-secondary);
+  }
+
+  .root[data-orientation='horizontal'] {
+    inline-size: 100%;
+    block-size: var(--semantic-dimension-border-width-default);
+  }
+
+  .root[data-orientation='vertical'] {
+    inline-size: var(--semantic-dimension-border-width-default);
+    block-size: 100%;
+  }
+
+  @media (forced-colors: active) {
+    .root {
+      background: CanvasText;
+    }
   }
 }

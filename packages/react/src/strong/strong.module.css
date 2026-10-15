@@ -1,3 +1,5 @@
-.root {
-  font-weight: var(--semantic-font-weight-emphasis);
+@layer elanor.components {
+  .root {
+    font-weight: var(--semantic-font-weight-emphasis);
+  }
 }

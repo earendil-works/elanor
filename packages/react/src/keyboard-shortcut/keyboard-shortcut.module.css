@@ -1,40 +1,43 @@
-.shortcut {
-  display: inline-flex;
-  align-items: baseline;
-  gap: var(--semantic-dimension-space-gap-xx-small);
-  color: var(--semantic-color-text-secondary);
-  font: var(--semantic-typography-code-secondary);
-  white-space: nowrap;
-}
+@layer elanor.components {
+  .shortcut {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--semantic-dimension-space-gap-xx-small);
+    color: var(--semantic-color-text-secondary);
+    font: var(--semantic-typography-code-secondary);
+    white-space: nowrap;
+  }
 
-.key {
-  box-sizing: border-box;
-  display: inline-block;
-  /* Single characters get square keys: the line height plus the top and bottom borders. */
-  min-inline-size: calc(
-    1lh + var(--semantic-dimension-border-width-small) +
-      var(--semantic-dimension-border-width-medium)
-  );
-  padding-inline: var(--semantic-dimension-space-padding-x-small);
-  border: var(--semantic-dimension-border-width-small) solid var(--semantic-color-border-secondary);
-  border-block-end-width: var(--semantic-dimension-border-width-medium);
-  border-radius: var(--semantic-dimension-radius-small);
-  background: var(--semantic-color-background-surface);
-  color: var(--semantic-color-text-primary);
-  font: var(--semantic-typography-code-secondary);
-  text-align: center;
-  white-space: nowrap;
-  cursor: pointer;
-}
-
-/* Pressing a key pushes the cap in by its bottom edge; keys in a combination press individually. */
-.key:active {
-  border-block-end-width: var(--semantic-dimension-border-width-small);
-  translate: 0 var(--semantic-dimension-travel-keyboard-key);
-}
-
-@media (forced-colors: active) {
   .key {
-    border-color: CanvasText;
+    box-sizing: border-box;
+    display: inline-block;
+    /* Single characters get square keys: the line height plus the top and bottom borders. */
+    min-inline-size: calc(
+      1lh + var(--semantic-dimension-border-width-small) +
+        var(--semantic-dimension-border-width-medium)
+    );
+    padding-inline: var(--semantic-dimension-space-padding-x-small);
+    border: var(--semantic-dimension-border-width-small) solid
+      var(--semantic-color-border-secondary);
+    border-block-end-width: var(--semantic-dimension-border-width-medium);
+    border-radius: var(--semantic-dimension-radius-small);
+    background: var(--semantic-color-background-surface);
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-code-secondary);
+    text-align: center;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  /* Pressing a key pushes the cap in by its bottom edge; keys in a combination press individually. */
+  .key:active {
+    border-block-end-width: var(--semantic-dimension-border-width-small);
+    translate: 0 var(--semantic-dimension-travel-keyboard-key);
+  }
+
+  @media (forced-colors: active) {
+    .key {
+      border-color: CanvasText;
+    }
   }
 }

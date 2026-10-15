@@ -1,100 +1,103 @@
-.radio {
-  position: relative;
-  isolation: isolate;
-  box-sizing: border-box;
-  display: inline-flex;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  inline-size: var(--semantic-dimension-size-small);
-  block-size: var(--semantic-dimension-size-small);
-  margin: 0;
-  padding: 0;
-  border: 0;
-  border-radius: var(--semantic-dimension-radius-full);
-  background: transparent;
-  color: var(--semantic-color-icon-radio-indicator);
-  touch-action: manipulation;
-}
-
-.radio::before {
-  position: absolute;
-  z-index: var(--semantic-number-layer-background);
-  box-sizing: border-box;
-  inline-size: var(--semantic-dimension-size-x-small);
-  block-size: var(--semantic-dimension-size-x-small);
-  border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-primary);
-  border-radius: var(--semantic-dimension-radius-full);
-  background: var(--semantic-color-background-radio);
-  content: '';
-}
-
-@media (pointer: coarse) {
+@layer elanor.components {
   .radio {
-    inline-size: var(--semantic-dimension-size-x-large);
-    block-size: var(--semantic-dimension-size-x-large);
+    position: relative;
+    isolation: isolate;
+    box-sizing: border-box;
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    inline-size: var(--semantic-dimension-size-small);
+    block-size: var(--semantic-dimension-size-small);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: var(--semantic-dimension-radius-full);
+    background: transparent;
+    color: var(--semantic-color-icon-radio-indicator);
+    touch-action: manipulation;
   }
-}
 
-@media (hover: hover) {
-  .radio:hover:not([data-disabled])::before {
-    background: var(--semantic-color-background-radio-hover);
-  }
-}
-
-.radio:active:not([data-disabled])::before {
-  background: var(--semantic-color-background-radio-active);
-}
-
-.radio[data-checked]::before {
-  border-color: var(--semantic-color-background-radio-selected);
-  background: var(--semantic-color-background-radio-selected);
-}
-
-@media (hover: hover) {
-  .radio[data-checked]:hover:not([data-disabled])::before {
-    border-color: var(--semantic-color-background-radio-selected-hover);
-    background: var(--semantic-color-background-radio-selected-hover);
-  }
-}
-
-.radio[data-checked]:active:not([data-disabled])::before {
-  border-color: var(--semantic-color-background-radio-selected-active);
-  background: var(--semantic-color-background-radio-selected-active);
-}
-
-.radio:focus-visible {
-  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
-  outline-offset: var(--semantic-dimension-border-width-medium);
-}
-
-.indicator {
-  display: inline-flex;
-  inline-size: calc(var(--semantic-dimension-size-x-small) * 0.375);
-  block-size: calc(var(--semantic-dimension-size-x-small) * 0.375);
-  border-radius: var(--semantic-dimension-radius-full);
-  background: currentcolor;
-}
-
-.indicator[data-unchecked] {
-  display: none;
-}
-
-.radio[data-disabled] {
-  cursor: not-allowed;
-  opacity: var(--semantic-number-opacity-disabled);
-}
-
-@media (forced-colors: active) {
   .radio::before {
-    border-color: ButtonBorder;
+    position: absolute;
+    z-index: var(--semantic-number-layer-background);
+    box-sizing: border-box;
+    inline-size: var(--semantic-dimension-size-x-small);
+    block-size: var(--semantic-dimension-size-x-small);
+    border: var(--semantic-dimension-border-width-default) solid
+      var(--semantic-color-border-primary);
+    border-radius: var(--semantic-dimension-radius-full);
+    background: var(--semantic-color-background-radio);
+    content: '';
+  }
+
+  @media (pointer: coarse) {
+    .radio {
+      inline-size: var(--semantic-dimension-size-x-large);
+      block-size: var(--semantic-dimension-size-x-large);
+    }
+  }
+
+  @media (hover: hover) {
+    .radio:hover:not([data-disabled])::before {
+      background: var(--semantic-color-background-radio-hover);
+    }
+  }
+
+  .radio:active:not([data-disabled])::before {
+    background: var(--semantic-color-background-radio-active);
   }
 
   .radio[data-checked]::before {
-    background: Highlight;
+    border-color: var(--semantic-color-background-radio-selected);
+    background: var(--semantic-color-background-radio-selected);
+  }
+
+  @media (hover: hover) {
+    .radio[data-checked]:hover:not([data-disabled])::before {
+      border-color: var(--semantic-color-background-radio-selected-hover);
+      background: var(--semantic-color-background-radio-selected-hover);
+    }
+  }
+
+  .radio[data-checked]:active:not([data-disabled])::before {
+    border-color: var(--semantic-color-background-radio-selected-active);
+    background: var(--semantic-color-background-radio-selected-active);
+  }
+
+  .radio:focus-visible {
+    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline-offset: var(--semantic-dimension-border-width-medium);
   }
 
   .indicator {
-    color: HighlightText;
+    display: inline-flex;
+    inline-size: calc(var(--semantic-dimension-size-x-small) * 0.375);
+    block-size: calc(var(--semantic-dimension-size-x-small) * 0.375);
+    border-radius: var(--semantic-dimension-radius-full);
+    background: currentcolor;
+  }
+
+  .indicator[data-unchecked] {
+    display: none;
+  }
+
+  .radio[data-disabled] {
+    cursor: not-allowed;
+    opacity: var(--semantic-number-opacity-disabled);
+  }
+
+  @media (forced-colors: active) {
+    .radio::before {
+      border-color: ButtonBorder;
+    }
+
+    .radio[data-checked]::before {
+      background: Highlight;
+    }
+
+    .indicator {
+      color: HighlightText;
+    }
   }
 }

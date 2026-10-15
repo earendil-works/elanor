@@ -1,17 +1,19 @@
-.root {
-  color: var(--semantic-color-text-link);
-  font: var(--semantic-typography-primary);
-  text-decoration: underline;
-  text-decoration-thickness: from-font;
-  text-underline-position: from-font;
-}
+@layer elanor.components {
+  .root {
+    color: var(--semantic-color-text-link);
+    font: var(--semantic-typography-primary);
+    text-decoration: underline;
+    text-decoration-thickness: from-font;
+    text-underline-position: from-font;
+  }
 
-.root:hover {
-  text-decoration-thickness: 10%;
-}
+  .root:hover {
+    text-decoration-thickness: 10%;
+  }
 
-.root:focus-visible {
-  border-radius: var(--semantic-dimension-radius-small);
-  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
-  outline-offset: var(--semantic-dimension-border-width-medium);
+  .root:focus-visible {
+    border-radius: var(--semantic-dimension-radius-small);
+    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline-offset: var(--semantic-dimension-border-width-medium);
+  }
 }

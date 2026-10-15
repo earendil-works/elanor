@@ -1,45 +1,47 @@
-.root {
-  min-inline-size: 0;
-}
+@layer elanor.components {
+  .root {
+    min-inline-size: 0;
+  }
 
-.label {
-  font: var(--semantic-typography-ui-primary);
-  color: var(--semantic-color-text-primary);
-}
+  .label {
+    font: var(--semantic-typography-ui-primary);
+    color: var(--semantic-color-text-primary);
+  }
 
-.value {
-  font: var(--semantic-typography-ui-primary);
-  font-variant-numeric: tabular-nums;
-  color: var(--semantic-color-text-secondary);
-}
+  .value {
+    font: var(--semantic-typography-ui-primary);
+    font-variant-numeric: tabular-nums;
+    color: var(--semantic-color-text-secondary);
+  }
 
-.track {
-  overflow: hidden;
-  block-size: var(--semantic-dimension-size-xx-small);
-  background: var(--semantic-color-background-fill-secondary);
-}
-
-.indicator {
-  background: var(--semantic-color-background-fill-data-viz-100);
-  transition: width var(--semantic-transition-movement-indicator);
-}
-
-.root[data-semantic='warning'] .indicator {
-  background: var(--semantic-color-border-warning);
-}
-
-.root[data-semantic='negative'] .indicator {
-  background: var(--semantic-color-background-fill-primary-negative);
-}
-
-@media (forced-colors: active) {
   .track {
-    outline: var(--semantic-dimension-border-width-small) solid CanvasText;
-    outline-offset: calc(-1 * var(--semantic-dimension-border-width-small));
+    overflow: hidden;
+    block-size: var(--semantic-dimension-size-xx-small);
+    background: var(--semantic-color-background-fill-secondary);
   }
 
   .indicator {
-    background: Highlight;
-    forced-color-adjust: none;
+    background: var(--semantic-color-background-fill-data-viz-100);
+    transition: width var(--semantic-transition-movement-indicator);
+  }
+
+  .root[data-semantic='warning'] .indicator {
+    background: var(--semantic-color-border-warning);
+  }
+
+  .root[data-semantic='negative'] .indicator {
+    background: var(--semantic-color-background-fill-primary-negative);
+  }
+
+  @media (forced-colors: active) {
+    .track {
+      outline: var(--semantic-dimension-border-width-small) solid CanvasText;
+      outline-offset: calc(-1 * var(--semantic-dimension-border-width-small));
+    }
+
+    .indicator {
+      background: Highlight;
+      forced-color-adjust: none;
+    }
   }
 }

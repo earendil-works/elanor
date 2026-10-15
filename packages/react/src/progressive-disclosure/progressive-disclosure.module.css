@@ -1,59 +1,61 @@
-.root {
-  min-inline-size: 0;
-  color: var(--semantic-color-text-primary);
-}
-
-.panel {
-  position: relative;
-  box-sizing: border-box;
-  min-inline-size: 0;
-}
-
-.panel:not([hidden]) {
-  /* stylelint-disable design-tokens/token-property-compatibility -- Structural inset: half the 16px lane plus half the 2px rule, then the 16px gap. */
-  padding-inline-start: calc(
-    (var(--semantic-dimension-size-x-small) + var(--semantic-dimension-border-width-default)) / 2 +
-      var(--semantic-dimension-space-gap-medium)
-  );
-  /* stylelint-enable design-tokens/token-property-compatibility */
-}
-
-.panel:not([hidden])::before {
-  display: block;
-  padding-block-start: var(--semantic-dimension-space-padding-medium);
-  content: '';
-}
-
-.panel:not([hidden])::after {
-  position: absolute;
-  inset-block: 0;
-  inset-inline-start: calc(
-    (var(--semantic-dimension-size-x-small) - var(--semantic-dimension-border-width-default)) / 2
-  );
-  border-inline-start: var(--semantic-dimension-border-width-default) solid
-    var(--semantic-color-border-secondary);
-  content: '';
-  pointer-events: none;
-}
-
-@media (forced-colors: active) {
-  .panel::after {
-    border-inline-start-color: CanvasText;
+@layer elanor.components {
+  .root {
+    min-inline-size: 0;
+    color: var(--semantic-color-text-primary);
   }
-}
 
-.panel {
-  height: var(--collapsible-panel-height);
-  transition: height var(--semantic-transition-movement-disclosure);
-}
+  .panel {
+    position: relative;
+    box-sizing: border-box;
+    min-inline-size: 0;
+  }
 
-.panel[data-height-transition],
-.panel[data-starting-style],
-.panel[data-ending-style] {
-  overflow: hidden;
-}
+  .panel:not([hidden]) {
+    /* stylelint-disable design-tokens/token-property-compatibility -- Structural inset: half the 16px lane plus half the 2px rule, then the 16px gap. */
+    padding-inline-start: calc(
+      (var(--semantic-dimension-size-x-small) + var(--semantic-dimension-border-width-default)) /
+        2 + var(--semantic-dimension-space-gap-medium)
+    );
+    /* stylelint-enable design-tokens/token-property-compatibility */
+  }
 
-.panel[data-starting-style],
-.panel[data-ending-style] {
-  height: 0;
+  .panel:not([hidden])::before {
+    display: block;
+    padding-block-start: var(--semantic-dimension-space-padding-medium);
+    content: '';
+  }
+
+  .panel:not([hidden])::after {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: calc(
+      (var(--semantic-dimension-size-x-small) - var(--semantic-dimension-border-width-default)) / 2
+    );
+    border-inline-start: var(--semantic-dimension-border-width-default) solid
+      var(--semantic-color-border-secondary);
+    content: '';
+    pointer-events: none;
+  }
+
+  @media (forced-colors: active) {
+    .panel::after {
+      border-inline-start-color: CanvasText;
+    }
+  }
+
+  .panel {
+    height: var(--collapsible-panel-height);
+    transition: height var(--semantic-transition-movement-disclosure);
+  }
+
+  .panel[data-height-transition],
+  .panel[data-starting-style],
+  .panel[data-ending-style] {
+    overflow: hidden;
+  }
+
+  .panel[data-starting-style],
+  .panel[data-ending-style] {
+    height: 0;
+  }
 }

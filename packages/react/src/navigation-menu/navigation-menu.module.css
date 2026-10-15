@@ -1,194 +1,196 @@
-.navigationItem {
-  position: relative;
-  box-sizing: border-box;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--semantic-dimension-space-control-gap-large);
-  padding-block: var(--semantic-dimension-space-control-padding-block-small);
-  padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
-  border: 0;
-  outline: 0;
-  background: var(--semantic-color-background-fill-ghost-neutral);
-  color: var(--semantic-color-text-primary);
-  font: var(--semantic-typography-ui-primary);
-  text-decoration: none;
-  white-space: nowrap;
-  cursor: pointer;
-}
+@layer elanor.components {
+  .navigationItem {
+    position: relative;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--semantic-dimension-space-control-gap-large);
+    padding-block: var(--semantic-dimension-space-control-padding-block-small);
+    padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
+    border: 0;
+    outline: 0;
+    background: var(--semantic-color-background-fill-ghost-neutral);
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-ui-primary);
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+  }
 
-.navigationItem::after {
-  position: absolute;
-  inset-inline: 0;
-  inset-block-end: 0;
-  block-size: var(--semantic-dimension-border-width-default);
-  background: var(--semantic-color-border-primary);
-  content: '';
-  visibility: hidden;
-}
+  .navigationItem::after {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: 0;
+    block-size: var(--semantic-dimension-border-width-default);
+    background: var(--semantic-color-border-primary);
+    content: '';
+    visibility: hidden;
+  }
 
-@media (hover: hover) {
-  .navigationItem:hover::after {
+  @media (hover: hover) {
+    .navigationItem:hover::after {
+      visibility: visible;
+    }
+  }
+
+  .navigationItem[data-active]::after,
+  .navigationItem[data-popup-open]::after {
     visibility: visible;
   }
-}
 
-.navigationItem[data-active]::after,
-.navigationItem[data-popup-open]::after {
-  visibility: visible;
-}
+  .navigationItem:focus-visible {
+    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline-offset: var(--semantic-dimension-border-width-medium);
+  }
 
-.navigationItem:focus-visible {
-  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
-  outline-offset: var(--semantic-dimension-border-width-medium);
-}
+  .navigationItem[data-disabled] {
+    cursor: not-allowed;
+    opacity: var(--semantic-number-opacity-disabled);
+  }
 
-.navigationItem[data-disabled] {
-  cursor: not-allowed;
-  opacity: var(--semantic-number-opacity-disabled);
-}
+  .icon {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    inline-size: var(--semantic-dimension-size-icon);
+    block-size: var(--semantic-dimension-size-icon);
+    color: var(--semantic-color-icon-primary);
+  }
 
-.icon {
-  display: inline-flex;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  inline-size: var(--semantic-dimension-size-icon);
-  block-size: var(--semantic-dimension-size-icon);
-  color: var(--semantic-color-icon-primary);
-}
+  .icon > svg,
+  .icon > img {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+  }
 
-.icon > svg,
-.icon > img {
-  display: block;
-  inline-size: 100%;
-  block-size: 100%;
-}
+  .list {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--semantic-dimension-space-gap-small);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
 
-.list {
-  display: flex;
-  align-items: flex-start;
-  gap: var(--semantic-dimension-space-gap-small);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
+  .listItem {
+    position: relative;
+  }
 
-.listItem {
-  position: relative;
-}
+  .positioner {
+    inline-size: var(--positioner-width);
+    block-size: var(--positioner-height);
+    max-inline-size: var(--available-width);
+  }
 
-.positioner {
-  inline-size: var(--positioner-width);
-  block-size: var(--positioner-height);
-  max-inline-size: var(--available-width);
-}
-
-.viewport {
-  position: relative;
-  overflow: hidden;
-  inline-size: 100%;
-  block-size: 100%;
-}
-
-.popup {
-  position: relative;
-  inline-size: var(--popup-width);
-  block-size: var(--popup-height);
-  box-sizing: border-box;
-  max-inline-size: var(--available-width);
-  max-block-size: var(--available-height);
-  overflow: hidden;
-  border: var(--semantic-dimension-border-width-default) solid
-    var(--semantic-color-border-secondary);
-  border-radius: var(--semantic-dimension-radius-small);
-  outline: 0;
-  background: var(--semantic-color-background-surface);
-  color: var(--semantic-color-text-primary);
-  font: var(--semantic-typography-ui-primary);
-}
-
-.content {
-  box-sizing: border-box;
-  inline-size: max-content;
-  max-block-size: calc(
-    var(--available-height) - 2 * var(--semantic-dimension-border-width-default)
-  );
-  overflow: auto;
-  max-inline-size: var(--available-width);
-  padding: var(--semantic-dimension-space-padding-x-small);
-  min-inline-size: 0;
-}
-
-@media (forced-colors: active) {
-  .navigationItem::after {
-    border-color: CanvasText;
-    background: Canvas;
+  .viewport {
+    position: relative;
+    overflow: hidden;
+    inline-size: 100%;
+    block-size: 100%;
   }
 
   .popup {
-    border-color: CanvasText;
-    background: Canvas;
+    position: relative;
+    inline-size: var(--popup-width);
+    block-size: var(--popup-height);
+    box-sizing: border-box;
+    max-inline-size: var(--available-width);
+    max-block-size: var(--available-height);
+    overflow: hidden;
+    border: var(--semantic-dimension-border-width-default) solid
+      var(--semantic-color-border-secondary);
+    border-radius: var(--semantic-dimension-radius-small);
+    outline: 0;
+    background: var(--semantic-color-background-surface);
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-ui-primary);
   }
-}
 
-.icon {
-  transition: transform var(--semantic-transition-movement-disclosure);
-}
+  .content {
+    box-sizing: border-box;
+    inline-size: max-content;
+    max-block-size: calc(
+      var(--available-height) - 2 * var(--semantic-dimension-border-width-default)
+    );
+    overflow: auto;
+    max-inline-size: var(--available-width);
+    padding: var(--semantic-dimension-space-padding-x-small);
+    min-inline-size: 0;
+  }
 
-.positioner {
-  transition-property: top, left, right, bottom;
-  transition-duration: var(--semantic-transition-movement-navigation-menu-duration);
-  transition-timing-function: var(--semantic-transition-movement-navigation-menu-timing-function);
-}
+  @media (forced-colors: active) {
+    .navigationItem::after {
+      border-color: CanvasText;
+      background: Canvas;
+    }
 
-.positioner[data-instant] {
-  transition: none;
-}
+    .popup {
+      border-color: CanvasText;
+      background: Canvas;
+    }
+  }
 
-.popup {
-  transform-origin: var(--transform-origin);
-  transition:
-    opacity var(--semantic-transition-fade),
-    transform var(--semantic-transition-movement-navigation-menu),
-    inline-size var(--semantic-transition-movement-navigation-menu),
-    block-size var(--semantic-transition-movement-navigation-menu);
-}
+  .icon {
+    transition: transform var(--semantic-transition-movement-disclosure);
+  }
 
-.popup[data-starting-style],
-.popup[data-ending-style] {
-  opacity: var(--semantic-number-opacity-hidden);
-  transform: scale(var(--semantic-number-scale-navigation-menu));
-}
+  .positioner {
+    transition-property: top, left, right, bottom;
+    transition-duration: var(--semantic-transition-movement-navigation-menu-duration);
+    transition-timing-function: var(--semantic-transition-movement-navigation-menu-timing-function);
+  }
 
-/* Close like other popups instead of at the menu's slower pace. */
-.popup[data-ending-style] {
-  transition:
-    opacity var(--semantic-transition-fade),
-    transform var(--semantic-transition-movement-popup);
-}
+  .positioner[data-instant] {
+    transition: none;
+  }
 
-.content {
-  transition:
-    opacity var(--semantic-transition-fade),
-    transform var(--semantic-transition-movement-navigation-menu);
-}
+  .popup {
+    transform-origin: var(--transform-origin);
+    transition:
+      opacity var(--semantic-transition-fade),
+      transform var(--semantic-transition-movement-navigation-menu),
+      inline-size var(--semantic-transition-movement-navigation-menu),
+      block-size var(--semantic-transition-movement-navigation-menu);
+  }
 
-.content[data-starting-style],
-.content[data-ending-style] {
-  opacity: var(--semantic-number-opacity-hidden);
-}
+  .popup[data-starting-style],
+  .popup[data-ending-style] {
+    opacity: var(--semantic-number-opacity-hidden);
+    transform: scale(var(--semantic-number-scale-navigation-menu));
+  }
 
-.content[data-starting-style][data-activation-direction='left'],
-.content[data-ending-style][data-activation-direction='right'] {
-  transform: translateX(-50%);
-}
+  /* Close like other popups instead of at the menu's slower pace. */
+  .popup[data-ending-style] {
+    transition:
+      opacity var(--semantic-transition-fade),
+      transform var(--semantic-transition-movement-popup);
+  }
 
-.content[data-starting-style][data-activation-direction='right'],
-.content[data-ending-style][data-activation-direction='left'] {
-  transform: translateX(50%);
-}
+  .content {
+    transition:
+      opacity var(--semantic-transition-fade),
+      transform var(--semantic-transition-movement-navigation-menu);
+  }
 
-.icon[data-popup-open] {
-  transform: rotate(180deg);
+  .content[data-starting-style],
+  .content[data-ending-style] {
+    opacity: var(--semantic-number-opacity-hidden);
+  }
+
+  .content[data-starting-style][data-activation-direction='left'],
+  .content[data-ending-style][data-activation-direction='right'] {
+    transform: translateX(-50%);
+  }
+
+  .content[data-starting-style][data-activation-direction='right'],
+  .content[data-ending-style][data-activation-direction='left'] {
+    transform: translateX(50%);
+  }
+
+  .icon[data-popup-open] {
+    transform: rotate(180deg);
+  }
 }

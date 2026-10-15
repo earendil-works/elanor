@@ -1,9 +1,11 @@
-.page {
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  gap: var(--semantic-dimension-space-gap-large);
-  inline-size: 100%;
-  min-inline-size: 0;
-  color: var(--semantic-color-text-primary);
+@layer elanor.components {
+  .page {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-gap-large);
+    inline-size: 100%;
+    min-inline-size: 0;
+    color: var(--semantic-color-text-primary);
+  }
 }

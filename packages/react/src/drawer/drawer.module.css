@@ -1,189 +1,192 @@
-.backdrop {
-  position: fixed;
-  inset: 0;
-  min-block-size: 100dvh;
-  background: var(--semantic-color-background-backdrop);
-  opacity: calc(var(--semantic-number-opacity-visible) - var(--drawer-swipe-progress));
-}
-
-@supports (-webkit-touch-callout: none) {
+@layer elanor.components {
   .backdrop {
-    position: absolute;
+    position: fixed;
+    inset: 0;
+    min-block-size: 100dvh;
+    background: var(--semantic-color-background-backdrop);
+    opacity: calc(var(--semantic-number-opacity-visible) - var(--drawer-swipe-progress));
   }
-}
 
-.viewport {
-  position: fixed;
-  inset: 0;
-  display: grid;
-  place-items: end center;
-  pointer-events: none;
-}
+  @supports (-webkit-touch-callout: none) {
+    .backdrop {
+      position: absolute;
+    }
+  }
 
-.popup {
-  box-sizing: border-box;
-  min-inline-size: 0;
-  inline-size: min(var(--semantic-dimension-size-max-width-drawer), 100%);
-  max-block-size: 100%;
-  overflow: auto;
-  overscroll-behavior: contain;
-  padding: var(--semantic-dimension-space-padding-x-large);
-  padding-block-end: max(
-    var(--semantic-dimension-space-padding-x-large),
-    env(safe-area-inset-bottom)
-  );
-  border: var(--semantic-dimension-border-width-default) solid
-    var(--semantic-color-border-secondary);
-  background: var(--semantic-color-background-canvas);
-  color: var(--semantic-color-text-primary);
-  font: var(--semantic-typography-ui-primary);
-  overflow-wrap: anywhere;
-  pointer-events: auto;
-  touch-action: auto;
-  transform: translateY(calc(var(--drawer-snap-point-offset) + var(--drawer-swipe-movement-y)));
-}
-
-.popup[data-swipe-direction='up'] {
-  align-self: start;
-}
-
-.popup[data-swipe-direction='left'],
-.popup[data-swipe-direction='right'] {
-  position: absolute;
-  inset-block: 0;
-  inline-size: min(
-    var(--semantic-dimension-size-max-width-drawer),
-    calc(100% - var(--semantic-dimension-size-x-large))
-  );
-  block-size: 100%;
-  transform: translateX(var(--drawer-swipe-movement-x));
-}
-
-/* Swipe directions are physical, including in RTL. */
-.popup[data-swipe-direction='left'] {
-  left: 0;
-}
-
-.popup[data-swipe-direction='right'] {
-  right: 0;
-}
-
-.popup[data-swiping] {
-  user-select: none;
-}
-
-.popup:focus-visible {
-  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
-  outline-offset: calc(-1 * var(--semantic-dimension-border-width-large));
-}
-
-.title {
-  margin: 0;
-  color: var(--semantic-color-text-primary);
-  font: var(--semantic-typography-heading-app-4);
-  letter-spacing: var(--semantic-typography-heading-app-4-letter-spacing);
-}
-
-.description {
-  margin: 0;
-  color: var(--semantic-color-text-secondary);
-  font: var(--semantic-typography-ui-primary);
-}
-
-@media (forced-colors: active) {
-  .backdrop {
-    background: Canvas;
-    opacity: calc(
-      var(--semantic-number-opacity-disabled) *
-        (var(--semantic-number-opacity-visible) - var(--drawer-swipe-progress))
-    );
+  .viewport {
+    position: fixed;
+    inset: 0;
+    display: grid;
+    place-items: end center;
+    pointer-events: none;
   }
 
   .popup {
-    border-color: CanvasText;
+    box-sizing: border-box;
+    min-inline-size: 0;
+    inline-size: min(var(--semantic-dimension-size-max-width-drawer), 100%);
+    max-block-size: 100%;
+    overflow: auto;
+    overscroll-behavior: contain;
+    padding: var(--semantic-dimension-space-padding-x-large);
+    padding-block-end: max(
+      var(--semantic-dimension-space-padding-x-large),
+      env(safe-area-inset-bottom)
+    );
+    border: var(--semantic-dimension-border-width-default) solid
+      var(--semantic-color-border-secondary);
+    background: var(--semantic-color-background-canvas);
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-ui-primary);
+    overflow-wrap: anywhere;
+    pointer-events: auto;
+    touch-action: auto;
+    transform: translateY(calc(var(--drawer-snap-point-offset) + var(--drawer-swipe-movement-y)));
   }
-}
 
-/* stylelint-disable design-tokens/no-non-token-custom-properties -- Locally derived Base UI stack geometry. */
-.popup[data-stacked][data-swipe-direction='down'] {
-  --stack-progress: clamp(0, var(--drawer-swipe-progress), 1);
-  --stack-scale: clamp(0, calc(1 - (var(--nested-drawers) - var(--stack-progress)) * 0.05), 1);
-  --stack-peek: max(
-    0px,
-    calc(
-      (var(--nested-drawers) - var(--stack-progress)) * var(--semantic-dimension-space-gap-medium)
-    )
-  );
-  --stack-height: var(--drawer-frontmost-height, var(--drawer-height, 0px));
+  .popup[data-swipe-direction='up'] {
+    align-self: start;
+  }
 
-  height: var(--drawer-height, auto);
-  transform-origin: bottom center;
-  transform: translateY(
+  .popup[data-swipe-direction='left'],
+  .popup[data-swipe-direction='right'] {
+    position: absolute;
+    inset-block: 0;
+    inline-size: min(
+      var(--semantic-dimension-size-max-width-drawer),
+      calc(100% - var(--semantic-dimension-size-x-large))
+    );
+    block-size: 100%;
+    transform: translateX(var(--drawer-swipe-movement-x));
+  }
+
+  /* Swipe directions are physical, including in RTL. */
+  .popup[data-swipe-direction='left'] {
+    left: 0;
+  }
+
+  .popup[data-swipe-direction='right'] {
+    right: 0;
+  }
+
+  .popup[data-swiping] {
+    user-select: none;
+  }
+
+  .popup:focus-visible {
+    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline-offset: calc(-1 * var(--semantic-dimension-border-width-large));
+  }
+
+  .title {
+    margin: 0;
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-heading-app-4);
+    letter-spacing: var(--semantic-typography-heading-app-4-letter-spacing);
+  }
+
+  .description {
+    margin: 0;
+    color: var(--semantic-color-text-secondary);
+    font: var(--semantic-typography-ui-primary);
+  }
+
+  @media (forced-colors: active) {
+    .backdrop {
+      background: Canvas;
+      opacity: calc(
+        var(--semantic-number-opacity-disabled) *
+          (var(--semantic-number-opacity-visible) - var(--drawer-swipe-progress))
+      );
+    }
+
+    .popup {
+      border-color: CanvasText;
+    }
+  }
+
+  /* stylelint-disable design-tokens/no-non-token-custom-properties -- Locally derived Base UI stack geometry. */
+  .popup[data-stacked][data-swipe-direction='down'] {
+    --stack-progress: clamp(0, var(--drawer-swipe-progress), 1);
+    --stack-scale: clamp(0, calc(1 - (var(--nested-drawers) - var(--stack-progress)) * 0.05), 1);
+    --stack-peek: max(
+      0px,
       calc(
-        var(--drawer-snap-point-offset) + var(--drawer-swipe-movement-y) - var(--stack-peek) -
-          (var(--semantic-number-scale-rest) - var(--stack-scale)) * var(--stack-height)
+        (var(--nested-drawers) - var(--stack-progress)) * var(--semantic-dimension-space-gap-medium)
       )
-    )
-    scale(var(--stack-scale));
-}
+    );
+    --stack-height: var(--drawer-frontmost-height, var(--drawer-height, 0px));
 
-.popup[data-stacked][data-nested-drawer-open][data-swipe-direction='down'] {
-  height: var(--drawer-frontmost-height, var(--drawer-height));
-  overflow: hidden;
-}
-/* stylelint-enable design-tokens/no-non-token-custom-properties */
+    height: var(--drawer-height, auto);
+    transform-origin: bottom center;
+    transform: translateY(
+        calc(
+          var(--drawer-snap-point-offset) + var(--drawer-swipe-movement-y) - var(--stack-peek) -
+            (var(--semantic-number-scale-rest) - var(--stack-scale)) * var(--stack-height)
+        )
+      )
+      scale(var(--stack-scale));
+  }
 
-.backdrop {
-  transition: opacity var(--semantic-transition-fade);
-}
+  .popup[data-stacked][data-nested-drawer-open][data-swipe-direction='down'] {
+    height: var(--drawer-frontmost-height, var(--drawer-height));
+    overflow: hidden;
+  }
+  /* stylelint-enable design-tokens/no-non-token-custom-properties */
 
-.popup {
-  transition:
-    transform var(--semantic-transition-movement-drawer),
-    height var(--semantic-transition-movement-drawer),
-    opacity var(--semantic-transition-fade);
-}
+  .backdrop {
+    transition: opacity var(--semantic-transition-fade);
+  }
 
-.popup[data-swiping],
-.popup[data-nested-drawer-swiping],
-.backdrop[data-swiping] {
-  transition: none;
-}
+  .popup {
+    transition:
+      transform var(--semantic-transition-movement-drawer),
+      height var(--semantic-transition-movement-drawer),
+      opacity var(--semantic-transition-fade);
+  }
 
-.backdrop[data-starting-style],
-.backdrop[data-ending-style] {
-  opacity: var(--semantic-number-opacity-hidden);
-}
+  .popup[data-swiping],
+  .popup[data-nested-drawer-swiping],
+  .backdrop[data-swiping] {
+    transition: none;
+  }
 
-.popup[data-swipe-direction='down']:is([data-starting-style], [data-ending-style]) {
-  transform: translateY(100%);
-}
+  .backdrop[data-starting-style],
+  .backdrop[data-ending-style] {
+    opacity: var(--semantic-number-opacity-hidden);
+  }
 
-.popup[data-swipe-direction='up']:is([data-starting-style], [data-ending-style]) {
-  transform: translateY(-100%);
-}
+  .popup[data-swipe-direction='down']:is([data-starting-style], [data-ending-style]) {
+    transform: translateY(100%);
+  }
 
-.popup[data-swipe-direction='left']:is([data-starting-style], [data-ending-style]) {
-  transform: translateX(-100%);
-}
+  .popup[data-swipe-direction='up']:is([data-starting-style], [data-ending-style]) {
+    transform: translateY(-100%);
+  }
 
-.popup[data-swipe-direction='right']:is([data-starting-style], [data-ending-style]) {
-  transform: translateX(100%);
-}
+  .popup[data-swipe-direction='left']:is([data-starting-style], [data-ending-style]) {
+    transform: translateX(-100%);
+  }
 
-/* A stronger swipe finishes the exit faster. */
-.popup[data-ending-style] {
-  transition:
-    transform
-      calc(var(--drawer-swipe-strength) * var(--semantic-transition-movement-drawer-duration))
-      var(--semantic-transition-movement-drawer-timing-function),
-    opacity calc(var(--drawer-swipe-strength) * var(--semantic-transition-fade-duration))
+  .popup[data-swipe-direction='right']:is([data-starting-style], [data-ending-style]) {
+    transform: translateX(100%);
+  }
+
+  /* A stronger swipe finishes the exit faster. */
+  .popup[data-ending-style] {
+    transition:
+      transform
+        calc(var(--drawer-swipe-strength) * var(--semantic-transition-movement-drawer-duration))
+        var(--semantic-transition-movement-drawer-timing-function),
+      opacity calc(var(--drawer-swipe-strength) * var(--semantic-transition-fade-duration))
+        var(--semantic-transition-fade-timing-function);
+    /* stylelint-disable-next-line design-tokens/no-hardcoded-token-values -- Detect exits even when the swipe has reached its endpoint. */
+    opacity: 0.9999;
+  }
+
+  .backdrop[data-ending-style] {
+    transition: opacity
+      calc(var(--drawer-swipe-strength) * var(--semantic-transition-fade-duration))
       var(--semantic-transition-fade-timing-function);
-  /* stylelint-disable-next-line design-tokens/no-hardcoded-token-values -- Detect exits even when the swipe has reached its endpoint. */
-  opacity: 0.9999;
-}
-
-.backdrop[data-ending-style] {
-  transition: opacity calc(var(--drawer-swipe-strength) * var(--semantic-transition-fade-duration))
-    var(--semantic-transition-fade-timing-function);
+  }
 }
