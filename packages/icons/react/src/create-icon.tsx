@@ -2,7 +2,7 @@
 import {forwardRef, type ForwardRefExoticComponent, type RefAttributes, type SVGProps} from 'react';
 
 export interface IconProps extends SVGProps<SVGSVGElement> {
-  /** Width and height, unless `width` or `height` is given. Defaults to 16. */
+  /** Width and height, unless `width` or `height` is given. Defaults to 20. */
   size?: number | string;
 }
 
@@ -11,7 +11,7 @@ export type IconComponent = ForwardRefExoticComponent<IconProps & RefAttributes<
 /** An icon is decorative (`aria-hidden`) unless it is named with `aria-label` or `aria-labelledby`. */
 export function createIcon(displayName: string, viewBox: string, d: string): IconComponent {
   const Icon = forwardRef<SVGSVGElement, IconProps>(function ElanorIcon(
-    {size = 16, children, ...props},
+    {size = 20, children, ...props},
     ref,
   ) {
     const named = props['aria-label'] != null || props['aria-labelledby'] != null;

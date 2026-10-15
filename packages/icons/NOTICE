@@ -6,6 +6,7 @@ Copyright Google LLC. Licensed under the Apache License, Version 2.0.
 
 The upstream artwork has been modified by Elanor: outlines are sampled,
 deterministically noise-displaced, geometrically simplified, optimized, renamed,
-and packaged as standalone SVG files and React components. These modifications
+and packaged as standalone SVG files and React components. The unboiled icons
+keep the upstream outlines and are only renamed and packaged. These modifications
 are not an official Google release. See provenance.json for the exact upstream
 revision and selected design axes, and LICENSE for the license text.

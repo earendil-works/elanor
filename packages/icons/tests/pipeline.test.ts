@@ -3,7 +3,7 @@ import {resolve} from 'node:path';
 
 import {describe, expect, test} from 'vitest';
 
-import {pipelineConfig} from '../config.js';
+import {pipelineConfig, unboiledPipelineConfig} from '../config.js';
 import {flattenPath, parsePathData, serializeContours} from '../scripts/lib/path-data.js';
 import {
   outputDecimals,
@@ -27,7 +27,7 @@ describe('pipeline', () => {
 
   test('each stage can be disabled independently', () => {
     const source =
-      '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M1 1Q10 0 19 1V19H1Z"/></svg>';
+      '<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 20 20"><path d="M1 1Q10 0 19 1V19H1Z"/></svg>';
     for (const [boiling, simplification] of [
       [true, false],
       [false, true],
@@ -39,18 +39,31 @@ describe('pipeline', () => {
       };
       expect(processSvg(source, config).artwork.d).toMatch(/^m[\d.\-hlvz ]+$/);
     }
-    const untouched = {
-      ...pipelineConfig,
-      boiling: {...pipelineConfig.boiling, enabled: false},
-      simplification: {...pipelineConfig.simplification, enabled: false},
-    };
-    expect(processSvg(source, untouched).artwork.d).toBe('M1 1Q10 0 19 1V19H1Z');
+    expect(processSvg(source, unboiledPipelineConfig).artwork.d).toBe('M1 1Q10 0 19 1V19H1Z');
+  });
+
+  test('keeps the source size and, unboiled, the source path', async () => {
+    const source = await readSource('keyboard_arrow_down');
+    expect(processSvg(source, unboiledPipelineConfig).svg).toBe(
+      '<!-- Google Material Symbols, renamed and repackaged by Elanor. Apache-2.0; see LICENSE and NOTICE. -->\n<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 -960 960 960"><path d="M480-333 240-573l51-51 189 189 189-189 51 51-240 240Z"/></svg>\n',
+    );
+    expect(processSvg(source, pipelineConfig).svg).toContain(
+      'Modified by Elanor from Google Material Symbols: sampled, noise-displaced, and simplified.',
+    );
+  });
+
+  test('rejects sources without a square size', () => {
+    expect(() =>
+      parseSvg(
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M0 0"/></svg>',
+      ),
+    ).toThrow(/width and height/);
   });
 
   test('rounds to the same display precision for any viewBox size', () => {
     const at = (size: number) =>
       outputDecimals(
-        {viewBox: {minX: 0, minY: 0, width: size, height: size}, d: ''},
+        {viewBox: {minX: 0, minY: 0, width: size, height: size}, d: '', size: 20},
         pipelineConfig,
       );
     expect(at(960)).toBe(1);
@@ -69,7 +82,7 @@ describe('pipeline', () => {
         processSvg(await readSource(name), pipelineConfig).artwork.d,
       );
       const allowed =
-        pipelineConfig.simplification.tolerance * unitsPerPixel(artwork, pipelineConfig) +
+        pipelineConfig.simplification.tolerance * unitsPerPixel(artwork) +
         Math.SQRT1_2 * 10 ** -outputDecimals(artwork, pipelineConfig);
 
       expect(output).toHaveLength(unsimplified.length);

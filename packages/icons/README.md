@@ -4,8 +4,11 @@ Material Symbols Outlined (20px, weight 400) with a hand-drawn “boil”, as SV
 
 ```ts
 import searchUrl from '@earendil-works/elanor-icons/svg/search.svg';
+import unboiledSearchUrl from '@earendil-works/elanor-icons/unboiled/svg/search.svg'; // without the boil
 import metadata from '@earendil-works/elanor-icons/metadata.json'; // search tags keyed by public icon name
 ```
+
+Icons are 20px, Material's own size, including its margin around the glyph.
 
 ## Development
 

@@ -7,3 +7,9 @@ import {SearchIcon} from '@earendil-works/elanor-icons-react/search';
 
 <SearchIcon aria-label="Search" />;
 ```
+
+The same icons without the boil are under `unboiled`:
+
+```tsx
+import {SearchIcon} from '@earendil-works/elanor-icons-react/unboiled/search';
+```
