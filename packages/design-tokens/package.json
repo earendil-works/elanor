@@ -6,9 +6,7 @@
   "license": "ISC",
   "type": "commonjs",
   "files": [
-    "dist",
-    "shiki-theme.mjs",
-    "shiki-theme.d.mts"
+    "dist"
   ],
   "sideEffects": [
     "**/*.css"
@@ -18,11 +16,7 @@
     "./pi.css": "./dist/pi/tokens.css",
     "./earendil.css": "./dist/earendil/tokens.css",
     "./lefos.css": "./dist/lefos/tokens.css",
-    "./*.catalog.json": "./dist/*/tokens.catalog.json",
-    "./shiki-theme": {
-      "types": "./shiki-theme.d.mts",
-      "default": "./shiki-theme.mjs"
-    }
+    "./*.catalog.json": "./dist/*/tokens.catalog.json"
   },
   "scripts": {
     "clean": "rm -rf dist",

@@ -23,6 +23,7 @@
     "@earendil-works/elanor-icons-boiled-react": "workspace:*",
     "@earendil-works/elanor-logos": "workspace:*",
     "@earendil-works/elanor-react": "workspace:*",
+    "@earendil-works/elanor-shiki-theme": "workspace:*",
     "@sentry/astro": "11.2.0",
     "astro": "^7.3.5",
     "react": "^19.3.0",
