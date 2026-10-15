@@ -228,6 +228,12 @@ export type {
   KeyValueValueProps,
 } from './key-value/key-value.tsx';
 
+export {KeyboardKey, KeyboardShortcut} from './keyboard-shortcut/keyboard-shortcut.tsx';
+export type {
+  KeyboardKeyProps,
+  KeyboardShortcutProps,
+} from './keyboard-shortcut/keyboard-shortcut.tsx';
+
 export {Link} from './link/link.tsx';
 export type {LinkProps} from './link/link.tsx';
 
