@@ -1,7 +1,7 @@
 {
   "name": "@earendil-works/elanor-icons",
   "version": "0.1.0",
-  "description": "Boiled Material Symbols as SVG files.",
+  "description": "Material Symbols as SVG files.",
   "license": "Apache-2.0",
   "type": "module",
   "sideEffects": false,

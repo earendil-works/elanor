@@ -2,13 +2,20 @@ import {mkdir, readdir, readFile, rm, writeFile} from 'node:fs/promises';
 import {basename, dirname, resolve} from 'node:path';
 import {fileURLToPath} from 'node:url';
 
-import {pipelineConfig} from '../config.js';
+import {pipelineConfigs} from '../config.js';
 import {validateMetadata} from './lib/metadata.js';
 import {processSvg} from './lib/pipeline.js';
 
+// Builds one icon package: the plain icons for @earendil-works/elanor-icons, or
+// with `boiled` the boiled icons for @earendil-works/elanor-icons-boiled. The
+// output goes to dist/ in the package that runs the build.
+const variant = process.argv[2] ?? 'plain';
+if (!(variant in pipelineConfigs)) throw new Error(`Unknown icon variant ${variant}`);
+const config = pipelineConfigs[variant as keyof typeof pipelineConfigs];
+
 const packageDirectory = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const sourceDirectory = resolve(packageDirectory, 'sources');
-const outputDirectory = resolve(packageDirectory, 'dist');
+const outputDirectory = resolve(process.cwd(), 'dist');
 const svgDirectory = resolve(outputDirectory, 'svg');
 
 const sourceFiles = (await readdir(sourceDirectory)).filter((name) => name.endsWith('.svg')).sort();
@@ -38,8 +45,8 @@ await writeFile(
 
 for (const sourceFile of sourceFiles) {
   const source = await readFile(resolve(sourceDirectory, sourceFile), 'utf8');
-  const {svg} = processSvg(source, pipelineConfig, sourceFile);
+  const {svg} = processSvg(source, config, sourceFile);
   await writeFile(resolve(svgDirectory, basename(sourceFile).replaceAll('_', '-')), svg);
 }
 
-console.log(`Built ${sourceFiles.length} icons.`);
+console.log(`Built ${sourceFiles.length} ${variant} icons.`);

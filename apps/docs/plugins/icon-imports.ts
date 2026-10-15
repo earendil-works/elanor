@@ -4,9 +4,9 @@ import {fileURLToPath} from 'node:url';
 import MagicString from 'magic-string';
 import {parseSync, type Plugin} from 'vite';
 
-const packageName = '@earendil-works/elanor-icons-react';
+const packageName = '@earendil-works/elanor-icons-boiled-react';
 const barrelPath = fileURLToPath(
-  new URL('../../../packages/icons/react/dist/index.js', import.meta.url),
+  new URL('../../../packages/icons-boiled/react/dist/index.js', import.meta.url),
 );
 
 // Keep the public barrel API, but bypass its unused re-exports in native-ESM dev.

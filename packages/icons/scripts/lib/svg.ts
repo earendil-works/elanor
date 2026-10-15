@@ -20,10 +20,15 @@ export function parseSvg(source: string, fileName = 'SVG'): Artwork {
     throw new Error(`${fileName}: missing SVG namespace`);
   }
 
-  return {viewBox: parseViewBox(attributes, fileName), d: match[2]!};
+  const width = Number(attributes.get('width'));
+  const height = Number(attributes.get('height'));
+  if (!(width > 0 && width === height)) {
+    throw new Error(`${fileName}: expected the same positive numeric width and height`);
+  }
+  return {viewBox: parseViewBox(attributes, width, fileName), d: match[2]!, size: width};
 }
 
-function parseViewBox(attributes: Map<string, string>, fileName: string): ViewBox {
+function parseViewBox(attributes: Map<string, string>, size: number, fileName: string): ViewBox {
   const viewBox = attributes.get('viewBox');
   if (viewBox !== undefined) {
     const [minX, minY, width, height, ...rest] = viewBox
@@ -40,11 +45,7 @@ function parseViewBox(attributes: Map<string, string>, fileName: string): ViewBo
     }
     throw new Error(`${fileName}: invalid viewBox`);
   }
-
-  const width = Number(attributes.get('width'));
-  const height = Number(attributes.get('height'));
-  if (width > 0 && height > 0) return {minX: 0, minY: 0, width, height};
-  throw new Error(`${fileName}: expected a viewBox or numeric width and height`);
+  return {minX: 0, minY: 0, width: size, height: size};
 }
 
 export function viewBoxString(viewBox: ViewBox): string {

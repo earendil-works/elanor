@@ -1,19 +1,15 @@
-// Generates the per-icon modules from the built SVGs of @earendil-works/elanor-icons.
-// The component they use, src/create-icon.tsx, is compiled by tsc afterwards.
+// Generates the per-icon modules from the built SVGs of an icon package:
+// @earendil-works/elanor-icons by default, or the package directory given as the
+// first argument (@earendil-works/elanor-icons-boiled for the boiled icons). The
+// output goes to dist/ in the package that runs the build. The component the
+// modules use, src/create-icon.tsx, is compiled by tsc afterwards.
 import {copyFile, mkdir, readdir, readFile, rm, writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 
-const packageDirectory = import.meta.dirname;
-const iconsDirectory = resolve(packageDirectory, '..');
+const iconsDirectory = resolve(process.argv[2] ?? resolve(import.meta.dirname, '..'));
 const svgDirectory = resolve(iconsDirectory, 'dist/svg');
-const outputDirectory = resolve(packageDirectory, 'dist');
-const svgPattern = /<svg [^>]*viewBox="([^"]+)"><path d="([^"]+)"\/><\/svg>/;
-
-const svgFiles = (await readdir(svgDirectory).catch(() => []))
-  .filter((name) => name.endsWith('.svg'))
-  .sort();
-if (svgFiles.length === 0)
-  throw new Error(`No SVGs in ${svgDirectory}; build @earendil-works/elanor-icons first`);
+const outputDirectory = resolve(process.cwd(), 'dist');
+const svgPattern = /^<!-- (.+) -->\n<svg [^>]*viewBox="([^"]+)"><path d="([^"]+)"\/><\/svg>/;
 
 await rm(outputDirectory, {recursive: true, force: true});
 await mkdir(outputDirectory, {recursive: true});
@@ -21,6 +17,12 @@ await Promise.all([
   copyFile(resolve(iconsDirectory, 'LICENSE'), resolve(outputDirectory, 'LICENSE')),
   copyFile(resolve(iconsDirectory, 'NOTICE'), resolve(outputDirectory, 'NOTICE')),
 ]);
+
+const svgFiles = (await readdir(svgDirectory).catch(() => []))
+  .filter((name) => name.endsWith('.svg'))
+  .sort();
+if (svgFiles.length === 0)
+  throw new Error(`No SVGs in ${svgDirectory}; build the icon package first`);
 
 const exports: string[] = [];
 const componentNames = new Set<string>();
@@ -36,7 +38,7 @@ for (const file of svgFiles) {
   await Promise.all([
     writeFile(
       resolve(outputDirectory, `${name}.js`),
-      `/*! @license Apache-2.0\n * Modified by Elanor from Google Material Symbols; see LICENSE and NOTICE.\n */\nimport {createIcon} from "./create-icon.js";\n\nexport const ${componentName} = /*#__PURE__*/ createIcon(${JSON.stringify(componentName)}, ${JSON.stringify(match[1])}, ${JSON.stringify(match[2])});\n`,
+      `/*! @license Apache-2.0\n * ${match[1]}\n */\nimport {createIcon} from "./create-icon.js";\n\nexport const ${componentName} = /*#__PURE__*/ createIcon(${JSON.stringify(componentName)}, ${JSON.stringify(match[2])}, ${JSON.stringify(match[3])});\n`,
     ),
     writeFile(
       resolve(outputDirectory, `${name}.d.ts`),
@@ -50,7 +52,7 @@ await Promise.all([
   writeFile(resolve(outputDirectory, 'index.js'), `${exports.join('\n')}\n`),
   writeFile(resolve(outputDirectory, 'index.d.ts'), `${exports.join('\n')}\n`),
 ]);
-console.log(`Built ${svgFiles.length} React icons.`);
+console.log(`Built ${svgFiles.length} React icons from ${iconsDirectory}.`);
 
 function toComponentName(name: string): string {
   const body = name

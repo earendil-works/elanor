@@ -1,5 +1,4 @@
 export interface PipelineConfig {
-  targetSize: number;
   boiling: {
     enabled: boolean;
     samplingStep: number;
@@ -18,9 +17,8 @@ export interface PipelineConfig {
   };
 }
 
-/** Lengths are display pixels at targetSize unless noted otherwise. */
-export const pipelineConfig = {
-  targetSize: 16,
+/** The boiled icons. Lengths are pixels at the icon's size (20px, from the source SVG). */
+export const boiledPipelineConfig = {
   boiling: {
     enabled: true,
     samplingStep: 0.1,
@@ -34,6 +32,19 @@ export const pipelineConfig = {
     tolerance: 0.01,
   },
   output: {
-    precision: 0.002,
+    precision: 0.0025,
   },
 } as const satisfies PipelineConfig;
+
+/** The plain icons: the upstream outlines, unchanged. */
+export const plainPipelineConfig = {
+  ...boiledPipelineConfig,
+  boiling: {...boiledPipelineConfig.boiling, enabled: false},
+  simplification: {...boiledPipelineConfig.simplification, enabled: false},
+} as const satisfies PipelineConfig;
+
+/** The pipeline settings for each icon package, by build variant. */
+export const pipelineConfigs = {
+  plain: plainPipelineConfig,
+  boiled: boiledPipelineConfig,
+} as const satisfies Record<string, PipelineConfig>;

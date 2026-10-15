@@ -1,9 +1,9 @@
 import type {PipelineConfig} from '../../config.js';
-import type {Contour, ViewBox} from './types.js';
+import type {Artwork, Contour} from './types.js';
 
 export function boilContours(
   contours: Contour[],
-  viewBox: ViewBox,
+  {viewBox, size}: Artwork,
   config: PipelineConfig,
 ): Contour[] {
   const settings = config.boiling;
@@ -19,18 +19,18 @@ export function boilContours(
   return contours.map((contour) => ({
     ...contour,
     points: contour.points.map(({x, y}) => {
-      const displayX = ((x - viewBox.minX) / viewBox.width) * config.targetSize;
-      const displayY = ((y - viewBox.minY) / viewBox.height) * config.targetSize;
+      const displayX = ((x - viewBox.minX) / viewBox.width) * size;
+      const displayY = ((y - viewBox.minY) / viewBox.height) * size;
       return {
         x:
           x +
           radius *
-            (viewBox.width / config.targetSize) *
+            (viewBox.width / size) *
             fractal(noiseX, displayX, displayY, settings.noiseFrequency, settings.octaves),
         y:
           y +
           radius *
-            (viewBox.height / config.targetSize) *
+            (viewBox.height / size) *
             fractal(noiseY, displayX, displayY, settings.noiseFrequency, settings.octaves),
       };
     }),

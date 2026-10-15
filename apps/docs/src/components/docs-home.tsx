@@ -1,4 +1,4 @@
-import {ArrowForwardIcon} from '@earendil-works/elanor-icons-react';
+import {ArrowForwardIcon} from '@earendil-works/elanor-icons-boiled-react';
 import {
   Button,
   Container,

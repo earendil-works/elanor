@@ -19,4 +19,6 @@ export interface Contour {
 export interface Artwork {
   viewBox: ViewBox;
   d: string;
+  /** Width and height in pixels. */
+  size: number;
 }

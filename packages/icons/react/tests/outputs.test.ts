@@ -19,7 +19,7 @@ async function load(name: string): Promise<ComponentType<IconProps>> {
 }
 
 describe('React icons', () => {
-  test.each(['search', 'home', 'settings-suggest'])(
+  test.each(['search', 'home', 'settings-suggest', 'keyboard-arrow-down'])(
     '%s renders the same geometry as the SVG',
     async (name) => {
       const svg = await readFile(resolve(packageDirectory, `../dist/svg/${name}.svg`), 'utf8');
@@ -37,6 +37,7 @@ describe('React icons', () => {
     const SearchIcon = await load('search');
     const decorative = renderToStaticMarkup(createElement(SearchIcon));
     expect(decorative).toContain('aria-hidden="true"');
+    expect(decorative).toContain('width="20"');
     expect(decorative).not.toContain('role="img"');
 
     const named = renderToStaticMarkup(
@@ -79,6 +80,16 @@ describe('React icons', () => {
     expect(markup).toContain('role="img"');
     expect(markup).not.toContain('aria-hidden');
     expect(/<path d="([^"]+)"/.exec(markup)?.[1]).toBe(/<path d="([^"]+)"/.exec(svg)?.[1]);
+  });
+
+  test('modules carry the license notice of their SVGs', async () => {
+    const [module, svg] = await Promise.all([
+      readFile(resolve(packageDirectory, 'dist/search.js'), 'utf8'),
+      readFile(resolve(packageDirectory, '../dist/svg/search.svg'), 'utf8'),
+    ]);
+    const notice = /^<!-- (.+) -->/.exec(svg)?.[1];
+    expect(notice).toContain('renamed and repackaged');
+    expect(module).toContain(` * ${notice}\n`);
   });
 
   test('the barrel tree-shakes to the imported icon', async () => {

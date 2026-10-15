@@ -1,0 +1,12 @@
+{
+  "extends": "../../../tsconfig.base.json",
+  "compilerOptions": {
+    "rootDir": "../../icons/react/src",
+    "outDir": "dist",
+    "jsx": "react-jsx",
+    "declarationMap": false,
+    "sourceMap": false,
+    "types": ["react"]
+  },
+  "include": ["../../icons/react/src"]
+}

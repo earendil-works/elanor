@@ -1,3 +1,5 @@
+import {fileURLToPath} from 'node:url';
+
 import mdx from '@astrojs/mdx';
 import react from '@astrojs/react';
 // oxlint-disable-next-line import/default -- The default export exists under Sentry's Node condition, not its browser entry.
@@ -7,6 +9,10 @@ import {defineConfig} from 'astro/config';
 import {demos} from './plugins/demos.ts';
 import {iconImports} from './plugins/icon-imports.ts';
 import {publicAssets} from './plugins/public-assets.ts';
+
+const boiledIcons = fileURLToPath(
+  new URL('./node_modules/@earendil-works/elanor-icons-boiled-react/dist', import.meta.url),
+);
 
 export default defineConfig({
   site: 'https://elanor.earendil.com',
@@ -32,6 +38,12 @@ export default defineConfig({
   vite: {
     plugins: [demos(), iconImports()],
     resolve: {
+      // The docs show the boiled icons, including inside Elanor's components, which
+      // import the plain package. Resolve to the docs' own boiled dependency.
+      alias: [
+        {find: /^@earendil-works\/elanor-icons-react$/, replacement: `${boiledIcons}/index.js`},
+        {find: /^@earendil-works\/elanor-icons-react\/(.+)$/, replacement: `${boiledIcons}/$1.js`},
+      ],
       conditions:
         process.env.NODE_ENV === 'development'
           ? ['source', 'module', 'browser', 'development']

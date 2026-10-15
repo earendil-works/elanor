@@ -51,3 +51,9 @@
   block-size: var(--semantic-dimension-size-x-small);
   color: var(--semantic-color-icon-primary);
 }
+
+.indicator > svg {
+  display: block;
+  inline-size: 100%;
+  block-size: 100%;
+}

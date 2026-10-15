@@ -1,7 +1,7 @@
 {
   "name": "@earendil-works/elanor-icons-react",
   "version": "0.1.0",
-  "description": "Boiled Material Symbols as React components.",
+  "description": "Material Symbols as React components.",
   "license": "Apache-2.0",
   "type": "module",
   "sideEffects": false,

@@ -85,7 +85,7 @@ export function IconBrowser(): React.JSX.Element {
     [index, deferredQuery],
   );
   const importLine = selected
-    ? `import {${selected[2]}} from '@earendil-works/elanor-icons-react/${selected[0]}';`
+    ? `import {${selected[2]}} from '@earendil-works/elanor-icons-boiled-react/${selected[0]}';`
     : '';
 
   // Clicking anywhere but an icon or the sidebar, or pressing Escape, deselects the icon.

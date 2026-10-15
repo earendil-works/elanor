@@ -223,14 +223,14 @@ export async function loadIcons(): Promise<ApiIcon[]> {
     const component = components.get(name);
     if (!component)
       throw new Error(
-        `${name} has no React component; build @earendil-works/elanor-icons-react first`,
+        `${name} has no React component; build @earendil-works/elanor-icons-boiled-react first`,
       );
     return {
       name,
       component,
       tags: entry.tags,
       svg: `/api/icons/${name}.svg`,
-      react: `import {${component}} from '@earendil-works/elanor-icons-react/${name}';`,
+      react: `import {${component}} from '@earendil-works/elanor-icons-boiled-react/${name}';`,
       url: iconUrl(name),
     };
   });
