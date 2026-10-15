@@ -140,6 +140,14 @@ const SIZE_PROPERTY = /^(?:(?:min|max)-)?(?:width|height|inline-size|block-size)
 const SIZE_CALC_ROLES = ['semantic.dimension.space.'];
 
 /**
+ * Maximum inline sizes cap an element's inline size: in `max-inline-size` or
+ * `max-width`, or as the cap in `inline-size: min(token, …)` or `width: min(…)`.
+ */
+const MAX_WIDTH_ROLE = 'semantic.dimension.size.maxWidth.';
+const MAX_WIDTH_PROPERTY = /^max-(?:inline-size|width)$/;
+const CAPPED_WIDTH_PROPERTY = /^(?:inline-size|width)$/;
+
+/**
  * Roles for tokens of one type inside transform functions: distances in a
  * translation are travel, factors in a scaling are scale. Other tokens in the
  * same function, such as a number multiplying a distance, keep the property's
@@ -228,6 +236,7 @@ function compensatedBorderOperands(
 interface NodeContext {
   transformFunction: string | undefined;
   inCalc: boolean;
+  inMin: boolean;
 }
 
 /**
@@ -251,6 +260,7 @@ function walkWithContext(
       {
         transformFunction: name in TRANSFORM_FUNCTION_ROLES ? name : context.transformFunction,
         inCalc: context.inCalc || name === 'calc',
+        inMin: context.inMin || name === 'min',
       },
       visit,
     );
@@ -295,8 +305,8 @@ export const rule: Rule<true, RuleOptions> = (primary, options) => (root, result
 
     walkWithContext(
       parsed.nodes,
-      {transformFunction: undefined, inCalc: false},
-      (node, {transformFunction, inCalc}) => {
+      {transformFunction: undefined, inCalc: false, inMin: false},
+      (node, {transformFunction, inCalc, inMin}) => {
         if (node.type !== 'function' || node.value.toLowerCase() !== 'var') return;
         const variable = node.nodes.find(
           (child) => child.type === 'word' && child.value.startsWith('--'),
@@ -315,6 +325,21 @@ export const rule: Rule<true, RuleOptions> = (primary, options) => (root, result
             : propertyRoles;
         const expectedRoles =
           functionRoles && functionRoles.type === token.type ? functionRoles.roles : sizeRoles;
+        if (
+          token.tier === 'semantic' &&
+          matchesRolePrefix(rolePath(token), MAX_WIDTH_ROLE) &&
+          !MAX_WIDTH_PROPERTY.test(property) &&
+          !(CAPPED_WIDTH_PROPERTY.test(property) && inMin)
+        ) {
+          report(
+            result,
+            ruleName,
+            declaration,
+            `Token "${variable}" is a maximum inline size; use it in "max-inline-size" or as the cap in "inline-size: min(…)", not in "${property}".`,
+            variable,
+          );
+          return;
+        }
         if (expectedTypes && !expectedTypes.includes(token.type)) {
           report(
             result,

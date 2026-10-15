@@ -71,18 +71,33 @@
       },
       "size": {
         "$description": "Use for bounded element dimensions, including control sizes and content limits.",
-        "content": {
-          "small": {
-            "$value": "{primitive.dimension.12000}",
-            "$description": "Use as a maximum inline size for compact content regions."
+        "maxWidth": {
+          "$description": "Maximum inline sizes: use in `max-inline-size`, or as the cap in `inline-size: min(token, …)` so an element shrinks to fit narrower space.",
+          "content": {
+            "small": {
+              "$value": "{primitive.dimension.12000}",
+              "$description": "Use as the maximum inline size for compact content regions."
+            },
+            "medium": {
+              "$value": "{primitive.dimension.19200}",
+              "$description": "Use as the maximum inline size for a single column of page content, such as documentation text with its examples."
+            },
+            "large": {
+              "$value": "{primitive.dimension.30400}",
+              "$description": "Use as the maximum inline size for broad page content, excluding surrounding gutters and side regions."
+            }
           },
-          "medium": {
+          "modal": {
             "$value": "{primitive.dimension.19200}",
-            "$description": "Use as a maximum inline size for a single column of page content, such as documentation text with its examples."
+            "$description": "Component token for the maximum inline size of a modal dialog, which shrinks to fit narrower windows."
           },
-          "large": {
-            "$value": "{primitive.dimension.30400}",
-            "$description": "Use as a maximum inline size for broad page content, excluding surrounding gutters and side regions."
+          "drawer": {
+            "$value": "{primitive.dimension.12000}",
+            "$description": "Component token for the maximum inline size of a drawer that slides in from the side or bottom, which shrinks to fit narrower windows."
+          },
+          "popover": {
+            "$value": "{primitive.dimension.16000}",
+            "$description": "Component token for the maximum inline size of a popover, which shrinks to the space available beside its trigger."
           }
         },
         "sidebar": {
@@ -92,14 +107,6 @@
         "topNavigation": {
           "$value": "{primitive.dimension.1600}",
           "$description": "Use as the block size of the top navigation bar, including its bottom border and excluding any safe-area inset. Derive sticky offsets and scroll padding below the bar from it rather than repeating the value."
-        },
-        "modal": {
-          "$value": "{primitive.dimension.19200}",
-          "$description": "Component token for the inline size of a modal dialog, which shrinks to fit narrower windows."
-        },
-        "popover": {
-          "$value": "{primitive.dimension.16000}",
-          "$description": "Component token for the maximum inline size of a popover, which shrinks to the space available beside its trigger."
         },
         "xxxSmall": {
           "$value": "{primitive.dimension.100}",

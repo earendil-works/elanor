@@ -1,6 +1,6 @@
 .frame {
   block-size: calc(var(--semantic-dimension-size-x-large) * 4);
-  max-inline-size: var(--semantic-dimension-size-content-small);
+  max-inline-size: var(--semantic-dimension-size-max-width-content-small);
   border: var(--semantic-dimension-border-width-default) solid
     var(--semantic-color-border-secondary);
   border-radius: var(--semantic-dimension-radius-small);
@@ -13,5 +13,6 @@
 }
 
 .wide {
-  inline-size: var(--semantic-dimension-size-content-large);
+  /* stylelint-disable-next-line design-tokens/no-hardcoded-token-values -- Demo frame size: content wider than the frame, so it scrolls. */
+  inline-size: 76rem;
 }

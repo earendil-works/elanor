@@ -50,7 +50,7 @@ Checks cover paint, borders, outlines, spacing, sizing, radii, typography, opaci
 - Borders: border, fill/background, or focus colors.
 - Transitions and animations, including their longhands and composite parts such as `-duration`: `semantic.transition` tokens.
 - `scale` and scale factors inside `transform`: `semantic.number.scale`; `translate` and distances inside `transform` translations: `semantic.dimension.travel`. Other tokens in those functions, such as a number multiplying a distance, follow the property. A configured `transform` role in `semanticRoles` replaces these function roles too.
-- Margins: spacing or size tokens. Sizes (`width`, `height`, `inline-size`, `block-size`, and their minimums and maximums): size tokens or border widths, plus spacing inside `calc()` where it adjusts another value, such as `calc(100dvh - 2 * var(--padding-token))`. Breakpoints are thresholds, not sizes.
+- Margins: spacing or size tokens. Sizes (`width`, `height`, `inline-size`, `block-size`, and their minimums and maximums): size tokens or border widths, plus spacing inside `calc()` where it adjusts another value, such as `calc(100dvh - 2 * var(--padding-token))`. Breakpoints are thresholds, not sizes. `semantic.dimension.size.maxWidth` tokens are maximums: they belong in `max-inline-size` or `max-width`, or as the cap in `inline-size: min(token, …)`.
 - `box-shadow`: shadow tokens, or the border roles (border widths with border, fill/background, or focus colors) for inset borders.
 - Spacing, radii, layers, and opacity keep their own roles. A matching value alone does not make a token compatible.
 - Padding also accepts top-level `calc(var(--padding-token) - var(--border-width-token))` for border compensation, without fallbacks.

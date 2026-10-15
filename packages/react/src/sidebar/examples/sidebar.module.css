@@ -8,7 +8,8 @@
 }
 
 .sidebar {
-  block-size: var(--semantic-dimension-size-content-small);
+  /* stylelint-disable-next-line design-tokens/no-hardcoded-token-values -- Demo frame size. */
+  block-size: 30rem;
 }
 
 .main {

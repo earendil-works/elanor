@@ -1,6 +1,9 @@
 .popup {
   box-sizing: border-box;
-  max-inline-size: min(var(--semantic-dimension-size-content-small), var(--available-width));
+  max-inline-size: min(
+    var(--semantic-dimension-size-max-width-content-small),
+    var(--available-width)
+  );
   max-block-size: var(--available-height);
   overflow: auto;
   overflow-wrap: anywhere;

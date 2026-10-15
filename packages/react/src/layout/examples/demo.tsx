@@ -36,7 +36,9 @@ export default function LayoutDemo() {
           </SideNavigation.Root>
         </Layout.Aside>
         <Layout.Main>
-          <Container style={{maxInlineSize: 'var(--semantic-dimension-size-content-small)'}}>
+          <Container
+            style={{maxInlineSize: 'var(--semantic-dimension-size-max-width-content-small)'}}
+          >
             <Page>
               <Heading level={2} size={2} id="first-week">
                 Your first week

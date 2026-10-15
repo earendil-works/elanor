@@ -22,11 +22,11 @@ import {Layout} from '@earendil-works/elanor-react';
 
 Use one `Main` per document. Inside an existing main landmark, use `<Layout.Main render={<div />}>`. A page without asides doesn't need `Body`.
 
-In the demo, the outer Container centers Body and the inner one caps the reading width at `semantic.dimension.size.content.small`. Asides are `semantic.dimension.size.sidebar` wide by default.
+In the demo, the outer Container centers Body and the inner one caps the reading width at `semantic.dimension.size.maxWidth.content.small`. Asides are `semantic.dimension.size.sidebar` wide by default.
 
 ## Application layout
 
-Put sidebars outside the content Grid. [Container](/components/container/) then centers content in the remaining space, capped at `semantic.dimension.size.content.large` (1216px).
+Put sidebars outside the content Grid. [Container](/components/container/) then centers content in the remaining space, capped at `semantic.dimension.size.maxWidth.content.large` (1216px).
 
 To use another component as the aside, pass Aside to its `render` prop instead of wrapping it, so there is one landmark: `<Sidebar.Root render={<Layout.Aside aria-label="Workspace" />}>`. See [Sidebar](/components/sidebar/).
 

@@ -33,7 +33,7 @@
   flex-direction: column;
   align-items: flex-start;
   inline-size: 100%;
-  max-inline-size: var(--semantic-dimension-size-content-medium);
+  max-inline-size: var(--semantic-dimension-size-max-width-content-medium);
 }
 
 /* Keep docs flex items (including hydrated examples) within the content column. */
@@ -79,7 +79,7 @@
 
 .wide {
   inline-size: 100%;
-  max-inline-size: var(--semantic-dimension-size-content-large);
+  max-inline-size: var(--semantic-dimension-size-max-width-content-large);
 }
 
 .page {
@@ -90,11 +90,11 @@
 
 /* Pages on the 12-column grid (1rem gutters) are at most 1216px wide; see brand-logos.module.css and icon-browser.module.css. */
 .grid-page {
-  max-inline-size: var(--semantic-dimension-size-content-large);
+  max-inline-size: var(--semantic-dimension-size-max-width-content-large);
 }
 
 .prose {
-  max-inline-size: var(--semantic-dimension-size-content-medium);
+  max-inline-size: var(--semantic-dimension-size-max-width-content-medium);
   font: var(--semantic-typography-prose-primary);
 }
 

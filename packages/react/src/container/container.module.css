@@ -2,8 +2,8 @@
   box-sizing: border-box;
   inline-size: 100%;
   max-inline-size: calc(
-    var(--semantic-dimension-size-content-large) + var(--semantic-dimension-space-padding-x-large) *
-      2
+    var(--semantic-dimension-size-max-width-content-large) +
+      var(--semantic-dimension-space-padding-x-large) * 2
   );
   min-inline-size: 0;
   margin-inline: auto;

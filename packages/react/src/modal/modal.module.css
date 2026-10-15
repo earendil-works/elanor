@@ -25,7 +25,7 @@
   box-sizing: border-box;
   display: grid;
   gap: var(--semantic-dimension-space-gap-large);
-  inline-size: min(var(--semantic-dimension-size-modal), 100%);
+  inline-size: min(var(--semantic-dimension-size-max-width-modal), 100%);
   max-block-size: calc(100dvh - 2 * var(--semantic-dimension-space-padding-medium));
   overflow: auto;
   padding: calc(
