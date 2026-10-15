@@ -1,0 +1,45 @@
+# Search dialog
+
+A search that opens in a modal dialog, with the field at the top, results as you type, and key hints at the bottom. Use it for site or documentation search. For filtering a list on the page, use [Search](/components/search/).
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {SearchDialog} from '@earendil-works/elanor-react';
+
+<SearchDialog.Root>
+  <SearchDialog.Trigger>Search documentation</SearchDialog.Trigger>
+  <SearchDialog.Popup aria-label="Search documentation" value={query} onValueChange={setQuery}>
+    <SearchDialog.Form action="/search">
+      <SearchDialog.Input name="q" />
+      <SearchDialog.Close aria-label="Close search" />
+    </SearchDialog.Form>
+    <SearchDialog.Results>
+      <SearchDialog.Status />
+      <SearchDialog.Message />
+      <SearchDialog.List aria-label="Results">
+        <SearchDialog.Result href="/guides/deploying">
+          <SearchDialog.ResultContext />
+          <SearchDialog.ResultTitle />
+          <SearchDialog.ResultExcerpt />
+        </SearchDialog.Result>
+      </SearchDialog.List>
+    </SearchDialog.Results>
+    <SearchDialog.Footer>
+      <SearchDialog.Hint />
+    </SearchDialog.Footer>
+  </SearchDialog.Popup>
+</SearchDialog.Root>;
+```
+
+The application finds the results; the dialog shows them. Control the query with `value` and `onValueChange` on the Popup, render a `Result` per match, and show a `Message`, such as an [Empty state](/components/empty-state/), when there are none. `Status` announces the count to assistive technology.
+
+The field is a combobox that controls the list. The first result is selected as results arrive; the arrow keys move the selection, and Enter or a click follows the selected result's link. Without results, Enter submits the form, so set `action` and the field's `name` for a search page.
+
+## Opening
+
+The Trigger looks like a search field. ⌘K or Ctrl+K, and `/` outside text fields, also open the dialog; turn them off with `shortcuts={false}` on Root. Show the shortcut in the Trigger with `shortcut`, such as a [Keyboard shortcut](/components/keyboard-shortcut/). The shortcut and the Footer's hints show only on devices that hover, which usually have a keyboard.
+
+The dialog sits `semantic.dimension.space.padding.xxxxLarge` from the top, so results grow downward without moving the field, and it is as wide as [Modal](/components/modal/). Only the results scroll. The query uses `semantic.typography.ui.searchDialog.input`, one step above the UI text.

@@ -1,0 +1,276 @@
+@layer elanor.components {
+  /* The trigger looks like a search field, its text in the placeholder's color, sized by its
+     padding and line height. */
+  .trigger {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: var(--semantic-dimension-space-control-gap-large);
+    inline-size: 100%;
+    min-inline-size: 0;
+    padding-block: calc(
+      var(--semantic-dimension-space-control-padding-block-small) -
+        var(--semantic-dimension-border-width-default)
+    );
+    padding-inline: calc(
+      var(--semantic-dimension-space-control-padding-inline-small) -
+        var(--semantic-dimension-border-width-default)
+    );
+    border: var(--semantic-dimension-border-width-default) solid
+      var(--semantic-color-background-fill-secondary);
+    border-radius: var(--semantic-dimension-radius-small);
+    background: var(--semantic-color-background-fill-secondary);
+    color: var(--semantic-color-text-secondary);
+    font: var(--semantic-typography-ui-primary);
+    text-align: start;
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  @media (hover: hover) {
+    .trigger:hover {
+      border-color: var(--semantic-color-background-fill-secondary-hover);
+      background: var(--semantic-color-background-fill-secondary-hover);
+    }
+  }
+
+  .trigger:focus-visible {
+    border-color: var(--semantic-color-focus-ring);
+    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline-offset: var(--semantic-dimension-border-width-medium);
+  }
+
+  .icon {
+    display: inline-flex;
+    flex: none;
+    inline-size: var(--semantic-dimension-size-icon);
+    block-size: var(--semantic-dimension-size-icon);
+    color: var(--semantic-color-icon-secondary);
+  }
+
+  .icon > svg {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  .triggerLabel {
+    flex: 1;
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .triggerShortcut {
+    display: inline-flex;
+    flex: none;
+  }
+
+  .backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: var(--semantic-number-layer-overlay);
+    background: var(--semantic-color-background-backdrop);
+    transition: opacity var(--semantic-transition-fade);
+  }
+
+  /* The dialog sits near the top of the window, so results grow downward without moving the
+     field. It is as wide as Modal, and only the results scroll. */
+  .popup {
+    position: fixed;
+    inset-block-start: var(--semantic-dimension-space-padding-xxxx-large);
+    /* Inset from the window's sides on narrow screens, centered at Modal's width otherwise. */
+    inset-inline: var(--semantic-dimension-space-padding-medium);
+    z-index: var(--semantic-number-layer-overlay);
+    box-sizing: border-box;
+    display: grid;
+    grid-template-rows: auto minmax(0, 1fr) auto;
+    max-inline-size: var(--semantic-dimension-size-max-width-modal);
+    max-block-size: calc(
+      100dvh - var(--semantic-dimension-space-padding-xxxx-large) -
+        var(--semantic-dimension-space-padding-medium)
+    );
+    margin-inline: auto;
+    overflow: hidden;
+    border: var(--semantic-dimension-border-width-default) solid
+      var(--semantic-color-border-secondary);
+    border-radius: var(--semantic-dimension-radius-medium);
+    outline: 0;
+    box-shadow: var(--semantic-shadow-popup);
+    /* The canvas, like Modal: the ghost fills of the selected result are made for it. */
+    background: var(--semantic-color-background-canvas);
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-ui-primary);
+    transition:
+      transform var(--semantic-transition-movement-popup),
+      opacity var(--semantic-transition-fade);
+  }
+
+  .backdrop[data-starting-style],
+  .backdrop[data-ending-style],
+  .popup[data-starting-style],
+  .popup[data-ending-style] {
+    opacity: var(--semantic-number-opacity-hidden);
+  }
+
+  .popup[data-starting-style],
+  .popup[data-ending-style] {
+    transform: scale(var(--semantic-number-scale-popup));
+  }
+
+  /* Rows line up with the results' text: their inline padding is the list's plus a result's. */
+  .form {
+    display: flex;
+    align-items: center;
+    gap: var(--semantic-dimension-space-control-gap-large);
+    padding-block: var(--semantic-dimension-space-padding-large);
+    padding-inline: calc(
+        var(--semantic-dimension-space-padding-medium) +
+          var(--semantic-dimension-space-padding-large)
+      )
+      var(--semantic-dimension-space-padding-large);
+    border-block-end: var(--semantic-dimension-border-width-small) solid
+      var(--semantic-color-border-secondary);
+  }
+
+  /* The dialog is the field: no fill, border, or focus ring; the caret shows focus. */
+  .field {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    gap: var(--semantic-dimension-space-control-gap-large);
+    min-inline-size: 0;
+  }
+
+  .input {
+    box-sizing: border-box;
+    flex: 1;
+    min-inline-size: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-ui-search-dialog-input);
+    letter-spacing: var(--semantic-typography-ui-search-dialog-input-letter-spacing);
+  }
+
+  .input::placeholder {
+    color: var(--semantic-color-text-secondary);
+  }
+
+  /* A result selected from the keyboard scrolls into view with the list's padding around it. */
+  .results {
+    min-block-size: 0;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scroll-padding-block: var(--semantic-dimension-space-padding-medium);
+  }
+
+  .visuallyHidden {
+    position: absolute;
+    inline-size: var(--semantic-dimension-border-width-small);
+    block-size: var(--semantic-dimension-border-width-small);
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .message {
+    padding-block: var(--semantic-dimension-space-padding-xxx-large);
+    padding-inline: calc(
+      var(--semantic-dimension-space-padding-medium) + var(--semantic-dimension-space-padding-large)
+    );
+  }
+
+  .list {
+    display: grid;
+    gap: var(--semantic-dimension-space-gap-small);
+    margin: 0;
+    padding: var(--semantic-dimension-space-padding-medium);
+    outline: 0;
+  }
+
+  .list:empty {
+    display: none;
+  }
+
+  /* A result: where it sits, its title, and up to two lines of matching text. The selected one
+     takes SideNavigation's current-page fill. */
+  .result {
+    display: grid;
+    gap: var(--semantic-dimension-space-gap-x-small);
+    padding: var(--semantic-dimension-space-padding-large);
+    border-radius: var(--semantic-dimension-radius-small);
+    color: var(--semantic-color-text-primary);
+    text-decoration: none;
+  }
+
+  .result[data-highlighted] {
+    background: var(--semantic-color-background-fill-ghost-neutral-active);
+  }
+
+  .resultContext {
+    color: var(--semantic-color-text-secondary);
+    font: var(--semantic-typography-ui-secondary);
+  }
+
+  .resultTitle {
+    font: var(--semantic-typography-heading-app-6);
+    letter-spacing: var(--semantic-typography-heading-app-6-letter-spacing);
+  }
+
+  .resultExcerpt {
+    display: -webkit-box;
+    overflow: hidden;
+    color: var(--semantic-color-text-secondary);
+    font: var(--semantic-typography-ui-primary);
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  .footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--semantic-dimension-space-gap-large);
+    padding-block: var(--semantic-dimension-space-padding-medium);
+    padding-inline: calc(
+      var(--semantic-dimension-space-padding-medium) + var(--semantic-dimension-space-padding-large)
+    );
+    border-block-start: var(--semantic-dimension-border-width-small) solid
+      var(--semantic-color-border-secondary);
+    color: var(--semantic-color-text-secondary);
+    font: var(--semantic-typography-ui-secondary);
+  }
+
+  .hint {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--semantic-dimension-space-gap-small);
+  }
+
+  /* Shortcuts and key hints are for keyboards, which touch screens rarely have. */
+  @media (hover: none) {
+    .triggerShortcut,
+    .footer {
+      display: none;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .trigger {
+      border-color: ButtonBorder;
+    }
+
+    .popup {
+      border-color: CanvasText;
+    }
+
+    .result[data-highlighted] {
+      outline: var(--semantic-dimension-border-width-default) solid Highlight;
+    }
+  }
+}

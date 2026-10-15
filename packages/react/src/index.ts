@@ -2,6 +2,7 @@ export * as Checkbox from './checkbox/index.ts';
 export * as Drawer from './drawer/index.ts';
 export * as Dropdown from './dropdown/index.ts';
 export * as SearchableDropdown from './dropdown/searchable-dropdown/index.ts';
+export * as SearchDialog from './search-dialog/index.ts';
 export * as EmptyState from './empty-state/index.ts';
 export * as Field from './field/index.ts';
 export * as Grid from './grid/index.ts';
@@ -523,6 +524,23 @@ export type {
   TopNavigationNavigationProps,
   TopNavigationRootProps,
 } from './top-navigation/top-navigation.tsx';
+
+export type {
+  SearchDialogCloseProps,
+  SearchDialogFooterProps,
+  SearchDialogFormProps,
+  SearchDialogHintProps,
+  SearchDialogInputProps,
+  SearchDialogListProps,
+  SearchDialogMessageProps,
+  SearchDialogPopupProps,
+  SearchDialogResultPartProps,
+  SearchDialogResultProps,
+  SearchDialogResultsProps,
+  SearchDialogRootProps,
+  SearchDialogStatusProps,
+  SearchDialogTriggerProps,
+} from './search-dialog/search-dialog.tsx';
 
 export {DirectionProvider, useDirection} from '@base-ui/react/direction-provider';
 export type {DirectionProviderProps, TextDirection} from '@base-ui/react/direction-provider';
