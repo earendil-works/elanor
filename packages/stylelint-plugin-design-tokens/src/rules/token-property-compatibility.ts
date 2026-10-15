@@ -5,7 +5,7 @@ import type {Rule} from 'stylelint';
 import type {CatalogueToken} from '../catalogue.js';
 import type {RuleOptions} from '../options.js';
 import {getCatalogue, isFoundation, isIgnored} from '../options.js';
-import {report} from './shared.js';
+import {matchesRolePrefix, report, rolePath} from './shared.js';
 
 export const ruleName = 'design-tokens/token-property-compatibility';
 
@@ -45,6 +45,8 @@ const DEFAULT_TYPES: Record<string, string[]> = {
   'scroll-padding*': ['dimension'],
   'grid-template*': ['dimension'],
   transform: ['dimension', 'number'],
+  translate: ['dimension'],
+  scale: ['number'],
   'transform-origin': ['dimension'],
   'flex-basis': ['dimension'],
   'z-index': ['number'],
@@ -58,6 +60,14 @@ const DEFAULT_TYPES: Record<string, string[]> = {
   opacity: ['number'],
   'box-shadow': ['shadow', 'color', 'dimension'],
   'text-shadow': ['shadow', 'color', 'dimension'],
+  transition: ['transition', 'duration', 'cubicBezier'],
+  animation: ['transition', 'duration', 'cubicBezier'],
+  'transition-duration': ['duration'],
+  'transition-delay': ['duration'],
+  'animation-duration': ['duration'],
+  'animation-delay': ['duration'],
+  'transition-timing-function': ['cubicBezier'],
+  'animation-timing-function': ['cubicBezier'],
 };
 
 const DEFAULT_ROLES: Record<string, string[]> = {
@@ -95,10 +105,39 @@ const DEFAULT_ROLES: Record<string, string[]> = {
   stroke: ['semantic.color.icon.'],
   'z-index': ['semantic.number.layer.'],
   opacity: ['semantic.number.opacity.'],
+  scale: ['semantic.number.scale.'],
+  translate: ['semantic.dimension.travel.'],
+  transition: ['semantic.transition.'],
+  animation: ['semantic.transition.'],
+  'transition-duration': ['semantic.transition.'],
+  'transition-delay': ['semantic.transition.'],
+  'transition-timing-function': ['semantic.transition.'],
+  'animation-duration': ['semantic.transition.'],
+  'animation-delay': ['semantic.transition.'],
+  'animation-timing-function': ['semantic.transition.'],
   'padding*': ['semantic.dimension.space.padding.', 'semantic.dimension.space.control.padding.'],
   gap: ['semantic.dimension.space.gap.', 'semantic.dimension.space.control.gap.'],
   'row-gap': ['semantic.dimension.space.gap.', 'semantic.dimension.space.control.gap.'],
   'column-gap': ['semantic.dimension.space.gap.', 'semantic.dimension.space.control.gap.'],
+};
+
+/**
+ * Roles for tokens of one type inside transform functions: distances in a
+ * translation are travel, factors in a scaling are scale. Other tokens in the
+ * same function, such as a number multiplying a distance, keep the property's
+ * roles.
+ */
+const TRANSFORM_FUNCTION_ROLES: Record<string, {type: string; roles: string[]}> = {
+  translate: {type: 'dimension', roles: ['semantic.dimension.travel.']},
+  translatex: {type: 'dimension', roles: ['semantic.dimension.travel.']},
+  translatey: {type: 'dimension', roles: ['semantic.dimension.travel.']},
+  translatez: {type: 'dimension', roles: ['semantic.dimension.travel.']},
+  translate3d: {type: 'dimension', roles: ['semantic.dimension.travel.']},
+  scale: {type: 'number', roles: ['semantic.number.scale.']},
+  scalex: {type: 'number', roles: ['semantic.number.scale.']},
+  scaley: {type: 'number', roles: ['semantic.number.scale.']},
+  scalez: {type: 'number', roles: ['semantic.number.scale.']},
+  scale3d: {type: 'number', roles: ['semantic.number.scale.']},
 };
 
 /**
@@ -112,28 +151,6 @@ function valuesFor(property: string, map: Record<string, string[]>): string[] | 
   if (map[property]) return map[property];
   const matches = Object.entries(map).filter(([pattern]) => minimatch(property, pattern));
   return matches.length ? [...new Set(matches.flatMap(([, values]) => values))] : undefined;
-}
-
-/**
- * Gets the source path used to evaluate a token's semantic role.
- *
- * @param token The catalogue token to inspect.
- * @returns The source token path for aliases, otherwise the token's own path.
- */
-function rolePath(token: CatalogueToken): string {
-  return token.sourceToken ?? token.path;
-}
-
-/**
- * Checks whether a token path belongs to a configured semantic role.
- *
- * @param tokenPath The dot-separated token path.
- * @param prefix The accepted role prefix.
- * @returns Whether the path equals or descends from the role prefix.
- */
-function matchesRolePrefix(tokenPath: string, prefix: string): boolean {
-  const basePath = prefix.replace(/\.+$/, '');
-  return tokenPath === basePath || tokenPath.startsWith(`${basePath}.`);
 }
 
 function significantNodes(nodes: Node[]): Node[] {
@@ -190,6 +207,31 @@ function compensatedBorderOperands(
 }
 
 /**
+ * Walks value nodes, passing each node the nearest enclosing transform function
+ * that has its own roles (such as `translateY` around a `calc()`).
+ *
+ * @param nodes The nodes to walk.
+ * @param transformFunction The enclosing transform function name, lowercased.
+ * @param visit The callback for each node.
+ */
+function walkWithTransformFunction(
+  nodes: Node[],
+  transformFunction: string | undefined,
+  visit: (node: Node, transformFunction: string | undefined) => void,
+): void {
+  for (const node of nodes) {
+    visit(node, transformFunction);
+    if (node.type !== 'function') continue;
+    const name = node.value.toLowerCase();
+    walkWithTransformFunction(
+      node.nodes,
+      name in TRANSFORM_FUNCTION_ROLES ? name : transformFunction,
+      visit,
+    );
+  }
+}
+
+/**
  * Creates a Stylelint rule that enforces token type and semantic role compatibility.
  *
  * Foundation and ignored files are excluded from enforcement.
@@ -208,14 +250,14 @@ export const rule: Rule<true, RuleOptions> = (primary, options) => (root, result
     if (declaration.prop.startsWith('--')) return;
     const property = declaration.prop.toLowerCase();
     const expectedTypes = valuesFor(property, typeMap);
-    const expectedRoles = valuesFor(property, roleMap);
+    const propertyRoles = valuesFor(property, roleMap);
     const parsed = valueParser(declaration.value);
     const compensatedBorders =
       /^padding(?:-(?:top|right|bottom|left|(?:block|inline)(?:-start|-end)?))?$/.test(property)
         ? compensatedBorderOperands(parsed.nodes, catalogue.tokensByVariable)
         : new Set<Node>();
 
-    parsed.walk((node) => {
+    walkWithTransformFunction(parsed.nodes, undefined, (node, transformFunction) => {
       if (node.type !== 'function' || node.value.toLowerCase() !== 'var') return;
       const variable = node.nodes.find(
         (child) => child.type === 'word' && child.value.startsWith('--'),
@@ -223,6 +265,12 @@ export const rule: Rule<true, RuleOptions> = (primary, options) => (root, result
       if (!variable) return;
       const token = catalogue.tokensByVariable.get(variable);
       if (!token) return;
+      const functionRoles =
+        property === 'transform' && transformFunction
+          ? TRANSFORM_FUNCTION_ROLES[transformFunction]
+          : undefined;
+      const expectedRoles =
+        functionRoles && functionRoles.type === token.type ? functionRoles.roles : propertyRoles;
       if (expectedTypes && !expectedTypes.includes(token.type)) {
         report(
           result,

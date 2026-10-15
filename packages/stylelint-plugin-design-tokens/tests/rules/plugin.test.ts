@@ -10,6 +10,7 @@ import plugin, {
   noNonTokenCustomPropertiesName,
   preferSemanticTokenName,
   tokenPropertyCompatibilityName,
+  transitionTypeCompatibilityName,
 } from '../../src/index.js';
 
 const catalogue = path.resolve('../design-tokens/dist/radius/tokens.catalog.json');
@@ -204,6 +205,47 @@ describe(noHardcodedTokenValuesName, () => {
       ),
     ).toHaveLength(0);
   });
+  it('finds literal durations, easings, and the ends of fades and scales', async () => {
+    const warnings = await lint(
+      `.a {
+      transition: opacity 150ms ease-out, transform 0.3s cubic-bezier(0.2, 0, 0, 1);
+      transition-delay: 0s;
+      animation-timing-function: linear(0, 1);
+      opacity: 0;
+      scale: 1;
+      translate: 4px 0;
+    }`,
+      noHardcodedTokenValuesName,
+    );
+    const text = warnings.map((warning) => warning.text).join('\n');
+    for (const expected of [
+      'duration value "150ms"',
+      'cubicBezier value "ease-out"',
+      'duration value "0.3s"',
+      'cubicBezier value "cubic-bezier(0.2, 0, 0, 1)"',
+      'duration value "0s"',
+      'cubicBezier value "linear(0, 1)"',
+      'number value "0"',
+      'number value "1"',
+      'dimension value "4px"',
+    ])
+      expect(text).toContain(expected);
+    expect(warnings).toHaveLength(9);
+  });
+
+  it('accepts transition tokens, step easings, and transition: none', async () => {
+    expect(
+      await lint(
+        `.a {
+        transition: opacity var(--semantic-transition-fade), transform var(--semantic-transition-movement-popup);
+        transition-timing-function: steps(4), step-end;
+        animation: none;
+      }
+      .b { transition: none; }`,
+        noHardcodedTokenValuesName,
+      ),
+    ).toHaveLength(0);
+  });
 });
 
 describe(tokenPropertyCompatibilityName, () => {
@@ -287,6 +329,96 @@ describe(tokenPropertyCompatibilityName, () => {
     expect(warnings).toHaveLength(3);
     expect(warnings[0]?.text).toContain('incompatible');
     expect(warnings[1]?.text).toContain('wrong role');
+  });
+});
+
+describe(`${tokenPropertyCompatibilityName} for motion`, () => {
+  it('accepts transition tokens and their parts, scales, and travel', async () => {
+    expect(
+      await lint(
+        `.a {
+        transition: transform var(--semantic-transition-movement-popup);
+        transition-duration: calc(2 * var(--semantic-transition-movement-drawer-duration));
+        transition-timing-function: var(--semantic-transition-fade-timing-function);
+        scale: var(--semantic-number-scale-popup);
+        translate: 0 calc(-1 * var(--semantic-dimension-travel-popup));
+        transform: translateY(calc(var(--semantic-dimension-travel-popup) * (var(--semantic-number-scale-rest) - 0.5))) scale(var(--semantic-number-scale-rest));
+      }`,
+        tokenPropertyCompatibilityName,
+      ),
+    ).toHaveLength(0);
+  });
+
+  it('rejects other tokens for transitions, scales, and translations', async () => {
+    const warnings = await lint(
+      `.a {
+      transition: opacity var(--semantic-dimension-space-gap-small);
+      transition-duration: var(--primitive-duration-150);
+      scale: var(--semantic-number-opacity-disabled);
+      translate: var(--semantic-dimension-space-gap-small);
+      transform: translateX(var(--semantic-dimension-space-gap-small)) scale(var(--semantic-number-opacity-visible));
+    }`,
+      tokenPropertyCompatibilityName,
+    );
+    const text = warnings.map((warning) => warning.text).join('\n');
+    expect(text).toContain('incompatible with "transition"');
+    expect(text).toContain('wrong role for "scale"');
+    expect(text).toContain('wrong role for "translate"');
+    expect(text).toContain('expected semantic.dimension.travel.');
+    expect(text).toContain('expected semantic.number.scale.');
+    expect(warnings).toHaveLength(5);
+  });
+});
+
+describe(transitionTypeCompatibilityName, () => {
+  it('accepts the transition type each property needs', async () => {
+    expect(
+      await lint(
+        `.a {
+        transition:
+          transform var(--semantic-transition-movement-popup),
+          opacity var(--semantic-transition-fade),
+          background-color var(--semantic-transition-feedback),
+          border-block-start-color var(--semantic-transition-feedback),
+          visibility var(--semantic-transition-fade) allow-discrete,
+          filter var(--semantic-transition-fade);
+      }
+      .b {
+        transition-property: top, opacity;
+        transition-duration: var(--semantic-transition-movement-drawer-duration), var(--semantic-transition-fade-duration);
+        transition-timing-function: var(--semantic-transition-movement-drawer-timing-function), var(--semantic-transition-fade-timing-function);
+      }
+      .c { transition: none; }`,
+        transitionTypeCompatibilityName,
+      ),
+    ).toHaveLength(0);
+  });
+
+  it('rejects movement without a movement transition, mismatched fades and feedback, and all', async () => {
+    const warnings = await lint(
+      `.a {
+      transition:
+        transform var(--semantic-transition-fade),
+        height calc(2 * var(--semantic-transition-feedback-duration)) var(--semantic-transition-feedback-timing-function),
+        opacity var(--semantic-transition-movement-popup),
+        color var(--semantic-transition-fade);
+    }
+    .b { transition: var(--semantic-transition-fade); }
+    .c { transition-property: all; transition-duration: var(--semantic-transition-fade-duration); }
+    .d {
+      transition-property: opacity, inline-size;
+      transition-duration: var(--semantic-transition-fade-duration);
+    }`,
+      transitionTypeCompatibilityName,
+    );
+    const text = warnings.map((warning) => warning.text).join('\n');
+    expect(text).toContain('"transform" needs a semantic.transition.movement.* token');
+    expect(text).toContain('"height" needs a semantic.transition.movement.* token');
+    expect(text).toContain('"opacity" needs a semantic.transition.fade token');
+    expect(text).toContain('"color" needs a semantic.transition.feedback token');
+    expect(text).toContain('"inline-size" needs a semantic.transition.movement.* token');
+    expect(text.match(/Do not transition "all"/g)).toHaveLength(2);
+    expect(warnings).toHaveLength(8);
   });
 });
 

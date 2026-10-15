@@ -67,7 +67,7 @@
    Forced-colors users retain the always-visible overflow scrollbar. */
 @media (forced-colors: none) {
   .scrollbar:not([data-scrolling]):not(:active) {
-    opacity: 0;
+    opacity: var(--semantic-number-opacity-hidden);
     pointer-events: none;
   }
 }
