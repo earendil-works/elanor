@@ -21,7 +21,7 @@ Key hex fallbacks match the logo artwork exactly.
 
 ## Standalone colors
 
-Brand black and white are key-only `primitive.color.<name>` tokens for logos and UI, not pure endpoints. Scales calculate between pure white (`0`) and black (`1000`), so `graphite.25` is lighter than `white` and `graphite.960` darker than `black`.
+Brand black and white are key-only `primitive.color.<name>` tokens for logos and UI, not pure endpoints. Scales calculate between pure white (`0`) and black (`1000`), so `graphite.25` is lighter than `white`.
 
 | Token   | Key (OKLCH L C H) | Hex       |
 | ------- | ----------------- | --------- |
@@ -60,19 +60,19 @@ Use `semantic.color.logo.*` only for logo artwork: `symbol.1`–`4` use the four
 
 `calamineBlue` is a supporting brand accent without a semantic status role.
 
-Structural backgrounds use different families by theme:
+Structural backgrounds are neutral Graphite in both themes:
 
-| Theme | Canvas                         | Surface                        |
-| ----- | ------------------------------ | ------------------------------ |
-| Light | `graphite.25` (`#F8F8F8`)      | `graphite.50` (`#F1F1F1`)      |
-| Dark  | `cerulianBlue.900` (`#10171B`) | `cerulianBlue.800` (`#1E313B`) |
+| Theme | Canvas                     | Surface                    |
+| ----- | -------------------------- | -------------------------- |
+| Light | `graphite.25` (`#F8F8F8`)  | `graphite.50` (`#F1F1F1`)  |
+| Dark  | `graphite.900` (`#161616`) | `graphite.800` (`#2E2E2E`) |
 
 Primary and ghost fills each have default, neutral, information, negative, and positive variants; default and information intentionally use the same Cerulian Blue steps. Every variant uses these steps of its family:
 
 | Fill    | Light rest / hover / active | Dark rest / hover / active  |
 | ------- | --------------------------- | --------------------------- |
 | Primary | `600` / `640` / `680`       | `400` / `360` / `320`       |
-| Ghost   | transparent / `40` / `80`   | transparent / `960` / `920` |
+| Ghost   | transparent / `40` / `80`   | transparent / `860` / `820` |
 
 Consumers use [semantic fill roles](token-naming.md#color-fill-roles), not family names.
 
@@ -83,6 +83,6 @@ Required WCAG 2.1 resting-state pairs:
 - ordinary text and content on canvas, surface, primary fills, and secondary fills at **4.5:1**;
 - meaningful borders, focus rings, selected fills, indicators, and switch knobs at **3:1**.
 
-All 178 pairs pass. The smallest margin is dark selected fill on dark surface: **3.07:1** against **3:1** required. Run `pnpm tokens:check:contrast` to recheck.
+All 178 pairs pass. The smallest margin is dark selected fill on dark surface: **3.09:1** against **3:1** required. Run `pnpm tokens:check:contrast` to recheck.
 
 Project policy excludes hover/active states from conformance checks. Secondary borders, secondary fills against their surroundings, and transparent ghost fills may fall below 3:1 only when decorative or lower-prominence and not the sole cue for a control or state.

@@ -5,11 +5,11 @@
       "$type": "color",
       "background": {
         "canvas": {
-          "$value": "{primitive.color.cerulianBlue.900}",
+          "$value": "{primitive.color.graphite.900}",
           "$description": "Use as the foundational background of a page or application."
         },
         "surface": {
-          "$value": "{primitive.color.cerulianBlue.800}",
+          "$value": "{primitive.color.graphite.800}",
           "$description": "Use for standard structural containers such as cards, panels, and content sections."
         },
         "backdrop": {
@@ -182,11 +182,11 @@
               "$description": "Use when a default bounded element intentionally has no visible fill and should reveal its parent background."
             },
             "hover": {
-              "$value": "{primitive.color.cerulianBlue.960}",
+              "$value": "{primitive.color.cerulianBlue.860}",
               "$description": "Use when a default ghost filled interactive element is hovered."
             },
             "active": {
-              "$value": "{primitive.color.cerulianBlue.920}",
+              "$value": "{primitive.color.cerulianBlue.820}",
               "$description": "Use while a default ghost filled interactive element is actively pressed."
             },
             "neutral": {
@@ -195,11 +195,11 @@
                 "$description": "Use when a neutral bounded element intentionally has no visible fill and should reveal its parent background."
               },
               "hover": {
-                "$value": "{primitive.color.graphite.960}",
+                "$value": "{primitive.color.graphite.860}",
                 "$description": "Use when a neutral ghost filled interactive element is hovered."
               },
               "active": {
-                "$value": "{primitive.color.graphite.920}",
+                "$value": "{primitive.color.graphite.820}",
                 "$description": "Use while a neutral ghost filled interactive element is actively pressed."
               }
             },
@@ -209,11 +209,11 @@
                 "$description": "Use when an informational bounded element intentionally has no visible fill and should reveal its parent background."
               },
               "hover": {
-                "$value": "{primitive.color.cerulianBlue.960}",
+                "$value": "{primitive.color.cerulianBlue.860}",
                 "$description": "Use when an informational ghost filled interactive element is hovered."
               },
               "active": {
-                "$value": "{primitive.color.cerulianBlue.920}",
+                "$value": "{primitive.color.cerulianBlue.820}",
                 "$description": "Use while an informational ghost filled interactive element is actively pressed."
               }
             },
@@ -223,11 +223,11 @@
                 "$description": "Use when a negative bounded element intentionally has no visible fill and should reveal its parent background."
               },
               "hover": {
-                "$value": "{primitive.color.coralRed.960}",
+                "$value": "{primitive.color.coralRed.860}",
                 "$description": "Use when a negative ghost filled interactive element is hovered."
               },
               "active": {
-                "$value": "{primitive.color.coralRed.920}",
+                "$value": "{primitive.color.coralRed.820}",
                 "$description": "Use while a negative ghost filled interactive element is actively pressed."
               }
             },
@@ -237,11 +237,11 @@
                 "$description": "Use when a positive bounded element intentionally has no visible fill and should reveal its parent background."
               },
               "hover": {
-                "$value": "{primitive.color.turquoiseGreen.960}",
+                "$value": "{primitive.color.turquoiseGreen.860}",
                 "$description": "Use when a positive ghost filled interactive element is hovered."
               },
               "active": {
-                "$value": "{primitive.color.turquoiseGreen.920}",
+                "$value": "{primitive.color.turquoiseGreen.820}",
                 "$description": "Use while a positive ghost filled interactive element is actively pressed."
               }
             }
@@ -367,7 +367,7 @@
           }
         },
         "secondary": {
-          "$value": "{primitive.color.graphite.800}",
+          "$value": "{primitive.color.graphite.700}",
           "$description": "Use for subtle decorative boundaries and dividers. Do not use when the boundary is the only visual cue identifying a control."
         },
         "information": {
