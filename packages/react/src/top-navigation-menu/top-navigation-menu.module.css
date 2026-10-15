@@ -1,0 +1,182 @@
+@layer elanor.components {
+  .trigger {
+    display: grid;
+    flex: none;
+    place-items: center;
+    inline-size: var(--semantic-dimension-size-large);
+    block-size: var(--semantic-dimension-size-large);
+    padding: 0;
+    border: 0;
+    border-radius: var(--semantic-dimension-radius-small);
+    background: var(--semantic-color-background-fill-ghost-neutral);
+    color: var(--semantic-color-icon-secondary);
+    cursor: pointer;
+  }
+
+  .trigger > svg {
+    inline-size: var(--semantic-dimension-size-icon);
+    block-size: var(--semantic-dimension-size-icon);
+  }
+
+  .trigger[data-popup-open] {
+    color: var(--semantic-color-icon-primary);
+  }
+
+  @media (hover: hover) {
+    .trigger:hover {
+      background: var(--semantic-color-background-fill-ghost-neutral-hover);
+      color: var(--semantic-color-icon-primary);
+    }
+  }
+
+  .trigger:focus-visible {
+    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline-offset: calc(-1 * var(--semantic-dimension-border-width-large));
+  }
+
+  /* The open menu fills the window below the top navigation. Its panels share one grid cell. */
+  .popup {
+    position: fixed;
+    inset: var(--semantic-dimension-size-top-navigation) 0 0;
+    z-index: var(--semantic-number-layer-floating);
+    display: grid;
+    overflow: hidden;
+    background: var(--semantic-color-background-canvas);
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-ui-primary);
+  }
+
+  .popup[hidden] {
+    display: none;
+  }
+
+  /* Panels slide sideways; reduced motion makes the slide instant through the token. Hidden
+     panels stay visible while they slide out, then hide. */
+  .panel {
+    display: flex;
+    flex-direction: column;
+    grid-area: 1 / 1;
+    gap: var(--semantic-dimension-space-gap-xx-small);
+    min-block-size: 0;
+    padding-block: var(--semantic-dimension-space-padding-large)
+      var(--semantic-dimension-space-padding-xx-large);
+    padding-inline: var(--semantic-dimension-space-padding-x-large);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    transition: translate var(--semantic-transition-movement-disclosure);
+  }
+
+  .panel:is([data-position='before'], [data-position='after']) {
+    visibility: hidden;
+    /* Visibility stays visible for the whole transition, then switches. */
+    transition:
+      translate var(--semantic-transition-movement-disclosure),
+      visibility var(--semantic-transition-movement-disclosure);
+  }
+
+  .panel[data-position='before'] {
+    translate: -100% 0;
+  }
+
+  .panel[data-position='after'] {
+    translate: 100% 0;
+  }
+
+  .list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-gap-xx-small);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .item {
+    min-inline-size: 0;
+  }
+
+  /* Items match SideNavigation's links. */
+  .link,
+  .back {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: var(--semantic-dimension-space-control-gap-large);
+    inline-size: 100%;
+    padding-block: var(--semantic-dimension-space-control-padding-block-small);
+    padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
+    border: 0;
+    border-radius: var(--semantic-dimension-radius-small);
+    background: var(--semantic-color-background-fill-ghost-neutral);
+    color: var(--semantic-color-text-secondary);
+    font: inherit;
+    text-align: start;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .link[data-active] {
+    background: var(--semantic-color-background-fill-ghost-neutral-active);
+    color: var(--semantic-color-text-primary);
+    font-weight: var(--semantic-font-weight-ui-selected);
+  }
+
+  /* The back button leads a nested panel in the selected weight, with room below it. Its label
+     centers in the row; its chevron sits at the start, in line with the items' text. */
+  .back {
+    position: relative;
+    justify-content: center;
+    margin-block-end: var(--semantic-dimension-space-gap-large);
+    color: var(--semantic-color-text-primary);
+    font-weight: var(--semantic-font-weight-ui-selected);
+  }
+
+  .back > .label {
+    flex: none;
+  }
+
+  .back > .icon {
+    position: absolute;
+    inset-inline-start: var(--semantic-dimension-space-control-padding-inline-small);
+  }
+
+  /* The current section keeps its fill on hover. */
+  @media (hover: hover) {
+    .link:not([data-active]):hover,
+    .back:hover {
+      background: var(--semantic-color-background-fill-ghost-neutral-hover);
+    }
+  }
+
+  .link:focus-visible,
+  .back:focus-visible {
+    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline-offset: var(--semantic-dimension-border-width-medium);
+  }
+
+  .label {
+    flex: 1;
+    min-inline-size: 0;
+  }
+
+  .icon {
+    display: inline-flex;
+    flex: none;
+    inline-size: var(--semantic-dimension-size-icon);
+    block-size: var(--semantic-dimension-size-icon);
+    color: var(--semantic-color-icon-secondary);
+  }
+
+  .icon > svg {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  @media (forced-colors: active) {
+    .link[data-active] {
+      outline: var(--semantic-dimension-border-width-default) solid Highlight;
+      outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
+    }
+  }
+}

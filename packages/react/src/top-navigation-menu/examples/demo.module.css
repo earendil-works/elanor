@@ -1,0 +1,18 @@
+.frame {
+  /* Demo only: the fixed menu is placed and clipped within the frame. */
+  contain: layout paint;
+  /* stylelint-disable-next-line design-tokens/no-hardcoded-token-values -- Demo frame size. */
+  block-size: 24rem;
+  border: var(--semantic-dimension-border-width-default) solid
+    var(--semantic-color-border-secondary);
+}
+
+.header {
+  padding-inline: var(--semantic-dimension-space-padding-x-large);
+  border-block-end: var(--semantic-dimension-border-width-small) solid
+    var(--semantic-color-border-secondary);
+}
+
+.content {
+  padding: var(--semantic-dimension-space-padding-x-large);
+}

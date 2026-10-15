@@ -30,6 +30,7 @@ export * as Table from './table/index.ts';
 export * as TableOfContents from './table-of-contents/index.ts';
 export * as Tabs from './tabs/index.ts';
 export * as TopNavigation from './top-navigation/index.ts';
+export * as TopNavigationMenu from './top-navigation-menu/index.ts';
 
 export type {
   GridRootProps,
@@ -562,6 +563,17 @@ export type {
   SearchDialogStatusProps,
   SearchDialogTriggerProps,
 } from './search-dialog/search-dialog.tsx';
+
+export type {
+  TopNavigationMenuItemProps,
+  TopNavigationMenuLinkProps,
+  TopNavigationMenuListProps,
+  TopNavigationMenuPanelProps,
+  TopNavigationMenuPanelTriggerProps,
+  TopNavigationMenuPopupProps,
+  TopNavigationMenuRootProps,
+  TopNavigationMenuTriggerProps,
+} from './top-navigation-menu/top-navigation-menu.tsx';
 
 export {DirectionProvider, useDirection} from '@base-ui/react/direction-provider';
 export type {DirectionProviderProps, TextDirection} from '@base-ui/react/direction-provider';
