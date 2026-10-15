@@ -22,7 +22,7 @@ export function PageHeaderRow({ref, className, ...props}: PageHeaderRowProps) {
   return <div {...props} ref={ref} className={classes(styles.headerRow, className)} />;
 }
 
-export type PageHeaderTitleProps = Omit<HeadingProps, 'size'>;
+export type PageHeaderTitleProps = Omit<HeadingProps, 'size' | 'variant'>;
 
 export function PageHeaderTitle({ref, className, ...props}: PageHeaderTitleProps) {
   return <Heading {...props} ref={ref} size={1} className={classes(styles.title, className)} />;

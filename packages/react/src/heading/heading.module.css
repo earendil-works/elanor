@@ -6,32 +6,67 @@
   color: var(--semantic-color-text-primary);
 }
 
-.heading1 {
+.app1 {
   font: var(--semantic-typography-heading-app-1);
   letter-spacing: var(--semantic-typography-heading-app-1-letter-spacing);
 }
 
-.heading2 {
+.app2 {
   font: var(--semantic-typography-heading-app-2);
   letter-spacing: var(--semantic-typography-heading-app-2-letter-spacing);
 }
 
-.heading3 {
+.app3 {
   font: var(--semantic-typography-heading-app-3);
   letter-spacing: var(--semantic-typography-heading-app-3-letter-spacing);
 }
 
-.heading4 {
+.app4 {
   font: var(--semantic-typography-heading-app-4);
   letter-spacing: var(--semantic-typography-heading-app-4-letter-spacing);
 }
 
-.heading5 {
+.app5 {
   font: var(--semantic-typography-heading-app-5);
   letter-spacing: var(--semantic-typography-heading-app-5-letter-spacing);
 }
 
-.heading6 {
+.app6 {
   font: var(--semantic-typography-heading-app-6);
   letter-spacing: var(--semantic-typography-heading-app-6-letter-spacing);
+}
+
+.marketingDisplay {
+  font: var(--semantic-typography-heading-marketing-display);
+  letter-spacing: var(--semantic-typography-heading-marketing-display-letter-spacing);
+}
+
+.marketing1 {
+  font: var(--semantic-typography-heading-marketing-1);
+  letter-spacing: var(--semantic-typography-heading-marketing-1-letter-spacing);
+}
+
+.marketing2 {
+  font: var(--semantic-typography-heading-marketing-2);
+  letter-spacing: var(--semantic-typography-heading-marketing-2-letter-spacing);
+}
+
+.marketing3 {
+  font: var(--semantic-typography-heading-marketing-3);
+  letter-spacing: var(--semantic-typography-heading-marketing-3-letter-spacing);
+}
+
+.marketing4 {
+  font: var(--semantic-typography-heading-marketing-4);
+  letter-spacing: var(--semantic-typography-heading-marketing-4-letter-spacing);
+}
+
+.marketing5 {
+  font: var(--semantic-typography-heading-marketing-5);
+  letter-spacing: var(--semantic-typography-heading-marketing-5-letter-spacing);
+}
+
+.marketing6 {
+  font: var(--semantic-typography-heading-marketing-6);
+  letter-spacing: var(--semantic-typography-heading-marketing-6-letter-spacing);
 }

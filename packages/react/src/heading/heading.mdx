@@ -21,3 +21,9 @@ Give each page one `level={1}` heading and don't skip levels. The demos on this 
 Sizes go from `1`, the largest, to `6`, the default, one per `semantic.typography.heading.app` style (36, 32, 28, 24, 21, and 18px). Choose the size for the visual hierarchy, independently of the level: a card's `level={3}` heading usually stays at the default. Where the level already reflects the hierarchy, as in headings rendered from Markdown, pass `size={level}`.
 
 <Demo example="./examples/sizes.tsx" />
+
+## Marketing
+
+`variant="marketing"` sets headings for promotional pages in the `semantic.typography.heading.marketing` styles: the prose typeface, bold, and larger (73px down to 18px). Use them for landing pages and announcements, not inside the product. Only marketing headings have `size="display"` (96px), for oversized promotional text above the heading hierarchy, such as a hero line. Choose `level` by the outline as usual: a display heading is often the page's `level={1}`.
+
+<Demo example="./examples/marketing.tsx" />
