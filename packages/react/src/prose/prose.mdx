@@ -1,0 +1,36 @@
+# Prose
+
+A container for long-form content, such as documentation, articles, and release notes. It switches the text inside to the prose style and spaces the blocks inside, so they need no margins of their own. For application UI, use [Stack](/components/stack/) and the components' own spacing.
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Heading, Prose, Text} from '@earendil-works/elanor-react';
+
+<Prose>
+  <Heading level={2} size={2} />
+  <Text />
+</Prose>;
+```
+
+Prose renders a `div` with `data-text-context="prose"`, so `semantic.typography.primary` resolves to the prose style for [Text](/components/text/), [Link](/components/link/), [List](/components/list/), and [Table](/components/table/) inside. Use `render` for another element, such as `article`.
+
+## Spacing
+
+Prose puts space above each block, from the `semantic.dimension.space.flow` tokens, also between the blocks inside list items and quotations:
+
+| Between                                         | Space                                         |
+| ----------------------------------------------- | --------------------------------------------- |
+| Blocks, such as paragraphs and lists            | `flow.small` (16px)                           |
+| A code block and its neighbors                  | `flow.medium` (24px)                          |
+| A quotation, figure, or image and its neighbors | `flow.large` (32px)                           |
+| A separator and its neighbors                   | `flow.xLarge` (48px)                          |
+| Above and below an `h2`                         | `flow.xLarge` and `flow.medium` (48 and 24px) |
+| Above and below an `h3`                         | `flow.large` and `flow.small` (32 and 16px)   |
+| Above and below `h4` to `h6`                    | `flow.medium` and `flow.xSmall` (24 and 8px)  |
+
+A heading stays closest to the content it introduces. Headings match directly or as the only heading inside a wrapper, such as a heading with a link button. Inline content in list items and quotations gets no space.
+
+The spacing lives in the `elanor.prose` cascade layer, after the components, so it overrides their margin resets.
