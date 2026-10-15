@@ -86,20 +86,26 @@ Token `100` is index `-1` (rounded to `10px`); each `100` advances one note. Tok
   "path": ["primitive"],
   "steps": [100, 200, 300, 400],
   "lineHeight": {
-    "multiplier": 1.2,
+    "anchors": [
+      {"fontSizePx": 10, "ratio": 1.2},
+      {"fontSizePx": 16, "ratio": 1.45},
+      {"fontSizePx": 84, "ratio": 1.1}
+    ],
     "gridTiers": [
       {"minFontSizePx": 0, "gridPx": 4},
-      {"minFontSizePx": 24, "gridPx": 8}
+      {"minFontSizePx": 48, "gridPx": 8}
     ]
   }
 }
 ```
 
-Font sizes round to whole pixels, then convert to rem. Line heights multiply the rounded size by `lineHeight.multiplier` and snap to the nearest grid multiple, never below the font size. `gridTiers` must start at `0px`, ordered by `minFontSizePx`; the highest matching tier wins.
+Font sizes round to whole pixels, then convert to rem. Line heights multiply the rounded size by a target ratio and snap to the nearest grid multiple, never below the font size. `gridTiers` must start at `0px`, ordered by `minFontSizePx`; the highest matching tier wins.
+
+The target ratio comes from `lineHeight.anchors`, ordered by `fontSizePx`. Between two anchors it is interpolated on a logarithmic font-size axis, so each scale step changes it by a similar amount; outside the anchors the nearest anchor applies. Small labels get compact leading, body sizes the loosest leading for reading, and display sizes progressively tighter leading.
 
 ### Why line heights snap to a grid
 
-Grid-aligned line boxes support the layout's 8px vertical rhythm. Below `24px`, a 4px half-grid avoids excessive changes in leading; larger type uses the full 8px grid (for example, `28.8px` snaps to `32px`).
+Grid-aligned line boxes support the layout's 8px vertical rhythm. Below `48px`, a 4px half-grid avoids excessive changes in leading; larger type uses the full 8px grid.
 
 The snapped height divided by font size becomes a unitless DTCG ratio, rounded to six decimals, for typography composites. Alignment assumes the configured `pixelsPerRem` base; components must still account for padding and borders.
 
