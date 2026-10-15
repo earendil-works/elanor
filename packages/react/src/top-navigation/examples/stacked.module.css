@@ -1,6 +1,8 @@
 .header {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
+  /* Two rows: opt out of the bar's fixed height. */
+  block-size: auto;
   padding-block: var(--semantic-dimension-space-padding-xx-large);
 }
 
