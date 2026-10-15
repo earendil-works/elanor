@@ -72,6 +72,51 @@ function validateGridTiers(recipe: TypographyRecipe): void {
 }
 
 /**
+ * Checks anchor ordering that cannot be expressed in the recipe JSON Schema.
+ *
+ * @param recipe The typography scale recipe.
+ * @throws When the anchors are not in ascending font-size order.
+ */
+function validateAnchors(recipe: TypographyRecipe): void {
+  const {anchors} = recipe.lineHeight;
+
+  for (let index = 1; index < anchors.length; index += 1) {
+    if (anchors[index].fontSizePx <= anchors[index - 1].fontSizePx) {
+      throw new Error('Line-height anchors must be in ascending font-size order');
+    }
+  }
+}
+
+/**
+ * Calculates the target line-height ratio for a font size.
+ *
+ * Ratios are interpolated between neighbouring anchors on a logarithmic
+ * font-size axis, so each scale step moves the ratio by a similar amount.
+ * Font sizes outside the anchors use the nearest anchor's ratio.
+ *
+ * @param recipe The typography scale recipe.
+ * @param fontSizePx The rounded font size in pixels.
+ * @returns The unsnapped line-height ratio.
+ */
+function ratioForFontSize(recipe: TypographyRecipe, fontSizePx: number): number {
+  const {anchors} = recipe.lineHeight;
+  const first = anchors[0];
+  if (fontSizePx <= first.fontSizePx) return first.ratio;
+
+  for (let index = 1; index < anchors.length; index += 1) {
+    const lower = anchors[index - 1];
+    const upper = anchors[index];
+    if (fontSizePx <= upper.fontSizePx) {
+      const progress =
+        Math.log(fontSizePx / lower.fontSizePx) / Math.log(upper.fontSizePx / lower.fontSizePx);
+      return lower.ratio + (upper.ratio - lower.ratio) * progress;
+    }
+  }
+
+  return anchors[anchors.length - 1].ratio;
+}
+
+/**
  * Selects the line-height grid for a rounded font size.
  *
  * @param recipe The typography scale recipe.
@@ -99,9 +144,9 @@ function gridPxForFontSize(recipe: TypographyRecipe, fontSizePx: number): number
  * @returns A line height in pixels that is divisible by the selected grid size.
  */
 function calculateLineHeightPx(recipe: TypographyRecipe, fontSizePx: number): number {
-  const {multiplier} = recipe.lineHeight;
   const gridPx = gridPxForFontSize(recipe, fontSizePx);
-  const nearestGridValue = Math.round((fontSizePx * multiplier) / gridPx) * gridPx;
+  const ratio = ratioForFontSize(recipe, fontSizePx);
+  const nearestGridValue = Math.round((fontSizePx * ratio) / gridPx) * gridPx;
   const minimumGridValue = Math.ceil(fontSizePx / gridPx) * gridPx;
   return Math.max(nearestGridValue, minimumGridValue);
 }
@@ -119,6 +164,7 @@ export function generateTypographyTokens(
 ): GeneratedTokenPatch[] {
   validateSteps(recipe.steps);
   validateGridTiers(recipe);
+  validateAnchors(recipe);
   const fontSizes: JsonObject = {};
   const lineHeights: JsonObject = {};
 

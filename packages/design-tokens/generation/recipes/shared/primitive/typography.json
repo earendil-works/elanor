@@ -5,10 +5,14 @@
     100, 200, 300, 400, 500, 600, 700, 800, 900, 1000, 1100, 1200, 1300, 1400, 1500, 1600, 1700
   ],
   "lineHeight": {
-    "multiplier": 1.2,
+    "anchors": [
+      {"fontSizePx": 10, "ratio": 1.2},
+      {"fontSizePx": 16, "ratio": 1.45},
+      {"fontSizePx": 84, "ratio": 1.1}
+    ],
     "gridTiers": [
       {"minFontSizePx": 0, "gridPx": 4},
-      {"minFontSizePx": 24, "gridPx": 8}
+      {"minFontSizePx": 48, "gridPx": 8}
     ]
   }
 }

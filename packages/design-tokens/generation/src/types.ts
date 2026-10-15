@@ -94,12 +94,18 @@ export interface TypographyGridTier {
   gridPx: number;
 }
 
+/** A target line-height ratio at a font size; ratios between anchors are interpolated. */
+export interface TypographyLineHeightAnchor {
+  fontSizePx: number;
+  ratio: number;
+}
+
 export interface TypographyRecipe {
   $schema?: string;
   path: string[];
   steps: number[];
   lineHeight: {
-    multiplier: number;
+    anchors: TypographyLineHeightAnchor[];
     gridTiers: TypographyGridTier[];
   };
 }

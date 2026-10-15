@@ -22,7 +22,7 @@
           }
         },
         "300": {
-          "$value": 1.142857,
+          "$value": 1.428571,
           "$extensions": {
             "com.earendil-works.generation": {
               "source": "recipes/shared/primitive/typography.json"
@@ -30,7 +30,7 @@
           }
         },
         "400": {
-          "$value": 1.25,
+          "$value": 1.5,
           "$extensions": {
             "com.earendil-works.generation": {
               "source": "recipes/shared/primitive/typography.json"
@@ -38,7 +38,7 @@
           }
         },
         "500": {
-          "$value": 1.111111,
+          "$value": 1.333333,
           "$extensions": {
             "com.earendil-works.generation": {
               "source": "recipes/shared/primitive/typography.json"
@@ -46,7 +46,7 @@
           }
         },
         "600": {
-          "$value": 1.142857,
+          "$value": 1.333333,
           "$extensions": {
             "com.earendil-works.generation": {
               "source": "recipes/shared/primitive/typography.json"
@@ -62,7 +62,7 @@
           }
         },
         "800": {
-          "$value": 1.142857,
+          "$value": 1.285714,
           "$extensions": {
             "com.earendil-works.generation": {
               "source": "recipes/shared/primitive/typography.json"
@@ -78,7 +78,7 @@
           }
         },
         "1000": {
-          "$value": 1.111111,
+          "$value": 1.333333,
           "$extensions": {
             "com.earendil-works.generation": {
               "source": "recipes/shared/primitive/typography.json"
@@ -86,7 +86,7 @@
           }
         },
         "1100": {
-          "$value": 1.142857,
+          "$value": 1.238095,
           "$extensions": {
             "com.earendil-works.generation": {
               "source": "recipes/shared/primitive/typography.json"
@@ -118,7 +118,7 @@
           }
         },
         "1500": {
-          "$value": 1.205479,
+          "$value": 1.09589,
           "$extensions": {
             "com.earendil-works.generation": {
               "source": "recipes/shared/primitive/typography.json"
@@ -126,7 +126,7 @@
           }
         },
         "1600": {
-          "$value": 1.238095,
+          "$value": 1.142857,
           "$extensions": {
             "com.earendil-works.generation": {
               "source": "recipes/shared/primitive/typography.json"
@@ -134,7 +134,7 @@
           }
         },
         "1700": {
-          "$value": 1.166667,
+          "$value": 1.083333,
           "$extensions": {
             "com.earendil-works.generation": {
               "source": "recipes/shared/primitive/typography.json"
