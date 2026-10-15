@@ -1,0 +1,183 @@
+@layer elanor.components {
+  /* A sticky bar with separators above and below. It sticks one border width higher, so what it
+     sticks under, such as a header's border, covers its top separator instead of doubling it. */
+  .root {
+    position: sticky;
+    z-index: var(--semantic-number-layer-floating);
+    inset-block-start: calc(-1 * var(--semantic-dimension-border-width-small));
+    box-sizing: border-box;
+    min-inline-size: 0;
+    padding-block: var(--semantic-dimension-space-padding-x-large);
+    border-block: var(--semantic-dimension-border-width-small) solid
+      var(--semantic-color-border-secondary);
+    background: var(--semantic-color-background-canvas);
+  }
+
+  /* The trigger looks like Dropdown's; the current section reads as a small heading. */
+  .trigger {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: var(--semantic-dimension-space-control-gap-large);
+    inline-size: 100%;
+    min-inline-size: 0;
+    padding-block: calc(
+      var(--semantic-dimension-space-control-padding-block-small) -
+        var(--semantic-dimension-border-width-default)
+    );
+    padding-inline: calc(
+      var(--semantic-dimension-space-control-padding-inline-small) -
+        var(--semantic-dimension-border-width-default)
+    );
+    border: var(--semantic-dimension-border-width-default) solid
+      var(--semantic-color-background-fill-secondary);
+    border-radius: var(--semantic-dimension-radius-small);
+    background: var(--semantic-color-background-fill-secondary);
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-heading-app-6);
+    letter-spacing: var(--semantic-typography-heading-app-6-letter-spacing);
+    text-align: start;
+    cursor: pointer;
+  }
+
+  @media (hover: hover) {
+    .trigger:hover {
+      border-color: var(--semantic-color-background-fill-secondary-hover);
+      background: var(--semantic-color-background-fill-secondary-hover);
+    }
+  }
+
+  .trigger[data-popup-open],
+  .trigger:focus-visible {
+    border-color: var(--semantic-color-focus-ring);
+    background: var(--semantic-color-background-fill-secondary);
+  }
+
+  .trigger:focus-visible {
+    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline-offset: var(--semantic-dimension-border-width-medium);
+  }
+
+  /* The prefix names the control for assistive technology only. */
+  .visuallyHidden {
+    position: absolute;
+    inline-size: var(--semantic-dimension-border-width-small);
+    block-size: var(--semantic-dimension-border-width-small);
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .value {
+    flex: 1;
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .icon {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    inline-size: var(--semantic-dimension-size-icon);
+    block-size: var(--semantic-dimension-size-icon);
+    color: var(--semantic-color-icon-primary);
+  }
+
+  .icon > svg {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  .positioner {
+    z-index: var(--semantic-number-layer-floating);
+  }
+
+  /* The list takes Dropdown's popup look and motion. */
+  .popup {
+    box-sizing: border-box;
+    min-inline-size: min(var(--anchor-width), var(--available-width));
+    max-inline-size: var(--available-width);
+    max-block-size: var(--available-height);
+    overflow: auto;
+    overscroll-behavior: contain;
+    border-radius: var(--semantic-dimension-radius-small);
+    outline: 0;
+    box-shadow: var(--semantic-shadow-popup);
+    background: var(--semantic-color-background-canvas);
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-ui-primary);
+    transform-origin: var(--transform-origin);
+    transition:
+      transform var(--semantic-transition-movement-popup),
+      opacity var(--semantic-transition-fade);
+  }
+
+  .popup[data-starting-style],
+  .popup[data-ending-style] {
+    opacity: var(--semantic-number-opacity-hidden);
+    transform: scale(var(--semantic-number-scale-popup));
+  }
+
+  .list {
+    display: flex;
+    flex-direction: column;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .item {
+    min-inline-size: 0;
+  }
+
+  .link {
+    box-sizing: border-box;
+    display: block;
+    padding-block: var(--semantic-dimension-space-control-padding-block-small);
+    padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
+    border-radius: var(--semantic-dimension-radius-small);
+    color: var(--semantic-color-text-primary);
+    overflow-wrap: anywhere;
+    text-decoration: none;
+  }
+
+  /* Nested entries indent their text, so fills keep the full width. */
+  .list .list .link {
+    padding-inline-start: calc(
+      var(--semantic-dimension-space-control-padding-inline-small) +
+        var(--semantic-dimension-space-padding-x-large)
+    );
+  }
+
+  @media (hover: hover) {
+    .link:hover {
+      background: var(--semantic-color-background-fill-ghost-neutral-hover);
+    }
+  }
+
+  .link:focus-visible {
+    background: var(--semantic-color-background-fill-ghost-neutral-hover);
+    outline: 0;
+  }
+
+  .link[data-active] {
+    background: var(--semantic-color-background-fill-ghost-neutral-active);
+    font-weight: var(--semantic-font-weight-ui-selected);
+  }
+
+  @media (forced-colors: active) {
+    .popup {
+      border: var(--semantic-dimension-border-width-default) solid CanvasText;
+    }
+
+    .link:focus-visible,
+    .link[data-active] {
+      outline: var(--semantic-dimension-border-width-default) solid Highlight;
+      outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
+    }
+  }
+}

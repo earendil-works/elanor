@@ -26,6 +26,7 @@ export * as Sidebar from './sidebar/index.ts';
 export * as Switch from './switch/index.ts';
 export * as Table from './table/index.ts';
 export * as TableOfContents from './table-of-contents/index.ts';
+export * as TableOfContentsMenu from './table-of-contents-menu/index.ts';
 export * as Tabs from './tabs/index.ts';
 export * as TopNavigation from './top-navigation/index.ts';
 
@@ -477,6 +478,15 @@ export type {
   TableOfContentsListProps,
   TableOfContentsRootProps,
 } from './table-of-contents/table-of-contents.tsx';
+
+export type {
+  TableOfContentsMenuItemProps,
+  TableOfContentsMenuLinkProps,
+  TableOfContentsMenuListProps,
+  TableOfContentsMenuPopupProps,
+  TableOfContentsMenuRootProps,
+  TableOfContentsMenuTriggerProps,
+} from './table-of-contents-menu/table-of-contents-menu.tsx';
 
 export type {
   TableBodyProps,

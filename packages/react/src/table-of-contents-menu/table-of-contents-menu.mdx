@@ -1,0 +1,30 @@
+# Table of contents menu
+
+A [Table of contents](/components/table-of-contents/) collapsed into a dropdown, for narrow layouts without room for the full list beside the content. The trigger shows the current section.
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {TableOfContentsMenu} from '@earendil-works/elanor-react';
+
+<TableOfContentsMenu.Root>
+  <TableOfContentsMenu.Trigger>Current section</TableOfContentsMenu.Trigger>
+  <TableOfContentsMenu.Popup>
+    <TableOfContentsMenu.Item>
+      <TableOfContentsMenu.Link href="#usage" active />
+    </TableOfContentsMenu.Item>
+  </TableOfContentsMenu.Popup>
+</TableOfContentsMenu.Root>;
+```
+
+The parts match Table of contents: `Item`, `Link` with `active`, and `List` for nested entries, so the same data renders both. The trigger reads "Table of contents: " before the current section to assistive technology; change it with `label`. The list is a `nav` of real links with the same name; choosing a link closes it. Keep the trigger's text in sync with the `active` link.
+
+## Sticky bar
+
+Root is a bar with separators above and below that sticks to the top of its scroll container, on `semantic.number.layer.floating`. It sticks one border width higher, so a header border above covers its top separator.
+
+### Below a header
+
+To stick below a sticky header, set `inset-block-start` in your own CSS, such as `calc(var(--semantic-dimension-size-top-navigation) - var(--semantic-dimension-border-width-small))`.
