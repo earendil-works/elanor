@@ -23,7 +23,6 @@
     gap: var(--semantic-dimension-space-gap-x-small);
     margin: 0;
     padding: 0;
-    padding-inline-start: var(--semantic-dimension-space-padding-x-large);
     list-style: none;
   }
 
@@ -31,35 +30,53 @@
     min-inline-size: 0;
   }
 
+  .item > .list {
+    margin-block-start: var(--semantic-dimension-space-gap-x-small);
+  }
+
+  /* Entries are secondary until hovered or active. Lists don't indent: entries indent their
+     text, so the active bar of every entry sits on the list's start edge. */
   .link {
+    position: relative;
     display: flex;
     align-items: center;
     padding-block: var(--semantic-dimension-space-control-padding-block-small);
-    color: inherit;
+    padding-inline-start: var(--semantic-dimension-space-padding-large);
+    color: var(--semantic-color-text-secondary);
     font: var(--semantic-typography-ui-primary);
     overflow-wrap: anywhere;
     text-decoration: none;
   }
 
+  .list .list .link {
+    padding-inline-start: var(--semantic-dimension-space-padding-xx-large);
+  }
+
   .label {
-    position: relative;
     min-inline-size: 0;
   }
 
-  .label::after {
-    position: absolute;
-    inset-inline: 0;
-    inset-block-end: calc(-1 * var(--semantic-dimension-space-control-padding-block-small));
-    block-size: var(--semantic-dimension-border-width-default);
-    background: var(--semantic-color-border-primary);
-    content: '';
-    visibility: hidden;
-    pointer-events: none;
+  .link[data-active] {
+    color: var(--semantic-color-text-primary);
   }
 
-  .link:hover > .label::after,
-  .link[data-active] > .label::after {
-    visibility: visible;
+  @media (hover: hover) {
+    .link:hover {
+      color: var(--semantic-color-text-primary);
+    }
+  }
+
+  /* The active entry gets a bar on the start edge, inset from its top and bottom, in its text
+     color, with a third of the small radius (1px): the small radius would round the ends fully. */
+  .link[data-active]::before {
+    position: absolute;
+    inset-block: var(--semantic-dimension-space-padding-x-small);
+    inset-inline-start: 0;
+    inline-size: var(--semantic-dimension-border-width-medium);
+    border-radius: calc(var(--semantic-dimension-radius-small) / 3);
+    background: currentColor;
+    content: '';
+    pointer-events: none;
   }
 
   .link:focus-visible {
@@ -75,7 +92,7 @@
   }
 
   @media (forced-colors: active) {
-    .label::after {
+    .link[data-active]::before {
       background: CanvasText;
       forced-color-adjust: none;
     }

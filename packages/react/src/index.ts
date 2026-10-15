@@ -473,6 +473,7 @@ export type {
 export type {
   TableOfContentsItemProps,
   TableOfContentsLinkProps,
+  TableOfContentsListProps,
   TableOfContentsRootProps,
 } from './table-of-contents/table-of-contents.tsx';
 
