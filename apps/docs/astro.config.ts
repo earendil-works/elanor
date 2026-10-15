@@ -2,6 +2,7 @@ import {fileURLToPath} from 'node:url';
 
 import mdx from '@astrojs/mdx';
 import react from '@astrojs/react';
+import elanorTheme from '@earendil-works/design-tokens/shiki-theme.json' with {type: 'json'};
 // oxlint-disable-next-line import/default -- The default export exists under Sentry's Node condition, not its browser entry.
 import sentry from '@sentry/astro';
 import {defineConfig} from 'astro/config';
@@ -10,12 +11,16 @@ import {demos} from './plugins/demos.ts';
 import {iconImports} from './plugins/icon-imports.ts';
 import {publicAssets} from './plugins/public-assets.ts';
 
+// Code blocks in MDX use the token-based theme, like the demo sources.
+const markdown = {shikiConfig: {theme: elanorTheme}};
+
 const boiledIcons = fileURLToPath(
   new URL('./node_modules/@earendil-works/elanor-icons-boiled-react/dist', import.meta.url),
 );
 
 export default defineConfig({
   site: 'https://elanor.earendil.com',
+  markdown,
   // Preserve the existing HTML whitespace behavior across the Astro 7 upgrade.
   compressHTML: true,
   integrations: [

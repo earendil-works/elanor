@@ -1,5 +1,6 @@
 ---
 import {CopyButton} from '@earendil-works/elanor-react';
+import elanorTheme from '@earendil-works/design-tokens/shiki-theme.json' with {type: 'json'};
 import {Code} from 'astro:components';
 
 interface Props {
@@ -24,7 +25,7 @@ const language = (name: string) => (name.endsWith('.css') ? 'css' : 'tsx');
             <span>{file.name}</span>
             <CopyButton value={file.code} aria-label={`Copy ${file.name}`} client:visible />
           </div>
-          <Code code={file.code.trimEnd()} lang={language(file.name)} />
+          <Code code={file.code.trimEnd()} lang={language(file.name)} theme={elanorTheme} />
         </div>
       ))
     }

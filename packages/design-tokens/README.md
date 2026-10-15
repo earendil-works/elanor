@@ -14,6 +14,14 @@ Other entry points: `pi.css`, `earendil.css`, `lefos.css`.
 
 Light semantic colors are the default. Dark overrides apply automatically through `prefers-color-scheme: dark`.
 
+For syntax highlighting with [Shiki](https://shiki.style), use the theme in `@earendil-works/design-tokens/shiki-theme.json`. Its colors are the `semantic.color.text.code` tokens on `semantic.color.background.fill.secondary`, as CSS variables, so one theme covers light and dark and every brand:
+
+```ts
+import elanorTheme from '@earendil-works/design-tokens/shiki-theme.json' with {type: 'json'};
+
+const html = await codeToHtml(code, {lang: 'tsx', theme: elanorTheme});
+```
+
 To check your CSS against the tokens, use the [Stylelint plugin](../stylelint-plugin-design-tokens/README.md). It rejects hardcoded values and unknown custom properties, checks that tokens suit their CSS properties, and requires semantic tokens outside foundation files.
 
 ## Develop
