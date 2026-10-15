@@ -23,7 +23,7 @@
 .popup {
   box-sizing: border-box;
   min-inline-size: 0;
-  inline-size: min(var(--semantic-dimension-size-content-small), 100%);
+  inline-size: min(var(--semantic-dimension-size-max-width-drawer), 100%);
   max-block-size: 100%;
   overflow: auto;
   overscroll-behavior: contain;
@@ -52,7 +52,7 @@
   position: absolute;
   inset-block: 0;
   inline-size: min(
-    var(--semantic-dimension-size-content-small),
+    var(--semantic-dimension-size-max-width-drawer),
     calc(100% - var(--semantic-dimension-size-x-large))
   );
   block-size: 100%;

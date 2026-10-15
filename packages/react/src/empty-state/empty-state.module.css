@@ -25,7 +25,7 @@
 .copy {
   display: grid;
   gap: var(--semantic-dimension-space-gap-small);
-  max-inline-size: var(--semantic-dimension-size-content-small);
+  max-inline-size: var(--semantic-dimension-size-max-width-content-small);
 }
 
 .title,

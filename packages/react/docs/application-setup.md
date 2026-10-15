@@ -38,7 +38,7 @@ Supply one main landmark per document; use `Layout.Main render={<div />}` inside
 an existing main. `Page` is a non-landmark content group.
 
 Place `Container` inside Main and content Grid inside Container, separate from
-sidebars. Container caps content at `semantic.dimension.size.content.large`
+sidebars. Container caps content at `semantic.dimension.size.maxWidth.content.large`
 (1216px) with 16px inline gutters; `width="full"` removes the cap, not the gutters.
 
 Layout uses document scrolling. From `semantic.dimension.breakpoint.medium` (64rem),

@@ -341,7 +341,7 @@ describe(`${tokenPropertyCompatibilityName} for spacing, sizes, and shadows`, ()
         inline-size: calc(var(--semantic-dimension-size-x-small) - 2 * var(--semantic-dimension-space-padding-xx-small));
         max-block-size: calc(100dvh - 2 * var(--semantic-dimension-space-padding-medium));
         block-size: var(--semantic-dimension-border-width-small);
-        max-inline-size: min(var(--semantic-dimension-size-modal), 100%);
+        max-inline-size: min(var(--semantic-dimension-size-max-width-modal), 100%);
         box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default) var(--semantic-color-border-primary), var(--semantic-shadow-popup);
       }`,
         tokenPropertyCompatibilityName,
@@ -365,6 +365,31 @@ describe(`${tokenPropertyCompatibilityName} for spacing, sizes, and shadows`, ()
     expect(text).toContain('wrong role for "max-inline-size"');
     expect(text).toContain('wrong role for "box-shadow"');
     expect(warnings).toHaveLength(4);
+  });
+
+  it('accepts maximum inline sizes only as maximums or as the cap in min()', async () => {
+    expect(
+      await lint(
+        `.a {
+        max-inline-size: calc(var(--semantic-dimension-size-max-width-content-large) + 2 * var(--semantic-dimension-space-padding-x-large));
+        inline-size: min(var(--semantic-dimension-size-max-width-modal), 100%);
+        max-width: var(--semantic-dimension-size-max-width-content-small);
+      }`,
+        tokenPropertyCompatibilityName,
+      ),
+    ).toHaveLength(0);
+    const warnings = await lint(
+      `.a {
+      inline-size: var(--semantic-dimension-size-max-width-content-small);
+      block-size: var(--semantic-dimension-size-max-width-content-small);
+      max-block-size: var(--semantic-dimension-size-max-width-drawer);
+    }`,
+      tokenPropertyCompatibilityName,
+    );
+    expect(warnings.map((warning) => warning.text).join('\n')).toContain(
+      'is a maximum inline size',
+    );
+    expect(warnings).toHaveLength(3);
   });
 
   it('lets a configured size role replace the calc() exception', async () => {

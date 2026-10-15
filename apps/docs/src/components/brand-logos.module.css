@@ -66,7 +66,7 @@
   display: flex;
   min-inline-size: 0;
   inline-size: 100%;
-  max-inline-size: var(--semantic-dimension-size-content-medium);
+  max-inline-size: var(--semantic-dimension-size-max-width-content-medium);
   flex-direction: column;
   gap: var(--semantic-dimension-space-gap-small);
 }

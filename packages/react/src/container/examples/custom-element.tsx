@@ -10,7 +10,7 @@ export default function ContainerCustomElement() {
   return (
     <Container
       render={<section aria-labelledby="reading-title" />}
-      style={{maxInlineSize: 'var(--semantic-dimension-size-content-small)'}}
+      style={{maxInlineSize: 'var(--semantic-dimension-size-max-width-content-small)'}}
     >
       <div style={outline}>
         <Heading level={3} id="reading-title">
