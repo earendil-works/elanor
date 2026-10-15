@@ -1,0 +1,14 @@
+.root {
+  box-sizing: border-box;
+  min-inline-size: 0;
+  margin: 0;
+  padding-inline-start: var(--semantic-dimension-space-padding-xx-large);
+  border-inline-start: var(--semantic-dimension-border-width-medium) solid
+    var(--semantic-color-border-primary);
+}
+
+@media (forced-colors: active) {
+  .root {
+    border-inline-start-color: CanvasText;
+  }
+}
