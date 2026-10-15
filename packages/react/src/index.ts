@@ -197,6 +197,9 @@ export type {
   FieldValidityState,
 } from './field/field.tsx';
 
+export {Emphasis} from './emphasis/emphasis.tsx';
+export type {EmphasisProps} from './emphasis/emphasis.tsx';
+
 export {Form} from './form/form.tsx';
 export type {
   FormActions,
@@ -467,6 +470,9 @@ export type {
   TabsTabProps,
   TabsTabState,
 } from './tabs/tabs.tsx';
+
+export {Strong} from './strong/strong.tsx';
+export type {StrongProps} from './strong/strong.tsx';
 
 export {TextArea} from './text-area/text-area.tsx';
 export type {TextAreaProps} from './text-area/text-area.tsx';
