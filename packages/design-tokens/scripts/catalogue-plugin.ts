@@ -53,11 +53,14 @@ export interface TokenCatalogue {
 
 const SUBVALUE_TYPES: Record<string, string> = {
   color: 'color',
+  delay: 'duration',
+  duration: 'duration',
   'font-family': 'fontFamily',
   'font-size': 'dimension',
   'font-weight': 'fontWeight',
   'letter-spacing': 'dimension',
   'line-height': 'number',
+  'timing-function': 'cubicBezier',
 };
 
 const SUBVALUE_PATHS: Record<string, string> = {
@@ -66,6 +69,7 @@ const SUBVALUE_PATHS: Record<string, string> = {
   'font-weight': 'fontWeight',
   'letter-spacing': 'letterSpacing',
   'line-height': 'lineHeight',
+  'timing-function': 'timingFunction',
 };
 
 function tierFor(path: string): string {
@@ -110,7 +114,9 @@ function cssVariablesFor(transform: TokenTransformed): Array<{
     transform.value['.'] ??
     (transform.token.$type === 'typography'
       ? `var(${localID}-font-weight) var(${localID}-font-size)/var(${localID}-line-height) var(${localID}-font-family)`
-      : undefined);
+      : transform.token.$type === 'transition'
+        ? `var(${localID}-duration) var(${localID}-delay) var(${localID}-timing-function)`
+        : undefined);
   if (shorthand) {
     variables.push({
       name: localID,

@@ -8,9 +8,11 @@ export type GeneratorName =
   | 'breakpoint'
   | 'color'
   | 'dimension'
+  | 'duration'
   | 'layer'
   | 'opacity'
   | 'radius'
+  | 'scale'
   | 'typography';
 
 export type DtcgTokenType =
@@ -63,7 +65,19 @@ export interface RadiusRecipe {
   steps: number[];
 }
 
+export interface DurationRecipe {
+  $schema?: string;
+  path: string[];
+  steps: number[];
+}
+
 export interface LayerRecipe {
+  $schema?: string;
+  path: string[];
+  steps: number[];
+}
+
+export interface ScaleRecipe {
   $schema?: string;
   path: string[];
   steps: number[];

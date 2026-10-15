@@ -42,21 +42,18 @@
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .panel {
-    height: var(--collapsible-panel-height);
-    transition: height var(--semantic-duration-motion-standard)
-      var(--semantic-cubic-bezier-motion-enter-exit);
-  }
+.panel {
+  height: var(--collapsible-panel-height);
+  transition: height var(--semantic-transition-movement-disclosure);
+}
 
-  .panel[data-height-transition],
-  .panel[data-starting-style],
-  .panel[data-ending-style] {
-    overflow: hidden;
-  }
+.panel[data-height-transition],
+.panel[data-starting-style],
+.panel[data-ending-style] {
+  overflow: hidden;
+}
 
-  .panel[data-starting-style],
-  .panel[data-ending-style] {
-    height: 0;
-  }
+.panel[data-starting-style],
+.panel[data-ending-style] {
+  height: 0;
 }

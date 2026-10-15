@@ -1,6 +1,36 @@
 import type {Permutation} from '@terrazzo/plugin-css';
 
 const SEMANTIC_COLOR_TOKEN_PATTERN = 'semantic.color.**';
+const MOVEMENT_TRANSITION_TOKEN_PATTERN = 'semantic.transition.movement.**';
+const TRANSITION_PARTS = {
+  duration: 'duration',
+  delay: 'delay',
+  timingFunction: 'timing-function',
+} as const;
+
+/**
+ * Emits each transition as one custom property per part plus the shorthand,
+ * like typography, so components can use a part on its own, such as the
+ * duration in `calc()`. Semantic transitions alias primitives for every part.
+ *
+ * @param token The token to transform.
+ * @param options The CSS transform options.
+ * @returns The part values, or `undefined` for other token types.
+ * @throws When a transition part is a literal instead of an alias.
+ */
+const transformTransitionParts: NonNullable<Permutation['transform']> = (token, options) => {
+  if (token.$type !== 'transition') return undefined;
+  const {transformAlias} = options;
+  if (!transformAlias) throw new Error('The CSS plugin passed no alias transform.');
+  const parts: Record<string, string> = {};
+  for (const [key, name] of Object.entries(TRANSITION_PARTS)) {
+    const alias = token.partialAliasOf?.[key as keyof typeof TRANSITION_PARTS];
+    const aliased = alias ? options.tokensSet[alias] : undefined;
+    if (!aliased) throw new Error(`${token.id}.${key} must alias a primitive token.`);
+    parts[name] = transformAlias(aliased);
+  }
+  return parts;
+};
 
 /**
  * Indents generated CSS declarations for use inside nested rule blocks.
@@ -44,12 +74,28 @@ function prepareDarkColorSchemeCss(contents: string): string {
 }
 
 /**
+ * Wraps reduced-motion declarations in the reduced-motion media query.
+ *
+ * Transitions that move content resolve to their default timing at the root
+ * and become instant when the reader prefers reduced motion.
+ *
+ * @param contents The declarations emitted by the CSS plugin.
+ * @returns A root CSS rule scoped to the reduced-motion preference.
+ */
+function prepareReducedMotionCss(contents: string): string {
+  return `@media (prefers-reduced-motion: reduce) {\n  :root {\n${indentDeclarations(contents, 2)}\n  }\n}`;
+}
+
+/**
  * How the CSS output switches on each non-default modifier context, recorded
  * in the token catalogue. Keep these in step with `cssPermutations`.
  */
 export const contextActivation: Record<string, Record<string, string>> = {
   colorScheme: {
     dark: '@media (prefers-color-scheme: dark) on :root without data-color-scheme, or :root[data-color-scheme="dark"]',
+  },
+  motion: {
+    reduced: '@media (prefers-reduced-motion: reduce) on :root',
   },
 };
 
@@ -59,15 +105,25 @@ export const contextActivation: Record<string, Record<string, string>> = {
  * Foundations, mode-independent semantic tokens, and the default light
  * semantic colors are emitted at the root. Dark semantic colors are emitted
  * for both the system preference and an explicit `data-color-scheme` override.
+ * Transitions that move content are redefined as instant under
+ * `prefers-reduced-motion: reduce`.
  */
 export const cssPermutations: Permutation[] = [
   {
     input: {},
     prepare: prepareBaseCss,
+    transform: transformTransitionParts,
   },
   {
     input: {colorScheme: 'dark'},
     include: [SEMANTIC_COLOR_TOKEN_PATTERN],
     prepare: prepareDarkColorSchemeCss,
+    transform: transformTransitionParts,
+  },
+  {
+    input: {motion: 'reduced'},
+    include: [MOVEMENT_TRANSITION_TOKEN_PATTERN],
+    prepare: prepareReducedMotionCss,
+    transform: transformTransitionParts,
   },
 ];

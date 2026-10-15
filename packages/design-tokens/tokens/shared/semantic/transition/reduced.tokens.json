@@ -1,0 +1,60 @@
+{
+  "$schema": "https://designtokens.org/schemas/2025.10/format.json",
+  "semantic": {
+    "transition": {
+      "$type": "transition",
+      "movement": {
+        "popup": {
+          "$value": {
+            "duration": "{primitive.duration.0}",
+            "delay": "{primitive.duration.0}",
+            "timingFunction": "{primitive.cubicBezier.easeOut.cubic}"
+          },
+          "$description": "Instant when the reader prefers reduced motion. Use for the scale or slide of popups as they open and close, such as dropdowns, menus, popovers, tooltips, and modals. Fade their opacity with `transition.fade`."
+        },
+        "disclosure": {
+          "$value": {
+            "duration": "{primitive.duration.0}",
+            "delay": "{primitive.duration.0}",
+            "timingFunction": "{primitive.cubicBezier.easeInOut.cubic}"
+          },
+          "$description": "Instant when the reader prefers reduced motion. Use when content expands or collapses, for chevrons that turn with it, and for menu panels that slide in and out."
+        },
+        "indicator": {
+          "$value": {
+            "duration": "{primitive.duration.0}",
+            "delay": "{primitive.duration.0}",
+            "timingFunction": "{primitive.cubicBezier.easeOut.cubic}"
+          },
+          "$description": "Instant when the reader prefers reduced motion. Use when a selection indicator answering a click moves to a new position or size, such as a tab indicator or a switch thumb."
+        },
+        "tableOfContents": {
+          "indicator": {
+            "$value": {
+              "duration": "{primitive.duration.0}",
+              "delay": "{primitive.duration.0}",
+              "timingFunction": "{primitive.cubicBezier.easeOut.back}"
+            },
+            "$description": "Instant when the reader prefers reduced motion. Component token for the table of contents indicator following the reading position. Overshoots slightly before it settles."
+          }
+        },
+        "drawer": {
+          "$value": {
+            "duration": "{primitive.duration.0}",
+            "delay": "{primitive.duration.0}",
+            "timingFunction": "{primitive.cubicBezier.easeOut.quart}"
+          },
+          "$description": "Instant when the reader prefers reduced motion. Component token for a drawer opening and closing, and snapping back after a swipe. Fade its backdrop with `transition.fade`."
+        },
+        "navigationMenu": {
+          "$value": {
+            "duration": "{primitive.duration.0}",
+            "delay": "{primitive.duration.0}",
+            "timingFunction": "{primitive.cubicBezier.easeOut.quint}"
+          },
+          "$description": "Instant when the reader prefers reduced motion. Component token for the navigation menu popup moving and resizing between triggers, and for its entry scale."
+        }
+      }
+    }
+  }
+}

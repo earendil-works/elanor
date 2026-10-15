@@ -62,6 +62,8 @@ Generated paths:
 | Radius       | `primitive.dimension.radius.<step>`, `primitive.dimension.radius.full`               |
 | Opacity      | `primitive.number.opacity.<step>`                                                    |
 | Layer        | `primitive.number.layer.<step>`, `primitive.number.layer.below`                      |
+| Scale        | `primitive.number.scale.<step>`                                                      |
+| Duration     | `primitive.duration.<step>`                                                          |
 | Color        | `primitive.color.<name>` (key; `$root` when scaled), `primitive.color.<name>.<step>` |
 
 Recipes select steps; omitting one never shifts another step's position or value.
@@ -181,6 +183,38 @@ value = step / 1000
 {
   "path": ["primitive"],
   "steps": [150, 400]
+}
+```
+
+## Duration scale
+
+```text
+milliseconds = step
+```
+
+Token `0` is an instant change and `150` is `150ms`. Add only steps needed by semantic tokens:
+
+```json
+{
+  "path": ["primitive"],
+  "steps": [0, 150, 200, 300, 450, 600]
+}
+```
+
+Easings are not generated: `primitive.cubicBezier` holds hand-authored standard curves.
+
+## Transform scale
+
+```text
+value = step / 1000
+```
+
+Token `1000` is an element's own size and `980` is `0.98`. Add only steps needed by semantic tokens:
+
+```json
+{
+  "path": ["primitive"],
+  "steps": [900, 980, 1000]
 }
 ```
 

@@ -3,10 +3,31 @@
   "primitive": {
     "cubicBezier": {
       "$type": "cubicBezier",
-      "easeOut": {"$value": [0, 0, 0.58, 1]},
-      "easeInOut": {"$value": [0.42, 0, 0.58, 1]},
-      "emphasized": {"$value": [0.22, 1, 0.36, 1]},
-      "drawer": {"$value": [0.32, 0.72, 0, 1]}
+      "$description": "Standard easing curves named by direction and curve family, never by use. `$root` is the CSS keyword curve; families from gentle to strong are quad, cubic, quart, quint, and expo, and `back` overshoots.",
+      "easeOut": {
+        "$root": {
+          "$value": [0, 0, 0.58, 1],
+          "$description": "The CSS `ease-out` curve."
+        },
+        "cubic": {
+          "$value": [0.33, 1, 0.68, 1]
+        },
+        "quart": {
+          "$value": [0.25, 1, 0.5, 1]
+        },
+        "quint": {
+          "$value": [0.22, 1, 0.36, 1]
+        },
+        "back": {
+          "$value": [0.2, 1.37, 0.4, 1],
+          "$description": "Passes its target by about 4.6% halfway through, then settles; gentler than the common back curve (about 10%)."
+        }
+      },
+      "easeInOut": {
+        "cubic": {
+          "$value": [0.65, 0, 0.35, 1]
+        }
+      }
     }
   }
 }

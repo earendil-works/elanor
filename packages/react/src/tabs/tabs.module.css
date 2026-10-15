@@ -84,10 +84,8 @@
   outline-offset: var(--semantic-dimension-border-width-medium);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .indicator {
-    transition:
-      translate var(--semantic-duration-motion-standard) var(--semantic-cubic-bezier-motion-state),
-      inline-size var(--semantic-duration-motion-standard) var(--semantic-cubic-bezier-motion-state);
-  }
+.indicator {
+  transition:
+    translate var(--semantic-transition-movement-indicator),
+    inline-size var(--semantic-transition-movement-indicator);
 }

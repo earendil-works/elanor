@@ -6,8 +6,13 @@
       "$description": "Choose unitless values by their intended interface role instead of consuming primitive scale steps directly.",
       "opacity": {
         "$description": "Use opacity roles to communicate interface states consistently.",
+        "hidden": {
+          "$value": "{primitive.number.opacity.0}",
+          "$description": "Use for the transparent end of a fade, such as a popup before it opens or after it closes."
+        },
         "visible": {
-          "$value": "{primitive.number.opacity.1000}"
+          "$value": "{primitive.number.opacity.1000}",
+          "$description": "Use for the fully opaque end of a fade, such as an open popup."
         },
         "disabled": {
           "$value": "{primitive.number.opacity.400}",
@@ -15,17 +20,18 @@
         }
       },
       "scale": {
+        "$description": "Transform scale factors for content that grows or shrinks as it moves, paired with the `movement` transition of the same item.",
         "rest": {
-          "$value": "{primitive.number.scale.1000}"
+          "$value": "{primitive.number.scale.1000}",
+          "$description": "Use for the element's own size when it is not moving."
         },
         "popup": {
-          "$value": "{primitive.number.scale.980}"
+          "$value": "{primitive.number.scale.980}",
+          "$description": "Use for the size popups grow from as they open and shrink to as they close."
         },
-        "combobox": {
-          "$value": "{primitive.number.scale.950}"
-        },
-        "navigation": {
-          "$value": "{primitive.number.scale.900}"
+        "navigationMenu": {
+          "$value": "{primitive.number.scale.900}",
+          "$description": "Component token for the size the navigation menu popup grows from as it opens."
         }
       },
       "layer": {

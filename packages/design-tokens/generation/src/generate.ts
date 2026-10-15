@@ -18,15 +18,18 @@ import {generateBorderWidthTokens} from './generators/borderWidth';
 import {generateBreakpointTokens} from './generators/breakpoint';
 import {generateColorTokens} from './generators/color';
 import {generateDimensionTokens} from './generators/dimension';
+import {generateDurationTokens} from './generators/duration';
 import {generateLayerTokens} from './generators/layer';
 import {generateOpacityTokens} from './generators/opacity';
 import {generateRadiusTokens} from './generators/radius';
+import {generateScaleTokens} from './generators/scale';
 import {generateTypographyTokens} from './generators/typography';
 import type {
   BorderWidthRecipe,
   BreakpointRecipe,
   ColorRecipe,
   DimensionRecipe,
+  DurationRecipe,
   GeneratedTokenPatch,
   GenerationConfig,
   GenerationMarker,
@@ -36,6 +39,7 @@ import type {
   LayerRecipe,
   OpacityRecipe,
   RadiusRecipe,
+  ScaleRecipe,
   TypographyRecipe,
 } from './types';
 
@@ -162,9 +166,11 @@ async function loadValidators(): Promise<ValidationContext> {
     'breakpoint',
     'color',
     'dimension',
+    'duration',
     'layer',
     'opacity',
     'radius',
+    'scale',
     'typography',
   ] as const) {
     const schemaPath = path.join(SCHEMAS_DIRECTORY, `${generator}.recipe.schema.json`);
@@ -257,9 +263,11 @@ function generatorForRecipe(
     'breakpoint',
     'color',
     'dimension',
+    'duration',
     'layer',
     'opacity',
     'radius',
+    'scale',
     'typography',
   ] as const) {
     const expectedSchemaPath = path.join(SCHEMAS_DIRECTORY, `${generator}.recipe.schema.json`);
@@ -349,12 +357,16 @@ function generateRecipe(loaded: LoadedRecipe, config: GenerationConfig): Generat
       return generateColorTokens(loaded.recipe as ColorRecipe);
     case 'dimension':
       return generateDimensionTokens(loaded.recipe as DimensionRecipe, config);
+    case 'duration':
+      return generateDurationTokens(loaded.recipe as DurationRecipe);
     case 'layer':
       return generateLayerTokens(loaded.recipe as LayerRecipe);
     case 'opacity':
       return generateOpacityTokens(loaded.recipe as OpacityRecipe);
     case 'radius':
       return generateRadiusTokens(loaded.recipe as RadiusRecipe, config);
+    case 'scale':
+      return generateScaleTokens(loaded.recipe as ScaleRecipe);
     case 'typography':
       return generateTypographyTokens(loaded.recipe as TypographyRecipe, config);
   }

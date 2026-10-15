@@ -241,6 +241,17 @@
             }
           }
         }
+      },
+      "travel": {
+        "$description": "How far content moves as it appears, disappears, or changes position, paired with the `movement` transition of the same item. Components set the direction with a sign.",
+        "rest": {
+          "$value": "{primitive.dimension.0}",
+          "$description": "Use for content at its resting position."
+        },
+        "popup": {
+          "$value": "{primitive.dimension.100}",
+          "$description": "Use for the distance popups slide as they open and close."
+        }
       }
     }
   }
