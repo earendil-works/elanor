@@ -295,7 +295,7 @@
     var(--semantic-dimension-space-padding-xx-small);
   padding-inline: var(--semantic-dimension-space-padding-medium);
   color: var(--semantic-color-text-secondary);
-  font: var(--semantic-typography-ui-tertiary);
+  font: var(--semantic-typography-ui-label);
 }
 
 .separator {
