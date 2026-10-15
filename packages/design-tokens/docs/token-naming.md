@@ -110,6 +110,7 @@ semantic.color.icon.onSecondaryFill.information
 - **Secondary:** base plus `information`, `warning`, `negative`, and `positive`. Keep background, text, and icon status paths parallel, as above.
 - **Ghost:** base plus the primary variants. Resting values are transparent, so the parent shows through. Hover/active use Cerulian Blue (base/information), Graphite (neutral), Coral Red (negative), or Turquoise Green (positive).
 - **Selected:** `background.fill.selected` is an accent for selected controls and progress indicators. Use `icon.onSelectedFill` for indicators; no text role exists because current components put no text inside this fill.
+- **Data visualization:** `background.fill.dataViz.100` through `.1000` alias the ordered `primitive.color.dataViz` palette for chart series and meter indicators. They are categorical, not status colors; assign them in series order. No content roles exist.
 
 Append interaction states after intent or selection:
 
@@ -267,7 +268,8 @@ Use contiguous subsets:
 | Scale                                      | Range                  |
 | ------------------------------------------ | ---------------------- |
 | Generic padding                            | `xxxSmall`–`xxxxLarge` |
-| General size, generic gap                  | `xxSmall`–`xLarge`     |
+| General size                               | `xxxSmall`–`xLarge`    |
+| Generic gap                                | `xxSmall`–`xLarge`     |
 | Breakpoints                                | `xSmall`–`xLarge`      |
 | Control block padding, control gap, radius | `small`–`large`        |
 | Control inline padding                     | `xSmall`–`large`       |

@@ -85,9 +85,13 @@
           "$value": "{primitive.dimension.5250}",
           "$description": "Use as the default inline size for expanded side navigation and supporting page regions, independently of the main content grid."
         },
+        "xxxSmall": {
+          "$value": "{primitive.dimension.100}",
+          "$description": "Use for the thinnest bounded elements, such as a thin meter track."
+        },
         "xxSmall": {
           "$value": "{primitive.dimension.200}",
-          "$description": "Use for the smallest bounded elements when extreme compactness is required."
+          "$description": "Use for tiny bounded elements when extreme compactness is required."
         },
         "xSmall": {
           "$value": "{primitive.dimension.400}",

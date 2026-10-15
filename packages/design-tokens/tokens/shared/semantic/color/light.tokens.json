@@ -259,6 +259,49 @@
               "$value": "{primitive.color.cerulianBlue.580}",
               "$description": "Use while a selected accent-filled interactive element is actively pressed."
             }
+          },
+          "dataViz": {
+            "$description": "Use for data visualization marks, such as chart series and meter indicators. Steps follow primitive.color.dataViz series order; assign them in order.",
+            "100": {
+              "$value": "{primitive.color.dataViz.100}",
+              "$description": "Use for the first data series in charts and for meter indicators. Do not use to signal status."
+            },
+            "200": {
+              "$value": "{primitive.color.dataViz.200}",
+              "$description": "Use for the second data series in charts. Do not use to signal status."
+            },
+            "300": {
+              "$value": "{primitive.color.dataViz.300}",
+              "$description": "Use for the third data series in charts. Do not use to signal status."
+            },
+            "400": {
+              "$value": "{primitive.color.dataViz.400}",
+              "$description": "Use for the fourth data series in charts. Do not use to signal status."
+            },
+            "500": {
+              "$value": "{primitive.color.dataViz.500}",
+              "$description": "Use for the fifth data series in charts. Do not use to signal status."
+            },
+            "600": {
+              "$value": "{primitive.color.dataViz.600}",
+              "$description": "Use for the sixth data series in charts. Do not use to signal status."
+            },
+            "700": {
+              "$value": "{primitive.color.dataViz.700}",
+              "$description": "Use for the seventh data series in charts. Do not use to signal status."
+            },
+            "800": {
+              "$value": "{primitive.color.dataViz.800}",
+              "$description": "Use for the eighth data series in charts. Do not use to signal status."
+            },
+            "900": {
+              "$value": "{primitive.color.dataViz.900}",
+              "$description": "Use for the ninth data series in charts. Do not use to signal status."
+            },
+            "1000": {
+              "$value": "{primitive.color.dataViz.1000}",
+              "$description": "Use for the tenth data series in charts. Do not use to signal status."
+            }
           }
         },
         "slider": {

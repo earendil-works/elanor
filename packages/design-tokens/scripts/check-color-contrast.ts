@@ -468,6 +468,18 @@ function createRules(paths: readonly string[]): ContrastRule[] {
         },
       ],
     },
+    {
+      category: 'meter/indicator-vs-track',
+      threshold: REQUIRED_NON_TEXT_CONTRAST,
+      pairs: everyCombination(
+        [
+          requirePath(pathSet, 'semantic.color.background.fill.dataViz.100'),
+          requirePath(pathSet, 'semantic.color.border.warning'),
+          requirePath(pathSet, 'semantic.color.background.fill.primary.negative'),
+        ],
+        [requirePath(pathSet, 'semantic.color.background.fill.secondary')],
+      ),
+    },
   ];
 }
 
