@@ -2,7 +2,7 @@ import {fileURLToPath} from 'node:url';
 
 import mdx from '@astrojs/mdx';
 import react from '@astrojs/react';
-import elanorTheme from '@earendil-works/design-tokens/shiki-theme.json' with {type: 'json'};
+import elanorTheme from '@earendil-works/design-tokens/shiki-theme';
 // oxlint-disable-next-line import/default -- The default export exists under Sentry's Node condition, not its browser entry.
 import sentry from '@sentry/astro';
 import {defineConfig} from 'astro/config';

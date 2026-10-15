@@ -7,7 +7,8 @@
   "type": "commonjs",
   "files": [
     "dist",
-    "shiki-theme.json"
+    "shiki-theme.mjs",
+    "shiki-theme.d.mts"
   ],
   "sideEffects": [
     "**/*.css"
@@ -18,7 +19,10 @@
     "./earendil.css": "./dist/earendil/tokens.css",
     "./lefos.css": "./dist/lefos/tokens.css",
     "./*.catalog.json": "./dist/*/tokens.catalog.json",
-    "./shiki-theme.json": "./shiki-theme.json"
+    "./shiki-theme": {
+      "types": "./shiki-theme.d.mts",
+      "default": "./shiki-theme.mjs"
+    }
   },
   "scripts": {
     "clean": "rm -rf dist",
