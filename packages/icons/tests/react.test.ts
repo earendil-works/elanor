@@ -8,7 +8,7 @@ import {describe, expect, test} from 'vitest';
 
 type IconProps = SVGProps<SVGSVGElement> & {size?: number | string};
 
-const packageDirectory = resolve(import.meta.dirname, '..');
+const packageDirectory = resolve(import.meta.dirname, '../plain/react');
 
 async function load(name: string): Promise<ComponentType<IconProps>> {
   const module = (await import(resolve(packageDirectory, `dist/${name}.js`))) as Record<

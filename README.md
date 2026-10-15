@@ -2,14 +2,14 @@
 
 Earendil's design system. It provides UI building blocks; applications supply routing, state, and their brand stylesheet.
 
-| Package                                                                 | npm name                                                             | Contents                                               |
-| ----------------------------------------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------ |
-| [React](./packages/react/README.md)                                     | `@earendil-works/elanor-react`                                       | Components built with Base UI and CSS Modules          |
-| [Fonts](./packages/fonts/README.md)                                     | `@earendil-works/elanor-fonts`                                       | Earendil and Commit Mono                               |
-| [Icons](./packages/icons/README.md)                                     | `@earendil-works/elanor-icons`, `@earendil-works/elanor-icons-react` | Material Symbols with a hand-drawn boil, SVG and React |
-| [Logos](./packages/logos/README.md)                                     | `@earendil-works/elanor-logos`, `@earendil-works/elanor-logos-react` | Brand artwork, SVG and React                           |
-| [Design tokens](./packages/design-tokens/README.md)                     | `@earendil-works/design-tokens`                                      | Shared and brand-specific tokens, CSS exports          |
-| [Stylelint plugin](./packages/stylelint-plugin-design-tokens/README.md) | `@earendil-works/stylelint-plugin-design-tokens`                     | Token usage rules                                      |
+| Package                                                                 | npm name                                                                                                                                                 | Contents                                                         |
+| ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| [React](./packages/react/README.md)                                     | `@earendil-works/elanor-react`                                                                                                                           | Components built with Base UI and CSS Modules                    |
+| [Fonts](./packages/fonts/README.md)                                     | `@earendil-works/elanor-fonts`                                                                                                                           | Earendil and Commit Mono                                         |
+| [Icons](./packages/icons/README.md)                                     | `@earendil-works/elanor-icons`, `@earendil-works/elanor-icons-react`, `@earendil-works/elanor-icons-boiled`, `@earendil-works/elanor-icons-boiled-react` | Material Symbols, plain or with a hand-drawn boil, SVG and React |
+| [Logos](./packages/logos/README.md)                                     | `@earendil-works/elanor-logos`, `@earendil-works/elanor-logos-react`                                                                                     | Brand artwork, SVG and React                                     |
+| [Design tokens](./packages/design-tokens/README.md)                     | `@earendil-works/design-tokens`                                                                                                                          | Shared and brand-specific tokens, CSS exports                    |
+| [Stylelint plugin](./packages/stylelint-plugin-design-tokens/README.md) | `@earendil-works/stylelint-plugin-design-tokens`                                                                                                         | Token usage rules                                                |
 
 The [docs app](./apps/docs) runs on Astro.
 

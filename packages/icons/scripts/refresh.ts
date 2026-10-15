@@ -62,7 +62,15 @@ try {
   await cp(resolve(repository, 'LICENSE'), resolve(packageDirectory, 'LICENSE'));
   if (revision !== provenance.revision) {
     provenance.revision = revision;
-    await writeFile(provenancePath, `${JSON.stringify(provenance, null, 2)}\n`);
+    const contents = `${JSON.stringify(provenance, null, 2)}\n`;
+    // The published packages carry a copy; scripts/check.ts keeps them identical.
+    for (const path of [
+      provenancePath,
+      ...['plain', 'boiled'].map((variant) =>
+        resolve(packageDirectory, variant, 'provenance.json'),
+      ),
+    ])
+      await writeFile(path, contents);
   }
   console.log(`Vendored ${names.length} icons from ${revision}.`);
   console.log("Review the upstream LICENSE/notices and this package's NOTICE before committing.");

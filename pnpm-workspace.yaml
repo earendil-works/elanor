@@ -1,8 +1,10 @@
 packages:
   - apps/*
   - packages/*
-  - packages/icons/react
-  - packages/icons-boiled/react
+  - packages/icons/plain
+  - packages/icons/plain/react
+  - packages/icons/boiled
+  - packages/icons/boiled/react
   - packages/logos/react
 
 allowBuilds:

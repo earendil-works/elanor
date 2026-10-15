@@ -1,37 +1,23 @@
-# `@earendil-works/elanor-icons`
+# Elanor icons
 
-Material Symbols Outlined (20px, weight 400) as SVG files. React components are published separately as [`@earendil-works/elanor-icons-react`](./react/README.md).
+Material Symbols Outlined (20px, weight 400), published as four packages with matching exports:
 
-```ts
-import searchUrl from '@earendil-works/elanor-icons/svg/search.svg';
-import metadata from '@earendil-works/elanor-icons/metadata.json'; // search tags keyed by public icon name
-```
+| Package                                                                 | Directory       | Contents                                    |
+| ----------------------------------------------------------------------- | --------------- | ------------------------------------------- |
+| [`@earendil-works/elanor-icons`](./plain/README.md)                     | `plain/`        | Plain icons as SVG files                    |
+| [`@earendil-works/elanor-icons-react`](./plain/react/README.md)         | `plain/react/`  | Plain icons as React components             |
+| [`@earendil-works/elanor-icons-boiled`](./boiled/README.md)             | `boiled/`       | Icons with a hand-drawn “boil” as SVG files |
+| [`@earendil-works/elanor-icons-boiled-react`](./boiled/react/README.md) | `boiled/react/` | Boiled icons as React components            |
 
-Icons are 20px, Material's own size, including its margin around the glyph.
-
-## Plain or boiled
-
-[`@earendil-works/elanor-icons-boiled`](../icons-boiled/README.md) has the same icons with a hand-drawn “boil”, and [`@earendil-works/elanor-icons-boiled-react`](../icons-boiled/react/README.md) their React components. The packages have the same exports, so switching is a matter of the package name. To switch the icons inside `@earendil-works/elanor-react` too, redirect the dependency in your application, for example with pnpm:
-
-```json
-{
-  "pnpm": {
-    "overrides": {
-      "@earendil-works/elanor-icons-react": "npm:@earendil-works/elanor-icons-boiled-react@^0.1.0"
-    }
-  }
-}
-```
-
-npm uses `overrides` and Yarn `resolutions` the same way. A bundler alias (such as Vite's `resolve.alias`) works too if it points at the boiled package's files, since `@earendil-works/elanor-react` cannot resolve the boiled package by name.
+This directory is the private source package: the vendored `sources/`, search tags in `metadata.json`, the pipeline in `scripts/` and [`config.ts`](./config.ts), and the React icon component in `src/`. Each published package builds itself from it: `plain/` and `boiled/` run `scripts/build.ts` with their variant, and the React packages run `scripts/build-react.ts` on their SVG package and compile `src/create-icon.tsx`.
 
 ## Development
 
 ```sh
-pnpm build    # sources/ -> dist/svg and metadata.json (requires tags for every icon)
-pnpm check    # validate SVGs and complete, nonempty search tags
-pnpm test     # pipeline, geometry, and metadata tests
-pnpm refresh  # re-vendor sources/ from the revision in provenance.json
+pnpm check    # validate SVGs, complete search tags, and the packages' LICENSE and provenance.json copies
+pnpm test     # pipeline, geometry, metadata, and React output tests
+pnpm refresh  # re-vendor sources/ from the revision in provenance.json (also updates the copies in plain/ and boiled/)
+pnpm --filter @earendil-works/elanor-icons... build   # build one package and what it depends on
 ```
 
-This package holds the build for both icon packages; `@earendil-works/elanor-icons-boiled` runs it with the boil. Pipeline settings live in [`config.ts`](./config.ts). See [`LICENSE`](./LICENSE) and [`NOTICE`](./NOTICE).
+See [`LICENSE`](./LICENSE).
