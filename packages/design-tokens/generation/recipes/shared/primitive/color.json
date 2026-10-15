@@ -51,6 +51,11 @@
       "saturation": {"min": 0.1, "max": 0.76}
     },
     {
+      "name": "amethystViolet",
+      "key": {"colorSpace": "oklch", "components": [0.7161, 0.0906, 295]},
+      "saturation": {"min": 0.1, "max": 0.72}
+    },
+    {
       "name": "graphite",
       "key": {"colorSpace": "oklch", "components": [0.5376, 0, 0]},
       "saturation": {"min": 0, "max": 0},

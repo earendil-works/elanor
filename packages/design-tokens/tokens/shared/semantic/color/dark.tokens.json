@@ -461,6 +461,45 @@
             "$value": "{primitive.color.turquoiseGreen.200}",
             "$description": "Use for text placed on secondary fills that communicate success, a favorable outcome, or positive confirmation."
           }
+        },
+        "code": {
+          "$description": "Syntax highlighting colors for source code on the secondary fill used by code snippets and inline code.",
+          "$root": {
+            "$value": "{primitive.color.graphite.200}",
+            "$description": "Use for plain source code text that no syntax role colors."
+          },
+          "comment": {
+            "$value": "{primitive.color.graphite.300}",
+            "$description": "Use for code comments. Muted relative to plain code text."
+          },
+          "punctuation": {
+            "$value": "{primitive.color.graphite.300}",
+            "$description": "Use for code punctuation and operators. Muted relative to plain code text."
+          },
+          "keyword": {
+            "$value": "{primitive.color.cerulianBlue.300}",
+            "$description": "Use for language keywords and tag names in code."
+          },
+          "function": {
+            "$value": "{primitive.color.creamYellow.300}",
+            "$description": "Use for function and method names in code."
+          },
+          "variable": {
+            "$value": "{primitive.color.calamineBlue.300}",
+            "$description": "Use for variables, parameters, properties, and attribute names in code."
+          },
+          "string": {
+            "$value": "{primitive.color.coralRed.300}",
+            "$description": "Use for strings and regular expressions in code."
+          },
+          "number": {
+            "$value": "{primitive.color.turquoiseGreen.300}",
+            "$description": "Use for numbers and language literals such as true, false, and null in code."
+          },
+          "type": {
+            "$value": "{primitive.color.amethystViolet.300}",
+            "$description": "Use for types, classes, and built-ins in code."
+          }
         }
       },
       "icon": {
