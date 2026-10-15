@@ -1,0 +1,29 @@
+# List
+
+A bulleted or numbered list of short items in running text. For navigation, use [Side navigation](/components/side-navigation/); for records with several values, use [Table](/components/table/).
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {List} from '@earendil-works/elanor-react';
+
+<List.Root>
+  <List.Item />
+</List.Root>;
+```
+
+Root renders a `ul` and Item an `li`. Lists use `semantic.typography.primary` and `semantic.color.text.primary` like [Text](/components/text/), so they switch to the prose style inside long-form content (`data-text-context="prose"`). Items are `semantic.dimension.space.gap.small` (8px) apart, markers are in `semantic.color.text.secondary`, and the list is indented by `semantic.dimension.space.padding.xxLarge` (24px).
+
+## Numbered
+
+Use `render={<ol />}` when the order matters, such as steps. Put `ol` attributes such as `start` on the rendered element.
+
+<Demo example="./examples/numbered.tsx" />
+
+## Nested
+
+Put a List.Root inside an item. It starts 8px below the item's text and is indented again.
+
+<Demo example="./examples/nested.tsx" />
