@@ -1,0 +1,26 @@
+# Image
+
+A picture in content, such as a screenshot or an illustration in documentation. It scales down to fit its container, keeps its aspect ratio, and centers when it's narrower.
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Image} from '@earendil-works/elanor-react';
+
+<Image
+  src="/screenshots/settings.png"
+  width={1600}
+  height={800}
+  alt="The workspace settings page"
+/>;
+```
+
+Image renders an `img` with `semantic.dimension.radius.default` corners. `alt` is required: describe what the image shows, or pass `""` when it's decorative. Set `width` and `height` to the image's own size, so the page reserves its space before it loads. It decodes off the main thread (`decoding="async"`) unless you pass `decoding`.
+
+## Narrower than its container
+
+An image never grows past its own width; a narrow one centers.
+
+<Demo example="./examples/small.tsx" />
