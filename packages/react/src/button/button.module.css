@@ -43,8 +43,8 @@
   flex: none;
   align-items: center;
   justify-content: center;
-  inline-size: var(--semantic-dimension-size-x-small);
-  block-size: var(--semantic-dimension-size-x-small);
+  inline-size: var(--semantic-dimension-size-icon);
+  block-size: var(--semantic-dimension-size-icon);
 }
 
 .icon > svg,
