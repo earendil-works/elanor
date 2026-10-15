@@ -1,0 +1,7 @@
+.root {
+  display: block;
+  max-inline-size: 100%;
+  block-size: auto;
+  margin-inline: auto;
+  border-radius: var(--semantic-dimension-radius-default);
+}
