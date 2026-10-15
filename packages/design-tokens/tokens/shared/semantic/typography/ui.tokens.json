@@ -1,0 +1,17 @@
+{
+  "$schema": "https://designtokens.org/schemas/2025.10/format.json",
+  "semantic": {
+    "typography": {
+      "$type": "typography",
+      "$description": "Running-text styles in the UI text context. The `textContext` modifier selects this file.",
+      "primary": {
+        "$value": "{semantic.typography.ui.primary}",
+        "$description": "Use for default running text in components that adapt to their context, such as paragraphs, lists, and links. Resolves to the UI style in interfaces and to the prose style inside long-form content."
+      },
+      "secondary": {
+        "$value": "{semantic.typography.ui.secondary}",
+        "$description": "Use for supporting running text in components that adapt to their context. Resolves to the secondary UI style in interfaces and to the secondary prose style inside long-form content."
+      }
+    }
+  }
+}

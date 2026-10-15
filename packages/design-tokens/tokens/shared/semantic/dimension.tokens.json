@@ -98,6 +98,10 @@
           "popover": {
             "$value": "{primitive.dimension.16000}",
             "$description": "Component token for the maximum inline size of a popover, which shrinks to the space available beside its trigger."
+          },
+          "text": {
+            "$value": "{primitive.dimension.20800}",
+            "$description": "Use as the maximum inline size of running text, the longest its lines should get, such as paragraphs and list items in long-form content."
           }
         },
         "sidebar": {
@@ -211,6 +215,29 @@
           "xLarge": {
             "$value": "{primitive.dimension.800}",
             "$description": "Use for the strongest separation between major groups of elements."
+          }
+        },
+        "flow": {
+          "$description": "Use for vertical space between consecutive blocks in flowing content, such as paragraphs, headings, lists, and code in long-form text. Apply it from the container that holds the flow, not from the blocks themselves.",
+          "xSmall": {
+            "$value": "{primitive.dimension.200}",
+            "$description": "Use between a minor heading and the content it introduces."
+          },
+          "small": {
+            "$value": "{primitive.dimension.400}",
+            "$description": "Use as the default space between consecutive blocks, and between a subsection heading and its content."
+          },
+          "medium": {
+            "$value": "{primitive.dimension.600}",
+            "$description": "Use around code blocks, before minor headings, and between a section heading and its content."
+          },
+          "large": {
+            "$value": "{primitive.dimension.800}",
+            "$description": "Use around quotations and media, and before subsection headings."
+          },
+          "xLarge": {
+            "$value": "{primitive.dimension.1200}",
+            "$description": "Use before section headings and around thematic breaks."
           }
         },
         "control": {

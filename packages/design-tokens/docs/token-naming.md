@@ -75,10 +75,10 @@ The first category selects the type vocabulary:
 | `semantic`  | `number`       | `opacity`, `layer`, `scale`                                      |
 | `semantic`  | `fontFamily`   | `prose`, `ui`, `code`                                            |
 | `semantic`  | `fontWeight`   | `emphasis`, `ui`                                                 |
-| `semantic`  | `typography`   | `code`, `heading`, `prose`, `ui`                                 |
+| `semantic`  | `typography`   | `code`, `heading`, `primary`, `prose`, `secondary`, `ui`         |
 | `semantic`  | `transition`   | `feedback`, `fade`, `movement`                                   |
 
-`semantic.fontWeight.emphasis` stands directly under its category because it applies in any text context, while `fontWeight.ui.*` is for interface text.
+Context-neutral tokens stand directly under their category because they apply in any text context: `semantic.fontWeight.emphasis`, and `semantic.typography.primary` and `.secondary`, which the `textContext` modifier resolves to the UI styles in interfaces and the prose styles in long-form content. `fontWeight.ui.*` and `typography.ui.*` are for interface text only.
 
 Omitted primitive categories have no `type`; continue with the next applicable part. Document new controlled values here before use. Do not add synonyms such as both `background` and `surface` as types.
 
@@ -261,6 +261,7 @@ Semantic relative sizes use the controlled T-shirt order listed above, in the `s
 ```text
 semantic.dimension.size.small
 semantic.dimension.space.gap.medium
+semantic.dimension.space.flow.small
 semantic.dimension.space.padding.xLarge
 semantic.dimension.space.control.padding.inline.large
 ```
@@ -272,7 +273,7 @@ Use contiguous subsets:
 | Generic padding                            | `xxxSmall`–`xxxxLarge` |
 | General size                               | `xxxSmall`–`xLarge`    |
 | Generic gap                                | `xxSmall`–`xLarge`     |
-| Breakpoints                                | `xSmall`–`xLarge`      |
+| Breakpoints, flow spacing                  | `xSmall`–`xLarge`      |
 | Control block padding, control gap, radius | `small`–`large`        |
 | Control inline padding                     | `xSmall`–`large`       |
 
