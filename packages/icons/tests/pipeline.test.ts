@@ -3,7 +3,7 @@ import {resolve} from 'node:path';
 
 import {describe, expect, test} from 'vitest';
 
-import {pipelineConfig, unboiledPipelineConfig} from '../config.js';
+import {boiledPipelineConfig as pipelineConfig, plainPipelineConfig} from '../config.js';
 import {flattenPath, parsePathData, serializeContours} from '../scripts/lib/path-data.js';
 import {
   outputDecimals,
@@ -39,12 +39,12 @@ describe('pipeline', () => {
       };
       expect(processSvg(source, config).artwork.d).toMatch(/^m[\d.\-hlvz ]+$/);
     }
-    expect(processSvg(source, unboiledPipelineConfig).artwork.d).toBe('M1 1Q10 0 19 1V19H1Z');
+    expect(processSvg(source, plainPipelineConfig).artwork.d).toBe('M1 1Q10 0 19 1V19H1Z');
   });
 
-  test('keeps the source size and, unboiled, the source path', async () => {
+  test('keeps the source size and, plain, the source path', async () => {
     const source = await readSource('keyboard_arrow_down');
-    expect(processSvg(source, unboiledPipelineConfig).svg).toBe(
+    expect(processSvg(source, plainPipelineConfig).svg).toBe(
       '<!-- Google Material Symbols, renamed and repackaged by Elanor. Apache-2.0; see LICENSE and NOTICE. -->\n<svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 -960 960 960"><path d="M480-333 240-573l51-51 189 189 189-189 51 51-240 240Z"/></svg>\n',
     );
     expect(processSvg(source, pipelineConfig).svg).toContain(

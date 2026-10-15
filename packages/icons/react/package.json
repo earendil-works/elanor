@@ -1,7 +1,7 @@
 {
   "name": "@earendil-works/elanor-icons-react",
   "version": "0.1.0",
-  "description": "Boiled and unboiled Material Symbols as React components.",
+  "description": "Material Symbols as React components.",
   "license": "Apache-2.0",
   "type": "module",
   "sideEffects": false,
@@ -13,10 +13,6 @@
     ".": {
       "types": "./dist/index.d.ts",
       "import": "./dist/index.js"
-    },
-    "./unboiled": {
-      "types": "./dist/unboiled/index.d.ts",
-      "import": "./dist/unboiled/index.js"
     },
     "./*": {
       "types": "./dist/*.d.ts",

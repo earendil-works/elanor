@@ -1,4 +1,4 @@
-import {CloseIcon, MenuIcon} from '@earendil-works/elanor-icons-react';
+import {CloseIcon, MenuIcon} from '@earendil-works/elanor-icons-boiled-react';
 import {
   Drawer,
   IconButton,

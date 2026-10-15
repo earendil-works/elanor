@@ -2,6 +2,7 @@ packages:
   - apps/*
   - packages/*
   - packages/icons/react
+  - packages/icons-boiled/react
   - packages/logos/react
 
 allowBuilds:

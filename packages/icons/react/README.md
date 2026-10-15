@@ -8,8 +8,4 @@ import {SearchIcon} from '@earendil-works/elanor-icons-react/search';
 <SearchIcon aria-label="Search" />;
 ```
 
-The same icons without the boil are under `unboiled`:
-
-```tsx
-import {SearchIcon} from '@earendil-works/elanor-icons-react/unboiled/search';
-```
+For the boiled icons, import the same names from [`@earendil-works/elanor-icons-boiled-react`](../../icons-boiled/react/README.md).

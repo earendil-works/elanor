@@ -1,0 +1,31 @@
+{
+  "name": "@earendil-works/elanor-icons-boiled",
+  "version": "0.1.0",
+  "description": "Material Symbols with a hand-drawn boil as SVG files.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "LICENSE",
+    "NOTICE",
+    "provenance.json",
+    "README.md"
+  ],
+  "exports": {
+    "./svg/*": {
+      "types": "./dist/svg.d.ts",
+      "default": "./dist/svg/*"
+    },
+    "./LICENSE": "./LICENSE",
+    "./NOTICE": "./NOTICE",
+    "./metadata.json": "./dist/metadata.json"
+  },
+  "scripts": {
+    "build": "tsx ../icons/scripts/build.ts boiled",
+    "prepack": "pnpm run build"
+  },
+  "devDependencies": {
+    "tsx": "^4.23.15"
+  }
+}
