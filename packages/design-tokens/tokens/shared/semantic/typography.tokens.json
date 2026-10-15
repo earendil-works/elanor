@@ -145,20 +145,20 @@
         "primary": {
           "$value": {
             "fontFamily": "{semantic.fontFamily.prose}",
-            "fontSize": "{primitive.dimension.fontSize.400}",
+            "fontSize": "{primitive.dimension.fontSize.500}",
             "fontWeight": "{primitive.fontWeight.normal}",
             "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
-            "lineHeight": "{primitive.number.lineHeight.400}"
+            "lineHeight": "{primitive.number.lineHeight.500}"
           },
           "$description": "Use for default body copy in long-form content."
         },
         "secondary": {
           "$value": {
             "fontFamily": "{semantic.fontFamily.prose}",
-            "fontSize": "{primitive.dimension.fontSize.300}",
+            "fontSize": "{primitive.dimension.fontSize.400}",
             "fontWeight": "{primitive.fontWeight.normal}",
             "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
-            "lineHeight": "{primitive.number.lineHeight.300}"
+            "lineHeight": "{primitive.number.lineHeight.400}"
           },
           "$description": "Use for supporting long-form content, such as annotations or ancillary copy. Use the primary prose style for default body copy."
         }
@@ -167,14 +167,24 @@
         "primary": {
           "$value": {
             "fontFamily": "{semantic.fontFamily.ui}",
+            "fontSize": "{primitive.dimension.fontSize.400}",
+            "fontWeight": "{primitive.fontWeight.normal}",
+            "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
+            "lineHeight": "{primitive.number.lineHeight.400}"
+          },
+          "$description": "Use for default text in application interfaces, including controls, labels, and navigation."
+        },
+        "secondary": {
+          "$value": {
+            "fontFamily": "{semantic.fontFamily.ui}",
             "fontSize": "{primitive.dimension.fontSize.300}",
             "fontWeight": "{primitive.fontWeight.normal}",
             "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
             "lineHeight": "{primitive.number.lineHeight.300}"
           },
-          "$description": "Use for default text in application interfaces, including controls, labels, and navigation."
+          "$description": "Use for supporting interface text, such as helper text or secondary labels. Use the primary UI style for default interface copy."
         },
-        "secondary": {
+        "tertiary": {
           "$value": {
             "fontFamily": "{semantic.fontFamily.ui}",
             "fontSize": "{primitive.dimension.fontSize.200}",
@@ -182,17 +192,17 @@
             "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
             "lineHeight": "{primitive.number.lineHeight.200}"
           },
-          "$description": "Use for supporting interface text, such as helper text or secondary labels. Use the primary UI style for default interface copy."
+          "$description": "Use for the lowest-priority interface text, such as compact metadata or supplemental labels. Do not use when the primary or secondary UI style provides sufficient hierarchy."
         },
-        "tertiary": {
+        "label": {
           "$value": {
             "fontFamily": "{semantic.fontFamily.ui}",
-            "fontSize": "{primitive.dimension.fontSize.100}",
-            "fontWeight": "{primitive.fontWeight.normal}",
+            "fontSize": "{primitive.dimension.fontSize.400}",
+            "fontWeight": "{primitive.fontWeight.bold}",
             "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
-            "lineHeight": "{primitive.number.lineHeight.100}"
+            "lineHeight": "{primitive.number.lineHeight.400}"
           },
-          "$description": "Use for the lowest-priority interface text, such as compact metadata or supplemental labels. Do not use when the primary or secondary UI style provides sufficient hierarchy."
+          "$description": "Use for structural interface labels, such as navigation and menu group labels and the table of contents title: the primary UI style's size in a heavier weight. Do not use for default interface copy."
         },
         "searchDialog": {
           "input": {

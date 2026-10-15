@@ -13,8 +13,7 @@
 }
 
 .title {
-  font: var(--semantic-typography-ui-tertiary);
-  text-transform: uppercase;
+  font: var(--semantic-typography-ui-label);
 }
 
 .list {
