@@ -1,7 +1,7 @@
 .control {
   box-sizing: border-box;
   inline-size: 100%;
-  block-size: var(--semantic-dimension-size-small);
+  min-block-size: var(--semantic-dimension-size-small);
   padding-block: calc(
     var(--semantic-dimension-space-control-padding-block-small) -
       var(--semantic-dimension-border-width-default)
