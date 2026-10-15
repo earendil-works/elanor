@@ -12,6 +12,16 @@
           "blur": {"value": 8, "unit": "px"},
           "spread": {"value": 0, "unit": "px"}
         }
+      },
+      "sticky": {
+        "$description": "Use under sticky elements, such as a pinned toolbar or table of contents, while content scrolls beneath them. Fade it in as content starts to pass underneath.",
+        "$value": {
+          "color": {"colorSpace": "srgb", "components": [0, 0, 0], "alpha": 0.15},
+          "offsetX": {"value": 0, "unit": "px"},
+          "offsetY": {"value": 4, "unit": "px"},
+          "blur": {"value": 8, "unit": "px"},
+          "spread": {"value": 0, "unit": "px"}
+        }
       }
     }
   }

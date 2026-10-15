@@ -3,10 +3,18 @@
   "semantic": {
     "fontWeight": {
       "$type": "fontWeight",
+      "emphasis": {
+        "$value": "{primitive.fontWeight.bold}",
+        "$description": "Use for strongly emphasized text in any context, such as important words in running text."
+      },
       "ui": {
         "emphasis": {
           "$value": "{primitive.fontWeight.bold}",
           "$description": "Use for emphasized interface text."
+        },
+        "selected": {
+          "$value": "{primitive.fontWeight.semiBold}",
+          "$description": "Use for the label of the selected or current item, such as the current page in navigation and the section that contains it."
         }
       }
     }

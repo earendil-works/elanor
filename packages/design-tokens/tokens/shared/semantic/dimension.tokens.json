@@ -89,6 +89,10 @@
           "$value": "{primitive.dimension.5250}",
           "$description": "Use as the default inline size for expanded side navigation and supporting page regions, independently of the main content grid."
         },
+        "topNavigation": {
+          "$value": "{primitive.dimension.1600}",
+          "$description": "Use as the block size of the top navigation bar, including its bottom border and excluding any safe-area inset. Derive sticky offsets and scroll padding below the bar from it rather than repeating the value."
+        },
         "modal": {
           "$value": "{primitive.dimension.19200}",
           "$description": "Component token for the inline size of a modal dialog, which shrinks to fit narrower windows."
