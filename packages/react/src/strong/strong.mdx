@@ -1,0 +1,15 @@
+# Strong
+
+Marks text of strong importance, seriousness, or urgency within running text. For stress that changes the meaning of a sentence, use [Emphasis](/components/emphasis/).
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Strong} from '@earendil-works/elanor-react';
+
+<Strong>removes its files for everyone</Strong>;
+```
+
+Strong renders a `strong` element in `semantic.fontWeight.emphasis`, the same weight in UI and in long-form content. A plain `strong` uses the browser's relative `bolder`, which depends on the surrounding weight and the fonts available.
