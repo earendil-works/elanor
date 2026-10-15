@@ -1,13 +1,76 @@
 {
   "$schema": "https://designtokens.org/schemas/2025.10/format.json",
+  "$description": "Contains generated and manually authored tokens. Edit only paths not managed by a generator.",
   "primitive": {
     "duration": {
+      "0": {
+        "$value": {
+          "value": 0,
+          "unit": "ms"
+        },
+        "$extensions": {
+          "com.earendil-works.generation": {
+            "source": "recipes/shared/primitive/duration.json"
+          }
+        }
+      },
+      "150": {
+        "$value": {
+          "value": 150,
+          "unit": "ms"
+        },
+        "$extensions": {
+          "com.earendil-works.generation": {
+            "source": "recipes/shared/primitive/duration.json"
+          }
+        }
+      },
+      "200": {
+        "$value": {
+          "value": 200,
+          "unit": "ms"
+        },
+        "$extensions": {
+          "com.earendil-works.generation": {
+            "source": "recipes/shared/primitive/duration.json"
+          }
+        }
+      },
+      "300": {
+        "$value": {
+          "value": 300,
+          "unit": "ms"
+        },
+        "$extensions": {
+          "com.earendil-works.generation": {
+            "source": "recipes/shared/primitive/duration.json"
+          }
+        }
+      },
+      "450": {
+        "$value": {
+          "value": 450,
+          "unit": "ms"
+        },
+        "$extensions": {
+          "com.earendil-works.generation": {
+            "source": "recipes/shared/primitive/duration.json"
+          }
+        }
+      },
+      "600": {
+        "$value": {
+          "value": 600,
+          "unit": "ms"
+        },
+        "$extensions": {
+          "com.earendil-works.generation": {
+            "source": "recipes/shared/primitive/duration.json"
+          }
+        }
+      },
       "$type": "duration",
-      "100": {"$value": {"value": 100, "unit": "ms"}},
-      "150": {"$value": {"value": 150, "unit": "ms"}},
-      "350": {"$value": {"value": 350, "unit": "ms"}},
-      "400": {"$value": {"value": 400, "unit": "ms"}},
-      "450": {"$value": {"value": 450, "unit": "ms"}}
+      "$description": "Durations where each step is its value in milliseconds; 0 is an instant change."
     }
   }
 }

@@ -1,0 +1,78 @@
+{
+  "$schema": "https://designtokens.org/schemas/2025.10/format.json",
+  "semantic": {
+    "transition": {
+      "$type": "transition",
+      "$description": "Choose a transition by what changes. `feedback` and `fade` keep their timing when the reader prefers reduced motion; `movement` becomes instant. Transitions have no delay.",
+      "feedback": {
+        "$value": {
+          "duration": "{primitive.duration.150}",
+          "delay": "{primitive.duration.0}",
+          "timingFunction": {"$ref": "#/primitive/cubicBezier/easeOut/$root/$value"}
+        },
+        "$description": "Use for color, background, border, and shadow changes, such as hover, press, and the switch track."
+      },
+      "fade": {
+        "$value": {
+          "duration": "{primitive.duration.150}",
+          "delay": "{primitive.duration.0}",
+          "timingFunction": {"$ref": "#/primitive/cubicBezier/easeOut/$root/$value"}
+        },
+        "$description": "Use for opacity when something appears or disappears, such as popups, scrollbars, backdrops, and page crossfades."
+      },
+      "movement": {
+        "$description": "Changes that move content: position, size, scale, rotation, and height. The `motion` modifier makes them instant when the reader prefers reduced motion.",
+        "popup": {
+          "$value": {
+            "duration": "{primitive.duration.150}",
+            "delay": "{primitive.duration.0}",
+            "timingFunction": "{primitive.cubicBezier.easeOut.cubic}"
+          },
+          "$description": "Use for the scale or slide of popups as they open and close, such as dropdowns, menus, popovers, tooltips, and modals. Fade their opacity with `transition.fade`."
+        },
+        "disclosure": {
+          "$value": {
+            "duration": "{primitive.duration.300}",
+            "delay": "{primitive.duration.0}",
+            "timingFunction": "{primitive.cubicBezier.easeInOut.cubic}"
+          },
+          "$description": "Use when content expands or collapses, for chevrons that turn with it, and for menu panels that slide in and out."
+        },
+        "indicator": {
+          "$value": {
+            "duration": "{primitive.duration.200}",
+            "delay": "{primitive.duration.0}",
+            "timingFunction": "{primitive.cubicBezier.easeOut.cubic}"
+          },
+          "$description": "Use when a selection indicator answering a click moves to a new position or size, such as a tab indicator or a switch thumb."
+        },
+        "tableOfContents": {
+          "indicator": {
+            "$value": {
+              "duration": "{primitive.duration.600}",
+              "delay": "{primitive.duration.0}",
+              "timingFunction": "{primitive.cubicBezier.easeOut.back}"
+            },
+            "$description": "Component token for the table of contents indicator following the reading position. Overshoots slightly before it settles."
+          }
+        },
+        "drawer": {
+          "$value": {
+            "duration": "{primitive.duration.450}",
+            "delay": "{primitive.duration.0}",
+            "timingFunction": "{primitive.cubicBezier.easeOut.quart}"
+          },
+          "$description": "Component token for a drawer opening and closing, and snapping back after a swipe. Fade its backdrop with `transition.fade`."
+        },
+        "navigationMenu": {
+          "$value": {
+            "duration": "{primitive.duration.300}",
+            "delay": "{primitive.duration.0}",
+            "timingFunction": "{primitive.cubicBezier.easeOut.quint}"
+          },
+          "$description": "Component token for the navigation menu popup moving and resizing between triggers, and for its entry scale."
+        }
+      }
+    }
+  }
+}

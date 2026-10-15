@@ -82,13 +82,16 @@ Modifiers select context-dependent values, such as color scheme or density:
 
 Static breakpoints remain in `semantic/dimension.tokens.json`; a threshold is not a modifier. CSS custom properties cannot appear in media-query conditions: tooling must resolve and inline breakpoint values at build time, not emit `var(--semantic-dimension-breakpoint-*)` there.
 
-| Modifier      | Example contexts                                       | Applies to           |
-| ------------- | ------------------------------------------------------ | -------------------- |
-| `colorScheme` | `light`, `dark`                                        | `color`              |
-| `viewport`    | `base`, `xSmall`, `small`, `medium`, `large`, `xLarge` | Responsive overrides |
-| `density`     | `comfortable`, `compact`                               | `dimension`          |
+| Modifier      | Example contexts                                       | Applies to             |
+| ------------- | ------------------------------------------------------ | ---------------------- |
+| `colorScheme` | `light`, `dark`                                        | `color`                |
+| `motion`      | `default`, `reduced`                                   | `movement` transitions |
+| `viewport`    | `base`, `xSmall`, `small`, `medium`, `large`, `xLarge` | Responsive overrides   |
+| `density`     | `comfortable`, `compact`                               | `dimension`            |
 
 Use `viewport` only when values vary by viewport width and the build explicitly maps contexts to thresholds. Configure modifier names and contexts in the resolver's `modifiers` section.
+
+A modifier context may be empty when the default values live in a flat file. All transitions live in `semantic/transition.tokens.json`; the `motion` modifier's `default` context is empty, and `reduced` loads `semantic/transition/reduced.tokens.json`, which restates every `movement` transition with `primitive.duration.0`. The CSS build emits it under `@media (prefers-reduced-motion: reduce)`, so components need no reduced-motion queries. `pnpm tokens:check` verifies that the reduced file holds exactly the movement transitions, each instant and otherwise unchanged. Transitions are emitted as one custom property per part (`-duration`, `-delay`, `-timing-function`) plus the shorthand.
 
 ## Resolver files
 

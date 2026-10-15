@@ -28,7 +28,7 @@ State vocabulary:
 - Numeric primitive steps or [derived-color operations](#derived-primitive-colors).
 - Semantic heading levels `1`–`6`.
 - T-shirt sizes: `xxxSmall`, `xxSmall`, `xSmall`, `small`, `medium`, `large`, `xLarge`, `xxLarge`, `xxxLarge`, `xxxxLarge`.
-- `none`, `default`, `full`, `hover`, `focus`, `active`, `selected`, `checked`, `disabled`, `visited`. Reserve `none` for explicit zero spacing and `full` for radii.
+- `none`, `default`, `full`, `rest`, `hidden`, `visible`, `hover`, `focus`, `active`, `selected`, `checked`, `disabled`, `visited`. Reserve `none` for explicit zero spacing and `full` for radii. `rest` is the value when nothing moves (`scale.rest`, `travel.rest`); `hidden` and `visible` are the ends of a fade.
 
 Examples:
 
@@ -66,16 +66,17 @@ strokeStyle, border, transition, shadow, gradient, typography
 
 The first category selects the type vocabulary:
 
-| Layer       | First category | Allowed types                                            |
-| ----------- | -------------- | -------------------------------------------------------- |
-| `primitive` | `dimension`    | `borderWidth`, `breakpoint`, `fontSize`, `letterSpacing` |
-| `primitive` | `number`       | `layer`, `lineHeight`, `opacity`                         |
-| `semantic`  | `color`        | `background`, `border`, `focusRing`, `icon`, `text`      |
-| `semantic`  | `dimension`    | `borderWidth`, `breakpoint`, `radius`, `size`, `space`   |
-| `semantic`  | `number`       | `opacity`, `layer`                                       |
-| `semantic`  | `fontFamily`   | `prose`, `ui`, `code`                                    |
-| `semantic`  | `fontWeight`   | `ui`                                                     |
-| `semantic`  | `typography`   | `code`, `heading`, `prose`, `ui`                         |
+| Layer       | First category | Allowed types                                                    |
+| ----------- | -------------- | ---------------------------------------------------------------- |
+| `primitive` | `dimension`    | `borderWidth`, `breakpoint`, `fontSize`, `letterSpacing`         |
+| `primitive` | `number`       | `layer`, `lineHeight`, `opacity`, `scale`                        |
+| `semantic`  | `color`        | `background`, `border`, `focusRing`, `icon`, `text`              |
+| `semantic`  | `dimension`    | `borderWidth`, `breakpoint`, `radius`, `size`, `space`, `travel` |
+| `semantic`  | `number`       | `opacity`, `layer`, `scale`                                      |
+| `semantic`  | `fontFamily`   | `prose`, `ui`, `code`                                            |
+| `semantic`  | `fontWeight`   | `ui`                                                             |
+| `semantic`  | `typography`   | `code`, `heading`, `prose`, `ui`                                 |
+| `semantic`  | `transition`   | `feedback`, `fade`, `movement`                                   |
 
 Omitted primitive categories have no `type`; continue with the next applicable part. Document new controlled values here before use. Do not add synonyms such as both `background` and `surface` as types.
 
@@ -163,11 +164,34 @@ semantic.color.text.code.type
 
 `punctuation` also covers operators, `keyword` tag names, `variable` parameters, properties, and attribute names, `number` literals such as `true`, `false`, and `null`, and `type` classes and built-ins. Code sits on the secondary fill used by code snippets and inline code, so every role must meet text contrast against it in both color schemes.
 
+## Motion roles
+
+Transitions are DTCG `transition` composites. Each references one primitive duration, `primitive.duration.0` as its delay, and one primitive easing, so a role is a single token. The type says what changes, which also decides what happens when the reader prefers reduced motion:
+
+| Type       | Use for                                                                | Reduced motion |
+| ---------- | ---------------------------------------------------------------------- | -------------- |
+| `feedback` | Color, background, border, and shadow changes, such as hover and press | Unchanged      |
+| `fade`     | Opacity when something appears or disappears                           | Unchanged      |
+| `movement` | Position, size, scale, rotation, and height                            | Instant        |
+
+```text
+semantic.transition.feedback
+semantic.transition.fade
+semantic.transition.movement.popup
+semantic.transition.movement.disclosure
+semantic.transition.movement.indicator
+semantic.transition.movement.drawer
+```
+
+Items under `movement` name a purpose (`popup`, `disclosure`, `indicator`) or, as component tokens, a component (`drawer`, `navigationMenu`, `tableOfContents.indicator`). Add a component item only when no shared purpose fits. How far something moves uses the same item names in its own category: `semantic.number.scale.popup` and `semantic.dimension.travel.popup`, with `rest` for the value when nothing moves. Direction is a sign in the component, and rotation stays structural (DTCG has no angle type).
+
+Primitive easings are named by shape, never by use: `primitive.cubicBezier.<direction>[.<curve>]`. Directions are `linear`, `easeIn`, `easeOut`, and `easeInOut`; `$root` is the CSS keyword curve; curve families from gentle to strong are `quad`, `cubic`, `quart`, `quint`, and `expo`, and `back` overshoots. Add only standard curves.
+
 ## Scale naming
 
 ### Magic-number scales
 
-Primitive numeric steps identify positions, not usage or literal units. Usually spaced by `100`, they leave room for intermediate steps; `0` may mean absence. Define generated intermediate steps in recipes, never by hand. Opacity and layer are the direct-value exceptions below.
+Primitive numeric steps identify positions, not usage or literal units. Usually spaced by `100`, they leave room for intermediate steps; `0` may mean absence. Define generated intermediate steps in recipes, never by hand. Opacity, layer, scale, and duration are the direct-value exceptions below.
 
 A numeric step occupies one `state` part and cannot combine with another state:
 
@@ -214,6 +238,10 @@ For contextual alpha, keep the primitive opaque. Compose the semantic color usin
 ### Opacity scale
 
 `primitive.number.opacity.<step>` maps directly to a normalized value (`150` is `0.15`); see the [formula](token-generation.md#opacity-scale). Add only steps required by semantic tokens.
+
+### Duration and transform scale
+
+`primitive.duration.<step>` is its value in milliseconds (`150` is `150ms`, `0` is instant). `primitive.number.scale.<step>` maps like opacity, with `1000` as an element's own size (`980` is `0.98`). See the [formulas](token-generation.md#duration-scale).
 
 ### Layer scale
 
@@ -287,6 +315,8 @@ Store a base with child variants/states in `$root`, not a `default` child:
 ```
 
 Logical names are `semantic.color.background.fill.selected` and `semantic.color.background.fill.selected.hover`. `$root` is storage syntax, not a name part. This applies to every base with children, including `focusRing`, `fill.primary`, `fill.secondary`, `onSecondaryFill`, and the checkbox, radio, switch, and slider-track bases. Use `default` only for a specific domain meaning.
+
+Reference a base as `{semantic.color.focusRing.$root}`. Inside a composite part, use a JSON Pointer instead, such as `"timingFunction": {"$ref": "#/primitive/cubicBezier/easeOut/$root/$value"}`: the DTCG schema rejects `$root` in curly-brace references there.
 
 ## Rules
 

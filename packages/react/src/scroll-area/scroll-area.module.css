@@ -65,12 +65,10 @@
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .scrollbar {
-    transition: opacity var(--semantic-duration-motion-standard);
-  }
+.scrollbar {
+  transition: opacity var(--semantic-transition-fade);
+}
 
-  .scrollbar[data-scrolling] {
-    transition: none;
-  }
+.scrollbar[data-scrolling] {
+  transition: none;
 }

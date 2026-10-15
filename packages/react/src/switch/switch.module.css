@@ -82,14 +82,10 @@
   }
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .root::before {
-    transition: background-color var(--semantic-duration-motion-standard)
-      var(--semantic-cubic-bezier-motion-state);
-  }
+.root::before {
+  transition: background-color var(--semantic-transition-feedback);
+}
 
-  .thumb {
-    transition: inset-inline-start var(--semantic-duration-motion-standard)
-      var(--semantic-cubic-bezier-motion-state);
-  }
+.thumb {
+  transition: inset-inline-start var(--semantic-transition-movement-indicator);
 }

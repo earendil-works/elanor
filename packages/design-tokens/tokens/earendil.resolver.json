@@ -11,7 +11,9 @@
         {"$ref": "./shared/primitive/dimension.tokens.json"},
         {"$ref": "./shared/primitive/number.tokens.json"},
         {"$ref": "./shared/primitive/fontFamily.tokens.json"},
-        {"$ref": "./shared/primitive/fontWeight.tokens.json"}
+        {"$ref": "./shared/primitive/fontWeight.tokens.json"},
+        {"$ref": "./shared/primitive/duration.tokens.json"},
+        {"$ref": "./shared/primitive/cubicBezier.tokens.json"}
       ]
     },
     "shared-semantic": {
@@ -19,10 +21,7 @@
       "sources": [
         {"$ref": "./shared/semantic/dimension.tokens.json"},
         {"$ref": "./shared/semantic/number.tokens.json"},
-        {"$ref": "./shared/primitive/duration.tokens.json"},
-        {"$ref": "./shared/primitive/cubicBezier.tokens.json"},
-        {"$ref": "./shared/semantic/duration.tokens.json"},
-        {"$ref": "./shared/semantic/cubicBezier.tokens.json"},
+        {"$ref": "./shared/semantic/transition.tokens.json"},
         {"$ref": "./shared/semantic/fontFamily.tokens.json"},
         {"$ref": "./shared/semantic/fontWeight.tokens.json"},
         {"$ref": "./shared/semantic/shadow.tokens.json"},
@@ -38,11 +37,20 @@
         "dark": [{"$ref": "./shared/semantic/color/dark.tokens.json"}]
       },
       "default": "light"
+    },
+    "motion": {
+      "description": "Makes transitions that move content instant when the reader prefers reduced motion.",
+      "contexts": {
+        "default": [],
+        "reduced": [{"$ref": "./shared/semantic/transition/reduced.tokens.json"}]
+      },
+      "default": "default"
     }
   },
   "resolutionOrder": [
     {"$ref": "#/sets/shared-primitive"},
     {"$ref": "#/sets/shared-semantic"},
-    {"$ref": "#/modifiers/colorScheme"}
+    {"$ref": "#/modifiers/colorScheme"},
+    {"$ref": "#/modifiers/motion"}
   ]
 }

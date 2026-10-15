@@ -1,6 +1,6 @@
 # Token Descriptions
 
-Every semantic token leaf requires a `$description` that explains its use without surrounding documentation. Write for consumers, including agents, not maintainers. Describe primitives only when they need token-specific guidance; keep scale-wide rules in the guides.
+Every semantic token leaf requires a `$description` that explains its use without surrounding documentation; `pnpm tokens:check` enforces it. Write for consumers, including agents, not maintainers. Describe primitives only when they need token-specific guidance; keep scale-wide rules in the guides.
 
 ## Placement
 
