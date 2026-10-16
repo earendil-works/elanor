@@ -1,9 +1,11 @@
+import {mergeProps} from '@base-ui/react/merge-props';
+import {useRender} from '@base-ui/react/use-render';
 import {
-  useEffect,
   useLayoutEffect,
   useRef,
   useState,
   type AnchorHTMLAttributes,
+  type CSSProperties,
   type HTMLAttributes,
   type Ref,
 } from 'react';
@@ -16,76 +18,84 @@ export interface TableOfContentsRootProps extends HTMLAttributes<HTMLElement> {
   readonly ref?: Ref<HTMLElement> | undefined;
 }
 
-interface Indicator {
-  readonly offset: number;
-  readonly size: number;
-}
-
 /**
- * A `nav` named "Table of contents" with an ordered list of `Item`s. One indicator marks the
- * active entry and moves to the next one when `active` changes; before it has measured the
- * entries, such as in server-rendered HTML, the active entry draws its own bar.
+ * A `nav` named "Table of contents". Put a `List` of `Item`s inside, and an `Indicator` after it
+ * to mark the active entry with a bar that moves.
  */
-export function TableOfContents({ref, children, className, ...props}: TableOfContentsRootProps) {
-  const listRef = useRef<HTMLOListElement>(null);
-  const [indicator, setIndicator] = useState<Indicator | null>(null);
-  const [animated, setAnimated] = useState(false);
-
-  // Measure the active entry after every render and when the list resizes.
-  useLayoutEffect(() => {
-    const list = listRef.current;
-    if (!list) return undefined;
-    function measure(): void {
-      const active = list?.querySelector<HTMLElement>('[data-active]');
-      const next = active ? {offset: active.offsetTop, size: active.offsetHeight} : null;
-      setIndicator((current) =>
-        current?.offset === next?.offset && current?.size === next?.size ? current : next,
-      );
-    }
-    measure();
-    const observer = new ResizeObserver(measure);
-    observer.observe(list);
-    return () => observer.disconnect();
-  });
-
-  // The first position appears in place; later changes move.
-  useEffect(() => {
-    if (!indicator || animated) return undefined;
-    const frame = requestAnimationFrame(() => setAnimated(true));
-    return () => cancelAnimationFrame(frame);
-  }, [indicator, animated]);
-
+export function TableOfContents({ref, className, ...props}: TableOfContentsRootProps) {
   return (
     <nav
       {...props}
       ref={ref}
       aria-label={props['aria-label'] ?? 'Table of contents'}
-      data-indicator={indicator ? '' : undefined}
       className={classes(styles.root, className)}
-    >
-      <ol ref={listRef} className={styles.list}>
-        {children}
-      </ol>
-      {indicator ? (
-        <span
-          aria-hidden="true"
-          data-animated={animated ? '' : undefined}
-          className={styles.indicator}
-          style={{
-            translate: `0 calc(${indicator.offset}px + var(--semantic-dimension-space-padding-x-small))`,
-            blockSize: `calc(${indicator.size}px - 2 * var(--semantic-dimension-space-padding-x-small))`,
-          }}
-        />
-      ) : null}
-    </nav>
+    />
   );
+}
+
+export interface TableOfContentsIndicatorProps extends useRender.ComponentProps<'span'> {}
+
+interface ActiveEntry {
+  readonly top: number;
+  readonly height: number;
+}
+
+/**
+ * A bar that marks the active entry and moves to the next one when `active` changes, like Tabs'
+ * indicator. It measures the active link and sets `--active-entry-top` and
+ * `--active-entry-height`; it stays hidden until it has measured, and the active entry draws its
+ * own bar until then. Place it in Root, after the `List`.
+ */
+export function TableOfContentsIndicator({ref, render, ...props}: TableOfContentsIndicatorProps) {
+  const elementRef = useRef<HTMLSpanElement>(null);
+  const [entry, setEntry] = useState<ActiveEntry | null>(null);
+
+  // Measure the active link within the table of contents (the indicator's parent) after every
+  // render and when the table of contents resizes.
+  useLayoutEffect(() => {
+    const root = elementRef.current?.parentElement;
+    if (!root) return undefined;
+    function measure(): void {
+      const active = root?.querySelector<HTMLElement>('a[data-active]');
+      const rootRect = root?.getBoundingClientRect();
+      const rect = active?.getBoundingClientRect();
+      const next =
+        rect && rootRect && rect.height > 0
+          ? {top: rect.top - rootRect.top + (root?.scrollTop ?? 0), height: rect.height}
+          : null;
+      setEntry((current) =>
+        current?.top === next?.top && current?.height === next?.height ? current : next,
+      );
+    }
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(root);
+    return () => observer.disconnect();
+  });
+
+  const variables = entry
+    ? ({
+        '--active-entry-top': `${entry.top}px`,
+        '--active-entry-height': `${entry.height}px`,
+      } as CSSProperties)
+    : undefined;
+
+  return useRender({
+    defaultTagName: 'span',
+    render,
+    ref: ref ? [ref, elementRef] : elementRef,
+    props: mergeProps<'span'>(
+      {role: 'presentation', hidden: !entry, className: styles.indicator, style: variables},
+      props,
+    ),
+  });
 }
 
 export interface TableOfContentsListProps extends HTMLAttributes<HTMLOListElement> {
   readonly ref?: Ref<HTMLOListElement> | undefined;
 }
 
-/** Nested entries, inside an `Item` after its `Link`. */
+/** The ordered list of entries, at the top and nested inside an `Item` after its `Link`. */
 export function TableOfContentsList({ref, className, ...props}: TableOfContentsListProps) {
   return <ol {...props} ref={ref} className={classes(styles.list, className)} />;
 }

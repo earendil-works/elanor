@@ -10,22 +10,27 @@ Links to the sections of the current page, usually in a side region of a long pa
 import {TableOfContents} from '@earendil-works/elanor-react';
 
 <TableOfContents.Root>
-  <TableOfContents.Item>
-    <TableOfContents.Link href="#usage">Usage</TableOfContents.Link>
-  </TableOfContents.Item>
+  <TableOfContents.List>
+    <TableOfContents.Item>
+      <TableOfContents.Link href="#usage" active>
+        Usage
+      </TableOfContents.Link>
+    </TableOfContents.Item>
+  </TableOfContents.List>
+  <TableOfContents.Indicator />
 </TableOfContents.Root>;
 ```
 
-The demo links point to sections of this page. Root renders a `nav` named "Table of contents" with an ordered list and no visible title; name the region with a heading next to it if the page needs one.
+The demo links point to sections of this page. Root renders a `nav` named "Table of contents" with no visible title; name the region with a heading next to it if the page needs one. `List` renders an ordered list, at the top and for nested entries. Like [Tabs](/components/tabs/), the parts follow Base UI's structure: the `Indicator` after the list marks the active entry.
 
 ## Current section
 
-`active` marks the section in view with `aria-current="location"`: its text turns `semantic.color.text.primary`, and a bar marks it on the list's start edge. When `active` moves to another entry, the bar slides there and resizes with `semantic.transition.movement.tableOfContents.indicator`, overshooting slightly; instantly when the reader prefers reduced motion. Other entries are `semantic.color.text.secondary` until hovered. The application decides which section is current, for example with an `IntersectionObserver`. In the demo, choosing an entry makes it current.
+`active` marks the section in view with `aria-current="location"`: its text turns `semantic.color.text.primary`, and the `Indicator`, a bar on the list's start edge, marks it. When `active` moves to another entry, the indicator slides there and resizes with `semantic.transition.movement.tableOfContents.indicator`, overshooting slightly; instantly when the reader prefers reduced motion. It measures the active link and sets `--active-entry-top` and `--active-entry-height`, like Tabs' indicator; until it has measured, such as in server-rendered HTML, or without an `Indicator`, the active entry draws its own bar. Other entries are `semantic.color.text.secondary` until hovered. The application decides which section is current, for example with an `IntersectionObserver`. In the demo, choosing an entry makes it current.
 
 <Demo example="./examples/active.tsx" />
 
 ## Nested sections
 
-Put a `List` inside an `Item`, after its `Link`, for subsections. Nested entries indent only their text, so the bar stays on the same edge.
+Put another `List` inside an `Item`, after its `Link`, for subsections. Nested entries indent only their text, so the bar stays on the same edge.
 
 <Demo example="./examples/nested.tsx" />

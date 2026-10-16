@@ -12,17 +12,20 @@ export default function TableOfContentsActive() {
   const [active, setActive] = useState('current-section');
   return (
     <TableOfContents.Root>
-      {sections.map((section) => (
-        <TableOfContents.Item key={section.id}>
-          <TableOfContents.Link
-            href={`#${section.id}`}
-            active={section.id === active}
-            onClick={() => setActive(section.id)}
-          >
-            {section.title}
-          </TableOfContents.Link>
-        </TableOfContents.Item>
-      ))}
+      <TableOfContents.List>
+        {sections.map((section) => (
+          <TableOfContents.Item key={section.id}>
+            <TableOfContents.Link
+              href={`#${section.id}`}
+              active={section.id === active}
+              onClick={() => setActive(section.id)}
+            >
+              {section.title}
+            </TableOfContents.Link>
+          </TableOfContents.Item>
+        ))}
+      </TableOfContents.List>
+      <TableOfContents.Indicator />
     </TableOfContents.Root>
   );
 }

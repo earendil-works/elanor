@@ -29,5 +29,8 @@ export default createStrictConfig({
     '--drawer-height',
     '--drawer-frontmost-height',
     '--nested-drawers',
+    // TableOfContents.Indicator measures the active entry, like Base UI's Tabs indicator.
+    '--active-entry-top',
+    '--active-entry-height',
   ],
 });

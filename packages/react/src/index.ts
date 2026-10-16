@@ -471,6 +471,7 @@ export type {
 } from './switch/switch.tsx';
 
 export type {
+  TableOfContentsIndicatorProps,
   TableOfContentsItemProps,
   TableOfContentsLinkProps,
   TableOfContentsListProps,

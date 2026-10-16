@@ -54,27 +54,34 @@
     color: var(--semantic-color-text-primary);
   }
 
-  /* Once measured, one indicator marks the active entry and moves to the next one with a slight
-     overshoot; the entries' own bars give way. Reduced motion makes the move instant through the
-     token. Its position and size are set inline from the measurement. */
+  /* The indicator spans the active entry, positioned from the measured variables like Tabs'
+     indicator, and draws the bar inset from the entry's top and bottom. It moves to the next entry
+     with a slight overshoot; reduced motion makes the move instant through the token. */
   .indicator {
     position: absolute;
     inset-block-start: 0;
     inset-inline-start: 0;
+    translate: 0 var(--active-entry-top);
     inline-size: var(--semantic-dimension-border-width-medium);
-    border-radius: calc(var(--semantic-dimension-radius-small) / 3);
-    /* The root's text color (text.primary), like the active entry's own bar. */
-    background: currentColor;
+    block-size: var(--active-entry-height);
     pointer-events: none;
-  }
-
-  .indicator[data-animated] {
     transition:
       translate var(--semantic-transition-movement-table-of-contents-indicator),
       block-size var(--semantic-transition-movement-table-of-contents-indicator);
   }
 
-  .root[data-indicator] .link[data-active]::before {
+  .indicator::before {
+    position: absolute;
+    inset-block: var(--semantic-dimension-space-padding-x-small);
+    inset-inline: 0;
+    border-radius: calc(var(--semantic-dimension-radius-small) / 3);
+    /* The root's text color (text.primary), like the active entry's own bar. */
+    background: currentColor;
+    content: '';
+  }
+
+  /* While the indicator shows, the active entry's own bar gives way. */
+  .root:has(> .indicator:not([hidden])) .link[data-active]::before {
     content: none;
   }
 
@@ -111,7 +118,7 @@
 
   @media (forced-colors: active) {
     .link[data-active]::before,
-    .indicator {
+    .indicator::before {
       background: CanvasText;
       forced-color-adjust: none;
     }
