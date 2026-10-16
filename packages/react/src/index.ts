@@ -5,6 +5,7 @@ export * as SearchableDropdown from './dropdown/searchable-dropdown/index.ts';
 export * as SearchDialog from './search-dialog/index.ts';
 export * as EmptyState from './empty-state/index.ts';
 export * as Field from './field/index.ts';
+export * as Fieldset from './fieldset/index.ts';
 export * as Grid from './grid/index.ts';
 export * as KeyValue from './key-value/index.ts';
 export * as Layout from './layout/index.ts';
@@ -95,6 +96,10 @@ export {Card} from './card/card.tsx';
 export type {CardProps} from './card/card.tsx';
 
 export type {
+  CheckboxGroupChangeEventDetails,
+  CheckboxGroupChangeEventReason,
+  CheckboxGroupProps,
+  CheckboxGroupState,
   CheckboxIndicatorProps,
   CheckboxIndicatorState,
   CheckboxRootChangeEventDetails,
@@ -201,6 +206,13 @@ export type {
   FieldValidityProps,
   FieldValidityState,
 } from './field/field.tsx';
+
+export type {
+  FieldsetLegendProps,
+  FieldsetLegendState,
+  FieldsetRootProps,
+  FieldsetRootState,
+} from './fieldset/fieldset.tsx';
 
 export {Emphasis} from './emphasis/emphasis.tsx';
 export type {EmphasisProps} from './emphasis/emphasis.tsx';

@@ -1,0 +1,38 @@
+# Fieldset
+
+Groups related controls, such as a set of checkboxes or radios, under one visible label. For a single control, use [Field](/components/field/).
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Checkbox, Fieldset, SelectionControlAndLabel} from '@earendil-works/elanor-react';
+
+<Fieldset.Root render={<Checkbox.Group />}>
+  <Fieldset.Legend>Notify me about</Fieldset.Legend>
+  <SelectionControlAndLabel
+    control={
+      <Checkbox.Root value="incidents">
+        <Checkbox.Indicator />
+      </Checkbox.Root>
+    }
+  >
+    Incidents
+  </SelectionControlAndLabel>
+</Fieldset.Root>;
+```
+
+`Fieldset.Legend` names the group for assistive technology. Use `render` to make the fieldset a [Checkbox](/components/checkbox/) or [Radio](/components/radio/) group.
+
+## Validation
+
+Wrap the fieldset in `Field.Root` with a `name` to submit the group's value with a [Form](/components/form/) and validate it. The demo requires at least one channel.
+
+<Demo example="./examples/validation.tsx" />
+
+## Disabled
+
+`disabled` disables every control in the fieldset.
+
+<Demo example="./examples/disabled.tsx" />

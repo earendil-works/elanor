@@ -13,6 +13,13 @@ export type {
   CheckboxIndicatorState,
 } from '@base-ui/react/checkbox';
 
+export type {
+  CheckboxGroupState,
+  CheckboxGroupProps,
+  CheckboxGroupChangeEventReason,
+  CheckboxGroupChangeEventDetails,
+} from '@base-ui/react/checkbox-group';
+
 export type CheckboxRootProps = ComponentPropsWithRef<typeof BaseCheckbox.Root>;
 export type CheckboxIndicatorProps = BaseCheckbox.Indicator.Props;
 
