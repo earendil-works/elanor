@@ -1,3 +1,5 @@
+import {Collapsible as BaseCollapsible} from '@base-ui/react/collapsible';
+import {KeyboardArrowDownIcon} from '@earendil-works/elanor-icons-react';
 import {
   createContext,
   useContext,
@@ -8,9 +10,17 @@ import {
 } from 'react';
 
 import {CompactTooltip} from '../sidebar/compact-tooltip.tsx';
-import {classes} from '../utils/class-names.ts';
+import {classes, mergeClassName} from '../utils/class-names.ts';
 
 import styles from './side-navigation.module.css';
+
+export type {
+  CollapsibleRootState as SideNavigationCollapsibleState,
+  CollapsibleRootChangeEventReason as SideNavigationCollapsibleChangeEventReason,
+  CollapsibleRootChangeEventDetails as SideNavigationCollapsibleChangeEventDetails,
+  CollapsibleTriggerState as SideNavigationCollapsibleTriggerState,
+  CollapsiblePanelState as SideNavigationCollapsiblePanelState,
+} from '@base-ui/react/collapsible';
 
 export type SideNavigationVariant = 'default' | 'compact';
 
@@ -156,5 +166,74 @@ export function SideNavigationLink({
         ) : null}
       </a>
     </CompactTooltip>
+  );
+}
+
+export type SideNavigationCollapsibleProps = BaseCollapsible.Root.Props;
+
+/**
+ * A section of links that opens and closes. Put a `CollapsibleTrigger` and a `CollapsiblePanel`
+ * with a `List` inside, in an `Item`. Pass `defaultOpen` to the section that contains the current
+ * page, or control it with `open` and `onOpenChange`.
+ */
+export function SideNavigationCollapsible({
+  ref,
+  className,
+  ...props
+}: SideNavigationCollapsibleProps) {
+  return (
+    <BaseCollapsible.Root
+      {...props}
+      ref={ref}
+      className={mergeClassName<BaseCollapsible.Root.State>(styles.collapsible, className)}
+    />
+  );
+}
+
+export type SideNavigationCollapsibleTriggerProps = BaseCollapsible.Trigger.Props;
+
+/** The section's title, a button styled like a link with a chevron at the end. */
+export function SideNavigationCollapsibleTrigger({
+  ref,
+  children,
+  className,
+  ...props
+}: SideNavigationCollapsibleTriggerProps) {
+  return (
+    <BaseCollapsible.Trigger
+      {...props}
+      ref={ref}
+      className={mergeClassName<BaseCollapsible.Trigger.State>(
+        classes(styles.link, styles.trigger),
+        className,
+      )}
+    >
+      <span className={styles.label}>{children}</span>
+      <span className={classes(styles.icon, styles.chevron)} aria-hidden="true">
+        <KeyboardArrowDownIcon />
+      </span>
+    </BaseCollapsible.Trigger>
+  );
+}
+
+export type SideNavigationCollapsiblePanelProps = BaseCollapsible.Panel.Props;
+
+/**
+ * The section's links. It grows and shrinks to its measured height. Closed panels stay in the
+ * document by default (`keepMounted`), so their links are part of the page's HTML.
+ */
+export function SideNavigationCollapsiblePanel({
+  ref,
+  keepMounted = true,
+  className,
+  ...props
+}: SideNavigationCollapsiblePanelProps) {
+  return (
+    <BaseCollapsible.Panel
+      {...props}
+      ref={ref}
+      keepMounted={keepMounted}
+      className={mergeClassName<BaseCollapsible.Panel.State>(styles.panel, className)}
+    />
   );
 }

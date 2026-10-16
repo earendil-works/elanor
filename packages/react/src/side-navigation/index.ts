@@ -5,4 +5,7 @@ export {
   SideNavigationList as List,
   SideNavigationItem as Item,
   SideNavigationLink as Link,
+  SideNavigationCollapsible as Collapsible,
+  SideNavigationCollapsibleTrigger as CollapsibleTrigger,
+  SideNavigationCollapsiblePanel as CollapsiblePanel,
 } from './side-navigation.tsx';

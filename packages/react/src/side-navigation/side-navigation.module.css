@@ -55,7 +55,8 @@
     padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
     border-radius: var(--semantic-dimension-radius-small);
     background: var(--semantic-color-background-fill-ghost-neutral);
-    color: var(--semantic-color-text-primary);
+    /* Items are secondary; the current page and its section are primary. */
+    color: var(--semantic-color-text-secondary);
     text-decoration: none;
   }
 
@@ -67,9 +68,12 @@
     }
   }
 
-  .link:active,
+  /* No pressed fill: it matched the current-page fill, so a click flashed current, hover,
+     current. The current page stands out by its fill, color, and weight. */
   .link[data-active] {
     background: var(--semantic-color-background-fill-ghost-neutral-active);
+    color: var(--semantic-color-text-primary);
+    font-weight: var(--semantic-font-weight-ui-selected);
     box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
       var(--semantic-color-background-fill-ghost-neutral-active);
   }
@@ -86,7 +90,7 @@
     justify-content: center;
     inline-size: var(--semantic-dimension-size-icon);
     block-size: var(--semantic-dimension-size-icon);
-    color: var(--semantic-color-icon-primary);
+    color: var(--semantic-color-icon-secondary);
   }
 
   .icon > svg,
@@ -96,12 +100,71 @@
     block-size: 100%;
   }
 
+  /* Long labels wrap to two lines, then truncate. */
   .label {
+    display: -webkit-box;
     flex: 1;
     min-inline-size: 0;
     overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    line-clamp: 2;
+  }
+
+  .collapsible {
+    min-inline-size: 0;
+  }
+
+  .trigger {
+    border: 0;
+    font: inherit;
+    text-align: start;
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .chevron {
+    transition: rotate var(--semantic-transition-movement-disclosure);
+  }
+
+  .trigger:not([data-panel-open]) .chevron {
+    rotate: -90deg;
+  }
+
+  /* The panel grows and shrinks to its measured height, as in Base UI's Collapsible docs;
+     reduced motion makes the change instant through the token. */
+  .panel {
+    min-inline-size: 0;
+    height: var(--collapsible-panel-height);
+    overflow: hidden;
+    transition: height var(--semantic-transition-movement-disclosure);
+  }
+
+  .panel[data-starting-style],
+  .panel[data-ending-style] {
+    height: 0;
+  }
+
+  /* Space above the nested list, as content rather than padding, so a closed panel has none. */
+  .panel::before {
+    display: block;
+    padding-block-start: var(--semantic-dimension-space-padding-medium);
+    content: '';
+  }
+
+  /* Nested links indent only their text, so fills keep the full row width: 16px past the
+     section title's text. */
+  .panel .link {
+    padding-inline-start: calc(
+      var(--semantic-dimension-space-control-padding-inline-small) +
+        var(--semantic-dimension-space-padding-x-large)
+    );
+  }
+
+  /* A section that contains the current page is marked like the page itself. */
+  .collapsible:has(.link[data-active]) > .trigger {
+    color: var(--semantic-color-text-primary);
+    font-weight: var(--semantic-font-weight-ui-selected);
   }
 
   .link[data-compact] {

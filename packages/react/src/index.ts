@@ -438,6 +438,14 @@ export {Separator} from './separator/separator.tsx';
 export type {SeparatorProps, SeparatorState} from './separator/separator.tsx';
 
 export type {
+  SideNavigationCollapsibleChangeEventDetails,
+  SideNavigationCollapsibleChangeEventReason,
+  SideNavigationCollapsiblePanelProps,
+  SideNavigationCollapsiblePanelState,
+  SideNavigationCollapsibleProps,
+  SideNavigationCollapsibleState,
+  SideNavigationCollapsibleTriggerProps,
+  SideNavigationCollapsibleTriggerState,
   SideNavigationGroupLabelProps,
   SideNavigationGroupProps,
   SideNavigationItemProps,
