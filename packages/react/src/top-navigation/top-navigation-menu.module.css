@@ -46,12 +46,12 @@
     outline-offset: calc(-1 * var(--semantic-dimension-border-width-large));
   }
 
-  /* The open menu fills the window below the top navigation. Its panels share one grid cell. */
+  /* The open menu fills the window below the top navigation. Its panels fill the menu, so the
+     `nav` around them needs no styles. */
   .popup {
     position: fixed;
     inset: var(--semantic-dimension-size-top-navigation) 0 0;
     z-index: var(--semantic-number-layer-floating);
-    display: grid;
     overflow: hidden;
     outline: 0;
     background: var(--semantic-color-background-canvas);
@@ -62,11 +62,11 @@
   /* Panels slide sideways; reduced motion makes the slide instant through the token. Hidden
      panels stay visible while they slide out, then hide. */
   .panel {
+    position: absolute;
+    inset: 0;
     display: flex;
     flex-direction: column;
-    grid-area: 1 / 1;
     gap: var(--semantic-dimension-space-gap-xx-small);
-    min-block-size: 0;
     padding-block: var(--semantic-dimension-space-padding-large)
       var(--semantic-dimension-space-padding-xx-large);
     padding-inline: var(--semantic-dimension-space-padding-x-large);
@@ -125,7 +125,7 @@
     cursor: pointer;
   }
 
-  .link[data-active] {
+  .link:is([aria-current='page'], [aria-current='true']) {
     background: var(--semantic-color-background-fill-ghost-neutral-active);
     color: var(--semantic-color-text-primary);
     font-weight: var(--semantic-font-weight-ui-selected);
@@ -147,7 +147,7 @@
   }
 
   @media (hover: hover) {
-    .link:not([data-active]):hover,
+    .link:not([aria-current='page'], [aria-current='true']):hover,
     .back:hover {
       background: var(--semantic-color-background-fill-ghost-neutral-hover);
     }
@@ -193,7 +193,7 @@
   }
 
   /* A section that contains the current page is marked like the page itself. */
-  .collapsible:has(.link[data-active]) > .collapsibleTrigger {
+  .collapsible:has(.link[aria-current='page']) > .collapsibleTrigger {
     color: var(--semantic-color-text-primary);
     font-weight: var(--semantic-font-weight-ui-selected);
   }
@@ -226,7 +226,7 @@
   }
 
   @media (forced-colors: active) {
-    .link[data-active] {
+    .link:is([aria-current='page'], [aria-current='true']) {
       outline: var(--semantic-dimension-border-width-default) solid Highlight;
       outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
     }
