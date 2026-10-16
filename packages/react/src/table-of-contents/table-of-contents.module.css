@@ -74,7 +74,6 @@
     position: absolute;
     inset-block: var(--semantic-dimension-space-padding-x-small);
     inset-inline: 0;
-    border-radius: calc(var(--semantic-dimension-radius-small) / 3);
     /* The root's text color (text.primary), like the active entry's own bar. */
     background: currentColor;
     content: '';
@@ -92,13 +91,12 @@
   }
 
   /* The active entry gets a bar on the start edge, inset from its top and bottom, in its text
-     color, with a third of the small radius (1px): the small radius would round the ends fully. */
+     color. */
   .link[data-active]::before {
     position: absolute;
     inset-block: var(--semantic-dimension-space-padding-x-small);
     inset-inline-start: 0;
     inline-size: var(--semantic-dimension-border-width-medium);
-    border-radius: calc(var(--semantic-dimension-radius-small) / 3);
     background: currentColor;
     content: '';
     pointer-events: none;
