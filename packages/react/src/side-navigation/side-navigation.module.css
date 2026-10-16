@@ -113,54 +113,56 @@
 
   .collapsible {
     min-inline-size: 0;
-    interpolate-size: allow-keywords;
-  }
-
-  /* Sections animate open and closed: the content grows from zero height and fades in. The clip
-     margin keeps the links' focus rings visible: 6px, the ring (border.width.large) plus its
-     offset (border.width.medium), as one token because Chrome computes a calc() here as 0px.
-     Browsers without ::details-content or interpolate-size open instantly. Reduced motion makes
-     the movement instant through the tokens. */
-  .collapsible::details-content {
-    overflow: clip;
-    overflow-clip-margin: var(--semantic-dimension-space-padding-small);
-    transition:
-      block-size var(--semantic-transition-movement-disclosure),
-      opacity var(--semantic-transition-fade),
-      content-visibility var(--semantic-transition-movement-disclosure-duration) allow-discrete;
-  }
-
-  .collapsible:not([open])::details-content {
-    block-size: 0;
-    opacity: var(--semantic-number-opacity-hidden);
   }
 
   .trigger {
-    list-style: none;
+    border: 0;
+    font: inherit;
+    text-align: start;
     cursor: pointer;
     user-select: none;
-  }
-
-  .trigger::-webkit-details-marker {
-    display: none;
   }
 
   .chevron {
     transition: rotate var(--semantic-transition-movement-disclosure);
   }
 
-  .collapsible:not([open]) > .trigger .chevron {
+  .trigger:not([data-panel-open]) .chevron {
     rotate: -90deg;
   }
 
-  /* Padding, not margin: a margin would collapse out of the closed section. */
-  .collapsible > .list {
+  /* The panel grows and shrinks to its measured height and fades; reduced motion makes the
+     height change instant through the token. It clips only while the height animates. */
+  .panel {
+    min-inline-size: 0;
+    height: var(--collapsible-panel-height);
+    transition:
+      height var(--semantic-transition-movement-disclosure),
+      opacity var(--semantic-transition-fade);
+  }
+
+  .panel[data-height-transition],
+  .panel[data-starting-style],
+  .panel[data-ending-style] {
+    overflow: hidden;
+  }
+
+  .panel[data-starting-style],
+  .panel[data-ending-style] {
+    height: 0;
+    opacity: var(--semantic-number-opacity-hidden);
+  }
+
+  /* Space above the nested list, as content rather than padding, so a closed panel has none. */
+  .panel::before {
+    display: block;
     padding-block-start: var(--semantic-dimension-space-padding-medium);
+    content: '';
   }
 
   /* Nested links indent only their text, so fills keep the full row width: 16px past the
      section title's text. */
-  .collapsible > .list .link {
+  .panel .link {
     padding-inline-start: calc(
       var(--semantic-dimension-space-control-padding-inline-small) +
         var(--semantic-dimension-space-padding-x-large)

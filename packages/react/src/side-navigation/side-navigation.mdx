@@ -25,7 +25,9 @@ Root renders a `nav`. `active` marks the current page with `aria-current="page"`
 
 ## Sections
 
-`Collapsible` holds a section that opens and closes, with a `CollapsibleTrigger` as its title and a `List` of links. It's a native `details` element, so it works before and without JavaScript. Pass `open` to the section that contains the current page; its title is marked like the current page. Nested links indent their text by `semantic.dimension.space.padding.xLarge`. Sections open and close with `semantic.transition.movement.disclosure`, instantly when the reader prefers reduced motion.
+`Collapsible` holds a section that opens and closes, with a `CollapsibleTrigger` as its title and a `CollapsiblePanel` holding a `List` of links. It is built on Base UI's [Collapsible](https://base-ui.com/react/components/collapsible), like [Progressive disclosure](/components/progressive-disclosure/). Pass `defaultOpen` to the section that contains the current page, or control it with `open` and `onOpenChange`; its title is marked like the current page. Nested links indent their text by `semantic.dimension.space.padding.xLarge`.
+
+The panel grows and shrinks to its measured height with `semantic.transition.movement.disclosure` and fades with `semantic.transition.fade`, the same in every browser; the height changes instantly when the reader prefers reduced motion. Closed panels stay in the document (`keepMounted`), so their links are part of the page's HTML.
 
 <Demo example="./examples/sections.tsx" />
 

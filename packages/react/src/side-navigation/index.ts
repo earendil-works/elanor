@@ -7,4 +7,5 @@ export {
   SideNavigationLink as Link,
   SideNavigationCollapsible as Collapsible,
   SideNavigationCollapsibleTrigger as CollapsibleTrigger,
+  SideNavigationCollapsiblePanel as CollapsiblePanel,
 } from './side-navigation.tsx';

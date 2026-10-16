@@ -1,16 +1,19 @@
+import {Collapsible as BaseCollapsible} from '@base-ui/react/collapsible';
+import {useRender} from '@base-ui/react/use-render';
 import {KeyboardArrowDownIcon} from '@earendil-works/elanor-icons-react';
 import {
   createContext,
   useContext,
   type AnchorHTMLAttributes,
-  type DetailsHTMLAttributes,
+  type ComponentPropsWithRef,
+  type CSSProperties,
   type HTMLAttributes,
   type ReactNode,
   type Ref,
 } from 'react';
 
 import {CompactTooltip} from '../sidebar/compact-tooltip.tsx';
-import {classes} from '../utils/class-names.ts';
+import {classes, mergeClassName} from '../utils/class-names.ts';
 
 import styles from './side-navigation.module.css';
 
@@ -161,28 +164,30 @@ export function SideNavigationLink({
   );
 }
 
-export interface SideNavigationCollapsibleProps extends DetailsHTMLAttributes<HTMLDetailsElement> {
-  readonly ref?: Ref<HTMLDetailsElement> | undefined;
-}
+export type SideNavigationCollapsibleProps = BaseCollapsible.Root.Props;
 
 /**
- * A section of links that opens and closes, on a native `details` element, so it works before
- * and without JavaScript. Put a `CollapsibleTrigger` and a `List` inside, in an `Item`. Pass
- * `open` for the section that contains the current page.
+ * A section of links that opens and closes. Put a `CollapsibleTrigger` and a `CollapsiblePanel`
+ * with a `List` inside, in an `Item`. Pass `defaultOpen` to the section that contains the current
+ * page, or control it with `open` and `onOpenChange`.
  */
 export function SideNavigationCollapsible({
   ref,
   className,
   ...props
 }: SideNavigationCollapsibleProps) {
-  return <details {...props} ref={ref} className={classes(styles.collapsible, className)} />;
+  return (
+    <BaseCollapsible.Root
+      {...props}
+      ref={ref}
+      className={mergeClassName<BaseCollapsible.Root.State>(styles.collapsible, className)}
+    />
+  );
 }
 
-export interface SideNavigationCollapsibleTriggerProps extends HTMLAttributes<HTMLElement> {
-  readonly ref?: Ref<HTMLElement> | undefined;
-}
+export type SideNavigationCollapsibleTriggerProps = BaseCollapsible.Trigger.Props;
 
-/** The section's title, a `summary` styled like a link with a chevron at the end. */
+/** The section's title, a button styled like a link with a chevron at the end. */
 export function SideNavigationCollapsibleTrigger({
   ref,
   children,
@@ -190,11 +195,65 @@ export function SideNavigationCollapsibleTrigger({
   ...props
 }: SideNavigationCollapsibleTriggerProps) {
   return (
-    <summary {...props} ref={ref} className={classes(styles.link, styles.trigger, className)}>
+    <BaseCollapsible.Trigger
+      {...props}
+      ref={ref}
+      className={mergeClassName<BaseCollapsible.Trigger.State>(
+        classes(styles.link, styles.trigger),
+        className,
+      )}
+    >
       <span className={styles.label}>{children}</span>
       <span className={classes(styles.icon, styles.chevron)} aria-hidden="true">
         <KeyboardArrowDownIcon />
       </span>
-    </summary>
+    </BaseCollapsible.Trigger>
+  );
+}
+
+export type SideNavigationCollapsiblePanelProps = BaseCollapsible.Panel.Props;
+
+function PanelElement({
+  elementProps,
+  render,
+  state,
+}: {
+  elementProps: ComponentPropsWithRef<'div'>;
+  render: SideNavigationCollapsiblePanelProps['render'];
+  state: BaseCollapsible.Panel.State;
+}) {
+  const style = elementProps.style as CSSProperties & {'--collapsible-panel-height'?: string};
+  const height = style['--collapsible-panel-height'];
+  return useRender({
+    render: typeof render === 'function' ? (props) => render(props, state) : render,
+    props: {
+      ...elementProps,
+      // Clip only while the height animates, so focus rings show at rest.
+      'data-height-transition': height !== undefined && height !== 'auto' ? '' : undefined,
+    },
+  });
+}
+
+/**
+ * The section's links. It grows and shrinks to its measured height. Closed panels stay in the
+ * document by default (`keepMounted`), so their links are part of the page's HTML.
+ */
+export function SideNavigationCollapsiblePanel({
+  ref,
+  keepMounted = true,
+  className,
+  render,
+  ...props
+}: SideNavigationCollapsiblePanelProps) {
+  return (
+    <BaseCollapsible.Panel
+      {...props}
+      ref={ref}
+      keepMounted={keepMounted}
+      render={(elementProps, state) => (
+        <PanelElement elementProps={elementProps} render={render} state={state} />
+      )}
+      className={mergeClassName<BaseCollapsible.Panel.State>(styles.panel, className)}
+    />
   );
 }
