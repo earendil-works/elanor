@@ -69,6 +69,17 @@
           }
         }
       },
+      "1000": {
+        "$value": {
+          "value": 1000,
+          "unit": "ms"
+        },
+        "$extensions": {
+          "com.earendil-works.generation": {
+            "source": "recipes/shared/primitive/duration.json"
+          }
+        }
+      },
       "$type": "duration",
       "$description": "Durations where each step is its value in milliseconds; 0 is an instant change."
     }

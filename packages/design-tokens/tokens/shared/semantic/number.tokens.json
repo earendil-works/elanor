@@ -17,6 +17,10 @@
         "disabled": {
           "$value": "{primitive.number.opacity.400}",
           "$description": "Use as the opacity for disabled elements that remain visible but unavailable for interaction."
+        },
+        "pulse": {
+          "$value": "{primitive.number.opacity.600}",
+          "$description": "Use for the dim end of a loading pulse, such as a skeleton, alternating with `visible` over `transition.pulse`. Do not use for disabled elements."
         }
       },
       "scale": {

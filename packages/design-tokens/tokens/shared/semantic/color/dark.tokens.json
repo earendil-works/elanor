@@ -399,6 +399,10 @@
             "$value": "{primitive.color.black}",
             "$description": "Use for the movable knob inside a switch track."
           }
+        },
+        "skeleton": {
+          "$value": "{primitive.color.graphite.700}",
+          "$description": "Use for placeholders that stand in for content while it loads, on canvas and surfaces. Do not use for empty or disabled states."
         }
       },
       "border": {

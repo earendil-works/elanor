@@ -28,7 +28,7 @@ State vocabulary:
 - Numeric primitive steps or [derived-color operations](#derived-primitive-colors).
 - Semantic heading levels `1`–`6`.
 - T-shirt sizes: `xxxSmall`, `xxSmall`, `xSmall`, `small`, `medium`, `large`, `xLarge`, `xxLarge`, `xxxLarge`, `xxxxLarge`.
-- `none`, `default`, `full`, `rest`, `hidden`, `visible`, `hover`, `focus`, `active`, `selected`, `checked`, `disabled`, `visited`. Reserve `none` for explicit zero spacing and `full` for radii. `rest` is the value when nothing moves (`scale.rest`, `travel.rest`); `hidden` and `visible` are the ends of a fade.
+- `none`, `default`, `full`, `rest`, `hidden`, `visible`, `pulse`, `hover`, `focus`, `active`, `selected`, `checked`, `disabled`, `visited`. Reserve `none` for explicit zero spacing and `full` for radii. `rest` is the value when nothing moves (`scale.rest`, `travel.rest`); `hidden` and `visible` are the ends of a fade; `pulse` is the far end of a repeating loading pulse.
 
 Examples:
 
@@ -76,7 +76,7 @@ The first category selects the type vocabulary:
 | `semantic`  | `fontFamily`   | `prose`, `ui`, `code`                                            |
 | `semantic`  | `fontWeight`   | `emphasis`, `ui`                                                 |
 | `semantic`  | `typography`   | `code`, `heading`, `primary`, `prose`, `secondary`, `ui`         |
-| `semantic`  | `transition`   | `feedback`, `fade`, `movement`                                   |
+| `semantic`  | `transition`   | `feedback`, `fade`, `movement`, `pulse`                          |
 
 Context-neutral tokens stand directly under their category because they apply in any text context: `semantic.fontWeight.emphasis`, and `semantic.typography.primary` and `.secondary`, which the `textContext` modifier resolves to the UI styles in interfaces and the prose styles in long-form content. `fontWeight.ui.*` and `typography.ui.*` are for interface text only.
 
@@ -143,9 +143,10 @@ semantic.color.icon.radio.indicator
 semantic.color.background.switch
 semantic.color.background.switch.selected
 semantic.color.background.switch.knob
+semantic.color.background.skeleton
 ```
 
-Checkbox/radio bases alias `fill.ghost.neutral`; selected variants and slider progress alias `fill.selected`. Slider track aliases the neutral secondary fill; its endstop aliases the primary border. Switch base is its off track, `selected` its on track, and `knob` its movable part.
+Checkbox/radio bases alias `fill.ghost.neutral`; selected variants and slider progress alias `fill.selected`. Slider track aliases the neutral secondary fill; its endstop aliases the primary border. Switch base is its off track, `selected` its on track, and `knob` its movable part. `skeleton` is a loading placeholder, visible on canvas and surfaces in both schemes; it pulses between `opacity.visible` and `opacity.pulse` over `transition.pulse`.
 
 Append `hover`/`active` only for changes, such as `background.checkbox.hover` or `background.radio.selected.hover`. Switch tracks and selected checkbox fills have no interaction variants.
 
@@ -176,10 +177,12 @@ Transitions are DTCG `transition` composites. Each references one primitive dura
 | `feedback` | Color, background, border, and shadow changes, such as hover and press | Unchanged      |
 | `fade`     | Opacity when something appears or disappears                           | Unchanged      |
 | `movement` | Position, size, scale, rotation, and height                            | Instant        |
+| `pulse`    | A repeating opacity pulse while content loads, such as a skeleton      | Unchanged      |
 
 ```text
 semantic.transition.feedback
 semantic.transition.fade
+semantic.transition.pulse
 semantic.transition.movement.popup
 semantic.transition.movement.disclosure
 semantic.transition.movement.indicator
