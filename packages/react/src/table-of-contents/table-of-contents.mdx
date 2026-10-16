@@ -37,7 +37,7 @@ Put another `List` inside an `Item`, after its `Link`, for subsections. Nested e
 
 ## Menu
 
-For layouts without room for the list beside the content, `Menu` collapses the table of contents into a bar with a dropdown. `MenuTrigger` shows the current section; `MenuPopup` holds the same `List`, `Item`, and `Link` parts, which look like dropdown items there, and choosing a link closes it. The list also closes when the page scrolls.
+For layouts without room for the list beside the content, `Menu` collapses the table of contents into a bar with a dropdown. `MenuTrigger` shows the current section; `MenuPopup` holds the same `List`, `Item`, and `Link` parts, which look like dropdown items there, and choosing a link closes it. The list also closes when the bar's scroll container scrolls.
 
 <Demo example="./examples/menu.tsx" />
 
@@ -52,4 +52,4 @@ For layouts without room for the list beside the content, `Menu` collapses the t
 
 Keep the trigger's text in sync with the `active` link. Assistive technology hears "Table of contents: " before it; change that with the trigger's `label`, and the list's name with the popup's `label`.
 
-The menu is a bar with separators above and below that sticks to the top of its scroll container, on `semantic.number.layer.floating`, with a shadow that fades in as content scrolls beneath it. To stick below a header, set `inset-block-start` in your CSS, such as `calc(var(--semantic-dimension-size-top-navigation) - var(--semantic-dimension-border-width-small))` below a top navigation: the bar sticks one border width higher, so the header's border covers its top separator.
+The menu is a bar with separators above and below that sticks to the top of its scroll container, the document or a scrolling ancestor such as a drawer, on `semantic.number.layer.floating`, with a shadow that fades in as content scrolls beneath it. To stick below a header, set `inset-block-start` in your CSS, such as `calc(var(--semantic-dimension-size-top-navigation) - var(--semantic-dimension-border-width-small))` below a top navigation: the bar sticks one border width higher, so the header's border covers its top separator.

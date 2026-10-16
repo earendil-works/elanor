@@ -135,6 +135,8 @@ export function TableOfContentsLink({
     <a
       {...props}
       ref={ref}
+      // Explicit, so the accessibility lint sees a link rather than a static element with a click
+      // handler.
       href={href}
       aria-current={active ? 'location' : props['aria-current']}
       data-active={active ? '' : undefined}
@@ -159,11 +161,22 @@ export interface TableOfContentsMenuProps extends useRender.ComponentProps<'div'
 const SHADOW_FADE_DISTANCE = 32;
 
 /**
- * The table of contents collapsed into a sticky bar with a dropdown, for layouts without room for
- * the full list. Put a `MenuTrigger` and a `MenuPopup` inside. The bar sticks to the top of its
- * scroll container; set `inset-block-start` in your CSS to stick below a header. Its shadow fades
- * in as content scrolls beneath it, and the list closes when the page scrolls.
+ * The element the bar sticks within: its nearest ancestor that clips or scrolls its overflow,
+ * like `position: sticky` uses, or `null` for the document.
  */
+function getScrollContainer(element: HTMLElement): HTMLElement | null {
+  for (let node = element.parentElement; node; node = node.parentElement) {
+    if (node === document.body || node === document.documentElement) return null;
+    if (/auto|scroll|overlay|hidden/.test(getComputedStyle(node).overflowY)) return node;
+  }
+  return null;
+}
+
+/** Scrolling position of a scroll container, or of the document for `null`. */
+function scrollTopOf(container: HTMLElement | null): number {
+  return container ? container.scrollTop : scrollY;
+}
+
 export function TableOfContentsMenu({ref, render, children, ...props}: TableOfContentsMenuProps) {
   const barRef = useRef<HTMLDivElement>(null);
   const actionsRef = useRef<BasePopover.Root.Actions>(null);
@@ -171,11 +184,14 @@ export function TableOfContentsMenu({ref, render, children, ...props}: TableOfCo
 
   const close = useCallback(() => actionsRef.current?.close(), []);
 
-  // Close the list when the page scrolls, so it never covers what the reader scrolls to.
+  // Close the list when the bar's scroll container scrolls, so it never covers what the reader
+  // scrolls to. The list's own scrolling doesn't count.
   useEffect(() => {
-    if (!open) return undefined;
-    addEventListener('scroll', close, {passive: true});
-    return () => removeEventListener('scroll', close);
+    const bar = barRef.current;
+    if (!open || !bar) return undefined;
+    const target = getScrollContainer(bar) ?? window;
+    target.addEventListener('scroll', close, {passive: true});
+    return () => target.removeEventListener('scroll', close);
   }, [open, close]);
 
   // Fade the shadow in as content scrolls beneath the bar: 0 at its resting position, 1 once
@@ -183,34 +199,56 @@ export function TableOfContentsMenu({ref, render, children, ...props}: TableOfCo
   useEffect(() => {
     const bar = barRef.current;
     if (!bar) return undefined;
+    const container = getScrollContainer(bar);
+    const target = container ?? window;
     let restingTop = 0;
     let stickyTop = 0;
     let frame = 0;
     function update(): void {
       frame = 0;
-      const progress = (scrollY + stickyTop - restingTop) / SHADOW_FADE_DISTANCE;
+      const progress = (scrollTopOf(container) + stickyTop - restingTop) / SHADOW_FADE_DISTANCE;
       bar?.style.setProperty('--sticky-progress', String(Math.min(Math.max(progress, 0), 1)));
     }
-    // The resting position changes only with the layout; measure it with sticking turned off.
+    // The resting position, in the container's scrolling coordinates, changes only with the
+    // layout; measure it with sticking turned off, then restore any inline position.
     function measure(): void {
       if (!bar) return;
+      const position = bar.style.position;
       bar.style.position = 'static';
-      restingTop = bar.getBoundingClientRect().top + scrollY;
-      bar.style.removeProperty('position');
+      const containerTop = container
+        ? container.getBoundingClientRect().top + container.clientTop
+        : 0;
+      restingTop = bar.getBoundingClientRect().top - containerTop + scrollTopOf(container);
+      bar.style.position = position;
       stickyTop = Number.parseFloat(getComputedStyle(bar).insetBlockStart) || 0;
       update();
     }
     function scheduleUpdate(): void {
       if (!frame) frame = requestAnimationFrame(update);
     }
+    // Re-measure when the content around the bar changes size: the document's body, or the
+    // container and what it holds, since a scroller keeps its own size as its content grows,
+    // including children added later.
     const observer = new ResizeObserver(measure);
-    observer.observe(document.body);
-    addEventListener('scroll', scheduleUpdate, {passive: true});
+    const children = new MutationObserver((records) => {
+      for (const record of records) {
+        for (const node of record.addedNodes) if (node instanceof Element) observer.observe(node);
+      }
+      measure();
+    });
+    if (container) {
+      for (const element of [container, ...container.children]) observer.observe(element);
+      children.observe(container, {childList: true});
+    } else {
+      observer.observe(document.body);
+    }
+    target.addEventListener('scroll', scheduleUpdate, {passive: true});
     measure();
     return () => {
       cancelAnimationFrame(frame);
       observer.disconnect();
-      removeEventListener('scroll', scheduleUpdate);
+      children.disconnect();
+      target.removeEventListener('scroll', scheduleUpdate);
     };
   }, []);
 
@@ -267,7 +305,7 @@ export function TableOfContentsMenuTrigger({
 
 export interface TableOfContentsMenuPopupProps extends HTMLAttributes<HTMLElement> {
   readonly ref?: Ref<HTMLElement> | undefined;
-  /** Accessible name of the list's `nav`. */
+  /** Accessible name of the popup and the list's `nav`. */
   readonly label?: string;
 }
 
@@ -282,7 +320,7 @@ export function TableOfContentsMenuPopup({
   return (
     <BasePopover.Portal>
       <BasePopover.Positioner align="start" className={styles.menuPositioner}>
-        <BasePopover.Popup className={styles.menuPopup}>
+        <BasePopover.Popup aria-label={label} className={styles.menuPopup}>
           <nav {...props} ref={ref} aria-label={label} className={className}>
             {children}
           </nav>
