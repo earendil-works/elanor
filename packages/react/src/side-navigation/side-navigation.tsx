@@ -14,6 +14,14 @@ import {classes, mergeClassName} from '../utils/class-names.ts';
 
 import styles from './side-navigation.module.css';
 
+export type {
+  CollapsibleRootState as SideNavigationCollapsibleState,
+  CollapsibleRootChangeEventReason as SideNavigationCollapsibleChangeEventReason,
+  CollapsibleRootChangeEventDetails as SideNavigationCollapsibleChangeEventDetails,
+  CollapsibleTriggerState as SideNavigationCollapsibleTriggerState,
+  CollapsiblePanelState as SideNavigationCollapsiblePanelState,
+} from '@base-ui/react/collapsible';
+
 export type SideNavigationVariant = 'default' | 'compact';
 
 export interface SideNavigationRootProps extends HTMLAttributes<HTMLElement> {
