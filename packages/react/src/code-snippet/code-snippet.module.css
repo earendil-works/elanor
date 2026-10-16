@@ -2,16 +2,16 @@
   .root {
     box-sizing: border-box;
     display: flex;
-    align-items: center;
-    justify-content: center;
+    /* Code and actions align to the top, so a multi-line block keeps its action on the first line. */
+    align-items: flex-start;
     gap: var(--semantic-dimension-space-control-gap-medium);
     min-inline-size: 0;
     margin: 0;
-    padding-block: var(--semantic-dimension-space-control-padding-block-small);
-    padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
+    padding-block: var(--semantic-dimension-space-padding-medium);
+    padding-inline: var(--semantic-dimension-space-padding-x-large);
     border-radius: var(--semantic-dimension-radius-small);
     background: var(--semantic-color-background-fill-secondary);
-    color: var(--semantic-color-text-on-secondary-fill);
+    color: var(--semantic-color-text-code);
     box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
       var(--semantic-color-background-fill-secondary);
   }
@@ -23,10 +23,33 @@
     white-space: pre;
   }
 
+  /* The action slot is one code line tall, so an action centers on the first line, and a single
+     line stays centered in the block. A 24px button overhangs the 20px line into the padding. */
   .actions {
     display: inline-flex;
     flex: none;
     align-items: center;
+    block-size: 1lh;
     margin-inline-start: auto;
+    font: var(--semantic-typography-code-primary);
+    transition: opacity var(--semantic-transition-fade);
+  }
+
+  /* Touch screens get a 48px icon button, which takes the 24px button's space, so the icon stays
+     where it is with a fine pointer. */
+  @media (pointer: coarse) {
+    .actions > * {
+      margin: calc(
+        (var(--semantic-dimension-size-small) - var(--semantic-dimension-size-x-large)) / 2
+      );
+    }
+  }
+
+  /* With a mouse, actions show on hover, on keyboard focus, and while a copy button reports a copy;
+     touch screens always show them. */
+  @media (hover: hover) {
+    .root:not(:hover, :focus-within) .actions:not(:has([data-copy-state='copied'])) {
+      opacity: var(--semantic-number-opacity-hidden);
+    }
   }
 }
