@@ -524,6 +524,20 @@ export type {
   TopNavigationRootProps,
 } from './top-navigation/top-navigation.tsx';
 
+export type {
+  TopNavigationMenuCollapsiblePanelProps,
+  TopNavigationMenuCollapsibleProps,
+  TopNavigationMenuCollapsibleTriggerProps,
+  TopNavigationMenuItemProps,
+  TopNavigationMenuLinkProps,
+  TopNavigationMenuListProps,
+  TopNavigationMenuPanelProps,
+  TopNavigationMenuPanelTriggerProps,
+  TopNavigationMenuPopupProps,
+  TopNavigationMenuProps,
+  TopNavigationMenuTriggerProps,
+} from './top-navigation/top-navigation-menu.tsx';
+
 export {DirectionProvider, useDirection} from '@base-ui/react/direction-provider';
 export type {DirectionProviderProps, TextDirection} from '@base-ui/react/direction-provider';
 
