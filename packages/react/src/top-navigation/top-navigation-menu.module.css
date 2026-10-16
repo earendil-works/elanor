@@ -13,9 +13,21 @@
     cursor: pointer;
   }
 
-  .trigger > svg {
+  /* The menu icon turns into the close icon while the menu is open. */
+  .openIcon,
+  .closeIcon {
+    grid-area: 1 / 1;
     inline-size: var(--semantic-dimension-size-icon);
     block-size: var(--semantic-dimension-size-icon);
+  }
+
+  .closeIcon,
+  .trigger[data-popup-open] > .openIcon {
+    visibility: hidden;
+  }
+
+  .trigger[data-popup-open] > .closeIcon {
+    visibility: visible;
   }
 
   .trigger[data-popup-open] {
@@ -41,13 +53,10 @@
     z-index: var(--semantic-number-layer-floating);
     display: grid;
     overflow: hidden;
+    outline: 0;
     background: var(--semantic-color-background-canvas);
     color: var(--semantic-color-text-primary);
     font: var(--semantic-typography-ui-primary);
-  }
-
-  .popup[hidden] {
-    display: none;
   }
 
   /* Panels slide sideways; reduced motion makes the slide instant through the token. Hidden
@@ -66,9 +75,9 @@
     transition: translate var(--semantic-transition-movement-disclosure);
   }
 
+  /* Visibility stays visible for the whole transition, then switches. */
   .panel:is([data-position='before'], [data-position='after']) {
     visibility: hidden;
-    /* Visibility stays visible for the whole transition, then switches. */
     transition:
       translate var(--semantic-transition-movement-disclosure),
       visibility var(--semantic-transition-movement-disclosure);
@@ -95,7 +104,8 @@
     min-inline-size: 0;
   }
 
-  /* Items match SideNavigation's links. */
+  /* Items: secondary text, the current page or section filled in primary text at the selected
+     weight, which keeps its fill on hover. */
   .link,
   .back {
     box-sizing: border-box;
@@ -115,6 +125,14 @@
     cursor: pointer;
   }
 
+  /* Touch screens get 48px rows. */
+  @media (pointer: coarse) {
+    .link,
+    .back {
+      min-block-size: var(--semantic-dimension-size-x-large);
+    }
+  }
+
   .link[data-active] {
     background: var(--semantic-color-background-fill-ghost-neutral-active);
     color: var(--semantic-color-text-primary);
@@ -122,25 +140,20 @@
   }
 
   /* The back button leads a nested panel in the selected weight, with room below it. Its label
-     centers in the row; its chevron sits at the start, in line with the items' text. */
+     centers in the row; its chevron sits at the start, in line with the items' text. A grid
+     places them: positioning the chevron absolutely kept WebKit from hitting the button. */
   .back {
-    position: relative;
-    justify-content: center;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
     margin-block-end: var(--semantic-dimension-space-gap-large);
     color: var(--semantic-color-text-primary);
     font-weight: var(--semantic-font-weight-ui-selected);
   }
 
-  .back > .label {
-    flex: none;
-  }
-
   .back > .icon {
-    position: absolute;
-    inset-inline-start: var(--semantic-dimension-space-control-padding-inline-small);
+    justify-self: start;
   }
 
-  /* The current section keeps its fill on hover. */
   @media (hover: hover) {
     .link:not([data-active]):hover,
     .back:hover {
@@ -171,6 +184,53 @@
     display: block;
     inline-size: 100%;
     block-size: 100%;
+  }
+
+  /* Collapsible sections inside a panel, built like SideNavigation's: the chevron points sideways
+     while closed, and the panel animates its measured height. */
+  .collapsible {
+    min-inline-size: 0;
+  }
+
+  .chevron {
+    transition: rotate var(--semantic-transition-movement-disclosure);
+  }
+
+  .collapsibleTrigger:not([data-panel-open]) .chevron {
+    rotate: -90deg;
+  }
+
+  /* A section that contains the current page is marked like the page itself. */
+  .collapsible:has(.link[data-active]) > .collapsibleTrigger {
+    color: var(--semantic-color-text-primary);
+    font-weight: var(--semantic-font-weight-ui-selected);
+  }
+
+  .collapsiblePanel {
+    min-inline-size: 0;
+    height: var(--collapsible-panel-height);
+    overflow: hidden;
+    transition: height var(--semantic-transition-movement-disclosure);
+  }
+
+  .collapsiblePanel[data-starting-style],
+  .collapsiblePanel[data-ending-style] {
+    height: 0;
+  }
+
+  /* Space above the nested list, as content rather than padding, so a closed panel has none. */
+  .collapsiblePanel::before {
+    display: block;
+    padding-block-start: var(--semantic-dimension-space-padding-xx-small);
+    content: '';
+  }
+
+  /* Nested links indent only their text, so fills keep the full row width. */
+  .collapsiblePanel .link {
+    padding-inline-start: calc(
+      var(--semantic-dimension-space-control-padding-inline-small) +
+        var(--semantic-dimension-space-padding-x-large)
+    );
   }
 
   @media (forced-colors: active) {
