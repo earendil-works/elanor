@@ -7,6 +7,7 @@ import {
   useRef,
   type FormHTMLAttributes,
   type HTMLAttributes,
+  type KeyboardEvent,
   type MouseEvent,
   type ReactNode,
   type Ref,
@@ -148,12 +149,33 @@ export function SearchDialogForm({ref, className, ...props}: SearchDialogFormPro
 
 export interface SearchDialogInputProps extends Omit<BaseAutocomplete.Input.Props, 'type'> {}
 
+// ⌘, Ctrl, or Alt with Enter opens the selected result in a new tab and leaves the search open,
+// as a modified click does. The field names the selected result in `aria-activedescendant`.
+function openSelectedResultInNewTab(event: KeyboardEvent<HTMLInputElement>): void {
+  if (event.key !== 'Enter' || event.nativeEvent.isComposing) return;
+  if (!event.metaKey && !event.ctrlKey && !event.altKey) return;
+  const input = event.currentTarget;
+  const selectedId = input.getAttribute('aria-activedescendant');
+  const href = selectedId
+    ? input.ownerDocument.getElementById(selectedId)?.getAttribute('href')
+    : null;
+  if (!href) return;
+  event.preventDefault();
+  event.stopPropagation();
+  input.ownerDocument.defaultView?.open(href, '_blank', 'noopener,noreferrer');
+}
+
 /**
  * The field: the search icon and the query, without a field's fill or border; the dialog is the
  * field. Focused when the dialog opens. Its type is `text`, because in a `search` field Escape
  * first clears the query and browsers add their own clear button.
  */
-export function SearchDialogInput({ref, className, ...props}: SearchDialogInputProps) {
+export function SearchDialogInput({
+  ref,
+  className,
+  onKeyDownCapture,
+  ...props
+}: SearchDialogInputProps) {
   return (
     <span className={styles.field}>
       <span className={styles.icon} aria-hidden="true">
@@ -167,6 +189,10 @@ export function SearchDialogInput({ref, className, ...props}: SearchDialogInputP
         spellCheck={false}
         enterKeyHint="go"
         {...props}
+        onKeyDownCapture={(event) => {
+          onKeyDownCapture?.(event);
+          if (!event.defaultPrevented) openSelectedResultInNewTab(event);
+        }}
         ref={ref}
         type="text"
         className={mergeClassName<BaseAutocomplete.Input.State>(styles.input, className)}

@@ -36,7 +36,7 @@ import {SearchDialog} from '@earendil-works/elanor-react';
 
 The application finds the results; the dialog shows them. Control the query with `value` and `onValueChange` on the Popup, render a `Result` per match, and show a `Message`, such as an [Empty state](/components/empty-state/), when there are none. `Status` announces the count to assistive technology. Clear the query when the dialog opens, in Root's `onOpenChange`, so each search starts empty.
 
-The field is a combobox that controls the list. The first result is selected as results arrive; the arrow keys move the selection, and Enter or a click follows the selected result's link and closes the dialog. A click with a modifier key, such as opening the link in a new tab, leaves it open. Without results, Enter submits the form, so set `action` and the field's `name` for a search page.
+The field is a combobox that controls the list. The first result is selected as results arrive; the arrow keys move the selection, and Enter or a click follows the selected result's link and closes the dialog. A click with a modifier key, such as opening the link in a new tab, leaves it open, and so does ⌘, Ctrl, or Alt with Enter, which opens the selected result in a new tab. Without results, Enter submits the form, so set `action` and the field's `name` for a search page.
 
 Results are `a` elements. For a router's link component, pass it as `render`, such as `render={<Link />}`; it receives the Result's `href`.
 
