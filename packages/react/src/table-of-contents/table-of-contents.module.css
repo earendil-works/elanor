@@ -1,81 +1,83 @@
-.root,
-.list,
-.link {
-  box-sizing: border-box;
-}
-
-.root {
-  display: flex;
-  flex-direction: column;
-  gap: var(--semantic-dimension-space-gap-small);
-  min-inline-size: 0;
-  color: var(--semantic-color-text-primary);
-}
-
-.title {
-  font: var(--semantic-typography-ui-label);
-}
-
-.list {
-  display: flex;
-  flex-direction: column;
-  gap: var(--semantic-dimension-space-gap-x-small);
-  margin: 0;
-  padding: 0;
-  padding-inline-start: var(--semantic-dimension-space-padding-x-large);
-  list-style: none;
-}
-
-.item {
-  min-inline-size: 0;
-}
-
-.link {
-  display: flex;
-  align-items: center;
-  padding-block: var(--semantic-dimension-space-control-padding-block-small);
-  color: inherit;
-  font: var(--semantic-typography-ui-primary);
-  overflow-wrap: anywhere;
-  text-decoration: none;
-}
-
-.label {
-  position: relative;
-  min-inline-size: 0;
-}
-
-.label::after {
-  position: absolute;
-  inset-inline: 0;
-  inset-block-end: calc(-1 * var(--semantic-dimension-space-control-padding-block-small));
-  block-size: var(--semantic-dimension-border-width-default);
-  background: var(--semantic-color-border-primary);
-  content: '';
-  visibility: hidden;
-  pointer-events: none;
-}
-
-.link:hover > .label::after,
-.link[data-active] > .label::after {
-  visibility: visible;
-}
-
-.link:focus-visible {
-  border-radius: var(--semantic-dimension-radius-small);
-  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
-  outline-offset: var(--semantic-dimension-border-width-medium);
-}
-
-@media (pointer: coarse) {
+@layer elanor.components {
+  .root,
+  .list,
   .link {
-    min-block-size: var(--semantic-dimension-size-x-large);
+    box-sizing: border-box;
   }
-}
 
-@media (forced-colors: active) {
+  .root {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-gap-small);
+    min-inline-size: 0;
+    color: var(--semantic-color-text-primary);
+  }
+
+  .title {
+    font: var(--semantic-typography-ui-label);
+  }
+
+  .list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-gap-x-small);
+    margin: 0;
+    padding: 0;
+    padding-inline-start: var(--semantic-dimension-space-padding-x-large);
+    list-style: none;
+  }
+
+  .item {
+    min-inline-size: 0;
+  }
+
+  .link {
+    display: flex;
+    align-items: center;
+    padding-block: var(--semantic-dimension-space-control-padding-block-small);
+    color: inherit;
+    font: var(--semantic-typography-ui-primary);
+    overflow-wrap: anywhere;
+    text-decoration: none;
+  }
+
+  .label {
+    position: relative;
+    min-inline-size: 0;
+  }
+
   .label::after {
-    background: CanvasText;
-    forced-color-adjust: none;
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: calc(-1 * var(--semantic-dimension-space-control-padding-block-small));
+    block-size: var(--semantic-dimension-border-width-default);
+    background: var(--semantic-color-border-primary);
+    content: '';
+    visibility: hidden;
+    pointer-events: none;
+  }
+
+  .link:hover > .label::after,
+  .link[data-active] > .label::after {
+    visibility: visible;
+  }
+
+  .link:focus-visible {
+    border-radius: var(--semantic-dimension-radius-small);
+    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline-offset: var(--semantic-dimension-border-width-medium);
+  }
+
+  @media (pointer: coarse) {
+    .link {
+      min-block-size: var(--semantic-dimension-size-x-large);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .label::after {
+      background: CanvasText;
+      forced-color-adjust: none;
+    }
   }
 }

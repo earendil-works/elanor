@@ -1,107 +1,109 @@
-.root {
-  box-sizing: border-box;
-  display: inline-flex;
-  align-items: center;
-  gap: var(--semantic-dimension-space-control-gap-large);
-  min-inline-size: 0;
-  padding-block: calc(
-    var(--semantic-dimension-space-control-padding-block-small) -
-      var(--semantic-dimension-border-width-default)
-  );
-  padding-inline: calc(
-    var(--semantic-dimension-space-control-padding-inline-small) -
-      var(--semantic-dimension-border-width-default)
-  );
-  border: var(--semantic-dimension-border-width-default) solid
-    var(--semantic-color-background-fill-secondary);
-  border-radius: var(--semantic-dimension-radius-small);
-  background: var(--semantic-color-background-fill-secondary);
-  color: var(--semantic-color-text-primary);
-}
-
-@media (hover: hover) {
-  .root:where(:hover:not(:has(.input:disabled, .input[data-disabled]))) {
-    border-color: var(--semantic-color-background-fill-secondary-hover);
-    background: var(--semantic-color-background-fill-secondary-hover);
-  }
-}
-
-.root:where(:focus-within:not(:has(.input:disabled, .input[data-disabled]))) {
-  border-color: var(--semantic-color-focus-ring);
-  background: var(--semantic-color-background-fill-secondary);
-}
-
-.root:has(.input:focus-visible) {
-  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
-  outline-offset: var(--semantic-dimension-border-width-medium);
-}
-
-.root:where(:has(.input[data-invalid], .input[aria-invalid='true'])) {
-  border-color: var(--semantic-color-focus-ring-negative);
-}
-
-.root:where(:has(.input:disabled, .input[data-disabled])) {
-  cursor: not-allowed;
-  opacity: var(--semantic-number-opacity-disabled);
-}
-
-.icon,
-.adornment {
-  display: inline-flex;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  inline-size: var(--semantic-dimension-size-icon);
-  block-size: var(--semantic-dimension-size-icon);
-  color: var(--semantic-color-icon-primary);
-}
-
-.icon {
-  color: var(--semantic-color-icon-secondary);
-}
-
-.icon > svg,
-.icon > img,
-.adornment > svg,
-.adornment > img {
-  display: block;
-  inline-size: 100%;
-  block-size: 100%;
-}
-
-.input {
-  box-sizing: border-box;
-  inline-size: 100%;
-  min-inline-size: 0;
-  padding: 0;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: inherit;
-  font: var(--semantic-typography-ui-primary);
-}
-
-/* Hide the built-in clear button so browsers match and a custom one isn't doubled. */
-.input::-webkit-search-cancel-button,
-.input::-webkit-search-decoration {
-  appearance: none;
-}
-
-.input::placeholder {
-  color: var(--semantic-color-text-secondary);
-}
-
-.input:disabled,
-.input[data-disabled] {
-  cursor: not-allowed;
-}
-
-@media (forced-colors: active) {
+@layer elanor.components {
   .root {
-    border-color: ButtonBorder;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--semantic-dimension-space-control-gap-large);
+    min-inline-size: 0;
+    padding-block: calc(
+      var(--semantic-dimension-space-control-padding-block-small) -
+        var(--semantic-dimension-border-width-default)
+    );
+    padding-inline: calc(
+      var(--semantic-dimension-space-control-padding-inline-small) -
+        var(--semantic-dimension-border-width-default)
+    );
+    border: var(--semantic-dimension-border-width-default) solid
+      var(--semantic-color-background-fill-secondary);
+    border-radius: var(--semantic-dimension-radius-small);
+    background: var(--semantic-color-background-fill-secondary);
+    color: var(--semantic-color-text-primary);
+  }
+
+  @media (hover: hover) {
+    .root:where(:hover:not(:has(.input:disabled, .input[data-disabled]))) {
+      border-color: var(--semantic-color-background-fill-secondary-hover);
+      background: var(--semantic-color-background-fill-secondary-hover);
+    }
+  }
+
+  .root:where(:focus-within:not(:has(.input:disabled, .input[data-disabled]))) {
+    border-color: var(--semantic-color-focus-ring);
+    background: var(--semantic-color-background-fill-secondary);
   }
 
   .root:has(.input:focus-visible) {
-    outline-color: Highlight;
+    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline-offset: var(--semantic-dimension-border-width-medium);
+  }
+
+  .root:where(:has(.input[data-invalid], .input[aria-invalid='true'])) {
+    border-color: var(--semantic-color-focus-ring-negative);
+  }
+
+  .root:where(:has(.input:disabled, .input[data-disabled])) {
+    cursor: not-allowed;
+    opacity: var(--semantic-number-opacity-disabled);
+  }
+
+  .icon,
+  .adornment {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    inline-size: var(--semantic-dimension-size-icon);
+    block-size: var(--semantic-dimension-size-icon);
+    color: var(--semantic-color-icon-primary);
+  }
+
+  .icon {
+    color: var(--semantic-color-icon-secondary);
+  }
+
+  .icon > svg,
+  .icon > img,
+  .adornment > svg,
+  .adornment > img {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  .input {
+    box-sizing: border-box;
+    inline-size: 100%;
+    min-inline-size: 0;
+    padding: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: inherit;
+    font: var(--semantic-typography-ui-primary);
+  }
+
+  /* Hide the built-in clear button so browsers match and a custom one isn't doubled. */
+  .input::-webkit-search-cancel-button,
+  .input::-webkit-search-decoration {
+    appearance: none;
+  }
+
+  .input::placeholder {
+    color: var(--semantic-color-text-secondary);
+  }
+
+  .input:disabled,
+  .input[data-disabled] {
+    cursor: not-allowed;
+  }
+
+  @media (forced-colors: active) {
+    .root {
+      border-color: ButtonBorder;
+    }
+
+    .root:has(.input:focus-visible) {
+      outline-color: Highlight;
+    }
   }
 }

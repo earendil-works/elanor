@@ -1,53 +1,55 @@
-.root {
-  display: flex;
-  flex-direction: column;
-  flex-wrap: nowrap;
-  align-items: flex-start;
-  gap: var(--semantic-dimension-space-gap-medium);
-  min-inline-size: 0;
-}
+@layer elanor.components {
+  .root {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    align-items: flex-start;
+    gap: var(--semantic-dimension-space-gap-medium);
+    min-inline-size: 0;
+  }
 
-.row {
-  flex-direction: row;
-}
+  .row {
+    flex-direction: row;
+  }
 
-.gapXxs {
-  gap: var(--semantic-dimension-space-gap-xx-small);
-}
+  .gapXxs {
+    gap: var(--semantic-dimension-space-gap-xx-small);
+  }
 
-.gapXs {
-  gap: var(--semantic-dimension-space-gap-x-small);
-}
+  .gapXs {
+    gap: var(--semantic-dimension-space-gap-x-small);
+  }
 
-.gapSm {
-  gap: var(--semantic-dimension-space-gap-small);
-}
+  .gapSm {
+    gap: var(--semantic-dimension-space-gap-small);
+  }
 
-.gapLg {
-  gap: var(--semantic-dimension-space-gap-large);
-}
+  .gapLg {
+    gap: var(--semantic-dimension-space-gap-large);
+  }
 
-.gapXl {
-  gap: var(--semantic-dimension-space-gap-x-large);
-}
+  .gapXl {
+    gap: var(--semantic-dimension-space-gap-x-large);
+  }
 
-.gapAuto {
-  justify-content: space-between;
-  gap: 0;
-}
+  .gapAuto {
+    justify-content: space-between;
+    gap: 0;
+  }
 
-.alignStretch {
-  align-items: stretch;
-}
+  .alignStretch {
+    align-items: stretch;
+  }
 
-.alignCenter {
-  align-items: center;
-}
+  .alignCenter {
+    align-items: center;
+  }
 
-.alignEnd {
-  align-items: flex-end;
-}
+  .alignEnd {
+    align-items: flex-end;
+  }
 
-.wrap {
-  flex-wrap: wrap;
+  .wrap {
+    flex-wrap: wrap;
+  }
 }

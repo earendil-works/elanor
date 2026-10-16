@@ -1,297 +1,300 @@
-.label {
-  color: var(--semantic-color-text-primary);
-  font: var(--semantic-typography-ui-primary);
-}
-
-.trigger {
-  box-sizing: border-box;
-  display: inline-flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--semantic-dimension-space-control-gap-large);
-  inline-size: 100%;
-  min-inline-size: 0;
-  padding-block: calc(
-    var(--semantic-dimension-space-control-padding-block-small) -
-      var(--semantic-dimension-border-width-default)
-  );
-  padding-inline: calc(
-    var(--semantic-dimension-space-control-padding-inline-small) -
-      var(--semantic-dimension-border-width-default)
-  );
-  border: var(--semantic-dimension-border-width-default) solid
-    var(--semantic-color-background-fill-secondary);
-  border-radius: var(--semantic-dimension-radius-small);
-  background: var(--semantic-color-background-fill-secondary);
-  color: var(--semantic-color-text-primary);
-  font: var(--semantic-typography-ui-primary);
-  text-align: start;
-  overflow-wrap: anywhere;
-  cursor: pointer;
-}
-
-.trigger:where(:hover:not(:disabled, [data-disabled])) {
-  border-color: var(--semantic-color-background-fill-secondary-hover);
-  background: var(--semantic-color-background-fill-secondary-hover);
-}
-
-.trigger:where([data-popup-open]) {
-  border-color: var(--semantic-color-focus-ring);
-  background: var(--semantic-color-background-fill-secondary);
-}
-
-.trigger:where(:focus-visible) {
-  border-color: var(--semantic-color-focus-ring);
-}
-
-.trigger:focus-visible {
-  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
-  outline-offset: var(--semantic-dimension-border-width-medium);
-}
-
-.trigger:where([data-invalid], [aria-invalid='true']) {
-  border-color: var(--semantic-color-focus-ring-negative);
-}
-
-.trigger[data-disabled] {
-  cursor: not-allowed;
-  opacity: var(--semantic-number-opacity-disabled);
-}
-
-.icon {
-  display: inline-flex;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  inline-size: var(--semantic-dimension-size-icon);
-  block-size: var(--semantic-dimension-size-icon);
-  color: var(--semantic-color-icon-primary);
-}
-
-.icon > svg,
-.icon > img {
-  display: block;
-  inline-size: 100%;
-  block-size: 100%;
-}
-
-.popup {
-  box-sizing: border-box;
-  min-inline-size: min(var(--anchor-width), var(--available-width));
-  max-inline-size: var(--available-width);
-  max-block-size: var(--available-height);
-  overflow: hidden;
-  border: 0;
-  border-radius: var(--semantic-dimension-radius-small);
-  /* stylelint-disable design-tokens/token-property-compatibility -- This inset outline is the panel's canvas stroke, not a focus ring. */
-  outline: var(--semantic-dimension-border-width-default) solid
-    var(--semantic-color-background-canvas);
-  /* stylelint-enable design-tokens/token-property-compatibility */
-  outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
-  box-shadow: var(--semantic-shadow-popup);
-  background: var(--semantic-color-background-canvas);
-  color: var(--semantic-color-text-primary);
-  font: var(--semantic-typography-ui-primary);
-}
-
-.list {
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  gap: 0;
-  min-block-size: 0;
-  max-block-size: var(--available-height);
-  overflow: auto;
-  overscroll-behavior: contain;
-  padding: 0;
-  outline: 0;
-}
-
-.item {
-  box-sizing: border-box;
-  display: flex;
-  flex: none;
-  align-items: center;
-  gap: var(--semantic-dimension-space-control-gap-small);
-  padding-block: var(--semantic-dimension-space-control-padding-block-small);
-  padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
-  border-radius: var(--semantic-dimension-radius-small);
-  outline: 0;
-  cursor: default;
-  overflow-wrap: anywhere;
-}
-
-.item:has(> .indicatorFrame) {
-  gap: var(--semantic-dimension-space-control-gap-large);
-}
-
-.item[data-highlighted] {
-  background: var(--semantic-color-background-fill-ghost-neutral-hover);
-}
-
-.item[data-selected] {
-  background: var(--semantic-color-background-fill-ghost-neutral-active);
-}
-
-.item[data-disabled] {
-  opacity: var(--semantic-number-opacity-disabled);
-}
-
-.indicatorFrame {
-  position: relative;
-  isolation: isolate;
-  display: inline-flex;
-  flex: none;
-  align-self: flex-start;
-  align-items: center;
-  justify-content: center;
-  inline-size: var(--semantic-dimension-size-x-small);
-  block-size: var(--semantic-dimension-size-x-small);
-  border-radius: var(--semantic-dimension-radius-full);
-  color: var(--semantic-color-icon-radio-indicator);
-}
-
-.indicatorFrame::before {
-  position: absolute;
-  inset: calc(var(--semantic-dimension-border-width-default) / 2);
-  z-index: var(--semantic-number-layer-background);
-  box-sizing: border-box;
-  border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-primary);
-  border-radius: inherit;
-  background: var(--semantic-color-background-radio);
-  content: '';
-  pointer-events: none;
-}
-
-.indicatorFrame:has(> [data-selected])::before {
-  border-color: var(--semantic-color-background-radio-selected);
-  background: var(--semantic-color-background-radio-selected);
-}
-
-.indicatorFrameMultiple {
-  border-radius: var(--semantic-dimension-radius-small);
-  color: var(--semantic-color-icon-checkbox-indicator);
-}
-
-.indicatorFrameMultiple::before {
-  background: var(--semantic-color-background-checkbox);
-}
-
-.indicatorFrameMultiple:has(> [data-selected])::before {
-  border-color: var(--semantic-color-background-checkbox-selected);
-  background: var(--semantic-color-background-checkbox-selected);
-}
-
-.itemIndicator {
-  position: relative;
-  display: inline-flex;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  inline-size: var(--semantic-dimension-size-x-small);
-  block-size: var(--semantic-dimension-size-x-small);
-  color: inherit;
-}
-
-.itemIndicator:empty::after {
-  position: absolute;
-  inset: 0;
-  box-sizing: border-box;
-  inline-size: 37.5%;
-  block-size: 37.5%;
-  margin: auto;
-  border-radius: var(--semantic-dimension-radius-full);
-  background: currentcolor;
-  content: '';
-  pointer-events: none;
-}
-
-.indicatorFrameMultiple > .itemIndicator:empty::after {
-  block-size: 50%;
-  border-radius: 0;
-  background: transparent;
-  /* Physical edges keep the check nondirectional in both LTR and RTL. */
-  border-right: var(--semantic-dimension-border-width-medium) solid currentcolor;
-  border-bottom: var(--semantic-dimension-border-width-medium) solid currentcolor;
-  /* Center the rotated check optically: raise it by half its stroke. */
-  inset-block-end: var(--semantic-dimension-border-width-medium);
-  transform: rotate(45deg);
-}
-
-.itemIndicator:not([data-selected]) {
-  visibility: hidden;
-  opacity: var(--semantic-number-opacity-hidden);
-}
-
-.groupLabel {
-  box-sizing: border-box;
-  padding-block: var(--semantic-dimension-space-padding-medium)
-    var(--semantic-dimension-space-padding-xx-small);
-  padding-inline: var(--semantic-dimension-space-padding-medium);
-  color: var(--semantic-color-text-secondary);
-  font: var(--semantic-typography-ui-label);
-}
-
-.separator {
-  block-size: var(--semantic-dimension-border-width-small);
-  margin-block: var(--semantic-dimension-space-gap-x-small);
-  background: var(--semantic-color-border-secondary);
-}
-
-@media (forced-colors: active) {
-  .indicatorFrame::before {
-    border-color: ButtonBorder;
-    background: Canvas;
-  }
-
-  .indicatorFrame:has(> [data-selected])::before {
-    border-color: Highlight;
-    background: Highlight;
-  }
-
-  .itemIndicator {
-    color: HighlightText;
-  }
-
-  .popup {
-    outline-color: ButtonBorder;
-    outline-offset: 0;
+@layer elanor.components {
+  .label {
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-ui-primary);
   }
 
   .trigger {
-    border-color: ButtonBorder;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--semantic-dimension-space-control-gap-large);
+    inline-size: 100%;
+    min-inline-size: 0;
+    padding-block: calc(
+      var(--semantic-dimension-space-control-padding-block-small) -
+        var(--semantic-dimension-border-width-default)
+    );
+    padding-inline: calc(
+      var(--semantic-dimension-space-control-padding-inline-small) -
+        var(--semantic-dimension-border-width-default)
+    );
+    border: var(--semantic-dimension-border-width-default) solid
+      var(--semantic-color-background-fill-secondary);
+    border-radius: var(--semantic-dimension-radius-small);
+    background: var(--semantic-color-background-fill-secondary);
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-ui-primary);
+    text-align: start;
+    overflow-wrap: anywhere;
+    cursor: pointer;
+  }
+
+  .trigger:where(:hover:not(:disabled, [data-disabled])) {
+    border-color: var(--semantic-color-background-fill-secondary-hover);
+    background: var(--semantic-color-background-fill-secondary-hover);
   }
 
   .trigger:where([data-popup-open]) {
-    outline: var(--semantic-dimension-border-width-default) solid Highlight;
-    outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
+    border-color: var(--semantic-color-focus-ring);
+    background: var(--semantic-color-background-fill-secondary);
+  }
+
+  .trigger:where(:focus-visible) {
+    border-color: var(--semantic-color-focus-ring);
   }
 
   .trigger:focus-visible {
-    outline-color: Highlight;
+    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline-offset: var(--semantic-dimension-border-width-medium);
+  }
+
+  .trigger:where([data-invalid], [aria-invalid='true']) {
+    border-color: var(--semantic-color-focus-ring-negative);
+  }
+
+  .trigger[data-disabled] {
+    cursor: not-allowed;
+    opacity: var(--semantic-number-opacity-disabled);
+  }
+
+  .icon {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    inline-size: var(--semantic-dimension-size-icon);
+    block-size: var(--semantic-dimension-size-icon);
+    color: var(--semantic-color-icon-primary);
+  }
+
+  .icon > svg,
+  .icon > img {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  .popup {
+    box-sizing: border-box;
+    min-inline-size: min(var(--anchor-width), var(--available-width));
+    max-inline-size: var(--available-width);
+    max-block-size: var(--available-height);
+    overflow: hidden;
+    border: 0;
+    border-radius: var(--semantic-dimension-radius-small);
+    /* stylelint-disable design-tokens/token-property-compatibility -- This inset outline is the panel's canvas stroke, not a focus ring. */
+    outline: var(--semantic-dimension-border-width-default) solid
+      var(--semantic-color-background-canvas);
+    /* stylelint-enable design-tokens/token-property-compatibility */
+    outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
+    box-shadow: var(--semantic-shadow-popup);
+    background: var(--semantic-color-background-canvas);
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-ui-primary);
+  }
+
+  .list {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    min-block-size: 0;
+    max-block-size: var(--available-height);
+    overflow: auto;
+    overscroll-behavior: contain;
+    padding: 0;
+    outline: 0;
+  }
+
+  .item {
+    box-sizing: border-box;
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: var(--semantic-dimension-space-control-gap-small);
+    padding-block: var(--semantic-dimension-space-control-padding-block-small);
+    padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
+    border-radius: var(--semantic-dimension-radius-small);
+    outline: 0;
+    cursor: default;
+    overflow-wrap: anywhere;
+  }
+
+  .item:has(> .indicatorFrame) {
+    gap: var(--semantic-dimension-space-control-gap-large);
   }
 
   .item[data-highlighted] {
-    outline: var(--semantic-dimension-border-width-default) solid Highlight;
-    outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
+    background: var(--semantic-color-background-fill-ghost-neutral-hover);
   }
-}
 
-.popup {
-  transform-origin: var(--transform-origin);
-  transition:
-    transform var(--semantic-transition-movement-popup),
-    opacity var(--semantic-transition-fade);
-}
+  .item[data-selected] {
+    background: var(--semantic-color-background-fill-ghost-neutral-active);
+  }
 
-.popup[data-starting-style],
-.popup[data-ending-style] {
-  opacity: var(--semantic-number-opacity-hidden);
-  transform: scale(var(--semantic-number-scale-popup));
-}
+  .item[data-disabled] {
+    opacity: var(--semantic-number-opacity-disabled);
+  }
 
-.popup[data-side='none'] {
-  transition: none;
-  transform: none;
-  opacity: var(--semantic-number-opacity-visible);
+  .indicatorFrame {
+    position: relative;
+    isolation: isolate;
+    display: inline-flex;
+    flex: none;
+    align-self: flex-start;
+    align-items: center;
+    justify-content: center;
+    inline-size: var(--semantic-dimension-size-x-small);
+    block-size: var(--semantic-dimension-size-x-small);
+    border-radius: var(--semantic-dimension-radius-full);
+    color: var(--semantic-color-icon-radio-indicator);
+  }
+
+  .indicatorFrame::before {
+    position: absolute;
+    inset: calc(var(--semantic-dimension-border-width-default) / 2);
+    z-index: var(--semantic-number-layer-background);
+    box-sizing: border-box;
+    border: var(--semantic-dimension-border-width-default) solid
+      var(--semantic-color-border-primary);
+    border-radius: inherit;
+    background: var(--semantic-color-background-radio);
+    content: '';
+    pointer-events: none;
+  }
+
+  .indicatorFrame:has(> [data-selected])::before {
+    border-color: var(--semantic-color-background-radio-selected);
+    background: var(--semantic-color-background-radio-selected);
+  }
+
+  .indicatorFrameMultiple {
+    border-radius: var(--semantic-dimension-radius-small);
+    color: var(--semantic-color-icon-checkbox-indicator);
+  }
+
+  .indicatorFrameMultiple::before {
+    background: var(--semantic-color-background-checkbox);
+  }
+
+  .indicatorFrameMultiple:has(> [data-selected])::before {
+    border-color: var(--semantic-color-background-checkbox-selected);
+    background: var(--semantic-color-background-checkbox-selected);
+  }
+
+  .itemIndicator {
+    position: relative;
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    inline-size: var(--semantic-dimension-size-x-small);
+    block-size: var(--semantic-dimension-size-x-small);
+    color: inherit;
+  }
+
+  .itemIndicator:empty::after {
+    position: absolute;
+    inset: 0;
+    box-sizing: border-box;
+    inline-size: 37.5%;
+    block-size: 37.5%;
+    margin: auto;
+    border-radius: var(--semantic-dimension-radius-full);
+    background: currentcolor;
+    content: '';
+    pointer-events: none;
+  }
+
+  .indicatorFrameMultiple > .itemIndicator:empty::after {
+    block-size: 50%;
+    border-radius: 0;
+    background: transparent;
+    /* Physical edges keep the check nondirectional in both LTR and RTL. */
+    border-right: var(--semantic-dimension-border-width-medium) solid currentcolor;
+    border-bottom: var(--semantic-dimension-border-width-medium) solid currentcolor;
+    /* Center the rotated check optically: raise it by half its stroke. */
+    inset-block-end: var(--semantic-dimension-border-width-medium);
+    transform: rotate(45deg);
+  }
+
+  .itemIndicator:not([data-selected]) {
+    visibility: hidden;
+    opacity: var(--semantic-number-opacity-hidden);
+  }
+
+  .groupLabel {
+    box-sizing: border-box;
+    padding-block: var(--semantic-dimension-space-padding-medium)
+      var(--semantic-dimension-space-padding-xx-small);
+    padding-inline: var(--semantic-dimension-space-padding-medium);
+    color: var(--semantic-color-text-secondary);
+    font: var(--semantic-typography-ui-label);
+  }
+
+  .separator {
+    block-size: var(--semantic-dimension-border-width-small);
+    margin-block: var(--semantic-dimension-space-gap-x-small);
+    background: var(--semantic-color-border-secondary);
+  }
+
+  @media (forced-colors: active) {
+    .indicatorFrame::before {
+      border-color: ButtonBorder;
+      background: Canvas;
+    }
+
+    .indicatorFrame:has(> [data-selected])::before {
+      border-color: Highlight;
+      background: Highlight;
+    }
+
+    .itemIndicator {
+      color: HighlightText;
+    }
+
+    .popup {
+      outline-color: ButtonBorder;
+      outline-offset: 0;
+    }
+
+    .trigger {
+      border-color: ButtonBorder;
+    }
+
+    .trigger:where([data-popup-open]) {
+      outline: var(--semantic-dimension-border-width-default) solid Highlight;
+      outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
+    }
+
+    .trigger:focus-visible {
+      outline-color: Highlight;
+    }
+
+    .item[data-highlighted] {
+      outline: var(--semantic-dimension-border-width-default) solid Highlight;
+      outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
+    }
+  }
+
+  .popup {
+    transform-origin: var(--transform-origin);
+    transition:
+      transform var(--semantic-transition-movement-popup),
+      opacity var(--semantic-transition-fade);
+  }
+
+  .popup[data-starting-style],
+  .popup[data-ending-style] {
+    opacity: var(--semantic-number-opacity-hidden);
+    transform: scale(var(--semantic-number-scale-popup));
+  }
+
+  .popup[data-side='none'] {
+    transition: none;
+    transform: none;
+    opacity: var(--semantic-number-opacity-visible);
+  }
 }

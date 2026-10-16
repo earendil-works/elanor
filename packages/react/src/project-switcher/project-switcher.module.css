@@ -1,59 +1,61 @@
-.trigger {
-  box-sizing: border-box;
-  display: inline-flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--semantic-dimension-space-control-gap-large);
-  padding-block: var(--semantic-dimension-space-control-padding-block-small);
-  padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
-  border: 0;
-  border-radius: var(--semantic-dimension-radius-small);
-  background: var(--semantic-color-background-fill-ghost-neutral);
-  color: var(--semantic-color-text-primary);
-  font: var(--semantic-typography-ui-primary);
-  white-space: nowrap;
-  cursor: pointer;
-}
-
-@media (hover: hover) {
-  .trigger:hover:not([data-disabled]) {
-    background: var(--semantic-color-background-fill-ghost-neutral-hover);
+@layer elanor.components {
+  .trigger {
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--semantic-dimension-space-control-gap-large);
+    padding-block: var(--semantic-dimension-space-control-padding-block-small);
+    padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
+    border: 0;
+    border-radius: var(--semantic-dimension-radius-small);
+    background: var(--semantic-color-background-fill-ghost-neutral);
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-ui-primary);
+    white-space: nowrap;
+    cursor: pointer;
   }
-}
 
-.trigger:active:not([data-disabled]),
-.trigger[data-popup-open] {
-  background: var(--semantic-color-background-fill-ghost-neutral-active);
-}
+  @media (hover: hover) {
+    .trigger:hover:not([data-disabled]) {
+      background: var(--semantic-color-background-fill-ghost-neutral-hover);
+    }
+  }
 
-.trigger:focus-visible {
-  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
-  outline-offset: var(--semantic-dimension-border-width-medium);
-}
+  .trigger:active:not([data-disabled]),
+  .trigger[data-popup-open] {
+    background: var(--semantic-color-background-fill-ghost-neutral-active);
+  }
 
-.trigger[data-disabled] {
-  cursor: not-allowed;
-  opacity: var(--semantic-number-opacity-disabled);
-}
+  .trigger:focus-visible {
+    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline-offset: var(--semantic-dimension-border-width-medium);
+  }
 
-.label {
-  min-inline-size: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
+  .trigger[data-disabled] {
+    cursor: not-allowed;
+    opacity: var(--semantic-number-opacity-disabled);
+  }
 
-.indicator {
-  display: inline-flex;
-  flex: none;
-  align-items: center;
-  justify-content: center;
-  inline-size: var(--semantic-dimension-size-icon);
-  block-size: var(--semantic-dimension-size-icon);
-  color: var(--semantic-color-icon-primary);
-}
+  .label {
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-.indicator > svg {
-  display: block;
-  inline-size: 100%;
-  block-size: 100%;
+  .indicator {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    inline-size: var(--semantic-dimension-size-icon);
+    block-size: var(--semantic-dimension-size-icon);
+    color: var(--semantic-color-icon-primary);
+  }
+
+  .indicator > svg {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+  }
 }

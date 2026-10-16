@@ -1,91 +1,93 @@
-.root {
-  position: relative;
-  isolation: isolate;
-  box-sizing: border-box;
-  display: inline-flex;
-  align-items: center;
-  inline-size: var(--semantic-dimension-size-medium);
-  block-size: var(--semantic-dimension-size-small);
-  flex: none;
-  padding: 0;
-  border: 0;
-  border-radius: var(--semantic-dimension-radius-full);
-  background: transparent;
-  touch-action: manipulation;
-  cursor: pointer;
-}
-
-.root::before {
-  position: absolute;
-  z-index: var(--semantic-number-layer-background);
-  inset-inline-start: calc((100% - var(--semantic-dimension-size-medium)) / 2);
-  inline-size: var(--semantic-dimension-size-medium);
-  block-size: var(--semantic-dimension-size-x-small);
-  border-radius: inherit;
-  background: var(--semantic-color-background-switch);
-  content: '';
-}
-
-.root[data-checked]::before {
-  background: var(--semantic-color-background-switch-selected);
-}
-
-.root:focus-visible {
-  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
-  outline-offset: var(--semantic-dimension-border-width-medium);
-}
-
-.root[data-disabled] {
-  cursor: not-allowed;
-  opacity: var(--semantic-number-opacity-disabled);
-}
-
-.thumb {
-  position: absolute;
-  inset-inline-start: calc(
-    (100% - var(--semantic-dimension-size-medium)) / 2 +
-      var(--semantic-dimension-space-padding-xx-small)
-  );
-  inline-size: calc(
-    var(--semantic-dimension-size-x-small) - 2 * var(--semantic-dimension-space-padding-xx-small)
-  );
-  block-size: calc(
-    var(--semantic-dimension-size-x-small) - 2 * var(--semantic-dimension-space-padding-xx-small)
-  );
-  border-radius: var(--semantic-dimension-radius-full);
-  background: var(--semantic-color-background-switch-knob);
-}
-
-.root[data-checked] .thumb {
-  inset-inline-start: calc(
-    (100% - var(--semantic-dimension-size-medium)) / 2 +
-      var(--semantic-dimension-space-padding-xx-small) + var(--semantic-dimension-size-medium) -
-      var(--semantic-dimension-size-x-small)
-  );
-}
-
-@media (pointer: coarse) {
+@layer elanor.components {
   .root {
-    inline-size: var(--semantic-dimension-size-x-large);
-    block-size: var(--semantic-dimension-size-x-large);
+    position: relative;
+    isolation: isolate;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    inline-size: var(--semantic-dimension-size-medium);
+    block-size: var(--semantic-dimension-size-small);
+    flex: none;
+    padding: 0;
+    border: 0;
+    border-radius: var(--semantic-dimension-radius-full);
+    background: transparent;
+    touch-action: manipulation;
+    cursor: pointer;
   }
-}
 
-@media (forced-colors: active) {
   .root::before {
-    outline: var(--semantic-dimension-border-width-small) solid ButtonText;
+    position: absolute;
+    z-index: var(--semantic-number-layer-background);
+    inset-inline-start: calc((100% - var(--semantic-dimension-size-medium)) / 2);
+    inline-size: var(--semantic-dimension-size-medium);
+    block-size: var(--semantic-dimension-size-x-small);
+    border-radius: inherit;
+    background: var(--semantic-color-background-switch);
+    content: '';
+  }
+
+  .root[data-checked]::before {
+    background: var(--semantic-color-background-switch-selected);
+  }
+
+  .root:focus-visible {
+    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline-offset: var(--semantic-dimension-border-width-medium);
+  }
+
+  .root[data-disabled] {
+    cursor: not-allowed;
+    opacity: var(--semantic-number-opacity-disabled);
   }
 
   .thumb {
-    background: ButtonText;
-    forced-color-adjust: none;
+    position: absolute;
+    inset-inline-start: calc(
+      (100% - var(--semantic-dimension-size-medium)) / 2 +
+        var(--semantic-dimension-space-padding-xx-small)
+    );
+    inline-size: calc(
+      var(--semantic-dimension-size-x-small) - 2 * var(--semantic-dimension-space-padding-xx-small)
+    );
+    block-size: calc(
+      var(--semantic-dimension-size-x-small) - 2 * var(--semantic-dimension-space-padding-xx-small)
+    );
+    border-radius: var(--semantic-dimension-radius-full);
+    background: var(--semantic-color-background-switch-knob);
   }
-}
 
-.root::before {
-  transition: background-color var(--semantic-transition-feedback);
-}
+  .root[data-checked] .thumb {
+    inset-inline-start: calc(
+      (100% - var(--semantic-dimension-size-medium)) / 2 +
+        var(--semantic-dimension-space-padding-xx-small) + var(--semantic-dimension-size-medium) -
+        var(--semantic-dimension-size-x-small)
+    );
+  }
 
-.thumb {
-  transition: inset-inline-start var(--semantic-transition-movement-indicator);
+  @media (pointer: coarse) {
+    .root {
+      inline-size: var(--semantic-dimension-size-x-large);
+      block-size: var(--semantic-dimension-size-x-large);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .root::before {
+      outline: var(--semantic-dimension-border-width-small) solid ButtonText;
+    }
+
+    .thumb {
+      background: ButtonText;
+      forced-color-adjust: none;
+    }
+  }
+
+  .root::before {
+    transition: background-color var(--semantic-transition-feedback);
+  }
+
+  .thumb {
+    transition: inset-inline-start var(--semantic-transition-movement-indicator);
+  }
 }

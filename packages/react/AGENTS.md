@@ -51,6 +51,7 @@ Each component directory has a `<component>.mdx` page and an `examples/` directo
 
 - Use semantic tokens and preserve focus, disabled, invalid, and forced-colors states.
 - Keep every CSS Module self-contained: no `composes` or imports of other stylesheets. Share semantic tokens, not other components' private CSS classes.
+- Wrap all rules of a component stylesheet in `@layer elanor.components { … }` (Prose uses `elanor.prose`), so unlayered application CSS always overrides Elanor. Example stylesheets are application code and stay unlayered.
 - Size controls that contain text by their block padding and line height, without a fixed or minimum block size, so they grow with larger type and stay aligned with buttons. Fixed block sizes are only for icon-only parts such as icon buttons and checkbox boxes, and touch sizes under `@media (pointer: coarse)`.
 - Prefer logical properties and flexible layouts. Handle narrow containers, RTL, and long content without hiding meaningful content.
 - Keep selectors scoped; avoid global overrides and specificity escalation.

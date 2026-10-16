@@ -1,90 +1,92 @@
-.list {
-  position: relative;
-  display: flex;
-  gap: var(--semantic-dimension-space-control-gap-x-large);
-  min-inline-size: 0;
-  border-block-end: var(--semantic-dimension-border-width-default) solid
-    var(--semantic-color-border-secondary);
-}
+@layer elanor.components {
+  .list {
+    position: relative;
+    display: flex;
+    gap: var(--semantic-dimension-space-control-gap-x-large);
+    min-inline-size: 0;
+    border-block-end: var(--semantic-dimension-border-width-default) solid
+      var(--semantic-color-border-secondary);
+  }
 
-.tab {
-  position: relative;
-  box-sizing: border-box;
-  min-inline-size: var(--semantic-dimension-size-small);
-  padding-block-start: var(--semantic-dimension-space-control-padding-block-large);
-  padding-block-end: calc(
-    var(--semantic-dimension-space-control-padding-block-large) -
-      var(--semantic-dimension-border-width-default)
-  );
-  padding-inline: 0;
-  border: 0;
-  outline: 0;
-  background: transparent;
-  color: var(--semantic-color-text-primary);
-  font: var(--semantic-typography-ui-primary);
-  cursor: pointer;
-}
-
-.tab:hover:not([data-disabled], [data-active])::after {
-  position: absolute;
-  inset-inline: 0;
-  inset-block-end: calc(-1 * var(--semantic-dimension-border-width-default));
-  block-size: var(--semantic-dimension-border-width-default);
-  background: var(--semantic-color-border-primary);
-  content: '';
-}
-
-.tab:focus-visible {
-  border-radius: var(--semantic-dimension-radius-small);
-  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
-  outline-offset: var(--semantic-dimension-border-width-medium);
-}
-
-.tab[data-disabled] {
-  cursor: not-allowed;
-  opacity: var(--semantic-number-opacity-disabled);
-}
-
-.indicator {
-  position: absolute;
-  left: 0;
-  translate: var(--active-tab-left) 0;
-  inset-block-end: calc(-1 * var(--semantic-dimension-border-width-default));
-  inline-size: var(--active-tab-width);
-  block-size: var(--semantic-dimension-border-width-default);
-  background: var(--semantic-color-border-primary);
-  pointer-events: none;
-}
-
-@media (pointer: coarse) {
   .tab {
-    min-inline-size: var(--semantic-dimension-size-x-large);
-    min-block-size: var(--semantic-dimension-size-x-large);
+    position: relative;
+    box-sizing: border-box;
+    min-inline-size: var(--semantic-dimension-size-small);
+    padding-block-start: var(--semantic-dimension-space-control-padding-block-large);
+    padding-block-end: calc(
+      var(--semantic-dimension-space-control-padding-block-large) -
+        var(--semantic-dimension-border-width-default)
+    );
+    padding-inline: 0;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-ui-primary);
+    cursor: pointer;
   }
-}
 
-@media (forced-colors: active) {
-  .indicator,
   .tab:hover:not([data-disabled], [data-active])::after {
-    background: Highlight;
-    forced-color-adjust: none;
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: calc(-1 * var(--semantic-dimension-border-width-default));
+    block-size: var(--semantic-dimension-border-width-default);
+    background: var(--semantic-color-border-primary);
+    content: '';
   }
-}
 
-.panel {
-  min-inline-size: 0;
-  padding-block-start: var(--semantic-dimension-space-padding-medium);
-  outline: 0;
-}
+  .tab:focus-visible {
+    border-radius: var(--semantic-dimension-radius-small);
+    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline-offset: var(--semantic-dimension-border-width-medium);
+  }
 
-.panel:focus-visible {
-  border-radius: var(--semantic-dimension-radius-small);
-  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
-  outline-offset: var(--semantic-dimension-border-width-medium);
-}
+  .tab[data-disabled] {
+    cursor: not-allowed;
+    opacity: var(--semantic-number-opacity-disabled);
+  }
 
-.indicator {
-  transition:
-    translate var(--semantic-transition-movement-indicator),
-    inline-size var(--semantic-transition-movement-indicator);
+  .indicator {
+    position: absolute;
+    left: 0;
+    translate: var(--active-tab-left) 0;
+    inset-block-end: calc(-1 * var(--semantic-dimension-border-width-default));
+    inline-size: var(--active-tab-width);
+    block-size: var(--semantic-dimension-border-width-default);
+    background: var(--semantic-color-border-primary);
+    pointer-events: none;
+  }
+
+  @media (pointer: coarse) {
+    .tab {
+      min-inline-size: var(--semantic-dimension-size-x-large);
+      min-block-size: var(--semantic-dimension-size-x-large);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .indicator,
+    .tab:hover:not([data-disabled], [data-active])::after {
+      background: Highlight;
+      forced-color-adjust: none;
+    }
+  }
+
+  .panel {
+    min-inline-size: 0;
+    padding-block-start: var(--semantic-dimension-space-padding-medium);
+    outline: 0;
+  }
+
+  .panel:focus-visible {
+    border-radius: var(--semantic-dimension-radius-small);
+    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline-offset: var(--semantic-dimension-border-width-medium);
+  }
+
+  .indicator {
+    transition:
+      translate var(--semantic-transition-movement-indicator),
+      inline-size var(--semantic-transition-movement-indicator);
+  }
 }

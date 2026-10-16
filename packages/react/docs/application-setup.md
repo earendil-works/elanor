@@ -13,6 +13,18 @@ import '@earendil-works/elanor-react/elanor.min.css';
 
 `elanor.min.css` contains all component styles. Component JavaScript does not load CSS; fonts and tokens remain separate.
 
+### Cascade layers
+
+Component styles live in the `elanor` cascade layer: `elanor.components`, then `elanor.prose`, so long-form spacing wins over the components' own resets. Unlayered CSS always wins over layered CSS, so your application's styles override Elanor's regardless of selector specificity or load order, and a `className` on a component needs no extra specificity.
+
+If your application uses layers too, name Elanor's layer in your order statement before your own, for example:
+
+```css
+@layer reset, elanor, app;
+```
+
+A broad unlayered rule such as `* { margin: 0 }` or `p { margin-block: 1em }` also wins over Elanor; scope global rules or put them in a layer before `elanor`.
+
 ## Portals
 
 Follow [Base UI's portal setup](https://base-ui.com/react/overview/quick-start):

@@ -1,25 +1,27 @@
-.root {
-  box-sizing: border-box;
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--semantic-dimension-space-gap-small);
-  inline-size: 100%;
-  block-size: var(--semantic-dimension-size-top-navigation);
-  color: var(--semantic-color-text-primary);
-  font: var(--semantic-typography-ui-primary);
-}
+@layer elanor.components {
+  .root {
+    box-sizing: border-box;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--semantic-dimension-space-gap-small);
+    inline-size: 100%;
+    block-size: var(--semantic-dimension-size-top-navigation);
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-ui-primary);
+  }
 
-.identity,
-.navigation,
-.actions {
-  display: flex;
-  align-items: center;
-  min-inline-size: 0;
-  gap: var(--semantic-dimension-space-gap-small);
-  flex: 0 1 auto;
-  flex-wrap: wrap;
-  max-inline-size: 100%;
-  overflow-wrap: anywhere;
+  .identity,
+  .navigation,
+  .actions {
+    display: flex;
+    align-items: center;
+    min-inline-size: 0;
+    gap: var(--semantic-dimension-space-gap-small);
+    flex: 0 1 auto;
+    flex-wrap: wrap;
+    max-inline-size: 100%;
+    overflow-wrap: anywhere;
+  }
 }
