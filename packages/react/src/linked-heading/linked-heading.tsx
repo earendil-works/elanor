@@ -17,8 +17,8 @@ export type LinkedHeadingProps = HeadingProps & {
 
 /**
  * A heading followed by a button that copies the heading's link and moves the page to it. The
- * button shows on hover, on keyboard focus, and after a copy with a mouse, and always on touch
- * screens. `ref` and the heading props go to the heading; `className` goes to the wrapper.
+ * button shows on hover, on keyboard focus, after a tap or click on the heading, and while it
+ * confirms a copy. `ref` and the heading props go to the heading; `className` goes to the wrapper.
  */
 export function LinkedHeading({
   id,
@@ -29,7 +29,8 @@ export function LinkedHeading({
 }: LinkedHeadingProps) {
   return (
     <div className={classes(styles.root, className)}>
-      <Heading {...props} id={id} className={styles.heading} />
+      {/* Focusable without joining the tab order, so a tap on the heading reveals the button. */}
+      <Heading tabIndex={-1} {...props} id={id} className={styles.heading} />
       <CopyButton
         value={() => new URL(`#${id}`, window.location.href).href}
         icon={<LinkIcon />}
