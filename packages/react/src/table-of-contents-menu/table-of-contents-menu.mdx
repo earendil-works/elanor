@@ -12,14 +12,16 @@ import {TableOfContentsMenu} from '@earendil-works/elanor-react';
 <TableOfContentsMenu.Root>
   <TableOfContentsMenu.Trigger>Current section</TableOfContentsMenu.Trigger>
   <TableOfContentsMenu.Popup>
-    <TableOfContentsMenu.Item>
-      <TableOfContentsMenu.Link href="#usage" active />
-    </TableOfContentsMenu.Item>
+    <TableOfContentsMenu.List>
+      <TableOfContentsMenu.Item>
+        <TableOfContentsMenu.Link href="#usage" active />
+      </TableOfContentsMenu.Item>
+    </TableOfContentsMenu.List>
   </TableOfContentsMenu.Popup>
 </TableOfContentsMenu.Root>;
 ```
 
-The parts match Table of contents: `Item`, `Link` with `active`, and `List` for nested entries, so the same data renders both. The trigger reads "Table of contents: " before the current section to assistive technology; change it with `label`. The list is a `nav` of real links with the same name; choosing a link closes it. Keep the trigger's text in sync with the `active` link.
+The parts match Table of contents: `List` at the top and for nested entries, `Item`, and `Link` with `active`, so the same data renders both. The trigger reads "Table of contents: " before the current section to assistive technology; change it with `label`. The list is a `nav` of real links with the same name; choosing a link closes it. Keep the trigger's text in sync with the `active` link.
 
 ## Sticky bar
 

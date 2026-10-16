@@ -80,7 +80,7 @@ export interface TableOfContentsMenuPopupProps extends HTMLAttributes<HTMLElemen
   readonly label?: string;
 }
 
-/** The list of sections, in a `nav` under the trigger. Put `Item`s inside. */
+/** The sections, in a `nav` under the trigger. Put a `List` of `Item`s inside. */
 export function TableOfContentsMenuPopup({
   ref,
   label = 'Table of contents',
@@ -93,7 +93,7 @@ export function TableOfContentsMenuPopup({
       <BasePopover.Positioner align="start" className={styles.positioner}>
         <BasePopover.Popup className={styles.popup}>
           <nav {...props} ref={ref} aria-label={label} className={classes(styles.nav, className)}>
-            <ol className={styles.list}>{children}</ol>
+            {children}
           </nav>
         </BasePopover.Popup>
       </BasePopover.Positioner>
@@ -105,7 +105,7 @@ export interface TableOfContentsMenuListProps extends HTMLAttributes<HTMLOListEl
   readonly ref?: Ref<HTMLOListElement> | undefined;
 }
 
-/** Nested entries, inside an `Item` after its `Link`. */
+/** The ordered list of entries, at the top and nested inside an `Item` after its `Link`. */
 export function TableOfContentsMenuList({ref, className, ...props}: TableOfContentsMenuListProps) {
   return <ol {...props} ref={ref} className={classes(styles.list, className)} />;
 }
