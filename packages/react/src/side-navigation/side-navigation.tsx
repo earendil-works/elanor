@@ -1,12 +1,9 @@
 import {Collapsible as BaseCollapsible} from '@base-ui/react/collapsible';
-import {useRender} from '@base-ui/react/use-render';
 import {KeyboardArrowDownIcon} from '@earendil-works/elanor-icons-react';
 import {
   createContext,
   useContext,
   type AnchorHTMLAttributes,
-  type ComponentPropsWithRef,
-  type CSSProperties,
   type HTMLAttributes,
   type ReactNode,
   type Ref,
@@ -213,27 +210,6 @@ export function SideNavigationCollapsibleTrigger({
 
 export type SideNavigationCollapsiblePanelProps = BaseCollapsible.Panel.Props;
 
-function PanelElement({
-  elementProps,
-  render,
-  state,
-}: {
-  elementProps: ComponentPropsWithRef<'div'>;
-  render: SideNavigationCollapsiblePanelProps['render'];
-  state: BaseCollapsible.Panel.State;
-}) {
-  const style = elementProps.style as CSSProperties & {'--collapsible-panel-height'?: string};
-  const height = style['--collapsible-panel-height'];
-  return useRender({
-    render: typeof render === 'function' ? (props) => render(props, state) : render,
-    props: {
-      ...elementProps,
-      // Clip only while the height animates, so focus rings show at rest.
-      'data-height-transition': height !== undefined && height !== 'auto' ? '' : undefined,
-    },
-  });
-}
-
 /**
  * The section's links. It grows and shrinks to its measured height. Closed panels stay in the
  * document by default (`keepMounted`), so their links are part of the page's HTML.
@@ -242,7 +218,6 @@ export function SideNavigationCollapsiblePanel({
   ref,
   keepMounted = true,
   className,
-  render,
   ...props
 }: SideNavigationCollapsiblePanelProps) {
   return (
@@ -250,9 +225,6 @@ export function SideNavigationCollapsiblePanel({
       {...props}
       ref={ref}
       keepMounted={keepMounted}
-      render={(elementProps, state) => (
-        <PanelElement elementProps={elementProps} render={render} state={state} />
-      )}
       className={mergeClassName<BaseCollapsible.Panel.State>(styles.panel, className)}
     />
   );

@@ -131,18 +131,13 @@
     rotate: -90deg;
   }
 
-  /* The panel grows and shrinks to its measured height; reduced motion makes the change instant
-     through the token. It clips only while the height animates. */
+  /* The panel grows and shrinks to its measured height, as in Base UI's Collapsible docs;
+     reduced motion makes the change instant through the token. */
   .panel {
     min-inline-size: 0;
     height: var(--collapsible-panel-height);
-    transition: height var(--semantic-transition-movement-disclosure);
-  }
-
-  .panel[data-height-transition],
-  .panel[data-starting-style],
-  .panel[data-ending-style] {
     overflow: hidden;
+    transition: height var(--semantic-transition-movement-disclosure);
   }
 
   .panel[data-starting-style],
