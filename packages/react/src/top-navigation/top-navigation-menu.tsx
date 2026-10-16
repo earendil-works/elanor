@@ -9,10 +9,8 @@ import {
 } from '@earendil-works/elanor-icons-react';
 import {
   createContext,
-  useCallback,
   useContext,
-  useEffect,
-  useId,
+  useMemo,
   useRef,
   useState,
   type AnchorHTMLAttributes,
@@ -20,39 +18,42 @@ import {
   type HTMLAttributes,
   type ReactNode,
   type Ref,
+  type RefObject,
 } from 'react';
+import {flushSync} from 'react-dom';
 
 import {classes, mergeClassName} from '../utils/class-names.ts';
 
 import styles from './top-navigation-menu.module.css';
 
-interface MenuContextValue {
-  readonly id: string;
-  readonly open: boolean;
-  readonly panel: string;
-  readonly showPanel: (panel: string) => void;
-  /** Returns from a nested panel to its parent. */
-  readonly goBack: (from: string, to: string) => void;
-  /** The nested panel just returned from, whose trigger takes focus. */
-  readonly returnedFrom: string | null;
+interface MenuActions {
   readonly close: () => void;
+  /** Slides to a nested panel and focuses its back button; going back focuses `opener` again. */
+  readonly showPanel: (panel: string, opener: HTMLElement) => void;
+  readonly goBack: (parent: string) => void;
+  /** Attached to the current panel's back button. */
+  readonly backButtonRef: RefObject<HTMLButtonElement | null>;
 }
 
-const MenuContext = /* @__PURE__ */ createContext<MenuContextValue | null>(null);
+/** The current panel. */
+const MenuPanelContext = /* @__PURE__ */ createContext<string | null>(null);
+const MenuActionsContext = /* @__PURE__ */ createContext<MenuActions | null>(null);
 
-function useMenu(part: string): MenuContextValue {
-  const menu = useContext(MenuContext);
-  if (!menu) throw new Error(`TopNavigation.${part} must be inside TopNavigation.Menu.`);
-  return menu;
+function useMenuPanel(part: string): string {
+  const panel = useContext(MenuPanelContext);
+  if (panel === null) throw new Error(`TopNavigation.${part} must be inside TopNavigation.Menu.`);
+  return panel;
 }
 
-function panelId(menuId: string, panel: string): string {
-  return `${menuId}-${panel}`;
+function useMenuActions(part: string): MenuActions {
+  const actions = useContext(MenuActionsContext);
+  if (!actions) throw new Error(`TopNavigation.${part} must be inside TopNavigation.Menu.`);
+  return actions;
 }
 
 export interface TopNavigationMenuProps extends Omit<
   BaseDialog.Root.Props,
-  'modal' | 'disablePointerDismissal' | 'actionsRef'
+  'modal' | 'disablePointerDismissal'
 > {
   /** The panel shown each time the menu opens. */
   readonly defaultPanel: string;
@@ -64,39 +65,53 @@ export interface TopNavigationMenuProps extends Omit<
  * modality: the bar's other controls stay usable, and clicking them leaves the menu open.
  * Renders no element.
  */
-export function TopNavigationMenu({defaultPanel, onOpenChange, ...props}: TopNavigationMenuProps) {
-  const id = useId();
-  const actionsRef = useRef<BaseDialog.Root.Actions>(null);
-  const [open, setOpen] = useState(props.defaultOpen ?? false);
-  const [panel, setPanel] = useState(defaultPanel);
-  const [returnedFrom, setReturnedFrom] = useState<string | null>(null);
-  const close = useCallback(() => actionsRef.current?.close(), []);
-  const showPanel = useCallback((next: string) => {
-    setReturnedFrom(null);
-    setPanel(next);
-  }, []);
-  const goBack = useCallback((from: string, to: string) => {
-    setReturnedFrom(from);
-    setPanel(to);
-  }, []);
+export function TopNavigationMenu({
+  defaultPanel,
+  actionsRef,
+  onOpenChangeComplete,
+  ...props
+}: TopNavigationMenuProps) {
+  const ownActionsRef = useRef<BaseDialog.Root.Actions>(null);
+  const dialogActionsRef = actionsRef ?? ownActionsRef;
+  const openerRef = useRef<HTMLElement>(null);
+  const backButtonRef = useRef<HTMLButtonElement>(null);
+  // `null` until the reader slides, so each opening shows the current `defaultPanel`.
+  const [panel, setPanel] = useState<string | null>(null);
+
+  // Slides render synchronously, so the panel shown next is no longer inert when focus moves.
+  const actions = useMemo<MenuActions>(
+    () => ({
+      close: () => dialogActionsRef.current?.close(),
+      showPanel: (next, opener) => {
+        openerRef.current = opener;
+        flushSync(() => setPanel(next));
+        backButtonRef.current?.focus({preventScroll: true});
+      },
+      goBack: (parent) => {
+        flushSync(() => setPanel(parent));
+        openerRef.current?.focus({preventScroll: true});
+      },
+      backButtonRef,
+    }),
+    [dialogActionsRef],
+  );
 
   return (
-    <MenuContext.Provider
-      value={{id, open: props.open ?? open, panel, showPanel, goBack, returnedFrom, close}}
-    >
-      <BaseDialog.Root
-        {...props}
-        actionsRef={actionsRef}
-        modal={false}
-        disablePointerDismissal
-        onOpenChange={(next, details) => {
-          // Each opening starts at the default panel.
-          if (next) showPanel(defaultPanel);
-          setOpen(next);
-          onOpenChange?.(next, details);
-        }}
-      />
-    </MenuContext.Provider>
+    <MenuActionsContext.Provider value={actions}>
+      <MenuPanelContext.Provider value={panel ?? defaultPanel}>
+        <BaseDialog.Root
+          {...props}
+          actionsRef={dialogActionsRef}
+          modal={false}
+          disablePointerDismissal
+          onOpenChangeComplete={(open) => {
+            // Each opening starts at the default panel.
+            if (!open) setPanel(null);
+            onOpenChangeComplete?.(open);
+          }}
+        />
+      </MenuPanelContext.Provider>
+    </MenuActionsContext.Provider>
   );
 }
 
@@ -131,6 +146,7 @@ export interface TopNavigationMenuPopupProps extends Omit<
   readonly 'aria-label': string;
   /** Where the menu renders; the document body by default. */
   readonly container?: BaseDialog.Portal.Props['container'];
+  /** A `nav` with the panels, named like the navigation it replaces. */
   readonly children?: ReactNode;
 }
 
@@ -155,15 +171,21 @@ export function TopNavigationMenuPopup({
   );
 }
 
-export interface TopNavigationMenuPanelProps extends HTMLAttributes<HTMLDivElement> {
-  readonly ref?: Ref<HTMLDivElement> | undefined;
-  /** Identifies the panel for `MenuPanelTrigger`s and the menu's `defaultPanel`. */
-  readonly panel: string;
-  /** The panel this one is nested in; a nested panel starts with a back button. */
-  readonly parent?: string;
-  /** The back button's label, such as "Main menu". */
-  readonly backLabel?: string;
-}
+type TopNavigationMenuPanelNesting =
+  | {readonly parent?: never; readonly backLabel?: never}
+  | {
+      /** The panel this one is nested in; a nested panel starts with a back button. */
+      readonly parent: string;
+      /** The back button's label, such as "Main menu". */
+      readonly backLabel: string;
+    };
+
+export type TopNavigationMenuPanelProps = HTMLAttributes<HTMLDivElement> &
+  TopNavigationMenuPanelNesting & {
+    readonly ref?: Ref<HTMLDivElement> | undefined;
+    /** Identifies the panel for `MenuPanelTrigger`s and the menu's `defaultPanel`. */
+    readonly panel: string;
+  };
 
 /** A panel of items. One level of nesting. */
 export function TopNavigationMenuPanel({
@@ -175,42 +197,27 @@ export function TopNavigationMenuPanel({
   children,
   ...props
 }: TopNavigationMenuPanelProps) {
-  const menu = useMenu('MenuPanel');
-  const backRef = useRef<HTMLButtonElement>(null);
-  const current = menu.panel === panel;
+  const currentPanel = useMenuPanel('MenuPanel');
+  const actions = useMenuActions('MenuPanel');
+  const current = currentPanel === panel;
   // With one level of nesting, other nested panels wait at the end and top-level panels at the
   // start, where a nested panel's parent slides out to.
   const position = current ? 'current' : parent ? 'after' : 'before';
-
-  // A nested panel that slides in takes focus on its back button; returning to a panel puts focus
-  // on the item that opened the nested one. Neither scrolls the menu while the panel is outside.
-  useEffect(() => {
-    if (!current || !menu.open) return;
-    if (parent && !menu.returnedFrom) backRef.current?.focus({preventScroll: true});
-    if (menu.returnedFrom) {
-      document
-        .getElementById(panelId(menu.id, panel))
-        ?.querySelector<HTMLElement>(`[aria-controls="${panelId(menu.id, menu.returnedFrom)}"]`)
-        ?.focus({preventScroll: true});
-    }
-  }, [current, parent, panel, menu.open, menu.returnedFrom, menu.id]);
 
   return (
     <div
       {...props}
       ref={ref}
-      id={panelId(menu.id, panel)}
       data-position={position}
       inert={!current}
       className={classes(styles.panel, className)}
     >
       {parent ? (
         <button
-          ref={backRef}
+          ref={current ? actions.backButtonRef : undefined}
           type="button"
-          aria-controls={panelId(menu.id, parent)}
           className={styles.back}
-          onClick={() => menu.goBack(panel, parent)}
+          onClick={() => actions.goBack(parent)}
         >
           <span className={styles.icon} aria-hidden="true">
             <KeyboardArrowLeftIcon />
@@ -241,7 +248,10 @@ export function TopNavigationMenuItem({ref, className, ...props}: TopNavigationM
 
 export interface TopNavigationMenuLinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   readonly ref?: Ref<HTMLAnchorElement> | undefined;
-  /** Marks the current page and sets `aria-current="page"`. */
+  /**
+   * Marks the current page with `aria-current="page"`. Router links that set `aria-current`
+   * themselves need no `active`.
+   */
   readonly active?: boolean;
 }
 
@@ -255,7 +265,7 @@ export function TopNavigationMenuLink({
   onClick,
   ...props
 }: TopNavigationMenuLinkProps) {
-  const menu = useMenu('MenuLink');
+  const {close} = useMenuActions('MenuLink');
   return (
     <a
       {...props}
@@ -264,11 +274,10 @@ export function TopNavigationMenuLink({
       // handler.
       href={href}
       aria-current={active ? 'page' : props['aria-current']}
-      data-active={active ? '' : undefined}
       className={classes(styles.link, className)}
       onClick={(event) => {
         onClick?.(event);
-        menu.close();
+        close();
       }}
     >
       <span className={styles.label}>{children}</span>
@@ -280,7 +289,7 @@ export interface TopNavigationMenuPanelTriggerProps extends ButtonHTMLAttributes
   readonly ref?: Ref<HTMLButtonElement> | undefined;
   /** The nested panel this item opens. */
   readonly panel: string;
-  /** Marks the item as the section with the current page. */
+  /** Marks the item as the section with the current page (`aria-current="true"`). */
   readonly active?: boolean;
 }
 
@@ -294,19 +303,17 @@ export function TopNavigationMenuPanelTrigger({
   onClick,
   ...props
 }: TopNavigationMenuPanelTriggerProps) {
-  const menu = useMenu('MenuPanelTrigger');
+  const {showPanel} = useMenuActions('MenuPanelTrigger');
   return (
     <button
       type="button"
       {...props}
       ref={ref}
-      aria-controls={panelId(menu.id, panel)}
-      aria-current={active ? 'true' : undefined}
-      data-active={active ? '' : undefined}
+      aria-current={active ? 'true' : props['aria-current']}
       className={classes(styles.link, className)}
       onClick={(event) => {
         onClick?.(event);
-        if (!event.defaultPrevented) menu.showPanel(panel);
+        showPanel(panel, event.currentTarget);
       }}
     >
       <span className={styles.label}>{children}</span>
