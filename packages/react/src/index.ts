@@ -311,6 +311,9 @@ export type {
 export {Page} from './page/page.tsx';
 export type {PageProps} from './page/page.tsx';
 
+export {Prose} from './prose/prose.tsx';
+export type {ProseProps} from './prose/prose.tsx';
+
 export type {
   PaginationLinkProps,
   PaginationRootProps,
