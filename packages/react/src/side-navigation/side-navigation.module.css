@@ -131,14 +131,12 @@
     rotate: -90deg;
   }
 
-  /* The panel grows and shrinks to its measured height and fades; reduced motion makes the
-     height change instant through the token. It clips only while the height animates. */
+  /* The panel grows and shrinks to its measured height; reduced motion makes the change instant
+     through the token. It clips only while the height animates. */
   .panel {
     min-inline-size: 0;
     height: var(--collapsible-panel-height);
-    transition:
-      height var(--semantic-transition-movement-disclosure),
-      opacity var(--semantic-transition-fade);
+    transition: height var(--semantic-transition-movement-disclosure);
   }
 
   .panel[data-height-transition],
@@ -150,7 +148,6 @@
   .panel[data-starting-style],
   .panel[data-ending-style] {
     height: 0;
-    opacity: var(--semantic-number-opacity-hidden);
   }
 
   /* Space above the nested list, as content rather than padding, so a closed panel has none. */
