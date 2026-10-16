@@ -34,12 +34,16 @@ import {SearchDialog} from '@earendil-works/elanor-react';
 </SearchDialog.Root>;
 ```
 
-The application finds the results; the dialog shows them. Control the query with `value` and `onValueChange` on the Popup, render a `Result` per match, and show a `Message`, such as an [Empty state](/components/empty-state/), when there are none. `Status` announces the count to assistive technology.
+The application finds the results; the dialog shows them. Control the query with `value` and `onValueChange` on the Popup, render a `Result` per match, and show a `Message`, such as an [Empty state](/components/empty-state/), when there are none. `Status` announces the count to assistive technology. Clear the query when the dialog opens, in Root's `onOpenChange`, so each search starts empty.
 
-The field is a combobox that controls the list. The first result is selected as results arrive; the arrow keys move the selection, and Enter or a click follows the selected result's link. Without results, Enter submits the form, so set `action` and the field's `name` for a search page.
+The field is a combobox that controls the list. The first result is selected as results arrive; the arrow keys move the selection, and Enter or a click follows the selected result's link and closes the dialog. A click with a modifier key, such as opening the link in a new tab, leaves it open. Without results, Enter submits the form, so set `action` and the field's `name` for a search page.
 
-## Opening
+Results are `a` elements. For a router's link component, pass it as `render`, such as `render={<Link />}`; it receives the Result's `href`.
 
-The Trigger looks like a search field. ⌘K or Ctrl+K, and `/` outside text fields, also open the dialog; turn them off with `shortcuts={false}` on Root. Show the shortcut in the Trigger with `shortcut`, such as a [Keyboard shortcut](/components/keyboard-shortcut/). The shortcut and the Footer's hints show only on devices that hover, which usually have a keyboard.
+The dialog sits `semantic.dimension.space.padding.xxxxLarge` from the top, so results grow downward without moving the field, and it is as wide as [Modal](/components/modal/). It grows with its results up to `semantic.dimension.size.maxHeight.searchDialog`, or the window if shorter. Only the results scroll, in a [Scroll area](/components/scroll-area/), so the scrollbar overlays them instead of narrowing them. The query uses `semantic.typography.ui.searchDialog.input`, one step above the UI text.
 
-The dialog sits `semantic.dimension.space.padding.xxxxLarge` from the top, so results grow downward without moving the field, and it is as wide as [Modal](/components/modal/). Only the results scroll. The query uses `semantic.typography.ui.searchDialog.input`, one step above the UI text.
+## Keyboard shortcut
+
+The Trigger looks like a search field. The application chooses the keyboard shortcut that opens the dialog: create a handle with `SearchDialog.createHandle()`, pass it to Root, and call `open(null)` from a key listener. Show the keys in the Trigger with `shortcut`, such as a [Keyboard shortcut](/components/keyboard-shortcut/), and name them in `aria-keyshortcuts`. The shortcut and the Footer's hints show only on devices that hover, which usually have a keyboard.
+
+<Demo example="./examples/keyboard-shortcut.tsx" />

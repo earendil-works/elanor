@@ -4,80 +4,61 @@ import {CloseIcon, SearchIcon} from '@earendil-works/elanor-icons-react';
 import {
   createContext,
   useContext,
-  useEffect,
-  useState,
+  useRef,
   type FormHTMLAttributes,
   type HTMLAttributes,
+  type MouseEvent,
   type ReactNode,
   type Ref,
 } from 'react';
 
 import {IconButton} from '../icon-button/icon-button.tsx';
+import * as ScrollArea from '../scroll-area/index.ts';
+import type {ScrollAreaRootProps, ScrollAreaRootState} from '../scroll-area/scroll-area.tsx';
 import {classes, mergeClassName} from '../utils/class-names.ts';
 
 import styles from './search-dialog.module.css';
 
+export type {
+  DialogRootActions as SearchDialogRootActions,
+  DialogRootChangeEventReason as SearchDialogRootChangeEventReason,
+  DialogRootChangeEventDetails as SearchDialogRootChangeEventDetails,
+} from '@base-ui/react/dialog';
+
+export type SearchDialogHandle<Payload = unknown> = BaseDialog.Handle<Payload>;
+
 const CloseContext = /* @__PURE__ */ createContext<() => void>(() => {});
 
-export interface SearchDialogRootProps {
-  /** Whether the dialog is open. Use with `onOpenChange` to control it. */
-  readonly open?: boolean;
-  /** Whether the dialog is open initially, when uncontrolled. */
-  readonly defaultOpen?: boolean;
-  readonly onOpenChange?: (open: boolean) => void;
-  /** Whether ⌘K or Ctrl+K, and `/` outside text fields, open the dialog. */
-  readonly shortcuts?: boolean;
-  readonly children?: ReactNode;
-}
+export type SearchDialogRootProps<Payload = unknown> = BaseDialog.Root.Props<Payload>;
 
-function isEditable(target: EventTarget | null): boolean {
-  return (
-    target instanceof HTMLElement &&
-    (target.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(target.tagName))
-  );
-}
-
-/** A search that opens in a modal dialog. Put a `Trigger` and a `Popup` inside. */
-export function SearchDialogRoot({
-  open: openProp,
-  defaultOpen = false,
-  onOpenChange,
-  shortcuts = true,
-  children,
-}: SearchDialogRootProps) {
-  const [openState, setOpenState] = useState(defaultOpen);
-  const open = openProp ?? openState;
-
-  function setOpen(next: boolean): void {
-    if (openProp === undefined) setOpenState(next);
-    onOpenChange?.(next);
-  }
-
-  useEffect(() => {
-    if (!shortcuts) return;
-    function onKeyDown(event: KeyboardEvent): void {
-      const command = (event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k';
-      const slash = event.key === '/' && !isEditable(event.target);
-      if (!command && !(slash && !open)) return;
-      event.preventDefault();
-      if (openProp === undefined) setOpenState(command ? (current) => !current : true);
-      onOpenChange?.(command ? !open : true);
-    }
-    document.addEventListener('keydown', onKeyDown);
-    return () => document.removeEventListener('keydown', onKeyDown);
-  }, [shortcuts, open, openProp, onOpenChange]);
+/**
+ * A search that opens in a modal dialog. Put a `Trigger` and a `Popup` inside. To open it with a
+ * keyboard shortcut, pass a `handle` from `createHandle()` and call `open()` from the application.
+ */
+export function SearchDialogRoot<Payload = unknown>({
+  actionsRef: actionsRefProp,
+  ...props
+}: SearchDialogRootProps<Payload>) {
+  // Choosing a result closes the dialog through Base UI's actions, in the application's ref when
+  // it passes one.
+  const ownActionsRef = useRef<BaseDialog.Root.Actions>(null);
+  const actionsRef = actionsRefProp ?? ownActionsRef;
+  const close = () => actionsRef.current?.close();
 
   return (
-    <BaseDialog.Root open={open} onOpenChange={(next) => setOpen(next)}>
-      <CloseContext.Provider value={() => setOpen(false)}>{children}</CloseContext.Provider>
-    </BaseDialog.Root>
+    <CloseContext.Provider value={close}>
+      <BaseDialog.Root {...props} actionsRef={actionsRef} />
+    </CloseContext.Provider>
   );
 }
 
 export interface SearchDialogTriggerProps extends Omit<BaseDialog.Trigger.Props, 'children'> {
   /** The trigger's text, such as "Search documentation". */
   readonly children?: ReactNode;
-  /** A keyboard shortcut shown at the end on devices that hover, such as a `KeyboardShortcut`. */
+  /**
+   * A keyboard shortcut shown at the end on devices that hover, such as a `KeyboardShortcut`. It
+   * only shows the keys: the application listens for them, and names them in `aria-keyshortcuts`.
+   */
   readonly shortcut?: ReactNode;
 }
 
@@ -108,14 +89,12 @@ export function SearchDialogTrigger({
   );
 }
 
-export interface SearchDialogPopupProps extends Omit<BaseDialog.Popup.Props, 'children'> {
+export interface SearchDialogPopupProps
+  extends
+    Omit<BaseDialog.Popup.Props, 'children'>,
+    Pick<BaseAutocomplete.Root.Props<string>, 'value' | 'defaultValue' | 'onValueChange'> {
   /** The accessible name, such as "Search documentation". */
   readonly 'aria-label': string;
-  /** The query. Use with `onValueChange` to control it. */
-  readonly value?: string;
-  /** The initial query, when uncontrolled. */
-  readonly defaultValue?: string;
-  readonly onValueChange?: (value: string) => void;
   readonly children?: ReactNode;
 }
 
@@ -146,9 +125,10 @@ export function SearchDialogPopup({
           open
           mode="none"
           autoHighlight="always"
+          keepHighlight
           {...(value === undefined ? {} : {value})}
           {...(defaultValue === undefined ? {} : {defaultValue})}
-          onValueChange={(next) => onValueChange?.(next)}
+          {...(onValueChange === undefined ? {} : {onValueChange})}
         >
           {children}
         </BaseAutocomplete.Root>
@@ -209,13 +189,28 @@ export function SearchDialogClose({ref, ...props}: SearchDialogCloseProps) {
   );
 }
 
-export interface SearchDialogResultsProps extends HTMLAttributes<HTMLDivElement> {
-  readonly ref?: Ref<HTMLDivElement> | undefined;
+export interface SearchDialogResultsProps extends Omit<ScrollAreaRootProps, 'children'> {
+  readonly children?: ReactNode;
 }
 
-/** The scrolling area below the form, for `Message`s, the `List`, and a `Status`. */
-export function SearchDialogResults({ref, className, ...props}: SearchDialogResultsProps) {
-  return <div {...props} ref={ref} className={classes(styles.results, className)} />;
+/**
+ * The area below the form, for `Message`s, the `List`, and a `Status`. It scrolls in a scroll
+ * area, whose scrollbar overlays the results instead of narrowing them.
+ */
+export function SearchDialogResults({className, children, ...props}: SearchDialogResultsProps) {
+  return (
+    <ScrollArea.Root
+      {...props}
+      className={mergeClassName<ScrollAreaRootState>(styles.results, className)}
+    >
+      <ScrollArea.Viewport className={styles.resultsViewport}>
+        <ScrollArea.Content className={styles.resultsContent}>{children}</ScrollArea.Content>
+      </ScrollArea.Viewport>
+      <ScrollArea.Scrollbar>
+        <ScrollArea.Thumb />
+      </ScrollArea.Scrollbar>
+    </ScrollArea.Root>
+  );
 }
 
 export interface SearchDialogStatusProps extends BaseAutocomplete.Status.Props {}
@@ -256,14 +251,32 @@ export function SearchDialogList({ref, className, ...props}: SearchDialogListPro
   );
 }
 
-export interface SearchDialogResultProps extends Omit<BaseAutocomplete.Item.Props, 'render'> {
+export interface SearchDialogResultProps extends BaseAutocomplete.Item.Props {
   /** The result's URL. Choosing the result follows it. */
   readonly href: string;
 }
 
+// Results are links by default; Base UI merges the item's props, including `href`, into them.
+const renderResultLink: BaseAutocomplete.Item.Props['render'] = ({children, ...props}) => (
+  <a {...props}>{children}</a>
+);
+
+// Modified clicks open the link elsewhere, such as in a new tab, and leave the search open.
+function isPlainPrimaryClick(event: MouseEvent): boolean {
+  return (
+    !event.defaultPrevented &&
+    event.button === 0 &&
+    !event.altKey &&
+    !event.ctrlKey &&
+    !event.metaKey &&
+    !event.shiftKey
+  );
+}
+
 /**
  * A result, a link: put a `ResultContext`, a `ResultTitle`, and a `ResultExcerpt` inside. The
- * selected one gets the active fill. Choosing it follows the link and closes the dialog.
+ * selected one gets the active fill. Choosing it follows the link and closes the dialog. It
+ * renders an `a`; for a router's link component, pass it as `render`, which receives `href`.
  */
 export function SearchDialogResult({
   ref,
@@ -271,43 +284,57 @@ export function SearchDialogResult({
   value,
   className,
   onClick,
+  render = renderResultLink,
   ...props
 }: SearchDialogResultProps) {
   const close = useContext(CloseContext);
   return (
     <BaseAutocomplete.Item
       {...props}
+      {...{href}}
       onClick={(event) => {
         onClick?.(event);
-        close();
+        if (isPlainPrimaryClick(event)) close();
       }}
       ref={ref}
       value={value ?? href}
-      render={({children, ...itemProps}) => (
-        <a {...itemProps} href={href}>
-          {children}
-        </a>
-      )}
+      render={render}
       className={mergeClassName<BaseAutocomplete.Item.State>(styles.result, className)}
     />
   );
 }
 
-export interface SearchDialogResultPartProps extends HTMLAttributes<HTMLSpanElement> {
+export interface SearchDialogResultContextProps extends HTMLAttributes<HTMLSpanElement> {
   readonly ref?: Ref<HTMLSpanElement> | undefined;
 }
 
 /** Where the result sits, such as its section. */
-export function SearchDialogResultContext({ref, className, ...props}: SearchDialogResultPartProps) {
+export function SearchDialogResultContext({
+  ref,
+  className,
+  ...props
+}: SearchDialogResultContextProps) {
   return <span {...props} ref={ref} className={classes(styles.resultContext, className)} />;
 }
 
-export function SearchDialogResultTitle({ref, className, ...props}: SearchDialogResultPartProps) {
+export interface SearchDialogResultTitleProps extends HTMLAttributes<HTMLSpanElement> {
+  readonly ref?: Ref<HTMLSpanElement> | undefined;
+}
+
+export function SearchDialogResultTitle({ref, className, ...props}: SearchDialogResultTitleProps) {
   return <span {...props} ref={ref} className={classes(styles.resultTitle, className)} />;
 }
 
+export interface SearchDialogResultExcerptProps extends HTMLAttributes<HTMLSpanElement> {
+  readonly ref?: Ref<HTMLSpanElement> | undefined;
+}
+
 /** Up to two lines of the matching text. */
-export function SearchDialogResultExcerpt({ref, className, ...props}: SearchDialogResultPartProps) {
+export function SearchDialogResultExcerpt({
+  ref,
+  className,
+  ...props
+}: SearchDialogResultExcerptProps) {
   return <span {...props} ref={ref} className={classes(styles.resultExcerpt, className)} />;
 }
 

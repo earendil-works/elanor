@@ -1,4 +1,4 @@
-import {KeyboardKey, KeyboardShortcut, SearchDialog, Text} from '@earendil-works/elanor-react';
+import {KeyboardKey, SearchDialog, Text} from '@earendil-works/elanor-react';
 import {useState} from 'react';
 
 const pages = [
@@ -36,17 +36,8 @@ export default function SearchDialogDemo() {
     : [];
 
   return (
-    <SearchDialog.Root>
-      <SearchDialog.Trigger
-        shortcut={
-          <KeyboardShortcut>
-            <KeyboardKey>Ctrl</KeyboardKey>
-            <KeyboardKey>K</KeyboardKey>
-          </KeyboardShortcut>
-        }
-      >
-        Search documentation
-      </SearchDialog.Trigger>
+    <SearchDialog.Root onOpenChange={(open) => open && setQuery('')}>
+      <SearchDialog.Trigger>Search documentation</SearchDialog.Trigger>
       <SearchDialog.Popup aria-label="Search documentation" value={query} onValueChange={setQuery}>
         <SearchDialog.Form>
           <SearchDialog.Input placeholder="Search documentation" />

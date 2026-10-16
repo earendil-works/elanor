@@ -87,9 +87,12 @@
     display: grid;
     grid-template-rows: auto minmax(0, 1fr) auto;
     max-inline-size: var(--semantic-dimension-size-max-width-modal);
-    max-block-size: calc(
-      100dvh - var(--semantic-dimension-space-padding-xxxx-large) -
-        var(--semantic-dimension-space-padding-medium)
+    max-block-size: min(
+      var(--semantic-dimension-size-max-height-search-dialog),
+      calc(
+        100dvh - var(--semantic-dimension-space-padding-xxxx-large) -
+          var(--semantic-dimension-space-padding-medium)
+      )
     );
     margin-inline: auto;
     overflow: hidden;
@@ -160,12 +163,19 @@
     color: var(--semantic-color-text-secondary);
   }
 
-  /* A result selected from the keyboard scrolls into view with the list's padding around it. */
+  /* The results scroll in a scroll area. A result selected from the keyboard scrolls into view
+     with the list's padding around it; the list and messages bring their own padding. */
   .results {
     min-block-size: 0;
-    overflow-y: auto;
+  }
+
+  .resultsViewport {
     overscroll-behavior: contain;
     scroll-padding-block: var(--semantic-dimension-space-padding-medium);
+  }
+
+  .resultsContent {
+    padding: 0;
   }
 
   .visuallyHidden {

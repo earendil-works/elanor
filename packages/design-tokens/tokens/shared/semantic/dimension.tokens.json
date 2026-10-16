@@ -104,6 +104,13 @@
             "$description": "Use as the maximum inline size of running text, the longest its lines should get, such as paragraphs and list items in long-form content."
           }
         },
+        "maxHeight": {
+          "$description": "Maximum block sizes: use as the cap in `max-block-size: min(token, …)` so an element shrinks to fit shorter windows.",
+          "searchDialog": {
+            "$value": "{primitive.dimension.12000}",
+            "$description": "Component token for the maximum block size of a search dialog, which grows with its results up to this size and shrinks to fit shorter windows."
+          }
+        },
         "sidebar": {
           "$value": "{primitive.dimension.5250}",
           "$description": "Use as the default inline size for expanded side navigation and supporting page regions, independently of the main content grid."

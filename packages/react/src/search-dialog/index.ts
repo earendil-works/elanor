@@ -1,3 +1,5 @@
+import {Dialog as BaseDialog} from '@base-ui/react/dialog';
+
 export {
   SearchDialogRoot as Root,
   SearchDialogTrigger as Trigger,
@@ -16,3 +18,5 @@ export {
   SearchDialogFooter as Footer,
   SearchDialogHint as Hint,
 } from './search-dialog.tsx';
+
+export const createHandle = BaseDialog.createHandle;
