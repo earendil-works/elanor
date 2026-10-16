@@ -1,0 +1,28 @@
+---
+import {PageActions} from './page-actions.tsx';
+
+interface Props {
+  id?: string;
+}
+
+// Replaces the H1 of pages with a Markdown version, whose path mirrors the page's.
+const {id} = Astro.props;
+const markdownPath = `${Astro.url.pathname.replace(/\/$/, '')}.md`;
+const markdownUrl = new URL(markdownPath, Astro.site).href;
+---
+
+<div class="page-title">
+  <h1 id={id}><slot /></h1>
+  <PageActions markdownPath={markdownPath} markdownUrl={markdownUrl} client:load />
+</div>
+
+<style>
+  .page-title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--semantic-dimension-space-gap-medium);
+    inline-size: 100%;
+  }
+</style>

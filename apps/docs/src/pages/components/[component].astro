@@ -2,6 +2,7 @@
 import {getCollection, render, type CollectionEntry} from 'astro:content';
 import ApiReference from '../../components/api-reference.astro';
 import Demo from '../../components/demo.astro';
+import PageTitle from '../../components/page-title.astro';
 import DocsLayout from '../../layouts/docs-layout.astro';
 import {componentName} from '../../lib/component-name.ts';
 
@@ -27,6 +28,6 @@ const {Content} = await render(entry);
   current={`/components/${entry.id}/`}
   markdown={`/components/${entry.id}.md`}
 >
-  <Content components={{Demo}} />
+  <Content components={{Demo, h1: PageTitle}} />
   <ApiReference page={entry.id} body={entry.body ?? ''} />
 </DocsLayout>
