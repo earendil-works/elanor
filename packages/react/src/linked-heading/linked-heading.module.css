@@ -1,0 +1,34 @@
+@layer elanor.components {
+  /* The heading flows inline, so the button sits directly after its last word. */
+  .heading {
+    display: inline;
+  }
+
+  /* The icon sits `gap.small` after the last word: the 24px button centers the 20px icon. */
+  .button {
+    margin-inline-start: calc(
+      var(--semantic-dimension-space-gap-small) -
+        (var(--semantic-dimension-size-small) - var(--semantic-dimension-size-icon)) / 2
+    );
+    vertical-align: middle;
+    transition: opacity var(--semantic-transition-fade);
+  }
+
+  /* Touch screens get a 48px button; it overlaps the heading, so the icon keeps its gap. */
+  @media (pointer: coarse) {
+    .button {
+      margin-inline-start: calc(
+        var(--semantic-dimension-space-gap-small) -
+          (var(--semantic-dimension-size-x-large) - var(--semantic-dimension-size-icon)) / 2
+      );
+    }
+  }
+
+  /* The button shows on hover, on keyboard focus, after a tap or click on the heading (which
+     takes focus), and while it reports a copy, on every device. Hidden, it ignores the pointer,
+     so a tap at the end of the heading reaches the heading. */
+  .root:not(:hover, :focus-within) > .button:not([data-copy-state='copied']) {
+    opacity: var(--semantic-number-opacity-hidden);
+    pointer-events: none;
+  }
+}

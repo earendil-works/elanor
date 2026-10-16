@@ -1,0 +1,25 @@
+# Linked heading
+
+A heading with a button that copies a link to it, for long pages that people share by section, such as documentation. For other headings, use [Heading](/components/heading/).
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {LinkedHeading} from '@earendil-works/elanor-react';
+
+<LinkedHeading level={2} id="billing" linkLabel="Copy link to Billing">
+  Billing
+</LinkedHeading>;
+```
+
+Linked heading takes Heading's props plus a required `id` and `linkLabel`. The button follows the heading's last word, `semantic.dimension.space.gap.small` away. Pressing it copies the heading's absolute URL and moves the page to the heading, so the address bar shows the link too.
+
+The button shows on hover, on keyboard focus, after a tap or click on the heading, and while it confirms a copy, on every device; the heading takes focus without joining the tab order (`tabIndex={-1}`). On touch screens the button is a 48px target.
+
+## In long-form content
+
+Inside [Prose](/components/prose/), a linked heading gets the same space as a plain heading of its level.
+
+<Demo example="./examples/prose.tsx" />
