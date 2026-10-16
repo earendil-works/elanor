@@ -456,6 +456,9 @@ export type {
   SideNavigationVariant,
 } from './side-navigation/side-navigation.tsx';
 
+export {Skeleton, SkeletonText} from './skeleton/skeleton.tsx';
+export type {SkeletonProps, SkeletonState, SkeletonTextProps} from './skeleton/skeleton.tsx';
+
 export {SocialLogin} from './social-login/social-login.tsx';
 export type {SocialLoginProps} from './social-login/social-login.tsx';
 

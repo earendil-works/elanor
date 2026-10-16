@@ -1,0 +1,28 @@
+# Skeleton
+
+A placeholder in the shape of content that is still loading, so the layout doesn't shift when it arrives. For waits longer than a few seconds, show a status message instead.
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Skeleton, SkeletonText} from '@earendil-works/elanor-react';
+
+<Skeleton loading={!user}>{user?.name ?? 'Placeholder name'}</Skeleton>;
+<SkeletonText lines={3} />;
+```
+
+Skeleton covers its content in `semantic.color.background.skeleton` and pulses with `semantic.transition.pulse`. The content keeps its size but is hidden from screen readers and keyboard focus, so set `aria-busy` on the region that is loading. Skeleton renders a `span`; use `render={<div />}` around blocks.
+
+## Loading
+
+`loading` switches between the placeholder and the content in the same element, without a layout shift.
+
+<Demo example="./examples/loading.tsx" />
+
+## Text
+
+SkeletonText shows placeholder lines in the size of the surrounding text. Put it inside [Text](/components/text/) or [Heading](/components/heading/). In a [Stack](/components/stack/), use `align="stretch"` so the lines fill the width.
+
+<Demo example="./examples/text.tsx" />

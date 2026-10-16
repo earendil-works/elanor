@@ -1,0 +1,60 @@
+@layer elanor.components {
+  .skeleton[data-loading],
+  .line {
+    border-radius: var(--semantic-dimension-radius-small);
+    background: var(--semantic-color-background-skeleton);
+  }
+
+  .skeleton[data-loading],
+  .text {
+    animation: pulse var(--semantic-transition-pulse-duration)
+      var(--semantic-transition-pulse-timing-function) infinite alternate;
+  }
+
+  .skeleton[data-loading] {
+    color: transparent;
+    box-decoration-break: clone;
+  }
+
+  .skeleton[data-loading] > * {
+    visibility: hidden;
+  }
+
+  .text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* A 1em bar centered in each line box. */
+  .line {
+    block-size: 1em;
+    margin-block: calc((1lh - 1em) / 2);
+  }
+
+  .line:last-child:not(:first-child) {
+    inline-size: 60%;
+  }
+
+  @keyframes pulse {
+    from {
+      opacity: var(--semantic-number-opacity-visible);
+    }
+
+    to {
+      opacity: var(--semantic-number-opacity-pulse);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .skeleton[data-loading],
+    .line {
+      forced-color-adjust: none;
+      background: GrayText;
+    }
+
+    .skeleton[data-loading],
+    .text {
+      animation: none;
+    }
+  }
+}
