@@ -32,5 +32,7 @@ export default createStrictConfig({
     // TableOfContents.Indicator measures the active entry, like Base UI's Tabs indicator.
     '--active-entry-top',
     '--active-entry-height',
+    // TableOfContents.Menu sets how far content has scrolled beneath its sticky bar (0 to 1).
+    '--sticky-progress',
   ],
 });

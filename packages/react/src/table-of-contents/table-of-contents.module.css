@@ -114,11 +114,198 @@
     }
   }
 
+  /* Menu: a sticky bar with separators above and below. It sticks one border width higher, so
+     what it sticks under, such as a header's border, covers its top separator instead of
+     doubling it. */
+  .menu {
+    position: sticky;
+    z-index: var(--semantic-number-layer-floating);
+    inset-block-start: calc(-1 * var(--semantic-dimension-border-width-small));
+    box-sizing: border-box;
+    min-inline-size: 0;
+    padding-block: var(--semantic-dimension-space-padding-x-large);
+    border-block: var(--semantic-dimension-border-width-small) solid
+      var(--semantic-color-border-secondary);
+    background: var(--semantic-color-background-canvas);
+  }
+
+  /* The shadow fades in as content scrolls beneath the bar (--sticky-progress, 0 to 1), only
+     below it. */
+  .menu::after {
+    position: absolute;
+    z-index: var(--semantic-number-layer-background);
+    inset: 0;
+    box-shadow: var(--semantic-shadow-sticky);
+    opacity: var(--sticky-progress, var(--semantic-number-opacity-hidden));
+    clip-path: inset(0 0 -100% 0);
+    content: '';
+    pointer-events: none;
+  }
+
+  /* The trigger looks like Dropdown's; the current section reads as a small heading. */
+  .menuTrigger {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: var(--semantic-dimension-space-control-gap-large);
+    inline-size: 100%;
+    min-inline-size: 0;
+    padding-block: calc(
+      var(--semantic-dimension-space-control-padding-block-small) -
+        var(--semantic-dimension-border-width-default)
+    );
+    padding-inline: calc(
+      var(--semantic-dimension-space-control-padding-inline-small) -
+        var(--semantic-dimension-border-width-default)
+    );
+    border: var(--semantic-dimension-border-width-default) solid
+      var(--semantic-color-background-fill-secondary);
+    border-radius: var(--semantic-dimension-radius-small);
+    background: var(--semantic-color-background-fill-secondary);
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-heading-app-6);
+    letter-spacing: var(--semantic-typography-heading-app-6-letter-spacing);
+    text-align: start;
+    cursor: pointer;
+  }
+
+  @media (hover: hover) {
+    .menuTrigger:hover {
+      border-color: var(--semantic-color-background-fill-secondary-hover);
+      background: var(--semantic-color-background-fill-secondary-hover);
+    }
+  }
+
+  .menuTrigger[data-popup-open],
+  .menuTrigger:focus-visible {
+    border-color: var(--semantic-color-focus-ring);
+    background: var(--semantic-color-background-fill-secondary);
+  }
+
+  .menuTrigger:focus-visible {
+    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline-offset: var(--semantic-dimension-border-width-medium);
+  }
+
+  /* The prefix names the control for assistive technology only. */
+  .visuallyHidden {
+    position: absolute;
+    inline-size: var(--semantic-dimension-border-width-small);
+    block-size: var(--semantic-dimension-border-width-small);
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .menuValue {
+    flex: 1;
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .menuIcon {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    inline-size: var(--semantic-dimension-size-icon);
+    block-size: var(--semantic-dimension-size-icon);
+    color: var(--semantic-color-icon-primary);
+  }
+
+  .menuIcon > svg {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  .menuPositioner {
+    z-index: var(--semantic-number-layer-floating);
+  }
+
+  /* The list takes Dropdown's popup look, a small gap below the trigger, and Popover's motion. */
+  .menuPopup {
+    box-sizing: border-box;
+    min-inline-size: min(var(--anchor-width), var(--available-width));
+    max-inline-size: var(--available-width);
+    max-block-size: var(--available-height);
+    margin-block-start: var(--semantic-dimension-space-gap-x-small);
+    overflow: auto;
+    overscroll-behavior: contain;
+    border-radius: var(--semantic-dimension-radius-small);
+    outline: 0;
+    box-shadow: var(--semantic-shadow-popup);
+    background: var(--semantic-color-background-canvas);
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-ui-primary);
+    transform-origin: var(--transform-origin);
+    transition:
+      transform var(--semantic-transition-movement-popup),
+      opacity var(--semantic-transition-fade);
+  }
+
+  .menuPopup[data-starting-style],
+  .menuPopup[data-ending-style] {
+    opacity: var(--semantic-number-opacity-hidden);
+    transform: scale(var(--semantic-number-scale-popup));
+  }
+
+  /* In the menu, entries look like Dropdown items: primary text, a fill on hover and focus, and
+     the active entry filled at the selected weight, without the bar. */
+  .menuPopup .list {
+    gap: 0;
+  }
+
+  .menuPopup .link {
+    padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
+    border-radius: var(--semantic-dimension-radius-small);
+    color: var(--semantic-color-text-primary);
+  }
+
+  .menuPopup .list .list .link {
+    padding-inline-start: calc(
+      var(--semantic-dimension-space-control-padding-inline-small) +
+        var(--semantic-dimension-space-padding-x-large)
+    );
+  }
+
+  @media (hover: hover) {
+    .menuPopup .link:hover {
+      background: var(--semantic-color-background-fill-ghost-neutral-hover);
+    }
+  }
+
+  .menuPopup .link:focus-visible {
+    background: var(--semantic-color-background-fill-ghost-neutral-hover);
+    outline: 0;
+  }
+
+  .menuPopup .link[data-active] {
+    background: var(--semantic-color-background-fill-ghost-neutral-active);
+    font-weight: var(--semantic-font-weight-ui-selected);
+  }
+
+  .menuPopup .link[data-active]::before {
+    content: none;
+  }
+
   @media (forced-colors: active) {
     .link[data-active]::before,
     .indicator::before {
       background: CanvasText;
       forced-color-adjust: none;
+    }
+
+    .menuPopup {
+      border: var(--semantic-dimension-border-width-default) solid CanvasText;
+    }
+
+    .menuPopup .link:focus-visible,
+    .menuPopup .link[data-active] {
+      outline: var(--semantic-dimension-border-width-default) solid Highlight;
+      outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
     }
   }
 }
