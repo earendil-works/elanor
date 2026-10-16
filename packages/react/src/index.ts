@@ -475,6 +475,9 @@ export type {
   TableOfContentsItemProps,
   TableOfContentsLinkProps,
   TableOfContentsListProps,
+  TableOfContentsMenuPopupProps,
+  TableOfContentsMenuProps,
+  TableOfContentsMenuTriggerProps,
   TableOfContentsRootProps,
 } from './table-of-contents/table-of-contents.tsx';
 
