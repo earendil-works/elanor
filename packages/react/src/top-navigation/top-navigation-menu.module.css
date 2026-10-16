@@ -125,14 +125,6 @@
     cursor: pointer;
   }
 
-  /* Touch screens get 48px rows. */
-  @media (pointer: coarse) {
-    .link,
-    .back {
-      min-block-size: var(--semantic-dimension-size-x-large);
-    }
-  }
-
   .link[data-active] {
     background: var(--semantic-color-background-fill-ghost-neutral-active);
     color: var(--semantic-color-text-primary);
