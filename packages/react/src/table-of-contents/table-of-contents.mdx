@@ -16,11 +16,11 @@ import {TableOfContents} from '@earendil-works/elanor-react';
 </TableOfContents.Root>;
 ```
 
-The demo links point to sections of this page. Root renders a `nav` named "Table of contents" with an ordered list. The visible title defaults to "On this page"; change it with `title`.
+The demo links point to sections of this page. Root renders a `nav` named "Table of contents" with an ordered list and no visible title; name the region with a heading next to it if the page needs one.
 
 ## Current section
 
-`active` marks the section in view with `aria-current="location"`: its text turns `semantic.color.text.primary`, and a bar marks it on the list's start edge. Other entries are `semantic.color.text.secondary` until hovered. The application decides which section is current, for example with an `IntersectionObserver`.
+`active` marks the section in view with `aria-current="location"`: its text turns `semantic.color.text.primary`, and a bar marks it on the list's start edge. When `active` moves to another entry, the bar slides there and resizes with `semantic.transition.movement.tableOfContents.indicator`, overshooting slightly; instantly when the reader prefers reduced motion. Other entries are `semantic.color.text.secondary` until hovered. The application decides which section is current, for example with an `IntersectionObserver`. In the demo, choosing an entry makes it current.
 
 <Demo example="./examples/active.tsx" />
 
@@ -29,9 +29,3 @@ The demo links point to sections of this page. Root renders a `nav` named "Table
 Put a `List` inside an `Item`, after its `Link`, for subsections. Nested entries indent only their text, so the bar stays on the same edge.
 
 <Demo example="./examples/nested.tsx" />
-
-## Without a title
-
-`title={null}` shows no title, for example when a heading next to it already names the list. The `nav` keeps its accessible name.
-
-<Demo example="./examples/no-title.tsx" />

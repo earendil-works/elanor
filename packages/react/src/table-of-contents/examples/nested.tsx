@@ -13,8 +13,8 @@ export default function TableOfContentsNested() {
         <TableOfContents.Link href="#nested-sections">Nested sections</TableOfContents.Link>
         <TableOfContents.List>
           <TableOfContents.Item>
-            <TableOfContents.Link href="#without-a-title" active>
-              Without a title
+            <TableOfContents.Link href="#nested-sections" active>
+              Subsections
             </TableOfContents.Link>
           </TableOfContents.Item>
         </TableOfContents.List>

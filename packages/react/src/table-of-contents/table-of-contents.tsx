@@ -1,31 +1,82 @@
-import type {AnchorHTMLAttributes, HTMLAttributes, ReactNode, Ref} from 'react';
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type AnchorHTMLAttributes,
+  type HTMLAttributes,
+  type Ref,
+} from 'react';
 
 import {classes} from '../utils/class-names.ts';
 
 import styles from './table-of-contents.module.css';
 
-export interface TableOfContentsRootProps extends Omit<HTMLAttributes<HTMLElement>, 'title'> {
+export interface TableOfContentsRootProps extends HTMLAttributes<HTMLElement> {
   readonly ref?: Ref<HTMLElement> | undefined;
-  /** Visible heading above the links; `null` shows none. The nav keeps its accessible name. */
-  readonly title?: ReactNode;
 }
 
-export function TableOfContents({
-  ref,
-  title = 'On this page',
-  children,
-  className,
-  ...props
-}: TableOfContentsRootProps) {
+interface Indicator {
+  readonly offset: number;
+  readonly size: number;
+}
+
+/**
+ * A `nav` named "Table of contents" with an ordered list of `Item`s. One indicator marks the
+ * active entry and moves to the next one when `active` changes; before it has measured the
+ * entries, such as in server-rendered HTML, the active entry draws its own bar.
+ */
+export function TableOfContents({ref, children, className, ...props}: TableOfContentsRootProps) {
+  const listRef = useRef<HTMLOListElement>(null);
+  const [indicator, setIndicator] = useState<Indicator | null>(null);
+  const [animated, setAnimated] = useState(false);
+
+  // Measure the active entry after every render and when the list resizes.
+  useLayoutEffect(() => {
+    const list = listRef.current;
+    if (!list) return undefined;
+    function measure(): void {
+      const active = list?.querySelector<HTMLElement>('[data-active]');
+      const next = active ? {offset: active.offsetTop, size: active.offsetHeight} : null;
+      setIndicator((current) =>
+        current?.offset === next?.offset && current?.size === next?.size ? current : next,
+      );
+    }
+    measure();
+    const observer = new ResizeObserver(measure);
+    observer.observe(list);
+    return () => observer.disconnect();
+  });
+
+  // The first position appears in place; later changes move.
+  useEffect(() => {
+    if (!indicator || animated) return undefined;
+    const frame = requestAnimationFrame(() => setAnimated(true));
+    return () => cancelAnimationFrame(frame);
+  }, [indicator, animated]);
+
   return (
     <nav
       {...props}
       ref={ref}
       aria-label={props['aria-label'] ?? 'Table of contents'}
+      data-indicator={indicator ? '' : undefined}
       className={classes(styles.root, className)}
     >
-      {title === null ? null : <div className={styles.title}>{title}</div>}
-      <ol className={styles.list}>{children}</ol>
+      <ol ref={listRef} className={styles.list}>
+        {children}
+      </ol>
+      {indicator ? (
+        <span
+          aria-hidden="true"
+          data-animated={animated ? '' : undefined}
+          className={styles.indicator}
+          style={{
+            translate: `0 calc(${indicator.offset}px + var(--semantic-dimension-space-padding-x-small))`,
+            blockSize: `calc(${indicator.size}px - 2 * var(--semantic-dimension-space-padding-x-small))`,
+          }}
+        />
+      ) : null}
     </nav>
   );
 }
