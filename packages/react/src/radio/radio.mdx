@@ -7,9 +7,10 @@ A set of options where exactly one can be selected. For two to five visible opti
 ## Usage
 
 ```tsx
-import {Radio, SelectionControlAndLabel} from '@earendil-works/elanor-react';
+import {Fieldset, Radio, SelectionControlAndLabel} from '@earendil-works/elanor-react';
 
-<Radio.Group aria-label="Email digest frequency">
+<Fieldset.Root render={<Radio.Group />}>
+  <Fieldset.Legend>Email digest</Fieldset.Legend>
   <SelectionControlAndLabel
     control={
       <Radio.Root value="daily">
@@ -19,13 +20,13 @@ import {Radio, SelectionControlAndLabel} from '@earendil-works/elanor-react';
   >
     Daily
   </SelectionControlAndLabel>
-</Radio.Group>;
+</Fieldset.Root>;
 ```
 
-Name the group with `aria-label` or `aria-labelledby`. Arrow keys move between options.
+Label the group with [Fieldset](/components/fieldset/). Arrow keys move between options.
 
 ## Disabled
 
-Disable a single option with `disabled` on `Radio.Root`, or the whole group on `Radio.Group`.
+Disable a single option with `disabled` on `Radio.Root`, or the whole group on `Fieldset.Root`.
 
 <Demo example="./examples/disabled.tsx" />

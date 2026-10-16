@@ -22,9 +22,15 @@ import {Checkbox, SelectionControlAndLabel} from '@earendil-works/elanor-react';
 
 [Selection control and label](/components/selection-control-and-label/) makes the whole label clickable.
 
+## Group
+
+`Checkbox.Group` holds the values of the checked options in one array. Label it with [Fieldset](/components/fieldset/).
+
+<Demo example="./examples/group.tsx" />
+
 ## Indeterminate
 
-Set `indeterminate` on a parent checkbox when only some of its children are checked.
+In a group, a `parent` checkbox checks or clears every option and is indeterminate when only some are checked. Pass every option to the group's `allValues`. Outside a group, set `indeterminate` yourself.
 
 <Demo example="./examples/indeterminate.tsx" />
 

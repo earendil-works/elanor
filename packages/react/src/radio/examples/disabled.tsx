@@ -1,8 +1,9 @@
-import {Radio, SelectionControlAndLabel, Stack} from '@earendil-works/elanor-react';
+import {Fieldset, Radio, SelectionControlAndLabel, Stack} from '@earendil-works/elanor-react';
 
 export default function RadioDisabled() {
   return (
-    <Radio.Group defaultValue="Standard" aria-label="Support plan">
+    <Fieldset.Root render={<Radio.Group defaultValue="Standard" />}>
+      <Fieldset.Legend>Support plan</Fieldset.Legend>
       <Stack gap="small">
         <SelectionControlAndLabel
           control={
@@ -23,6 +24,6 @@ export default function RadioDisabled() {
           Priority (Enterprise only)
         </SelectionControlAndLabel>
       </Stack>
-    </Radio.Group>
+    </Fieldset.Root>
   );
 }

@@ -1,10 +1,11 @@
-import {Radio, SelectionControlAndLabel, Stack} from '@earendil-works/elanor-react';
+import {Fieldset, Radio, SelectionControlAndLabel, Stack} from '@earendil-works/elanor-react';
 
 const frequencies = ['Daily', 'Weekly', 'Monthly'];
 
 export default function RadioDemo() {
   return (
-    <Radio.Group defaultValue="Weekly" aria-label="Email digest frequency">
+    <Fieldset.Root render={<Radio.Group defaultValue="Weekly" />}>
+      <Fieldset.Legend>Email digest</Fieldset.Legend>
       <Stack gap="small">
         {frequencies.map((frequency) => (
           <SelectionControlAndLabel
@@ -19,6 +20,6 @@ export default function RadioDemo() {
           </SelectionControlAndLabel>
         ))}
       </Stack>
-    </Radio.Group>
+    </Fieldset.Root>
   );
 }
