@@ -2,7 +2,7 @@
   /* Demo only: the fixed menu is placed and clipped within the frame. */
   contain: layout paint;
   /* stylelint-disable-next-line design-tokens/no-hardcoded-token-values -- Demo frame size. */
-  block-size: 24rem;
+  block-size: 28rem;
   border: var(--semantic-dimension-border-width-default) solid
     var(--semantic-color-border-secondary);
 }

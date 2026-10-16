@@ -28,7 +28,6 @@ export * as Table from './table/index.ts';
 export * as TableOfContents from './table-of-contents/index.ts';
 export * as Tabs from './tabs/index.ts';
 export * as TopNavigation from './top-navigation/index.ts';
-export * as TopNavigationMenu from './top-navigation-menu/index.ts';
 
 export type {
   GridRootProps,
@@ -526,15 +525,18 @@ export type {
 } from './top-navigation/top-navigation.tsx';
 
 export type {
+  TopNavigationMenuCollapsiblePanelProps,
+  TopNavigationMenuCollapsibleProps,
+  TopNavigationMenuCollapsibleTriggerProps,
   TopNavigationMenuItemProps,
   TopNavigationMenuLinkProps,
   TopNavigationMenuListProps,
   TopNavigationMenuPanelProps,
   TopNavigationMenuPanelTriggerProps,
   TopNavigationMenuPopupProps,
-  TopNavigationMenuRootProps,
+  TopNavigationMenuProps,
   TopNavigationMenuTriggerProps,
-} from './top-navigation-menu/top-navigation-menu.tsx';
+} from './top-navigation/top-navigation-menu.tsx';
 
 export {DirectionProvider, useDirection} from '@base-ui/react/direction-provider';
 export type {DirectionProviderProps, TextDirection} from '@base-ui/react/direction-provider';
