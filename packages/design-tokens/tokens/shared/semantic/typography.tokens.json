@@ -82,14 +82,24 @@
           "1": {
             "$value": {
               "fontFamily": "{semantic.fontFamily.ui}",
+              "fontSize": "{primitive.dimension.fontSize.1100}",
+              "fontWeight": "{primitive.fontWeight.semiBold}",
+              "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
+              "lineHeight": "{primitive.number.lineHeight.1100}"
+            },
+            "$description": "Use for the highest-level heading in an application interface, such as a page title."
+          },
+          "2": {
+            "$value": {
+              "fontFamily": "{semantic.fontFamily.ui}",
               "fontSize": "{primitive.dimension.fontSize.1000}",
               "fontWeight": "{primitive.fontWeight.semiBold}",
               "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
               "lineHeight": "{primitive.number.lineHeight.1000}"
             },
-            "$description": "Use for the highest-level heading in an application interface, such as a page title."
+            "$description": "Use for second-level headings in an application interface beneath a level 1 heading."
           },
-          "2": {
+          "3": {
             "$value": {
               "fontFamily": "{semantic.fontFamily.ui}",
               "fontSize": "{primitive.dimension.fontSize.900}",
@@ -97,9 +107,9 @@
               "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
               "lineHeight": "{primitive.number.lineHeight.900}"
             },
-            "$description": "Use for second-level headings in an application interface beneath a level 1 heading."
+            "$description": "Use for third-level headings in an application interface beneath a level 2 heading."
           },
-          "3": {
+          "4": {
             "$value": {
               "fontFamily": "{semantic.fontFamily.ui}",
               "fontSize": "{primitive.dimension.fontSize.800}",
@@ -107,9 +117,9 @@
               "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
               "lineHeight": "{primitive.number.lineHeight.800}"
             },
-            "$description": "Use for third-level headings in an application interface beneath a level 2 heading."
+            "$description": "Use for fourth-level headings in an application interface beneath a level 3 heading."
           },
-          "4": {
+          "5": {
             "$value": {
               "fontFamily": "{semantic.fontFamily.ui}",
               "fontSize": "{primitive.dimension.fontSize.700}",
@@ -117,25 +127,15 @@
               "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
               "lineHeight": "{primitive.number.lineHeight.700}"
             },
-            "$description": "Use for fourth-level headings in an application interface beneath a level 3 heading."
+            "$description": "Use for fifth-level headings in an application interface beneath a level 4 heading."
           },
-          "5": {
+          "6": {
             "$value": {
               "fontFamily": "{semantic.fontFamily.ui}",
               "fontSize": "{primitive.dimension.fontSize.600}",
               "fontWeight": "{primitive.fontWeight.semiBold}",
               "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
               "lineHeight": "{primitive.number.lineHeight.600}"
-            },
-            "$description": "Use for fifth-level headings in an application interface beneath a level 4 heading."
-          },
-          "6": {
-            "$value": {
-              "fontFamily": "{semantic.fontFamily.ui}",
-              "fontSize": "{primitive.dimension.fontSize.500}",
-              "fontWeight": "{primitive.fontWeight.semiBold}",
-              "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
-              "lineHeight": "{primitive.number.lineHeight.500}"
             },
             "$description": "Use for sixth-level headings in an application interface beneath a level 5 heading; it is the lowest application heading level."
           }
@@ -145,20 +145,20 @@
         "primary": {
           "$value": {
             "fontFamily": "{semantic.fontFamily.prose}",
-            "fontSize": "{primitive.dimension.fontSize.500}",
+            "fontSize": "{primitive.dimension.fontSize.600}",
             "fontWeight": "{primitive.fontWeight.normal}",
             "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
-            "lineHeight": "{primitive.number.lineHeight.500}"
+            "lineHeight": "{primitive.number.lineHeight.600}"
           },
           "$description": "Use for default body copy in long-form content."
         },
         "secondary": {
           "$value": {
             "fontFamily": "{semantic.fontFamily.prose}",
-            "fontSize": "{primitive.dimension.fontSize.400}",
+            "fontSize": "{primitive.dimension.fontSize.500}",
             "fontWeight": "{primitive.fontWeight.normal}",
             "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
-            "lineHeight": "{primitive.number.lineHeight.400}"
+            "lineHeight": "{primitive.number.lineHeight.500}"
           },
           "$description": "Use for supporting long-form content, such as annotations or ancillary copy. Use the primary prose style for default body copy."
         }
@@ -167,14 +167,24 @@
         "primary": {
           "$value": {
             "fontFamily": "{semantic.fontFamily.ui}",
+            "fontSize": "{primitive.dimension.fontSize.500}",
+            "fontWeight": "{primitive.fontWeight.normal}",
+            "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
+            "lineHeight": "{primitive.number.lineHeight.500}"
+          },
+          "$description": "Use for default text in application interfaces, including controls, labels, and navigation."
+        },
+        "secondary": {
+          "$value": {
+            "fontFamily": "{semantic.fontFamily.ui}",
             "fontSize": "{primitive.dimension.fontSize.400}",
             "fontWeight": "{primitive.fontWeight.normal}",
             "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
             "lineHeight": "{primitive.number.lineHeight.400}"
           },
-          "$description": "Use for default text in application interfaces, including controls, labels, and navigation."
+          "$description": "Use for supporting interface text, such as helper text or secondary labels. Use the primary UI style for default interface copy."
         },
-        "secondary": {
+        "tertiary": {
           "$value": {
             "fontFamily": "{semantic.fontFamily.ui}",
             "fontSize": "{primitive.dimension.fontSize.300}",
@@ -182,25 +192,15 @@
             "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
             "lineHeight": "{primitive.number.lineHeight.300}"
           },
-          "$description": "Use for supporting interface text, such as helper text or secondary labels. Use the primary UI style for default interface copy."
-        },
-        "tertiary": {
-          "$value": {
-            "fontFamily": "{semantic.fontFamily.ui}",
-            "fontSize": "{primitive.dimension.fontSize.200}",
-            "fontWeight": "{primitive.fontWeight.normal}",
-            "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
-            "lineHeight": "{primitive.number.lineHeight.200}"
-          },
           "$description": "Use for the lowest-priority interface text, such as compact metadata or supplemental labels. Do not use when the primary or secondary UI style provides sufficient hierarchy."
         },
         "label": {
           "$value": {
             "fontFamily": "{semantic.fontFamily.ui}",
-            "fontSize": "{primitive.dimension.fontSize.400}",
+            "fontSize": "{primitive.dimension.fontSize.500}",
             "fontWeight": "{primitive.fontWeight.bold}",
             "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
-            "lineHeight": "{primitive.number.lineHeight.400}"
+            "lineHeight": "{primitive.number.lineHeight.500}"
           },
           "$description": "Use for structural interface labels, such as navigation and menu group labels and the table of contents title: the primary UI style's size in a heavier weight. Do not use for default interface copy."
         },
@@ -208,10 +208,10 @@
           "input": {
             "$value": {
               "fontFamily": "{semantic.fontFamily.ui}",
-              "fontSize": "{primitive.dimension.fontSize.500}",
+              "fontSize": "{primitive.dimension.fontSize.600}",
               "fontWeight": "{primitive.fontWeight.normal}",
               "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
-              "lineHeight": "{primitive.number.lineHeight.500}"
+              "lineHeight": "{primitive.number.lineHeight.600}"
             },
             "$description": "Component token for the search dialog's field, the dialog's main input. Larger than the primary UI style, so the query reads as the dialog's heading. Do not use for other fields."
           }
@@ -221,20 +221,20 @@
         "primary": {
           "$value": {
             "fontFamily": "{semantic.fontFamily.code}",
-            "fontSize": "{primitive.dimension.fontSize.300}",
+            "fontSize": "{primitive.dimension.fontSize.400}",
             "fontWeight": "{primitive.fontWeight.normal}",
             "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
-            "lineHeight": "{primitive.number.lineHeight.300}"
+            "lineHeight": "{primitive.number.lineHeight.400}"
           },
           "$description": "Use for primary code content, including source code, commands, and structured machine-readable text."
         },
         "secondary": {
           "$value": {
             "fontFamily": "{semantic.fontFamily.code}",
-            "fontSize": "{primitive.dimension.fontSize.200}",
+            "fontSize": "{primitive.dimension.fontSize.300}",
             "fontWeight": "{primitive.fontWeight.normal}",
             "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
-            "lineHeight": "{primitive.number.lineHeight.200}"
+            "lineHeight": "{primitive.number.lineHeight.300}"
           },
           "$description": "Use for supporting code content, such as annotations or ancillary technical metadata. Use the primary code style for the main code content."
         }
