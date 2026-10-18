@@ -145,20 +145,20 @@
         "primary": {
           "$value": {
             "fontFamily": "{semantic.fontFamily.prose}",
-            "fontSize": "{primitive.dimension.fontSize.600}",
+            "fontSize": "{primitive.dimension.fontSize.500}",
             "fontWeight": "{primitive.fontWeight.normal}",
             "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
-            "lineHeight": "{primitive.number.lineHeight.600}"
+            "lineHeight": "{primitive.number.lineHeight.500}"
           },
           "$description": "Use for default body copy in long-form content."
         },
         "secondary": {
           "$value": {
             "fontFamily": "{semantic.fontFamily.prose}",
-            "fontSize": "{primitive.dimension.fontSize.500}",
+            "fontSize": "{primitive.dimension.fontSize.400}",
             "fontWeight": "{primitive.fontWeight.normal}",
             "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
-            "lineHeight": "{primitive.number.lineHeight.500}"
+            "lineHeight": "{primitive.number.lineHeight.400}"
           },
           "$description": "Use for supporting long-form content, such as annotations or ancillary copy. Use the primary prose style for default body copy."
         }
