@@ -119,6 +119,7 @@ export type {
   MenuGroupProps,
   MenuHandle,
   MenuItemProps,
+  MenuItemSemantic,
   MenuItemState,
   MenuLinkItemProps,
   MenuLinkItemState,
@@ -531,7 +532,7 @@ export {TextArea} from './text-area/text-area.tsx';
 export type {TextAreaProps} from './text-area/text-area.tsx';
 
 export {Text} from './text/text.tsx';
-export type {TextProps} from './text/text.tsx';
+export type {TextHierarchy, TextProps} from './text/text.tsx';
 
 export type {
   TopNavigationActionsProps,

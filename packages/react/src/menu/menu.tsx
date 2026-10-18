@@ -60,14 +60,28 @@ function MenuItemContent({children, icon, endAdornment}: MenuItemContentProps): 
   );
 }
 
-export interface MenuItemProps
-  extends Omit<ComponentPropsWithRef<typeof BaseMenu.Item>, 'children'>, MenuItemContentProps {}
+export type MenuItemSemantic = 'neutral' | 'negative';
 
-export function MenuItem({ref, children, icon, endAdornment, className, ...props}: MenuItemProps) {
+export interface MenuItemProps
+  extends Omit<ComponentPropsWithRef<typeof BaseMenu.Item>, 'children'>, MenuItemContentProps {
+  /** `negative` for destructive actions, such as delete or remove. */
+  readonly semantic?: MenuItemSemantic;
+}
+
+export function MenuItem({
+  ref,
+  children,
+  icon,
+  endAdornment,
+  semantic = 'neutral',
+  className,
+  ...props
+}: MenuItemProps) {
   return (
     <BaseMenu.Item
       {...props}
       ref={ref}
+      data-semantic={semantic}
       className={mergeClassName<BaseMenu.Item.State>(styles.item, className)}
     >
       <MenuItemContent icon={icon} endAdornment={endAdornment}>

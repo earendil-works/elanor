@@ -5,6 +5,11 @@
     font: var(--semantic-typography-primary);
   }
 
+  .secondary {
+    color: var(--semantic-color-text-secondary);
+    font: var(--semantic-typography-secondary);
+  }
+
   .text:where(p) {
     box-sizing: border-box;
     min-inline-size: 0;

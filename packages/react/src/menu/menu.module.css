@@ -59,6 +59,34 @@
       var(--semantic-color-background-fill-ghost-neutral-active);
   }
 
+  .item[data-semantic='negative'] {
+    color: var(--semantic-color-text-negative);
+  }
+
+  .item[data-semantic='negative'] .icon {
+    color: var(--semantic-color-icon-negative);
+  }
+
+  @media (hover: hover) {
+    .item[data-semantic='negative']:hover:not([data-disabled]) {
+      background: var(--semantic-color-background-fill-ghost-negative-hover);
+      box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+        var(--semantic-color-background-fill-ghost-negative-hover);
+    }
+  }
+
+  .item[data-semantic='negative'][data-highlighted] {
+    background: var(--semantic-color-background-fill-ghost-negative-hover);
+    box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+      var(--semantic-color-background-fill-ghost-negative-hover);
+  }
+
+  .item[data-semantic='negative']:active:not([data-disabled]) {
+    background: var(--semantic-color-background-fill-ghost-negative-active);
+    box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+      var(--semantic-color-background-fill-ghost-negative-active);
+  }
+
   .item[data-disabled] {
     opacity: var(--semantic-number-opacity-disabled);
     cursor: not-allowed;
