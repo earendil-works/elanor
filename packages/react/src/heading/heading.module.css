@@ -4,6 +4,7 @@
     min-inline-size: 0;
     margin: 0;
     overflow-wrap: anywhere;
+    text-wrap: pretty;
     color: var(--semantic-color-text-primary);
   }
 
