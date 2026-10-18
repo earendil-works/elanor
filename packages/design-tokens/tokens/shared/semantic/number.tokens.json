@@ -24,7 +24,7 @@
         },
         "stale": {
           "$value": "{primitive.number.opacity.250}",
-          "$description": "Use for content that stays visible while it is being replaced, such as the previous page while the next one loads, dimmed over `transition.stale`. Do not use for disabled elements; use `disabled`."
+          "$description": "Use for content shown while its replacement loads, such as the previous page during navigation. Do not use for disabled elements; use `disabled`."
         }
       },
       "scale": {

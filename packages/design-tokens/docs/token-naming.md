@@ -28,7 +28,7 @@ State vocabulary:
 - Numeric primitive steps or [derived-color operations](#derived-primitive-colors).
 - Semantic heading levels `1`–`6`.
 - T-shirt sizes: `xxxSmall`, `xxSmall`, `xSmall`, `small`, `medium`, `large`, `xLarge`, `xxLarge`, `xxxLarge`, `xxxxLarge`.
-- `none`, `default`, `full`, `rest`, `hidden`, `visible`, `pulse`, `stale`, `hover`, `focus`, `active`, `selected`, `checked`, `disabled`, `visited`. Reserve `none` for explicit zero spacing and `full` for radii. `rest` is the value when nothing moves (`scale.rest`, `travel.rest`); `hidden` and `visible` are the ends of a fade; `pulse` is the far end of a repeating loading pulse; `stale` is content being replaced.
+- `none`, `default`, `full`, `rest`, `hidden`, `visible`, `pulse`, `stale`, `hover`, `focus`, `active`, `selected`, `checked`, `disabled`, `visited`. Reserve `none` for explicit zero spacing and `full` for radii. `rest` is the value when nothing moves (`scale.rest`, `travel.rest`); `hidden` and `visible` are the ends of a fade; `pulse` is the far end of a repeating loading pulse; `stale` is content shown while its replacement loads.
 
 Examples:
 
@@ -170,7 +170,7 @@ semantic.color.text.code.type
 
 ## Motion roles
 
-Transitions are DTCG `transition` composites. Each references one primitive duration, `primitive.duration.0` as its delay, and one primitive easing, so a role is a single token. Only `stale` has a delay, so fast updates don't flicker. The type says what changes, which also decides what happens when the reader prefers reduced motion:
+Transitions are DTCG `transition` composites. Each references one primitive duration, a `primitive.duration.0` delay (except `stale`), and one primitive easing, so a role is a single token. The type says what changes, which also decides what happens when the reader prefers reduced motion:
 
 | Type       | Use for                                                                | Reduced motion |
 | ---------- | ---------------------------------------------------------------------- | -------------- |
@@ -178,7 +178,7 @@ Transitions are DTCG `transition` composites. Each references one primitive dura
 | `fade`     | Opacity when something appears or disappears                           | Unchanged      |
 | `movement` | Position, size, scale, rotation, and height                            | Instant        |
 | `pulse`    | A repeating opacity pulse while content loads, such as a skeleton      | Unchanged      |
-| `stale`    | Dimming content that is being replaced, after a delay                  | Unchanged      |
+| `stale`    | Dimming content while its replacement loads, after a delay             | Unchanged      |
 
 ```text
 semantic.transition.feedback

@@ -34,7 +34,7 @@
           "delay": "{primitive.duration.200}",
           "timingFunction": {"$ref": "#/primitive/cubicBezier/easeOut/$root/$value"}
         },
-        "$description": "Use to dim content to `opacity.stale` while it is being replaced; the delay keeps fast updates, such as a quick navigation, from flickering. Set it only while content is stale, so it returns to full opacity at once."
+        "$description": "Use to dim content to `opacity.stale`; the delay keeps fast updates from flickering. Apply it only in the stale state, so content restores instantly."
       },
       "movement": {
         "$description": "Changes that move content: position, size, scale, rotation, and height. The `motion` modifier makes them instant when the reader prefers reduced motion.",
