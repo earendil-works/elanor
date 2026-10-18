@@ -29,13 +29,13 @@ const families = [
     ],
   },
   {
-    entry: 'source-sans',
-    family: 'Source Sans 3',
+    entry: 'elanor-sans',
+    family: 'Elanor Sans',
     format: 'woff2',
     signature: 'wOF2',
     faces: [
-      ['SourceSans3-Variable.woff2', '200 900', 'normal'],
-      ['SourceSans3-Italic-Variable.woff2', '200 900', 'italic'],
+      ['ElanorSans-Variable.woff2', '200 900', 'normal'],
+      ['ElanorSans-Italic-Variable.woff2', '200 900', 'italic'],
     ],
   },
 ];

@@ -4,7 +4,7 @@
     "fontFamily": {
       "$type": "fontFamily",
       "sansSerif": {
-        "$value": ["Source Sans 3", "Helvetica Neue", "Arial", "sans-serif"]
+        "$value": ["Elanor Sans", "Helvetica Neue", "Arial", "sans-serif"]
       }
     }
   }

@@ -1,3 +1,7 @@
+Elanor Sans is a Modified Version of Source Sans 3 (Adobe, version 3.052, from github.com/google/fonts,
+ofl/sourcesans3): its vertical metrics changed (ascent 937, descent 313; scripts/elanor-sans.py), everything else is
+Source Sans 3. As the license asks, it does not use the Reserved Font Name "Source".
+
 Copyright 2010-2020 Adobe (http://www.adobe.com/), with Reserved Font Name 'Source'. All Rights Reserved. Source is a trademark of Adobe in the United States and/or other countries.
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1.
