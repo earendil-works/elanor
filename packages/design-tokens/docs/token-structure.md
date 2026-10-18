@@ -107,6 +107,6 @@ Register new shared files in the appropriate resolver `set` or `modifier` and in
 
 ## Brand overrides
 
-Only Lefos currently has overrides; Radius, Pi, and Earendil use the shared baseline unchanged. Every brand still has its own resolver and CSS entry point, so a brand can diverge later without changing consumers.
+Lefos and Pi have overrides; Radius and Earendil use the shared baseline unchanged. Pi sets its UI text in Source Sans 3 (`primitive.fontFamily.sansSerif`, `semantic.fontFamily.ui`) and keeps Earendil for prose. Every brand still has its own resolver and CSS entry point, so a brand can diverge later without changing consumers.
 
 For an override, add only values that differ under `tokens/<brand>/`, register the source after its shared equivalent, and place its set after shared layers in `resolutionOrder`. Do not copy shared defaults into brand files; copies drift.

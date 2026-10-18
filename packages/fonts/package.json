@@ -2,7 +2,7 @@
   "name": "@earendil-works/elanor-fonts",
   "version": "0.1.0",
   "private": true,
-  "description": "Earendil and Commit Mono fonts with self-hosted CSS entry points.",
+  "description": "Earendil, Commit Mono and Source Sans 3 fonts with self-hosted CSS entry points.",
   "license": "OFL-1.1",
   "type": "module",
   "sideEffects": [
@@ -17,6 +17,7 @@
   "exports": {
     "./earendil.css": "./earendil.css",
     "./commit-mono.css": "./commit-mono.css",
+    "./source-sans.css": "./source-sans.css",
     "./files/*": "./files/*",
     "./licenses/*": "./licenses/*"
   },

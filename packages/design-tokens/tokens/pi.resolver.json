@@ -16,6 +16,10 @@
         {"$ref": "./shared/primitive/cubicBezier.tokens.json"}
       ]
     },
+    "pi-primitive": {
+      "description": "Pi primitive tokens grouped by DTCG type.",
+      "sources": [{"$ref": "./pi/primitive/fontFamily.tokens.json"}]
+    },
     "shared-semantic": {
       "description": "Shared mode-independent semantic tokens grouped by DTCG type.",
       "sources": [
@@ -27,6 +31,10 @@
         {"$ref": "./shared/semantic/shadow.tokens.json"},
         {"$ref": "./shared/semantic/typography.tokens.json"}
       ]
+    },
+    "pi-semantic": {
+      "description": "Pi mode-independent semantic tokens grouped by DTCG type.",
+      "sources": [{"$ref": "./pi/semantic/fontFamily.tokens.json"}]
     }
   },
   "modifiers": {
@@ -57,7 +65,9 @@
   },
   "resolutionOrder": [
     {"$ref": "#/sets/shared-primitive"},
+    {"$ref": "#/sets/pi-primitive"},
     {"$ref": "#/sets/shared-semantic"},
+    {"$ref": "#/sets/pi-semantic"},
     {"$ref": "#/modifiers/colorScheme"},
     {"$ref": "#/modifiers/textContext"},
     {"$ref": "#/modifiers/motion"}

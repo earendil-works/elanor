@@ -1,0 +1,12 @@
+{
+  "$schema": "https://designtokens.org/schemas/2025.10/format.json",
+  "semantic": {
+    "fontFamily": {
+      "$type": "fontFamily",
+      "ui": {
+        "$value": "{primitive.fontFamily.sansSerif}",
+        "$description": "Use for text in application interfaces, including controls, labels, and navigation. Do not use for long-form reading or code."
+      }
+    }
+  }
+}

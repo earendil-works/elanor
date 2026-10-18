@@ -1,0 +1,11 @@
+{
+  "$schema": "https://designtokens.org/schemas/2025.10/format.json",
+  "primitive": {
+    "fontFamily": {
+      "$type": "fontFamily",
+      "sansSerif": {
+        "$value": ["Source Sans 3", "Helvetica Neue", "Arial", "sans-serif"]
+      }
+    }
+  }
+}

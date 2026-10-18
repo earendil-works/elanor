@@ -28,6 +28,16 @@ const families = [
       ['CommitMono-700-Regular.otf', 700, 'normal'],
     ],
   },
+  {
+    entry: 'source-sans',
+    family: 'Source Sans 3',
+    format: 'woff2',
+    signature: 'wOF2',
+    faces: [
+      ['SourceSans3-Variable.woff2', '200 900', 'normal'],
+      ['SourceSans3-Italic-Variable.woff2', '200 900', 'italic'],
+    ],
+  },
 ];
 
 for (const {entry, family, format, signature, faces} of families) {
