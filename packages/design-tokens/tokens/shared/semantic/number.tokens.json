@@ -21,6 +21,10 @@
         "pulse": {
           "$value": "{primitive.number.opacity.600}",
           "$description": "Use for the dim end of a loading pulse, such as a skeleton, alternating with `visible` over `transition.pulse`. Do not use for disabled elements."
+        },
+        "stale": {
+          "$value": "{primitive.number.opacity.250}",
+          "$description": "Use for content that stays visible while it is being replaced, such as the previous page while the next one loads, dimmed over `transition.stale`. Do not use for disabled elements; use `disabled`."
         }
       },
       "scale": {

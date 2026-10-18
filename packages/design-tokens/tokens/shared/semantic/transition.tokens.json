@@ -3,7 +3,7 @@
   "semantic": {
     "transition": {
       "$type": "transition",
-      "$description": "Choose a transition by what changes. `feedback`, `fade`, and `pulse` keep their timing when the reader prefers reduced motion; `movement` becomes instant. Transitions have no delay.",
+      "$description": "Choose a transition by what changes. `feedback`, `fade`, `pulse`, and `stale` keep their timing when the reader prefers reduced motion; `movement` becomes instant. Only `stale` has a delay.",
       "feedback": {
         "$value": {
           "duration": "{primitive.duration.150}",
@@ -27,6 +27,14 @@
           "timingFunction": "{primitive.cubicBezier.easeInOut.cubic}"
         },
         "$description": "Use for one half of a repeating opacity pulse that shows content is loading, such as a skeleton, between `opacity.visible` and `opacity.pulse`. Do not use for elements appearing or disappearing; use `fade`."
+      },
+      "stale": {
+        "$value": {
+          "duration": "{primitive.duration.200}",
+          "delay": "{primitive.duration.200}",
+          "timingFunction": {"$ref": "#/primitive/cubicBezier/easeOut/$root/$value"}
+        },
+        "$description": "Use to dim content to `opacity.stale` while it is being replaced; the delay keeps fast updates, such as a quick navigation, from flickering. Set it only while content is stale, so it returns to full opacity at once."
       },
       "movement": {
         "$description": "Changes that move content: position, size, scale, rotation, and height. The `motion` modifier makes them instant when the reader prefers reduced motion.",

@@ -159,6 +159,14 @@
             }
           }
         },
+        "250": {
+          "$value": 0.25,
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/opacity.json"
+            }
+          }
+        },
         "400": {
           "$value": 0.4,
           "$extensions": {

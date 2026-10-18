@@ -28,7 +28,7 @@ State vocabulary:
 - Numeric primitive steps or [derived-color operations](#derived-primitive-colors).
 - Semantic heading levels `1`–`6`.
 - T-shirt sizes: `xxxSmall`, `xxSmall`, `xSmall`, `small`, `medium`, `large`, `xLarge`, `xxLarge`, `xxxLarge`, `xxxxLarge`.
-- `none`, `default`, `full`, `rest`, `hidden`, `visible`, `pulse`, `hover`, `focus`, `active`, `selected`, `checked`, `disabled`, `visited`. Reserve `none` for explicit zero spacing and `full` for radii. `rest` is the value when nothing moves (`scale.rest`, `travel.rest`); `hidden` and `visible` are the ends of a fade; `pulse` is the far end of a repeating loading pulse.
+- `none`, `default`, `full`, `rest`, `hidden`, `visible`, `pulse`, `stale`, `hover`, `focus`, `active`, `selected`, `checked`, `disabled`, `visited`. Reserve `none` for explicit zero spacing and `full` for radii. `rest` is the value when nothing moves (`scale.rest`, `travel.rest`); `hidden` and `visible` are the ends of a fade; `pulse` is the far end of a repeating loading pulse; `stale` is content being replaced.
 
 Examples:
 
@@ -76,7 +76,7 @@ The first category selects the type vocabulary:
 | `semantic`  | `fontFamily`   | `prose`, `ui`, `code`                                            |
 | `semantic`  | `fontWeight`   | `emphasis`, `ui`                                                 |
 | `semantic`  | `typography`   | `code`, `heading`, `primary`, `prose`, `secondary`, `ui`         |
-| `semantic`  | `transition`   | `feedback`, `fade`, `movement`, `pulse`                          |
+| `semantic`  | `transition`   | `feedback`, `fade`, `movement`, `pulse`, `stale`                 |
 
 Context-neutral tokens stand directly under their category because they apply in any text context: `semantic.fontWeight.emphasis`, and `semantic.typography.primary` and `.secondary`, which the `textContext` modifier resolves to the UI styles in interfaces and the prose styles in long-form content. `fontWeight.ui.*` and `typography.ui.*` are for interface text only.
 
@@ -170,7 +170,7 @@ semantic.color.text.code.type
 
 ## Motion roles
 
-Transitions are DTCG `transition` composites. Each references one primitive duration, `primitive.duration.0` as its delay, and one primitive easing, so a role is a single token. The type says what changes, which also decides what happens when the reader prefers reduced motion:
+Transitions are DTCG `transition` composites. Each references one primitive duration, `primitive.duration.0` as its delay, and one primitive easing, so a role is a single token. Only `stale` has a delay, so fast updates don't flicker. The type says what changes, which also decides what happens when the reader prefers reduced motion:
 
 | Type       | Use for                                                                | Reduced motion |
 | ---------- | ---------------------------------------------------------------------- | -------------- |
@@ -178,11 +178,13 @@ Transitions are DTCG `transition` composites. Each references one primitive dura
 | `fade`     | Opacity when something appears or disappears                           | Unchanged      |
 | `movement` | Position, size, scale, rotation, and height                            | Instant        |
 | `pulse`    | A repeating opacity pulse while content loads, such as a skeleton      | Unchanged      |
+| `stale`    | Dimming content that is being replaced, after a delay                  | Unchanged      |
 
 ```text
 semantic.transition.feedback
 semantic.transition.fade
 semantic.transition.pulse
+semantic.transition.stale
 semantic.transition.movement.popup
 semantic.transition.movement.disclosure
 semantic.transition.movement.indicator
