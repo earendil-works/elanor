@@ -113,7 +113,6 @@ export function attachSheetDrag(popup: HTMLElement, {backdrop, close}: SheetDrag
       }
       gesture.mode = dx > Math.abs(dy) ? 'none' : dy > 0 && atTop(gesture.target, popup) ? 'drag' : 'scroll';
       if (gesture.mode === 'drag') {
-        gesture.startY = touch.clientY;
         setDragging(true);
       }
     }
