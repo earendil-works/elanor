@@ -1,0 +1,40 @@
+# Ticker
+
+One line showing the newest of a sequence, such as the step an agent is working on. When a new item arrives, the line rolls to it like a drum, and the previous item stays bent back above it. To show every step, use [Timeline](/components/timeline/).
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Ticker} from '@earendil-works/elanor-react';
+
+<Ticker.Root active>
+  {steps.map((step) => (
+    <Ticker.Item key={step.id} label={step.text}>
+      {step.icon}
+      <span>{step.text}</span>
+    </Ticker.Item>
+  ))}
+</Ticker.Root>;
+```
+
+Items are listed oldest first, with stable keys; the last is current. Only the last few stay mounted. An item lays out its icon and text in a row, `semantic.dimension.space.gap.small` (8px) apart; text in an element, such as a `span`, ends in an ellipsis. Icons are `semantic.color.icon.secondary`, the current item's `semantic.color.icon.primary`.
+
+Root is a polite live region: screen readers hear the newest item's `label`, and the drawn items are hidden from them. It fills its row's height, at least `semantic.dimension.size.xLarge` (48px). The roll uses `semantic.transition.movement.indicator`, so it is instant when the reader prefers reduced motion.
+
+## Active
+
+`active` makes the current item breathe with `semantic.transition.pulse`, to show that work is going on. It stops when the reader prefers reduced motion.
+
+## Negative
+
+`negative` colors an item `semantic.color.text.negative` and its icons `semantic.color.icon.negative`, such as a failed step. It stays red as it rolls away.
+
+<Demo example="./examples/negative.tsx" />
+
+## Settled
+
+`settled` shows only the current item, without the previous one above it, such as a summary once the work is done.
+
+<Demo example="./examples/settled.tsx" />

@@ -1,0 +1,112 @@
+@layer elanor.components {
+  /* The drum: the current item faces the reader, the previous one bends back above it. */
+  .root {
+    position: relative;
+    display: block;
+    flex: 1;
+    align-self: stretch;
+    min-inline-size: 0;
+    min-block-size: var(--semantic-dimension-size-x-large);
+    overflow: hidden;
+    /* The drum's depth, and its fade towards the edges. */
+    perspective: 18rem;
+    mask-image: linear-gradient(transparent, black 30%, black 70%, transparent);
+  }
+
+  .item {
+    position: absolute;
+    inset-inline: 0;
+    inset-block-start: 50%;
+    display: flex;
+    align-items: center;
+    block-size: var(--semantic-dimension-size-small);
+    margin-block-start: calc(-1 * var(--semantic-dimension-size-small) / 2);
+    opacity: var(--semantic-number-opacity-hidden);
+    white-space: nowrap;
+    backface-visibility: hidden;
+    transition:
+      transform var(--semantic-transition-movement-indicator),
+      opacity var(--semantic-transition-fade);
+  }
+
+  .item[data-neighbour] {
+    opacity: var(--semantic-number-opacity-disabled);
+  }
+
+  .item[data-current] {
+    opacity: var(--semantic-number-opacity-visible);
+  }
+
+  .root[data-settled] > .item[data-neighbour] {
+    opacity: var(--semantic-number-opacity-hidden);
+  }
+
+  .content {
+    display: flex;
+    align-items: center;
+    gap: var(--semantic-dimension-space-gap-small);
+    min-inline-size: 0;
+    max-inline-size: 100%;
+  }
+
+  .content > * {
+    flex: none;
+  }
+
+  .content > :not(svg, img) {
+    flex: 0 1 auto;
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .content svg {
+    color: var(--semantic-color-icon-secondary);
+  }
+
+  .item[data-current] svg {
+    color: var(--semantic-color-icon-primary);
+  }
+
+  /* A negative item stays red as it rolls away. */
+  .item[data-negative] {
+    color: var(--semantic-color-text-negative);
+  }
+
+  .item[data-negative] svg {
+    color: var(--semantic-color-icon-negative);
+  }
+
+  /* Active: the current item's icon and words breathe together. */
+  .root[data-active] > .item[data-current] > .content {
+    animation: breathe var(--semantic-transition-pulse-duration)
+      var(--semantic-transition-pulse-timing-function) infinite alternate;
+  }
+
+  @keyframes breathe {
+    to {
+      opacity: var(--semantic-number-opacity-pulse);
+    }
+  }
+
+  .label {
+    position: absolute;
+    inline-size: var(--semantic-dimension-border-width-small);
+    block-size: var(--semantic-dimension-border-width-small);
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .root[data-active] > .item[data-current] > .content {
+      animation: none;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .root[data-active] > .item[data-current] > .content {
+      animation: none;
+    }
+  }
+}

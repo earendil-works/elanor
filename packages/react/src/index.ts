@@ -29,6 +29,7 @@ export * as Switch from './switch/index.ts';
 export * as Table from './table/index.ts';
 export * as TableOfContents from './table-of-contents/index.ts';
 export * as Tabs from './tabs/index.ts';
+export * as Ticker from './ticker/index.ts';
 export * as Timeline from './timeline/index.ts';
 export * as TopNavigation from './top-navigation/index.ts';
 
@@ -51,6 +52,8 @@ export type {
   LayoutMainProps,
   LayoutFooterProps,
 } from './layout/layout.tsx';
+
+export type {TickerItemProps, TickerRootProps} from './ticker/ticker.tsx';
 
 export type {
   TimelineItemProps,
