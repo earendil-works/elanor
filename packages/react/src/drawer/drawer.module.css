@@ -124,6 +124,156 @@
     font: var(--semantic-typography-ui-primary);
   }
 
+  /* A popup holding a Drawer.Stack: the pages fill it and scroll themselves. */
+  .popup:has(> .stack) {
+    padding: 0;
+    overflow: hidden;
+  }
+
+  /* Base UI focuses the popup when it opens; the controls inside keep their own focus rings. */
+  .popup:has(> .stack):focus-visible {
+    outline: none;
+  }
+
+  .popup[data-swipe-direction='down']:has(> .stack) {
+    block-size: 85dvh;
+    max-block-size: 85dvh;
+    border-start-start-radius: var(--semantic-dimension-radius-large);
+    border-start-end-radius: var(--semantic-dimension-radius-large);
+  }
+
+  .popup[data-swipe-direction='down']:has(> .stack) > .grip {
+    margin-block-start: 0;
+  }
+
+  /* Side panels round their inner edge. Swipe directions are physical. */
+  .popup[data-swipe-direction='right']:has(> .stack) {
+    border-top-left-radius: var(--semantic-dimension-radius-large);
+    border-bottom-left-radius: var(--semantic-dimension-radius-large);
+  }
+
+  .popup[data-swipe-direction='left']:has(> .stack) {
+    border-top-right-radius: var(--semantic-dimension-radius-large);
+    border-bottom-right-radius: var(--semantic-dimension-radius-large);
+  }
+
+  .stack {
+    position: relative;
+    block-size: 100%;
+    overflow: hidden;
+  }
+
+  /* A page: a card with its own header and scroll position. Drawer.Stack moves and dims it inline. */
+  .page {
+    position: absolute;
+    inset: 0;
+    isolation: isolate;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    overflow-x: hidden;
+    overflow-y: auto;
+    /* No bounce at the edges: past the top, a bottom sheet itself moves (sheet-drag.ts). */
+    overscroll-behavior: none;
+    padding: 0 var(--semantic-dimension-space-padding-x-large)
+      max(var(--semantic-dimension-space-padding-x-large), env(safe-area-inset-bottom));
+    background: var(--semantic-color-background-canvas);
+  }
+
+  /* A page over another casts a shadow onto it. */
+  .page + .page {
+    box-shadow: var(--semantic-shadow-popup);
+  }
+
+  .pageHeader {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: var(--semantic-number-layer-raised);
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: var(--semantic-dimension-space-gap-small);
+    margin-inline: calc(-1 * var(--semantic-dimension-space-padding-x-large));
+    padding-block: var(--semantic-dimension-space-padding-x-large)
+      var(--semantic-dimension-space-padding-small);
+    padding-inline: var(--semantic-dimension-space-padding-x-large);
+    background: var(--semantic-color-background-canvas);
+  }
+
+  /* Room above for a bottom sheet's grip. */
+  .popup[data-swipe-direction='down'] .pageHeader {
+    padding-block-start: var(--semantic-dimension-space-padding-xx-large);
+  }
+
+  /* One line beside the buttons: the page below says the rest. */
+  .pageTitle {
+    flex: 1;
+    min-inline-size: 0;
+    margin: 0;
+    overflow: hidden;
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-ui-primary);
+    font-weight: var(--semantic-font-weight-ui-selected);
+    letter-spacing: normal;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .pageTitle:focus-visible {
+    outline: none;
+  }
+
+  /*
+   * The header's buttons line up with a Timeline in the page: Back's icon over the steps' markers (size small, after
+   * the step's medium padding), Close's icon over the chevrons (an icon, before the medium padding). An icon button is
+   * size small, or x-large on a touch screen.
+   */
+  .pageBack {
+    margin-inline-start: calc(
+      var(--semantic-dimension-space-padding-medium) + var(--semantic-dimension-size-small) / 2 -
+        var(--semantic-dimension-size-small) / 2
+    );
+  }
+
+  .pageBack:dir(rtl) > svg {
+    transform: rotateY(180deg);
+  }
+
+  .pageClose {
+    margin-inline-end: calc(
+      var(--semantic-dimension-space-padding-medium) + var(--semantic-dimension-size-icon) / 2 -
+        var(--semantic-dimension-size-small) / 2
+    );
+  }
+
+  @media (pointer: coarse) {
+    .pageBack {
+      margin-inline-start: calc(
+        var(--semantic-dimension-space-padding-medium) + var(--semantic-dimension-size-small) / 2 -
+          var(--semantic-dimension-size-x-large) / 2
+      );
+    }
+
+    .pageClose {
+      margin-inline-end: calc(
+        var(--semantic-dimension-space-padding-medium) + var(--semantic-dimension-size-icon) / 2 -
+          var(--semantic-dimension-size-x-large) / 2
+      );
+    }
+  }
+
+  .pageBody {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-gap-medium);
+    min-inline-size: 0;
+  }
+
+  .pageBody > * {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+  }
+
   @media (forced-colors: active) {
     .backdrop {
       background: Canvas;

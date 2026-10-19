@@ -40,6 +40,18 @@ Close the drawer when the user navigates, with `actionsRef.current.close()` or c
 
 <Demo example="./examples/side-panel.tsx" />
 
+## Pages
+
+Put a `Drawer.Stack` directly in the Popup for a stack of pages, like a phone's navigation stack. Its children are `Drawer.Page` elements with keys, bottom first; the last is shown. Each page is a card with its own scroll position and a sticky header: a back button on deeper pages, the title on one line, and a close button on the first page. The first page's title is the drawer's `Drawer.Title`; deeper titles are `h3`. Add a page to push it and remove the last one in `onBack` to go back; `backLabel` and `closeLabel` name the buttons.
+
+A pushed page slides in from the inline end over the one below, which shifts aside and dims, with `semantic.transition.movement.drawer`; going back reverses it, and the popped page stays rendered until it has left. A swipe towards the inline end goes back, past 40% of the width or on a flick; content that scrolls sideways keeps its own swipes. A bottom sheet with a stack is 85% of the viewport's height with rounded top corners; a side panel keeps its full height and rounds its inner edge. When content arrives at the end of a page, change its `follow` prop (such as a count): if the reader is at the end, the page scrolls to the new end.
+
+<Demo example="./examples/stack.tsx" />
+
+The header's buttons line up with a [Timeline](/components/timeline/) in the page: the back icon over its markers, the close icon over its chevrons. In a side panel:
+
+<Demo example="./examples/stack-side-panel.tsx" />
+
 ## Nested sheets
 
 Nest a Drawer inside a Popup to stack bottom sheets. With `data-stacked` on each Popup, parent sheets shrink behind the open sheet. Closing a nested sheet returns focus to its trigger.

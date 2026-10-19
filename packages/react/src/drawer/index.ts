@@ -8,6 +8,7 @@ export {
   DrawerTitle as Title,
   DrawerDescription as Description,
 } from './drawer.tsx';
+export {DrawerPage as Page, DrawerStack as Stack} from './drawer-stack.tsx';
 
 export const Trigger = BaseDrawer.Trigger;
 export const Portal = BaseDrawer.Portal;

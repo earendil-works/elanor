@@ -42,7 +42,10 @@ interface SheetContextValue {
   onClosed: (callback: () => void) => () => void;
 }
 
-const SheetContext = /* @__PURE__ */ createContext<SheetContextValue | null>(null);
+export const SheetContext = /* @__PURE__ */ createContext<SheetContextValue | null>(null);
+
+/** The popup element, for parts that listen to gestures on it (Drawer.Stack's swipe back). */
+export const PopupContext = /* @__PURE__ */ createContext<HTMLElement | null>(null);
 
 function setRef<Value>(ref: Ref<Value> | undefined, value: Value | null) {
   if (typeof ref === 'function') {
@@ -183,7 +186,7 @@ export function DrawerPopup({ref, className, children, ...props}: DrawerPopupPro
       className={mergeClassName<BaseDrawer.Popup.State>(styles.popup, className)}
     >
       <span className={styles.grip} aria-hidden="true" />
-      {children}
+      <PopupContext value={popup}>{children}</PopupContext>
     </BaseDrawer.Popup>
   );
 }

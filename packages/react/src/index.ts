@@ -598,3 +598,4 @@ export type {
   DrawerTitleProps,
   DrawerDescriptionProps,
 } from './drawer/drawer.tsx';
+export type {DrawerPageProps, DrawerStackProps} from './drawer/drawer-stack.tsx';
