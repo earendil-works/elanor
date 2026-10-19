@@ -1,0 +1,218 @@
+@layer elanor.components {
+  .root {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* The rail: a segment above and below each marker, stopping short of it. */
+  .item {
+    position: relative;
+  }
+
+  .item::before,
+  .item::after {
+    position: absolute;
+    inset-inline-start: calc(
+      var(--semantic-dimension-space-padding-medium) + var(--semantic-dimension-size-small) / 2 -
+        var(--semantic-dimension-border-width-medium) / 2
+    );
+    border-inline-start: var(--semantic-dimension-border-width-medium) solid
+      var(--semantic-color-border-secondary);
+    content: '';
+  }
+
+  .item::before {
+    inset-block-start: 0;
+    block-size: calc(
+      var(--semantic-dimension-space-padding-medium) - var(--semantic-dimension-space-gap-x-small)
+    );
+  }
+
+  .item::after {
+    inset-block: calc(
+        var(--semantic-dimension-space-padding-medium) + var(--semantic-dimension-size-small) +
+          var(--semantic-dimension-space-gap-x-small)
+      )
+      0;
+  }
+
+  .item:first-child::before,
+  .item:last-child::after {
+    display: none;
+  }
+
+  .item[data-arriving] {
+    animation: arrive var(--semantic-transition-movement-disclosure-duration)
+      var(--semantic-transition-movement-disclosure-timing-function);
+  }
+
+  @keyframes arrive {
+    from {
+      opacity: var(--semantic-number-opacity-hidden);
+      transform: translateY(calc(2 * var(--semantic-dimension-travel-popup)));
+    }
+  }
+
+  .step {
+    box-sizing: border-box;
+    display: flex;
+    align-items: flex-start;
+    gap: var(--semantic-dimension-space-gap-medium);
+    inline-size: 100%;
+    margin: 0;
+    padding: var(--semantic-dimension-space-padding-medium);
+    border: 0;
+    background: transparent;
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-ui-primary);
+    text-align: start;
+  }
+
+  button.step {
+    cursor: pointer;
+    touch-action: manipulation;
+  }
+
+  button.step:focus-visible {
+    outline: none;
+  }
+
+  .marker {
+    display: grid;
+    flex: none;
+    place-items: center;
+    inline-size: var(--semantic-dimension-size-small);
+    block-size: var(--semantic-dimension-size-small);
+    color: var(--semantic-color-icon-secondary);
+  }
+
+  .marker > svg {
+    inline-size: var(--semantic-dimension-size-icon);
+    block-size: var(--semantic-dimension-size-icon);
+  }
+
+  .marker[data-status='running'] {
+    color: var(--semantic-color-icon-primary);
+    animation: breathe var(--semantic-transition-pulse-duration)
+      var(--semantic-transition-pulse-timing-function) infinite alternate;
+  }
+
+  .marker[data-status='error'] {
+    color: var(--semantic-color-icon-negative);
+  }
+
+  @keyframes breathe {
+    to {
+      opacity: var(--semantic-number-opacity-pulse);
+    }
+  }
+
+  .dot {
+    inline-size: var(--semantic-dimension-size-xx-small);
+    block-size: var(--semantic-dimension-size-xx-small);
+    border-radius: var(--semantic-dimension-radius-full);
+    background: currentcolor;
+  }
+
+  /* The text area takes the press highlight and focus ring, clear of the rail and the marker. */
+  .body {
+    display: flex;
+    flex: 1;
+    align-items: flex-start;
+    gap: var(--semantic-dimension-space-gap-small);
+    min-inline-size: 0;
+    margin: calc(-1 * var(--semantic-dimension-space-padding-small))
+      calc(-1 * var(--semantic-dimension-space-padding-medium));
+    padding: var(--semantic-dimension-space-padding-small)
+      var(--semantic-dimension-space-padding-medium);
+    border-radius: var(--semantic-dimension-radius-default);
+    transition: background-color var(--semantic-transition-feedback);
+  }
+
+  @media (hover: hover) {
+    button.step:hover > .body {
+      background: var(--semantic-color-background-fill-ghost-neutral-hover);
+    }
+  }
+
+  button.step:active > .body {
+    background: var(--semantic-color-background-fill-ghost-neutral-active);
+  }
+
+  button.step:focus-visible > .body {
+    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+  }
+
+  .text {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-inline-size: 0;
+  }
+
+  /* One line each: the whole step is one tap away. */
+  .title,
+  .description {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .description {
+    color: var(--semantic-color-text-secondary);
+    font: var(--semantic-typography-ui-secondary);
+  }
+
+  .description[data-code] {
+    font: var(--semantic-typography-code-secondary);
+  }
+
+  .item[data-status='error'] .description {
+    color: var(--semantic-color-text-negative);
+  }
+
+  .chevron {
+    display: grid;
+    flex: none;
+    place-items: center;
+    block-size: var(--semantic-dimension-size-small);
+    color: var(--semantic-color-icon-secondary);
+  }
+
+  .chevron:dir(rtl) > svg {
+    transform: rotateY(180deg);
+  }
+
+  @media (pointer: coarse) {
+    button.step {
+      min-block-size: var(--semantic-dimension-size-x-large);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marker[data-status='running'] {
+      animation: none;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .item::before,
+    .item::after {
+      border-color: GrayText;
+    }
+
+    .dot {
+      forced-color-adjust: none;
+      background: CanvasText;
+    }
+
+    .marker[data-status='running'] {
+      animation: none;
+    }
+
+    button.step:focus-visible > .body {
+      outline-color: Highlight;
+    }
+  }
+}

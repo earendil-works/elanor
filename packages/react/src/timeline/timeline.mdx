@@ -1,0 +1,39 @@
+# Timeline
+
+A vertical list of steps on a rail, in order, such as what an agent or a deployment did. Each step has a marker, a one-line title and an optional one-line description; a step can open its details. For a short ordered list in running text, use [List](/components/list/); to show only the latest step, use [Ticker](/components/ticker/).
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Timeline} from '@earendil-works/elanor-react';
+
+<Timeline.Root>
+  <Timeline.Item title="Ran the tests" description="pnpm test" />
+</Timeline.Root>;
+```
+
+Root renders an `ol` and Item an `li`. The marker, `semantic.dimension.size.small` (24px), sits beside the title's line; the rail between markers stops `semantic.dimension.space.gap.xSmall` (4px) short of them. Title and description stay on one line and end in an ellipsis, so put the full text in the step's detail.
+
+## Status
+
+`status` is `done` by default. A `running` marker is `semantic.color.icon.primary` and breathes with `semantic.transition.pulse` (not when the reader prefers reduced motion); an `error` marker is `semantic.color.icon.negative` and its description `semantic.color.text.negative`. The marker is named by its status ("Running", "Done", "Failed"); set `statusLabel` to translate it.
+
+## Icons
+
+`icon` replaces the dot with an icon for the kind of step. It takes the marker's color. `code` sets the description in the code font, for commands and output.
+
+<Demo example="./examples/icons.tsx" />
+
+## Clickable steps
+
+With `onClick`, a step is a button with a trailing chevron. Its text area highlights when hovered or pressed, clear of the rail and the marker.
+
+<Demo example="./examples/clickable.tsx" />
+
+## Arriving steps
+
+Items mounted after the timeline first rendered slide in, so new steps are noticed while the list is open. Give items stable keys.
+
+<Demo example="./examples/live.tsx" />
