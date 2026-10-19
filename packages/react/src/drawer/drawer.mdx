@@ -26,7 +26,11 @@ import {Drawer} from '@earendil-works/elanor-react';
 </Drawer.Root>;
 ```
 
-A bottom sheet shows a grip at its top edge, a cue that it can be swiped away; side panels have none. Popup scrolls within the viewport. Content keeps text selectable with a mouse; add `data-base-ui-swipe-ignore` to controls that handle their own gestures.
+A bottom sheet shows a grip at its top edge, a cue that it can be dragged away; side panels have none. Popup scrolls within the viewport. Content keeps text selectable with a mouse; add `data-base-ui-swipe-ignore` to controls that handle their own gestures.
+
+## Drag to close
+
+A bottom sheet follows the finger through a rubber band: light at first, heavier the further it goes. It closes past a third of its height or on a clear flick, and otherwise springs back; pulled up, it gives only a little. A drag starts where the content under the finger is scrolled to its top. Elsewhere the content scrolls, and once it reaches the top the same finger takes over the sheet. Sheets with snap points and side panels keep Base UI's swipe.
 
 ## Side panel
 

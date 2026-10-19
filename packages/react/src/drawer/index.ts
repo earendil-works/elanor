@@ -1,6 +1,7 @@
 import {Drawer as BaseDrawer} from '@base-ui/react/drawer';
 
 export {
+  DrawerRoot as Root,
   DrawerBackdrop as Backdrop,
   DrawerViewport as Viewport,
   DrawerPopup as Popup,
@@ -8,7 +9,6 @@ export {
   DrawerDescription as Description,
 } from './drawer.tsx';
 
-export const Root = BaseDrawer.Root;
 export const Trigger = BaseDrawer.Trigger;
 export const Portal = BaseDrawer.Portal;
 export const Content = BaseDrawer.Content;

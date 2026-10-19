@@ -4,7 +4,11 @@
     inset: 0;
     min-block-size: 100dvh;
     background: var(--semantic-color-background-backdrop);
-    opacity: calc(var(--semantic-number-opacity-visible) - var(--drawer-swipe-progress));
+    /* Drag to close (sheet-drag.ts) sets its own progress; otherwise Base UI's swipe does. */
+    opacity: calc(
+      var(--semantic-number-opacity-visible) -
+        var(--drawer-drag-progress, var(--drawer-swipe-progress))
+    );
   }
 
   @supports (-webkit-touch-callout: none) {
@@ -41,7 +45,10 @@
     overflow-wrap: anywhere;
     pointer-events: auto;
     touch-action: auto;
-    transform: translateY(calc(var(--drawer-snap-point-offset) + var(--drawer-swipe-movement-y)));
+    /* Drag to close (sheet-drag.ts) sets its own offset; otherwise Base UI's swipe does. */
+    transform: translateY(
+      calc(var(--drawer-snap-point-offset) + var(--drawer-drag, var(--drawer-swipe-movement-y)))
+    );
   }
 
   /* The grip of a bottom sheet: no space of its own, it stays at the popup's top edge while the content scrolls. */
@@ -95,7 +102,7 @@
     right: 0;
   }
 
-  .popup[data-swiping] {
+  .popup:is([data-swiping], [data-dragging]) {
     user-select: none;
   }
 
@@ -122,7 +129,10 @@
       background: Canvas;
       opacity: calc(
         var(--semantic-number-opacity-disabled) *
-          (var(--semantic-number-opacity-visible) - var(--drawer-swipe-progress))
+          (
+            var(--semantic-number-opacity-visible) -
+              var(--drawer-drag-progress, var(--drawer-swipe-progress))
+          )
       );
     }
 
@@ -147,7 +157,8 @@
     transform-origin: bottom center;
     transform: translateY(
         calc(
-          var(--drawer-snap-point-offset) + var(--drawer-swipe-movement-y) - var(--stack-peek) -
+          var(--drawer-snap-point-offset) + var(--drawer-drag, var(--drawer-swipe-movement-y)) -
+            var(--stack-peek) -
             (var(--semantic-number-scale-rest) - var(--stack-scale)) * var(--stack-height)
         )
       )
@@ -172,8 +183,10 @@
   }
 
   .popup[data-swiping],
+  .popup[data-dragging],
   .popup[data-nested-drawer-swiping],
-  .backdrop[data-swiping] {
+  .backdrop[data-swiping],
+  .backdrop[data-dragging] {
     transition: none;
   }
 

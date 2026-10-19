@@ -29,6 +29,9 @@ export default createStrictConfig({
     '--drawer-height',
     '--drawer-frontmost-height',
     '--nested-drawers',
+    // Drawer's drag to close (sheet-drag.ts) sets the sheet's offset and its progress towards closing.
+    '--drawer-drag',
+    '--drawer-drag-progress',
     // TableOfContents.Indicator measures the active entry, like Base UI's Tabs indicator.
     '--active-entry-top',
     '--active-entry-height',
