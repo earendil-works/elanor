@@ -3,6 +3,7 @@
     box-sizing: border-box;
     display: inline-flex;
     gap: var(--semantic-dimension-space-control-gap-large);
+    inline-size: fit-content;
     min-inline-size: 0;
     padding: var(--semantic-dimension-space-padding-xx-small);
     border-radius: var(--semantic-dimension-radius-small);
