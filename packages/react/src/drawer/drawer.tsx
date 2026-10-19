@@ -51,13 +51,17 @@ export function DrawerViewport({ref, className, ...props}: DrawerViewportProps) 
 export type DrawerPopupProps = BaseDrawer.Popup.Props;
 export type DrawerPopupState = BaseDrawer.Popup.State;
 
-export function DrawerPopup({ref, className, ...props}: DrawerPopupProps) {
+/** The drawer's panel. A bottom sheet (`swipeDirection="down"`) shows a grip at its top edge, a cue to swipe it away. */
+export function DrawerPopup({ref, className, children, ...props}: DrawerPopupProps) {
   return (
     <BaseDrawer.Popup
       {...props}
       ref={ref}
       className={mergeClassName<BaseDrawer.Popup.State>(styles.popup, className)}
-    />
+    >
+      <span className={styles.grip} aria-hidden="true" />
+      {children}
+    </BaseDrawer.Popup>
   );
 }
 

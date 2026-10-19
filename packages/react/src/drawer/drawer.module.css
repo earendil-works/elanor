@@ -44,6 +44,32 @@
     transform: translateY(calc(var(--drawer-snap-point-offset) + var(--drawer-swipe-movement-y)));
   }
 
+  /* The grip of a bottom sheet: no space of its own, it stays at the popup's top edge while the content scrolls. */
+  .grip {
+    display: none;
+  }
+
+  .popup[data-swipe-direction='down'] > .grip {
+    position: sticky;
+    inset-block-start: 0;
+    z-index: var(--semantic-number-layer-raised);
+    display: block;
+    block-size: 0;
+    margin-block-start: calc(-1 * var(--semantic-dimension-space-padding-x-large));
+  }
+
+  .popup[data-swipe-direction='down'] > .grip::before {
+    position: absolute;
+    inset-block-start: var(--semantic-dimension-space-padding-small);
+    inset-inline-start: 50%;
+    inline-size: var(--semantic-dimension-size-large);
+    block-size: var(--semantic-dimension-size-xxx-small);
+    border-radius: var(--semantic-dimension-radius-full);
+    background: var(--semantic-color-border-primary);
+    content: '';
+    transform: translateX(-50%);
+  }
+
   .popup[data-swipe-direction='up'] {
     align-self: start;
   }
