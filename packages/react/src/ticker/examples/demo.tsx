@@ -17,11 +17,11 @@ const STEPS = [
 export default function TickerDemo() {
   const [count, setCount] = useState(1);
   useEffect(() => {
-    const timer = setInterval(() => setCount((value) => value + 1), 1800);
+    const timer = setInterval(() => setCount((value) => Math.min(value + 1, 12)), 1800);
     return () => clearInterval(timer);
   }, []);
   return (
-    <Ticker.Root active>
+    <Ticker.Root active={count < 12}>
       {Array.from({length: count}, (_, index) => {
         const step = STEPS[index % STEPS.length]!;
         return (

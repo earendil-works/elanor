@@ -1,18 +1,48 @@
 @layer elanor.components {
-  /* The drum: the current item faces the reader, the previous one bends back above it. */
+  /*
+   * The ticker: tall enough for the items around the current one. Its color is inherited, so `color` on it or an
+   * ancestor recolors the current item; the others are secondary.
+   */
   .root {
     position: relative;
     display: block;
     flex: 1;
     align-self: stretch;
+    box-sizing: border-box;
     min-inline-size: 0;
-    min-block-size: var(--semantic-dimension-size-x-large);
+    min-block-size: calc(3 * var(--semantic-dimension-size-small));
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: var(--semantic-dimension-radius-default);
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: start;
+    cursor: grab;
+    touch-action: none;
+    user-select: none;
+  }
+
+  .root:active {
+    cursor: grabbing;
+  }
+
+  .root:focus-visible {
+    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline-offset: calc(-1 * var(--semantic-dimension-border-width-large));
+  }
+
+  /* The drum: its depth, and its fade towards the top and bottom. */
+  .drum {
+    position: absolute;
+    inset: 0;
     overflow: hidden;
-    /* The drum's depth, and its fade towards the edges. */
     perspective: 18rem;
     mask-image: linear-gradient(transparent, black 30%, black 70%, transparent);
   }
 
+  /* An item; Ticker.Root turns and fades it each frame, so it has no transition of its own. */
   .item {
     position: absolute;
     inset-inline: 0;
@@ -21,24 +51,26 @@
     align-items: center;
     block-size: var(--semantic-dimension-size-small);
     margin-block-start: calc(-1 * var(--semantic-dimension-size-small) / 2);
-    opacity: var(--semantic-number-opacity-hidden);
+    color: var(--semantic-color-text-secondary);
     white-space: nowrap;
     backface-visibility: hidden;
-    transition:
-      transform var(--semantic-transition-movement-indicator),
-      opacity var(--semantic-transition-fade);
   }
 
-  .item[data-neighbour] {
-    opacity: var(--semantic-number-opacity-disabled);
+  .item svg {
+    color: var(--semantic-color-icon-secondary);
   }
 
-  .item[data-current] {
-    opacity: var(--semantic-number-opacity-visible);
+  .item[data-current],
+  .item[data-current] svg {
+    color: inherit;
   }
 
-  .root[data-settled] > .item[data-neighbour] {
-    opacity: var(--semantic-number-opacity-hidden);
+  .item[data-negative] {
+    color: var(--semantic-color-text-negative);
+  }
+
+  .item[data-negative] svg {
+    color: var(--semantic-color-icon-negative);
   }
 
   .content {
@@ -60,25 +92,8 @@
     text-overflow: ellipsis;
   }
 
-  .content svg {
-    color: var(--semantic-color-icon-secondary);
-  }
-
-  .item[data-current] svg {
-    color: var(--semantic-color-icon-primary);
-  }
-
-  /* A negative item stays red as it rolls away. */
-  .item[data-negative] {
-    color: var(--semantic-color-text-negative);
-  }
-
-  .item[data-negative] svg {
-    color: var(--semantic-color-icon-negative);
-  }
-
-  /* Active: the current item's icon and words breathe together. */
-  .root[data-active] > .item[data-current] > .content {
+  /* Active: the newest item breathes while it faces the reader. */
+  .root[data-active] .item[data-current][data-newest] > .content {
     animation: breathe var(--semantic-transition-pulse-duration)
       var(--semantic-transition-pulse-timing-function) infinite alternate;
   }
@@ -89,7 +104,7 @@
     }
   }
 
-  .label {
+  .announcement {
     position: absolute;
     inline-size: var(--semantic-dimension-border-width-small);
     block-size: var(--semantic-dimension-border-width-small);
@@ -99,14 +114,18 @@
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .root[data-active] > .item[data-current] > .content {
+    .root[data-active] .item[data-current][data-newest] > .content {
       animation: none;
     }
   }
 
   @media (forced-colors: active) {
-    .root[data-active] > .item[data-current] > .content {
+    .root[data-active] .item[data-current][data-newest] > .content {
       animation: none;
+    }
+
+    .root:focus-visible {
+      outline-color: Highlight;
     }
   }
 }

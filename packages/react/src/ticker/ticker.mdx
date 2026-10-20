@@ -1,6 +1,6 @@
 # Ticker
 
-One line showing the newest of a sequence, such as the step an agent is working on. When a new item arrives, the line rolls to it like a drum, and the previous item stays bent back above it. To show every step, use [Timeline](/components/timeline/).
+One line showing the newest of a sequence, such as the step an agent is working on. Items sit on a drum like iOS's picker: a new item rolls in, and the reader can roll back through earlier ones. To show every step at once, use [Timeline](/components/timeline/).
 
 <Demo example="./examples/demo.tsx" />
 
@@ -19,22 +19,36 @@ import {Ticker} from '@earendil-works/elanor-react';
 </Ticker.Root>;
 ```
 
-Items are listed oldest first, with stable keys; the last is current. Only the last few stay mounted. An item lays out its icon and text in a row, `semantic.dimension.space.gap.small` (8px) apart; text in an element, such as a `span`, ends in an ellipsis. Icons are `semantic.color.icon.secondary`, the current item's `semantic.color.icon.primary`.
+Items are listed oldest first, with stable keys; the last is the newest. Each is `semantic.dimension.size.small` (24px) tall and lays out its icon and text in a row, `semantic.dimension.space.gap.small` (8px) apart; text in an element, such as a `span`, ends in an ellipsis. The ticker fills its row's height, at least three items (72px); items further than three and a half from the middle are not rendered, and the others fade with their distance.
 
-Root is a polite live region: screen readers hear the newest item's `label`, and the drawn items are hidden from them. It fills its row's height, at least `semantic.dimension.size.xLarge` (48px). The roll uses `semantic.transition.movement.indicator`, so it is instant when the reader prefers reduced motion.
+The item facing the reader inherits the ticker's color, `semantic.color.text.primary` in most contexts; the others are `semantic.color.text.secondary` with `semantic.color.icon.secondary` icons. Set `color` on the ticker (with `className`) or an ancestor to recolor the current item, such as a finished summary in `semantic.color.text.secondary`.
+
+Screen readers hear the newest item's `label` politely; the drawn items besides the current one are hidden from them.
+
+## Scrolling
+
+The reader can drag the drum, or turn it with the mouse wheel. The physics follow iOS's picker: the drum moves one to one under the finger once it has moved 6px; on release, the speed over the last 80ms is projected to where iOS's deceleration would stop it, and the drum decays to the nearest item at that rate. A slow release or a short move snaps to the nearest item. Past the ends it gives like a rubber band, and catching it stops it. The mouse wheel turns it like a scroll area nested in the page: until it reaches its end in that direction, then the page scrolls.
+
+The ticker follows the newest item. While the reader has scrolled within the last four seconds, new items wait; then it rolls all the way to the newest. More than two items arriving at once, such as when a sequence loads, jump to the newest without rolling. The roll is driven by animation frames, so it does not stop when the reader prefers reduced motion; the reader controls it.
+
+## Activate
+
+With `onActivate`, the ticker is a button named by the label of the item facing the reader. A tap, not a drag, calls it with the key of the item the reader rolled to, or `undefined` on the newest item, for example to open that step's details. The arrow keys move one item. The ticker stops its taps' clicks from reaching the elements around it, so a row around it can open the same thing for clicks beside it. Without `onActivate`, the ticker scrolls but is not focusable.
+
+<Demo example="./examples/activate.tsx" />
 
 ## Active
 
-`active` makes the current item breathe with `semantic.transition.pulse`, to show that work is going on. It stops when the reader prefers reduced motion.
+`active` makes the newest item breathe with `semantic.transition.pulse` while it faces the reader, to show that work is going on. It stops when the reader prefers reduced motion.
 
 ## Negative
 
-`negative` colors an item `semantic.color.text.negative` and its icons `semantic.color.icon.negative`, such as a failed step. It stays red as it rolls away.
+`negative` colors an item `semantic.color.text.negative` and its icons `semantic.color.icon.negative`, such as a failed step. It stays red on the drum.
 
 <Demo example="./examples/negative.tsx" />
 
 ## Settled
 
-`settled` shows only the current item, without the previous one above it, such as a summary once the work is done.
+`settled` shows only the item facing the reader, without its neighbours, such as a summary once the work is done.
 
 <Demo example="./examples/settled.tsx" />
