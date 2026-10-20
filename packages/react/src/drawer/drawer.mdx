@@ -48,9 +48,13 @@ A pushed page slides in from the inline end over the one below, which shifts asi
 
 <Demo example="./examples/stack.tsx" />
 
-The header's buttons line up with a [Timeline](/components/timeline/) in the page: the back icon over its markers, the close icon over its chevrons. In a side panel:
+The back icon starts where the page's content starts; the close icon lines up with the chevrons of a [Timeline](/components/timeline/) in the page. In a side panel:
 
 <Demo example="./examples/stack-side-panel.tsx" />
+
+### Fade
+
+`transition="fade"` crossfades the pages with `semantic.transition.fade` instead of sliding them: a pushed page fades in over the one below, and a popped page fades out. Pages don't move and there is no swipe back. Use it where sliding pages would look out of place, such as a panel docked beside a desktop layout.
 
 ## Nested sheets
 

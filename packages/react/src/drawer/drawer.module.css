@@ -220,14 +220,13 @@
   }
 
   /*
-   * The header's buttons line up with a Timeline in the page: Back's icon over the steps' markers (size small, after
-   * the step's medium padding), Close's icon over the chevrons (an icon, before the medium padding). An icon button is
-   * size small, or x-large on a touch screen.
+   * Back's icon starts where the page's content starts; Close's icon lines up with a Timeline's chevrons (an icon,
+   * before the step's medium padding). An icon button is size small, or x-large on a touch screen, with its icon
+   * centred.
    */
   .pageBack {
     margin-inline-start: calc(
-      var(--semantic-dimension-space-padding-medium) + var(--semantic-dimension-size-small) / 2 -
-        var(--semantic-dimension-size-small) / 2
+      (var(--semantic-dimension-size-icon) - var(--semantic-dimension-size-small)) / 2
     );
   }
 
@@ -245,8 +244,7 @@
   @media (pointer: coarse) {
     .pageBack {
       margin-inline-start: calc(
-        var(--semantic-dimension-space-padding-medium) + var(--semantic-dimension-size-small) / 2 -
-          var(--semantic-dimension-size-x-large) / 2
+        (var(--semantic-dimension-size-icon) - var(--semantic-dimension-size-x-large)) / 2
       );
     }
 

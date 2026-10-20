@@ -50,17 +50,39 @@ function milliseconds(value: string): number {
   return value.trim().endsWith('ms') ? time : time * 1000;
 }
 
-/** The drawer's movement token, `semantic.transition.movement.drawer`: instant when the reader prefers reduced motion. */
-function motion(element: HTMLElement): {duration: number; easing: string} {
+/**
+ * A transition token's duration and easing: `semantic.transition.movement.drawer` (instant when the reader prefers
+ * reduced motion) for sliding pages, `semantic.transition.fade` for fading ones.
+ */
+function motion(
+  element: HTMLElement,
+  token: 'movement-drawer' | 'fade' = 'movement-drawer',
+): {duration: number; easing: string} {
   const style = getComputedStyle(element);
   return {
-    duration: milliseconds(
-      style.getPropertyValue('--semantic-transition-movement-drawer-duration'),
-    ),
+    duration: milliseconds(style.getPropertyValue(`--semantic-transition-${token}-duration`)),
     easing:
-      style.getPropertyValue('--semantic-transition-movement-drawer-timing-function').trim() ||
-      'ease-out',
+      style.getPropertyValue(`--semantic-transition-${token}-timing-function`).trim() || 'ease-out',
   };
+}
+
+/** Fades `page` in or out with `semantic.transition.fade`, then calls `done`. */
+function fade(stack: HTMLElement, page: HTMLElement | undefined, show: boolean, done?: () => void) {
+  if (!page) {
+    done?.();
+    return;
+  }
+  const {duration, easing} = motion(stack, 'fade');
+  const from = getComputedStyle(page).opacity;
+  const to = show ? '1' : '0';
+  page.style.opacity = show ? '' : '0';
+  if (!duration) {
+    done?.();
+    return;
+  }
+  const animation = page.animate([{opacity: from}, {opacity: to}], {duration, easing});
+  animation.onfinish = () => done?.();
+  animation.oncancel = () => done?.();
 }
 
 /** The pages rendered in `stack`, bottom first (the current stack, then a popped page while it leaves). */
@@ -153,6 +175,13 @@ export interface DrawerStackProps extends Omit<BaseDrawer.Content.Props, 'childr
    * @default 'Close'
    */
   closeLabel?: string | undefined;
+  /**
+   * How pages change. `slide`: a pushed page slides in from the inline end over the one below, which shifts aside
+   * and dims, and a swipe towards the inline end goes back. `fade`: pages crossfade with `semantic.transition.fade`,
+   * without movement or swipe back, such as in a panel docked beside a desktop layout.
+   * @default 'slide'
+   */
+  transition?: 'slide' | 'fade' | undefined;
   /** `Drawer.Page` elements with keys, bottom first. The last one is shown. */
   children?: ReactNode;
 }
@@ -160,12 +189,14 @@ export interface DrawerStackProps extends Omit<BaseDrawer.Content.Props, 'childr
 /**
  * A stack of pages in a drawer, like a phone's navigation stack. Each page is a card with its own header and scroll
  * position. A pushed page slides in from the inline end over the one below, which shifts aside and dims; going back
- * (the back button, or a swipe towards the inline end) reverses it. Put it directly in `Drawer.Popup`.
+ * (the back button, or a swipe towards the inline end) reverses it. With `transition="fade"` pages crossfade instead.
+ * Put it directly in `Drawer.Popup`.
  */
 export function DrawerStack({
   onBack,
   backLabel = 'Back',
   closeLabel = 'Close',
+  transition = 'slide',
   children,
   className,
   ref,
@@ -211,11 +242,14 @@ export function DrawerStack({
     if (!stack) {
       return;
     }
+    if (transition !== 'slide') {
+      return;
+    }
     const rendered = pagesOf(stack);
     for (const page of rendered.slice(0, -1)) {
       place(stack, page, -PARALLAX, DIM);
     }
-  }, [stack]);
+  }, [stack, transition]);
 
   // Push: the new page comes in from the inline end over the one below. Pop: the top page leaves towards it.
   const committed = useRef(keys);
@@ -230,7 +264,21 @@ export function DrawerStack({
     const extends_ = (longer: string[], shorter: string[]) =>
       shorter.every((key, index) => key === longer[index]);
     let changed = false;
-    if (after.length > before.length && before.length && extends_(after, before)) {
+    const removeLeaving = () =>
+      setLeaving((page) => (page && !after.includes(String(page.key)) ? null : page));
+    if (transition === 'fade') {
+      if (after.length > before.length && before.length && extends_(after, before)) {
+        const top = rendered[after.length - 1];
+        if (top) {
+          top.style.opacity = '0';
+        }
+        fade(stack, top, true);
+        changed = true;
+      } else if (after.length < before.length && extends_(before, after)) {
+        fade(stack, rendered[after.length], false, removeLeaving);
+        changed = true;
+      }
+    } else if (after.length > before.length && before.length && extends_(after, before)) {
       const top = rendered[after.length - 1];
       place(stack, top, 1);
       animate(stack, [
@@ -247,7 +295,7 @@ export function DrawerStack({
           {page: rendered[after.length - 1], to: 0},
         ],
         1,
-        () => setLeaving((page) => (page && !after.includes(String(page.key)) ? null : page)),
+        removeLeaving,
       );
       changed = true;
     }
@@ -261,12 +309,12 @@ export function DrawerStack({
         ?.querySelector<HTMLElement>('[data-drawer-page-title]')
         ?.focus({preventScroll: true});
     }
-  }, [keyList, stack, popup]);
+  }, [keyList, stack, popup, transition]);
 
   // Swipe back, listening on the popup. A bottom sheet's drag to close (sheet-drag.ts) leaves horizontal moves alone.
-  const latest = useRef({count: keys.length, onBack});
+  const latest = useRef({count: keys.length, onBack, swipe: transition === 'slide'});
   useLayoutEffect(() => {
-    latest.current = {count: keys.length, onBack};
+    latest.current = {count: keys.length, onBack, swipe: transition === 'slide'};
   });
   useEffect(() => {
     if (!popup || !stack) {
@@ -279,7 +327,7 @@ export function DrawerStack({
     };
     return attachSwipeBack(popup, {
       stack,
-      canGoBack: () => latest.current.count > 1,
+      canGoBack: () => latest.current.swipe && latest.current.count > 1,
       swipe: (offset) => {
         const {below, top} = pair();
         const width = stack.clientWidth || 1;
@@ -318,7 +366,9 @@ export function DrawerStack({
       {...props}
       ref={stackRef}
       // Base UI's swipe to close a side panel would take the swipe back.
-      {...(!sheet?.drag && pages.length > 1 ? {'data-base-ui-swipe-ignore': ''} : {})}
+      {...(!sheet?.drag && transition === 'slide' && pages.length > 1
+        ? {'data-base-ui-swipe-ignore': ''}
+        : {})}
       className={mergeClassName<BaseDrawer.Content.State>(styles.stack, className)}
     >
       {rendered.map((page, index) => (
