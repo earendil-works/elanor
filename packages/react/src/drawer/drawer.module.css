@@ -194,15 +194,11 @@
     align-items: center;
     gap: var(--semantic-dimension-space-gap-small);
     margin-inline: calc(-1 * var(--semantic-dimension-space-padding-x-large));
-    padding-block: var(--semantic-dimension-space-padding-x-large)
-      var(--semantic-dimension-space-padding-small);
+    /* Room above for a bottom sheet's grip (side panels match it); a gap below before the page's content. */
+    padding-block: var(--semantic-dimension-space-padding-xx-large)
+      var(--semantic-dimension-space-padding-x-large);
     padding-inline: var(--semantic-dimension-space-padding-x-large);
     background: var(--semantic-color-background-canvas);
-  }
-
-  /* Room above for a bottom sheet's grip. */
-  .popup[data-swipe-direction='down'] .pageHeader {
-    padding-block-start: var(--semantic-dimension-space-padding-xx-large);
   }
 
   /* One line beside the buttons: the page below says the rest. */
