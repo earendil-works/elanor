@@ -11,7 +11,7 @@
             "$value": {
               "fontFamily": "{semantic.fontFamily.prose}",
               "fontSize": "{primitive.dimension.fontSize.1700}",
-              "fontWeight": "{primitive.fontWeight.bold}",
+              "fontWeight": "{primitive.fontWeight.normalPlus}",
               "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
               "lineHeight": "{primitive.number.lineHeight.1700}"
             },
@@ -21,7 +21,7 @@
             "$value": {
               "fontFamily": "{semantic.fontFamily.prose}",
               "fontSize": "{primitive.dimension.fontSize.1500}",
-              "fontWeight": "{primitive.fontWeight.bold}",
+              "fontWeight": "{primitive.fontWeight.normalPlus}",
               "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
               "lineHeight": "{primitive.number.lineHeight.1500}"
             },
@@ -31,7 +31,7 @@
             "$value": {
               "fontFamily": "{semantic.fontFamily.prose}",
               "fontSize": "{primitive.dimension.fontSize.1300}",
-              "fontWeight": "{primitive.fontWeight.bold}",
+              "fontWeight": "{primitive.fontWeight.normalPlus}",
               "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
               "lineHeight": "{primitive.number.lineHeight.1300}"
             },
@@ -41,7 +41,7 @@
             "$value": {
               "fontFamily": "{semantic.fontFamily.prose}",
               "fontSize": "{primitive.dimension.fontSize.1100}",
-              "fontWeight": "{primitive.fontWeight.bold}",
+              "fontWeight": "{primitive.fontWeight.normalPlus}",
               "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
               "lineHeight": "{primitive.number.lineHeight.1100}"
             },
@@ -51,7 +51,7 @@
             "$value": {
               "fontFamily": "{semantic.fontFamily.prose}",
               "fontSize": "{primitive.dimension.fontSize.900}",
-              "fontWeight": "{primitive.fontWeight.bold}",
+              "fontWeight": "{primitive.fontWeight.medium}",
               "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
               "lineHeight": "{primitive.number.lineHeight.900}"
             },
@@ -61,7 +61,7 @@
             "$value": {
               "fontFamily": "{semantic.fontFamily.prose}",
               "fontSize": "{primitive.dimension.fontSize.700}",
-              "fontWeight": "{primitive.fontWeight.bold}",
+              "fontWeight": "{primitive.fontWeight.medium}",
               "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
               "lineHeight": "{primitive.number.lineHeight.700}"
             },
@@ -71,7 +71,7 @@
             "$value": {
               "fontFamily": "{semantic.fontFamily.prose}",
               "fontSize": "{primitive.dimension.fontSize.500}",
-              "fontWeight": "{primitive.fontWeight.bold}",
+              "fontWeight": "{primitive.fontWeight.mediumPlus}",
               "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
               "lineHeight": "{primitive.number.lineHeight.500}"
             },
@@ -83,7 +83,7 @@
             "$value": {
               "fontFamily": "{semantic.fontFamily.ui}",
               "fontSize": "{primitive.dimension.fontSize.1100}",
-              "fontWeight": "{primitive.fontWeight.semiBold}",
+              "fontWeight": "{primitive.fontWeight.medium}",
               "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
               "lineHeight": "{primitive.number.lineHeight.1100}"
             },
@@ -93,7 +93,7 @@
             "$value": {
               "fontFamily": "{semantic.fontFamily.ui}",
               "fontSize": "{primitive.dimension.fontSize.1000}",
-              "fontWeight": "{primitive.fontWeight.semiBold}",
+              "fontWeight": "{primitive.fontWeight.medium}",
               "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
               "lineHeight": "{primitive.number.lineHeight.1000}"
             },
@@ -103,7 +103,7 @@
             "$value": {
               "fontFamily": "{semantic.fontFamily.ui}",
               "fontSize": "{primitive.dimension.fontSize.900}",
-              "fontWeight": "{primitive.fontWeight.semiBold}",
+              "fontWeight": "{primitive.fontWeight.medium}",
               "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
               "lineHeight": "{primitive.number.lineHeight.900}"
             },
@@ -113,7 +113,7 @@
             "$value": {
               "fontFamily": "{semantic.fontFamily.ui}",
               "fontSize": "{primitive.dimension.fontSize.800}",
-              "fontWeight": "{primitive.fontWeight.semiBold}",
+              "fontWeight": "{primitive.fontWeight.mediumPlus}",
               "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
               "lineHeight": "{primitive.number.lineHeight.800}"
             },
@@ -123,7 +123,7 @@
             "$value": {
               "fontFamily": "{semantic.fontFamily.ui}",
               "fontSize": "{primitive.dimension.fontSize.700}",
-              "fontWeight": "{primitive.fontWeight.semiBold}",
+              "fontWeight": "{primitive.fontWeight.mediumPlus}",
               "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
               "lineHeight": "{primitive.number.lineHeight.700}"
             },

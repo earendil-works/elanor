@@ -16,8 +16,16 @@
       "normal": {
         "$value": 400
       },
+      "normalPlus": {
+        "$value": 450,
+        "$description": "Half a step above normal, between normal (400) and medium (500). Needs a variable font; static fonts render the nearest weight."
+      },
       "medium": {
         "$value": 500
+      },
+      "mediumPlus": {
+        "$value": 550,
+        "$description": "Half a step above medium, between medium (500) and semi-bold (600). Needs a variable font; static fonts render the nearest weight."
       },
       "semiBold": {
         "$value": 600
