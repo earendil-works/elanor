@@ -64,6 +64,8 @@ export interface Drum {
   pointerMove: (event: PointerEvent) => void;
   pointerUp: (event: PointerEvent) => void;
   pointerCancel: () => void;
+  /** The pointer's capture ended (it can without a pointerup, as Firefox and Safari do), or the window lost focus. */
+  lostCapture: () => void;
   /** Moves one item towards the oldest (-1) or the newest (1). */
   step: (direction: -1 | 1) => void;
   destroy: () => void;
@@ -138,7 +140,7 @@ export function createDrum(initial: number, onMove: (position: number) => void):
     settle(target, fling && Math.abs(target - at) > 1 ? DECELERATION : SNAP_DECELERATION);
   };
 
-  return {
+  const handlers: Drum = {
     setLast: (next) => {
       const added = next - last;
       last = next;
@@ -192,6 +194,11 @@ export function createDrum(initial: number, onMove: (position: number) => void):
       if (!drag) {
         return;
       }
+      // A mouse whose button is no longer down was released where no pointerup reached the drum (outside the window).
+      if (event.pointerType === 'mouse' && event.buttons === 0) {
+        handlers.pointerUp(event);
+        return;
+      }
       const dy = event.clientY - drag.y;
       if (!drag.moved && Math.abs(dy) < SLOP) {
         return;
@@ -234,6 +241,18 @@ export function createDrum(initial: number, onMove: (position: number) => void):
       release(velocity);
     },
     pointerCancel: () => {
+      if (!drag) {
+        return;
+      }
+      drag = undefined;
+      release(0);
+    },
+    lostCapture: () => {
+      // After a pointerup the drag is over already; otherwise this is the drag's end, and the drum must settle.
+      if (!drag) {
+        return;
+      }
+      dragged = drag.moved;
       drag = undefined;
       release(0);
     },
@@ -247,4 +266,5 @@ export function createDrum(initial: number, onMove: (position: number) => void):
       clearTimeout(wheelTimer);
     },
   };
+  return handlers;
 }

@@ -111,18 +111,28 @@ export function TickerRoot({
       pointermove: drum.pointerMove,
       pointerup: drum.pointerUp,
       pointercancel: drum.pointerCancel,
+      lostpointercapture: drum.lostCapture,
+      // A native drag (of text or an image inside) would take the pointer without ending the drum's drag.
+      dragstart: (event: Event) => event.preventDefault(),
     } as const;
     element.addEventListener('wheel', listeners.wheel, {passive: false});
     element.addEventListener('pointerdown', listeners.pointerdown);
     element.addEventListener('pointermove', listeners.pointermove);
     element.addEventListener('pointerup', listeners.pointerup);
     element.addEventListener('pointercancel', listeners.pointercancel);
+    element.addEventListener('lostpointercapture', listeners.lostpointercapture);
+    element.addEventListener('dragstart', listeners.dragstart);
+    // Switching away mid-drag (another window, an alert) ends the drag too.
+    window.addEventListener('blur', listeners.lostpointercapture);
     return () => {
       element.removeEventListener('wheel', listeners.wheel);
       element.removeEventListener('pointerdown', listeners.pointerdown);
       element.removeEventListener('pointermove', listeners.pointermove);
       element.removeEventListener('pointerup', listeners.pointerup);
       element.removeEventListener('pointercancel', listeners.pointercancel);
+      element.removeEventListener('lostpointercapture', listeners.lostpointercapture);
+      element.removeEventListener('dragstart', listeners.dragstart);
+      window.removeEventListener('blur', listeners.lostpointercapture);
     };
   }, [element, drum]);
 
