@@ -44,10 +44,22 @@ export function TableBody({ref, ...props}: TableBodyProps) {
 
 export interface TableRowProps extends HTMLAttributes<HTMLTableRowElement> {
   readonly ref?: Ref<HTMLTableRowElement> | undefined;
+  /**
+   * Table edges taken by cells that span down from an earlier row with `rowSpan`. The row's first
+   * or last cell on that edge then sits inside the table and keeps its inner padding.
+   */
+  readonly spannedEdges?: 'start' | 'end' | 'both' | undefined;
 }
 
-export function TableRow({ref, className, ...props}: TableRowProps) {
-  return <tr {...props} ref={ref} className={classes(styles.row, className)} />;
+export function TableRow({ref, spannedEdges, className, ...props}: TableRowProps) {
+  return (
+    <tr
+      {...props}
+      ref={ref}
+      data-spanned-edges={spannedEdges}
+      className={classes(styles.row, className)}
+    />
+  );
 }
 
 export interface TableHeaderCellProps extends Omit<

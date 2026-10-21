@@ -25,11 +25,13 @@
     vertical-align: top;
   }
 
-  .cell:first-child {
+  /* Cells on the table's edges drop their outer padding, so content lines up with the
+     surrounding layout. Cells spanning down from earlier rows take those edges in later rows. */
+  .row:not([data-spanned-edges='start'], [data-spanned-edges='both']) > .cell:first-child {
     padding-inline-start: 0;
   }
 
-  .cell:last-child {
+  .row:not([data-spanned-edges='end'], [data-spanned-edges='both']) > .cell:last-child {
     padding-inline-end: 0;
   }
 

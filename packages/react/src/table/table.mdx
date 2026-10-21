@@ -34,3 +34,9 @@ Cells align to the top, so short cells line up with the first line of taller one
 `CellPrimary` and `CellSecondary` stack a main value over supporting text in one cell.
 
 <Demo example="./examples/two-line-cells.tsx" />
+
+## Cells that span rows
+
+Cells with `rowSpan` fill the same column in the rows below them. The first and last cell of a row drop their outer padding to line up with the table's edges, so tell later rows which edges spanning cells take with `spannedEdges`. Their first or last cell then keeps its padding and stays in line with its column.
+
+<Demo example="./examples/spanning-rows.tsx" />
