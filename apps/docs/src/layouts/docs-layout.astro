@@ -4,12 +4,12 @@ import '@earendil-works/elanor-react/elanor.min.css';
 import '../styles/docs.css';
 import '@earendil-works/elanor-fonts/earendil.css';
 import '@earendil-works/elanor-fonts/commit-mono.css';
-import {getCollection} from 'astro:content';
 import {ClientRouter} from 'astro:transitions';
 import ColorSchemeScript from '../components/color-scheme-script.astro';
 import {ColorSchemeToggle} from '../components/color-scheme-toggle.tsx';
 import {DocsSideNavigation, type DocsNavigationSection} from '../components/docs-side-navigation.tsx';
 import {DocsMobileNavigation} from '../components/docs-mobile-navigation.tsx';
+import {componentGroups} from '../lib/component-groups.ts';
 import {componentName} from '../lib/component-name.ts';
 
 interface Props {
@@ -31,21 +31,20 @@ const widePreview = [
   '/components/container/',
   '/components/sidebar/',
 ].includes(current);
-const entries = await getCollection('components');
-
 const sections: DocsNavigationSection[] = [
   {
     label: 'Brand',
     links: [{href: '/brand/', label: 'Logos'}],
   },
   {label: 'Foundations', links: [{href: '/icons/', label: 'Icons'}]},
-  {
-    label: 'Components',
-    links: entries
-      .map((entry) => entry.id)
-      .sort()
-      .map((id) => ({href: `/components/${id}/`, label: componentName(id)})),
-  },
+  {label: 'Components', links: [{href: '/components/', label: 'Overview'}]},
+  ...(await componentGroups()).map((group) => ({
+    label: group.label,
+    links: group.entries.map((entry) => ({
+      href: `/components/${entry.id}/`,
+      label: componentName(entry.id),
+    })),
+  })),
 ];
 ---
 

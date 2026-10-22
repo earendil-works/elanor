@@ -1,11 +1,13 @@
 import type {APIRoute} from 'astro';
-import {getCollection} from 'astro:content';
 
 import {text, tokenBrands} from '../lib/api.ts';
 import {componentIndexLine} from '../lib/component-docs.ts';
+import {componentGroups} from '../lib/component-groups.ts';
 
 export const GET: APIRoute = async () => {
-  const components = (await getCollection('components')).sort((a, b) => a.id.localeCompare(b.id));
+  const components = (await componentGroups())
+    .map((group) => `### ${group.label}\n\n${group.entries.map(componentIndexLine).join('\n')}`)
+    .join('\n\n');
   return text(`# Elanor
 
 > Earendil's design system: tokens for ${(await tokenBrands()).join(', ')}, React components, icons, and logos.
@@ -27,7 +29,7 @@ React components from \`@earendil-works/elanor-react\`. Each page has usage, exa
 
 Full Base UI index: [base-ui.com/llms.txt](https://base-ui.com/llms.txt).
 
-${components.map(componentIndexLine).join('\n')}
+${components}
 
 ## Icons
 

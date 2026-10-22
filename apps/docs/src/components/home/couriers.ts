@@ -10,7 +10,7 @@ const PACKAGES = 'https://github.com/earendil-works/elanor/tree/main/packages';
 /** Clockwise from the top petal. Order matches the petal geometry in `garden/geometry.ts`. */
 export const COURIERS: readonly Courier[] = [
   {label: 'Design tokens', href: `${PACKAGES}/design-tokens`, external: true},
-  {label: 'Components', href: '/components/layout/'},
+  {label: 'Components', href: '/components/'},
   {label: 'Icons', href: '/icons/'},
   {label: 'Fonts', href: `${PACKAGES}/fonts`, external: true},
   {label: 'Brand', href: '/brand/'},
