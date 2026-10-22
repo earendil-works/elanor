@@ -11,6 +11,8 @@ app.use('*', async (c, next) => {
   await next();
   c.header('Referrer-Policy', 'same-origin');
   c.header('X-Content-Type-Options', 'nosniff');
+  c.header('X-Frame-Options', 'SAMEORIGIN');
+  c.header('Content-Security-Policy', "base-uri 'self'; object-src 'none'; frame-ancestors 'self'");
 });
 
 app.all('*', async (c) => {

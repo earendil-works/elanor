@@ -19,6 +19,7 @@ const boiledIcons = fileURLToPath(
 
 export default defineConfig({
   site: 'https://elanor.earendil.com',
+  output: 'static',
   markdown,
   // Preserve the existing HTML whitespace behavior across the Astro 7 upgrade.
   compressHTML: true,

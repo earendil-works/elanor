@@ -29,7 +29,7 @@
   },
   "dependencies": {
     "minimatch": "^10.2.6",
-    "postcss": "^8.5.28",
+    "postcss": "^8.5.29",
     "postcss-value-parser": "^4.2.0"
   },
   "devDependencies": {
@@ -37,6 +37,6 @@
     "@types/node": "^24.19.0",
     "stylelint": "^17.15.0",
     "typescript": "^7.0.2",
-    "vitest": "^5.0.2"
+    "vitest": "^5.0.4"
   }
 }
