@@ -23,6 +23,7 @@
     background: transparent;
     color: var(--semantic-color-text-primary);
     font: var(--semantic-typography-ui-primary);
+    text-decoration: none;
     cursor: pointer;
   }
 

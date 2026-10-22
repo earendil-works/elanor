@@ -19,3 +19,22 @@ import {Tabs} from '@earendil-works/elanor-react';
 ```
 
 Each Tab's `value` matches a Panel. Name the List with `aria-label`. Arrow keys move between tabs. `Tabs.Indicator` underlines the active tab.
+
+## Links
+
+To render tabs as links, pass `nativeButton={false}` and a link to `render`. Set Root's `value` from the current route, and render the page in one Panel.
+
+```tsx
+<Tabs.Root value={tab}>
+  <Tabs.List aria-label="Project details">
+    <Tabs.Tab value="overview" nativeButton={false} render={<a href="/project/overview" />}>
+      Overview
+    </Tabs.Tab>
+    <Tabs.Tab value="activity" nativeButton={false} render={<a href="/project/activity" />}>
+      Activity
+    </Tabs.Tab>
+    <Tabs.Indicator />
+  </Tabs.List>
+  <Tabs.Panel value={tab}>{page}</Tabs.Panel>
+</Tabs.Root>
+```
