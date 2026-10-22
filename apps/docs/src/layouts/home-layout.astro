@@ -3,19 +3,25 @@ import '@earendil-works/design-tokens/radius.css';
 import '@earendil-works/elanor-react/elanor.min.css';
 import '@earendil-works/elanor-fonts/earendil.css';
 import '@earendil-works/elanor-fonts/commit-mono.css';
+import ColorSchemeScript from '../components/color-scheme-script.astro';
 ---
 
 <!doctype html>
-<html lang="en" data-color-scheme="light">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Elanor - Design system</title>
+    <ColorSchemeScript />
   </head>
   <body>
     <slot />
   </body>
 </html>
+
+<script>
+  import '../scripts/color-scheme.ts';
+</script>
 
 <style>
   :global(body) {

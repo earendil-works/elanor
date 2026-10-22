@@ -1,0 +1,16 @@
+---
+// Resolves the color scheme before first paint: the saved choice, else the system preference.
+// Keep the storage key in sync with src/scripts/color-scheme.ts.
+---
+
+<script is:inline>
+  (() => {
+    let saved = null;
+    try {
+      saved = localStorage.getItem('elanor-color-scheme');
+    } catch {}
+    const system = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    document.documentElement.dataset.colorScheme =
+      saved === 'dark' || saved === 'light' ? saved : system;
+  })();
+</script>

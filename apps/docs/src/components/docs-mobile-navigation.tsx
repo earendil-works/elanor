@@ -14,11 +14,14 @@ import {DocsSideNavigation, type DocsNavigationSection} from './docs-side-naviga
 interface DocsMobileNavigationProps {
   readonly sections: readonly DocsNavigationSection[];
   readonly current: string;
+  /** Static actions before the menu button, passed from Astro as the `actions` slot. */
+  readonly actions?: React.ReactNode;
 }
 
 export function DocsMobileNavigation({
   sections,
   current,
+  actions,
 }: DocsMobileNavigationProps): React.JSX.Element {
   const actionsRef = useRef<DrawerRootActions>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -50,6 +53,7 @@ export function DocsMobileNavigation({
           </Link>
         </TopNavigation.Identity>
         <TopNavigation.Actions>
+          {actions}
           <Drawer.Trigger ref={triggerRef} render={<IconButton aria-label="Open navigation" />}>
             <MenuIcon />
           </Drawer.Trigger>

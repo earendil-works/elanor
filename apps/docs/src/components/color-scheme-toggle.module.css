@@ -1,0 +1,5 @@
+/* Shows the scheme the toggle switches to. */
+:global(:root[data-color-scheme='dark']) .dark,
+:global(:root:not([data-color-scheme='dark'])) .light {
+  display: none;
+}

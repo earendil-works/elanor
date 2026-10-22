@@ -6,6 +6,8 @@ import '@earendil-works/elanor-fonts/earendil.css';
 import '@earendil-works/elanor-fonts/commit-mono.css';
 import {getCollection} from 'astro:content';
 import {ClientRouter} from 'astro:transitions';
+import ColorSchemeScript from '../components/color-scheme-script.astro';
+import {ColorSchemeToggle} from '../components/color-scheme-toggle.tsx';
 import {DocsSideNavigation, type DocsNavigationSection} from '../components/docs-side-navigation.tsx';
 import {DocsMobileNavigation} from '../components/docs-mobile-navigation.tsx';
 import {componentName} from '../lib/component-name.ts';
@@ -48,19 +50,26 @@ const sections: DocsNavigationSection[] = [
 ---
 
 <!doctype html>
-<html lang="en" data-color-scheme="light">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width" />
     <title>{title}</title>
+    <ColorSchemeScript />
     {markdown && <link rel="alternate" type="text/markdown" href={markdown} />}
     <ClientRouter />
   </head>
   <body class="docs-layout">
     <div data-docs-swap="mobile-navigation">
-      <DocsMobileNavigation sections={sections} current={current} client:load />
+      <DocsMobileNavigation sections={sections} current={current} client:load>
+        {/* A slot stays static HTML, so the color scheme script owns its state without hydration. */}
+        <ColorSchemeToggle slot="actions" />
+      </DocsMobileNavigation>
     </div>
     <aside>
+      <div class="docs-aside-actions">
+        <ColorSchemeToggle />
+      </div>
       <div data-docs-swap="navigation">
         <DocsSideNavigation sections={sections} current={current} />
       </div>
@@ -75,5 +84,6 @@ const sections: DocsNavigationSection[] = [
 
 
 <script>
+  import '../scripts/color-scheme.ts';
   import '../scripts/docs-swap.ts';
 </script>

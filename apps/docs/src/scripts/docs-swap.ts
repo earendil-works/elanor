@@ -7,6 +7,9 @@ document.addEventListener('astro:before-swap', (event) => {
     const nextDocument = event.newDocument;
 
     swapFunctions.deselectScripts(nextDocument);
+    // The color scheme is resolved on the client; keep it when root attributes are swapped.
+    const colorScheme = document.documentElement.dataset.colorScheme;
+    if (colorScheme) nextDocument.documentElement.dataset.colorScheme = colorScheme;
     swapFunctions.swapRootAttributes(nextDocument);
     swapFunctions.swapHeadElements(nextDocument);
 

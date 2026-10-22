@@ -28,6 +28,12 @@
   border-inline-end: var(--semantic-dimension-border-width-default) solid;
 }
 
+.docs-aside-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-block-end: var(--semantic-dimension-space-gap-medium);
+}
+
 .preview {
   display: flex;
   flex-direction: column;

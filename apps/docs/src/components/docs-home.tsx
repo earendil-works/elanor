@@ -9,6 +9,8 @@ import {
   Text,
 } from '@earendil-works/elanor-react';
 
+import {ColorSchemeToggle} from './color-scheme-toggle.tsx';
+
 import styles from './docs-home.module.css';
 
 const destinations = [
@@ -44,6 +46,7 @@ export function DocsHome() {
             <Link href="/" aria-label="Elanor home" className={styles.identity}>
               Elanor
             </Link>
+            <ColorSchemeToggle />
           </Stack>
         </Container>
       </Layout.Header>
