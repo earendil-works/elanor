@@ -1,6 +1,6 @@
 # Search and filter bar
 
-Places a search input and filter controls in one row above a list or table. Controls wrap to fit the available width.
+Places a search input and filter controls in one row above a list or table. Controls wrap to fit the available width, and narrow bars can move the filters into a drawer.
 
 <Demo example="./examples/demo.tsx" />
 
@@ -9,9 +9,37 @@ Places a search input and filter controls in one row above a list or table. Cont
 ```tsx
 import {Search, SearchAndFilterBar} from '@earendil-works/elanor-react';
 
-<SearchAndFilterBar role="search" aria-label="Member search and filters" search={<Search />}>
-  {/* Filter controls, such as Dropdowns */}
-</SearchAndFilterBar>;
+<SearchAndFilterBar.Root role="search" aria-label="Member search and filters">
+  <SearchAndFilterBar.Search>
+    <Search />
+  </SearchAndFilterBar.Search>
+  <SearchAndFilterBar.Filters>
+    {/* Filter controls, such as Dropdowns */}
+  </SearchAndFilterBar.Filters>
+</SearchAndFilterBar.Root>;
 ```
 
-The bar only arranges its contents; the application filters the data. Give it `role="search"` and an `aria-label`, and announce the number of results in a status region.
+The bar only arranges its contents; the application filters the data. Give Root `role="search"` and an `aria-label`, and announce the number of results in a status region.
+
+## Narrow bars
+
+Add a FiltersTrigger and a FiltersDrawer, and bars narrower than 24rem keep the search and replace the filters with a button that opens them in a [Drawer](/components/drawer/). Without them, the filters stack in one column. A container query switches the layout, so it fits the bar's own width, including narrow columns on wide screens. The drawer closes when the bar grows past it, and focus moves to the inline filters.
+
+```tsx
+<SearchAndFilterBar.FiltersTrigger>Filters (2)</SearchAndFilterBar.FiltersTrigger>
+<SearchAndFilterBar.FiltersDrawer>
+  <Drawer.Title>Filters</Drawer.Title>
+  <SearchAndFilterBar.FiltersSlot />
+  <SearchAndFilterBar.FiltersStatus>12 members</SearchAndFilterBar.FiltersStatus>
+  <SearchAndFilterBar.FiltersActions>
+    <Button hierarchy="secondary" focusableWhenDisabled>Clear all</Button>
+    <Drawer.Close render={<Button />}>Show 12 members</Drawer.Close>
+  </SearchAndFilterBar.FiltersActions>
+</SearchAndFilterBar.FiltersDrawer>
+```
+
+While the drawer is open, the controls in Filters render in its FiltersSlot instead, so they mount again each time; control their values from the application. The page behind the drawer is inert, so FiltersStatus announces the results instead of the page's status region.
+
+FiltersActions stacks the buttons at full width. Put the primary action last, nearest the thumb, so the visual order matches the focus order. Keep Clear all focusable while disabled, so focus stays on it after clearing.
+
+<Demo example="./examples/narrow.tsx" />
