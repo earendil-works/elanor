@@ -1,4 +1,4 @@
-import {Heading, Link, Stack, Text} from '@earendil-works/elanor-react';
+import {Heading, InlineCode, Link, Stack, Text} from '@earendil-works/elanor-react';
 import type {ReactNode} from 'react';
 
 import type {LogoAsset, LogoBrand} from '../lib/packages.ts';
@@ -191,12 +191,13 @@ export function BrandLogos({brand, pressKit, children}: BrandLogosProps): React.
                 ) : (
                   'the web app manifest'
                 )}
-                , and add these tags to its <code>&lt;head&gt;</code>:
+                , and add these tags to its <InlineCode>&lt;head&gt;</InlineCode>:
               </Text>
               {children}
               <Text className={styles.note}>
-                In this repository, <code>elanor-logos favicons {brand.id} --out public</code>{' '}
-                copies the files for you; see the logos package README.
+                In this repository,{' '}
+                <InlineCode>elanor-logos favicons {brand.id} --out public</InlineCode> copies the
+                files for you; see the logos package README.
               </Text>
             </div>
           ) : null}

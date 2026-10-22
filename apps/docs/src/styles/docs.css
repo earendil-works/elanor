@@ -72,9 +72,31 @@
   overflow-x: auto;
 }
 
-.preview > :where(p, ul, ol, dl, blockquote, table) code,
-.prose :not(pre) > code {
+/* InlineCode styles for Markdown and generated HTML. */
+.preview
+  > :where(p, ul, ol, dl, blockquote, table, h1, h2, h3, h4, h5, h6)
+  code:not(pre code, [data-variant]),
+:where(.prose, .api) code:not(pre code, [data-variant]) {
+  color: var(--semantic-color-text-code);
+  font: inherit;
+  font-family: var(--semantic-font-family-code);
+  font-size: 0.875em;
   overflow-wrap: anywhere;
+}
+
+/* Soft in prose; plain in headings and tables. */
+.preview > :where(p, ul, ol, dl, blockquote) code:not(pre code, [data-variant]),
+.prose :where(p, li, dd, blockquote) code:not(pre code, [data-variant]) {
+  padding-inline: var(--semantic-dimension-space-control-padding-inline-x-small);
+  border-radius: var(--semantic-dimension-radius-small);
+  background: var(--semantic-color-background-fill-secondary);
+}
+
+@media (forced-colors: active) {
+  .preview > :where(p, ul, ol, dl, blockquote) code:not(pre code, [data-variant]),
+  .prose :where(p, li, dd, blockquote) code:not(pre code, [data-variant]) {
+    outline: var(--semantic-dimension-border-width-small) solid CanvasText;
+  }
 }
 
 .wide {

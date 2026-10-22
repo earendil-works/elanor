@@ -1,4 +1,5 @@
 ---
+import {InlineCode} from '@earendil-works/elanor-react';
 import {inlineHtml, orderedApi, partSummary} from '../lib/component-api.ts';
 
 interface Props {
@@ -19,7 +20,7 @@ const parts = orderedApi(page, body);
       {parts.map((part) => (
         <>
           <h3 id={`api-${part.name.toLowerCase().replace('.', '-')}`}>
-            <code>{part.name}</code>
+            <InlineCode variant="plain">{part.name}</InlineCode>
           </h3>
           {part.description && <p set:html={inlineHtml(part.description)} />}
           {part.props.length > 0 && (
@@ -36,14 +37,14 @@ const parts = orderedApi(page, body);
                 {part.props.map((prop) => (
                   <tr>
                     <th scope="row">
-                      <code>{prop.name}</code>
+                      <InlineCode variant="plain">{prop.name}</InlineCode>
                       {prop.required && <span class="required">required</span>}
                     </th>
                     <td data-label="Type">
-                      <code>{prop.type}</code>
+                      <InlineCode variant="plain">{prop.type}</InlineCode>
                     </td>
                     <td data-label="Default" data-empty={prop.defaultValue ? undefined : ''}>
-                      {prop.defaultValue ? <code>{prop.defaultValue}</code> : '-'}
+                      {prop.defaultValue ? <InlineCode variant="plain">{prop.defaultValue}</InlineCode> : '-'}
                     </td>
                     <td set:html={prop.description ? inlineHtml(prop.description) : ''} />
                   </tr>
@@ -62,10 +63,6 @@ const parts = orderedApi(page, body);
   .api {
     container-type: inline-size;
     inline-size: 100%;
-  }
-
-  .api code {
-    overflow-wrap: anywhere;
   }
 
   .api th[scope='row'] {
