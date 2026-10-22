@@ -312,10 +312,19 @@ export function tokenizableLiterals(
       if (before === '*' || before === '/' || after === '*') arithmeticScalars.add(operand);
     }
   });
+  const variableNames = new Set<Node>();
   parsed.walk((node) => {
     // URLs are resources, not design values. Color functions are reported as a
     // whole, so their numeric channels are not independently inspected.
     if (node.type === 'function' && node.value.toLowerCase() === 'url') return false;
+    if (node.type === 'function' && node.value.toLowerCase() === 'var') {
+      const name = node.nodes.find(
+        (child) => child.type === 'word' && child.value.startsWith('--'),
+      );
+      if (name) variableNames.add(name);
+    }
+    // Skip var() names, but still check fallbacks.
+    if (variableNames.has(node)) return undefined;
     if (arithmeticScalars.has(node)) return undefined;
     const literal = literalFromNode(node, property.toLowerCase(), policy);
     if (!literal) return undefined;
