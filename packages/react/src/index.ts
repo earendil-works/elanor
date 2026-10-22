@@ -693,6 +693,7 @@ export type {
   DrawerCloseProps,
   DrawerCloseState,
   DrawerContentProps,
+  DrawerVirtualKeyboardProviderProps,
   DrawerHandle,
   DrawerSnapPoint,
   DrawerBackdropProps,
