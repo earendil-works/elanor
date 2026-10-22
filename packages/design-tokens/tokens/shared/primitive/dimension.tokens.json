@@ -212,6 +212,17 @@
           }
         }
       },
+      "5600": {
+        "$value": {
+          "value": 14,
+          "unit": "rem"
+        },
+        "$extensions": {
+          "com.earendil-works.generation": {
+            "source": "recipes/shared/primitive/dimension.json"
+          }
+        }
+      },
       "7200": {
         "$value": {
           "value": 18,

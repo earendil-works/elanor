@@ -123,6 +123,10 @@
           "$value": "{primitive.dimension.7200}",
           "$description": "Component token for the inline size of an image grid, such as a message's pictures: one width whatever the number of images, so grids line up. Pair it with max-inline-size: 100%, so it shrinks to fit narrower space."
         },
+        "menu": {
+          "$value": "{primitive.dimension.5600}",
+          "$description": "Component token for the least inline size of a menu on touch screens, wide enough for its larger rows. Pair it with the space available, so it never overflows."
+        },
         "icon": {
           "$value": "{primitive.dimension.500}",
           "$description": "Use for the box of an icon in a control or row, including Material's margin around the glyph. Checkbox, radio, and switch indicators and brand logos keep their own sizes."

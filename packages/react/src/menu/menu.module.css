@@ -118,6 +118,33 @@
     white-space: nowrap;
   }
 
+  /*
+   * Touch screens: rows a touch target tall in the larger interface type, in a wider popup with rounder corners, as
+   * the system's own long-press menus.
+   */
+  @media (pointer: coarse) {
+    .popup {
+      min-inline-size: min(
+        max(var(--semantic-dimension-size-menu), min(var(--anchor-width), var(--available-width))),
+        var(--available-width)
+      );
+      padding: var(--semantic-dimension-space-padding-x-small);
+      border-radius: var(--semantic-dimension-radius-large);
+      font: var(--semantic-typography-ui-primary);
+    }
+
+    .item {
+      min-block-size: var(--semantic-dimension-size-x-large);
+      padding-block: var(--semantic-dimension-space-control-padding-block-large);
+      padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
+      border-radius: var(--semantic-dimension-radius-default);
+    }
+
+    .label {
+      padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
+    }
+  }
+
   .group {
     display: flex;
     flex-direction: column;

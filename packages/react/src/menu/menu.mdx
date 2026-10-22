@@ -40,3 +40,7 @@ Choosing an item closes the menu. Run the action in the item's `onClick`.
 `Group` and `GroupLabel` name related items; `Separator` draws a line between groups.
 
 <Demo example="./examples/groups.tsx" />
+
+## Touch screens
+
+On touch screens (`pointer: coarse`), the menu takes the size of the system's own long-press menus: each item is at least `semantic.dimension.size.x-large` (48px) tall, a comfortable touch target, in `semantic.typography.ui.primary`, and the popup is at least `semantic.dimension.size.menu` (224px) wide, within the space available, with `semantic.dimension.radius.large` corners. With a mouse it stays compact.
