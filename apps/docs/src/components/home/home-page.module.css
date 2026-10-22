@@ -1,0 +1,88 @@
+/* Interface chrome around the garden. The illustration itself lives in garden.css. */
+.home {
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--semantic-dimension-space-gap-medium);
+    padding: var(--semantic-dimension-space-padding-xxx-large)
+      var(--semantic-dimension-space-padding-xx-large);
+    background: transparent;
+  }
+
+  .identity {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--semantic-dimension-space-gap-small);
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-heading-app-4);
+    text-decoration: none;
+  }
+
+  .mark {
+    display: block;
+    flex: none;
+    inline-size: var(--semantic-dimension-size-medium);
+    block-size: var(--semantic-dimension-size-medium);
+    /* The eye centers the flower on its stamens, 8.5% below the image center; raise them to the capitals. */
+    /* stylelint-disable-next-line design-tokens/token-property-compatibility -- a static optical offset proportional to the mark size, not travel. */
+    translate: 0 calc(var(--semantic-dimension-size-medium) * -0.085);
+  }
+
+  .main {
+    display: grid;
+    place-items: center;
+    padding-inline: var(--semantic-dimension-space-padding-xx-large);
+    padding-block-end: var(--semantic-dimension-space-padding-xxxx-large);
+  }
+
+  .title {
+    position: absolute;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .replay {
+    position: fixed;
+    inset-block-end: var(--semantic-dimension-space-padding-x-large);
+    inset-inline-end: var(--semantic-dimension-space-padding-xx-large);
+    color: var(--semantic-color-text-secondary);
+  }
+
+  /* Component display rules would otherwise override the attribute. */
+  .replay[hidden] {
+    display: none;
+  }
+
+  .skipLink {
+    position: absolute;
+    inset-block-start: var(--semantic-dimension-space-padding-small);
+    inset-inline-start: var(--semantic-dimension-space-padding-x-large);
+    z-index: var(--semantic-number-layer-overlay);
+    padding: var(--semantic-dimension-space-padding-medium);
+    background: var(--semantic-color-background-canvas);
+  }
+
+  .skipLink:not(:focus) {
+    /* Hidden without introducing another focus target or changing document flow. */
+    clip-path: inset(50%);
+  }
+
+  /* The intro is motion, so there is nothing to replay. */
+  @media (prefers-reduced-motion: reduce) {
+    .replay {
+      display: none;
+    }
+  }
+
+  @media (max-width: 48rem /* token: semantic.dimension.breakpoint.small */) {
+    .header {
+      padding: var(--semantic-dimension-space-padding-xx-large);
+    }
+
+    .main {
+      padding-inline: var(--semantic-dimension-space-padding-medium);
+    }
+  }
+}
