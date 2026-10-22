@@ -46,8 +46,11 @@
     display: none;
   }
 
-  .search:has(+ .filters:empty),
-  .search:empty + .filters {
+  /* A trigger keeps its column while the controls are in the drawer and the inline slot is empty. */
+  .search:last-child,
+  .layout:not(:has(> .trigger)) > .search:has(+ .filters:empty),
+  .search:empty + .filters,
+  .filters:first-child {
     grid-column: 1 / -1;
   }
 
@@ -74,5 +77,63 @@
     .filters {
       grid-template-columns: minmax(0, 1fr);
     }
+  }
+
+  .trigger {
+    display: none;
+  }
+
+  /* With a FiltersTrigger, narrow bars keep the search inline and move the filters into a drawer. */
+  @container (inline-size < 24rem) {
+    .layout:has(> .trigger) {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .layout:has(> .trigger) > .search {
+      grid-column: auto;
+    }
+
+    .layout:has(> .trigger) > .filters {
+      display: none;
+    }
+
+    .trigger {
+      display: block;
+    }
+
+    .search:empty ~ .trigger,
+    .filters:first-child ~ .trigger {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .drawerContent {
+    display: grid;
+    gap: var(--semantic-dimension-space-gap-large);
+  }
+
+  .filtersSlot {
+    display: grid;
+    gap: var(--semantic-dimension-space-gap-medium);
+  }
+
+  .filtersSlot > * {
+    min-inline-size: 0;
+  }
+
+  /* The drawer is at most 30rem wide, so its buttons always stack at full width. */
+  .filtersActions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-control-gap-medium);
+  }
+
+  .visuallyHidden {
+    position: absolute;
+    inline-size: var(--semantic-dimension-border-width-small);
+    block-size: var(--semantic-dimension-border-width-small);
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 }

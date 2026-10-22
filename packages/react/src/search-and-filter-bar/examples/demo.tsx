@@ -1,5 +1,7 @@
-import {Dropdown, Search, Stack, Text, SearchAndFilterBar} from '@earendil-works/elanor-react';
+import {Search, SearchAndFilterBar, Stack, Text} from '@earendil-works/elanor-react';
 import {useState} from 'react';
+
+import {MemberFilter} from './member-filter.tsx';
 
 const members = [
   {
@@ -51,43 +53,42 @@ export default function SearchAndFilterBarDemo() {
 
   return (
     <Stack align="stretch">
-      <SearchAndFilterBar
-        role="search"
-        aria-label="Member search and filters"
-        search={
+      <SearchAndFilterBar.Root role="search" aria-label="Member search and filters">
+        <SearchAndFilterBar.Search>
           <Search
             aria-label="Search members"
             placeholder="Search members"
             value={query}
             onValueChange={setQuery}
           />
-        }
-      >
-        <MemberFilter
-          label="Status"
-          value={status}
-          options={['All', 'Active', 'Invited', 'Suspended']}
-          onChange={setStatus}
-        />
-        <MemberFilter
-          label="Role"
-          value={role}
-          options={['All', 'Admin', 'Member', 'Viewer']}
-          onChange={setRole}
-        />
-        <MemberFilter
-          label="Group"
-          value={group}
-          options={['All', 'Engineering', 'Design', 'Operations']}
-          onChange={setGroup}
-        />
-        <MemberFilter
-          label="2FA"
-          value={twoFactor}
-          options={['All', 'Enabled', 'Disabled']}
-          onChange={setTwoFactor}
-        />
-      </SearchAndFilterBar>
+        </SearchAndFilterBar.Search>
+        <SearchAndFilterBar.Filters>
+          <MemberFilter
+            label="Status"
+            value={status}
+            options={['All', 'Active', 'Invited', 'Suspended']}
+            onChange={setStatus}
+          />
+          <MemberFilter
+            label="Role"
+            value={role}
+            options={['All', 'Admin', 'Member', 'Viewer']}
+            onChange={setRole}
+          />
+          <MemberFilter
+            label="Group"
+            value={group}
+            options={['All', 'Engineering', 'Design', 'Operations']}
+            onChange={setGroup}
+          />
+          <MemberFilter
+            label="2FA"
+            value={twoFactor}
+            options={['All', 'Enabled', 'Disabled']}
+            onChange={setTwoFactor}
+          />
+        </SearchAndFilterBar.Filters>
+      </SearchAndFilterBar.Root>
       <Text role="status">
         {matchingMembers.length} of {members.length} members
       </Text>
@@ -104,43 +105,5 @@ export default function SearchAndFilterBarDemo() {
         ))}
       </ul>
     </Stack>
-  );
-}
-
-interface MemberFilterProps {
-  readonly label: string;
-  readonly value: string;
-  readonly options: readonly string[];
-  readonly onChange: (value: string) => void;
-}
-
-function MemberFilter({label, value, options, onChange}: MemberFilterProps) {
-  return (
-    <Dropdown.Root
-      value={value}
-      items={options.map((option) => ({value: option, label: option}))}
-      onValueChange={(next) => onChange(next ?? 'All')}
-    >
-      <Dropdown.Trigger aria-label={`${label} filter`}>
-        <span>
-          {label}: <Dropdown.Value />
-        </span>
-        <Dropdown.Icon />
-      </Dropdown.Trigger>
-      <Dropdown.Portal>
-        <Dropdown.Positioner alignItemWithTrigger={false}>
-          <Dropdown.Popup>
-            <Dropdown.List>
-              {options.map((option) => (
-                <Dropdown.Item key={option} value={option}>
-                  <Dropdown.ItemIndicator />
-                  <Dropdown.ItemText>{option}</Dropdown.ItemText>
-                </Dropdown.Item>
-              ))}
-            </Dropdown.List>
-          </Dropdown.Popup>
-        </Dropdown.Positioner>
-      </Dropdown.Portal>
-    </Dropdown.Root>
   );
 }

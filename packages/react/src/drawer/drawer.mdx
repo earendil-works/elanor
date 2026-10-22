@@ -28,6 +28,8 @@ import {Drawer} from '@earendil-works/elanor-react';
 
 Popup scrolls within the viewport. Content keeps text selectable with a mouse; add `data-base-ui-swipe-ignore` to controls that handle their own gestures.
 
+When a bottom sheet contains form fields, wrap its Portal in `VirtualKeyboardProvider` inside Root. On touch devices, it keeps the focused field visible above the software keyboard.
+
 ## Side panel
 
 `swipeDirection="left"` or `"right"` turns the drawer into a side panel; the default, `"down"`, is a bottom sheet. Directions are physical, so they don't flip in right-to-left layouts.
