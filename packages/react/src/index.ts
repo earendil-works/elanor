@@ -11,6 +11,7 @@ export * as KeyValue from './key-value/index.ts';
 export * as Layout from './layout/index.ts';
 export * as List from './list/index.ts';
 export * as Menu from './menu/index.ts';
+export * as Message from './message/index.ts';
 export * as Meter from './meter/index.ts';
 export * as Modal from './modal/index.ts';
 export * as NavigationMenu from './navigation-menu/index.ts';
@@ -54,6 +55,26 @@ export type {
 } from './layout/layout.tsx';
 
 export type {TickerItemProps, TickerRootProps} from './ticker/ticker.tsx';
+
+export type {
+  MessageBubbleProps,
+  MessageFileProps,
+  MessageFilesProps,
+  MessageImagesProps,
+  MessageNoteProps,
+  MessageParticipant,
+  MessageQuoteProps,
+  MessageRootProps,
+  MessageSpeakerProps,
+  MessageTextProps,
+} from './message/message.tsx';
+
+export {ImageGrid} from './image-grid/image-grid.tsx';
+export type {ImageGridProps} from './image-grid/image-grid.tsx';
+export {ImageViewer} from './image-viewer/image-viewer.tsx';
+export type {ImageViewerImage, ImageViewerProps} from './image-viewer/image-viewer.tsx';
+export {Mention} from './mention/mention.tsx';
+export type {MentionProps} from './mention/mention.tsx';
 
 export type {
   TimelineItemProps,

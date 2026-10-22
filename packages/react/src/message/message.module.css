@@ -1,0 +1,278 @@
+@layer elanor.components {
+  /* A message: the bubble and a note below it, at the end of the line for the reader's own, at the start otherwise. */
+  .root {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--semantic-dimension-space-gap-xx-small);
+    min-inline-size: 0;
+  }
+
+  .root[data-align='end'] {
+    align-items: flex-end;
+  }
+
+  .root > * {
+    max-inline-size: 85%;
+  }
+
+  .bubble {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-gap-small);
+    box-sizing: border-box;
+    min-inline-size: 0;
+    padding-block: calc(
+      var(--semantic-dimension-space-padding-medium) +
+        var(--semantic-dimension-space-padding-xx-small)
+    );
+    padding-inline: var(--semantic-dimension-space-padding-x-large);
+    border-radius: var(--semantic-dimension-radius-large);
+    background: var(--semantic-color-background-surface);
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-ui-primary);
+    overflow-wrap: anywhere;
+  }
+
+  /*
+   * With images, the bubble takes their width and a narrower frame, the same on every side; its other parts keep the
+   * text's inset.
+   */
+  .bubble[data-images] {
+    inline-size: calc(
+      var(--semantic-dimension-size-image-grid) + 2 * var(--semantic-dimension-space-padding-small)
+    );
+    max-inline-size: 100%;
+    padding: var(--semantic-dimension-space-padding-small);
+  }
+
+  .bubble[data-images] > :not(.images) {
+    padding-inline: calc(
+      var(--semantic-dimension-space-padding-x-large) -
+        var(--semantic-dimension-space-padding-small)
+    );
+  }
+
+  .images {
+    inline-size: 100%;
+  }
+
+  /* The speaker: a name after an optional icon, in the participant's color; a button when it opens something. */
+  .speaker {
+    display: inline-flex;
+    align-items: center;
+    align-self: flex-start;
+    gap: var(--semantic-dimension-space-gap-x-small);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--semantic-color-text-secondary);
+    font: var(--semantic-typography-ui-tertiary);
+    font-weight: var(--semantic-font-weight-ui-selected);
+    text-align: start;
+  }
+
+  .speaker > svg {
+    flex: none;
+    inline-size: var(--semantic-dimension-size-x-small);
+    block-size: var(--semantic-dimension-size-x-small);
+  }
+
+  .speaker:where(button) {
+    cursor: pointer;
+  }
+
+  @media (hover: hover) {
+    .speaker:where(button):hover {
+      text-decoration: underline;
+    }
+  }
+
+  .speaker:focus-visible,
+  .quote:focus-visible,
+  .more:focus-visible {
+    border-radius: var(--semantic-dimension-radius-small);
+    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline-offset: var(--semantic-dimension-border-width-medium);
+  }
+
+  /* A quote: who and an excerpt in one line, beside a bar. */
+  .quote {
+    display: flex;
+    align-items: center;
+    gap: var(--semantic-dimension-space-gap-x-small);
+    box-sizing: border-box;
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    margin: 0;
+    padding-block: 0;
+    padding-inline: var(--semantic-dimension-space-padding-small) 0;
+    border: 0;
+    border-inline-start: var(--semantic-dimension-border-width-medium) solid
+      var(--semantic-color-border-primary);
+    background: transparent;
+    color: var(--semantic-color-text-secondary);
+    font: var(--semantic-typography-ui-tertiary);
+    text-align: start;
+    white-space: nowrap;
+    cursor: pointer;
+  }
+
+  .quoteName {
+    flex: none;
+    color: var(--semantic-color-text-primary);
+    font-weight: var(--semantic-font-weight-ui-selected);
+  }
+
+  .quoteText {
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .quoteDetail {
+    flex: none;
+  }
+
+  /* The text; cut at its lines (an inline max-block-size), fading out. */
+  .text {
+    min-inline-size: 0;
+    overflow: hidden;
+  }
+
+  .text[data-overflows] {
+    mask-image: linear-gradient(to bottom, black 70%, transparent);
+  }
+
+  .more {
+    align-self: flex-start;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--semantic-color-text-secondary);
+    font: var(--semantic-typography-ui-secondary);
+    font-weight: var(--semantic-font-weight-ui-selected);
+    cursor: pointer;
+  }
+
+  .files {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--semantic-dimension-space-gap-x-small);
+  }
+
+  .file {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--semantic-dimension-space-gap-x-small);
+    min-inline-size: 0;
+    padding-block: var(--semantic-dimension-space-padding-xx-small);
+    padding-inline: var(--semantic-dimension-space-padding-small);
+    border-radius: var(--semantic-dimension-radius-default);
+    background: var(--semantic-color-background-canvas);
+    color: var(--semantic-color-icon-secondary);
+    font: var(--semantic-typography-ui-tertiary);
+  }
+
+  .file > svg {
+    flex: none;
+    inline-size: var(--semantic-dimension-size-x-small);
+    block-size: var(--semantic-dimension-size-x-small);
+  }
+
+  .fileName {
+    overflow: hidden;
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-code-secondary);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* The note below the bubble, at the text's inset. */
+  .note {
+    padding-inline: var(--semantic-dimension-space-padding-x-large);
+    color: var(--semantic-color-text-secondary);
+    font: var(--semantic-typography-ui-tertiary);
+  }
+
+  /* Participants: each person's bubble tinted with their color, their name and its icon in it. */
+  .root[data-participant='1'] .bubble {
+    background: var(--semantic-color-background-fill-participant-1);
+  }
+
+  .root[data-participant='1'] .speaker {
+    color: var(--semantic-color-text-on-participant-fill-1);
+  }
+
+  .root[data-participant='1'] .speaker > svg {
+    color: var(--semantic-color-icon-on-participant-fill-1);
+  }
+
+  .root[data-participant='2'] .bubble {
+    background: var(--semantic-color-background-fill-participant-2);
+  }
+
+  .root[data-participant='2'] .speaker {
+    color: var(--semantic-color-text-on-participant-fill-2);
+  }
+
+  .root[data-participant='2'] .speaker > svg {
+    color: var(--semantic-color-icon-on-participant-fill-2);
+  }
+
+  .root[data-participant='3'] .bubble {
+    background: var(--semantic-color-background-fill-participant-3);
+  }
+
+  .root[data-participant='3'] .speaker {
+    color: var(--semantic-color-text-on-participant-fill-3);
+  }
+
+  .root[data-participant='3'] .speaker > svg {
+    color: var(--semantic-color-icon-on-participant-fill-3);
+  }
+
+  .root[data-participant='4'] .bubble {
+    background: var(--semantic-color-background-fill-participant-4);
+  }
+
+  .root[data-participant='4'] .speaker {
+    color: var(--semantic-color-text-on-participant-fill-4);
+  }
+
+  .root[data-participant='4'] .speaker > svg {
+    color: var(--semantic-color-icon-on-participant-fill-4);
+  }
+
+  .root[data-participant='5'] .bubble {
+    background: var(--semantic-color-background-fill-participant-5);
+  }
+
+  .root[data-participant='5'] .speaker {
+    color: var(--semantic-color-text-on-participant-fill-5);
+  }
+
+  .root[data-participant='5'] .speaker > svg {
+    color: var(--semantic-color-icon-on-participant-fill-5);
+  }
+
+  .root[data-participant='6'] .bubble {
+    background: var(--semantic-color-background-fill-participant-6);
+  }
+
+  .root[data-participant='6'] .speaker {
+    color: var(--semantic-color-text-on-participant-fill-6);
+  }
+
+  .root[data-participant='6'] .speaker > svg {
+    color: var(--semantic-color-icon-on-participant-fill-6);
+  }
+
+  @media (forced-colors: active) {
+    .bubble {
+      border: var(--semantic-dimension-border-width-small) solid CanvasText;
+    }
+  }
+}

@@ -1,0 +1,67 @@
+# Message
+
+A message in a conversation between people, or between people and agents: a bubble with who wrote it, what it answers, its text, images and files. The reader's own messages sit at the end of the line, everyone else's at the start, each person in their own color. For an agent's answer that is a document rather than a message, use [Prose](/components/prose/).
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Message} from '@earendil-works/elanor-react';
+
+<Message.Root participant={2}>
+  <Message.Bubble>
+    <Message.Speaker>Anna</Message.Speaker>
+    <Message.Quote author="Ben">Does it work on Android?</Message.Quote>
+    <Message.Images images={images} />
+    <Message.Text>Works on Android, but the preview is cut off.</Message.Text>
+    <Message.Files>
+      <Message.File>screenshot-notes.md</Message.File>
+    </Message.Files>
+  </Message.Bubble>
+  <Message.Note>Edited</Message.Note>
+</Message.Root>;
+```
+
+- `Message.Root` places the message: `align="end"` for the reader's own, `start` (the default) for everyone else's. Its parts are at most 85% of the line wide.
+- `Message.Bubble` holds the parts, `semantic.dimension.space.gap.small` apart, in `semantic.typography.ui.primary` on `semantic.color.background.surface` with `semantic.dimension.radius.large` corners.
+- `Message.Speaker` names who wrote it, in `semantic.typography.ui.tertiary`. Leave it out on the reader's own messages, and on a message that continues the same person's run.
+- `Message.Note` sits below the bubble, such as "Edited" or who has read it.
+
+## Participants
+
+`participant` (1 to 6) tints the bubble with `semantic.color.background.fill.participant.<n>` and colors the speaker with `semantic.color.text.onParticipantFill.<n>`, so readers tell people apart. Give each person the same color everywhere, such as by a stable hash of their id; leave the reader's own messages untinted.
+
+<Demo example="./examples/participants.tsx" />
+
+## Speaker
+
+Put an icon before the name for a participant that is not a person, such as an agent's mark; it takes the participant's `semantic.color.icon.onParticipantFill.<n>`. When the name opens something, such as the agent's conversation, render a button: `render={<button type="button" />}`.
+
+## Quote
+
+`Message.Quote` shows what a message answers in one line: its `author` and an excerpt, cut with an ellipsis, beside a `semantic.color.border.primary` bar. It is a button, to show the quoted message.
+
+<Demo example="./examples/quote.tsx" />
+
+It also stands on its own, such as above an agent's reply that is not a bubble. `detail` follows the excerpt, such as how many messages came with it.
+
+<Demo example="./examples/quote-alone.tsx" />
+
+## Images
+
+`Message.Images` shows an [Image grid](/components/image-grid/) in the bubble. The bubble then takes the grid's width and a closer `semantic.dimension.space.padding.small` frame, while its other parts keep the text's inset. A tap opens an image full screen.
+
+<Demo example="./examples/images.tsx" />
+
+## Long text
+
+`Message.Text` holds plain text or rich content. Longer than `lines` (12 by default), it is cut, fading out, with a Show more button; `showMoreLabel` and `showLessLabel` rename it.
+
+<Demo example="./examples/long.tsx" />
+
+## Files
+
+`Message.Files` lists attached files as `Message.File` chips: a file icon and the name in the code font, cut with an ellipsis when long.
+
+<Demo example="./examples/files.tsx" />

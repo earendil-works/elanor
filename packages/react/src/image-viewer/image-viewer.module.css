@@ -1,0 +1,123 @@
+@layer elanor.components {
+  /*
+   * The viewer: the picture on a dark stage, in both color schemes. Opening, the stage fades in and the picture grows
+   * into place; closing by Close, Escape or a tap beside it is the same backwards. A drag sets the backdrop's opacity
+   * inline (gestures.ts) and hands it back at rest.
+   */
+  .backdrop {
+    position: fixed;
+    inset: 0;
+    background: var(--semantic-color-background-media);
+    transition: opacity var(--semantic-transition-fade);
+  }
+
+  .popup {
+    position: fixed;
+    inset: 0;
+    outline: none;
+    transition: opacity var(--semantic-transition-fade);
+  }
+
+  .backdrop[data-starting-style],
+  .backdrop[data-ending-style],
+  .popup[data-starting-style],
+  .popup[data-ending-style] {
+    opacity: var(--semantic-number-opacity-hidden);
+  }
+
+  /* Dragged away, the viewer has already faded with its picture: it leaves at once. */
+  .popup[data-dragging][data-ending-style] {
+    transition: none;
+  }
+
+  /*
+   * The stage takes every touch, so a pinch zooms the picture and never the page. It is one grid cell the size of
+   * the viewer, less room for Close above and the count below, so the picture's largest size is a share of the
+   * stage, not of the picture.
+   */
+  .stage {
+    display: grid;
+    grid-template: minmax(0, 1fr) / minmax(0, 1fr);
+    place-items: center;
+    box-sizing: border-box;
+    block-size: 100%;
+    padding-block: max(var(--semantic-dimension-space-padding-xxxx-large), env(safe-area-inset-top))
+      calc(var(--semantic-dimension-space-padding-xxxx-large) + env(safe-area-inset-bottom));
+    padding-inline: var(--semantic-dimension-space-padding-medium);
+    overflow: hidden;
+    touch-action: none;
+    user-select: none;
+    transition: scale var(--semantic-transition-movement-indicator);
+  }
+
+  .popup[data-starting-style] .stage,
+  .popup[data-ending-style] .stage {
+    scale: var(--semantic-number-scale-image-viewer);
+  }
+
+  .image {
+    min-inline-size: 0;
+    min-block-size: 0;
+    max-inline-size: 100%;
+    max-block-size: 100%;
+    border-radius: var(--semantic-dimension-radius-small);
+    object-fit: contain;
+    transform-origin: center;
+    will-change: transform;
+  }
+
+  /* Controls over the picture: light on a dark disc that keeps them legible over a light picture. */
+  .close,
+  .step {
+    position: absolute;
+    border-radius: var(--semantic-dimension-radius-full);
+    background: var(--semantic-color-background-fill-media);
+    color: var(--semantic-color-icon-on-media);
+    transition: opacity var(--semantic-transition-fade);
+  }
+
+  .close {
+    inset-block-start: max(var(--semantic-dimension-space-padding-small), env(safe-area-inset-top));
+    inset-inline-end: var(--semantic-dimension-space-padding-small);
+  }
+
+  .step {
+    inset-block-start: 50%;
+    translate: 0 -50%;
+  }
+
+  .step[data-side='previous'] {
+    inset-inline-start: var(--semantic-dimension-space-padding-small);
+  }
+
+  .step[data-side='next'] {
+    inset-inline-end: var(--semantic-dimension-space-padding-small);
+  }
+
+  .count {
+    position: absolute;
+    inset-block-end: calc(
+      var(--semantic-dimension-space-padding-medium) + env(safe-area-inset-bottom)
+    );
+    inset-inline: 0;
+    color: var(--semantic-color-text-on-media);
+    font: var(--semantic-typography-ui-secondary);
+    text-align: center;
+    transition: opacity var(--semantic-transition-fade);
+  }
+
+  /* While the picture is dragged away, the controls fade out; they come back if it springs back. */
+  .popup[data-dragging] .close,
+  .popup[data-dragging] .step,
+  .popup[data-dragging] .count {
+    opacity: var(--semantic-number-opacity-hidden);
+    pointer-events: none;
+  }
+
+  @media (forced-colors: active) {
+    .close,
+    .step {
+      border: var(--semantic-dimension-border-width-small) solid ButtonBorder;
+    }
+  }
+}

@@ -1,0 +1,33 @@
+# Image grid
+
+Pictures as thumbnails, such as the images attached to a message. A tap opens one full screen in an [Image viewer](/components/image-viewer/), where the reader steps through all of them. To show a single picture in content at its size, use [Image](/components/image/).
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {ImageGrid} from '@earendil-works/elanor-react';
+
+<ImageGrid images={[{src: screenshot, alt: 'The failing test run'}]} />;
+```
+
+Each image has a `src` and an optional `alt`, which names its thumbnail ("Open the failing test run") and the viewer; without one, a thumbnail is "Open image 1 of 3". The grid is `semantic.dimension.size.imageGrid` (288px) wide whatever the number of images, so grids line up, and narrower when its container is. Thumbnails sit `semantic.dimension.space.gap.xx-small` apart in a frame with `semantic.dimension.radius.default` corners.
+
+## One image
+
+One image fills the width at its own shape. A very tall one is cropped to 4:5; a very wide one keeps at least twice `semantic.dimension.size.x-large` (96px) of height.
+
+<Demo example="./examples/one.tsx" />
+
+## Three images
+
+Two or more images are squares in two columns; with three, the first is large on the left.
+
+<Demo example="./examples/three.tsx" />
+
+## More images
+
+Four thumbnails show by default; the last carries a count of the rest, and the viewer still steps through all of them. Set `max` to show more or fewer.
+
+<Demo example="./examples/more.tsx" />

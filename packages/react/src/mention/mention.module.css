@@ -1,0 +1,17 @@
+@layer elanor.components {
+  .root {
+    padding-block: 0;
+    padding-inline: var(--semantic-dimension-space-padding-xx-small);
+    border-radius: var(--semantic-dimension-radius-small);
+    background: var(--semantic-color-background-fill-secondary-information);
+    color: var(--semantic-color-text-on-secondary-fill-information);
+    font-weight: var(--semantic-font-weight-ui-selected);
+    box-decoration-break: clone;
+  }
+
+  @media (forced-colors: active) {
+    .root {
+      border: var(--semantic-dimension-border-width-small) solid CanvasText;
+    }
+  }
+}

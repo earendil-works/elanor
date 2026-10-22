@@ -1,0 +1,17 @@
+# Mention
+
+A mention in text, such as "@pi" calling an agent into a conversation or "@anna" pointing a message at someone. It sets the name apart as a pill and stays in line with the text around it. For a link to a person's profile, use [Link](/components/link/).
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Mention} from '@earendil-works/elanor-react';
+
+<Text>
+  <Mention>@pi</Mention> can you fix it?
+</Text>;
+```
+
+Mention renders a `span` on `semantic.color.background.fill.secondary.information` with `semantic.color.text.onSecondaryFill.information` text in `semantic.fontWeight.ui.selected`, and `semantic.dimension.radius.small` corners. It takes the surrounding font and size, and a mention that wraps keeps its pill on each line. Finding mentions in text is the application's: wrap each match in a Mention.

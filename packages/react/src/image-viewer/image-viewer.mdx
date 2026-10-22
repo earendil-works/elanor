@@ -1,0 +1,44 @@
+# Image viewer
+
+An image full screen, on a dark stage, such as a picture someone sent in a conversation or a screenshot opened from a thumbnail. The reader zooms and pans it like a phone's photo viewer and drags it away to close. To show pictures in content at their size, use [Image](/components/image/); for thumbnails that open the viewer, use [Image grid](/components/image-grid/).
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {ImageViewer} from '@earendil-works/elanor-react';
+
+const [index, setIndex] = useState<number>();
+
+<ImageViewer images={images} index={index} onIndexChange={setIndex} />;
+```
+
+The viewer is controlled: `index` is the image shown, or `undefined` while it is closed, and `onIndexChange` receives another image's index or `undefined` to close. Each image has a `src` and an optional `alt`; the viewer is named by the shown image's `alt`, or by its position ("Image 2 of 5").
+
+It is a modal dialog: it traps focus while open and returns it to what opened it. The stage is `semantic.color.background.media` and its controls `semantic.color.icon.onMedia` on `semantic.color.background.fill.media`, dark and light in both color schemes, so pictures read as they are. Opening, the stage fades in with `semantic.transition.fade` while the picture grows from `semantic.number.scale.imageViewer` with `semantic.transition.movement.indicator`; closing by Close, Escape or a tap beside the picture is the same backwards.
+
+## Gestures
+
+The gestures follow PhotoSwipe and the iOS Photos app. The stage takes every touch, so a pinch zooms the picture and never the page.
+
+- **Pinch** zooms from one to four times, around the fingers' midpoint. Past either limit it gives a little and springs back.
+- **Drag** a zoomed picture to pan it, up to its edges. Lifting one finger of a pinch carries on as a pan.
+- **Double-tap** the picture to zoom in at the tap, and again to zoom back out.
+- **Drag up or down** at its own size to close. The picture follows the finger and shrinks a little, the stage fades, and the controls step aside. Released past a sixth of the screen, or with a flick, it flies out at the release's speed and the viewer closes; otherwise it springs back.
+- **Swipe sideways** for the next or previous image.
+- **Tap beside** the picture to close at once.
+
+## Several images
+
+With more than one image, side buttons and the arrow keys step through them, wrapping at the ends, and a count shows the position. A new image starts unzoomed.
+
+## One image
+
+With a single image, the viewer has only Close.
+
+<Demo example="./examples/single.tsx" />
+
+## Labels
+
+`closeLabel`, `previousLabel` and `nextLabel` name the buttons for screen readers; they default to "Close", "Previous image" and "Next image".

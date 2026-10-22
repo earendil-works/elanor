@@ -1,0 +1,70 @@
+@layer elanor.components {
+  /*
+   * Thumbnails at one width whatever their number: one fills it at its own shape (a very tall one cropped to 4:5),
+   * two or more are squares in two columns, three with the first one large on the left.
+   */
+  .root {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: var(--semantic-dimension-space-gap-xx-small);
+    inline-size: var(--semantic-dimension-size-image-grid);
+    max-inline-size: 100%;
+    overflow: hidden;
+    border-radius: var(--semantic-dimension-radius-default);
+  }
+
+  .root[data-count='1'] {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .item {
+    position: relative;
+    display: block;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    background: var(--semantic-color-background-fill-secondary);
+    cursor: zoom-in;
+  }
+
+  .item:focus-visible {
+    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline-offset: calc(-1 * var(--semantic-dimension-border-width-large));
+  }
+
+  .image {
+    display: block;
+    inline-size: 100%;
+    /* stylelint-disable-next-line design-tokens/no-hardcoded-token-values -- A square thumbnail: a shape, not a scale step. */
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+  }
+
+  .root[data-count='1'] .image {
+    block-size: auto;
+    min-block-size: calc(2 * var(--semantic-dimension-size-x-large));
+    max-block-size: calc(var(--semantic-dimension-size-image-grid) * 1.25);
+    aspect-ratio: auto;
+  }
+
+  .root[data-count='3'] .item:first-child {
+    grid-row: span 2;
+  }
+
+  .root[data-count='3'] .item:first-child .image {
+    block-size: 100%;
+    aspect-ratio: auto;
+  }
+
+  /* More images than shown: their count over the last thumbnail. */
+  .more {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    background: var(--semantic-color-background-fill-media);
+    color: var(--semantic-color-text-on-media);
+    font: var(--semantic-typography-heading-app-5);
+  }
+}
