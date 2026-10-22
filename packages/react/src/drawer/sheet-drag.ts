@@ -64,7 +64,10 @@ export interface SheetDragOptions {
 }
 
 /** Attaches drag to close to a bottom sheet's popup; returns the cleanup. */
-export function attachSheetDrag(popup: HTMLElement, {backdrop, close}: SheetDragOptions): () => void {
+export function attachSheetDrag(
+  popup: HTMLElement,
+  {backdrop, close}: SheetDragOptions,
+): () => void {
   let gesture: Gesture | undefined;
 
   const setDragging = (dragging: boolean) => {
@@ -85,7 +88,8 @@ export function attachSheetDrag(popup: HTMLElement, {backdrop, close}: SheetDrag
 
   const start = (event: TouchEvent) => {
     const touch = event.touches[0];
-    const ignored = event.target instanceof Element && event.target.closest(IGNORE_SELECTOR) !== popup;
+    const ignored =
+      event.target instanceof Element && event.target.closest(IGNORE_SELECTOR) !== popup;
     gesture =
       touch && event.touches.length === 1 && !ignored
         ? {
@@ -111,13 +115,18 @@ export function attachSheetDrag(popup: HTMLElement, {backdrop, close}: SheetDrag
       if (Math.abs(dy) < SLOP && dx < SLOP) {
         return;
       }
-      gesture.mode = dx > Math.abs(dy) ? 'none' : dy > 0 && atTop(gesture.target, popup) ? 'drag' : 'scroll';
+      gesture.mode =
+        dx > Math.abs(dy) ? 'none' : dy > 0 && atTop(gesture.target, popup) ? 'drag' : 'scroll';
       if (gesture.mode === 'drag') {
         setDragging(true);
       }
     }
     // The handover: scrolling up, the content reaches its top while the finger still moves down.
-    if (gesture.mode === 'scroll' && touch.clientY > gesture.lastY && atTop(gesture.target, popup)) {
+    if (
+      gesture.mode === 'scroll' &&
+      touch.clientY > gesture.lastY &&
+      atTop(gesture.target, popup)
+    ) {
       Object.assign(gesture, {mode: 'drag', startY: touch.clientY, distance: 0, velocity: 0});
       setDragging(true);
     }

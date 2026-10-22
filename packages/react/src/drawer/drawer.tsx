@@ -12,9 +12,9 @@ import {
 } from 'react';
 
 import {mergeClassName} from '../utils/class-names.ts';
+import {attachSheetDrag} from './sheet-drag.ts';
 
 import styles from './drawer.module.css';
-import {attachSheetDrag} from './sheet-drag.ts';
 
 export type {
   DrawerRootActions,
