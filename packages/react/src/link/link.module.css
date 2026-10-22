@@ -7,6 +7,10 @@
     text-underline-position: from-font;
   }
 
+  :where(h1, h2, h3, h4, h5, h6) .root {
+    font: inherit;
+  }
+
   .root:hover {
     text-decoration-thickness: 10%;
   }
