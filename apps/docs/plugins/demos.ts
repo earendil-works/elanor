@@ -30,7 +30,10 @@ export function demos(): Plugin {
           });
           return `<Demo files={[${files.join(', ')}]}>\n  <${component} client:load />\n</Demo>`;
         });
-        return {code: `${imports.join('\n')}\n\n${body}`, map: null};
+        // Front matter must stay at the start of the file, before the imports.
+        const frontMatter = /^---\r?\n[\s\S]*?\r?\n---\r?\n/.exec(body)?.[0] ?? '';
+        const content = body.slice(frontMatter.length);
+        return {code: `${frontMatter}${imports.join('\n')}\n\n${content}`, map: null};
       },
     },
   };

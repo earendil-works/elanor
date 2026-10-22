@@ -16,7 +16,8 @@ For Base UI changes, consult [the documentation index](https://base-ui.com/llms.
 
 Each component directory has a `<component>.mdx` page and an `examples/` directory. The docs site renders the page at `/components/<component>/` and as Markdown for agents at `/components/<component>.md`.
 
-- Start with an H1 (the directory name in sentence case) and a one-paragraph description: what it is and when to use it, with alternatives.
+- Start with front matter that sets `category`, one of the categories in `apps/docs/src/lib/component-categories.ts`. The docs group the sidebar and the components overview by it.
+- Then an H1 (the directory name in sentence case) and a one-paragraph description: what it is and when to use it, with alternatives.
 - Then a hero demo (`examples/demo.tsx`), `## Usage` with the import and a minimal snippet or anatomy, and one `##` section per variant or state. Add notes only where needed.
 - Don't write an API section. It's generated from the props types; document props with JSDoc on Elanor's declarations, and parts with JSDoc on the component.
 - Write live previews as `<Demo example="./examples/<name>.tsx" />` on one line. MDX contains no other JSX or imports; use code fences for code that can't render on a page.
