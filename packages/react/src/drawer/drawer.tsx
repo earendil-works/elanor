@@ -17,6 +17,7 @@ export type {
   DrawerCloseProps,
   DrawerCloseState,
   DrawerContentProps,
+  DrawerVirtualKeyboardProviderProps,
 } from '@base-ui/react/drawer';
 
 export type DrawerHandle<Payload = unknown> = BaseDrawer.Handle<Payload>;
