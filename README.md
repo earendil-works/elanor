@@ -15,7 +15,7 @@ The [docs app](./apps/docs) runs on Astro.
 
 ## Development
 
-Requires Node.js ≥24 and pnpm 12.8.2. pnpm only installs dependency versions published at least seven days ago (`pnpm-workspace.yaml`).
+Requires Node.js ≥24.22.1 <25 and pnpm 12.8.2. pnpm only installs dependency versions published at least seven days ago (`pnpm-workspace.yaml`).
 
 ```sh
 pnpm install --frozen-lockfile
