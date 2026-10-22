@@ -28,6 +28,13 @@ const families = [
       ['CommitMono-700-Regular.otf', 700, 'normal'],
     ],
   },
+  {
+    entry: 'departure-mono',
+    family: 'DepartureMono',
+    format: 'woff2',
+    signature: 'wOF2',
+    faces: [['DepartureMono-Regular.woff2', 400, 'normal']],
+  },
 ];
 
 for (const {entry, family, format, signature, faces} of families) {
