@@ -55,7 +55,7 @@ Each component directory has a `<component>.mdx` page and an `examples/` directo
 - Size controls that contain text by their block padding and line height, without a fixed or minimum block size, so they grow with larger type and stay aligned with buttons. Fixed block sizes are only for icon-only parts such as icon buttons and checkbox boxes, and touch sizes under `@media (pointer: coarse)`.
 - Prefer logical properties and flexible layouts. Handle narrow containers, RTL, and long content without hiding meaningful content.
 - Keep selectors scoped; avoid global overrides and specificity escalation.
-- For motion, use `semantic.transition` tokens: `movement.*` for anything that moves, scales, rotates, or resizes, `fade` for opacity, and `feedback` for color changes. Movement becomes instant when the reader prefers reduced motion, so add no reduced-motion queries. List transitioned properties explicitly—no `transition: all`.
+- For motion, use `semantic.transition` tokens: `movement.*` for anything that moves, scales, rotates, or resizes, `fade` for opacity, and `feedback` for color changes. Movement becomes instant when the reader prefers reduced motion, so add no reduced-motion queries. List transitioned properties explicitly - no `transition: all`.
 - Use the design-token plugin's strict configuration for the target brand. `stylelint.config.mjs` defines allowed Base UI runtime variables.
 
 ## Validation

@@ -98,7 +98,7 @@ export default function SearchAndFilterBarDemo() {
         {matchingMembers.map((member) => (
           <li key={member.name}>
             <Text render={<span />}>
-              {member.name} — {member.role}
+              {member.name} - {member.role}
             </Text>
           </li>
         ))}

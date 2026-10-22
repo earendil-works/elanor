@@ -62,7 +62,7 @@ function apiMarkdown(entry: Entry): string {
   const sections = parts.map((part) => {
     const rows = part.props.map(
       (prop) =>
-        `| ${code(prop.name)}${prop.required ? ' (required)' : ''} | ${code(prop.type)} | ${prop.defaultValue ? code(prop.defaultValue) : '—'} | ${cell(prop.description ?? '')} |`,
+        `| ${code(prop.name)}${prop.required ? ' (required)' : ''} | ${code(prop.type)} | ${prop.defaultValue ? code(prop.defaultValue) : '-'} | ${cell(prop.description ?? '')} |`,
     );
     const table = rows.length
       ? `| Prop | Type | Default | Description |\n| --- | --- | --- | --- |\n${rows.join('\n')}\n\n`

@@ -43,7 +43,7 @@ const parts = orderedApi(page, body);
                       <code>{prop.type}</code>
                     </td>
                     <td data-label="Default" data-empty={prop.defaultValue ? undefined : ''}>
-                      {prop.defaultValue ? <code>{prop.defaultValue}</code> : '—'}
+                      {prop.defaultValue ? <code>{prop.defaultValue}</code> : '-'}
                     </td>
                     <td set:html={prop.description ? inlineHtml(prop.description) : ''} />
                   </tr>

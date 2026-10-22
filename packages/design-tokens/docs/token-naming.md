@@ -311,7 +311,7 @@ semantic.typography.ui.secondary
 semantic.typography.ui.tertiary
 ```
 
-Use ordinals for prose/UI styles, action emphasis, or text colors—not headings, interactions, or physical sizes. Add `quaternary`, `quinary`, or later levels only for stable, documented roles.
+Use ordinals for prose/UI styles, action emphasis, or text colors - not headings, interactions, or physical sizes. Add `quaternary`, `quinary`, or later levels only for stable, documented roles.
 
 ## Base values with `$root`
 
