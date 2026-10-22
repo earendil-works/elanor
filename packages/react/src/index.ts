@@ -3,6 +3,7 @@ export * as Collapsible from './collapsible/index.ts';
 export * as Drawer from './drawer/index.ts';
 export * as Dropdown from './dropdown/index.ts';
 export * as SearchableDropdown from './dropdown/searchable-dropdown/index.ts';
+export * as SearchAndFilterBar from './search-and-filter-bar/index.ts';
 export * as SearchDialog from './search-dialog/index.ts';
 export * as EmptyState from './empty-state/index.ts';
 export * as Field from './field/index.ts';
@@ -474,8 +475,16 @@ export type {
   RadioRootState,
 } from './radio/radio.tsx';
 
-export {SearchAndFilterBar} from './search-and-filter-bar/search-and-filter-bar.tsx';
-export type {SearchAndFilterBarProps} from './search-and-filter-bar/search-and-filter-bar.tsx';
+export type {
+  SearchAndFilterBarRootProps,
+  SearchAndFilterBarSearchProps,
+  SearchAndFilterBarFiltersProps,
+  SearchAndFilterBarFiltersTriggerProps,
+  SearchAndFilterBarFiltersDrawerProps,
+  SearchAndFilterBarFiltersSlotProps,
+  SearchAndFilterBarFiltersStatusProps,
+  SearchAndFilterBarFiltersActionsProps,
+} from './search-and-filter-bar/search-and-filter-bar.tsx';
 
 export {Search} from './search/search.tsx';
 export type {SearchProps} from './search/search.tsx';
