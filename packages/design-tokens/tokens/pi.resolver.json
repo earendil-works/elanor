@@ -39,10 +39,16 @@
   },
   "modifiers": {
     "colorScheme": {
-      "description": "Selects semantic colors for the active color scheme.",
+      "description": "Selects semantic colors and shadows for the active color scheme.",
       "contexts": {
-        "light": [{"$ref": "./shared/semantic/color/light.tokens.json"}],
-        "dark": [{"$ref": "./shared/semantic/color/dark.tokens.json"}]
+        "light": [
+          {"$ref": "./shared/semantic/color/light.tokens.json"},
+          {"$ref": "./shared/semantic/shadow/light.tokens.json"}
+        ],
+        "dark": [
+          {"$ref": "./shared/semantic/color/dark.tokens.json"},
+          {"$ref": "./shared/semantic/shadow/dark.tokens.json"}
+        ]
       },
       "default": "light"
     },
