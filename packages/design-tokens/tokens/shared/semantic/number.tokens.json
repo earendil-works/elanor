@@ -36,6 +36,10 @@
         "navigationMenu": {
           "$value": "{primitive.number.scale.900}",
           "$description": "Component token for the size the navigation menu popup grows from as it opens."
+        },
+        "imageViewer": {
+          "$value": "{primitive.number.scale.900}",
+          "$description": "Component token for the size an image viewer's picture grows from as it opens and shrinks to as it closes."
         }
       },
       "layer": {

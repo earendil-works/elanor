@@ -113,6 +113,8 @@ semantic.color.icon.onSecondaryFill.information
 - **Ghost:** base plus the primary variants. Resting values are transparent, so the parent shows through. Hover/active use Cerulian Blue (base/information), Graphite (neutral), Coral Red (negative), or Turquoise Green (positive).
 - **Selected:** `background.fill.selected` is an accent for selected controls and progress indicators. Use `icon.onSelectedFill` for indicators; no text role exists because current components put no text inside this fill.
 - **Data visualization:** `background.fill.dataViz.100` through `.1000` alias the ordered `primitive.color.dataViz` palette for chart series and meter indicators. They are categorical, not status colors; assign them in series order. No content roles exist.
+- **Media:** `background.media` is the stage of full-screen media, such as an image viewer, and `background.fill.media` the controls laid over it; with `text.onMedia` and `icon.onMedia` they stay dark and light in both color schemes, so pictures read as they are.
+- **Participants:** `background.fill.participant.1` through `.6` tell a conversation's participants apart: each person's bubble takes one, with their name in `text.onParticipantFill.<n>` and icons in `icon.onParticipantFill.<n>`. Steps are identities, not status colors; assign them in order or by a stable hash of the participant's id. Message text on them is `text.primary`; names also meet text contrast on the page.
 
 Append interaction states after intent or selection:
 

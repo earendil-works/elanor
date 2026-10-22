@@ -301,6 +301,11 @@ function createRules(paths: readonly string[]): ContrastRule[] {
 
   const primaryFills = under(paths, 'semantic.color.background.fill.primary');
   const secondaryFills = under(paths, 'semantic.color.background.fill.secondary');
+  const participantFills = under(
+    paths,
+    'semantic.color.background.fill.participant',
+    (relative) => relative !== '',
+  );
   const statusSecondaryFills = under(
     paths,
     'semantic.color.background.fill.secondary',
@@ -387,6 +392,61 @@ function createRules(paths: readonly string[]): ContrastRule[] {
         'semantic.color.icon.onSecondaryFill',
         secondaryFills,
         'semantic.color.background.fill.secondary',
+      ),
+    },
+    {
+      category: 'text/on-participant-fill',
+      threshold: REQUIRED_TEXT_CONTRAST,
+      pairs: pairBySuffix(
+        under(paths, 'semantic.color.text.onParticipantFill'),
+        'semantic.color.text.onParticipantFill',
+        participantFills,
+        'semantic.color.background.fill.participant',
+      ),
+    },
+    {
+      // A participant's bubble holds their message in the primary text color.
+      category: 'text/primary-on-participant-fill',
+      threshold: REQUIRED_TEXT_CONTRAST,
+      pairs: everyCombination(
+        [
+          requirePath(pathSet, 'semantic.color.text.primary'),
+          requirePath(pathSet, 'semantic.color.text.secondary'),
+        ],
+        participantFills,
+      ),
+    },
+    {
+      // A participant's name also stands beside their bubble, on the page.
+      category: 'text/participant-on-page',
+      threshold: REQUIRED_TEXT_CONTRAST,
+      pairs: everyCombination(under(paths, 'semantic.color.text.onParticipantFill'), page),
+    },
+    {
+      category: 'icon/on-participant-fill',
+      threshold: REQUIRED_NON_TEXT_CONTRAST,
+      pairs: pairBySuffix(
+        under(paths, 'semantic.color.icon.onParticipantFill'),
+        'semantic.color.icon.onParticipantFill',
+        participantFills,
+        'semantic.color.background.fill.participant',
+      ),
+    },
+    {
+      category: 'text/on-media',
+      threshold: REQUIRED_TEXT_CONTRAST,
+      // Translucent fill.media cannot be checked; it only darkens what is under it.
+      pairs: everyCombination(
+        [requirePath(pathSet, 'semantic.color.text.onMedia')],
+        [requirePath(pathSet, 'semantic.color.background.media')],
+      ),
+    },
+    {
+      category: 'icon/on-media',
+      threshold: REQUIRED_NON_TEXT_CONTRAST,
+      pairs: everyCombination(
+        [requirePath(pathSet, 'semantic.color.icon.onMedia')],
+        [requirePath(pathSet, 'semantic.color.background.media')],
       ),
     },
     {

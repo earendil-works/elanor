@@ -59,7 +59,9 @@ Use `semantic.color.logo.*` only for logo artwork: `symbol.1`–`4` use the four
 | Negative                                          | `coralRed`       |
 | Positive                                          | `turquoiseGreen` |
 
-`calamineBlue` is a supporting brand accent without a semantic status role. `amethystViolet` is used only for code syntax.
+`calamineBlue` is a supporting brand accent without a semantic status role. `amethystViolet` is used for code syntax and as a participant color.
+
+Participant colors (`background.fill.participant.1`–`6`) use all six chromatic families, in the order `cerulianBlue`, `coralRed`, `turquoiseGreen`, `amethystViolet`, `calamineBlue`, `creamYellow`: the fill is step `100` in light and `780` in dark, the name `600` in light and `300` in dark.
 
 Structural backgrounds are neutral Graphite in both themes:
 

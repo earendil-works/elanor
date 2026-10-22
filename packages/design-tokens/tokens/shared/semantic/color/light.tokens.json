@@ -34,6 +34,10 @@
           },
           "$description": "Use behind modal dialogs, drawers, and other blocking overlays to dim underlying content."
         },
+        "media": {
+          "$value": "{primitive.color.black}",
+          "$description": "Use for the stage of full-screen media, such as an image viewer. Dark in both color schemes, so pictures read as they are; pair with text.onMedia and icon.onMedia."
+        },
         "fill": {
           "$description": "Use these colors for bounded filled elements according to their prominence and meaning.",
           "primary": {
@@ -302,6 +306,55 @@
               "$value": "{primitive.color.dataViz.1000}",
               "$description": "Use for the tenth data series in charts. Do not use to signal status."
             }
+          },
+          "participant": {
+            "$description": "Use for the bubbles of a conversation's participants, one color each, so readers tell people apart. Assign in order; they are identities, not status colors. Pair each with the same step of text.onParticipantFill.",
+            "1": {
+              "$value": "{primitive.color.cerulianBlue.100}",
+              "$description": "Use for the bubble of a conversation's first participant. Do not use to signal status."
+            },
+            "2": {
+              "$value": "{primitive.color.coralRed.100}",
+              "$description": "Use for the bubble of a conversation's second participant. Do not use to signal status."
+            },
+            "3": {
+              "$value": "{primitive.color.turquoiseGreen.100}",
+              "$description": "Use for the bubble of a conversation's third participant. Do not use to signal status."
+            },
+            "4": {
+              "$value": "{primitive.color.amethystViolet.100}",
+              "$description": "Use for the bubble of a conversation's fourth participant. Do not use to signal status."
+            },
+            "5": {
+              "$value": "{primitive.color.calamineBlue.100}",
+              "$description": "Use for the bubble of a conversation's fifth participant. Do not use to signal status."
+            },
+            "6": {
+              "$value": "{primitive.color.creamYellow.100}",
+              "$description": "Use for the bubble of a conversation's sixth participant. Do not use to signal status."
+            }
+          },
+          "media": {
+            "$value": {
+              "colorSpace": {
+                "$ref": "#/primitive/color/black/$value/colorSpace"
+              },
+              "components": [
+                {
+                  "$ref": "#/primitive/color/black/$value/components/0"
+                },
+                {
+                  "$ref": "#/primitive/color/black/$value/components/1"
+                },
+                {
+                  "$ref": "#/primitive/color/black/$value/components/2"
+                }
+              ],
+              "alpha": {
+                "$ref": "#/primitive/number/opacity/600/$value"
+              }
+            },
+            "$description": "Use for controls laid over media, such as an image viewer's Close button, so they stay legible over light pictures. Dark in both color schemes."
           }
         },
         "slider": {
@@ -509,6 +562,37 @@
             "$description": "Use for text placed on secondary fills that communicate success, a favorable outcome, or positive confirmation."
           }
         },
+        "onParticipantFill": {
+          "$description": "Use for a participant's name and texts on, or beside, the matching background.fill.participant step.",
+          "1": {
+            "$value": "{primitive.color.cerulianBlue.600}",
+            "$description": "Use for the first participant's name."
+          },
+          "2": {
+            "$value": "{primitive.color.coralRed.600}",
+            "$description": "Use for the second participant's name."
+          },
+          "3": {
+            "$value": "{primitive.color.turquoiseGreen.600}",
+            "$description": "Use for the third participant's name."
+          },
+          "4": {
+            "$value": "{primitive.color.amethystViolet.600}",
+            "$description": "Use for the fourth participant's name."
+          },
+          "5": {
+            "$value": "{primitive.color.calamineBlue.600}",
+            "$description": "Use for the fifth participant's name."
+          },
+          "6": {
+            "$value": "{primitive.color.creamYellow.600}",
+            "$description": "Use for the sixth participant's name."
+          }
+        },
+        "onMedia": {
+          "$value": "{primitive.color.white}",
+          "$description": "Use for text on background.media and background.fill.media, such as an image viewer's count. Light in both color schemes."
+        },
         "code": {
           "$description": "Syntax highlighting colors for source code on the secondary fill used by code snippets and inline code.",
           "$root": {
@@ -608,6 +692,37 @@
             "$value": "{semantic.color.text.onSecondaryFill.positive}",
             "$description": "Use for icons placed on secondary fills that communicate success, a favorable outcome, or positive confirmation."
           }
+        },
+        "onParticipantFill": {
+          "$description": "Use for a participant's name and icons on, or beside, the matching background.fill.participant step.",
+          "1": {
+            "$value": "{semantic.color.text.onParticipantFill.1}",
+            "$description": "Use for the first participant's icons, such as an agent mark beside the name."
+          },
+          "2": {
+            "$value": "{semantic.color.text.onParticipantFill.2}",
+            "$description": "Use for the second participant's icons, such as an agent mark beside the name."
+          },
+          "3": {
+            "$value": "{semantic.color.text.onParticipantFill.3}",
+            "$description": "Use for the third participant's icons, such as an agent mark beside the name."
+          },
+          "4": {
+            "$value": "{semantic.color.text.onParticipantFill.4}",
+            "$description": "Use for the fourth participant's icons, such as an agent mark beside the name."
+          },
+          "5": {
+            "$value": "{semantic.color.text.onParticipantFill.5}",
+            "$description": "Use for the fifth participant's icons, such as an agent mark beside the name."
+          },
+          "6": {
+            "$value": "{semantic.color.text.onParticipantFill.6}",
+            "$description": "Use for the sixth participant's icons, such as an agent mark beside the name."
+          }
+        },
+        "onMedia": {
+          "$value": "{semantic.color.text.onMedia}",
+          "$description": "Use for icons on background.media and background.fill.media, such as an image viewer's controls."
         },
         "checkbox": {
           "indicator": {

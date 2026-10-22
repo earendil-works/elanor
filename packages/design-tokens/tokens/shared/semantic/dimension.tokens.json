@@ -119,6 +119,10 @@
           "$value": "{primitive.dimension.1600}",
           "$description": "Use as the block size of the top navigation bar, including its bottom border and excluding any safe-area inset. Derive sticky offsets and scroll padding below the bar from it rather than repeating the value."
         },
+        "imageGrid": {
+          "$value": "{primitive.dimension.7200}",
+          "$description": "Component token for the inline size of an image grid, such as a message's pictures: one width whatever the number of images, so grids line up. Pair it with max-inline-size: 100%, so it shrinks to fit narrower space."
+        },
         "icon": {
           "$value": "{primitive.dimension.500}",
           "$description": "Use for the box of an icon in a control or row, including Material's margin around the glyph. Checkbox, radio, and switch indicators and brand logos keep their own sizes."
