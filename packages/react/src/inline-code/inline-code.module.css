@@ -1,16 +1,22 @@
 @layer elanor.components {
   .root {
-    padding-inline: var(--semantic-dimension-space-control-padding-inline-x-small);
-    border-radius: var(--semantic-dimension-radius-small);
-    background: var(--semantic-color-background-fill-secondary);
     color: var(--semantic-color-text-code);
-    font: var(--semantic-typography-code-primary);
+    font: inherit;
+    font-family: var(--semantic-font-family-code);
+    /* Monospace looks larger than text at the same size. */
+    font-size: 0.875em;
     /* Long identifiers break instead of widening narrow columns, such as in tables. */
     overflow-wrap: break-word;
   }
 
+  .root[data-variant='soft'] {
+    padding-inline: var(--semantic-dimension-space-control-padding-inline-x-small);
+    border-radius: var(--semantic-dimension-radius-small);
+    background: var(--semantic-color-background-fill-secondary);
+  }
+
   @media (forced-colors: active) {
-    .root {
+    .root[data-variant='soft'] {
       outline: var(--semantic-dimension-border-width-small) solid CanvasText;
     }
   }

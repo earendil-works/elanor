@@ -12,7 +12,13 @@ import {InlineCode} from '@earendil-works/elanor-react';
 <InlineCode>pnpm install</InlineCode>;
 ```
 
-Inline code uses `semantic.typography.code.primary` and `semantic.color.text.code` on the `semantic.color.background.fill.secondary` fill, like Code snippet. Long identifiers wrap instead of widening narrow columns.
+Inline code uses `semantic.fontFamily.code` and `semantic.color.text.code` at 0.875em of the surrounding text. The default `soft` variant adds a `semantic.color.background.fill.secondary` fill. Long identifiers wrap.
+
+## Plain
+
+Use `variant="plain"` in headings, tables, and dense text.
+
+<Demo example="./examples/plain.tsx" />
 
 ## Program output
 

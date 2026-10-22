@@ -236,7 +236,7 @@ export {Image} from './image/image.tsx';
 export type {ImageProps} from './image/image.tsx';
 
 export {InlineCode} from './inline-code/inline-code.tsx';
-export type {InlineCodeProps} from './inline-code/inline-code.tsx';
+export type {InlineCodeProps, InlineCodeVariant} from './inline-code/inline-code.tsx';
 
 export {Input} from './input/input.tsx';
 export type {
