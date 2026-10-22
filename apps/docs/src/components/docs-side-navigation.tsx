@@ -38,7 +38,6 @@ export function DocsSideNavigation({
               <SideNavigation.Item key={link.href}>
                 <SideNavigation.Link
                   href={link.href}
-                  data-astro-reload={link.href.startsWith('/auth/') || undefined}
                   active={link.href === current}
                   onClick={onNavigate}
                 >

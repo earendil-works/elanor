@@ -16,12 +16,11 @@ interface Props {
   current: string;
   /** Pages with their own layout, such as grids, use the full content width. */
   wide?: boolean;
-  audience?: 'internal' | 'public';
   /** Markdown version of the page, advertised to agents in the head. */
   markdown?: string;
 }
 
-const {title, current, wide = false, audience = 'internal', markdown} = Astro.props;
+const {title, current, wide = false, markdown} = Astro.props;
 // The Layout demo supplies the page's single main landmark.
 const ContentTag = current === '/components/layout/' ? 'div' : 'main';
 const widePreview = [
@@ -30,23 +29,21 @@ const widePreview = [
   '/components/container/',
   '/components/sidebar/',
 ].includes(current);
-const entries = audience === 'internal' ? await getCollection('components') : [];
+const entries = await getCollection('components');
 
 const sections: DocsNavigationSection[] = [
   {
     label: 'Brand',
     links: [{href: '/brand/', label: 'Logos'}],
   },
-  ...(audience === 'internal' ? [
-    {label: 'Foundations', links: [{href: '/icons/', label: 'Icons'}]},
-    {
-      label: 'Components',
-      links: entries
-        .map((entry) => entry.id)
-        .sort()
-        .map((id) => ({href: `/components/${id}/`, label: componentName(id)})),
-    },
-  ] : [{label: 'Account', links: [{href: '/auth/login?next=%2Fbrand%2F', label: 'Sign in'}]}]),
+  {label: 'Foundations', links: [{href: '/icons/', label: 'Icons'}]},
+  {
+    label: 'Components',
+    links: entries
+      .map((entry) => entry.id)
+      .sort()
+      .map((id) => ({href: `/components/${id}/`, label: componentName(id)})),
+  },
 ];
 ---
 

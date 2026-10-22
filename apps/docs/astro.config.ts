@@ -9,7 +9,6 @@ import {defineConfig} from 'astro/config';
 
 import {demos} from './plugins/demos.ts';
 import {iconImports} from './plugins/icon-imports.ts';
-import {publicAssets} from './plugins/public-assets.ts';
 
 // Code blocks in MDX use the token-based theme, like the demo sources.
 const markdown = {shikiConfig: {theme: elanorTheme}};
@@ -38,7 +37,6 @@ export default defineConfig({
         filesToDeleteAfterUpload: ['./dist/**/*.map'],
       },
     }),
-    publicAssets(),
   ],
   vite: {
     plugins: [demos(), iconImports()],

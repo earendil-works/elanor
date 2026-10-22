@@ -1,6 +1,5 @@
 import {ArrowForwardIcon} from '@earendil-works/elanor-icons-boiled-react';
 import {
-  Button,
   Container,
   Layout,
   Link,
@@ -33,10 +32,7 @@ const destinations = [
   },
 ] as const;
 
-export function DocsHome({signedIn}: {readonly signedIn: boolean}) {
-  const visibleDestinations = signedIn
-    ? destinations
-    : destinations.filter((destination) => destination.id === 'brand');
+export function DocsHome() {
   return (
     <Layout.Root className={styles.home}>
       <Link href="#main" className={styles.skipLink}>
@@ -48,17 +44,6 @@ export function DocsHome({signedIn}: {readonly signedIn: boolean}) {
             <Link href="/" aria-label="Elanor home" className={styles.identity}>
               Elanor
             </Link>
-            {signedIn ? (
-              <form method="post" action="/auth/logout" data-astro-reload>
-                <Button type="submit" hierarchy="tertiary" className={styles.signOut}>
-                  Sign out
-                </Button>
-              </form>
-            ) : (
-              <Link href="/auth/login" data-astro-reload>
-                Sign in
-              </Link>
-            )}
           </Stack>
         </Container>
       </Layout.Header>
@@ -68,14 +53,12 @@ export function DocsHome({signedIn}: {readonly signedIn: boolean}) {
             <PageHeader.Root>
               <PageHeader.Title level={1}>Design system</PageHeader.Title>
               <PageHeader.Description className={styles.description}>
-                {signedIn
-                  ? 'Components and resources for Earendil products.'
-                  : 'Logos and brand guidelines for Earendil products.'}
+                Components and resources for Earendil products.
               </PageHeader.Description>
             </PageHeader.Root>
             <nav aria-label="Design system resources">
               <ul className={styles.destinations}>
-                {visibleDestinations.map((destination, index) => (
+                {destinations.map((destination, index) => (
                   <li key={destination.id}>
                     <Link
                       href={destination.href}
@@ -101,9 +84,7 @@ export function DocsHome({signedIn}: {readonly signedIn: boolean}) {
                       </Stack>
                       <ArrowForwardIcon aria-hidden="true" className={styles.arrow} />
                     </Link>
-                    {index < visibleDestinations.length - 1 ? (
-                      <Separator aria-hidden="true" />
-                    ) : null}
+                    {index < destinations.length - 1 ? <Separator aria-hidden="true" /> : null}
                   </li>
                 ))}
               </ul>

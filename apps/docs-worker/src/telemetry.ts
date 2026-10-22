@@ -1,8 +1,6 @@
 import type {CloudflareOptions} from '@sentry/hono/cloudflare';
 
-import type {Bindings} from './auth.js';
-
-export function sentryOptions(env: Bindings): CloudflareOptions {
+export function sentryOptions(env: WorkerEnv): CloudflareOptions {
   return {
     dsn: env.SENTRY_DSN,
     enabled: Boolean(env.SENTRY_DSN),

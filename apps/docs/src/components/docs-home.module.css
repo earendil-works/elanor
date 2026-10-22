@@ -88,12 +88,6 @@
     clip-path: inset(50%);
   }
 
-  @media (pointer: coarse) {
-    .signOut {
-      min-block-size: var(--semantic-dimension-size-x-large);
-    }
-  }
-
   @media (min-width: 48rem /* token: semantic.dimension.breakpoint.small */) {
     .main {
       padding-block: calc(var(--semantic-dimension-space-padding-xxxx-large) * 2);
