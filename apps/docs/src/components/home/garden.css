@@ -1,674 +1,689 @@
 /* stylelint-disable design-tokens/no-hardcoded-token-values, design-tokens/no-non-token-custom-properties -- Artwork colors, geometry, and timings are not UI tokens. Local properties hold per-courier values set by the markup and the garden scripts. */
 
-/* Elanor's canvas colors; the docs load the Radius tokens. */
-.garden-page {
-  /* Couriers start off-screen; `clip` avoids a scroll container. */
-  overflow: clip;
-  background: #ebe7e4;
-}
-
-/* A fading overlay, because Chrome can flash the start color at the end of a background-color transition. */
-.garden-page::before {
-  position: fixed;
-  inset: 0;
-  z-index: -1;
-  background: #141a17;
-  content: '';
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 1.3s ease;
-}
-
-:root[data-color-scheme='dark'] .garden-page::before {
-  opacity: 1;
-}
-
-/* Same timing as the overlay, so text keeps its contrast mid-switch. */
-.garden-page > header :is(a, button),
-.garden-page > [data-replay-intro] {
-  transition: color 1.3s ease;
-}
-
-.garden {
-  --paper: #f1e9d2;
-  --paper-ink: #655d43;
-  --paper-active: #a67c34;
-  --paper-focus: #8b8d63;
-  --thread: #9a8352;
-
-  position: relative;
-  inline-size: min(720px, calc(100svh - 175px), 100%);
-  aspect-ratio: 1;
-  isolation: isolate;
-  container-type: inline-size;
-}
-
-:root[data-color-scheme='dark'] .garden {
-  --paper: #343c30;
-  --paper-ink: #d5d8b9;
-  --paper-active: #ebcb88;
-  --paper-focus: #c6b679;
-  --thread: #bdb48c;
-}
-
-.flower-art {
-  position: absolute;
-  inset-inline-start: 14%;
-  inset-block-start: 12%;
-  inline-size: 72%;
-  aspect-ratio: 1;
-}
-
-.flower-reference,
-.flower-bleed {
-  position: absolute;
-  inset: 0;
-  display: block;
-  inline-size: 100%;
-  block-size: 100%;
-  pointer-events: none;
-  user-select: none;
-  transition: filter 1.8s ease;
-}
-
-:root[data-color-scheme='dark'] :is(.flower-reference, .flower-bleed) {
-  filter: brightness(0.86) saturate(0.62) contrast(0.98);
-}
-
-/* Warm halo; the gradient fades out before the box edge. */
-.flower-art::before {
-  position: absolute;
-  inset-inline-start: 52%;
-  inset-block-start: 58%;
-  inline-size: 138%;
-  block-size: 138%;
-  translate: -50% -50%;
-  background: radial-gradient(
-    ellipse 46% 44% at center,
-    #efba5724 0%,
-    #e2ab4914 38%,
-    #d5983606 68%,
-    #d5983600 100%
-  );
-  content: '';
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 1.8s ease;
-}
-
-:root[data-color-scheme='dark'] .flower-art::before {
-  opacity: 1;
-}
-
-.flower-aura {
-  position: absolute;
-  inset: 0;
-  inline-size: 100%;
-  block-size: 100%;
-  filter: blur(22px) saturate(0.85) brightness(1.1);
-  opacity: 0;
-  pointer-events: none;
-  user-select: none;
-  transition: opacity 1.7s ease;
-}
-
-:root[data-color-scheme='dark'] .flower-aura {
-  opacity: 0.18;
-}
-
-.center-light {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(ellipse at 52% 59%, #ffe4ad2e 0%, #efbe6412 14%, transparent 29%);
-  mix-blend-mode: screen;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 2s ease;
-}
-
-:root[data-color-scheme='dark'] .center-light {
-  opacity: 0.8;
-}
-
-.pollen-canvas {
-  position: absolute;
-  inset-inline-start: -12%;
-  inset-block-start: -12%;
-  inline-size: 124%;
-  block-size: 124%;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 1.6s ease;
-}
-
-.pollen-ready .pollen-canvas {
-  opacity: 1;
-}
-
-/* `.intro` is set by the head script in home-garden.astro. */
-.intro .flower-reference,
-.intro:not(.intro-settling) :is(.flower-aura, .center-light, .pollen-canvas) {
-  opacity: 0 !important;
-}
-
-.intro:not(.intro-settling) .flower-art::before {
-  opacity: 0 !important;
-}
-
-.intro:not(.couriers-launched) .courier {
-  opacity: 0;
-}
-
-/* Placeholder while a slow connection loads the painting. */
-.flower-damp {
-  position: absolute;
-  inset: -8%;
-  display: none;
-  background: radial-gradient(
-    ellipse 30% 27% at 52% 58%,
-    #dcc08a3d 0%,
-    #e3cc9a24 42%,
-    #e9d6a800 72%
-  );
-  filter: blur(8px);
-  opacity: 0;
-  pointer-events: none;
-}
-
-:root[data-color-scheme='dark'] .flower-damp {
-  background: radial-gradient(
-    ellipse 30% 27% at 52% 58%,
-    #f0c56a24 0%,
-    #e2ab4912 42%,
-    #d5983600 72%
-  );
-}
-
-.intro .flower-damp {
-  display: block;
-  animation:
-    damp-in 1.6s ease 0.35s forwards,
-    damp-breathe 3.4s ease-in-out 1.95s infinite alternate;
-}
-
-/* The link is a fixed hit area; the insect moves inside it. */
-.courier {
-  --paper-height: 32px;
-  --insect-size: clamp(32px, 8.5cqw, 64px);
-
-  position: absolute;
-  z-index: 3;
-  inline-size: 142px;
-  block-size: 94px;
-  /* `transform`, not `translate`: the arrival animates the independent `translate` property. */
-  transform: translate(-50%, -50%);
-  color: inherit;
-  text-decoration: none;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.courier:focus-visible {
-  border-radius: 21px;
-  outline: 1px dashed var(--paper-focus);
-  outline-offset: 0;
-}
-
-.courier[data-courier='0'] {
-  inset-inline-start: 50%;
-  inset-block-start: 6%;
-}
-
-.courier[data-courier='1'] {
-  inset-inline-start: 91%;
-  inset-block-start: 34%;
-}
-
-.courier[data-courier='2'] {
-  inset-inline-start: 77%;
-  inset-block-start: 91%;
-}
-
-.courier[data-courier='3'] {
-  inset-inline-start: 32%;
-  inset-block-start: 91%;
-}
-
-.courier[data-courier='4'] {
-  inset-inline-start: 8%;
-  inset-block-start: 34%;
-}
-
-.courier-flight {
-  position: absolute;
-  inset: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  align-items: center;
-  padding-block-end: 7px;
-  transform-origin: 50% 28px;
-  animation: bee-flight var(--flight-time) ease-in-out var(--flight-delay) infinite;
-}
-
-:root[data-color-scheme='dark'] .courier-flight {
-  animation-name: firefly-flight;
-  animation-duration: calc(var(--flight-time) * 1.45);
-}
-
-.insect-rig {
-  position: absolute;
-  inset-block-end: calc(var(--paper-height) + 25px - var(--insect-size) * 0.13);
-  inset-inline-start: 50%;
-  z-index: 1;
-  inline-size: var(--insect-size);
-  block-size: calc(var(--insect-size) * 0.75);
-  transform: translateX(-50%) scaleX(var(--heading));
-  pointer-events: none;
-  animation: flight-attitude var(--flight-time) ease-in-out var(--flight-delay) infinite;
-}
-
-.bee,
-.firefly {
-  position: absolute;
-  inset: 0;
-  display: block;
-  inline-size: 100%;
-  block-size: 100%;
-  overflow: visible;
-  transition:
-    opacity 1.1s ease,
-    filter 1.4s ease;
-}
-
-.bee {
-  filter: drop-shadow(0 2px 1px #655a2d16);
-}
-
-.firefly,
-:root[data-color-scheme='dark'] .bee {
-  opacity: 0;
-}
-
-:root[data-color-scheme='dark'] .firefly {
-  opacity: 1;
-}
-
-.wing {
-  transform-box: view-box;
-  transform-origin: 115px 63px;
-  pointer-events: none;
-  animation: wing-stroke 0.055s ease-in-out infinite alternate;
-}
-
-.wing-far {
-  opacity: 0.55;
-  animation-delay: -0.055s;
-  animation-direction: alternate-reverse;
-}
-
-.wing-near {
-  opacity: 0.8;
-}
-
-.wing-wash {
-  filter: blur(0.65px);
-  opacity: 0.15;
-}
-
-.firefly .wing {
-  transform-origin: 117px 69px;
-  animation-duration: 0.085s;
-}
-
-.in-flight .wing {
-  animation-duration: 0.034s;
-}
-
-.in-flight .firefly .wing {
-  animation-duration: 0.05s;
-}
-
-.firefly-halo,
-.firefly-lantern {
-  transform-box: fill-box;
-  transform-origin: center;
-  animation: lantern-breathe 3.6s ease-in-out var(--pulse-delay) infinite;
-}
-
-.firefly-halo {
-  opacity: 0.7;
-}
-
-.firefly-lantern {
-  filter: drop-shadow(0 0 7px #d8ec8ec2);
-}
-
-.paper-threads {
-  position: absolute;
-  inset: 0;
-  inline-size: 100%;
-  block-size: 100%;
-  overflow: visible;
-  color: var(--thread);
-  pointer-events: none;
-  transition: color 1.2s;
-}
-
-.paper-thread {
-  fill: currentcolor;
-  opacity: 0.78;
-  transition: opacity 1.2s;
-}
-
-:root[data-color-scheme='dark'] .paper-thread {
-  opacity: 0.72;
-}
-
-/* Zero-size points measured by tethers.ts. */
-.grip-anchor,
-.thread-frame,
-.paper-anchor {
-  position: absolute;
-  inline-size: 0;
-  block-size: 0;
-  pointer-events: none;
-}
-
-.frame-origin {
-  inset-inline-start: 0;
-  inset-block-start: 0;
-}
-
-.frame-x {
-  inset-inline-start: 100%;
-  inset-block-start: 0;
-}
-
-.frame-y {
-  inset-inline-start: 0;
-  inset-block-start: 100%;
-}
-
-.paper-anchor {
-  inset-block-start: 2px;
-}
-
-.paper-anchor-start {
-  inset-inline-start: 7px;
-}
-
-.paper-anchor-end {
-  inset-inline-end: 7px;
-}
-
-.paper-wrap {
-  position: relative;
-  z-index: 1;
-  display: block;
-  transform: rotate(var(--paper-tilt));
-  transform-origin: 50% -20px;
-  filter: drop-shadow(0 3px 3px #57533012);
-  animation: paper-sway 5.7s ease-in-out var(--flight-delay) infinite;
-}
-
-.paper {
-  position: relative;
-  display: block;
-  min-inline-size: 73px;
-  padding: 8px 13px 9px;
-  background-color: var(--paper);
-  background-image:
-    repeating-linear-gradient(96deg, #8e784c05 0 1px, transparent 1px 4px),
-    linear-gradient(12deg, #a08d5320, transparent 50%, #fff6d426);
-  clip-path: polygon(
-    1% 5%,
-    16% 2%,
-    31% 5%,
-    51% 1%,
-    72% 4%,
-    98% 0%,
-    99% 30%,
-    98% 67%,
-    100% 95%,
-    79% 98%,
-    59% 94%,
-    36% 100%,
-    16% 96%,
-    0% 99%,
-    1% 65%,
-    0% 33%
-  );
-  color: var(--paper-ink);
-  font-family: var(--semantic-font-family-prose);
-  font-size: 14px;
-  line-height: 1.1;
-  text-align: center;
-  white-space: nowrap;
-  transition: color var(--semantic-transition-feedback);
-}
-
-.courier:is(:hover, :focus-visible, .active) :is(.courier-flight, .paper-wrap, .insect-rig) {
-  animation-play-state: paused;
-}
-
-.courier:is(:hover, :focus-visible, .active) .paper {
-  color: var(--paper-active);
-}
-
-.garden.is-paused * {
-  animation-play-state: paused !important;
-}
-
-@keyframes damp-in {
-  to {
-    opacity: 1;
-  }
-}
-
-@keyframes damp-breathe {
-  to {
-    scale: 1.06;
-  }
-}
-
-@keyframes bee-flight {
-  0%,
-  100% {
-    transform: translate(-3px, 2px) rotate(-2deg);
+@layer components {
+  /* Elanor's canvas colors, both at once: the night overlay fades over the day canvas. */
+  .garden-page {
+    --paper-focus: #8b8d63;
+
+    /* Couriers start off-screen; `clip` avoids a scroll container. */
+    overflow: clip;
+    background: var(--primitive-color-moonstone);
   }
 
-  27% {
-    transform: translate(5px, -6px) rotate(2deg);
+  :root[data-color-scheme='dark'] .garden-page {
+    --paper-focus: #c6b679;
   }
 
-  58% {
-    transform: translate(8px, 1px) rotate(-1deg);
+  /* A fading overlay, because Chrome can flash the start color at the end of a background-color transition. */
+  .garden-page::before {
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: var(--primitive-color-night);
+    content: '';
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.3s ease;
   }
 
-  79% {
-    transform: translate(-5px, -3px) rotate(1.5deg);
-  }
-}
-
-@keyframes firefly-flight {
-  0%,
-  100% {
-    transform: translate(-5px, 3px) rotate(-3deg);
-  }
-
-  22% {
-    transform: translate(8px, -9px) rotate(4deg);
-  }
-
-  51% {
-    transform: translate(12px, 3px) rotate(-2deg);
-  }
-
-  76% {
-    transform: translate(-8px, -6px) rotate(2deg);
-  }
-}
-
-@keyframes flight-attitude {
-  0%,
-  100% {
-    transform: translateX(-50%) scaleX(var(--heading)) rotate(-2deg);
-  }
-
-  35% {
-    transform: translateX(-50%) scaleX(var(--heading)) rotate(3deg);
-  }
-
-  72% {
-    transform: translateX(-50%) scaleX(var(--heading)) rotate(-4deg);
-  }
-}
-
-@keyframes paper-sway {
-  0%,
-  100% {
-    transform: rotate(var(--paper-tilt));
-  }
-
-  35% {
-    transform: rotate(calc(var(--paper-tilt) + 2.5deg));
-  }
-
-  72% {
-    transform: rotate(calc(var(--paper-tilt) - 2deg));
-  }
-}
-
-@keyframes wing-stroke {
-  from {
-    transform: rotate(-7deg) scaleY(0.4);
-  }
-
-  to {
-    transform: rotate(6deg) scaleY(1);
-  }
-}
-
-@keyframes lantern-breathe {
-  0%,
-  100% {
-    opacity: 0.48;
-  }
-
-  43% {
+  :root[data-color-scheme='dark'] .garden-page::before {
     opacity: 1;
   }
 
-  72% {
-    opacity: 0.68;
+  /* Same timing as the overlay, so text keeps its contrast mid-switch. */
+  .garden-page > header :is(a, button) {
+    transition: color 1.3s ease;
   }
-}
 
-@media (min-width: 1700px) {
+  /* The couriers' focus ring, for the header too. */
+  .garden-page > header :is(a, button):focus-visible {
+    outline: var(--semantic-dimension-border-width-small) dashed var(--paper-focus);
+    outline-offset: 0;
+  }
+
   .garden {
-    inline-size: min(850px, calc(100svh - 175px), 100%);
-  }
-}
+    --paper: #f1e9d2;
+    --paper-ink: #655d43;
+    --paper-active: #a67c34;
+    --thread: #9a8352;
 
-@media (max-width: 700px) {
-  .garden {
-    inline-size: min(590px, 100%);
+    position: relative;
+    inline-size: min(720px, calc(100svh - 175px), 100%);
+    aspect-ratio: 1;
+    isolation: isolate;
+    container-type: inline-size;
   }
 
+  :root[data-color-scheme='dark'] .garden {
+    --paper: #343c30;
+    --paper-ink: #d5d8b9;
+    --paper-active: #ebcb88;
+    --thread: #bdb48c;
+  }
+
+  .flower-art {
+    position: absolute;
+    inset-inline-start: 14%;
+    inset-block-start: 12%;
+    inline-size: 72%;
+    aspect-ratio: 1;
+  }
+
+  .flower-reference,
+  .flower-bleed {
+    position: absolute;
+    inset: 0;
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    pointer-events: none;
+    user-select: none;
+    transition: filter 1.8s ease;
+  }
+
+  :root[data-color-scheme='dark'] :is(.flower-reference, .flower-bleed) {
+    filter: brightness(0.86) saturate(0.62) contrast(0.98);
+  }
+
+  /* Warm halo; the gradient fades out before the box edge. */
+  .flower-art::before {
+    position: absolute;
+    inset-inline-start: 52%;
+    inset-block-start: 58%;
+    inline-size: 138%;
+    block-size: 138%;
+    translate: -50% -50%;
+    background: radial-gradient(
+      ellipse 46% 44% at center,
+      #efba5724 0%,
+      #e2ab4914 38%,
+      #d5983606 68%,
+      #d5983600 100%
+    );
+    content: '';
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.8s ease;
+  }
+
+  :root[data-color-scheme='dark'] .flower-art::before {
+    opacity: 1;
+  }
+
+  .flower-aura {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    filter: blur(22px) saturate(0.85) brightness(1.1);
+    opacity: 0;
+    pointer-events: none;
+    user-select: none;
+    transition: opacity 1.7s ease;
+  }
+
+  :root[data-color-scheme='dark'] .flower-aura {
+    opacity: 0.18;
+  }
+
+  .center-light {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 52% 59%, #ffe4ad2e 0%, #efbe6412 14%, transparent 29%);
+    mix-blend-mode: screen;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 2s ease;
+  }
+
+  :root[data-color-scheme='dark'] .center-light {
+    opacity: 0.8;
+  }
+
+  .pollen-canvas {
+    position: absolute;
+    inset-inline-start: -12%;
+    inset-block-start: -12%;
+    inline-size: 124%;
+    block-size: 124%;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 1.6s ease;
+  }
+
+  .pollen-ready .pollen-canvas {
+    opacity: 1;
+  }
+
+  /* `.intro` is set by the head script in home-garden.astro. */
+  .intro .flower-reference,
+  .intro:not(.intro-settling) :is(.flower-aura, .center-light, .pollen-canvas) {
+    opacity: 0;
+  }
+
+  .intro:not(.intro-settling) .flower-art::before {
+    opacity: 0;
+  }
+
+  .intro:not(.couriers-launched) .courier {
+    opacity: 0;
+  }
+
+  /* Placeholder while a slow connection loads the painting. */
+  .flower-damp {
+    position: absolute;
+    inset: -8%;
+    display: none;
+    background: radial-gradient(
+      ellipse 30% 27% at 52% 58%,
+      #dcc08a3d 0%,
+      #e3cc9a24 42%,
+      #e9d6a800 72%
+    );
+    filter: blur(8px);
+    opacity: 0;
+    pointer-events: none;
+  }
+
+  :root[data-color-scheme='dark'] .flower-damp {
+    background: radial-gradient(
+      ellipse 30% 27% at 52% 58%,
+      #f0c56a24 0%,
+      #e2ab4912 42%,
+      #d5983600 72%
+    );
+  }
+
+  .intro .flower-damp {
+    display: block;
+    animation:
+      damp-in 1.6s ease 0.35s forwards,
+      damp-breathe 3.4s ease-in-out 1.95s infinite alternate;
+  }
+
+  /* The link is a fixed hit area; the insect moves inside it. */
   .courier {
-    --paper-height: 29px;
+    --paper-height: 32px;
+    --insect-size: clamp(32px, 8.5cqw, 64px);
 
-    inline-size: 108px;
-    block-size: 86px;
+    position: absolute;
+    z-index: 3;
+    inline-size: 142px;
+    block-size: 94px;
+    /* `transform`, not `translate`: the arrival animates the independent `translate` property. */
+    transform: translate(-50%, -50%);
+    color: inherit;
+    text-decoration: none;
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
   }
 
-  .paper {
-    min-inline-size: 65px;
-    padding: 7px 10px 8px;
-    font-size: 12.5px;
+  .courier:focus-visible {
+    border-radius: 21px;
+    outline: var(--semantic-dimension-border-width-small) dashed var(--paper-focus);
+    outline-offset: 0;
   }
 
   .courier[data-courier='0'] {
-    inset-block-start: 0%;
+    inset-inline-start: 50%;
+    inset-block-start: 6%;
   }
 
   .courier[data-courier='1'] {
-    inset-inline-start: 80%;
-    inset-block-start: 17%;
+    inset-inline-start: 91%;
+    inset-block-start: 34%;
   }
 
   .courier[data-courier='2'] {
-    inset-inline-start: 79%;
-    inset-block-start: 88%;
+    inset-inline-start: 77%;
+    inset-block-start: 91%;
   }
 
   .courier[data-courier='3'] {
     inset-inline-start: 32%;
-    inset-block-start: 90%;
+    inset-block-start: 91%;
   }
 
   .courier[data-courier='4'] {
-    inset-inline-start: 17%;
-    inset-block-start: 17%;
-  }
-}
-
-@media (min-width: 501px) and (max-width: 700px) {
-  .courier[data-courier='1'] {
-    inset-inline-start: 88%;
-    inset-block-start: 26%;
+    inset-inline-start: 8%;
+    inset-block-start: 34%;
   }
 
-  .courier[data-courier='4'] {
-    inset-inline-start: 12%;
-    inset-block-start: 26%;
-  }
-}
-
-@media (max-height: 600px) and (min-width: 701px) {
-  .garden {
-    inline-size: min(500px, calc(100svh - 110px));
-  }
-
-  .courier {
-    inline-size: 124px;
-    block-size: 82px;
+  .courier-flight {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: center;
+    padding-block-end: 7px;
+    transform-origin: 50% 28px;
+    animation: bee-flight var(--flight-time) ease-in-out var(--flight-delay) infinite;
   }
 
-  .courier[data-courier='0'] {
-    inset-block-start: 3%;
+  :root[data-color-scheme='dark'] .courier-flight {
+    animation-name: firefly-flight;
+    animation-duration: calc(var(--flight-time) * 1.45);
   }
 
-  .paper {
-    font-size: 12.5px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .garden-page::before,
-  .garden-page > header :is(a, button),
-  .garden-page > [data-replay-intro],
-  .garden *,
-  .garden *::before,
-  .garden *::after {
-    transition: none !important;
-    animation: none !important;
+  .insect-rig {
+    position: absolute;
+    inset-block-end: calc(var(--paper-height) + 25px - var(--insect-size) * 0.13);
+    inset-inline-start: 50%;
+    z-index: 1;
+    inline-size: var(--insect-size);
+    block-size: calc(var(--insect-size) * 0.75);
+    transform: translateX(-50%) scaleX(var(--heading));
+    pointer-events: none;
+    animation: flight-attitude var(--flight-time) ease-in-out var(--flight-delay) infinite;
   }
 
-  .wing {
-    transform: scaleY(0.8);
+  .bee,
+  .firefly {
+    position: absolute;
+    inset: 0;
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+    overflow: visible;
+    transition:
+      opacity 1.1s ease,
+      filter 1.4s ease;
   }
 
-  .firefly-halo {
-    opacity: 0.2;
+  .bee {
+    filter: drop-shadow(0 2px 1px #655a2d16);
   }
 
-  .firefly-lantern {
+  .firefly,
+  :root[data-color-scheme='dark'] .bee {
+    opacity: 0;
+  }
+
+  :root[data-color-scheme='dark'] .firefly {
     opacity: 1;
   }
 
-  .thread-glint {
-    display: none;
+  .wing {
+    transform-box: view-box;
+    transform-origin: 115px 63px;
+    pointer-events: none;
+    animation: wing-stroke 0.055s ease-in-out infinite alternate;
+  }
+
+  .wing-far {
+    opacity: 0.55;
+    animation-delay: -0.055s;
+    animation-direction: alternate-reverse;
+  }
+
+  .wing-near {
+    opacity: 0.8;
+  }
+
+  .wing-wash {
+    filter: blur(0.65px);
+    opacity: 0.15;
+  }
+
+  .firefly .wing {
+    transform-origin: 117px 69px;
+    animation-duration: 0.085s;
+  }
+
+  .in-flight .wing {
+    animation-duration: 0.034s;
+  }
+
+  .in-flight .firefly .wing {
+    animation-duration: 0.05s;
+  }
+
+  .firefly-halo,
+  .firefly-lantern {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: lantern-breathe 3.6s ease-in-out var(--pulse-delay) infinite;
+  }
+
+  .firefly-halo {
+    opacity: 0.7;
+  }
+
+  .firefly-lantern {
+    filter: drop-shadow(0 0 7px #d8ec8ec2);
+  }
+
+  .paper-threads {
+    position: absolute;
+    inset: 0;
+    inline-size: 100%;
+    block-size: 100%;
+    overflow: visible;
+    color: var(--thread);
+    pointer-events: none;
+    transition: color 1.2s;
+  }
+
+  .paper-thread {
+    fill: currentcolor;
+    opacity: 0.78;
+    transition: opacity 1.2s;
+  }
+
+  :root[data-color-scheme='dark'] .paper-thread {
+    opacity: 0.72;
+  }
+
+  /* Zero-size points measured by tethers.ts. */
+  .grip-anchor,
+  .thread-frame,
+  .paper-anchor {
+    position: absolute;
+    inline-size: 0;
+    block-size: 0;
+    pointer-events: none;
+  }
+
+  .frame-origin {
+    inset-inline-start: 0;
+    inset-block-start: 0;
+  }
+
+  .frame-x {
+    inset-inline-start: 100%;
+    inset-block-start: 0;
+  }
+
+  .frame-y {
+    inset-inline-start: 0;
+    inset-block-start: 100%;
+  }
+
+  .paper-anchor {
+    inset-block-start: 2px;
+  }
+
+  .paper-anchor-start {
+    inset-inline-start: 7px;
+  }
+
+  .paper-anchor-end {
+    inset-inline-end: 7px;
+  }
+
+  .paper-wrap {
+    position: relative;
+    z-index: 1;
+    display: block;
+    transform: rotate(var(--paper-tilt));
+    transform-origin: 50% -20px;
+    filter: drop-shadow(0 3px 3px #57533012);
+    animation: paper-sway 5.7s ease-in-out var(--flight-delay) infinite;
+  }
+
+  .paper {
+    position: relative;
+    display: block;
+    min-inline-size: 73px;
+    padding: 8px 13px 9px;
+    background-color: var(--paper);
+    background-image:
+      repeating-linear-gradient(96deg, #8e784c05 0 1px, transparent 1px 4px),
+      linear-gradient(12deg, #a08d5320, transparent 50%, #fff6d426);
+    clip-path: polygon(
+      1% 5%,
+      16% 2%,
+      31% 5%,
+      51% 1%,
+      72% 4%,
+      98% 0%,
+      99% 30%,
+      98% 67%,
+      100% 95%,
+      79% 98%,
+      59% 94%,
+      36% 100%,
+      16% 96%,
+      0% 99%,
+      1% 65%,
+      0% 33%
+    );
+    color: var(--paper-ink);
+    font-family: var(--semantic-font-family-prose);
+    font-size: 14px;
+    line-height: 1.1;
+    text-align: center;
+    white-space: nowrap;
+    transition: color var(--semantic-transition-feedback);
+  }
+
+  .courier:is(:hover, :focus-visible, .active) :is(.courier-flight, .paper-wrap, .insect-rig) {
+    animation-play-state: paused;
+  }
+
+  .courier:is(:hover, :focus-visible, .active) .paper {
+    color: var(--paper-active);
+  }
+
+  @keyframes damp-in {
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes damp-breathe {
+    to {
+      scale: 1.06;
+    }
+  }
+
+  @keyframes bee-flight {
+    0%,
+    100% {
+      transform: translate(-3px, 2px) rotate(-2deg);
+    }
+
+    27% {
+      transform: translate(5px, -6px) rotate(2deg);
+    }
+
+    58% {
+      transform: translate(8px, 1px) rotate(-1deg);
+    }
+
+    79% {
+      transform: translate(-5px, -3px) rotate(1.5deg);
+    }
+  }
+
+  @keyframes firefly-flight {
+    0%,
+    100% {
+      transform: translate(-5px, 3px) rotate(-3deg);
+    }
+
+    22% {
+      transform: translate(8px, -9px) rotate(4deg);
+    }
+
+    51% {
+      transform: translate(12px, 3px) rotate(-2deg);
+    }
+
+    76% {
+      transform: translate(-8px, -6px) rotate(2deg);
+    }
+  }
+
+  @keyframes flight-attitude {
+    0%,
+    100% {
+      transform: translateX(-50%) scaleX(var(--heading)) rotate(-2deg);
+    }
+
+    35% {
+      transform: translateX(-50%) scaleX(var(--heading)) rotate(3deg);
+    }
+
+    72% {
+      transform: translateX(-50%) scaleX(var(--heading)) rotate(-4deg);
+    }
+  }
+
+  @keyframes paper-sway {
+    0%,
+    100% {
+      transform: rotate(var(--paper-tilt));
+    }
+
+    35% {
+      transform: rotate(calc(var(--paper-tilt) + 2.5deg));
+    }
+
+    72% {
+      transform: rotate(calc(var(--paper-tilt) - 2deg));
+    }
+  }
+
+  @keyframes wing-stroke {
+    from {
+      transform: rotate(-7deg) scaleY(0.4);
+    }
+
+    to {
+      transform: rotate(6deg) scaleY(1);
+    }
+  }
+
+  @keyframes lantern-breathe {
+    0%,
+    100% {
+      opacity: 0.48;
+    }
+
+    43% {
+      opacity: 1;
+    }
+
+    72% {
+      opacity: 0.68;
+    }
+  }
+
+  @media (width >= 1700px) {
+    .garden {
+      inline-size: min(850px, calc(100svh - 175px), 100%);
+    }
+  }
+
+  @media (width <= 700px) {
+    .garden {
+      inline-size: min(590px, 100%);
+    }
+
+    .courier {
+      --paper-height: 29px;
+
+      inline-size: 108px;
+      block-size: 86px;
+    }
+
+    .paper {
+      min-inline-size: 65px;
+      padding: 7px 10px 8px;
+      font-size: 12.5px;
+    }
+
+    .courier[data-courier='0'] {
+      inset-block-start: 0%;
+    }
+
+    .courier[data-courier='1'] {
+      inset-inline-start: 80%;
+      inset-block-start: 17%;
+    }
+
+    .courier[data-courier='2'] {
+      inset-inline-start: 79%;
+      inset-block-start: 88%;
+    }
+
+    .courier[data-courier='3'] {
+      inset-inline-start: 32%;
+      inset-block-start: 90%;
+    }
+
+    .courier[data-courier='4'] {
+      inset-inline-start: 17%;
+      inset-block-start: 17%;
+    }
+  }
+
+  @media (width >= 501px) and (width <= 700px) {
+    .courier[data-courier='1'] {
+      inset-inline-start: 88%;
+      inset-block-start: 26%;
+    }
+
+    .courier[data-courier='4'] {
+      inset-inline-start: 12%;
+      inset-block-start: 26%;
+    }
+  }
+
+  @media (height <= 600px) and (width >= 701px) {
+    .garden {
+      inline-size: min(500px, calc(100svh - 110px));
+    }
+
+    .courier {
+      inline-size: 124px;
+      block-size: 82px;
+    }
+
+    .courier[data-courier='0'] {
+      inset-block-start: 3%;
+    }
+
+    .paper {
+      font-size: 12.5px;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .wing {
+      transform: scaleY(0.8);
+    }
+
+    .firefly-halo {
+      opacity: 0.2;
+    }
+
+    .firefly-lantern {
+      opacity: 1;
+    }
+
+    .thread-glint {
+      display: none;
+    }
+  }
+}
+
+/* States that override the artwork, so they come later in the cascade. */
+@layer utilities {
+  .garden:is(.is-paused, [data-paused]) * {
+    animation-play-state: paused;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .garden-page::before,
+    .garden-page > header :is(a, button),
+    .garden *,
+    .garden *::before,
+    .garden *::after {
+      transition: none;
+      animation: none;
+    }
   }
 }

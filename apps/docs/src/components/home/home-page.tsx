@@ -1,5 +1,5 @@
-import {ReplayIcon} from '@earendil-works/elanor-icons-boiled-react';
-import {Button, Layout, Link} from '@earendil-works/elanor-react';
+import {PauseIcon, PlayArrowIcon, ReplayIcon} from '@earendil-works/elanor-icons-boiled-react';
+import {IconButton, Layout} from '@earendil-works/elanor-react';
 import type {ReactNode} from 'react';
 
 import type {SiteMark} from '../../lib/site-mark.ts';
@@ -13,31 +13,39 @@ interface HomePageProps {
   readonly children: ReactNode;
 }
 
-/** Static HTML: the garden scripts wire the replay button, the color scheme script the toggle. */
+/** Static HTML: the garden scripts wire replay and pause, the color scheme script the toggle. */
 export function HomePage({mark, children}: HomePageProps): React.JSX.Element {
   return (
     <Layout.Root className={`${styles.home} garden-page`}>
-      <Link href="#main" className={styles.skipLink}>
-        Skip to content
-      </Link>
       <Layout.Header className={styles.header}>
         <SiteIdentity mark={mark} />
-        <ColorSchemeToggle />
+        <div className={styles.actions}>
+          {/* Shown by the garden scripts; motion controls are hidden with reduced motion. */}
+          <IconButton
+            aria-label="Replay intro"
+            className={styles.motion}
+            data-replay-intro=""
+            hidden
+          >
+            <ReplayIcon />
+          </IconButton>
+          <IconButton
+            aria-label="Pause animations"
+            aria-pressed="false"
+            className={styles.motion}
+            data-garden-pause=""
+            hidden
+          >
+            <PauseIcon className={styles.pauseIcon} />
+            <PlayArrowIcon className={styles.playIcon} />
+          </IconButton>
+          <ColorSchemeToggle />
+        </div>
       </Layout.Header>
-      <Layout.Main id="main" tabIndex={-1} className={styles.main}>
-        <h1 className={styles.title}>Elanor design system</h1>
+      <Layout.Main className={styles.main}>
+        <h1 className="visually-hidden">Elanor design system</h1>
         {children}
       </Layout.Main>
-      <Button
-        hierarchy="tertiary"
-        density="compact"
-        iconEnd={<ReplayIcon />}
-        className={styles.replay}
-        data-replay-intro=""
-        hidden
-      >
-        Replay intro
-      </Button>
     </Layout.Root>
   );
 }

@@ -1,4 +1,5 @@
 import {COLOR_SCHEME_EVENT} from '../../../scripts/color-scheme.ts';
+import {isPaused, PAUSE_EVENT} from './pause.ts';
 
 interface Point {
   readonly x: number;
@@ -163,7 +164,8 @@ export function connectPapers(garden: HTMLElement, links: readonly HTMLElement[]
         glint.setAttribute('cy', at.y.toFixed(2));
       }
     }
-    if (!reducedMotion.matches) schedule();
+    // Still or paused: one frame per change, e.g. after a resize.
+    if (!reducedMotion.matches && !isPaused(garden)) schedule();
   }
 
   // The paper's height positions the insect above it.
@@ -183,6 +185,7 @@ export function connectPapers(garden: HTMLElement, links: readonly HTMLElement[]
 
   document.addEventListener('visibilitychange', schedule);
   reducedMotion.addEventListener('change', schedule);
+  garden.addEventListener(PAUSE_EVENT, schedule);
   window.addEventListener(COLOR_SCHEME_EVENT, schedule);
   window.addEventListener('pagehide', () => {
     stopped = true;

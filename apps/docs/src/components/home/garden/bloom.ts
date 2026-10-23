@@ -200,10 +200,13 @@ export function paintBloom(
     let washPalette: HTMLCanvasElement | undefined;
     let poolPalette: HTMLCanvasElement | undefined;
     let glowPalette: HTMLCanvasElement | undefined;
+    // The day canvas, from Elanor's tokens.
+    const canvasColor = () =>
+      getComputedStyle(document.documentElement).getPropertyValue('--primitive-color-moonstone');
     const wash = () =>
       (washPalette ??= tinted(reference, size, (context) => {
         fill(context, 'saturation', 0.55, '#808080');
-        fill(context, 'source-atop', 0.5, '#ebe7e4');
+        fill(context, 'source-atop', 0.5, canvasColor());
       }));
     const pool = () =>
       (poolPalette ??= tinted(reference, size, (context) => {

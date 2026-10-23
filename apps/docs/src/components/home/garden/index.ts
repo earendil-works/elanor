@@ -1,5 +1,6 @@
 import {bringFlowerToLife} from './flower.ts';
 import {playIntro} from './intro.ts';
+import {connectPauseToggle} from './pause.ts';
 import {connectPapers} from './tethers.ts';
 
 /** Starts the garden rendered by `home-garden.astro`. */
@@ -12,6 +13,7 @@ export function plantGarden(): void {
   const couriers = [...garden.querySelectorAll<HTMLAnchorElement>('.courier')];
 
   connectPapers(garden, couriers);
+  connectPauseToggle(garden);
   playIntro({reference, damp: garden.querySelector('.flower-damp'), couriers});
   // Hovering a petal highlights its courier; clicking follows its link.
   bringFlowerToLife({

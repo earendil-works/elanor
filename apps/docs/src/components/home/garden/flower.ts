@@ -1,5 +1,6 @@
 import {COLOR_SCHEME_EVENT, currentColorScheme} from '../../../scripts/color-scheme.ts';
 import {petalAt} from './geometry.ts';
+import {isPaused, PAUSE_EVENT} from './pause.ts';
 import {createPollen} from './pollen.ts';
 
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
@@ -51,6 +52,9 @@ export async function bringFlowerToLife({
   let night = currentColorScheme() === 'dark' ? 1 : 0;
   let schemeChangedAt = -IGNITION;
   let size = 1;
+  // The pollen's clock stops while paused, so it resumes where it stopped.
+  let pausedAt: number | undefined;
+  let pausedFor = 0;
 
   const pick = (x: number, y: number) => {
     const rect = reference.getBoundingClientRect();
@@ -86,7 +90,8 @@ export async function bringFlowerToLife({
     frame = 0;
     if (!visible || stopped || failed || document.hidden) return;
     const still = reducedMotion.matches;
-    if (!still && now - lastTime < FRAME_INTERVAL) {
+    const held = pausedAt !== undefined;
+    if (!still && !held && now - lastTime < FRAME_INTERVAL) {
       wake();
       return;
     }
@@ -94,19 +99,19 @@ export async function bringFlowerToLife({
     lastTime = now;
     // Ease toward the color scheme instead of switching.
     const target = currentColorScheme() === 'dark' ? 1 : 0;
-    night = still ? target : night + (target - night) * (1 - Math.exp(-dt * 3.2));
+    night = still || held ? target : night + (target - night) * (1 - Math.exp(-dt * 3.2));
     try {
       drawPollen({
         size,
-        time: still ? 12 : now / 1000,
+        time: still ? 12 : ((pausedAt ?? now) - pausedFor) / 1000,
         night,
-        ignition: still ? 0 : Math.max(0, 1 - (now - schemeChangedAt) / IGNITION),
+        ignition: still || held ? 0 : Math.max(0, 1 - (now - schemeChangedAt) / IGNITION),
       });
     } catch (error) {
       stop(error);
       return;
     }
-    if (!still) wake();
+    if (!still && !held) wake();
   }
 
   art.addEventListener('pointermove', (event) => {
@@ -123,6 +128,16 @@ export async function bringFlowerToLife({
     wake();
   });
   reducedMotion.addEventListener('change', wake);
+  garden.addEventListener(PAUSE_EVENT, () => {
+    const now = performance.now();
+    if (isPaused(garden)) pausedAt = now;
+    else if (pausedAt !== undefined) {
+      pausedFor += now - pausedAt;
+      pausedAt = undefined;
+    }
+    lastTime = now;
+    wake();
+  });
 
   const pause = () => garden.classList.toggle('is-paused', document.hidden || !visible);
   document.addEventListener('visibilitychange', () => {

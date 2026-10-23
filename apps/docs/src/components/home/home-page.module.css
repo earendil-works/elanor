@@ -1,72 +1,54 @@
-.home {
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--semantic-dimension-space-gap-medium);
-    /* Matches the docs sidebar, so the logo stays in place across the crossfade. */
-    padding: var(--semantic-dimension-space-padding-x-large);
-    background: transparent;
-  }
+@layer components {
+  .home {
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--semantic-dimension-space-gap-medium);
+      /* Matches the docs sidebar, so the logo stays in place across the crossfade. */
+      padding: var(--semantic-dimension-space-padding-x-large);
+      background: transparent;
+    }
 
-  .main {
-    display: grid;
-    place-items: center;
-    padding-inline: var(--semantic-dimension-space-padding-xx-large);
-    padding-block-end: var(--semantic-dimension-space-padding-xxxx-large);
-  }
+    .main {
+      display: grid;
+      place-items: center;
+      padding-inline: var(--semantic-dimension-space-padding-xx-large);
+      padding-block-end: var(--semantic-dimension-space-padding-xxxx-large);
+    }
 
-  .title {
-    position: absolute;
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
-  }
+    .actions {
+      display: flex;
+      align-items: center;
+      gap: var(--semantic-dimension-space-gap-x-small);
+    }
 
-  .replay {
-    position: fixed;
-    inset-block-end: var(--semantic-dimension-space-padding-x-large);
-    inset-inline-end: var(--semantic-dimension-space-padding-xx-large);
-    color: var(--semantic-color-text-secondary);
-  }
-
-  /* Button's display rule would override `hidden`. */
-  .replay[hidden] {
-    display: none;
-  }
-
-  .skipLink {
-    position: absolute;
-    inset-block-start: var(--semantic-dimension-space-padding-small);
-    inset-inline-start: var(--semantic-dimension-space-padding-x-large);
-    z-index: var(--semantic-number-layer-overlay);
-    padding: var(--semantic-dimension-space-padding-medium);
-    background: var(--semantic-color-background-canvas);
-  }
-
-  .skipLink:not(:focus) {
-    clip-path: inset(50%);
-  }
-
-  /* The intro doesn't play with reduced motion. */
-  @media (prefers-reduced-motion: reduce) {
-    .replay {
+    /* The pause toggle shows what pressing it does. */
+    .motion[aria-pressed='true'] .pauseIcon,
+    .motion:not([aria-pressed='true']) .playIcon {
       display: none;
     }
-  }
 
-  /* Matches the docs mobile header. */
-  @media (width < 64rem /* token: semantic.dimension.breakpoint.medium */) {
-    .header {
-      block-size: var(--semantic-dimension-size-top-navigation);
-      padding: var(--semantic-dimension-space-padding-medium)
-        var(--semantic-dimension-space-padding-x-large);
+    /* Nothing moves with reduced motion. */
+    @media (prefers-reduced-motion: reduce) {
+      .motion {
+        display: none;
+      }
     }
-  }
 
-  @media (max-width: 48rem /* token: semantic.dimension.breakpoint.small */) {
-    .main {
-      padding-inline: var(--semantic-dimension-space-padding-medium);
+    /* Matches the docs mobile header. */
+    @media (width < 64rem /* token: semantic.dimension.breakpoint.medium */) {
+      .header {
+        block-size: var(--semantic-dimension-size-top-navigation);
+        padding: var(--semantic-dimension-space-padding-medium)
+          var(--semantic-dimension-space-padding-x-large);
+      }
+    }
+
+    @media (width <= 48rem /* token: semantic.dimension.breakpoint.small */) {
+      .main {
+        padding-inline: var(--semantic-dimension-space-padding-medium);
+      }
     }
   }
 }
