@@ -44,7 +44,7 @@
   .garden {
     --paper: #f1e9d2;
     --paper-ink: #655d43;
-    --paper-active: #a67c34;
+    --paper-active: #6e4f17;
     --thread: #9a8352;
 
     position: relative;
@@ -57,7 +57,7 @@
   :root[data-color-scheme='dark'] .garden {
     --paper: #343c30;
     --paper-ink: #d5d8b9;
-    --paper-active: #ebcb88;
+    --paper-active: #f3dca6;
     --thread: #bdb48c;
   }
 
