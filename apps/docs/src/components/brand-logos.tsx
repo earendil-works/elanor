@@ -47,6 +47,17 @@ function printProfileLabel(profile: string): string {
 }
 const fileName = (path: string) => path.split('/').at(-1);
 
+/** The 1×, 2×, and 3× preview PNGs when the logo has them, otherwise its SVG. */
+function previewImage(asset: LogoAsset): {src: string; srcSet?: string} {
+  const preview = asset.files.preview;
+  if (!preview?.length) return {src: url(asset.files.svg)};
+  const [base] = preview.toSorted((a, b) => a.height - b.height);
+  return {
+    src: url(base!.path),
+    srcSet: preview.map((file) => `${url(file.path)} ${file.height / base!.height}x`).join(', '),
+  };
+}
+
 function describeIcon(key: string): {label: string; use: string; masked?: boolean} {
   const description = iconDescriptions[key];
   if (description) return description;
@@ -95,7 +106,7 @@ export function BrandLogos({brand, pressKit, children}: BrandLogosProps): React.
                     style={{background: brand.backgrounds[asset.scheme]}}
                   >
                     <img
-                      src={url(asset.files.svg)}
+                      {...previewImage(asset)}
                       loading="lazy"
                       decoding="async"
                       alt={`${brand.name} ${kindLabels[kind].toLowerCase()}, ${treatmentLabels[asset.treatment].toLowerCase()}`}

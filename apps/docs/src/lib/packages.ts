@@ -29,7 +29,14 @@ export interface LogoAsset {
   monochrome: boolean;
   width: number;
   height: number;
-  files: {svg: string; png?: string; pdf?: Record<string, string>; [key: string]: unknown};
+  files: {
+    svg: string;
+    png?: string;
+    pdf?: Record<string, string>;
+    /** Small PNGs for logos whose SVG is too large to preview. */
+    preview?: Array<{height: number; path: string}>;
+    [key: string]: unknown;
+  };
 }
 
 export interface LogoBrand {
