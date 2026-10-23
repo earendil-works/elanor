@@ -26,6 +26,12 @@ document.addEventListener('astro:before-swap', (event) => {
     }
 
     restoreFocus();
+
+    // Page scripts sit outside the regions. Add the next page's new ones; Astro runs them after the swap.
+    for (const script of nextDocument.body.querySelectorAll<HTMLScriptElement>(':scope > script')) {
+      if (!('astroExec' in script.dataset)) document.body.append(script);
+    }
+
     document.querySelector('.astro-route-announcer')?.remove();
   };
 });
