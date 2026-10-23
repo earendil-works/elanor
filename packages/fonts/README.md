@@ -23,6 +23,6 @@ DepartureMono is the Lefos mono font. Import it only in apps that use the Lefos 
 
 CSS uses relative URLs and `font-display: swap`. Without a bundler, serve the CSS and `files/` directory together.
 
-For preloading or custom CSS, import `@earendil-works/elanor-fonts/files/<filename>`.
+For preloading or custom CSS, import `@earendil-works/elanor-fonts/files/<filename>`. Commit Mono also ships its original `.otf` files for desktop installs; the CSS uses WOFF2.
 
 All families use SIL OFL 1.1. Include the matching file from `licenses/` when redistributing them.
