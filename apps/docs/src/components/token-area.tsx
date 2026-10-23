@@ -373,15 +373,15 @@ function EntryRow({entry}: {readonly entry: TokenEntry}): React.JSX.Element {
         data-filter-item
         data-filter-text={filterText}
       >
-        <div className={styles.preview}>
-          <TokenPreview preview={state.preview} nameId={nameId} />
-        </div>
         <div className={styles.info}>
           <Name entry={entry} id={nameId} />
           <Variable state={state} />
           {description}
         </div>
         <Values state={state} />
+        <div className={styles.preview}>
+          <TokenPreview preview={state.preview} nameId={nameId} />
+        </div>
       </li>
     );
   }
@@ -400,14 +400,14 @@ function EntryRow({entry}: {readonly entry: TokenEntry}): React.JSX.Element {
       <ul className={styles.states}>
         {entry.states.map((state) => (
           <li key={state.id} id={state.id} className={styles.row} data-state>
-            <div className={styles.preview}>
-              <TokenPreview preview={state.preview} nameId={nameId} />
-            </div>
             <div className={styles.info}>
               <span className={styles.stateLabel}>{state.label}</span>
               <Variable state={state} />
             </div>
             <Values state={state} />
+            <div className={styles.preview}>
+              <TokenPreview preview={state.preview} nameId={nameId} />
+            </div>
           </li>
         ))}
       </ul>

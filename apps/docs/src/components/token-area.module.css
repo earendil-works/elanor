@@ -225,27 +225,20 @@
     var(--semantic-dimension-space-padding-x-large);
 }
 
-/* Rows: preview, then the name, variable, and description, then the values. */
+/* Rows: the name, variable, and description, then the values, then the preview. Narrow rows stack them. */
 .row {
   display: grid;
   grid-template-areas:
-    'preview info'
-    'preview values';
-  /* stylelint-disable-next-line design-tokens/no-non-token-custom-properties -- Group preview column, set inline by token-area.tsx. */
-  grid-template-columns: var(--preview-size) minmax(0, 1fr);
+    'info'
+    'values'
+    'preview';
+  grid-template-columns: minmax(0, 1fr);
   align-items: start;
   gap: var(--semantic-dimension-space-gap-small) var(--semantic-dimension-space-gap-medium);
   padding-block: var(--semantic-dimension-space-padding-large);
   border-block-start: var(--semantic-dimension-border-width-small) solid
     var(--semantic-color-border-secondary);
   scroll-margin-block-start: var(--semantic-dimension-space-padding-x-large);
-}
-
-.row[data-wide] {
-  grid-template-areas:
-    'preview preview'
-    'info info'
-    'values values';
 }
 
 .row:target {
@@ -261,16 +254,11 @@
     var(--semantic-color-border-secondary);
 }
 
-/* The header uses the row's columns, so it lines up with the info column of the state lines. */
+/* The header uses the row's columns, so its description stays clear of the preview column. */
 .entryHeader {
   display: grid;
-  /* stylelint-disable-next-line design-tokens/no-non-token-custom-properties -- Group preview column, set inline by token-area.tsx. */
-  grid-template-columns: var(--preview-size) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
   column-gap: var(--semantic-dimension-space-gap-medium);
-}
-
-.entryHeader > * {
-  grid-column: 2 / -1;
 }
 
 .row[data-state] {
@@ -285,20 +273,25 @@
 
 @container token-rows (min-width: 48rem /* token: semantic.dimension.breakpoint.small */) {
   .row {
-    grid-template-areas: 'preview info values';
+    grid-template-areas: 'info values preview';
     /* stylelint-disable-next-line design-tokens/no-non-token-custom-properties -- Group preview column, set inline by token-area.tsx. */
-    grid-template-columns: var(--preview-size) minmax(0, 3fr) minmax(0, 2fr);
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr) var(--preview-size);
   }
 
+  /* Type samples and motion tracks need the full width. */
   .row[data-wide] {
     grid-template-areas:
-      'preview preview preview'
-      '. info values';
+      'info values .'
+      'preview preview preview';
   }
 
   .entryHeader {
     /* stylelint-disable-next-line design-tokens/no-non-token-custom-properties -- Group preview column, set inline by token-area.tsx. */
-    grid-template-columns: var(--preview-size) minmax(0, 3fr) minmax(0, 2fr);
+    grid-template-columns: minmax(0, 3fr) minmax(0, 2fr) var(--preview-size);
+  }
+
+  .entryHeader > * {
+    grid-column: 1 / 3;
   }
 }
 
@@ -444,7 +437,8 @@
 /* Body text at the line height, wrapped in the column so the space between lines shows. */
 .lines {
   display: block;
-  max-inline-size: 100%;
+  /* stylelint-disable-next-line design-tokens/no-non-token-custom-properties -- Group preview column, set inline by token-area.tsx. */
+  max-inline-size: min(100%, var(--preview-size));
   overflow: hidden;
   color: var(--semantic-color-text-primary);
 }
@@ -486,7 +480,8 @@
 
 .gap[data-direction='column'] {
   flex-direction: column;
-  inline-size: 100%;
+  /* stylelint-disable-next-line design-tokens/no-non-token-custom-properties -- Group preview column, set inline by token-area.tsx. */
+  inline-size: min(100%, var(--preview-size));
 }
 
 .gap[data-direction='column'] .block {
