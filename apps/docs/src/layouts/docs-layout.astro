@@ -80,6 +80,7 @@ const groups: DocsNavigationGroup[] = [
     <SiteHead title={title} />
     <ColorSchemeScript />
     {markdown && <link rel="alternate" type="text/markdown" href={markdown} />}
+    <slot name="head" />
     <ClientRouter />
   </head>
   <body class="docs-layout">

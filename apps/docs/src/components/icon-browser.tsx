@@ -8,16 +8,43 @@ import {
   Stack,
   Text,
 } from '@earendil-works/elanor-react';
-import {useDeferredValue, useEffect, useMemo, useRef, useState} from 'react';
+import {useDeferredValue, useEffect, useMemo, useRef, useState, type Ref} from 'react';
 
 import styles from './icon-browser.module.css';
 
 type IndexEntry = readonly [name: string, tags: string, component: string];
 
+type IndexState =
+  | {readonly status: 'loading'}
+  | {readonly status: 'failed'}
+  | {readonly status: 'ready'; readonly entries: readonly IndexEntry[]};
+
 const PAGE_SIZE = 240;
 
+/** Fetches on every mount, so the page's preload is used after client-side navigation too. */
+function requestIndex(update: (state: IndexState) => void): void {
+  fetch('/icons/search-index.json')
+    .then((response) => {
+      if (!response.ok) throw new Error(`Icon index request failed: ${response.status}`);
+      return response.json() as Promise<IndexEntry[]>;
+    })
+    .then(
+      (entries) => update({status: 'ready', entries}),
+      () => update({status: 'failed'}),
+    );
+}
+
+/** Keeps `?q=` in step with the search, so searches can be shared. */
+function syncUrl(query: string): void {
+  const url = new URL(window.location.href);
+  if (query.trim()) url.searchParams.set('q', query.trim());
+  else url.searchParams.delete('q');
+  // Keep the router's history state.
+  history.replaceState(history.state, '', url);
+}
+
 /** Ranks name matches before tag matches, with alphabetical ties. */
-function search(index: readonly IndexEntry[], query: string): readonly IndexEntry[] {
+function searchIcons(index: readonly IndexEntry[], query: string): readonly IndexEntry[] {
   const terms = query
     .toLowerCase()
     .trim()
@@ -46,16 +73,16 @@ function search(index: readonly IndexEntry[], query: string): readonly IndexEntr
 }
 
 export function IconBrowser(): React.JSX.Element {
-  const [index, setIndex] = useState<readonly IndexEntry[] | null>(null);
-  const [loadFailed, setLoadFailed] = useState(false);
-  const [attempt, setAttempt] = useState(0);
+  const [index, setIndex] = useState<IndexState>({status: 'loading'});
   const [query, setQuery] = useState('');
   const [limit, setLimit] = useState(PAGE_SIZE);
   const [selected, setSelected] = useState<IndexEntry | null>(null);
   const deferredQuery = useDeferredValue(query);
   const end = useRef<HTMLDivElement>(null);
   const grid = useRef<HTMLUListElement>(null);
+  const search = useRef<HTMLInputElement>(null);
   const sidebar = useRef<HTMLElement>(null);
+  const hasSelection = selected !== null;
 
   useEffect(() => {
     // `?q=` pre-fills the search, so searches can be linked.
@@ -65,32 +92,23 @@ export function IconBrowser(): React.JSX.Element {
   }, []);
 
   useEffect(() => {
-    const controller = new AbortController();
-    void fetch('/icons/search-index.json', {signal: controller.signal})
-      .then((response) => {
-        if (!response.ok) throw new Error(`Icon index request failed: ${response.status}`);
-        return response.json() as Promise<IndexEntry[]>;
-      })
-      .then((entries) => {
-        if (!controller.signal.aborted) setIndex(entries);
-      })
-      .catch(() => {
-        if (!controller.signal.aborted) setLoadFailed(true);
-      });
-    return () => controller.abort();
-  }, [attempt]);
+    let active = true;
+    requestIndex((state) => {
+      if (active) setIndex(state);
+    });
+    return () => {
+      active = false;
+    };
+  }, []);
 
   const results = useMemo(
-    () => (index ? search(index, deferredQuery) : []),
+    () => (index.status === 'ready' ? searchIcons(index.entries, deferredQuery) : []),
     [index, deferredQuery],
   );
-  const importLine = selected
-    ? `import {${selected[2]}} from '@earendil-works/elanor-icons-boiled-react/${selected[0]}';`
-    : '';
 
   // Clicking anywhere but an icon or the sidebar, or pressing Escape, deselects the icon.
   useEffect(() => {
-    if (!selected) return;
+    if (!hasSelection) return;
     const deselectOutside = (event: PointerEvent) => {
       const target = event.target as Node;
       const onIcon =
@@ -98,7 +116,13 @@ export function IconBrowser(): React.JSX.Element {
       if (!onIcon && !sidebar.current?.contains(target)) setSelected(null);
     };
     const deselectOnEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setSelected(null);
+      if (event.key !== 'Escape') return;
+      // The sidebar closes, so focus moves back to the selected icon, or the search if it is filtered out.
+      if (sidebar.current?.contains(document.activeElement)) {
+        const tile = grid.current?.querySelector<HTMLButtonElement>('[aria-pressed="true"]');
+        (tile ?? search.current)?.focus();
+      }
+      setSelected(null);
     };
     document.addEventListener('pointerdown', deselectOutside);
     document.addEventListener('keydown', deselectOnEscape);
@@ -106,7 +130,7 @@ export function IconBrowser(): React.JSX.Element {
       document.removeEventListener('pointerdown', deselectOutside);
       document.removeEventListener('keydown', deselectOnEscape);
     };
-  }, [selected]);
+  }, [hasSelection]);
 
   // Infinite scroll: show the next page once the end of the list nears the viewport. Observing again after
   // each page keeps loading while the end stays in view.
@@ -126,12 +150,13 @@ export function IconBrowser(): React.JSX.Element {
   return (
     <div className={styles.browser}>
       <Search
+        ref={search}
         rootClassName={styles.search}
         aria-label="Search icons"
         placeholder={
-          index
-            ? `Search ${index.length} icons by name or keyword…`
-            : loadFailed
+          index.status === 'ready'
+            ? `Search ${index.entries.length} icons by name or keyword…`
+            : index.status === 'failed'
               ? 'Search icons…'
               : 'Loading icons…'
         }
@@ -139,17 +164,18 @@ export function IconBrowser(): React.JSX.Element {
         onChange={(event) => {
           setQuery(event.currentTarget.value);
           setLimit(PAGE_SIZE);
+          syncUrl(event.currentTarget.value);
         }}
       />
       <div className={styles.main}>
-        {loadFailed ? (
+        {index.status === 'failed' ? (
           <Stack gap="small" align="start">
             <Text role="alert">Could not load icons. Please try again.</Text>
             <Button
               hierarchy="secondary"
               onClick={() => {
-                setLoadFailed(false);
-                setAttempt((current) => current + 1);
+                setIndex({status: 'loading'});
+                requestIndex(setIndex);
               }}
             >
               Retry
@@ -177,29 +203,39 @@ export function IconBrowser(): React.JSX.Element {
         </ul>
         <div ref={end} />
       </div>
-      {selected ? (
-        <aside ref={sidebar} className={styles.sidebar} aria-label="Selected icon">
-          <Stack gap="medium">
-            <span
-              className={styles.large}
-              style={{maskImage: `url(/api/icons/${selected[0]}.svg)`}}
-              aria-hidden="true"
-            />
-            <Heading level={2} size={6}>
-              {selected[0]}
-            </Heading>
-            <CodeSnippet
-              className={styles.snippet}
-              actions={<CopyButton key={importLine} value={importLine} aria-label="Copy import" />}
-            >
-              {importLine}
-            </CodeSnippet>
-            <Link href={`/api/icons/${selected[0]}.svg`} download data-astro-prefetch="false">
-              Download SVG
-            </Link>
-          </Stack>
-        </aside>
-      ) : null}
+      {selected ? <SelectedIcon entry={selected} ref={sidebar} /> : null}
     </div>
+  );
+}
+
+interface SelectedIconProps {
+  readonly entry: IndexEntry;
+  readonly ref: Ref<HTMLElement>;
+}
+
+function SelectedIcon({entry: [name, , component], ref}: SelectedIconProps): React.JSX.Element {
+  const importLine = `import {${component}} from '@earendil-works/elanor-icons-boiled-react/${name}';`;
+  return (
+    <aside ref={ref} className={styles.sidebar} aria-label="Selected icon">
+      <Stack gap="medium">
+        <span
+          className={styles.large}
+          style={{maskImage: `url(/api/icons/${name}.svg)`}}
+          aria-hidden="true"
+        />
+        <Heading level={2} size={6}>
+          {name}
+        </Heading>
+        <CodeSnippet
+          className={styles.snippet}
+          actions={<CopyButton key={importLine} value={importLine} aria-label="Copy import" />}
+        >
+          {importLine}
+        </CodeSnippet>
+        <Link href={`/api/icons/${name}.svg`} download data-astro-prefetch="false">
+          Download SVG
+        </Link>
+      </Stack>
+    </aside>
   );
 }
