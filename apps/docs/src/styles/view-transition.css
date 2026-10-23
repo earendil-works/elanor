@@ -1,0 +1,6 @@
+/* Crossfade full page loads between the homepage and the docs. Docs pages swap with the client router. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition {
+    navigation: auto;
+  }
+}
