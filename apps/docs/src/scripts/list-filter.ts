@@ -10,7 +10,7 @@
  * - Optional: `data-filter-section` (hides when none of its groups match), `data-filter-status`,
  *   `data-filter-empty`, `data-filter-query` (shows the query), and `data-filter-clear`.
  *
- * Delegated, so it survives page swaps. `?q=` pre-fills the search.
+ * Delegated, so it survives page swaps. `?q=` pre-fills the search and follows it.
  */
 
 const SEARCH = '[data-filter-search]';
@@ -67,9 +67,20 @@ function reveal(group: HTMLDetailsElement, open: boolean): void {
   }
 }
 
+/** Keeps `?q=` in step with the search, so the filtered list can be shared. */
+function syncUrl(input: HTMLInputElement): void {
+  const url = new URL(window.location.href);
+  const query = input.value.trim();
+  if (query) url.searchParams.set('q', query);
+  else url.searchParams.delete('q');
+  // Keep the router's history state.
+  history.replaceState(history.state, '', url);
+}
+
 document.addEventListener('input', (event) => {
-  if (event.target instanceof HTMLInputElement && event.target.matches(SEARCH))
-    filter(event.target);
+  if (!(event.target instanceof HTMLInputElement) || !event.target.matches(SEARCH)) return;
+  filter(event.target);
+  syncUrl(event.target);
 });
 
 document.addEventListener('click', (event) => {
@@ -81,6 +92,7 @@ document.addEventListener('click', (event) => {
   if (!input) return;
   input.value = '';
   filter(input);
+  syncUrl(input);
   input.focus();
 });
 

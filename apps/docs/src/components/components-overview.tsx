@@ -42,7 +42,7 @@ export function ComponentsOverview({groups}: ComponentsOverviewProps): React.JSX
     <div className={styles.overview} data-filter="components">
       <Search
         aria-label="Search components"
-        placeholder={`Search ${total} components`}
+        placeholder={`Search ${total} components…`}
         data-filter-search
       />
       <p role="status" className="visually-hidden" data-filter-status />

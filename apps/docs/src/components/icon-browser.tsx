@@ -130,9 +130,9 @@ export function IconBrowser(): React.JSX.Element {
           aria-label="Search icons"
           placeholder={
             index
-              ? `Search ${index.length} icons by name or keyword`
+              ? `Search ${index.length} icons by name or keyword…`
               : loadFailed
-                ? 'Search icons'
+                ? 'Search icons…'
                 : 'Loading icons…'
           }
           value={query}

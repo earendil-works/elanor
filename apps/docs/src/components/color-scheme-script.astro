@@ -9,7 +9,9 @@
       saved = localStorage.getItem('elanor-color-scheme');
     } catch {}
     const system = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    document.documentElement.dataset.colorScheme =
-      saved === 'dark' || saved === 'light' ? saved : system;
+    const scheme = saved === 'dark' || saved === 'light' ? saved : system;
+    document.documentElement.dataset.colorScheme = scheme;
+    const themeColor = document.querySelector('meta[name="theme-color"]');
+    if (themeColor) themeColor.content = themeColor.dataset[scheme];
   })();
 </script>

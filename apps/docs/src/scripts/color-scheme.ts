@@ -31,12 +31,16 @@ function save(scheme: ColorScheme): void {
   }
 }
 
-/** Toggles render without state; this syncs every copy. */
-function syncToggles(): void {
-  const pressed = String(currentColorScheme() === 'dark');
+/** Toggles render without state; this syncs every copy and the browser's theme color. */
+function syncScheme(): void {
+  const scheme = currentColorScheme();
+  const pressed = String(scheme === 'dark');
   for (const toggle of document.querySelectorAll(TOGGLE_SELECTOR)) {
     toggle.setAttribute('aria-pressed', pressed);
   }
+  const themeColor = document.querySelector<HTMLMetaElement>('meta[name="theme-color"]');
+  const color = themeColor?.dataset[scheme];
+  if (themeColor && color) themeColor.content = color;
 }
 
 function apply(scheme: ColorScheme): void {
@@ -44,7 +48,7 @@ function apply(scheme: ColorScheme): void {
     root.dataset.colorScheme = scheme;
     window.dispatchEvent(new CustomEvent(COLOR_SCHEME_EVENT, {detail: {scheme}}));
   }
-  syncToggles();
+  syncScheme();
 }
 
 // Delegated, so swapped and hydrated toggles need no wiring.
@@ -65,5 +69,5 @@ window.addEventListener('storage', (event) => {
   }
 });
 
-document.addEventListener('astro:after-swap', syncToggles);
-syncToggles();
+document.addEventListener('astro:after-swap', syncScheme);
+syncScheme();

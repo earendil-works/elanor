@@ -4,14 +4,22 @@ import {readFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 
 import socialCard from '../assets/social-card.png';
+import {loadTokens} from '../lib/api.ts';
 import {logosDist, siteFavicons} from '../lib/packages.ts';
 
 interface Props {
+  /** The page's own title; the site name is added. */
   title: string;
+  /** The token brand the layout loads, for the browser's theme color. */
+  tokens?: 'radius' | 'elanor';
 }
 
-const {title} = Astro.props;
+const {title, tokens = 'radius'} = Astro.props;
 const name = 'Elanor';
+const canvas = (await loadTokens(tokens)).find(
+  (token) => token.path === 'semantic.color.background.canvas',
+);
+const themeColor = {light: canvas?.hex, dark: canvas?.contexts?.colorScheme?.dark?.hex ?? canvas?.hex};
 const description = "Earendil's design system.";
 // Favicon tags written by the logo build.
 const favicons = await readFile(resolve(logosDist, (await siteFavicons()).html!), 'utf8');
@@ -25,6 +33,15 @@ const url = new URL(Astro.url.pathname, site);
 <style is:inline>
   @layer elanor, base, components, utilities;
 </style>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{`${title} · ${name}`}</title>
+{/* The color scheme scripts pick the light or dark value. */}
+<meta
+  name="theme-color"
+  content={themeColor.light}
+  data-light={themeColor.light}
+  data-dark={themeColor.dark}
+/>
 <meta name="description" content={description} />
 <Fragment set:html={favicons} />
 <meta property="og:type" content="website" />

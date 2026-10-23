@@ -47,14 +47,24 @@ function printProfileLabel(profile: string): string {
 }
 const fileName = (path: string) => path.split('/').at(-1);
 
+interface PreviewImage {
+  src: string;
+  srcSet?: string;
+  width: number;
+  height: number;
+}
+
 /** The 1×, 2×, and 3× preview PNGs when the logo has them, otherwise its SVG. */
-function previewImage(asset: LogoAsset): {src: string; srcSet?: string} {
+function previewImage(asset: LogoAsset): PreviewImage {
   const preview = asset.files.preview;
-  if (!preview?.length) return {src: url(asset.files.svg)};
+  if (!preview?.length)
+    return {src: url(asset.files.svg), width: asset.width, height: asset.height};
   const [base] = preview.toSorted((a, b) => a.height - b.height);
   return {
     src: url(base!.path),
     srcSet: preview.map((file) => `${url(file.path)} ${file.height / base!.height}x`).join(', '),
+    width: Math.round((base!.height * asset.width) / asset.height),
+    height: base!.height,
   };
 }
 
@@ -142,13 +152,18 @@ export function BrandLogos({brand, pressKit, children}: BrandLogosProps): React.
           <ul className={styles.grid}>
             {avatarTreatments.map((treatment) => {
               const sizes = brand.avatars!.filter((avatar) => avatar.treatment === treatment);
-              const largest = sizes.reduce((a, b) => (b.size > a.size ? b : a));
+              // The smallest covers the 6rem preview on high-density screens.
+              const smallest = sizes.reduce((a, b) => (b.size < a.size ? b : a));
               return (
                 <li key={treatment} className={styles.tile}>
                   <div className={styles.preview}>
                     <img
                       className={styles.avatar}
-                      src={url(largest.path)}
+                      src={url(smallest.path)}
+                      width={smallest.size}
+                      height={smallest.size}
+                      loading="lazy"
+                      decoding="async"
                       alt={`${brand.name} avatar, ${treatment}`}
                     />
                   </div>
@@ -178,9 +193,14 @@ export function BrandLogos({brand, pressKit, children}: BrandLogosProps): React.
               return (
                 <li key={key} className={`${styles.tile} ${styles.small}`}>
                   <div className={styles.preview} style={{background: brand.backgrounds.light}}>
+                    {/* Favicons are square; the stylesheet sets their size. */}
                     <img
                       className={masked ? styles.round : undefined}
                       src={url(path)}
+                      width={48}
+                      height={48}
+                      loading="lazy"
+                      decoding="async"
                       alt={`${brand.name} ${label.toLowerCase()}`}
                     />
                   </div>

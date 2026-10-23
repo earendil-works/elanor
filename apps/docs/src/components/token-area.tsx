@@ -536,7 +536,7 @@ export function TokenArea({page}: {readonly page: TokenAreaPage}): React.JSX.Ele
         <Search
           rootClassName={styles.search}
           aria-label={`Search ${page.area.label.toLowerCase()} tokens`}
-          placeholder={`Search ${page.total} tokens`}
+          placeholder={`Search ${page.total} tokens…`}
           data-filter-search
         />
         <Button hierarchy="secondary" data-groups-toggle>
