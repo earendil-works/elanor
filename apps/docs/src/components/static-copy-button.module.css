@@ -1,0 +1,35 @@
+.button {
+  flex: none;
+}
+
+/* Icons are SVG masks so they take the button's color; the state shows one of them. */
+.icon {
+  display: block;
+  inline-size: var(--semantic-dimension-size-icon);
+  block-size: var(--semantic-dimension-size-icon);
+  background: currentcolor;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+}
+
+.button:not([data-copy-state='copied']) [data-icon='copied'],
+.button[data-copy-state='copied'] [data-icon='copy'] {
+  display: none;
+}
+
+@media (forced-colors: active) {
+  .icon {
+    background: ButtonText;
+    forced-color-adjust: none;
+  }
+}
+
+.status {
+  position: absolute;
+  inline-size: var(--semantic-dimension-border-width-small);
+  block-size: var(--semantic-dimension-border-width-small);
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}

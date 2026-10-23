@@ -1,0 +1,594 @@
+.area {
+  display: flex;
+  flex-direction: column;
+  gap: var(--semantic-dimension-space-gap-x-large);
+}
+
+.note {
+  margin: 0;
+  color: var(--semantic-color-text-secondary);
+  font: var(--semantic-typography-ui-secondary);
+}
+
+/* Brand picker: links that look like Tabs. */
+.brandList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--semantic-dimension-space-control-gap-x-large);
+  margin: 0;
+  padding: 0;
+  border-block-end: var(--semantic-dimension-border-width-default) solid
+    var(--semantic-color-border-secondary);
+  list-style: none;
+}
+
+.brand {
+  position: relative;
+  display: block;
+  padding-block-start: var(--semantic-dimension-space-control-padding-block-large);
+  padding-block-end: calc(
+    var(--semantic-dimension-space-control-padding-block-large) -
+      var(--semantic-dimension-border-width-default)
+  );
+  color: var(--semantic-color-text-primary);
+  font: var(--semantic-typography-ui-primary);
+  text-decoration: none;
+}
+
+.brand[aria-current='page'] {
+  font-weight: var(--semantic-font-weight-ui-selected);
+}
+
+.brand[aria-current='page']::after,
+.brand[href]:hover:not([aria-current])::after {
+  position: absolute;
+  inset-inline: 0;
+  inset-block-end: calc(-1 * var(--semantic-dimension-border-width-default));
+  block-size: var(--semantic-dimension-border-width-default);
+  background: var(--semantic-color-border-primary);
+  content: '';
+}
+
+.brand:focus-visible {
+  border-radius: var(--semantic-dimension-radius-small);
+  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+  outline-offset: var(--semantic-dimension-border-width-medium);
+}
+
+.brand[aria-disabled='true'] {
+  cursor: not-allowed;
+  opacity: var(--semantic-number-opacity-disabled);
+}
+
+@media (forced-colors: active) {
+  .brand[aria-current='page']::after,
+  .brand[href]:hover:not([aria-current])::after {
+    background: Highlight;
+    forced-color-adjust: none;
+  }
+
+  .brand[aria-disabled='true'] {
+    color: GrayText;
+  }
+}
+
+/* Search and the Expand all button share a row. */
+.toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--semantic-dimension-space-gap-small);
+}
+
+.search {
+  flex: 1;
+  min-inline-size: 0;
+}
+
+.section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--semantic-dimension-space-gap-small);
+}
+
+.groups {
+  display: flex;
+  flex-direction: column;
+}
+
+.section[hidden],
+.group[hidden],
+.entry[hidden],
+.row[hidden],
+.tile[hidden] {
+  display: none;
+}
+
+/* Groups: a summary row with the label, count, and colors; closed by default. */
+.group {
+  border-block-end: var(--semantic-dimension-border-width-small) solid
+    var(--semantic-color-border-secondary);
+  scroll-margin-block-start: var(--semantic-dimension-space-padding-x-large);
+}
+
+.groups > .group:first-child {
+  border-block-start: var(--semantic-dimension-border-width-small) solid
+    var(--semantic-color-border-secondary);
+}
+
+.summary {
+  display: flex;
+  align-items: center;
+  gap: var(--semantic-dimension-space-gap-small);
+  padding-block: var(--semantic-dimension-space-padding-large);
+  list-style: none;
+  cursor: pointer;
+}
+
+.summary::-webkit-details-marker {
+  display: none;
+}
+
+.summary:hover {
+  background: var(--semantic-color-background-fill-ghost-hover);
+}
+
+.summary:focus-visible {
+  border-radius: var(--semantic-dimension-radius-small);
+  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+  outline-offset: var(--semantic-dimension-border-width-medium);
+}
+
+.chevron {
+  flex: none;
+  inline-size: var(--semantic-dimension-size-icon);
+  block-size: var(--semantic-dimension-size-icon);
+  background: currentcolor;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+  transition: rotate var(--semantic-transition-movement-disclosure);
+}
+
+.group:not([open]) > .summary .chevron {
+  rotate: -90deg;
+}
+
+.groupHeading {
+  flex: none;
+  margin: 0;
+}
+
+.count {
+  flex: none;
+  color: var(--semantic-color-text-secondary);
+  font: var(--semantic-typography-ui-secondary);
+}
+
+.strip {
+  display: flex;
+  flex: 0 1 auto;
+  min-inline-size: 0;
+  margin-inline-start: auto;
+  overflow: hidden;
+  border: var(--semantic-dimension-border-width-small) solid var(--semantic-color-border-secondary);
+  border-radius: var(--semantic-dimension-radius-small);
+}
+
+.stripCell {
+  display: flex;
+  /* Cells shrink evenly on narrow screens, so every color stays visible. */
+  flex: 0 1 auto;
+  flex-direction: column;
+  inline-size: var(--semantic-dimension-size-small);
+  min-inline-size: 0;
+}
+
+.stripCell > span {
+  block-size: var(--semantic-dimension-size-xx-small);
+}
+
+.strip[data-palette] .stripCell {
+  inline-size: var(--semantic-dimension-size-xx-small);
+}
+
+.strip[data-palette] .stripCell > span {
+  block-size: var(--semantic-dimension-size-x-small);
+}
+
+.rows,
+.tiles,
+.states {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rows {
+  container: token-rows / inline-size;
+  padding-block-end: var(--semantic-dimension-space-padding-large);
+}
+
+.tiles {
+  padding-block: var(--semantic-dimension-space-padding-small)
+    var(--semantic-dimension-space-padding-x-large);
+}
+
+/* Rows: preview, then the name, variable, and description, then the values. */
+.row {
+  display: grid;
+  grid-template-areas:
+    'preview info'
+    'preview values';
+  grid-template-columns: calc(var(--semantic-dimension-size-x-large) * 2) minmax(0, 1fr);
+  align-items: start;
+  gap: var(--semantic-dimension-space-gap-small) var(--semantic-dimension-space-gap-medium);
+  padding-block: var(--semantic-dimension-space-padding-large);
+  border-block-start: var(--semantic-dimension-border-width-small) solid
+    var(--semantic-color-border-secondary);
+  scroll-margin-block-start: var(--semantic-dimension-space-padding-x-large);
+}
+
+.row[data-wide] {
+  grid-template-areas:
+    'preview preview'
+    'info info'
+    'values values';
+}
+
+.row:target {
+  background: var(--semantic-color-background-fill-ghost-hover);
+}
+
+.entry {
+  display: flex;
+  flex-direction: column;
+  gap: var(--semantic-dimension-space-gap-xx-small);
+  padding-block: var(--semantic-dimension-space-padding-large);
+  border-block-start: var(--semantic-dimension-border-width-small) solid
+    var(--semantic-color-border-secondary);
+}
+
+/* The header uses the row's columns, so it lines up with the info column of the state lines. */
+.entryHeader {
+  display: grid;
+  grid-template-columns: calc(var(--semantic-dimension-size-x-large) * 2) minmax(0, 1fr);
+  column-gap: var(--semantic-dimension-space-gap-medium);
+}
+
+.entryHeader > * {
+  grid-column: 2 / -1;
+}
+
+.row[data-state] {
+  padding-block: var(--semantic-dimension-space-padding-small);
+  border: 0;
+}
+
+.stateLabel {
+  font: var(--semantic-typography-ui-secondary);
+  font-weight: var(--semantic-font-weight-ui-emphasis);
+}
+
+@container token-rows (min-width: 48rem /* token: semantic.dimension.breakpoint.small */) {
+  .row {
+    grid-template-areas: 'preview info values';
+    grid-template-columns:
+      calc(var(--semantic-dimension-size-x-large) * 2) minmax(0, 3fr)
+      minmax(0, 2fr);
+  }
+
+  .row[data-wide] {
+    grid-template-areas:
+      'preview preview preview'
+      '. info values';
+  }
+
+  .entryHeader {
+    grid-template-columns:
+      calc(var(--semantic-dimension-size-x-large) * 2) minmax(0, 3fr)
+      minmax(0, 2fr);
+  }
+}
+
+.preview {
+  display: flex;
+  grid-area: preview;
+  align-items: center;
+  min-inline-size: 0;
+  min-block-size: var(--semantic-dimension-size-large);
+}
+
+.info {
+  display: flex;
+  grid-area: info;
+  flex-direction: column;
+  gap: var(--semantic-dimension-space-gap-xx-small);
+  min-inline-size: 0;
+}
+
+.nameLine,
+.variable,
+.description {
+  margin: 0;
+}
+
+.nameLine {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--semantic-dimension-space-gap-small);
+}
+
+.name {
+  font: var(--semantic-typography-code-primary);
+  font-weight: var(--semantic-font-weight-ui-emphasis);
+  overflow-wrap: anywhere;
+}
+
+.badge {
+  padding-inline: var(--semantic-dimension-space-control-padding-inline-x-small);
+  border: var(--semantic-dimension-border-width-small) solid var(--semantic-color-border-secondary);
+  border-radius: var(--semantic-dimension-radius-small);
+  color: var(--semantic-color-text-secondary);
+  font: var(--semantic-typography-ui-tertiary);
+}
+
+.variable {
+  display: flex;
+  align-items: center;
+  gap: var(--semantic-dimension-space-gap-xx-small);
+  color: var(--semantic-color-text-secondary);
+  font: var(--semantic-typography-code-secondary);
+}
+
+.variable code {
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.description {
+  color: var(--semantic-color-text-secondary);
+  font: var(--semantic-typography-ui-secondary);
+}
+
+.description code {
+  color: var(--semantic-color-text-code);
+  font-family: var(--semantic-font-family-code);
+  font-size: 0.875em;
+}
+
+.values {
+  display: grid;
+  grid-area: values;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: var(--semantic-dimension-space-gap-xx-small) var(--semantic-dimension-space-gap-small);
+  margin: 0;
+  font: var(--semantic-typography-ui-secondary);
+}
+
+.value {
+  display: contents;
+}
+
+.value dt {
+  color: var(--semantic-color-text-secondary);
+}
+
+.value dd {
+  margin: 0;
+  min-inline-size: 0;
+  overflow-wrap: anywhere;
+}
+
+.value code {
+  font: var(--semantic-typography-code-secondary);
+}
+
+.alias {
+  font: var(--semantic-typography-code-secondary);
+}
+
+/* Previews */
+.swatches {
+  display: flex;
+  gap: var(--semantic-dimension-space-gap-xx-small);
+}
+
+.swatch,
+.stage {
+  display: block;
+  inline-size: var(--semantic-dimension-size-large);
+  block-size: var(--semantic-dimension-size-large);
+  border: var(--semantic-dimension-border-width-small) solid var(--semantic-color-border-secondary);
+  border-radius: var(--semantic-dimension-radius-small);
+}
+
+.stage {
+  display: grid;
+  place-items: center;
+}
+
+.raised {
+  display: block;
+  inline-size: var(--semantic-dimension-size-small);
+  block-size: var(--semantic-dimension-size-small);
+  border-radius: var(--semantic-dimension-radius-small);
+}
+
+.sample,
+.glyphs {
+  display: block;
+  max-inline-size: 100%;
+  overflow: hidden;
+  color: var(--semantic-color-text-primary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.glyphs {
+  font: var(--semantic-typography-heading-app-5);
+}
+
+.barTrack {
+  display: block;
+  inline-size: 100%;
+}
+
+.bar {
+  display: block;
+  max-inline-size: 100%;
+  block-size: var(--semantic-dimension-size-xx-small);
+  border-radius: var(--semantic-dimension-radius-small);
+  background: var(--semantic-color-background-fill-primary);
+}
+
+.line {
+  display: block;
+  inline-size: 100%;
+  background: var(--semantic-color-background-fill-primary);
+}
+
+.shape {
+  display: block;
+  box-sizing: border-box;
+  inline-size: var(--semantic-dimension-size-large);
+  block-size: var(--semantic-dimension-size-large);
+  border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-primary);
+}
+
+.shape[data-filled] {
+  border: 0;
+  background: var(--semantic-color-background-fill-primary);
+}
+
+.scaleFrame {
+  display: block;
+  border: var(--semantic-dimension-border-width-small) dashed var(--semantic-color-border-secondary);
+}
+
+.curve {
+  flex: none;
+  inline-size: var(--semantic-dimension-size-x-large);
+  overflow: visible;
+  color: var(--semantic-color-icon-primary);
+}
+
+.curveFrame {
+  fill: none;
+  stroke: var(--semantic-color-icon-secondary);
+  stroke-dasharray: 2 3;
+}
+
+.curveLine {
+  fill: none;
+  stroke: currentcolor;
+}
+
+.motion {
+  display: flex;
+  align-items: center;
+  gap: var(--semantic-dimension-space-gap-medium);
+  inline-size: 100%;
+}
+
+.motionTrack {
+  display: flex;
+  flex: 1;
+  align-items: center;
+  min-inline-size: 0;
+  max-inline-size: var(--semantic-dimension-size-max-width-content-small);
+  block-size: var(--semantic-dimension-size-small);
+  padding-inline: var(--semantic-dimension-space-padding-xx-small);
+  border: var(--semantic-dimension-border-width-small) solid var(--semantic-color-border-secondary);
+  border-radius: var(--semantic-dimension-radius-full);
+}
+
+.motionTarget {
+  display: block;
+  inline-size: var(--semantic-dimension-size-x-small);
+  block-size: var(--semantic-dimension-size-x-small);
+  border-radius: var(--semantic-dimension-radius-full);
+  background: var(--semantic-color-background-fill-primary);
+}
+
+.icon {
+  display: block;
+  inline-size: var(--semantic-dimension-size-icon);
+  block-size: var(--semantic-dimension-size-icon);
+  background: currentcolor;
+  mask-repeat: no-repeat;
+  mask-position: center;
+  mask-size: contain;
+}
+
+.play:not([data-played]) [data-icon='replay'],
+.play[data-played] [data-icon='play'] {
+  display: none;
+}
+
+@media (forced-colors: active) {
+  .icon {
+    background: ButtonText;
+    forced-color-adjust: none;
+  }
+}
+
+/* Palettes: a grid of swatches. */
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(calc(var(--semantic-dimension-size-x-large) * 2), 1fr)
+  );
+  gap: var(--semantic-dimension-space-gap-medium) var(--semantic-dimension-space-gap-small);
+}
+
+.tile {
+  display: flex;
+  flex-direction: column;
+  gap: var(--semantic-dimension-space-gap-xx-small);
+  min-inline-size: 0;
+  scroll-margin-block-start: var(--semantic-dimension-space-padding-x-large);
+}
+
+.tile:target .tileSwatch {
+  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+  outline-offset: var(--semantic-dimension-border-width-medium);
+}
+
+.tileSwatch {
+  display: block;
+  block-size: var(--semantic-dimension-size-x-large);
+  border: var(--semantic-dimension-border-width-small) solid var(--semantic-color-border-secondary);
+  border-radius: var(--semantic-dimension-radius-small);
+}
+
+.tileMeta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--semantic-dimension-space-gap-xx-small);
+}
+
+.tileStep {
+  font: var(--semantic-typography-ui-secondary);
+  font-weight: var(--semantic-font-weight-ui-emphasis);
+}
+
+.tileValue {
+  overflow: hidden;
+  color: var(--semantic-color-text-secondary);
+  font: var(--semantic-typography-code-secondary);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.visuallyHidden {
+  position: absolute;
+  inline-size: var(--semantic-dimension-border-width-small);
+  block-size: var(--semantic-dimension-border-width-small);
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
