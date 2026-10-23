@@ -2,20 +2,15 @@ import {ReplayIcon} from '@earendil-works/elanor-icons-boiled-react';
 import {Button, Layout, Link} from '@earendil-works/elanor-react';
 import type {ReactNode} from 'react';
 
+import type {SiteMark} from '../../lib/site-mark.ts';
 import {ColorSchemeToggle} from '../color-scheme-toggle.tsx';
+import {SiteIdentity} from '../site-identity.tsx';
 
 import styles from './home-page.module.css';
 
-export interface HomePageMark {
-  readonly src: string;
-  readonly srcSet: string;
-  readonly width: number;
-  readonly height: number;
-}
-
 interface HomePageProps {
   /** The flower, shown beside the wordmark. */
-  readonly mark: HomePageMark;
+  readonly mark: SiteMark;
   /** The garden navigation. */
   readonly children: ReactNode;
 }
@@ -31,17 +26,7 @@ export function HomePage({mark, children}: HomePageProps): React.JSX.Element {
         Skip to content
       </Link>
       <Layout.Header className={styles.header}>
-        <Link href="/" aria-label="Elanor home" className={styles.identity}>
-          <img
-            className={styles.mark}
-            src={mark.src}
-            srcSet={mark.srcSet}
-            width={mark.width}
-            height={mark.height}
-            alt=""
-          />
-          <span>Elanor</span>
-        </Link>
+        <SiteIdentity mark={mark} />
         <ColorSchemeToggle />
       </Layout.Header>
       <Layout.Main id="main" tabIndex={-1} className={styles.main}>

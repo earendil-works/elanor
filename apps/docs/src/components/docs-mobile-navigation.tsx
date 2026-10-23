@@ -2,18 +2,21 @@ import {CloseIcon, MenuIcon} from '@earendil-works/elanor-icons-boiled-react';
 import {
   Drawer,
   IconButton,
-  Link,
   Stack,
   TopNavigation,
   type DrawerRootActions,
 } from '@earendil-works/elanor-react';
 import {useEffect, useRef} from 'react';
 
+import type {SiteMark} from '../lib/site-mark.ts';
 import {DocsSideNavigation, type DocsNavigationGroup} from './docs-side-navigation.tsx';
+import {SiteIdentity} from './site-identity.tsx';
 
 interface DocsMobileNavigationProps {
   readonly groups: readonly DocsNavigationGroup[];
   readonly current: string;
+  /** The flower beside the wordmark. */
+  readonly mark: SiteMark;
   /** Static actions before the menu button, passed from Astro as the `actions` slot. */
   readonly actions?: React.ReactNode;
 }
@@ -21,6 +24,7 @@ interface DocsMobileNavigationProps {
 export function DocsMobileNavigation({
   groups,
   current,
+  mark,
   actions,
 }: DocsMobileNavigationProps): React.JSX.Element {
   const actionsRef = useRef<DrawerRootActions>(null);
@@ -48,9 +52,7 @@ export function DocsMobileNavigation({
     <Drawer.Root swipeDirection="left" actionsRef={actionsRef}>
       <TopNavigation.Root className="docs-mobile-header">
         <TopNavigation.Identity>
-          <Link href="/" data-astro-reload>
-            Elanor
-          </Link>
+          <SiteIdentity mark={mark} data-astro-reload />
         </TopNavigation.Identity>
         <TopNavigation.Actions>
           {actions}

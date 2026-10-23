@@ -33,7 +33,9 @@
 
 .docs-aside-actions {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--semantic-dimension-space-gap-medium);
   margin-block-end: var(--semantic-dimension-space-gap-medium);
 }
 

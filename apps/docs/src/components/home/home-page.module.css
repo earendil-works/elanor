@@ -5,28 +5,9 @@
     align-items: center;
     justify-content: space-between;
     gap: var(--semantic-dimension-space-gap-medium);
-    padding: var(--semantic-dimension-space-padding-xxx-large)
-      var(--semantic-dimension-space-padding-xx-large);
+    /* Matches the docs sidebar, so the identity stays in place across the crossfade. */
+    padding: var(--semantic-dimension-space-padding-x-large);
     background: transparent;
-  }
-
-  .identity {
-    display: inline-flex;
-    align-items: center;
-    gap: var(--semantic-dimension-space-gap-small);
-    color: var(--semantic-color-text-primary);
-    font: var(--semantic-typography-heading-app-4);
-    text-decoration: none;
-  }
-
-  .mark {
-    display: block;
-    flex: none;
-    inline-size: var(--semantic-dimension-size-medium);
-    block-size: var(--semantic-dimension-size-medium);
-    /* The eye centers the flower on its stamens, 8.5% below the image center; raise them to the capitals. */
-    /* stylelint-disable-next-line design-tokens/token-property-compatibility -- a static optical offset proportional to the mark size, not travel. */
-    translate: 0 calc(var(--semantic-dimension-size-medium) * -0.085);
   }
 
   .main {
@@ -76,11 +57,17 @@
     }
   }
 
-  @media (max-width: 48rem /* token: semantic.dimension.breakpoint.small */) {
+  /* Where the docs switch to their mobile header. */
+  @media (width < 64rem /* token: semantic.dimension.breakpoint.medium */) {
     .header {
-      padding: var(--semantic-dimension-space-padding-xx-large);
+      /* Matches the docs mobile header. */
+      block-size: var(--semantic-dimension-size-top-navigation);
+      padding: var(--semantic-dimension-space-padding-medium)
+        var(--semantic-dimension-space-padding-x-large);
     }
+  }
 
+  @media (max-width: 48rem /* token: semantic.dimension.breakpoint.small */) {
     .main {
       padding-inline: var(--semantic-dimension-space-padding-medium);
     }

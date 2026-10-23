@@ -1,0 +1,18 @@
+.identity {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--semantic-dimension-space-gap-small);
+  color: var(--semantic-color-text-primary);
+  font: var(--semantic-typography-heading-app-4);
+  text-decoration: none;
+}
+
+.mark {
+  display: block;
+  flex: none;
+  inline-size: var(--semantic-dimension-size-medium);
+  block-size: var(--semantic-dimension-size-medium);
+  /* The eye centers the flower on its stamens, 8.5% below the image center; raise them to the capitals. */
+  /* stylelint-disable-next-line design-tokens/token-property-compatibility -- a static optical offset proportional to the mark size, not travel. */
+  translate: 0 calc(var(--semantic-dimension-size-medium) * -0.085);
+}

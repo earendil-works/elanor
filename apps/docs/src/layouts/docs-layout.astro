@@ -13,8 +13,10 @@ import {
   type DocsNavigationLink,
 } from '../components/docs-side-navigation.tsx';
 import {DocsMobileNavigation} from '../components/docs-mobile-navigation.tsx';
+import {SiteIdentity} from '../components/site-identity.tsx';
 import {componentGroups} from '../lib/component-groups.ts';
 import {componentName} from '../lib/component-name.ts';
+import {siteMark} from '../lib/site-mark.ts';
 import {defaultTokenBrand, tokenAreaHref, tokenAreas} from '../lib/token-pages.ts';
 
 interface Props {
@@ -28,6 +30,7 @@ interface Props {
 }
 
 const {title, current, wide = false, markdown} = Astro.props;
+const mark = await siteMark();
 // The Layout demo supplies the page's single main landmark.
 const ContentTag = current === '/components/layout/' ? 'div' : 'main';
 const widePreview = [
@@ -78,13 +81,15 @@ const groups: DocsNavigationGroup[] = [
   </head>
   <body class="docs-layout">
     <div data-docs-swap="mobile-navigation">
-      <DocsMobileNavigation groups={groups} current={current} client:load>
+      <DocsMobileNavigation groups={groups} current={current} mark={mark} client:load>
         {/* A slot stays static HTML, so the color scheme script owns its state without hydration. */}
         <ColorSchemeToggle slot="actions" />
       </DocsMobileNavigation>
     </div>
     <aside>
       <div class="docs-aside-actions">
+        {/* A full load: the homepage has its own layout without the client router. */}
+        <SiteIdentity mark={mark} data-astro-reload />
         <ColorSchemeToggle />
       </div>
       <div data-docs-swap="navigation">

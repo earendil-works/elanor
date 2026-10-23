@@ -1,22 +1,14 @@
 ---
-import {getImage} from 'astro:assets';
-import flowerSource from '../assets/home/elanor-flower.png';
 import HomeGarden from '../components/home/home-garden.astro';
 import {HomePage} from '../components/home/home-page.tsx';
 import HomeLayout from '../layouts/home-layout.astro';
+import {siteMark} from '../lib/site-mark.ts';
 
-const mark = await getImage({src: flowerSource, width: 32, densities: [1, 2, 3], format: 'webp'});
+const mark = await siteMark();
 ---
 
 <HomeLayout>
-  <HomePage
-    mark={{
-      src: mark.src,
-      srcSet: mark.srcSet.attribute,
-      width: Number(mark.attributes.width),
-      height: Number(mark.attributes.height),
-    }}
-  >
+  <HomePage mark={mark}>
     <HomeGarden />
   </HomePage>
 </HomeLayout>

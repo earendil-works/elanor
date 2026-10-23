@@ -76,18 +76,6 @@ export function DocsSideNavigation({
 
   return (
     <SideNavigation.Root aria-label="Documentation">
-      <SideNavigation.List>
-        <SideNavigation.Item>
-          <SideNavigation.Link
-            href="/"
-            active={current === '/'}
-            onClick={onNavigate}
-            data-astro-reload
-          >
-            Home
-          </SideNavigation.Link>
-        </SideNavigation.Item>
-      </SideNavigation.List>
       {groups.map((group) => (
         <SideNavigation.Group key={group.label}>
           <SideNavigation.GroupLabel>{group.label}</SideNavigation.GroupLabel>
