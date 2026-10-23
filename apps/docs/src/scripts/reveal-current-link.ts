@@ -13,7 +13,18 @@ async function revealCurrentLink(): Promise<void> {
     navigation.getAnimations({subtree: true}).map((animation) => animation.finished),
   );
 
-  navigation.querySelector('a[aria-current="page"]')?.scrollIntoView({block: 'nearest'});
+  const link = navigation.querySelector('a[aria-current="page"]');
+  const sidebar = navigation.closest('aside');
+  if (!link || !sidebar) return;
+  // Scrolls the sidebar itself: `scrollIntoView` would also move where the next Tab starts.
+  const linkRect = link.getBoundingClientRect();
+  const sidebarRect = sidebar.getBoundingClientRect();
+  const padding = parseFloat(getComputedStyle(sidebar).scrollPaddingBlockStart) || 0;
+  if (linkRect.top < sidebarRect.top + padding) {
+    sidebar.scrollTop -= sidebarRect.top + padding - linkRect.top;
+  } else if (linkRect.bottom > sidebarRect.bottom - padding) {
+    sidebar.scrollTop += linkRect.bottom - (sidebarRect.bottom - padding);
+  }
 }
 
 document.addEventListener('astro:page-load', () => void revealCurrentLink());

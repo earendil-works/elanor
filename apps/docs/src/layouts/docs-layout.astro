@@ -17,6 +17,7 @@ import {
 } from '../components/docs-side-navigation.tsx';
 import {DocsMobileNavigation} from '../components/docs-mobile-navigation.tsx';
 import {SiteIdentity} from '../components/site-identity.tsx';
+import {SkipLink} from '../components/skip-link.tsx';
 import {componentGroups} from '../lib/component-groups.ts';
 import {componentName} from '../lib/component-name.ts';
 import {siteMark} from '../lib/site-mark.ts';
@@ -84,6 +85,7 @@ const groups: DocsNavigationGroup[] = [
     <ClientRouter />
   </head>
   <body class="docs-layout">
+    <SkipLink />
     <div data-docs-swap="mobile-navigation">
       <DocsMobileNavigation groups={groups} current={current} mark={mark} client:load>
         {/* Slotted, so it stays static HTML for the color scheme script. */}
@@ -106,7 +108,7 @@ const groups: DocsNavigationGroup[] = [
         />
       </div>
     </aside>
-    <ContentTag data-docs-swap="content">
+    <ContentTag id="main" tabindex="-1" data-docs-swap="content">
       <div class:list={[wide ? 'wide' : 'preview']} data-wide={widePreview ? '' : undefined}>
         <slot />
       </div>
