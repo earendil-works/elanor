@@ -26,6 +26,7 @@
     "tokens:build:pi": "pnpm --filter @earendil-works/design-tokens run build:pi",
     "tokens:build:earendil": "pnpm --filter @earendil-works/design-tokens run build:earendil",
     "tokens:build:lefos": "pnpm --filter @earendil-works/design-tokens run build:lefos",
+    "tokens:build:elanor": "pnpm --filter @earendil-works/design-tokens run build:elanor",
     "tokens:check": "pnpm --filter @earendil-works/design-tokens run check",
     "tokens:check:types": "pnpm --filter @earendil-works/design-tokens run check:types",
     "tokens:check:schema": "pnpm --filter @earendil-works/design-tokens run check:schema",

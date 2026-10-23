@@ -1,0 +1,76 @@
+{
+  "$schema": "https://designtokens.org/schemas/2025.10/resolver.json",
+  "name": "Elanor Design Tokens",
+  "version": "2025.10",
+  "description": "Shared design foundations for Elanor.",
+  "sets": {
+    "shared-primitive": {
+      "description": "Shared primitive tokens grouped by DTCG type.",
+      "sources": [
+        {"$ref": "./shared/primitive/color.tokens.json"},
+        {"$ref": "./shared/primitive/dimension.tokens.json"},
+        {"$ref": "./shared/primitive/number.tokens.json"},
+        {"$ref": "./shared/primitive/fontFamily.tokens.json"},
+        {"$ref": "./shared/primitive/fontWeight.tokens.json"},
+        {"$ref": "./shared/primitive/duration.tokens.json"},
+        {"$ref": "./shared/primitive/cubicBezier.tokens.json"}
+      ]
+    },
+    "elanor-primitive": {
+      "description": "Elanor primitive tokens grouped by DTCG type.",
+      "sources": [{"$ref": "./elanor/primitive/color.tokens.json"}]
+    },
+    "shared-semantic": {
+      "description": "Shared mode-independent semantic tokens grouped by DTCG type.",
+      "sources": [
+        {"$ref": "./shared/semantic/dimension.tokens.json"},
+        {"$ref": "./shared/semantic/number.tokens.json"},
+        {"$ref": "./shared/semantic/transition.tokens.json"},
+        {"$ref": "./shared/semantic/fontFamily.tokens.json"},
+        {"$ref": "./shared/semantic/fontWeight.tokens.json"},
+        {"$ref": "./shared/semantic/shadow.tokens.json"},
+        {"$ref": "./shared/semantic/typography.tokens.json"}
+      ]
+    }
+  },
+  "modifiers": {
+    "colorScheme": {
+      "description": "Selects semantic colors for the active color scheme.",
+      "contexts": {
+        "light": [
+          {"$ref": "./shared/semantic/color/light.tokens.json"},
+          {"$ref": "./elanor/semantic/color/light.tokens.json"}
+        ],
+        "dark": [
+          {"$ref": "./shared/semantic/color/dark.tokens.json"},
+          {"$ref": "./elanor/semantic/color/dark.tokens.json"}
+        ]
+      },
+      "default": "light"
+    },
+    "textContext": {
+      "description": "Selects running-text styles for the surrounding content: UI by default, prose inside long-form content.",
+      "contexts": {
+        "ui": [{"$ref": "./shared/semantic/typography/ui.tokens.json"}],
+        "prose": [{"$ref": "./shared/semantic/typography/prose.tokens.json"}]
+      },
+      "default": "ui"
+    },
+    "motion": {
+      "description": "Makes transitions that move content instant when the reader prefers reduced motion.",
+      "contexts": {
+        "default": [],
+        "reduced": [{"$ref": "./shared/semantic/transition/reduced.tokens.json"}]
+      },
+      "default": "default"
+    }
+  },
+  "resolutionOrder": [
+    {"$ref": "#/sets/shared-primitive"},
+    {"$ref": "#/sets/elanor-primitive"},
+    {"$ref": "#/sets/shared-semantic"},
+    {"$ref": "#/modifiers/colorScheme"},
+    {"$ref": "#/modifiers/textContext"},
+    {"$ref": "#/modifiers/motion"}
+  ]
+}

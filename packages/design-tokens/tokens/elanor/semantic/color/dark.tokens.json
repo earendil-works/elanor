@@ -1,0 +1,14 @@
+{
+  "$schema": "https://designtokens.org/schemas/2025.10/format.json",
+  "semantic": {
+    "color": {
+      "$type": "color",
+      "background": {
+        "canvas": {
+          "$value": "{primitive.color.night}",
+          "$description": "Use as the foundational background of a page or application."
+        }
+      }
+    }
+  }
+}
