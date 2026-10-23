@@ -96,6 +96,8 @@ export function BrandLogos({brand, pressKit, children}: BrandLogosProps): React.
                   >
                     <img
                       src={url(asset.files.svg)}
+                      loading="lazy"
+                      decoding="async"
                       alt={`${brand.name} ${kindLabels[kind].toLowerCase()}, ${treatmentLabels[asset.treatment].toLowerCase()}`}
                     />
                   </div>

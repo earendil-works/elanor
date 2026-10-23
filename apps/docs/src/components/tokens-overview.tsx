@@ -36,7 +36,8 @@ export function TokensOverview({areas}: TokensOverviewProps): React.JSX.Element 
         </Heading>
         <Text>
           Import one brand stylesheet: <InlineCode>radius</InlineCode>, <InlineCode>pi</InlineCode>,{' '}
-          <InlineCode>earendil</InlineCode>, or <InlineCode>lefos</InlineCode>.
+          <InlineCode>earendil</InlineCode>, <InlineCode>lefos</InlineCode>, or{' '}
+          <InlineCode>elanor</InlineCode>.
         </Text>
         <CodeSnippet
           id="token-usage"

@@ -14,6 +14,7 @@ const brandLabels: Readonly<Record<string, string>> = {
   pi: 'Pi',
   earendil: 'Earendil',
   lefos: 'Lefos',
+  elanor: 'Elanor',
 };
 
 export function tokenBrandLabel(brand: string): string {
