@@ -7,7 +7,7 @@ interface Props extends Courier {
   readonly fireflySrc: string;
 }
 
-const {index, label, href, external = false, beeSrc, fireflySrc} = Astro.props;
+const {index, label, href, beeSrc, fireflySrc} = Astro.props;
 
 // Each carrier keeps its own rhythm so the five never move in step.
 const PAPER_TILTS = [-2, 3, -3, 2, -1];
@@ -120,7 +120,6 @@ const rig = {
     <span class="paper-wrap">
       <span class="paper">
         {label}
-        {external && <span class="visually-hidden"> (GitHub)</span>}
         <span class="paper-anchor paper-anchor-start" aria-hidden="true"></span>
         <span class="paper-anchor paper-anchor-end" aria-hidden="true"></span>
       </span>

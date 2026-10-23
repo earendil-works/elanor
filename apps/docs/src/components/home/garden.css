@@ -404,16 +404,6 @@
   inset-inline-end: 7px;
 }
 
-/* Spoken with the label, such as "(GitHub)" for links that leave the docs. */
-.visually-hidden {
-  position: absolute;
-  inline-size: 1px;
-  block-size: 1px;
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
-}
-
 .paper-wrap {
   position: relative;
   z-index: 1;
