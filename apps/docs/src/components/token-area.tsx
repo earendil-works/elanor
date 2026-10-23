@@ -135,7 +135,13 @@ const onCanvas = (color: string, canvas: string) => ({
   background: `linear-gradient(${color}, ${color}), ${canvas}`,
 });
 
-function TokenPreview({preview, nameId}: {readonly preview: Preview; readonly nameId: string}) {
+function TokenPreview({
+  preview,
+  nameId,
+}: {
+  readonly preview: Preview;
+  readonly nameId: string;
+}): React.JSX.Element | null {
   switch (preview.kind) {
     case 'color':
       return (

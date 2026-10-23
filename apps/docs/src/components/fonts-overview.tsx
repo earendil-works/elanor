@@ -1,7 +1,7 @@
 import {CodeSnippet, Heading, InlineCode, KeyValue, Link, Text} from '@earendil-works/elanor-react';
-import {Fragment, type ReactNode} from 'react';
+import {Fragment, type ReactElement, type ReactNode} from 'react';
 
-import type {FontFamily, FontLink, FontsPage} from '../lib/fonts.ts';
+import type {FontFamily, FontsPage} from '../lib/fonts.ts';
 import {CopyStatus, StaticCopyButton} from './static-copy-button.tsx';
 
 import styles from './fonts-overview.module.css';
@@ -19,24 +19,27 @@ const glyphs = [
   '0123456789 &@#%?!(){}[]',
 ];
 
-function Links({
-  links,
-  code = false,
-}: {
-  readonly links: readonly FontLink[];
-  readonly code?: boolean;
-}) {
-  return links.map((link, index) => (
-    <Fragment key={link.href}>
-      {index > 0 ? ', ' : null}
-      <Link href={link.href}>
-        {code ? <code className={styles.code}>{link.label}</code> : link.label}
-      </Link>
-    </Fragment>
-  ));
+/** Its children, separated by commas. */
+function CommaList({children}: {readonly children: readonly ReactElement[]}): React.JSX.Element {
+  return (
+    <>
+      {children.map((child, index) => (
+        <Fragment key={child.key ?? index}>
+          {index > 0 ? ', ' : null}
+          {child}
+        </Fragment>
+      ))}
+    </>
+  );
 }
 
-function Fact({label, children}: {readonly label: string; readonly children: ReactNode}) {
+function Fact({
+  label,
+  children,
+}: {
+  readonly label: string;
+  readonly children: ReactNode;
+}): React.JSX.Element {
   return (
     <>
       <KeyValue.Key>{label}</KeyValue.Key>
@@ -80,14 +83,13 @@ function Family({family}: {readonly family: FontFamily}): React.JSX.Element {
         {family.downloads.length > 0 ? (
           <Fact label="Desktop">
             OTF{' '}
-            {family.downloads.map((download, index) => (
-              <Fragment key={download.href}>
-                {index > 0 ? ', ' : null}
-                <Link href={download.href} download data-astro-prefetch="false">
+            <CommaList>
+              {family.downloads.map((download) => (
+                <Link key={download.href} href={download.href} download data-astro-prefetch="false">
                   {download.label}
                 </Link>
-              </Fragment>
-            ))}
+              ))}
+            </CommaList>
           </Fact>
         ) : null}
         {family.usage.map((usage) => (
@@ -95,12 +97,24 @@ function Family({family}: {readonly family: FontFamily}): React.JSX.Element {
             <span className={styles.usage}>
               {usage.styles.length > 0 ? (
                 <span>
-                  <Links links={usage.styles} />
+                  <CommaList>
+                    {usage.styles.map((link) => (
+                      <Link key={link.href} href={link.href}>
+                        {link.label}
+                      </Link>
+                    ))}
+                  </CommaList>
                 </span>
               ) : null}
               {usage.tokens.length > 0 ? (
                 <span>
-                  <Links links={usage.tokens} code />
+                  <CommaList>
+                    {usage.tokens.map((link) => (
+                      <Link key={link.href} href={link.href}>
+                        <code className={styles.code}>{link.label}</code>
+                      </Link>
+                    ))}
+                  </CommaList>
                 </span>
               ) : null}
             </span>
