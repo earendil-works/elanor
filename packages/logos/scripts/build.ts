@@ -47,7 +47,7 @@ for (const brand of Object.keys(brands) as BrandId[]) {
 
   for (const kind of kinds) {
     const color = await composeArtwork(brand, kind, false);
-    const monochrome = brandConfig.painting ? color : await composeArtwork(brand, kind, true);
+    const monochrome = brandConfig.painted ? color : await composeArtwork(brand, kind, true);
     const lockup = lockupOf(kind);
     artworkKinds[kind] = {...(lockup ? {lockup} : {}), color, monochrome};
     for (const path of color.paths) if (path.token) usedTokens.add(path.token);
@@ -84,8 +84,8 @@ for (const brand of Object.keys(brands) as BrandId[]) {
         {light: tokenHex(tokens, token, 'light'), dark: tokenHex(tokens, token, 'dark')},
       ]),
   );
-  // A painting's artwork is too large for a React component.
-  if (!brandConfig.painting) artwork[brand] = {colors, kinds: artworkKinds};
+  // Painted artwork is too large for a React component.
+  if (!brandConfig.painted) artwork[brand] = {colors, kinds: artworkKinds};
 }
 
 await writeFile(

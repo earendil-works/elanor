@@ -1,5 +1,5 @@
-// Validates that every source is clean and links only to existing logo tokens. Only a painting's
-// mark may have fixed colors.
+// Validates that every source is clean and links only to existing logo tokens. Only painted marks
+// may have fixed colors.
 import {readdir, readFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 
@@ -37,9 +37,9 @@ for (const entry of await readdir(sourceDirectory, {withFileTypes: true})) {
     );
     for (const path of artwork.paths) {
       if (path.token === undefined) {
-        if (!brandConfig.painting || file !== 'mark.svg')
+        if (!brandConfig.painted || file !== 'mark.svg')
           throw new Error(
-            `sources/${brand}/${file}: fixed color ${path.color}; only a painting's mark may have them`,
+            `sources/${brand}/${file}: fixed color ${path.color}; only painted marks may have them`,
           );
       } else if (!path.token.startsWith(`${logoTokens.group}.`) || !tokens.tokens[path.token]) {
         throw new Error(`sources/${brand}/${file}: fill links to unknown logo token ${path.token}`);

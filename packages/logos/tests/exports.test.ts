@@ -207,7 +207,7 @@ describe('built exports', () => {
     ]);
   });
 
-  test('the painting gets color logos as SVG and PNG, previews, profile pictures, and raster favicons', async () => {
+  test('the painted brand gets color logos as SVG and PNG, previews, profile pictures, and raster favicons', async () => {
     const manifest = JSON.parse(await readFile(resolve(dist, 'manifest.json'), 'utf8'));
     const elanor = manifest.brands.find((brand: {id: string}) => brand.id === 'elanor');
     expect(elanor.backgrounds).toEqual({light: '#ebe7e4', dark: '#141a17'});
@@ -222,7 +222,7 @@ describe('built exports', () => {
     expect(elanor.avatars).toHaveLength(4);
     expect(elanor.favicons.svg).toBeUndefined();
     expect(elanor.favicons.ico).toBe('favicons/elanor/favicon.ico');
-    // The painting keeps its colors; the wordmark follows the scheme.
+    // The painted mark keeps its colors; the wordmark follows the scheme.
     const dark = await readFile(
       resolve(dist, 'svg/elanor/elanor-logo-wordmark-horizontal-on-dark.svg'),
       'utf8',

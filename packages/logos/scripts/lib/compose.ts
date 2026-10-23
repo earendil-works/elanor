@@ -33,10 +33,10 @@ export const kinds: LogoKind[] = [
   ),
 ];
 
-/** A brand's color treatments; a painting has no one-color version. */
+/** A brand's color treatments; painted marks have no one-color version. */
 export function brandTreatments(brand: BrandId): readonly Treatment[] {
   const brandConfig: BrandConfig = brands[brand];
-  return brandConfig.painting ? treatments.filter(({monochrome}) => !monochrome) : treatments;
+  return brandConfig.painted ? treatments.filter(({monochrome}) => !monochrome) : treatments;
 }
 
 /** The lockup a kind composes, or undefined for the symbol alone. */

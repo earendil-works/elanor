@@ -34,7 +34,7 @@ export const exportPlugins: ExportPlugin[] = [
     select: {brands: kitBrands, kinds: ['logo-wordmark-horizontal'], treatments: ['on-light']},
     heights: [32, 64],
   }),
-  // The painting's SVGs are too large to preview; the docs show these at 1×, 2×, and 3×.
+  // Painted SVGs are too large to preview; the docs show these at 1×, 2×, and 3×.
   pngHeights({name: 'preview', select: {brands: ['elanor']}, heights: [48, 96, 144]}),
   print({
     select: {brands: kitBrands},
@@ -45,7 +45,7 @@ export const exportPlugins: ExportPlugin[] = [
   }),
   favicons({
     treatments: {light: 'monochrome-on-light', dark: 'monochrome-on-dark'},
-    // The painting has no one-color version, and its SVG is too large for a favicon.
+    // Painted marks have no one-color version, and their SVGs are too large for a favicon.
     brands: {elanor: {treatments: {light: 'on-light', dark: 'on-dark'}, svg: false}},
     svgSize: 32,
     icoSizes: [16, 32, 48],

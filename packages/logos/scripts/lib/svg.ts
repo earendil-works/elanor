@@ -26,7 +26,7 @@ const pathPattern =
 /**
  * Parses a logo source. Sources are deliberately strict: an `<svg>` with a
  * viewBox at the origin, containing only paths whose fill is a token reference
- * or, in traced paintings, a fixed color.
+ * or, in painted marks, a fixed color.
  */
 export function parseSource(source: string, fileName: string): SourceArtwork {
   const document = documentPattern.exec(source);

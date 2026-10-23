@@ -55,7 +55,7 @@ pnpm check   # source geometry and token references
 pnpm test
 ```
 
-- `sources/<brand>/`: path-only SVGs from Figma: `mark`, optional `mark-monochrome`, `wordmark`, and `wordmark-small`. Fills reference tokens, e.g. `fill="{semantic.color.logo.symbol.1}"`. Brands with `painting: true` (Elanor) may use fixed `#rrggbb` fills in `mark`.
+- `sources/<brand>/`: path-only SVGs from Figma: `mark`, optional `mark-monochrome`, `wordmark`, and `wordmark-small`. Fills reference tokens, e.g. `fill="{semantic.color.logo.symbol.1}"`. Brands with `painted: true` (Elanor) may use fixed `#rrggbb` fills in `mark`.
 - [`config.ts`](./config.ts): brands, colors, clear space, and lockups. The build resolves colors and positions paths without changing their geometry.
 - [`exports.config.ts`](./exports.config.ts): ordered [plugins](./scripts/exports/) for PNGs, CMYK PDFs, favicons, avatars, email signatures, guidelines, and press kits. Each receives the assets, brand tokens, and manifest.
 

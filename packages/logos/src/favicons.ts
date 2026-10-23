@@ -8,7 +8,7 @@ const distDirectory = resolve(packageDirectory, 'dist');
 /** File names of the favicons the `<head>` tags link to. */
 export interface FaviconFiles {
   ico: string;
-  /** Absent for brands without an SVG favicon, such as a painting. */
+  /** Absent for brands without an SVG favicon, such as painted ones. */
   svg?: string;
   appleTouchIcon: string;
   webmanifest: string;
