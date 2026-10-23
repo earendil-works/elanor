@@ -253,6 +253,20 @@ function TokenPreview({preview, nameId}: {readonly preview: Preview; readonly na
           aria-hidden="true"
         />
       );
+    case 'line-height':
+      return (
+        <span
+          className={styles.lines}
+          style={{
+            fontFamily: preview.family,
+            fontSize: preview.fontSize,
+            lineHeight: preview.lineHeight,
+          }}
+          aria-hidden="true"
+        >
+          Sphinx of black quartz
+        </span>
+      );
     case 'motion-value':
       return <MotionValue preview={preview} nameId={nameId} />;
     case 'easing':

@@ -429,6 +429,12 @@ export type TokenPreview =
     }
   | {readonly kind: 'opacity'; readonly opacity: string}
   | {
+      readonly kind: 'line-height';
+      readonly lineHeight: string;
+      readonly fontSize: string;
+      readonly family: string;
+    }
+  | {
       readonly kind: 'motion-value';
       /** Travel slides by a distance; scale grows from a size. */
       readonly change: 'travel' | 'scale';
@@ -961,6 +967,18 @@ function describe(
         within(token.path, `semantic.number.${kind}`) ||
         within(token.path, `primitive.number.${kind}`);
       if (is('opacity')) return {values, preview: {kind: 'opacity', opacity: token.css}};
+      const lineHeight = Number(token.value);
+      // Two lines of body text; unusual values that would stretch the row show the value only.
+      if (is('lineHeight') && lineHeight > 0 && lineHeight <= 3)
+        return {
+          values,
+          preview: {
+            kind: 'line-height',
+            lineHeight: token.css,
+            fontSize: cssOf(context, 'semantic.typography.ui.primary.fontSize'),
+            family: cssOf(context, 'semantic.fontFamily.ui'),
+          },
+        };
       const scale = Number(token.value);
       // Scales outside 0–1 would draw beyond the outline; they show the value only.
       if (is('scale') && scale >= 0 && scale <= 1) {

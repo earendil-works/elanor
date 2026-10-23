@@ -441,6 +441,14 @@
   font: var(--semantic-typography-heading-app-5);
 }
 
+/* Body text at the line height, wrapped in the column so the space between lines shows. */
+.lines {
+  display: block;
+  max-inline-size: 100%;
+  overflow: hidden;
+  color: var(--semantic-color-text-primary);
+}
+
 /* Lengths at true size, except scaled ones; scaled ones show their full width as a track. */
 .barTrack {
   display: block;
