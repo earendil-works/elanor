@@ -1,14 +1,7 @@
 import {SearchOffIcon} from '@earendil-works/elanor-icons-boiled-react';
-import {
-  Button,
-  Card,
-  EmptyState,
-  Grid,
-  Heading,
-  InlineCode,
-  Link,
-  Search,
-} from '@earendil-works/elanor-react';
+import {Button, EmptyState, Grid, Heading, InlineCode, Search} from '@earendil-works/elanor-react';
+
+import {LinkCard} from './link-card.tsx';
 
 import styles from './components-overview.module.css';
 
@@ -31,7 +24,7 @@ interface ComponentsOverviewProps {
 
 function Description({text}: {readonly text: string}): React.JSX.Element {
   return (
-    <p className={styles.description}>
+    <p>
       {text
         .split('`')
         .map((part, index) =>
@@ -42,26 +35,26 @@ function Description({text}: {readonly text: string}): React.JSX.Element {
 }
 
 /**
- * Every component as a card, grouped by category. It renders as static HTML; `scripts/components-filter.ts`
- * filters it through the `data-components-*` attributes.
+ * Every component as a card, grouped by category. It renders as static HTML; `scripts/list-filter.ts`
+ * filters it through the `data-filter-*` attributes.
  */
 export function ComponentsOverview({groups}: ComponentsOverviewProps): React.JSX.Element {
   const total = groups.reduce((sum, group) => sum + group.components.length, 0);
 
   return (
-    <div className={styles.overview} data-components-overview>
+    <div className={styles.overview} data-filter="components">
       <Search
         aria-label="Search components"
         placeholder={`Search ${total} components`}
-        data-components-search
+        data-filter-search
       />
-      <p role="status" className={styles.visuallyHidden} data-components-status />
+      <p role="status" className={styles.visuallyHidden} data-filter-status />
       {groups.map((group) => (
         <section
           key={group.category}
           className={styles.group}
           aria-labelledby={`category-${group.category}`}
-          data-components-group
+          data-filter-group
         >
           <Heading level={2} size={4} id={`category-${group.category}`}>
             {group.label}
@@ -72,22 +65,17 @@ export function ComponentsOverview({groups}: ComponentsOverviewProps): React.JSX
                 key={component.id}
                 span={{base: 'full', xSmall: 6, medium: 4}}
                 render={<li />}
-                data-components-item
+                data-filter-item
               >
-                <Card className={styles.card}>
-                  <Heading level={3} size={6}>
-                    <Link className={styles.link} href={`/components/${component.id}/`}>
-                      {component.name}
-                    </Link>
-                  </Heading>
+                <LinkCard href={`/components/${component.id}/`} title={component.name}>
                   <Description text={component.description} />
-                </Card>
+                </LinkCard>
               </Grid.Item>
             ))}
           </Grid.Root>
         </section>
       ))}
-      <div hidden data-components-empty>
+      <div hidden data-filter-empty>
         <EmptyState.Root>
           <EmptyState.Illustration>
             <SearchOffIcon size={64} />
@@ -96,12 +84,12 @@ export function ComponentsOverview({groups}: ComponentsOverviewProps): React.JSX
             <EmptyState.Copy>
               <EmptyState.Title level={2}>No matching components</EmptyState.Title>
               <EmptyState.Description>
-                Nothing matches “<span data-components-query />
+                Nothing matches “<span data-filter-query />
                 ”. Try a shorter or different word.
               </EmptyState.Description>
             </EmptyState.Copy>
             <EmptyState.Actions>
-              <Button hierarchy="secondary" data-components-clear>
+              <Button hierarchy="secondary" data-filter-clear>
                 Clear search
               </Button>
             </EmptyState.Actions>

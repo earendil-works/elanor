@@ -20,41 +20,6 @@
   list-style: none;
 }
 
-/* The title link covers the whole card, so the card is one target. */
-.card {
-  position: relative;
-  block-size: 100%;
-  border: var(--semantic-dimension-border-width-default) solid
-    var(--semantic-color-border-secondary);
-  border-radius: var(--semantic-dimension-radius-medium);
-}
-
-.card:has(.link:hover) {
-  background: var(--semantic-color-background-fill-ghost-hover);
-}
-
-.card:has(.link:focus-visible) {
-  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
-  outline-offset: var(--semantic-dimension-border-width-medium);
-}
-
-.link::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  border-radius: inherit;
-}
-
-.link:focus-visible {
-  outline: none;
-}
-
-.description {
-  margin: 0;
-  color: var(--semantic-color-text-secondary);
-  font: var(--semantic-typography-ui-secondary);
-}
-
 .visuallyHidden {
   position: absolute;
   inline-size: var(--semantic-dimension-border-width-small);
