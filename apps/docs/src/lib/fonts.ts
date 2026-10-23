@@ -3,7 +3,7 @@ import {resolve} from 'node:path';
 
 import {type ApiToken, type ApiTokenValue, loadTokens} from './api.ts';
 import {fontsDist} from './packages.ts';
-import {tokenAreaHref, tokenAreaPage, tokenBrandOptions} from './token-pages.ts';
+import {firstFamily, tokenAreaHref, tokenAreaPage, tokenBrandOptions} from './token-pages.ts';
 
 /*
  * Data for the fonts page, read at build time: each family's faces and files from its stylesheet in
@@ -41,7 +41,7 @@ const familySpecs: readonly FamilySpec[] = [
 const licensesHref = 'https://github.com/earendil-works/elanor/blob/main/packages/fonts/licenses';
 
 /** Where the docs serve the desktop font files (`pages/fonts/files/[file].ts`). */
-export const fontDownloadHref = (file: string) => `/fonts/files/${file}`;
+const fontDownloadHref = (file: string) => `/fonts/files/${file}`;
 
 export interface FontLink {
   readonly label: string;
@@ -151,14 +151,6 @@ export async function fontDownloads(): Promise<string[]> {
 }
 
 // Tokens
-
-const firstFamily = (value: unknown): string | undefined => {
-  if (Array.isArray(value)) return value[0] === undefined ? undefined : String(value[0]);
-  if (typeof value === 'string') return value.split(',')[0]?.replaceAll(/['"]/g, '').trim();
-  if (value && typeof value === 'object' && 'fontFamily' in value)
-    return firstFamily(value.fontFamily);
-  return undefined;
-};
 
 /** The first family a token names, in every context. */
 function familiesOf(token: ApiToken): string[] {

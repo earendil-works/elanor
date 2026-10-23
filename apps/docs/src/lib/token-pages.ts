@@ -757,8 +757,14 @@ const bezierOf = (value: unknown): Bezier => {
   return [x1, y1, x2, y2];
 };
 
-const firstFamily = (family: unknown) =>
-  Array.isArray(family) ? String(family[0]) : String(family ?? '');
+/** The first family in a font family or typography value. */
+export const firstFamily = (value: unknown): string | undefined => {
+  if (Array.isArray(value)) return value[0] === undefined ? undefined : String(value[0]);
+  if (typeof value === 'string') return value.split(',')[0]?.replaceAll(/['"]/g, '').trim();
+  if (value && typeof value === 'object' && 'fontFamily' in value)
+    return firstFamily(value.fontFamily);
+  return undefined;
+};
 
 function motionRole(path: string): MotionRole {
   if (within(path, 'semantic.transition.movement')) return 'slide';
@@ -892,7 +898,7 @@ function describe(
         {label: 'Size', value: dimensionText(value.fontSize, size)},
         {label: 'Line height', value: String(value.lineHeight)},
         {label: 'Weight', value: String(value.fontWeight)},
-        {label: 'Family', value: firstFamily(value.fontFamily)},
+        {label: 'Family', value: firstFamily(value.fontFamily) ?? ''},
       ];
       if (value.letterSpacing?.value) values.push({label: 'Letter spacing', value: letterSpacing});
       if (alias) values.push({label: 'Alias of', value: alias.name, alias});
