@@ -309,6 +309,20 @@ export interface TableOfContentsMenuPopupProps extends HTMLAttributes<HTMLElemen
   readonly label?: string;
 }
 
+/**
+ * Moves focus into the opened list like Base UI does by default: to the first link, or to the
+ * popup itself when opened by touch. It focuses without scrolling, though: while the popup scales
+ * in, its first link can sit under the page's `scroll-padding`, and scrolling to it would close
+ * the menu again.
+ */
+function focusOpenedMenu(popup: HTMLElement | null, interactionType: string): boolean {
+  if (!popup) return true;
+  const target =
+    interactionType === 'touch' ? popup : (popup.querySelector<HTMLElement>('a[href]') ?? popup);
+  target.focus({preventScroll: true});
+  return false;
+}
+
 /** The sections, in a `nav` under the trigger. Put a `List` of `Item`s inside. */
 export function TableOfContentsMenuPopup({
   ref,
@@ -317,10 +331,20 @@ export function TableOfContentsMenuPopup({
   className,
   ...props
 }: TableOfContentsMenuPopupProps) {
+  const popupRef = useRef<HTMLDivElement>(null);
+  const initialFocus = useCallback(
+    (interactionType: string) => focusOpenedMenu(popupRef.current, interactionType),
+    [],
+  );
   return (
     <BasePopover.Portal>
       <BasePopover.Positioner align="start" className={styles.menuPositioner}>
-        <BasePopover.Popup aria-label={label} className={styles.menuPopup}>
+        <BasePopover.Popup
+          ref={popupRef}
+          aria-label={label}
+          className={styles.menuPopup}
+          initialFocus={initialFocus}
+        >
           <nav {...props} ref={ref} aria-label={label} className={className}>
             {children}
           </nav>

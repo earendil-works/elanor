@@ -37,7 +37,7 @@ Put another `List` inside an `Item`, after its `Link`, for subsections. Nested e
 
 ## Menu
 
-For layouts without room for the list beside the content, `Menu` collapses the table of contents into a bar with a dropdown. `MenuTrigger` shows the current section; `MenuPopup` holds the same `List`, `Item`, and `Link` parts, which look like dropdown items there, and choosing a link closes it. The list also closes when the bar's scroll container scrolls.
+For layouts without room for the list beside the content, `Menu` collapses the table of contents into a bar with a dropdown. `MenuTrigger` shows the current section; `MenuPopup` holds the same `List`, `Item`, and `Link` parts, which look like dropdown items there, and choosing a link closes it. The list also closes when the bar's scroll container scrolls. Opening it moves focus to the first link, or to the list when opened by touch, without scrolling the page.
 
 <Demo example="./examples/menu.tsx" />
 
