@@ -95,7 +95,7 @@ export function BrandLogos({brand, pressKit, children}: BrandLogosProps): React.
           {brand.name}
         </Heading>
         {pressKit ? (
-          <Link href={url(pressKit)} download>
+          <Link href={url(pressKit)} download data-astro-prefetch="false">
             Download press kit
           </Link>
         ) : null}
@@ -124,16 +124,16 @@ export function BrandLogos({brand, pressKit, children}: BrandLogosProps): React.
                   </div>
                   <Text>{treatmentLabels[asset.treatment]}</Text>
                   <Stack direction="row" gap="small" wrap="wrap">
-                    <Link href={url(asset.files.svg)} download>
+                    <Link href={url(asset.files.svg)} download data-astro-prefetch="false">
                       SVG
                     </Link>
                     {asset.files.png ? (
-                      <Link href={url(asset.files.png)} download>
+                      <Link href={url(asset.files.png)} download data-astro-prefetch="false">
                         PNG
                       </Link>
                     ) : null}
                     {Object.entries(asset.files.pdf ?? {}).map(([profile, path]) => (
-                      <Link key={profile} href={url(path)} download>
+                      <Link key={profile} href={url(path)} download data-astro-prefetch="false">
                         {printProfileLabel(profile)}
                       </Link>
                     ))}
@@ -170,7 +170,12 @@ export function BrandLogos({brand, pressKit, children}: BrandLogosProps): React.
                   <Text>{treatmentLabels[treatment as LogoAsset['treatment']]}</Text>
                   <Stack direction="row" gap="small" wrap="wrap">
                     {sizes.map((avatar) => (
-                      <Link key={avatar.path} href={url(avatar.path)} download>
+                      <Link
+                        key={avatar.path}
+                        href={url(avatar.path)}
+                        download
+                        data-astro-prefetch="false"
+                      >
                         {avatar.size} px
                       </Link>
                     ))}
@@ -206,7 +211,7 @@ export function BrandLogos({brand, pressKit, children}: BrandLogosProps): React.
                   </div>
                   <Text>{label}</Text>
                   <Text className={styles.note}>{use}</Text>
-                  <Link href={url(path)} download>
+                  <Link href={url(path)} download data-astro-prefetch="false">
                     {fileName(path)}
                   </Link>
                 </li>
@@ -218,7 +223,7 @@ export function BrandLogos({brand, pressKit, children}: BrandLogosProps): React.
               <Text>
                 Put the files in your site's root, with{' '}
                 {brand.favicons?.webmanifest ? (
-                  <Link href={url(brand.favicons.webmanifest)} download>
+                  <Link href={url(brand.favicons.webmanifest)} download data-astro-prefetch="false">
                     site.webmanifest
                   </Link>
                 ) : (

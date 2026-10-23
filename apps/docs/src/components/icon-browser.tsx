@@ -194,7 +194,7 @@ export function IconBrowser(): React.JSX.Element {
             >
               {importLine}
             </CodeSnippet>
-            <Link href={`/api/icons/${selected[0]}.svg`} download>
+            <Link href={`/api/icons/${selected[0]}.svg`} download data-astro-prefetch="false">
               Download SVG
             </Link>
           </Stack>
