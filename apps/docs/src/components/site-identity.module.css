@@ -1,18 +1,20 @@
-.identity {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--semantic-dimension-space-gap-small);
-  color: var(--semantic-color-text-primary);
-  font: var(--semantic-typography-heading-app-4);
-  text-decoration: none;
-}
+@layer components {
+  .identity {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--semantic-dimension-space-gap-small);
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-heading-app-4);
+    text-decoration: none;
+  }
 
-.mark {
-  display: block;
-  flex: none;
-  inline-size: var(--semantic-dimension-size-medium);
-  block-size: var(--semantic-dimension-size-medium);
-  /* Raises the stamens, 8.5% below the image center, to the middle of the text. */
-  /* stylelint-disable-next-line design-tokens/token-property-compatibility -- a static optical offset, not travel. */
-  translate: 0 calc(var(--semantic-dimension-size-medium) * -0.085);
+  .mark {
+    display: block;
+    flex: none;
+    inline-size: var(--semantic-dimension-size-medium);
+    block-size: var(--semantic-dimension-size-medium);
+    /* Raises the stamens, 8.5% below the image center, to the middle of the text. */
+    /* stylelint-disable-next-line design-tokens/token-property-compatibility -- a static optical offset, not travel. */
+    translate: 0 calc(var(--semantic-dimension-size-medium) * -0.085);
+  }
 }

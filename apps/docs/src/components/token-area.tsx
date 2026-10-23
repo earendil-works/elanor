@@ -422,12 +422,12 @@ function Swatch({entry}: {readonly entry: TokenEntry}): React.JSX.Element {
       <span className={styles.tileSwatch} style={{background: color}} aria-hidden="true" />
       <span className={styles.tileMeta}>
         <span className={styles.tileStep}>
-          <code id={variableId} className={styles.visuallyHidden}>
+          <code id={variableId} className="visually-hidden">
             {state.cssVariable}
           </code>
           {entry.step}
           {entry.brandSpecific ? (
-            <span className={styles.visuallyHidden}> Brand-specific</span>
+            <span className="visually-hidden"> Brand-specific</span>
           ) : null}
         </span>
         <StaticCopyButton
@@ -543,7 +543,7 @@ export function TokenArea({page}: {readonly page: TokenAreaPage}): React.JSX.Ele
           Expand all
         </Button>
       </div>
-      <p role="status" className={styles.visuallyHidden} data-filter-status />
+      <p role="status" className="visually-hidden" data-filter-status />
       <CopyStatus />
       {only ? (
         <div className={styles.groups}>

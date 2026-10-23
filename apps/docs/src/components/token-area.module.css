@@ -1,743 +1,736 @@
-.area {
-  display: flex;
-  flex-direction: column;
-  gap: var(--semantic-dimension-space-gap-x-large);
-}
+@layer components {
+  .area {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-gap-x-large);
+  }
 
-.note {
-  margin: 0;
-  color: var(--semantic-color-text-secondary);
-  font: var(--semantic-typography-ui-secondary);
-}
+  .note {
+    margin: 0;
+    color: var(--semantic-color-text-secondary);
+    font: var(--semantic-typography-ui-secondary);
+  }
 
-/* Brand picker */
-.brandList {
-  display: flex;
-  flex-wrap: wrap;
-  gap: var(--semantic-dimension-space-control-gap-x-large);
-  margin: 0;
-  padding: 0;
-  border-block-end: var(--semantic-dimension-border-width-default) solid
-    var(--semantic-color-border-secondary);
-  list-style: none;
-}
+  /* Brand picker */
+  .brandList {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--semantic-dimension-space-control-gap-x-large);
+    margin: 0;
+    padding: 0;
+    border-block-end: var(--semantic-dimension-border-width-default) solid
+      var(--semantic-color-border-secondary);
+    list-style: none;
+  }
 
-.brand {
-  position: relative;
-  display: block;
-  padding-block-start: var(--semantic-dimension-space-control-padding-block-large);
-  padding-block-end: calc(
-    var(--semantic-dimension-space-control-padding-block-large) -
-      var(--semantic-dimension-border-width-default)
-  );
-  color: var(--semantic-color-text-primary);
-  font: var(--semantic-typography-ui-primary);
-  text-decoration: none;
-}
+  .brand {
+    position: relative;
+    display: block;
+    padding-block-start: var(--semantic-dimension-space-control-padding-block-large);
+    padding-block-end: calc(
+      var(--semantic-dimension-space-control-padding-block-large) -
+        var(--semantic-dimension-border-width-default)
+    );
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-ui-primary);
+    text-decoration: none;
+  }
 
-.brand[aria-current='page'] {
-  font-weight: var(--semantic-font-weight-ui-selected);
-}
+  .brand[aria-current='page'] {
+    font-weight: var(--semantic-font-weight-ui-selected);
+  }
 
-.brand[aria-current='page']::after,
-.brand[href]:hover:not([aria-current])::after {
-  position: absolute;
-  inset-inline: 0;
-  inset-block-end: calc(-1 * var(--semantic-dimension-border-width-default));
-  block-size: var(--semantic-dimension-border-width-default);
-  background: var(--semantic-color-border-primary);
-  content: '';
-}
-
-.brand:focus-visible {
-  border-radius: var(--semantic-dimension-radius-small);
-  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
-  outline-offset: var(--semantic-dimension-border-width-medium);
-}
-
-.brand[aria-disabled='true'] {
-  cursor: not-allowed;
-  opacity: var(--semantic-number-opacity-disabled);
-}
-
-@media (forced-colors: active) {
   .brand[aria-current='page']::after,
   .brand[href]:hover:not([aria-current])::after {
-    background: Highlight;
-    forced-color-adjust: none;
+    position: absolute;
+    inset-inline: 0;
+    inset-block-end: calc(-1 * var(--semantic-dimension-border-width-default));
+    block-size: var(--semantic-dimension-border-width-default);
+    background: var(--semantic-color-border-primary);
+    content: '';
+  }
+
+  .brand:focus-visible {
+    border-radius: var(--semantic-dimension-radius-small);
+    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline-offset: var(--semantic-dimension-border-width-medium);
   }
 
   .brand[aria-disabled='true'] {
-    color: GrayText;
-  }
-}
-
-.toolbar {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--semantic-dimension-space-gap-small);
-}
-
-.search {
-  flex: 1;
-  min-inline-size: 0;
-}
-
-.section {
-  display: flex;
-  flex-direction: column;
-  gap: var(--semantic-dimension-space-gap-small);
-}
-
-.groups {
-  display: flex;
-  flex-direction: column;
-}
-
-.section[hidden],
-.group[hidden],
-.entry[hidden],
-.row[hidden],
-.tile[hidden] {
-  display: none;
-}
-
-/* Groups */
-.group {
-  container: token-group / inline-size;
-  border-block-end: var(--semantic-dimension-border-width-small) solid
-    var(--semantic-color-border-secondary);
-  scroll-margin-block-start: var(--semantic-dimension-space-padding-x-large);
-}
-
-.groups > .group:first-child {
-  border-block-start: var(--semantic-dimension-border-width-small) solid
-    var(--semantic-color-border-secondary);
-}
-
-.summary {
-  display: flex;
-  align-items: center;
-  gap: var(--semantic-dimension-space-gap-small);
-  padding-block: var(--semantic-dimension-space-padding-large);
-  list-style: none;
-  cursor: pointer;
-}
-
-.summary::-webkit-details-marker {
-  display: none;
-}
-
-.summary:hover {
-  background: var(--semantic-color-background-fill-ghost-hover);
-}
-
-.summary:focus-visible {
-  border-radius: var(--semantic-dimension-radius-small);
-  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
-  outline-offset: var(--semantic-dimension-border-width-medium);
-}
-
-.chevron {
-  flex: none;
-  inline-size: var(--semantic-dimension-size-icon);
-  block-size: var(--semantic-dimension-size-icon);
-  background: currentcolor;
-  mask-repeat: no-repeat;
-  mask-position: center;
-  mask-size: contain;
-  transition: rotate var(--semantic-transition-movement-disclosure);
-}
-
-.group:not([open]) > .summary .chevron {
-  rotate: -90deg;
-}
-
-.groupHeading {
-  flex: none;
-  margin: 0;
-}
-
-.count {
-  flex: none;
-  color: var(--semantic-color-text-secondary);
-  font: var(--semantic-typography-ui-secondary);
-}
-
-.strip {
-  display: flex;
-  flex: 0 1 auto;
-  min-inline-size: 0;
-  margin-inline-start: auto;
-  overflow: hidden;
-  border: var(--semantic-dimension-border-width-small) solid var(--semantic-color-border-secondary);
-  border-radius: var(--semantic-dimension-radius-small);
-}
-
-.stripCell {
-  display: flex;
-  /* Cells shrink evenly, so every color stays visible on narrow screens. */
-  flex: 0 1 auto;
-  flex-direction: column;
-  inline-size: var(--semantic-dimension-size-small);
-  min-inline-size: 0;
-}
-
-.stripCell > span {
-  block-size: var(--semantic-dimension-size-xx-small);
-}
-
-.strip[data-palette] .stripCell {
-  inline-size: var(--semantic-dimension-size-xx-small);
-}
-
-.strip[data-palette] .stripCell > span {
-  block-size: var(--semantic-dimension-size-x-small);
-}
-
-.caption {
-  margin: 0;
-  padding-block-end: var(--semantic-dimension-space-padding-large);
-  color: var(--semantic-color-text-secondary);
-  font: var(--semantic-typography-ui-secondary);
-}
-
-.rows,
-.tiles,
-.states {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.rows {
-  /* stylelint-disable-next-line design-tokens/no-non-token-custom-properties -- Group preview column, set inline by token-area.tsx. */
-  --preview-size: calc(var(--semantic-dimension-size-x-large) * 2);
-
-  container: token-rows / inline-size;
-  padding-block-end: var(--semantic-dimension-space-padding-large);
-}
-
-.tiles {
-  padding-block: var(--semantic-dimension-space-padding-small)
-    var(--semantic-dimension-space-padding-x-large);
-}
-
-/* Rows: info, values, preview; stacked on narrow screens. */
-.row {
-  display: grid;
-  grid-template-areas:
-    'info'
-    'values'
-    'preview';
-  grid-template-columns: minmax(0, 1fr);
-  align-items: start;
-  gap: var(--semantic-dimension-space-gap-small) var(--semantic-dimension-space-gap-medium);
-  padding-block: var(--semantic-dimension-space-padding-large);
-  border-block-start: var(--semantic-dimension-border-width-small) solid
-    var(--semantic-color-border-secondary);
-  scroll-margin-block-start: var(--semantic-dimension-space-padding-x-large);
-}
-
-.row:target {
-  background: var(--semantic-color-background-fill-ghost-hover);
-}
-
-.entry {
-  display: flex;
-  flex-direction: column;
-  gap: var(--semantic-dimension-space-gap-xx-small);
-  padding-block: var(--semantic-dimension-space-padding-large);
-  border-block-start: var(--semantic-dimension-border-width-small) solid
-    var(--semantic-color-border-secondary);
-}
-
-/* Shares the row's columns, so the description stays clear of the preview. */
-.entryHeader {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  column-gap: var(--semantic-dimension-space-gap-medium);
-}
-
-.row[data-state] {
-  padding-block: var(--semantic-dimension-space-padding-small);
-  border: 0;
-}
-
-.stateLabel {
-  font: var(--semantic-typography-ui-secondary);
-  font-weight: var(--semantic-font-weight-ui-emphasis);
-}
-
-/*
- * Indents content to the group title and keeps dividers full width. The gutters are tracks, so the
- * indent can differ from the column gap.
- */
-@container token-rows (min-width: 48rem /* token: semantic.dimension.breakpoint.small */) {
-  .row,
-  .entryHeader {
-    column-gap: 0;
-    /* stylelint-disable design-tokens/no-non-token-custom-properties -- Group preview column, set inline by token-area.tsx. */
-    grid-template-columns: calc(
-        var(--semantic-dimension-size-icon) + var(--semantic-dimension-space-gap-small)
-      ) minmax(0, 3fr) var(--semantic-dimension-space-gap-medium) minmax(0, 2fr) var(
-        --semantic-dimension-space-gap-medium
-      ) var(--preview-size) var(--semantic-dimension-space-padding-x-large);
-    /* stylelint-enable design-tokens/no-non-token-custom-properties */
+    cursor: not-allowed;
+    opacity: var(--semantic-number-opacity-disabled);
   }
 
-  .row {
-    grid-template-areas: '. info . values . preview .';
+  @media (forced-colors: active) {
+    .brand[aria-current='page']::after,
+    .brand[href]:hover:not([aria-current])::after {
+      background: Highlight;
+      forced-color-adjust: none;
+    }
+
+    .brand[aria-disabled='true'] {
+      color: GrayText;
+    }
   }
 
-  /* Type samples and motion tracks need the full width. */
-  .row[data-wide] {
-    grid-template-areas:
-      '. info . values . . .'
-      '. preview preview preview preview preview .';
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--semantic-dimension-space-gap-small);
   }
 
-  .entryHeader > * {
-    grid-column: 2 / 5;
+  .search {
+    flex: 1;
+    min-inline-size: 0;
   }
-}
 
-@container token-group (min-width: 48rem /* token: semantic.dimension.breakpoint.small */) {
-  .caption,
+  .section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-gap-small);
+  }
+
+  .groups {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Groups */
+  .group {
+    container: token-group / inline-size;
+    border-block-end: var(--semantic-dimension-border-width-small) solid
+      var(--semantic-color-border-secondary);
+    scroll-margin-block-start: var(--semantic-dimension-space-padding-x-large);
+  }
+
+  .groups > .group:first-child {
+    border-block-start: var(--semantic-dimension-border-width-small) solid
+      var(--semantic-color-border-secondary);
+  }
+
+  .summary {
+    display: flex;
+    align-items: center;
+    gap: var(--semantic-dimension-space-gap-small);
+    padding-block: var(--semantic-dimension-space-padding-large);
+    list-style: none;
+    cursor: pointer;
+  }
+
+  .summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .summary:hover {
+    background: var(--semantic-color-background-fill-ghost-hover);
+  }
+
+  .summary:focus-visible {
+    border-radius: var(--semantic-dimension-radius-small);
+    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline-offset: var(--semantic-dimension-border-width-medium);
+  }
+
+  .chevron {
+    flex: none;
+    inline-size: var(--semantic-dimension-size-icon);
+    block-size: var(--semantic-dimension-size-icon);
+    background: currentcolor;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: contain;
+    transition: rotate var(--semantic-transition-movement-disclosure);
+  }
+
+  .group:not([open]) > .summary .chevron {
+    rotate: -90deg;
+  }
+
+  .groupHeading {
+    flex: none;
+    margin: 0;
+  }
+
+  .count {
+    flex: none;
+    color: var(--semantic-color-text-secondary);
+    font: var(--semantic-typography-ui-secondary);
+  }
+
+  .strip {
+    display: flex;
+    flex: 0 1 auto;
+    min-inline-size: 0;
+    margin-inline-start: auto;
+    overflow: hidden;
+    border: var(--semantic-dimension-border-width-small) solid
+      var(--semantic-color-border-secondary);
+    border-radius: var(--semantic-dimension-radius-small);
+  }
+
+  .stripCell {
+    display: flex;
+    /* Cells shrink evenly, so every color stays visible on narrow screens. */
+    flex: 0 1 auto;
+    flex-direction: column;
+    inline-size: var(--semantic-dimension-size-small);
+    min-inline-size: 0;
+  }
+
+  .stripCell > span {
+    block-size: var(--semantic-dimension-size-xx-small);
+  }
+
+  .strip[data-palette] .stripCell {
+    inline-size: var(--semantic-dimension-size-xx-small);
+  }
+
+  .strip[data-palette] .stripCell > span {
+    block-size: var(--semantic-dimension-size-x-small);
+  }
+
+  .caption {
+    margin: 0;
+    padding-block-end: var(--semantic-dimension-space-padding-large);
+    color: var(--semantic-color-text-secondary);
+    font: var(--semantic-typography-ui-secondary);
+  }
+
+  .rows,
+  .tiles,
+  .states {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .rows {
+    /* stylelint-disable-next-line design-tokens/no-non-token-custom-properties -- Group preview column, set inline by token-area.tsx. */
+    --preview-size: calc(var(--semantic-dimension-size-x-large) * 2);
+
+    container: token-rows / inline-size;
+    padding-block-end: var(--semantic-dimension-space-padding-large);
+  }
+
   .tiles {
-    margin-inline: calc(
-        var(--semantic-dimension-size-icon) + var(--semantic-dimension-space-gap-small)
-      )
+    padding-block: var(--semantic-dimension-space-padding-small)
       var(--semantic-dimension-space-padding-x-large);
   }
 
-  /* The color strip ends where the rows end. */
-  .summary {
-    padding-inline-end: var(--semantic-dimension-space-padding-x-large);
+  /* Rows: info, values, preview; stacked on narrow screens. */
+  .row {
+    display: grid;
+    grid-template-areas:
+      'info'
+      'values'
+      'preview';
+    grid-template-columns: minmax(0, 1fr);
+    align-items: start;
+    gap: var(--semantic-dimension-space-gap-small) var(--semantic-dimension-space-gap-medium);
+    padding-block: var(--semantic-dimension-space-padding-large);
+    border-block-start: var(--semantic-dimension-border-width-small) solid
+      var(--semantic-color-border-secondary);
+    scroll-margin-block-start: var(--semantic-dimension-space-padding-x-large);
   }
-}
 
-.preview {
-  display: flex;
-  grid-area: preview;
-  align-items: center;
-  min-inline-size: 0;
-  min-block-size: var(--semantic-dimension-size-large);
-}
+  .row:target {
+    background: var(--semantic-color-background-fill-ghost-hover);
+  }
 
-.info {
-  display: flex;
-  grid-area: info;
-  flex-direction: column;
-  gap: var(--semantic-dimension-space-gap-xx-small);
-  min-inline-size: 0;
-}
+  .entry {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-gap-xx-small);
+    padding-block: var(--semantic-dimension-space-padding-large);
+    border-block-start: var(--semantic-dimension-border-width-small) solid
+      var(--semantic-color-border-secondary);
+  }
 
-.nameLine,
-.variable,
-.description {
-  margin: 0;
-}
+  /* Shares the row's columns, so the description stays clear of the preview. */
+  .entryHeader {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    column-gap: var(--semantic-dimension-space-gap-medium);
+  }
 
-.nameLine {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: var(--semantic-dimension-space-gap-small);
-}
+  .row[data-state] {
+    padding-block: var(--semantic-dimension-space-padding-small);
+    border: 0;
+  }
 
-.name {
-  font: var(--semantic-typography-code-primary);
-  font-weight: var(--semantic-font-weight-ui-emphasis);
-  overflow-wrap: anywhere;
-}
+  .stateLabel {
+    font: var(--semantic-typography-ui-secondary);
+    font-weight: var(--semantic-font-weight-ui-emphasis);
+  }
 
-.badge {
-  padding-inline: var(--semantic-dimension-space-control-padding-inline-x-small);
-  border: var(--semantic-dimension-border-width-small) solid var(--semantic-color-border-secondary);
-  border-radius: var(--semantic-dimension-radius-small);
-  color: var(--semantic-color-text-secondary);
-  font: var(--semantic-typography-ui-tertiary);
-}
+  /*
+ * Indents content to the group title and keeps dividers full width. The gutters are tracks, so the
+ * indent can differ from the column gap.
+ */
+  @container token-rows (width >= 48rem /* token: semantic.dimension.breakpoint.small */) {
+    .row,
+    .entryHeader {
+      column-gap: 0;
+      /* stylelint-disable design-tokens/no-non-token-custom-properties -- Group preview column, set inline by token-area.tsx. */
+      grid-template-columns: calc(
+          var(--semantic-dimension-size-icon) + var(--semantic-dimension-space-gap-small)
+        ) minmax(0, 3fr) var(--semantic-dimension-space-gap-medium) minmax(0, 2fr) var(
+          --semantic-dimension-space-gap-medium
+        ) var(--preview-size) var(--semantic-dimension-space-padding-x-large);
+      /* stylelint-enable design-tokens/no-non-token-custom-properties */
+    }
 
-.variable {
-  display: flex;
-  align-items: center;
-  gap: var(--semantic-dimension-space-gap-xx-small);
-  color: var(--semantic-color-text-secondary);
-  font: var(--semantic-typography-code-secondary);
-}
+    .row {
+      grid-template-areas: '. info . values . preview .';
+    }
 
-.variable code {
-  min-inline-size: 0;
-  overflow-wrap: anywhere;
-}
+    /* Type samples and motion tracks need the full width. */
+    .row[data-wide] {
+      grid-template-areas:
+        '. info . values . . .'
+        '. preview preview preview preview preview .';
+    }
 
-.description {
-  color: var(--semantic-color-text-secondary);
-  font: var(--semantic-typography-ui-secondary);
-}
+    .entryHeader > * {
+      grid-column: 2 / 5;
+    }
+  }
 
-.description code {
-  color: var(--semantic-color-text-code);
-  font-family: var(--semantic-font-family-code);
-  font-size: 0.875em;
-}
+  @container token-group (width >= 48rem /* token: semantic.dimension.breakpoint.small */) {
+    .caption,
+    .tiles {
+      margin-inline: calc(
+          var(--semantic-dimension-size-icon) + var(--semantic-dimension-space-gap-small)
+        )
+        var(--semantic-dimension-space-padding-x-large);
+    }
 
-.values {
-  display: grid;
-  grid-area: values;
-  grid-template-columns: auto minmax(0, 1fr);
-  gap: var(--semantic-dimension-space-gap-xx-small) var(--semantic-dimension-space-gap-small);
-  margin: 0;
-  font: var(--semantic-typography-ui-secondary);
-}
+    /* The color strip ends where the rows end. */
+    .summary {
+      padding-inline-end: var(--semantic-dimension-space-padding-x-large);
+    }
+  }
 
-.value {
-  display: contents;
-}
+  .preview {
+    display: flex;
+    grid-area: preview;
+    align-items: center;
+    min-inline-size: 0;
+    min-block-size: var(--semantic-dimension-size-large);
+  }
 
-.value dt {
-  color: var(--semantic-color-text-secondary);
-}
+  .info {
+    display: flex;
+    grid-area: info;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-gap-xx-small);
+    min-inline-size: 0;
+  }
 
-.value dd {
-  margin: 0;
-  min-inline-size: 0;
-  overflow-wrap: anywhere;
-}
+  .nameLine,
+  .variable,
+  .description {
+    margin: 0;
+  }
 
-.value code {
-  font: var(--semantic-typography-code-secondary);
-}
+  .nameLine {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--semantic-dimension-space-gap-small);
+  }
 
-.alias {
-  font: var(--semantic-typography-code-secondary);
-}
+  .name {
+    font: var(--semantic-typography-code-primary);
+    font-weight: var(--semantic-font-weight-ui-emphasis);
+    overflow-wrap: anywhere;
+  }
 
-/* Previews */
-.swatches {
-  display: flex;
-  gap: var(--semantic-dimension-space-gap-xx-small);
-}
+  .badge {
+    padding-inline: var(--semantic-dimension-space-control-padding-inline-x-small);
+    border: var(--semantic-dimension-border-width-small) solid
+      var(--semantic-color-border-secondary);
+    border-radius: var(--semantic-dimension-radius-small);
+    color: var(--semantic-color-text-secondary);
+    font: var(--semantic-typography-ui-tertiary);
+  }
 
-.swatch,
-.stage {
-  display: block;
-  inline-size: var(--semantic-dimension-size-large);
-  block-size: var(--semantic-dimension-size-large);
-  border: var(--semantic-dimension-border-width-small) solid var(--semantic-color-border-secondary);
-  border-radius: var(--semantic-dimension-radius-small);
-}
+  .variable {
+    display: flex;
+    align-items: center;
+    gap: var(--semantic-dimension-space-gap-xx-small);
+    color: var(--semantic-color-text-secondary);
+    font: var(--semantic-typography-code-secondary);
+  }
 
-.stage {
-  display: grid;
-  place-items: center;
-}
+  .variable code {
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
 
-.raised {
-  display: block;
-  inline-size: var(--semantic-dimension-size-small);
-  block-size: var(--semantic-dimension-size-small);
-  border-radius: var(--semantic-dimension-radius-small);
-}
+  .description {
+    color: var(--semantic-color-text-secondary);
+    font: var(--semantic-typography-ui-secondary);
+  }
 
-.sample,
-.glyphs {
-  display: block;
-  max-inline-size: 100%;
-  overflow: hidden;
-  color: var(--semantic-color-text-primary);
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+  .description code {
+    color: var(--semantic-color-text-code);
+    font-family: var(--semantic-font-family-code);
+    font-size: 0.875em;
+  }
 
-.glyphs {
-  font: var(--semantic-typography-heading-app-5);
-}
+  .values {
+    display: grid;
+    grid-area: values;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: var(--semantic-dimension-space-gap-xx-small) var(--semantic-dimension-space-gap-small);
+    margin: 0;
+    font: var(--semantic-typography-ui-secondary);
+  }
 
-/* Wraps within the column, so the line spacing shows. */
-.lines {
-  display: block;
-  /* stylelint-disable-next-line design-tokens/no-non-token-custom-properties -- Group preview column, set inline by token-area.tsx. */
-  max-inline-size: min(100%, var(--preview-size));
-  overflow: hidden;
-  color: var(--semantic-color-text-primary);
-}
+  .value {
+    display: contents;
+  }
 
-/* Lengths */
-.barTrack {
-  display: block;
-  inline-size: 100%;
-}
+  .value dt {
+    color: var(--semantic-color-text-secondary);
+  }
 
-.bar {
-  display: block;
-  max-inline-size: 100%;
-  block-size: var(--semantic-dimension-size-xx-small);
-  border-radius: var(--semantic-dimension-radius-small);
-  background: var(--semantic-color-background-fill-primary);
-}
+  .value dd {
+    margin: 0;
+    min-inline-size: 0;
+    overflow-wrap: anywhere;
+  }
 
-.square,
-.block {
-  display: block;
-  flex: none;
-  background: var(--semantic-color-background-fill-primary);
-}
+  .value code {
+    font: var(--semantic-typography-code-secondary);
+  }
 
-.block {
-  inline-size: var(--semantic-dimension-size-x-small);
-  block-size: var(--semantic-dimension-size-x-small);
-}
+  .alias {
+    font: var(--semantic-typography-code-secondary);
+  }
 
-.inset {
-  display: flex;
-  border: var(--semantic-dimension-border-width-small) dashed var(--semantic-color-border-primary);
-}
+  /* Previews */
+  .swatches {
+    display: flex;
+    gap: var(--semantic-dimension-space-gap-xx-small);
+  }
 
-.gap {
-  display: flex;
-}
+  .swatch,
+  .stage {
+    display: block;
+    inline-size: var(--semantic-dimension-size-large);
+    block-size: var(--semantic-dimension-size-large);
+    border: var(--semantic-dimension-border-width-small) solid
+      var(--semantic-color-border-secondary);
+    border-radius: var(--semantic-dimension-radius-small);
+  }
 
-.gap[data-direction='column'] {
-  flex-direction: column;
-  /* stylelint-disable-next-line design-tokens/no-non-token-custom-properties -- Group preview column, set inline by token-area.tsx. */
-  inline-size: min(100%, var(--preview-size));
-}
+  .stage {
+    display: grid;
+    place-items: center;
+  }
 
-.gap[data-direction='column'] .block {
-  inline-size: 100%;
-}
+  .raised {
+    display: block;
+    inline-size: var(--semantic-dimension-size-small);
+    block-size: var(--semantic-dimension-size-small);
+    border-radius: var(--semantic-dimension-radius-small);
+  }
 
-.scaleTrack {
-  display: block;
-  inline-size: 100%;
-  block-size: var(--semantic-dimension-size-xx-small);
-  overflow: hidden;
-  border: var(--semantic-dimension-border-width-small) solid var(--semantic-color-border-primary);
-  border-radius: var(--semantic-dimension-radius-small);
-}
+  .sample,
+  .glyphs {
+    display: block;
+    max-inline-size: 100%;
+    overflow: hidden;
+    color: var(--semantic-color-text-primary);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 
-.scaleMark {
-  display: block;
-  block-size: 100%;
-  background: var(--semantic-color-background-fill-primary);
-}
+  .glyphs {
+    font: var(--semantic-typography-heading-app-5);
+  }
 
-@media (forced-colors: active) {
-  .bar,
+  /* Wraps within the column, so the line spacing shows. */
+  .lines {
+    display: block;
+    /* stylelint-disable-next-line design-tokens/no-non-token-custom-properties -- Group preview column, set inline by token-area.tsx. */
+    max-inline-size: min(100%, var(--preview-size));
+    overflow: hidden;
+    color: var(--semantic-color-text-primary);
+  }
+
+  /* Lengths */
+  .barTrack {
+    display: block;
+    inline-size: 100%;
+  }
+
+  .bar {
+    display: block;
+    max-inline-size: 100%;
+    block-size: var(--semantic-dimension-size-xx-small);
+    border-radius: var(--semantic-dimension-radius-small);
+    background: var(--semantic-color-background-fill-primary);
+  }
+
   .square,
-  .block,
-  .scaleMark,
-  .mover[data-sample='block'] {
-    background: CanvasText;
-    forced-color-adjust: none;
+  .block {
+    display: block;
+    flex: none;
+    background: var(--semantic-color-background-fill-primary);
   }
-}
 
-.line {
-  display: block;
-  inline-size: 100%;
-  background: var(--semantic-color-background-fill-primary);
-}
+  .block {
+    inline-size: var(--semantic-dimension-size-x-small);
+    block-size: var(--semantic-dimension-size-x-small);
+  }
 
-.shape {
-  display: block;
-  box-sizing: border-box;
-  inline-size: var(--semantic-dimension-size-large);
-  block-size: var(--semantic-dimension-size-large);
-  border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-primary);
-}
+  .inset {
+    display: flex;
+    border: var(--semantic-dimension-border-width-small) dashed var(--semantic-color-border-primary);
+  }
 
-.shape[data-filled] {
-  border: 0;
-  background: var(--semantic-color-background-fill-primary);
-}
+  .gap {
+    display: flex;
+  }
 
-/* Travel and scale */
-.motionValue {
-  display: grid;
-  /* The button column stays when there is nothing to play, so samples line up. */
-  grid-template-columns: var(--semantic-dimension-size-small) auto;
-  align-items: center;
-  gap: var(--semantic-dimension-space-gap-small);
-}
+  .gap[data-direction='column'] {
+    flex-direction: column;
+    /* stylelint-disable-next-line design-tokens/no-non-token-custom-properties -- Group preview column, set inline by token-area.tsx. */
+    inline-size: min(100%, var(--preview-size));
+  }
 
-.valueStage {
-  display: grid;
-  grid-column: 2;
-}
+  .gap[data-direction='column'] .block {
+    inline-size: 100%;
+  }
 
-.rest,
-.mover {
-  box-sizing: border-box;
-  grid-area: 1 / 1;
-  inline-size: var(--semantic-dimension-size-large);
-  block-size: var(--semantic-dimension-size-large);
-}
+  .scaleTrack {
+    display: block;
+    inline-size: 100%;
+    block-size: var(--semantic-dimension-size-xx-small);
+    overflow: hidden;
+    border: var(--semantic-dimension-border-width-small) solid var(--semantic-color-border-primary);
+    border-radius: var(--semantic-dimension-radius-small);
+  }
 
-.rest {
-  border: var(--semantic-dimension-border-width-small) dashed var(--semantic-color-border-primary);
-}
+  .scaleMark {
+    display: block;
+    block-size: 100%;
+    background: var(--semantic-color-background-fill-primary);
+  }
 
-.mover {
-  background: var(--semantic-color-background-fill-primary);
-}
+  @media (forced-colors: active) {
+    .bar,
+    .square,
+    .block,
+    .scaleMark,
+    .mover[data-sample='block'] {
+      background: CanvasText;
+      forced-color-adjust: none;
+    }
+  }
 
-.rest[data-sample='popup'],
-.mover[data-sample='popup'] {
-  inline-size: var(--semantic-dimension-size-x-large);
-  block-size: var(--semantic-dimension-size-medium);
-  border-radius: var(--semantic-dimension-radius-medium);
-}
+  .line {
+    display: block;
+    inline-size: 100%;
+    background: var(--semantic-color-background-fill-primary);
+  }
 
-.mover[data-sample='popup'] {
-  border: var(--semantic-dimension-border-width-small) solid var(--semantic-color-border-secondary);
-  background: var(--semantic-color-background-surface);
-  box-shadow: var(--semantic-shadow-popup);
-}
+  .shape {
+    display: block;
+    box-sizing: border-box;
+    inline-size: var(--semantic-dimension-size-large);
+    block-size: var(--semantic-dimension-size-large);
+    border: var(--semantic-dimension-border-width-default) solid
+      var(--semantic-color-border-primary);
+  }
 
-/* A pressed key cap, as in KeyboardShortcut. */
-.rest[data-sample='key'],
-.mover[data-sample='key'] {
-  inline-size: var(--semantic-dimension-size-medium);
-  block-size: var(--semantic-dimension-size-medium);
-  border-radius: var(--semantic-dimension-radius-small);
-}
+  .shape[data-filled] {
+    border: 0;
+    background: var(--semantic-color-background-fill-primary);
+  }
 
-.mover[data-sample='key'] {
-  display: grid;
-  place-items: center;
-  border: var(--semantic-dimension-border-width-small) solid var(--semantic-color-border-secondary);
-  background: var(--semantic-color-background-surface);
-  color: var(--semantic-color-text-primary);
-  font: var(--semantic-typography-code-secondary);
-}
+  /* Travel and scale */
+  .motionValue {
+    display: grid;
+    /* The button column stays when there is nothing to play, so samples line up. */
+    grid-template-columns: var(--semantic-dimension-size-small) auto;
+    align-items: center;
+    gap: var(--semantic-dimension-space-gap-small);
+  }
 
-.curve {
-  flex: none;
-  inline-size: var(--semantic-dimension-size-x-large);
-  overflow: visible;
-  color: var(--semantic-color-icon-primary);
-}
+  .valueStage {
+    display: grid;
+    grid-column: 2;
+  }
 
-.curveFrame {
-  fill: none;
-  stroke: var(--semantic-color-icon-secondary);
-  stroke-dasharray: 2 3;
-}
+  .rest,
+  .mover {
+    box-sizing: border-box;
+    grid-area: 1 / 1;
+    inline-size: var(--semantic-dimension-size-large);
+    block-size: var(--semantic-dimension-size-large);
+  }
 
-.curveLine {
-  fill: none;
-  stroke: currentcolor;
-}
+  .rest {
+    border: var(--semantic-dimension-border-width-small) dashed var(--semantic-color-border-primary);
+  }
 
-.motion {
-  display: flex;
-  align-items: center;
-  gap: var(--semantic-dimension-space-gap-medium);
-  inline-size: 100%;
-}
+  .mover {
+    background: var(--semantic-color-background-fill-primary);
+  }
 
-.motionTrack {
-  display: flex;
-  flex: 1;
-  align-items: center;
-  min-inline-size: 0;
-  max-inline-size: var(--semantic-dimension-size-max-width-content-small);
-  block-size: var(--semantic-dimension-size-small);
-  padding-inline: var(--semantic-dimension-space-padding-xx-small);
-  border: var(--semantic-dimension-border-width-small) solid var(--semantic-color-border-secondary);
-  border-radius: var(--semantic-dimension-radius-full);
-}
+  .rest[data-sample='popup'],
+  .mover[data-sample='popup'] {
+    inline-size: var(--semantic-dimension-size-x-large);
+    block-size: var(--semantic-dimension-size-medium);
+    border-radius: var(--semantic-dimension-radius-medium);
+  }
 
-.motionTarget {
-  display: block;
-  inline-size: var(--semantic-dimension-size-x-small);
-  block-size: var(--semantic-dimension-size-x-small);
-  border-radius: var(--semantic-dimension-radius-full);
-  background: var(--semantic-color-background-fill-primary);
-}
+  .mover[data-sample='popup'] {
+    border: var(--semantic-dimension-border-width-small) solid
+      var(--semantic-color-border-secondary);
+    background: var(--semantic-color-background-surface);
+    box-shadow: var(--semantic-shadow-popup);
+  }
 
-.icon {
-  display: block;
-  inline-size: var(--semantic-dimension-size-icon);
-  block-size: var(--semantic-dimension-size-icon);
-  background: currentcolor;
-  mask-repeat: no-repeat;
-  mask-position: center;
-  mask-size: contain;
-}
+  /* A pressed key cap, as in KeyboardShortcut. */
+  .rest[data-sample='key'],
+  .mover[data-sample='key'] {
+    inline-size: var(--semantic-dimension-size-medium);
+    block-size: var(--semantic-dimension-size-medium);
+    border-radius: var(--semantic-dimension-radius-small);
+  }
 
-.play:not([data-played]) [data-icon='replay'],
-.play[data-played] [data-icon='play'] {
-  display: none;
-}
+  .mover[data-sample='key'] {
+    display: grid;
+    place-items: center;
+    border: var(--semantic-dimension-border-width-small) solid
+      var(--semantic-color-border-secondary);
+    background: var(--semantic-color-background-surface);
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-code-secondary);
+  }
 
-@media (forced-colors: active) {
+  .curve {
+    flex: none;
+    inline-size: var(--semantic-dimension-size-x-large);
+    overflow: visible;
+    color: var(--semantic-color-icon-primary);
+  }
+
+  .curveFrame {
+    fill: none;
+    stroke: var(--semantic-color-icon-secondary);
+    stroke-dasharray: 2 3;
+  }
+
+  .curveLine {
+    fill: none;
+    stroke: currentcolor;
+  }
+
+  .motion {
+    display: flex;
+    align-items: center;
+    gap: var(--semantic-dimension-space-gap-medium);
+    inline-size: 100%;
+  }
+
+  .motionTrack {
+    display: flex;
+    flex: 1;
+    align-items: center;
+    min-inline-size: 0;
+    max-inline-size: var(--semantic-dimension-size-max-width-content-small);
+    block-size: var(--semantic-dimension-size-small);
+    padding-inline: var(--semantic-dimension-space-padding-xx-small);
+    border: var(--semantic-dimension-border-width-small) solid
+      var(--semantic-color-border-secondary);
+    border-radius: var(--semantic-dimension-radius-full);
+  }
+
+  .motionTarget {
+    display: block;
+    inline-size: var(--semantic-dimension-size-x-small);
+    block-size: var(--semantic-dimension-size-x-small);
+    border-radius: var(--semantic-dimension-radius-full);
+    background: var(--semantic-color-background-fill-primary);
+  }
+
   .icon {
-    background: ButtonText;
-    forced-color-adjust: none;
+    display: block;
+    inline-size: var(--semantic-dimension-size-icon);
+    block-size: var(--semantic-dimension-size-icon);
+    background: currentcolor;
+    mask-repeat: no-repeat;
+    mask-position: center;
+    mask-size: contain;
   }
-}
 
-/* Palettes */
-.tiles {
-  display: grid;
-  grid-template-columns: repeat(
-    auto-fill,
-    minmax(calc(var(--semantic-dimension-size-x-large) * 2), 1fr)
-  );
-  gap: var(--semantic-dimension-space-gap-medium) var(--semantic-dimension-space-gap-small);
-}
+  .play:not([data-played]) [data-icon='replay'],
+  .play[data-played] [data-icon='play'] {
+    display: none;
+  }
 
-.tile {
-  display: flex;
-  flex-direction: column;
-  gap: var(--semantic-dimension-space-gap-xx-small);
-  min-inline-size: 0;
-  scroll-margin-block-start: var(--semantic-dimension-space-padding-x-large);
-}
+  @media (forced-colors: active) {
+    .icon {
+      background: ButtonText;
+      forced-color-adjust: none;
+    }
+  }
 
-.tile:target .tileSwatch {
-  outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
-  outline-offset: var(--semantic-dimension-border-width-medium);
-}
+  /* Palettes */
+  .tiles {
+    display: grid;
+    grid-template-columns: repeat(
+      auto-fill,
+      minmax(calc(var(--semantic-dimension-size-x-large) * 2), 1fr)
+    );
+    gap: var(--semantic-dimension-space-gap-medium) var(--semantic-dimension-space-gap-small);
+  }
 
-.tileSwatch {
-  display: block;
-  block-size: var(--semantic-dimension-size-x-large);
-  border: var(--semantic-dimension-border-width-small) solid var(--semantic-color-border-secondary);
-  border-radius: var(--semantic-dimension-radius-small);
-}
+  .tile {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-gap-xx-small);
+    min-inline-size: 0;
+    scroll-margin-block-start: var(--semantic-dimension-space-padding-x-large);
+  }
 
-.tileMeta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--semantic-dimension-space-gap-xx-small);
-}
+  .tile:target .tileSwatch {
+    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline-offset: var(--semantic-dimension-border-width-medium);
+  }
 
-.tileStep {
-  font: var(--semantic-typography-ui-secondary);
-  font-weight: var(--semantic-font-weight-ui-emphasis);
-}
+  .tileSwatch {
+    display: block;
+    block-size: var(--semantic-dimension-size-x-large);
+    border: var(--semantic-dimension-border-width-small) solid
+      var(--semantic-color-border-secondary);
+    border-radius: var(--semantic-dimension-radius-small);
+  }
 
-.tileValue {
-  overflow: hidden;
-  color: var(--semantic-color-text-secondary);
-  font: var(--semantic-typography-code-secondary);
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
+  .tileMeta {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--semantic-dimension-space-gap-xx-small);
+  }
 
-.visuallyHidden {
-  position: absolute;
-  inline-size: var(--semantic-dimension-border-width-small);
-  block-size: var(--semantic-dimension-border-width-small);
-  overflow: hidden;
-  clip-path: inset(50%);
-  white-space: nowrap;
+  .tileStep {
+    font: var(--semantic-typography-ui-secondary);
+    font-weight: var(--semantic-font-weight-ui-emphasis);
+  }
+
+  .tileValue {
+    overflow: hidden;
+    color: var(--semantic-color-text-secondary);
+    font: var(--semantic-typography-code-secondary);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
 }

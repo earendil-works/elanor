@@ -1,94 +1,96 @@
-.use,
-.section {
-  display: flex;
-  flex-direction: column;
-  gap: var(--semantic-dimension-space-gap-medium);
-}
+@layer components {
+  .use,
+  .section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-gap-medium);
+  }
 
-.section {
-  container: font-family / inline-size;
-}
+  .section {
+    container: font-family / inline-size;
+  }
 
-.use {
-  max-inline-size: var(--semantic-dimension-size-max-width-content-medium);
-}
+  .use {
+    max-inline-size: var(--semantic-dimension-size-max-width-content-medium);
+  }
 
-/* The font family is set inline; text inside sets only size and weight. */
-.specimen {
-  display: flex;
-  flex-direction: column;
-  gap: var(--semantic-dimension-space-gap-x-large);
-  padding: var(--semantic-dimension-space-padding-x-large);
-  border: var(--semantic-dimension-border-width-default) solid
-    var(--semantic-color-border-secondary);
-  border-radius: var(--semantic-dimension-radius-medium);
-  color: var(--semantic-color-text-primary);
-  overflow-wrap: anywhere;
-}
+  /* The font family is set inline; text inside sets only size and weight. */
+  .specimen {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-gap-x-large);
+    padding: var(--semantic-dimension-space-padding-x-large);
+    border: var(--semantic-dimension-border-width-default) solid
+      var(--semantic-color-border-secondary);
+    border-radius: var(--semantic-dimension-radius-medium);
+    color: var(--semantic-color-text-primary);
+    overflow-wrap: anywhere;
+  }
 
-.sample,
-.glyphs,
-.faces {
-  margin: 0;
-}
+  .sample,
+  .glyphs,
+  .faces {
+    margin: 0;
+  }
 
-.sample {
-  font-size: var(--semantic-typography-heading-app-3-font-size);
-  font-weight: var(--semantic-typography-prose-primary-font-weight);
-  line-height: var(--semantic-typography-heading-app-3-line-height);
-}
-
-.glyphs {
-  display: flex;
-  flex-direction: column;
-  font-size: var(--semantic-typography-heading-app-5-font-size);
-  line-height: var(--semantic-typography-heading-app-5-line-height);
-}
-
-.faces {
-  display: flex;
-  flex-direction: column;
-  gap: var(--semantic-dimension-space-gap-small);
-}
-
-.face {
-  display: flex;
-  flex-direction: column;
-}
-
-.face dt {
-  color: var(--semantic-color-text-secondary);
-  font: var(--semantic-typography-ui-secondary);
-}
-
-.face dd {
-  margin: 0;
-  font-size: var(--semantic-typography-prose-primary-font-size);
-  line-height: var(--semantic-typography-prose-primary-line-height);
-}
-
-.facts {
-  column-gap: var(--semantic-dimension-space-gap-large);
-}
-
-.usage {
-  display: flex;
-  flex-direction: column;
-}
-
-.code {
-  font-family: var(--semantic-font-family-code);
-  font-size: 0.875em;
-}
-
-@container font-family (min-width: 40rem /* token: semantic.dimension.breakpoint.xSmall */) {
   .sample {
-    font-size: var(--semantic-typography-heading-marketing-3-font-size);
-    line-height: var(--semantic-typography-heading-marketing-3-line-height);
+    font-size: var(--semantic-typography-heading-app-3-font-size);
+    font-weight: var(--semantic-typography-prose-primary-font-weight);
+    line-height: var(--semantic-typography-heading-app-3-line-height);
   }
 
   .glyphs {
-    font-size: var(--semantic-typography-heading-app-4-font-size);
-    line-height: var(--semantic-typography-heading-app-4-line-height);
+    display: flex;
+    flex-direction: column;
+    font-size: var(--semantic-typography-heading-app-5-font-size);
+    line-height: var(--semantic-typography-heading-app-5-line-height);
+  }
+
+  .faces {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-gap-small);
+  }
+
+  .face {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .face dt {
+    color: var(--semantic-color-text-secondary);
+    font: var(--semantic-typography-ui-secondary);
+  }
+
+  .face dd {
+    margin: 0;
+    font-size: var(--semantic-typography-prose-primary-font-size);
+    line-height: var(--semantic-typography-prose-primary-line-height);
+  }
+
+  .facts {
+    column-gap: var(--semantic-dimension-space-gap-large);
+  }
+
+  .usage {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .code {
+    font-family: var(--semantic-font-family-code);
+    font-size: 0.875em;
+  }
+
+  @container font-family (width >= 40rem /* token: semantic.dimension.breakpoint.xSmall */) {
+    .sample {
+      font-size: var(--semantic-typography-heading-marketing-3-font-size);
+      line-height: var(--semantic-typography-heading-marketing-3-line-height);
+    }
+
+    .glyphs {
+      font-size: var(--semantic-typography-heading-app-4-font-size);
+      line-height: var(--semantic-typography-heading-app-4-line-height);
+    }
   }
 }

@@ -45,7 +45,7 @@ export function ComponentsOverview({groups}: ComponentsOverviewProps): React.JSX
         placeholder={`Search ${total} components`}
         data-filter-search
       />
-      <p role="status" className={styles.visuallyHidden} data-filter-status />
+      <p role="status" className="visually-hidden" data-filter-status />
       {groups.map((group) => (
         <section
           key={group.category}

@@ -1,15 +1,17 @@
-.card {
-  block-size: 100%;
-}
+@layer components {
+  .card {
+    block-size: 100%;
+  }
 
-.body {
-  display: flex;
-  flex-direction: column;
-  gap: var(--semantic-dimension-space-gap-x-small);
-  color: var(--semantic-color-text-secondary);
-  font: var(--semantic-typography-ui-secondary);
-}
+  .body {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-gap-x-small);
+    color: var(--semantic-color-text-secondary);
+    font: var(--semantic-typography-ui-secondary);
+  }
 
-.body > p {
-  margin: 0;
+  .body > p {
+    margin: 0;
+  }
 }

@@ -1,170 +1,167 @@
-* {
-  box-sizing: border-box;
-}
-
-.docs-layout {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr);
-  grid-template-rows: auto 1fr;
-  min-height: 100vh;
-  margin: 0;
-  background: var(--semantic-color-background-canvas);
-  color: var(--semantic-color-text-primary);
-  font: var(--semantic-typography-ui-primary);
-}
-
-[data-docs-swap='content'] {
-  padding: var(--semantic-dimension-space-padding-x-large);
-}
-
-.docs-layout > aside {
-  display: none;
-  position: sticky;
-  inset-block-start: 0;
-  /* A fixed width, so opening a section with longer names doesn't move the content. */
-  inline-size: var(--semantic-dimension-size-sidebar);
-  block-size: 100vh;
-  min-block-size: 0;
-  overflow-y: auto;
-  scroll-padding-block: var(--semantic-dimension-space-padding-x-large);
-  padding: var(--semantic-dimension-space-padding-x-large);
-  border-inline-end: var(--semantic-dimension-border-width-default) solid;
-}
-
-.docs-aside-actions {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--semantic-dimension-space-gap-medium);
-  margin-block-end: var(--semantic-dimension-space-gap-medium);
-}
-
-.preview {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  inline-size: 100%;
-  max-inline-size: var(--semantic-dimension-size-max-width-content-medium);
-}
-
-/* Keep docs flex items (including hydrated examples) within the content column. */
-.preview,
-.wide,
-.page,
-.prose {
-  min-inline-size: 0;
-}
-
-.preview > *,
-.preview > astro-island > * {
-  min-inline-size: 0;
-  max-inline-size: 100%;
-}
-
-.preview pre.astro-code,
-.prose pre {
-  min-inline-size: 0;
-  max-inline-size: 100%;
-  overflow-x: auto;
-}
-
-/* Code blocks written in MDX, such as usage snippets. */
-.preview > pre.astro-code {
-  padding: var(--semantic-dimension-space-padding-x-large);
-  border-radius: var(--semantic-dimension-radius-medium);
-  font: var(--semantic-typography-code-secondary);
-}
-
-/* MDX tables have no wrapper; scroll the table locally, not the page. */
-.preview > table,
-.prose table {
-  display: block;
-  max-inline-size: 100%;
-  overflow-x: auto;
-}
-
-/* InlineCode styles for Markdown and generated HTML. */
-.preview
-  > :where(p, ul, ol, dl, blockquote, table, h1, h2, h3, h4, h5, h6)
-  code:not(pre code, [data-variant]),
-:where(.prose, .api) code:not(pre code, [data-variant]) {
-  color: var(--semantic-color-text-code);
-  font: inherit;
-  font-family: var(--semantic-font-family-code);
-  font-size: 0.875em;
-  overflow-wrap: anywhere;
-}
-
-/* Soft in prose; plain in headings and tables. */
-.preview > :where(p, ul, ol, dl, blockquote) code:not(pre code, [data-variant]),
-.prose :where(p, li, dd, blockquote) code:not(pre code, [data-variant]) {
-  padding-inline: var(--semantic-dimension-space-control-padding-inline-x-small);
-  border-radius: var(--semantic-dimension-radius-small);
-  background: var(--semantic-color-background-fill-secondary);
-}
-
-@media (forced-colors: active) {
-  .preview > :where(p, ul, ol, dl, blockquote) code:not(pre code, [data-variant]),
-  .prose :where(p, li, dd, blockquote) code:not(pre code, [data-variant]) {
-    outline: var(--semantic-dimension-border-width-small) solid CanvasText;
-  }
-}
-
-.wide {
-  inline-size: 100%;
-  max-inline-size: var(--semantic-dimension-size-max-width-content-large);
-}
-
-.page {
-  display: flex;
-  flex-direction: column;
-  gap: var(--semantic-dimension-space-gap-x-large);
-}
-
-/* Pages on the 12-column grid (1rem gutters) are at most 1216px wide; see brand-logos.module.css and icon-browser.module.css. */
-.grid-page {
-  max-inline-size: var(--semantic-dimension-size-max-width-content-large);
-}
-
-.prose {
-  max-inline-size: var(--semantic-dimension-size-max-width-content-medium);
-  font: var(--semantic-typography-prose-primary);
-}
-
-.prose img {
-  max-inline-size: 100%;
-}
-
-.preview[data-wide] {
-  max-inline-size: none;
-  align-items: stretch;
-}
-
-.docs-navigation-layer {
-  /* Keep the absolute iOS backdrop anchored to the viewport. */
-  position: fixed;
-  inset: 0;
-  z-index: var(--semantic-number-layer-overlay);
-}
-
-.docs-mobile-header {
-  padding: var(--semantic-dimension-space-padding-medium)
-    var(--semantic-dimension-space-padding-x-large);
-  border-block-end: var(--semantic-dimension-border-width-default) solid
-    var(--semantic-color-border-secondary);
-}
-
-@media (width >= 64rem /* token: semantic.dimension.breakpoint.medium */) {
+@layer base {
   .docs-layout {
-    grid-template-columns: max-content minmax(0, 1fr);
-    grid-template-rows: auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: auto 1fr;
+    min-height: 100vh;
+    background: var(--semantic-color-background-canvas);
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-ui-primary);
+  }
+
+  [data-docs-swap='content'] {
+    padding: var(--semantic-dimension-space-padding-x-large);
   }
 
   .docs-layout > aside {
-    display: block;
+    display: none;
+    position: sticky;
+    inset-block-start: 0;
+    /* A fixed width, so opening a section with longer names doesn't move the content. */
+    inline-size: var(--semantic-dimension-size-sidebar);
+    block-size: 100vh;
+    min-block-size: 0;
+    overflow-y: auto;
+    scroll-padding-block: var(--semantic-dimension-space-padding-x-large);
+    padding: var(--semantic-dimension-space-padding-x-large);
+    border-inline-end: var(--semantic-dimension-border-width-default) solid;
   }
 
-  [data-docs-swap='mobile-navigation'] {
-    display: none;
+  .docs-aside-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--semantic-dimension-space-gap-medium);
+    margin-block-end: var(--semantic-dimension-space-gap-medium);
+  }
+
+  .preview {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    inline-size: 100%;
+    max-inline-size: var(--semantic-dimension-size-max-width-content-medium);
+  }
+
+  /* Keep docs flex items (including hydrated examples) within the content column. */
+  .preview,
+  .wide,
+  .page,
+  .prose {
+    min-inline-size: 0;
+  }
+
+  .preview > *,
+  .preview > astro-island > * {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+  }
+
+  .preview pre.astro-code,
+  .prose pre {
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    overflow-x: auto;
+  }
+
+  /* Code blocks written in MDX, such as usage snippets. */
+  .preview > pre.astro-code {
+    padding: var(--semantic-dimension-space-padding-x-large);
+    border-radius: var(--semantic-dimension-radius-medium);
+    font: var(--semantic-typography-code-secondary);
+  }
+
+  /* MDX tables have no wrapper; scroll the table locally, not the page. */
+  .preview > table,
+  .prose table {
+    display: block;
+    max-inline-size: 100%;
+    overflow-x: auto;
+  }
+
+  /* InlineCode styles for Markdown and generated HTML. */
+  .preview
+    > :where(p, ul, ol, dl, blockquote, table, h1, h2, h3, h4, h5, h6)
+    code:not(pre code, [data-variant]),
+  :where(.prose, .api) code:not(pre code, [data-variant]) {
+    color: var(--semantic-color-text-code);
+    font: inherit;
+    font-family: var(--semantic-font-family-code);
+    font-size: 0.875em;
+    overflow-wrap: anywhere;
+  }
+
+  /* Soft in prose; plain in headings and tables. */
+  .preview > :where(p, ul, ol, dl, blockquote) code:not(pre code, [data-variant]),
+  .prose :where(p, li, dd, blockquote) code:not(pre code, [data-variant]) {
+    padding-inline: var(--semantic-dimension-space-control-padding-inline-x-small);
+    border-radius: var(--semantic-dimension-radius-small);
+    background: var(--semantic-color-background-fill-secondary);
+  }
+
+  @media (forced-colors: active) {
+    .preview > :where(p, ul, ol, dl, blockquote) code:not(pre code, [data-variant]),
+    .prose :where(p, li, dd, blockquote) code:not(pre code, [data-variant]) {
+      outline: var(--semantic-dimension-border-width-small) solid CanvasText;
+    }
+  }
+
+  .wide {
+    inline-size: 100%;
+    max-inline-size: var(--semantic-dimension-size-max-width-content-large);
+  }
+
+  .page {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-gap-x-large);
+  }
+
+  /* Pages on the 12-column grid (1rem gutters) are at most 1216px wide; see brand-logos.module.css and icon-browser.module.css. */
+  .grid-page {
+    max-inline-size: var(--semantic-dimension-size-max-width-content-large);
+  }
+
+  .prose {
+    max-inline-size: var(--semantic-dimension-size-max-width-content-medium);
+    font: var(--semantic-typography-prose-primary);
+  }
+
+  .prose img {
+    max-inline-size: 100%;
+  }
+
+  .preview[data-wide] {
+    max-inline-size: none;
+    align-items: stretch;
+  }
+
+  .docs-navigation-layer {
+    /* Keep the absolute iOS backdrop anchored to the viewport. */
+    position: fixed;
+    inset: 0;
+    z-index: var(--semantic-number-layer-overlay);
+  }
+
+  .docs-mobile-header {
+    padding: var(--semantic-dimension-space-padding-medium)
+      var(--semantic-dimension-space-padding-x-large);
+    border-block-end: var(--semantic-dimension-border-width-default) solid
+      var(--semantic-color-border-secondary);
+  }
+
+  @media (width >= 64rem /* token: semantic.dimension.breakpoint.medium */) {
+    .docs-layout {
+      grid-template-columns: max-content minmax(0, 1fr);
+      grid-template-rows: auto;
+    }
+
+    .docs-layout > aside {
+      display: block;
+    }
+
+    [data-docs-swap='mobile-navigation'] {
+      display: none;
+    }
   }
 }

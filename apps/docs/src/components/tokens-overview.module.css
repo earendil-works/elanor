@@ -1,16 +1,18 @@
-.section {
-  display: flex;
-  flex-direction: column;
-  gap: var(--semantic-dimension-space-gap-medium);
-  max-inline-size: var(--semantic-dimension-size-max-width-content-medium);
-}
+@layer components {
+  .section {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-gap-medium);
+    max-inline-size: var(--semantic-dimension-size-max-width-content-medium);
+  }
 
-.section:has(.list) {
-  max-inline-size: none;
-}
+  .section:has(.list) {
+    max-inline-size: none;
+  }
 
-.list {
-  margin: 0;
-  padding: 0;
-  list-style: none;
+  .list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
 }

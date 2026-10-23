@@ -21,6 +21,10 @@ const image = new URL(socialCard.src, site);
 const url = new URL(Astro.url.pathname, site);
 ---
 
+{/* Inline and first, so the order holds before any bundled or hoisted styles. */}
+<style is:inline>
+  @layer elanor, base, components, utilities;
+</style>
 <meta name="description" content={description} />
 <Fragment set:html={favicons} />
 <meta property="og:type" content="website" />

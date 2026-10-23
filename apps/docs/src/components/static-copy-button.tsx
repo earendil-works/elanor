@@ -46,5 +46,5 @@ export function StaticCopyButton({
 
 /** The live region for copy results; render one per page. */
 export function CopyStatus(): React.JSX.Element {
-  return <span role="status" className={styles.status} data-copy-status />;
+  return <span role="status" className="visually-hidden" data-copy-status />;
 }

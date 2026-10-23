@@ -17,12 +17,14 @@ const markdownUrl = new URL(markdownPath, Astro.site).href;
 </div>
 
 <style>
-  .page-title {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--semantic-dimension-space-gap-medium);
-    inline-size: 100%;
+  @layer components {
+    .page-title {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--semantic-dimension-space-gap-medium);
+      inline-size: 100%;
+    }
   }
 </style>
