@@ -9,17 +9,17 @@ import {
 } from '@earendil-works/elanor-react';
 import {useEffect, useRef} from 'react';
 
-import {DocsSideNavigation, type DocsNavigationSection} from './docs-side-navigation.tsx';
+import {DocsSideNavigation, type DocsNavigationGroup} from './docs-side-navigation.tsx';
 
 interface DocsMobileNavigationProps {
-  readonly sections: readonly DocsNavigationSection[];
+  readonly groups: readonly DocsNavigationGroup[];
   readonly current: string;
   /** Static actions before the menu button, passed from Astro as the `actions` slot. */
   readonly actions?: React.ReactNode;
 }
 
 export function DocsMobileNavigation({
-  sections,
+  groups,
   current,
   actions,
 }: DocsMobileNavigationProps): React.JSX.Element {
@@ -80,7 +80,7 @@ export function DocsMobileNavigation({
                   </Drawer.Close>
                 </Stack>
                 <DocsSideNavigation
-                  sections={sections}
+                  groups={groups}
                   current={current}
                   onNavigate={() => actionsRef.current?.close()}
                 />

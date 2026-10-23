@@ -21,9 +21,12 @@
   display: none;
   position: sticky;
   inset-block-start: 0;
+  /* A fixed width, so opening a section with longer names doesn't move the content. */
+  inline-size: var(--semantic-dimension-size-sidebar);
   block-size: 100vh;
   min-block-size: 0;
   overflow-y: auto;
+  scroll-padding-block: var(--semantic-dimension-space-padding-x-large);
   padding: var(--semantic-dimension-space-padding-x-large);
   border-inline-end: var(--semantic-dimension-border-width-default) solid;
 }

@@ -7,7 +7,11 @@ import '@earendil-works/elanor-fonts/commit-mono.css';
 import {ClientRouter} from 'astro:transitions';
 import ColorSchemeScript from '../components/color-scheme-script.astro';
 import {ColorSchemeToggle} from '../components/color-scheme-toggle.tsx';
-import {DocsSideNavigation, type DocsNavigationSection} from '../components/docs-side-navigation.tsx';
+import {
+  DocsSideNavigation,
+  type DocsNavigationGroup,
+  type DocsNavigationLink,
+} from '../components/docs-side-navigation.tsx';
 import {DocsMobileNavigation} from '../components/docs-mobile-navigation.tsx';
 import {componentGroups} from '../lib/component-groups.ts';
 import {componentName} from '../lib/component-name.ts';
@@ -34,33 +38,31 @@ const widePreview = [
 ].includes(current);
 // Token links stay on the brand of the current token page.
 const tokenBrand = /^\/tokens\/([^/]+)\//.exec(current)?.[1] ?? defaultTokenBrand;
-const sections: DocsNavigationSection[] = [
-  {
-    label: 'Brand',
-    links: [{href: '/brand/', label: 'Logos'}],
-  },
-  {
-    label: 'Foundations',
-    links: [
-      {href: '/fonts/', label: 'Fonts'},
-      {href: '/icons/', label: 'Icons'},
-    ],
-  },
+const link = (href: string, label: string): DocsNavigationLink => ({type: 'link', href, label});
+const groups: DocsNavigationGroup[] = [
+  {label: 'Brand', items: [link('/brand/', 'Logos')]},
+  {label: 'Foundations', items: [link('/fonts/', 'Fonts'), link('/icons/', 'Icons')]},
   {
     label: 'Tokens',
-    links: [
-      {href: '/tokens/', label: 'Overview'},
-      ...tokenAreas.map((area) => ({href: tokenAreaHref(tokenBrand, area.id), label: area.label})),
+    items: [
+      link('/tokens/', 'Overview'),
+      ...tokenAreas.map((area) => link(tokenAreaHref(tokenBrand, area.id), area.label)),
     ],
   },
-  {label: 'Components', links: [{href: '/components/', label: 'Overview'}]},
-  ...(await componentGroups()).map((group) => ({
-    label: group.label,
-    links: group.entries.map((entry) => ({
-      href: `/components/${entry.id}/`,
-      label: componentName(entry.id),
-    })),
-  })),
+  {
+    label: 'Components',
+    items: [
+      link('/components/', 'Overview'),
+      ...(await componentGroups()).map((group) => ({
+        type: 'section' as const,
+        id: group.category,
+        label: group.label,
+        links: group.entries.map((entry) =>
+          link(`/components/${entry.id}/`, componentName(entry.id)),
+        ),
+      })),
+    ],
+  },
 ];
 ---
 
@@ -76,7 +78,7 @@ const sections: DocsNavigationSection[] = [
   </head>
   <body class="docs-layout">
     <div data-docs-swap="mobile-navigation">
-      <DocsMobileNavigation sections={sections} current={current} client:load>
+      <DocsMobileNavigation groups={groups} current={current} client:load>
         {/* A slot stays static HTML, so the color scheme script owns its state without hydration. */}
         <ColorSchemeToggle slot="actions" />
       </DocsMobileNavigation>
@@ -86,7 +88,13 @@ const sections: DocsNavigationSection[] = [
         <ColorSchemeToggle />
       </div>
       <div data-docs-swap="navigation">
-        <DocsSideNavigation sections={sections} current={current} />
+        {/* Persisted, so opened sections stay open across client-side navigation. */}
+        <DocsSideNavigation
+          groups={groups}
+          current={current}
+          client:load
+          transition:persist="docs-side-navigation"
+        />
       </div>
     </aside>
     <ContentTag data-docs-swap="content">
@@ -101,4 +109,5 @@ const sections: DocsNavigationSection[] = [
 <script>
   import '../scripts/color-scheme.ts';
   import '../scripts/docs-swap.ts';
+  import '../scripts/reveal-current-link.ts';
 </script>
