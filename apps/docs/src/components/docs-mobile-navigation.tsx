@@ -34,7 +34,7 @@ export function DocsMobileNavigation({
     const breakpoint = getComputedStyle(document.documentElement).getPropertyValue(
       '--semantic-dimension-breakpoint-medium',
     );
-    const desktop = window.matchMedia(`(min-width: ${breakpoint.trim()})`);
+    const desktop = window.matchMedia(`(width >= ${breakpoint.trim()})`);
     const close = () => actionsRef.current?.close();
     const onBreakpointChange = () => {
       if (desktop.matches) close();
