@@ -1,5 +1,4 @@
-import {SearchOffIcon} from '@earendil-works/elanor-icons-boiled-react';
-import {Button, EmptyState, Heading, IconButton, Link, Search} from '@earendil-works/elanor-react';
+import {Button, Heading, IconButton, Link, Search} from '@earendil-works/elanor-react';
 
 import type {
   TokenAreaPage,
@@ -12,6 +11,7 @@ import type {
 } from '../lib/token-pages.ts';
 import {tokenAreaHref} from '../lib/token-pages.ts';
 import {CodeText} from './code-text.tsx';
+import {FilterEmptyState} from './filter-empty-state.tsx';
 import {CopyStatus, StaticCopyButton} from './static-copy-button.tsx';
 
 import styles from './token-area.module.css';
@@ -551,27 +551,7 @@ export function TokenArea({page}: {readonly page: TokenAreaPage}): React.JSX.Ele
       ) : (
         page.sections.map((section) => <Section key={section.id} section={section} />)
       )}
-      <div hidden data-filter-empty>
-        <EmptyState.Root>
-          <EmptyState.Illustration>
-            <SearchOffIcon size={64} />
-          </EmptyState.Illustration>
-          <EmptyState.Body>
-            <EmptyState.Copy>
-              <EmptyState.Title level={2}>No matching tokens</EmptyState.Title>
-              <EmptyState.Description>
-                Nothing matches “<span data-filter-query />
-                ”. Try a shorter or different word.
-              </EmptyState.Description>
-            </EmptyState.Copy>
-            <EmptyState.Actions>
-              <Button hierarchy="secondary" data-filter-clear>
-                Clear search
-              </Button>
-            </EmptyState.Actions>
-          </EmptyState.Body>
-        </EmptyState.Root>
-      </div>
+      <FilterEmptyState noun="tokens" />
     </div>
   );
 }
