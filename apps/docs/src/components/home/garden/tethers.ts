@@ -1,4 +1,4 @@
-import {COLOR_SCHEME_EVENT} from '../../../scripts/color-scheme.ts';
+import {COLOR_SCHEME_EVENT, currentColorScheme} from '../../../scripts/color-scheme.ts';
 import {isPaused, PAUSE_EVENT} from './pause.ts';
 
 interface Point {
@@ -96,6 +96,8 @@ export function connectPapers(garden: HTMLElement, links: readonly HTMLElement[]
   let frame = 0;
   let visible = true;
   let stopped = false;
+  // Fireflies mid-crossfade; only these need their opacity read.
+  const fading = new Set<EventTarget>();
 
   const schedule = () => {
     if (!frame && visible && !stopped && !document.hidden) frame = requestAnimationFrame(update);
@@ -114,20 +116,24 @@ export function connectPapers(garden: HTMLElement, links: readonly HTMLElement[]
       const origin = rectOf(carrier.origin);
       const x = rectOf(carrier.axisX);
       const y = rectOf(carrier.axisY);
-      const inverse = new DOMMatrix([
-        (x.x - origin.x) / width,
-        (x.y - origin.y) / width,
-        (y.x - origin.x) / height,
-        (y.y - origin.y) / height,
-        origin.x,
-        origin.y,
-      ]).inverse();
-      const local = (element: Element) => {
+      // The inverse of the courier's transform, from its frame anchors, as plain numbers.
+      const a = (x.x - origin.x) / width;
+      const b = (x.y - origin.y) / width;
+      const c = (y.x - origin.x) / height;
+      const d = (y.y - origin.y) / height;
+      const det = a * d - b * c || 1;
+      const local = (element: Element): Point => {
         const rect = rectOf(element);
-        return new DOMPoint(rect.x, rect.y).matrixTransform(inverse);
+        const dx = rect.x - origin.x;
+        const dy = rect.y - origin.y;
+        return {x: (d * dx - c * dy) / det, y: (a * dy - b * dx) / det};
       };
       // During the bee/firefly crossfade, follow the more visible insect.
-      const blend = Number(getComputedStyle(carrier.firefly).opacity);
+      const blend = fading.has(carrier.firefly)
+        ? Number(getComputedStyle(carrier.firefly).opacity)
+        : currentColorScheme() === 'dark'
+          ? 1
+          : 0;
       const feet = carrier.beeGrips
         .map((grip, i) => {
           const bee = local(grip);
@@ -182,6 +188,17 @@ export function connectPapers(garden: HTMLElement, links: readonly HTMLElement[]
     visible = entry?.isIntersecting ?? true;
     schedule();
   }).observe(garden);
+
+  const fireflies = new Set<EventTarget>(carriers.map((carrier) => carrier.firefly));
+  const crossfade = (event: TransitionEvent) => {
+    const {target} = event;
+    if (!target || !fireflies.has(target) || event.propertyName !== 'opacity') return;
+    if (event.type === 'transitionrun') fading.add(target);
+    else fading.delete(target);
+    schedule();
+  };
+  for (const type of ['transitionrun', 'transitionend', 'transitioncancel'] as const)
+    garden.addEventListener(type, crossfade);
 
   document.addEventListener('visibilitychange', schedule);
   reducedMotion.addEventListener('change', schedule);
