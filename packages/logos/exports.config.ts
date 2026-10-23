@@ -10,7 +10,7 @@ import {
   print,
 } from './scripts/exports/index.js';
 
-/** Brands with the full set of files; Elanor gets only SVG, PNG, profile pictures, and favicons. */
+/** Brands with the full set of files; Elanor gets only SVG, PNG, previews, profile pictures, and favicons. */
 const kitBrands: BrandId[] = ['earendil', 'pi', 'radius', 'lefos'];
 
 /** Press kits, and the brands each one covers. The Earendil kit is the company kit with every kit brand. */
@@ -34,6 +34,8 @@ export const exportPlugins: ExportPlugin[] = [
     select: {brands: kitBrands, kinds: ['logo-wordmark-horizontal'], treatments: ['on-light']},
     heights: [32, 64],
   }),
+  // The painting's SVGs are too large to preview; the docs show these at 1×, 2×, and 3×.
+  pngHeights({name: 'preview', select: {brands: ['elanor']}, heights: [48, 96, 144]}),
   print({
     select: {brands: kitBrands},
     // White prints no ink, so on dark backgrounds it knocks out to the paper.

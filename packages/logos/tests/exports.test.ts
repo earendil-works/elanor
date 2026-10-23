@@ -207,7 +207,7 @@ describe('built exports', () => {
     ]);
   });
 
-  test('the painting gets color logos as SVG and PNG, profile pictures, and raster favicons', async () => {
+  test('the painting gets color logos as SVG and PNG, previews, profile pictures, and raster favicons', async () => {
     const manifest = JSON.parse(await readFile(resolve(dist, 'manifest.json'), 'utf8'));
     const elanor = manifest.brands.find((brand: {id: string}) => brand.id === 'elanor');
     expect(elanor.backgrounds).toEqual({light: '#ebe7e4', dark: '#141a17'});
@@ -215,7 +215,10 @@ describe('built exports', () => {
       new Set(['on-light', 'on-dark']),
     );
     for (const asset of elanor.assets)
-      expect(Object.keys(asset.files).sort()).toEqual(['png', 'svg']);
+      expect(Object.keys(asset.files).sort()).toEqual(['png', 'preview', 'svg']);
+    expect(elanor.assets[0].files.preview.map((file: {height: number}) => file.height)).toEqual([
+      48, 96, 144,
+    ]);
     expect(elanor.avatars).toHaveLength(4);
     expect(elanor.favicons.svg).toBeUndefined();
     expect(elanor.favicons.ico).toBe('favicons/elanor/favicon.ico');
