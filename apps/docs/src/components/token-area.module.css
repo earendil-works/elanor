@@ -504,7 +504,8 @@
   .bar,
   .square,
   .block,
-  .scaleMark {
+  .scaleMark,
+  .mover[data-sample='block'] {
     background: CanvasText;
     forced-color-adjust: none;
   }
@@ -529,9 +530,64 @@
   background: var(--semantic-color-background-fill-primary);
 }
 
-.scaleFrame {
-  display: block;
-  border: var(--semantic-dimension-border-width-small) dashed var(--semantic-color-border-secondary);
+/* Travel and scale: the sample where it starts, over a dashed outline where it rests. */
+.motionValue {
+  display: grid;
+  /* The button's column stays when there is nothing to play, so samples line up. */
+  grid-template-columns: var(--semantic-dimension-size-small) auto;
+  align-items: center;
+  gap: var(--semantic-dimension-space-gap-small);
+}
+
+.valueStage {
+  display: grid;
+  grid-column: 2;
+}
+
+.rest,
+.mover {
+  box-sizing: border-box;
+  grid-area: 1 / 1;
+  inline-size: var(--semantic-dimension-size-large);
+  block-size: var(--semantic-dimension-size-large);
+}
+
+.rest {
+  border: var(--semantic-dimension-border-width-small) dashed var(--semantic-color-border-primary);
+}
+
+.mover {
+  background: var(--semantic-color-background-fill-primary);
+}
+
+.rest[data-sample='popup'],
+.mover[data-sample='popup'] {
+  inline-size: var(--semantic-dimension-size-x-large);
+  block-size: var(--semantic-dimension-size-medium);
+  border-radius: var(--semantic-dimension-radius-medium);
+}
+
+.mover[data-sample='popup'] {
+  border: var(--semantic-dimension-border-width-small) solid var(--semantic-color-border-secondary);
+  background: var(--semantic-color-background-surface);
+  box-shadow: var(--semantic-shadow-popup);
+}
+
+/* A key cap, as in KeyboardShortcut, shown pressed: in by its travel and by its thicker bottom edge. */
+.rest[data-sample='key'],
+.mover[data-sample='key'] {
+  inline-size: var(--semantic-dimension-size-medium);
+  block-size: var(--semantic-dimension-size-medium);
+  border-radius: var(--semantic-dimension-radius-small);
+}
+
+.mover[data-sample='key'] {
+  display: grid;
+  place-items: center;
+  border: var(--semantic-dimension-border-width-small) solid var(--semantic-color-border-secondary);
+  background: var(--semantic-color-background-surface);
+  color: var(--semantic-color-text-primary);
+  font: var(--semantic-typography-code-secondary);
 }
 
 .curve {

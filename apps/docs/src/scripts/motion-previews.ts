@@ -5,6 +5,61 @@
  */
 
 type Role = 'slide' | 'fade' | 'feedback' | 'pulse' | 'stale';
+/** Travel and scale values: the sample moves from where it starts to rest; a key presses down. */
+type ValueRole = 'travel' | 'scale' | 'press';
+
+const valueRoles: ReadonlySet<string> = new Set<ValueRole>(['travel', 'scale', 'press']);
+
+function valueKeyframes(role: ValueRole, from: string): Keyframe[] {
+  switch (role) {
+    case 'travel':
+      return [{translate: from}, {translate: '0 0'}];
+    case 'scale':
+      return [{scale: from}, {scale: 1}];
+    case 'press': {
+      // Up at rest, then pressed in by the travel and the thicker bottom edge, as in KeyboardShortcut.
+      const rest = {
+        translate: '0 0',
+        borderBlockEndWidth: 'var(--semantic-dimension-border-width-medium)',
+      };
+      const pressed = {
+        translate: from,
+        borderBlockEndWidth: 'var(--semantic-dimension-border-width-small)',
+      };
+      return [
+        {...rest, offset: 0},
+        {...rest, offset: 0.4},
+        {...pressed, offset: 0.4},
+        {...pressed, offset: 1},
+      ];
+    }
+  }
+}
+
+function playValue(preview: HTMLElement, target: HTMLElement, role: ValueRole): void {
+  const {
+    from = '0',
+    duration,
+    delay,
+    easing = 'linear',
+    fadeDuration,
+    fadeEasing,
+  } = preview.dataset;
+  target.animate(valueKeyframes(role, from), {
+    duration: Number(duration),
+    delay: Number(delay),
+    easing,
+    fill: 'forwards',
+  });
+  // Popups also fade in.
+  if (fadeDuration)
+    target.animate([{opacity: 0}, {opacity: 1}], {
+      duration: Number(fadeDuration),
+      delay: Number(delay),
+      easing: fadeEasing ?? 'linear',
+      fill: 'forwards',
+    });
+}
 
 function keyframes(role: Role, target: HTMLElement, opacity: string): Keyframe[] {
   switch (role) {
@@ -29,8 +84,18 @@ function keyframes(role: Role, target: HTMLElement, opacity: string): Keyframe[]
 function play(preview: HTMLElement, button: HTMLElement): void {
   const target = preview.querySelector<HTMLElement>('[data-motion-target]');
   if (!target) return;
-  const role = preview.dataset.motion as Role;
   for (const animation of target.getAnimations()) animation.cancel();
+  const role = preview.dataset.motion ?? '';
+  if (valueRoles.has(role)) playValue(preview, target, role as ValueRole);
+  else playRole(preview, target, role as Role);
+  if (!('played' in button.dataset)) {
+    button.dataset.played = '';
+    button.setAttribute('aria-label', 'Replay');
+    button.title = 'Replay';
+  }
+}
+
+function playRole(preview: HTMLElement, target: HTMLElement, role: Role): void {
   target.animate(keyframes(role, target, preview.dataset.opacity ?? '1'), {
     duration: Number(preview.dataset.duration),
     delay: Number(preview.dataset.delay),
@@ -38,11 +103,6 @@ function play(preview: HTMLElement, button: HTMLElement): void {
     // A pulse runs back and forth a few times, as in Skeleton.
     ...(role === 'pulse' ? {iterations: 4, direction: 'alternate'} : {fill: 'forwards'}),
   });
-  if (!('played' in button.dataset)) {
-    button.dataset.played = '';
-    button.setAttribute('aria-label', 'Replay');
-    button.title = 'Replay';
-  }
 }
 
 document.addEventListener('click', (event) => {

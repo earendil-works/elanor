@@ -370,6 +370,13 @@ export interface TokenValueLine {
 }
 
 export type MotionRole = 'slide' | 'fade' | 'feedback' | 'pulse' | 'stale';
+
+export interface MotionTiming {
+  /** In milliseconds. */
+  readonly duration: number;
+  readonly delay: number;
+  readonly easing: string;
+}
 type Bezier = readonly [number, number, number, number];
 
 /**
@@ -421,7 +428,21 @@ export type TokenPreview =
       readonly surfaceDark: string;
     }
   | {readonly kind: 'opacity'; readonly opacity: string}
-  | {readonly kind: 'scale'; readonly scale: string}
+  | {
+      readonly kind: 'motion-value';
+      /** Travel slides by a distance; scale grows from a size. */
+      readonly change: 'travel' | 'scale';
+      /** A block, a key cap that presses down, or a popup that also fades in. */
+      readonly sample: 'block' | 'key' | 'popup';
+      /** Where the sample rests in the static preview: a `translate` or `scale` value. */
+      readonly from: string;
+      /** Room around the sample for its travel. */
+      readonly room: string;
+      /** How it plays; undefined for values at rest. */
+      readonly timing: MotionTiming | undefined;
+      /** How popups fade in. */
+      readonly fade: MotionTiming | undefined;
+    }
   | {readonly kind: 'easing'; readonly bezier: Bezier}
   | {
       readonly kind: 'motion';
@@ -740,6 +761,21 @@ function motionRole(path: string): MotionRole {
   return 'fade';
 }
 
+function timingOf(token: ApiToken | undefined): MotionTiming | undefined {
+  if (token?.type !== 'transition') return undefined;
+  const value = token.value as {duration: Dimension; delay: Dimension; timingFunction: unknown};
+  return {
+    duration: value.duration.value,
+    delay: value.delay.value,
+    easing: `cubic-bezier(${bezierOf(value.timingFunction).join(', ')})`,
+  };
+}
+
+/** How a motion value plays when no transition shares its name; tokens don't say how they move. */
+const neutralTiming: MotionTiming = {duration: 300, delay: 0, easing: 'ease-out'};
+/** Keys press instantly; the preview holds the key down for a moment. */
+const keyPressTiming: MotionTiming = {duration: 600, delay: 0, easing: 'linear'};
+
 interface BuildContext {
   readonly brand: string;
   readonly byPath: ReadonlyMap<string, ApiToken>;
@@ -763,6 +799,39 @@ function cssOf(context: BuildContext, path: string, scheme?: 'dark'): string {
   const token = context.byPath.get(path);
   if (!token) return '';
   return (scheme ? token.contexts?.['colorScheme']?.[scheme]?.css : undefined) ?? token.css;
+}
+
+/**
+ * A travel or scale value as a motion preview. It plays with the movement transition of the same name,
+ * such as `travel.popup` with `transition.movement.popup`, or a neutral timing.
+ */
+function motionValue(
+  context: BuildContext,
+  token: ApiToken,
+  change: 'travel' | 'scale',
+  from: string,
+  room: string,
+  moving: boolean,
+): {line: TokenValueLine | undefined; preview: TokenPreview} {
+  const name = token.path.slice(token.path.lastIndexOf('.') + 1);
+  const pairedPath = `semantic.transition.movement.${name}`;
+  const paired = timingOf(context.byPath.get(pairedPath));
+  const sample =
+    change === 'travel' && name === 'keyboardKey' ? 'key' : name === 'popup' ? 'popup' : 'block';
+  const timing = moving
+    ? (paired ?? (sample === 'key' ? keyPressTiming : neutralTiming))
+    : undefined;
+  const fade =
+    sample === 'popup' && timing
+      ? (timingOf(context.byPath.get('semantic.transition.fade')) ?? timing)
+      : undefined;
+  return {
+    line:
+      paired && moving
+        ? {label: 'Plays with', value: displayName(pairedPath), alias: link(context, pairedPath)}
+        : undefined,
+    preview: {kind: 'motion-value', change, sample, from, room, timing, fade},
+  };
 }
 
 function describe(
@@ -852,6 +921,20 @@ function describe(
           },
         };
       if (is('letterSpacing')) return {values, preview: {kind: 'none'}};
+      const rem = remOf(token.value);
+      // Travel that isn't a length, or too long to show, is drawn like other lengths.
+      if (is('travel') && rem !== undefined && Math.abs(rem) <= context.frame.block) {
+        const offset = within(token.path, 'semantic.dimension.travel.keyboardKey') ? rem : -rem;
+        const {line, preview} = motionValue(
+          context,
+          token,
+          'travel',
+          `0 ${offset}rem`,
+          `${Math.abs(rem)}rem`,
+          rem !== 0,
+        );
+        return {values: line ? [...values, line] : values, preview};
+      }
       return {values, preview: lengthPreview(context.frame, token, scaled)};
     }
     case 'shadow':
@@ -878,7 +961,19 @@ function describe(
         within(token.path, `semantic.number.${kind}`) ||
         within(token.path, `primitive.number.${kind}`);
       if (is('opacity')) return {values, preview: {kind: 'opacity', opacity: token.css}};
-      if (is('scale')) return {values, preview: {kind: 'scale', scale: token.css}};
+      const scale = Number(token.value);
+      // Scales outside 0–1 would draw beyond the outline; they show the value only.
+      if (is('scale') && scale >= 0 && scale <= 1) {
+        const {line, preview} = motionValue(
+          context,
+          token,
+          'scale',
+          String(scale),
+          '0rem',
+          scale !== 1,
+        );
+        return {values: line ? [...values, line] : values, preview};
+      }
       return {values, preview: {kind: 'none'}};
     }
     case 'transition': {

@@ -78,6 +78,61 @@ function EasingCurve({bezier}: {readonly bezier: readonly number[]}): React.JSX.
   );
 }
 
+function PlayButton({nameId}: {readonly nameId: string}): React.JSX.Element {
+  return (
+    <IconButton
+      className={styles.play}
+      aria-label="Play"
+      aria-describedby={nameId}
+      title="Play"
+      data-motion-play
+    >
+      <span className={styles.icon} data-icon="play" style={icon('play-arrow')} />
+      <span className={styles.icon} data-icon="replay" style={icon('replay')} />
+    </IconButton>
+  );
+}
+
+/**
+ * A travel or scale value: the sample where it starts, over a dashed outline where it comes to rest.
+ * Playing moves it to rest; values at rest have nothing to play.
+ */
+function MotionValue({
+  preview,
+  nameId,
+}: {
+  readonly preview: Extract<Preview, {kind: 'motion-value'}>;
+  readonly nameId: string;
+}): React.JSX.Element {
+  const {timing, fade} = preview;
+  const motion = preview.sample === 'key' ? 'press' : preview.change;
+  return (
+    <span
+      className={styles.motionValue}
+      data-motion={timing ? motion : undefined}
+      data-from={preview.from}
+      data-duration={timing?.duration}
+      data-delay={timing?.delay}
+      data-easing={timing?.easing}
+      data-fade-duration={fade?.duration}
+      data-fade-easing={fade?.easing}
+    >
+      {timing ? <PlayButton nameId={nameId} /> : null}
+      <span className={styles.valueStage} style={{paddingBlock: preview.room}} aria-hidden="true">
+        <span className={styles.rest} data-sample={preview.sample} />
+        <span
+          className={styles.mover}
+          data-sample={preview.sample}
+          style={preview.change === 'travel' ? {translate: preview.from} : {scale: preview.from}}
+          data-motion-target
+        >
+          {preview.sample === 'key' ? 'K' : null}
+        </span>
+      </span>
+    </span>
+  );
+}
+
 const sample = 'Sphinx of black quartz, judge my vow.';
 
 /** A color over a scheme's canvas, so translucent colors show as they render. */
@@ -198,12 +253,8 @@ function TokenPreview({preview, nameId}: {readonly preview: Preview; readonly na
           aria-hidden="true"
         />
       );
-    case 'scale':
-      return (
-        <span className={styles.scaleFrame} aria-hidden="true">
-          <span className={styles.shape} data-filled style={{scale: preview.scale}} />
-        </span>
-      );
+    case 'motion-value':
+      return <MotionValue preview={preview} nameId={nameId} />;
     case 'easing':
       return <EasingCurve bezier={preview.bezier} />;
     case 'motion':
@@ -216,16 +267,7 @@ function TokenPreview({preview, nameId}: {readonly preview: Preview; readonly na
           data-easing={preview.easing}
           data-opacity={preview.opacity}
         >
-          <IconButton
-            className={styles.play}
-            aria-label="Play"
-            aria-describedby={nameId}
-            title="Play"
-            data-motion-play
-          >
-            <span className={styles.icon} data-icon="play" style={icon('play-arrow')} />
-            <span className={styles.icon} data-icon="replay" style={icon('replay')} />
-          </IconButton>
+          <PlayButton nameId={nameId} />
           <span className={styles.motionTrack} aria-hidden="true">
             <span className={styles.motionTarget} data-motion-target />
           </span>
