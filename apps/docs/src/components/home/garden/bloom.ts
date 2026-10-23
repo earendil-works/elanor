@@ -212,7 +212,7 @@ export function paintBloom(
     const wash = () =>
       (washPalette ??= tinted(reference, size, (context) => {
         fill(context, 'saturation', 0.55, '#808080');
-        fill(context, 'source-atop', 0.5, '#faf7ef');
+        fill(context, 'source-atop', 0.5, '#ebe7e4');
       }));
     const pool = () =>
       (poolPalette ??= tinted(reference, size, (context) => {

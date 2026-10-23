@@ -1,10 +1,10 @@
 /* stylelint-disable design-tokens/no-hardcoded-token-values, design-tokens/no-non-token-custom-properties -- Homepage illustration: the watercolor palette, paper, thread, and lantern colors, the hand-tuned artwork geometry, and the motion timings belong to the artwork, not the UI token scale. Local properties carry per-courier rig values set in markup and by the garden scripts. Interface chrome around the garden uses tokens in home-page.module.css. */
 
-/* Warm paper the painting was made for; replaces the neutral canvas on the homepage only. */
+/* Elanor's light canvas (moonstone, shared with Lefos); replaces the docs canvas on the homepage only. */
 .garden-page {
   /* Couriers fly in from beyond the viewport; clip without creating a scroll container. */
   overflow: clip;
-  background: #faf7ef;
+  background: #ebe7e4;
 }
 
 /* Night falls as a wash over the paper. Opacity, not background-color: Chrome composites
