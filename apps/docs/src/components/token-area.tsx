@@ -120,10 +120,46 @@ function TokenPreview({preview, nameId}: {readonly preview: Preview; readonly na
           Aa Gg 0123
         </span>
       );
-    case 'length':
+    case 'bar':
       return (
         <span className={styles.barTrack} aria-hidden="true">
           <span className={styles.bar} style={{inlineSize: preview.size}} />
+        </span>
+      );
+    case 'square':
+      return (
+        <span
+          className={styles.square}
+          style={{inlineSize: preview.size, blockSize: preview.size}}
+          aria-hidden="true"
+        />
+      );
+    case 'inset': {
+      const padding = {all: 'padding', block: 'paddingBlock', inline: 'paddingInline'}[
+        preview.axis
+      ];
+      return (
+        <span className={styles.inset} style={{[padding]: preview.size}} aria-hidden="true">
+          <span className={styles.block} />
+        </span>
+      );
+    }
+    case 'gap':
+      return (
+        <span
+          className={styles.gap}
+          data-direction={preview.direction}
+          style={{gap: preview.size}}
+          aria-hidden="true"
+        >
+          <span className={styles.block} />
+          <span className={styles.block} />
+        </span>
+      );
+    case 'scaled':
+      return (
+        <span className={styles.scaleTrack} aria-hidden="true">
+          <span className={styles.scaleMark} style={{inlineSize: preview.size}} />
         </span>
       );
     case 'radius':
@@ -396,6 +432,7 @@ function Group({
         </span>
         <Strip group={group} />
       </summary>
+      {group.caption ? <p className={styles.caption}>{group.caption}</p> : null}
       {group.layout === 'swatches' ? (
         <ul className={styles.tiles}>
           {group.entries.map((entry) => (
@@ -403,7 +440,14 @@ function Group({
           ))}
         </ul>
       ) : (
-        <ul className={styles.rows}>
+        <ul
+          className={styles.rows}
+          style={
+            group.previewSize
+              ? ({'--preview-size': group.previewSize} as React.CSSProperties)
+              : undefined
+          }
+        >
           {group.entries.map((entry) => (
             <EntryRow key={entry.id} entry={entry} />
           ))}

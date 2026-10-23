@@ -196,6 +196,13 @@
   block-size: var(--semantic-dimension-size-x-small);
 }
 
+.caption {
+  margin: 0;
+  padding-block-end: var(--semantic-dimension-space-padding-large);
+  color: var(--semantic-color-text-secondary);
+  font: var(--semantic-typography-ui-secondary);
+}
+
 .rows,
 .tiles,
 .states {
@@ -205,6 +212,10 @@
 }
 
 .rows {
+  /* Groups whose previews need more room set a wider column inline. */
+  /* stylelint-disable-next-line design-tokens/no-non-token-custom-properties -- Group preview column, set inline by token-area.tsx. */
+  --preview-size: calc(var(--semantic-dimension-size-x-large) * 2);
+
   container: token-rows / inline-size;
   padding-block-end: var(--semantic-dimension-space-padding-large);
 }
@@ -220,7 +231,8 @@
   grid-template-areas:
     'preview info'
     'preview values';
-  grid-template-columns: calc(var(--semantic-dimension-size-x-large) * 2) minmax(0, 1fr);
+  /* stylelint-disable-next-line design-tokens/no-non-token-custom-properties -- Group preview column, set inline by token-area.tsx. */
+  grid-template-columns: var(--preview-size) minmax(0, 1fr);
   align-items: start;
   gap: var(--semantic-dimension-space-gap-small) var(--semantic-dimension-space-gap-medium);
   padding-block: var(--semantic-dimension-space-padding-large);
@@ -252,7 +264,8 @@
 /* The header uses the row's columns, so it lines up with the info column of the state lines. */
 .entryHeader {
   display: grid;
-  grid-template-columns: calc(var(--semantic-dimension-size-x-large) * 2) minmax(0, 1fr);
+  /* stylelint-disable-next-line design-tokens/no-non-token-custom-properties -- Group preview column, set inline by token-area.tsx. */
+  grid-template-columns: var(--preview-size) minmax(0, 1fr);
   column-gap: var(--semantic-dimension-space-gap-medium);
 }
 
@@ -273,9 +286,8 @@
 @container token-rows (min-width: 48rem /* token: semantic.dimension.breakpoint.small */) {
   .row {
     grid-template-areas: 'preview info values';
-    grid-template-columns:
-      calc(var(--semantic-dimension-size-x-large) * 2) minmax(0, 3fr)
-      minmax(0, 2fr);
+    /* stylelint-disable-next-line design-tokens/no-non-token-custom-properties -- Group preview column, set inline by token-area.tsx. */
+    grid-template-columns: var(--preview-size) minmax(0, 3fr) minmax(0, 2fr);
   }
 
   .row[data-wide] {
@@ -285,9 +297,8 @@
   }
 
   .entryHeader {
-    grid-template-columns:
-      calc(var(--semantic-dimension-size-x-large) * 2) minmax(0, 3fr)
-      minmax(0, 2fr);
+    /* stylelint-disable-next-line design-tokens/no-non-token-custom-properties -- Group preview column, set inline by token-area.tsx. */
+    grid-template-columns: var(--preview-size) minmax(0, 3fr) minmax(0, 2fr);
   }
 }
 
@@ -430,6 +441,7 @@
   font: var(--semantic-typography-heading-app-5);
 }
 
+/* Lengths at true size, except scaled ones; scaled ones show their full width as a track. */
 .barTrack {
   display: block;
   inline-size: 100%;
@@ -441,6 +453,61 @@
   block-size: var(--semantic-dimension-size-xx-small);
   border-radius: var(--semantic-dimension-radius-small);
   background: var(--semantic-color-background-fill-primary);
+}
+
+.square,
+.block {
+  display: block;
+  flex: none;
+  background: var(--semantic-color-background-fill-primary);
+}
+
+.block {
+  inline-size: var(--semantic-dimension-size-x-small);
+  block-size: var(--semantic-dimension-size-x-small);
+}
+
+.inset {
+  display: flex;
+  border: var(--semantic-dimension-border-width-small) dashed var(--semantic-color-border-primary);
+}
+
+.gap {
+  display: flex;
+}
+
+.gap[data-direction='column'] {
+  flex-direction: column;
+  inline-size: 100%;
+}
+
+.gap[data-direction='column'] .block {
+  inline-size: 100%;
+}
+
+.scaleTrack {
+  display: block;
+  inline-size: 100%;
+  block-size: var(--semantic-dimension-size-xx-small);
+  overflow: hidden;
+  border: var(--semantic-dimension-border-width-small) solid var(--semantic-color-border-primary);
+  border-radius: var(--semantic-dimension-radius-small);
+}
+
+.scaleMark {
+  display: block;
+  block-size: 100%;
+  background: var(--semantic-color-background-fill-primary);
+}
+
+@media (forced-colors: active) {
+  .bar,
+  .square,
+  .block,
+  .scaleMark {
+    background: CanvasText;
+    forced-color-adjust: none;
+  }
 }
 
 .line {

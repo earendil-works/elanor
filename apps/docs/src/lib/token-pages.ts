@@ -30,6 +30,8 @@ interface GroupSpec {
    * wins. Entries follow the order of the prefixes.
    */
   readonly prefixes: readonly string[];
+  /** Draw every length on the shared scale; otherwise each is drawn at true size if it fits. */
+  readonly scaled?: boolean;
 }
 
 interface SectionSpec {
@@ -50,6 +52,11 @@ const group = (id: string, label: string, ...prefixes: string[]): GroupSpec => (
   id,
   label,
   prefixes,
+});
+/** A group whose lengths all use the shared scale, so they compare with each other. */
+const scaledGroup = (id: string, label: string, ...prefixes: string[]): GroupSpec => ({
+  ...group(id, label, ...prefixes),
+  scaled: true,
 });
 const section = (id: string, label: string, ...groups: GroupSpec[]): SectionSpec => ({
   id,
@@ -234,19 +241,19 @@ const areaSpecs: readonly AreaSpec[] = [
         'size',
         'Size & layout',
         group('controls-and-icons', 'Controls & icons', 'semantic.dimension.size'),
-        group(
+        scaledGroup(
           'layout',
           'Layout',
           'semantic.dimension.size.sidebar',
           'semantic.dimension.size.topNavigation',
         ),
-        group(
+        scaledGroup(
           'maximum-sizes',
           'Maximum sizes',
           'semantic.dimension.size.maxWidth',
           'semantic.dimension.size.maxHeight',
         ),
-        group('breakpoints', 'Breakpoints', 'semantic.dimension.breakpoint'),
+        scaledGroup('breakpoints', 'Breakpoints', 'semantic.dimension.breakpoint'),
       ),
     ],
   },
@@ -300,7 +307,7 @@ const areaSpecs: readonly AreaSpec[] = [
         'space-and-size',
         'Space & size',
         group('dimension', 'Dimension scale', 'primitive.dimension'),
-        group('breakpoints', 'Breakpoints', 'primitive.dimension.breakpoint'),
+        scaledGroup('breakpoints', 'Breakpoints', 'primitive.dimension.breakpoint'),
       ),
       section(
         'type',
@@ -365,6 +372,31 @@ export interface TokenValueLine {
 export type MotionRole = 'slide' | 'fade' | 'feedback' | 'pulse' | 'stale';
 type Bezier = readonly [number, number, number, number];
 
+/**
+ * Lengths at true size: a bar, a square, content inset by padding, or two blocks apart. Scaled ones show
+ * a share of the full width. `width` is the column width in rem the preview needs.
+ */
+export type LengthPreview =
+  | {readonly kind: 'bar'; readonly size: string; readonly width: number}
+  | {readonly kind: 'square'; readonly size: string; readonly width: number}
+  | {
+      readonly kind: 'inset';
+      readonly size: string;
+      readonly axis: 'all' | 'block' | 'inline';
+      readonly width: number;
+    }
+  | {
+      readonly kind: 'gap';
+      readonly size: string;
+      readonly direction: 'row' | 'column';
+      readonly width: number;
+    }
+  | {readonly kind: 'scaled'; readonly size: string; readonly width: number};
+
+const lengthKinds: ReadonlySet<string> = new Set(['bar', 'square', 'inset', 'gap', 'scaled']);
+const isLengthPreview = (preview: TokenPreview): preview is LengthPreview =>
+  lengthKinds.has(preview.kind);
+
 export type TokenPreview =
   | {
       readonly kind: 'color';
@@ -376,7 +408,7 @@ export type TokenPreview =
   | {readonly kind: 'typography'; readonly font: string; readonly letterSpacing: string}
   | {readonly kind: 'font-family'; readonly family: string}
   | {readonly kind: 'font-weight'; readonly weight: string; readonly family: string}
-  | {readonly kind: 'length'; readonly size: string}
+  | LengthPreview
   | {readonly kind: 'radius'; readonly radius: string}
   | {readonly kind: 'border-width'; readonly width: string}
   | {
@@ -438,6 +470,10 @@ export interface TokenGroup {
   readonly strip: ReadonlyArray<{readonly light: string; readonly dark: string}>;
   /** Tokens, counting each state. */
   readonly count: number;
+  /** The preview column, when the group's previews need more than the default. */
+  readonly previewSize?: string | undefined;
+  /** A note shown above the tokens, such as the scale of the previews. */
+  readonly caption?: string | undefined;
   readonly entries: readonly TokenEntry[];
 }
 
@@ -587,6 +623,99 @@ function dimensionText(value: unknown, css: string): string {
   return css;
 }
 
+/** A length in rem; undefined for units without a fixed size, such as `%` or `vw`. */
+function remOf(value: unknown): number | undefined {
+  if (!isDimension(value)) return undefined;
+  if (value.unit === 'rem') return value.value;
+  if (value.unit === 'px') return value.value / 16;
+  return undefined;
+}
+
+const remText = (rem: number) => `${Math.round(rem * 1000) / 1000}rem`;
+
+const isDimensionKind = (path: string, kind: string) =>
+  within(path, `semantic.dimension.${kind}`) || within(path, `primitive.dimension.${kind}`);
+
+/** Dimensions drawn as lengths; radius, border width, font size, and letter spacing have their own. */
+const isLength = (token: ApiToken) =>
+  token.type === 'dimension' &&
+  !['radius', 'borderWidth', 'fontSize', 'letterSpacing'].some((kind) =>
+    isDimensionKind(token.path, kind),
+  );
+
+/** What length previews are drawn in, in rem, from the brand's tokens. */
+interface LengthFrame {
+  /** The default preview column: `calc(size-x-large * 2)` in token-area.module.css. */
+  readonly column: number;
+  /** The widest a group's preview column grows to fit its previews at true size. */
+  readonly widest: number;
+  /** The blocks in inset and gap previews: `size-x-small`. */
+  readonly block: number;
+  /** The outline of inset previews: `border-width-small`. */
+  readonly border: number;
+  /** The full width of scaled previews: the brand's largest length. */
+  readonly full: number;
+}
+
+function lengthFrame(tokens: readonly ApiToken[]): LengthFrame {
+  const at = (path: string, fallback: number) =>
+    remOf(tokens.find((token) => token.path === path)?.value) ?? fallback;
+  const lengths = tokens.flatMap((token) => (isLength(token) ? (remOf(token.value) ?? []) : []));
+  const column = at('semantic.dimension.size.xLarge', 3) * 2;
+  return {
+    column,
+    widest: column * 1.5,
+    block: at('semantic.dimension.size.xSmall', 1),
+    border: at('semantic.dimension.borderWidth.small', 1 / 16),
+    full: Math.max(1, ...lengths),
+  };
+}
+
+/**
+ * A length's preview: what the token is for at true size, a bar if that doesn't fit, and the shared scale
+ * if the bar doesn't either. Units without a fixed size get no preview.
+ */
+function lengthPreview(frame: LengthFrame, token: ApiToken, scaled: boolean): TokenPreview {
+  const rem = remOf(token.value);
+  if (rem === undefined) return {kind: 'none'};
+  const size = token.css;
+  const fits = (width: number, height: number) => width <= frame.widest && height <= frame.widest;
+  if (!scaled) {
+    const role = rolePreview(frame, token.path, size, rem);
+    if (role && fits(role.preview.width, role.height)) return role.preview;
+    if (fits(rem, 0)) return {kind: 'bar', size, width: rem};
+  }
+  const share = Math.min(Math.max(rem / frame.full, 0), 1);
+  return {kind: 'scaled', size: `${Math.round(share * 1000) / 10}%`, width: 0};
+}
+
+/** The preview for what a length is for, with the space it takes. */
+function rolePreview(
+  frame: LengthFrame,
+  path: string,
+  size: string,
+  rem: number,
+): {preview: LengthPreview; height: number} | undefined {
+  const space = (kind: string) => within(path, `semantic.dimension.space.${kind}`);
+  const inset = 2 * rem + frame.block + 2 * frame.border;
+  const box = frame.block + 2 * frame.border;
+  const apart = 2 * frame.block + rem;
+  if (space('control.padding.block'))
+    return {preview: {kind: 'inset', size, axis: 'block', width: box}, height: inset};
+  if (space('control.padding.inline'))
+    return {preview: {kind: 'inset', size, axis: 'inline', width: inset}, height: box};
+  if (space('padding'))
+    return {preview: {kind: 'inset', size, axis: 'all', width: inset}, height: inset};
+  if (space('gap') || space('control.gap'))
+    return {preview: {kind: 'gap', size, direction: 'row', width: apart}, height: frame.block};
+  // Flow blocks stretch across the column.
+  if (space('flow'))
+    return {preview: {kind: 'gap', size, direction: 'column', width: 0}, height: apart};
+  if (within(path, 'semantic.dimension.size'))
+    return {preview: {kind: 'square', size, width: rem}, height: rem};
+  return undefined;
+}
+
 /** A number to sort dimensions, durations, numbers, and weights by; undefined for other values. */
 function magnitude(token: ApiToken): number | undefined {
   const value = token.value;
@@ -616,6 +745,7 @@ interface BuildContext {
   readonly byPath: ReadonlyMap<string, ApiToken>;
   readonly placements: ReadonlyMap<string, Placement>;
   readonly base: ReadonlyMap<string, string> | undefined;
+  readonly frame: LengthFrame;
 }
 
 function link(context: BuildContext, path: string | undefined): TokenLink | undefined {
@@ -638,6 +768,8 @@ function cssOf(context: BuildContext, path: string, scheme?: 'dark'): string {
 function describe(
   context: BuildContext,
   token: ApiToken,
+  /** Draw lengths on the shared scale. */
+  scaled: boolean,
 ): {values: TokenValueLine[]; preview: TokenPreview} {
   const alias = link(context, token.aliasOf);
   const dark: ApiTokenValue | undefined = token.contexts?.['colorScheme']?.['dark'];
@@ -707,9 +839,7 @@ function describe(
       };
     case 'dimension': {
       const values = [{label: 'Value', value: dimensionText(token.value, token.css), alias}];
-      const is = (kind: string) =>
-        within(token.path, `semantic.dimension.${kind}`) ||
-        within(token.path, `primitive.dimension.${kind}`);
+      const is = (kind: string) => isDimensionKind(token.path, kind);
       if (is('radius')) return {values, preview: {kind: 'radius', radius: token.css}};
       if (is('borderWidth')) return {values, preview: {kind: 'border-width', width: token.css}};
       if (is('fontSize'))
@@ -722,7 +852,7 @@ function describe(
           },
         };
       if (is('letterSpacing')) return {values, preview: {kind: 'none'}};
-      return {values, preview: {kind: 'length', size: token.css}};
+      return {values, preview: lengthPreview(context.frame, token, scaled)};
     }
     case 'shadow':
       return {
@@ -832,25 +962,22 @@ function compareWithinPrefix(prefix: string, a: ApiToken, b: ApiToken): number {
   return a.path.localeCompare(b.path);
 }
 
-/** Bars longer than the preview column are drawn relative to the group's longest one. */
-function scaleBars(states: TokenState[]): TokenState[] {
-  const rem = (size: string) => (size.endsWith('rem') ? Number.parseFloat(size) : 0);
-  const longest = Math.max(
+/** A wider preview column, so every length in the group fits at true size. */
+function previewSize(frame: LengthFrame, states: readonly TokenState[]): string | undefined {
+  const widest = Math.max(
     0,
-    ...states.map((state) => (state.preview.kind === 'length' ? rem(state.preview.size) : 0)),
+    ...states.map((state) => (isLengthPreview(state.preview) ? state.preview.width : 0)),
   );
-  if (longest <= 6) return states;
-  return states.map((state) =>
-    state.preview.kind === 'length'
-      ? {
-          ...state,
-          preview: {
-            kind: 'length',
-            size: `${Math.round((rem(state.preview.size) / longest) * 1000) / 10}%`,
-          },
-        }
-      : state,
-  );
+  return widest > frame.column ? remText(widest) : undefined;
+}
+
+/** Says how scaled previews are drawn, if a group has any. */
+function scaleCaption(frame: LengthFrame, states: readonly TokenState[]): string | undefined {
+  const scaled = states.filter((state) => state.preview.kind === 'scaled').length;
+  if (scaled === 0) return undefined;
+  const lengths = states.filter((state) => isLengthPreview(state.preview)).length;
+  const which = scaled === lengths ? 'Scaled' : `Lengths over ${remText(frame.widest)} are scaled`;
+  return `${which}: full width is ${remText(frame.full)} (${Math.round(frame.full * 16)}px)`;
 }
 
 function buildGroup(
@@ -871,23 +998,20 @@ function buildGroup(
       return pa.order - pb.order || compareWithinPrefix(spec.prefixes[pa.order]!, a, b);
     });
 
-  const scaled = new Map(
-    scaleBars(
-      members.map((token) => ({
-        id: token.cssVariable.slice(2),
-        label: '',
-        path: token.path,
-        cssVariable: token.cssVariable,
-        ...describe(context, token),
-      })),
-    ).map((state) => [state.path, state]),
-  );
+  const described = members.map((token): TokenState => ({
+    id: token.cssVariable.slice(2),
+    label: '',
+    path: token.path,
+    cssVariable: token.cssVariable,
+    ...describe(context, token, spec.scaled ?? false),
+  }));
+  const byPath = new Map(described.map((state) => [state.path, state]));
 
   const paths = new Set(members.map((token) => token.path));
   const entries = new Map<string, {token: ApiToken; states: TokenState[]; specific: boolean}>();
   for (const token of members) {
     const {base, label} = stateBase(token.path, paths);
-    const state = {...scaled.get(token.path)!, label};
+    const state = {...byPath.get(token.path)!, label};
     const specific = context.base ? context.base.get(token.path) !== signature(token) : false;
     const entry = entries.get(base);
     if (entry) {
@@ -923,6 +1047,8 @@ function buildGroup(
       return preview?.kind === 'color' ? [{light: preview.light, dark: preview.dark}] : [];
     }),
     count: members.length,
+    previewSize: previewSize(context.frame, described),
+    caption: scaleCaption(context.frame, described),
     entries: list,
   };
 }
@@ -936,6 +1062,7 @@ export async function tokenAreaPage(brand: string, areaId: string): Promise<Toke
     brand,
     byPath: new Map(tokens.map((token) => [token.path, token])),
     placements: placeTokens(brand, tokens),
+    frame: lengthFrame(tokens),
     base:
       brand === defaultTokenBrand
         ? undefined
