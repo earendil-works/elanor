@@ -32,4 +32,36 @@
     color: var(--semantic-color-text-secondary);
     font: var(--semantic-typography-ui-tertiary);
   }
+
+  /* Rendered as a link, the whole card is one target; the border shows its extent. */
+  .root:any-link {
+    border: var(--semantic-dimension-border-width-default) solid
+      var(--semantic-color-border-secondary);
+    border-radius: var(--semantic-dimension-radius-medium);
+    text-decoration: none;
+    transition: background-color var(--semantic-transition-feedback);
+  }
+
+  .root:any-link:hover {
+    background: var(--semantic-color-background-fill-ghost-hover);
+  }
+
+  .root:any-link:active {
+    background: var(--semantic-color-background-fill-ghost-active);
+  }
+
+  .root:any-link:focus-visible {
+    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline-offset: var(--semantic-dimension-border-width-medium);
+  }
+
+  @media (forced-colors: active) {
+    .root:any-link:hover {
+      outline: var(--semantic-dimension-border-width-small) solid LinkText;
+    }
+
+    .root:any-link:focus-visible {
+      outline-color: Highlight;
+    }
+  }
 }

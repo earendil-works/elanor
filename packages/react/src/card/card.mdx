@@ -4,7 +4,7 @@ category: layout
 
 # Card
 
-A padded block that groups related content, such as a summary metric or a set of settings. It has no border or background of its own.
+A padded block that groups related content, such as a summary metric or a set of settings. It has no border or background of its own unless it is a link.
 
 <Demo example="./examples/demo.tsx" />
 
@@ -21,3 +21,11 @@ import {Card} from '@earendil-works/elanor-react';
 ## Custom content
 
 <Demo example="./examples/custom-content.tsx" />
+
+## Link
+
+Use `render={<a href="…" />}` to make the whole card a link. Linked cards get a border, so the whole target is visible.
+
+<Demo example="./examples/link.tsx" />
+
+The link's accessible name is all of the card's text, so keep it short. Don't put other links or buttons inside; use [custom content](#custom-content) with a separate link instead.
