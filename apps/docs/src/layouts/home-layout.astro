@@ -5,6 +5,9 @@ import '@earendil-works/elanor-fonts/earendil.css';
 import '@earendil-works/elanor-fonts/commit-mono.css';
 import '../styles/view-transition.css';
 import ColorSchemeScript from '../components/color-scheme-script.astro';
+import SiteHead from '../components/site-head.astro';
+
+const title = 'Elanor - Design system';
 ---
 
 <!doctype html>
@@ -12,7 +15,8 @@ import ColorSchemeScript from '../components/color-scheme-script.astro';
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Elanor - Design system</title>
+    <title>{title}</title>
+    <SiteHead title={title} />
     <ColorSchemeScript />
   </head>
   <body>

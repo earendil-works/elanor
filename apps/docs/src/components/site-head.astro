@@ -1,0 +1,35 @@
+---
+// Favicons, the description, and the social card, shared by every page's <head>.
+import {readFile} from 'node:fs/promises';
+import {resolve} from 'node:path';
+
+import socialCard from '../assets/social-card.png';
+import {logosDist, siteFavicons} from '../lib/packages.ts';
+
+interface Props {
+  title: string;
+}
+
+const {title} = Astro.props;
+const name = 'Elanor';
+const description = "Earendil's design system.";
+// The logo build writes the favicon tags, versioned with the package.
+const favicons = await readFile(resolve(logosDist, (await siteFavicons()).html!), 'utf8');
+const site = Astro.site ?? Astro.url;
+// The image URL has a content hash, so social sites fetch a changed card.
+const image = new URL(socialCard.src, site);
+const url = new URL(Astro.url.pathname, site);
+---
+
+<meta name="description" content={description} />
+<Fragment set:html={favicons} />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={name} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={url.href} />
+<meta property="og:image" content={image.href} />
+<meta property="og:image:width" content={String(socialCard.width)} />
+<meta property="og:image:height" content={String(socialCard.height)} />
+<meta property="og:image:alt" content={`The ${name} flower beside the word ${name}.`} />
+<meta name="twitter:card" content="summary_large_image" />

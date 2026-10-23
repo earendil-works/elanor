@@ -1,6 +1,6 @@
-import {readdir} from 'node:fs/promises';
+import {readdir, readFile} from 'node:fs/promises';
 import {createRequire} from 'node:module';
-import {dirname, relative, resolve} from 'node:path';
+import {dirname, extname, relative, resolve} from 'node:path';
 
 // Resolve from the docs package itself; bundled pages move away from their sources.
 const require = createRequire(resolve(process.cwd(), 'package.json'));
@@ -46,6 +46,37 @@ export interface LogoManifest {
   clearSpace: number;
   brands: LogoBrand[];
   pressKits?: Record<string, string>;
+}
+
+/** Every file type the logo build writes. Browsers only render SVG images served with their type. */
+const logoContentTypes: Record<string, string> = {
+  '.svg': 'image/svg+xml',
+  '.png': 'image/png',
+  '.ico': 'image/x-icon',
+  '.pdf': 'application/pdf',
+  '.zip': 'application/zip',
+  '.json': 'application/json',
+  '.webmanifest': 'application/manifest+json',
+  '.md': 'text/markdown; charset=utf-8',
+  '.html': 'text/html; charset=utf-8',
+};
+
+export function logoContentType(path: string): string {
+  const contentType = logoContentTypes[extname(path)];
+  if (!contentType)
+    throw new Error(`No content type for logo file ${path}; add its extension to logoContentTypes`);
+  return contentType;
+}
+
+/** The site's favicons: the Elanor brand's, from the logo package's manifest, by manifest key. */
+export async function siteFavicons(): Promise<Record<string, string>> {
+  const manifest = JSON.parse(
+    await readFile(resolve(logosDist, 'manifest.json'), 'utf8'),
+  ) as LogoManifest;
+  const favicons = manifest.brands.find(({id}) => id === 'elanor')?.favicons;
+  if (!favicons)
+    throw new Error('The logo build has no Elanor favicons; rebuild @earendil-works/elanor-logos');
+  return favicons;
 }
 
 export interface GuidelinesImage {
