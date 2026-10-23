@@ -84,7 +84,7 @@ for (const brand of Object.keys(brands) as BrandId[]) {
         {light: tokenHex(tokens, token, 'light'), dark: tokenHex(tokens, token, 'dark')},
       ]),
   );
-  // Paintings get no React components: their artwork is too large for a component.
+  // A painting's artwork is too large for a React component.
   if (!brandConfig.painting) artwork[brand] = {colors, kinds: artworkKinds};
 }
 

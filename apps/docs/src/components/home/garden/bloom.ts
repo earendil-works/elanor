@@ -1,18 +1,15 @@
 import {currentColorScheme} from '../../../scripts/color-scheme.ts';
 
-// A one-time watercolor bleed: the painting soaks outward from the stamens with a
-// noisy wet edge. Petals are laid in first; the green leaves follow as a second wash.
-// By day a pale pigment runs ahead of the color and denser pigment pools along the
-// front; by night the front glows warmly. It ends on the original <img> and removes itself.
+// The intro's watercolor bleed: the painting spreads from the stamens, petals first, then leaves.
 
-/** Resolution of the wetness field and masks; upscaled smoothly when drawn. */
+/** Grid size of the wetness field and masks. */
 const GRID = 200;
-/** The stamens, where the paint first touches, as fractions of the painting. */
+/** The stamens, as fractions of the painting. */
 const CENTER = [0.52, 0.585] as const;
 const BINS = 180;
 const LEAF_DELAY = 0.24;
 const SOFT = 0.075;
-/** Progress at which the atmosphere (halo, center light, pollen) may fade in. */
+/** Progress at which the halo, center light, and pollen fade in. */
 const SETTLING = 0.72;
 
 function hash(x: number, y: number): number {
@@ -58,10 +55,7 @@ function squareCanvas(size: number): HTMLCanvasElement {
   return canvas;
 }
 
-/**
- * Per-cell "wetness time": 0 at the stamens, about 1 at every petal tip, leaves later.
- * The range spans first touch to last tip, so the slow creep at the end is never dead time.
- */
+/** When paint reaches each cell: 0 at the stamens, about 1 at the petal tips, later for leaves. */
 function wetness(reference: HTMLImageElement) {
   const context = context2d(squareCanvas(GRID), {willReadFrequently: true});
   context.drawImage(reference, 0, 0, GRID, GRID);
@@ -81,7 +75,7 @@ function wetness(reference: HTMLImageElement) {
       reach[b] = Math.max(reach[b] ?? 0, Math.hypot(x - cx, y - cy));
     }
   }
-  // Soften the silhouette so the front stays organic rather than star-shaped.
+  // Smooth the reach, so the front isn't star-shaped.
   const smooth = new Float32Array(BINS);
   for (let b = 0; b < BINS; b++) {
     let sum = 0;
@@ -94,7 +88,7 @@ function wetness(reference: HTMLImageElement) {
     smooth[b] = Math.max(GRID * 0.12, sum / weight);
   }
 
-  // Leafiness: green-dominant pigment, blurred so the two washes meet softly.
+  // Green-dominant cells, blurred so petals and leaves blend.
   const leaf = new Float32Array(GRID * GRID);
   for (let i = 0; i < leaf.length; i++) {
     const red = pixels[i * 4] ?? 0;
@@ -176,14 +170,11 @@ function createMask() {
 }
 
 interface BloomOptions {
-  /** Called once when the bleed nears the tips, to fade in the atmosphere. */
+  /** Called once at `SETTLING`. */
   readonly onSettling?: () => void;
 }
 
-/**
- * Paints the flower in as a watercolor bleed on a canvas over `reference`, which must be
- * decoded and hidden meanwhile. Resolves when the canvas has handed back to the image.
- */
+/** Paints `reference` in on a canvas above it, then removes the canvas. `reference` must be decoded. */
 export function paintBloom(
   reference: HTMLImageElement,
   duration: number,
@@ -205,7 +196,7 @@ export function paintBloom(
     const out = context2d(canvas);
     const layer = context2d(squareCanvas(size));
 
-    // Palettes are built lazily, so switching the color scheme mid-bloom switches treatment.
+    // Built lazily, so a color scheme switch mid-bloom takes effect.
     let washPalette: HTMLCanvasElement | undefined;
     let poolPalette: HTMLCanvasElement | undefined;
     let glowPalette: HTMLCanvasElement | undefined;
@@ -250,7 +241,7 @@ export function paintBloom(
 
     const frame = (now: number) => {
       const progress = Math.min(1, (now - start) / duration);
-      // A fast initial soak, then a slow creep toward the tips and leaves.
+      // Fast at first, then slow toward the tips.
       const t = from + (to - from) * (1 - Math.pow(1 - progress, 2.4));
       const dark = currentColorScheme() === 'dark';
       for (let i = 0; i < values.length; i++) {
@@ -265,7 +256,7 @@ export function paintBloom(
 
       out.globalAlpha = 1;
       out.clearRect(0, 0, size, size);
-      // At night any translucent wash reads as smoke on the dark ground.
+      // A translucent wash looks like smoke on the dark background.
       if (!dark) draw(wash(), washMask, 0.9);
       draw(reference, colorMask);
       if (dark) draw(glow(), edgeMask, 0.5, 'lighter');

@@ -10,7 +10,7 @@ import {
   print,
 } from './scripts/exports/index.js';
 
-/** Brands with the full set of files. Elanor's painting gets only SVG, PNG, profile pictures, and favicons. */
+/** Brands with the full set of files; Elanor gets only SVG, PNG, profile pictures, and favicons. */
 const kitBrands: BrandId[] = ['earendil', 'pi', 'radius', 'lefos'];
 
 /** Press kits, and the brands each one covers. The Earendil kit is the company kit with every kit brand. */

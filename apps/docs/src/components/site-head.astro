@@ -1,5 +1,5 @@
 ---
-// Favicons, the description, and the social card, shared by every page's <head>.
+// Head tags shared by both layouts.
 import {readFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 
@@ -13,10 +13,10 @@ interface Props {
 const {title} = Astro.props;
 const name = 'Elanor';
 const description = "Earendil's design system.";
-// The logo build writes the favicon tags, versioned with the package.
+// Favicon tags written by the logo build.
 const favicons = await readFile(resolve(logosDist, (await siteFavicons()).html!), 'utf8');
 const site = Astro.site ?? Astro.url;
-// The image URL has a content hash, so social sites fetch a changed card.
+// Hashed URL, so social sites refetch a changed card.
 const image = new URL(socialCard.src, site);
 const url = new URL(Astro.url.pathname, site);
 ---

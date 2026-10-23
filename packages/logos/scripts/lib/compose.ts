@@ -211,7 +211,10 @@ export function tokenHex(tokens: TokenCatalog, token: string, scheme: Scheme): s
   return hex;
 }
 
-/** Replaces token links with the treatment's colors; fixed colors stay. Monochrome paints every shape with one color. */
+/**
+ * Replaces token links with the treatment's colors; fixed colors stay. Monochrome paints every shape
+ * with one color.
+ */
 export function colorArtwork(
   artwork: Artwork,
   treatment: Treatment,

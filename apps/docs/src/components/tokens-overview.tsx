@@ -26,7 +26,7 @@ const usage = `@import '@earendil-works/design-tokens/radius.css';
 const stylelintHref =
   'https://github.com/earendil-works/elanor/blob/main/packages/stylelint-plugin-design-tokens/README.md';
 
-/** How to use the tokens, then a card per area. Static HTML; `scripts/copy-buttons.ts` runs the copy button. */
+/** Static HTML; `scripts/copy-buttons.ts` handles the copy button. */
 export function TokensOverview({areas}: TokensOverviewProps): React.JSX.Element {
   return (
     <>

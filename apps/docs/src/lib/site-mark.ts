@@ -2,7 +2,7 @@ import {getImage} from 'astro:assets';
 
 import flowerSource from '../assets/home/elanor-flower.png';
 
-/** The flower beside the wordmark, as a small responsive image. */
+/** The flower for the site logo. */
 export interface SiteMark {
   readonly src: string;
   readonly srcSet: string;

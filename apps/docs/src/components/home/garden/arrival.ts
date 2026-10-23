@@ -1,17 +1,13 @@
-// Couriers fly in from beyond the viewport on the side they face, fast at first, then
-// brake into place. The entrance animates the independent `translate` and `rotate`
-// properties, so it composes with the idle `transform` loops that run from the first
-// frame: no handoff, no jump.
+// The entrance animates `translate` and `rotate`, so it composes with the idle `transform` loops.
 
 /** Launch order by courier index, and each courier's start height as a share of the viewport. */
 const ORDER = [1, 3, 0, 4, 2];
 const LIFT = [-0.3, -0.14, 0.24, 0.3, -0.1];
 const STAGGER = 140;
-/** Keyframes per second for the sampled flight and swing. */
+/** Samples per second for the flight and swing keyframes. */
 const RATE = 60;
 
-// The hanging paper is a damped pendulum driven by airflow: it trails while the insect
-// is fast, swings forward as it brakes, then settles into its idle sway.
+// The paper swings as a damped pendulum driven by the flight's acceleration.
 const OMEGA = (2 * Math.PI) / 0.95;
 const DAMPING = 2 * 0.17 * OMEGA;
 const DRAG = 0.006;
@@ -22,7 +18,7 @@ const clamp = (x: number, min: number, max: number) => Math.min(max, Math.max(mi
 
 type FlightPath = (u: number) => {x: number; y: number; eased: number};
 
-/** A swoop from (sx, sy) to the origin, eased out (quartic) so it arrives gently. */
+/** A curve from (sx, sy) to the origin, with quartic ease-out. */
 function flightPath(sx: number, sy: number): FlightPath {
   // The control point bows the path upward.
   const cx = sx * 0.38;
@@ -59,7 +55,7 @@ function swing(path: FlightPath, duration: number): number[] {
     velocity += (-OMEGA * OMEGA * (angle - trail(time)) - DAMPING * velocity) * dt;
     angle += velocity * dt;
   }
-  // Ease the last samples to exactly zero so the idle sway takes over seamlessly.
+  // End at exactly zero, so the idle sway takes over without a jump.
   const tail = Math.min(12, samples.length);
   for (let i = 0; i < tail; i++) {
     const last = samples.length - 1 - i;
@@ -68,11 +64,7 @@ function swing(path: FlightPath, duration: number): number[] {
   return samples;
 }
 
-/**
- * Flies every courier in from off-screen after `delay` ms, staggered.
- *
- * @returns A promise that settles when all couriers have landed.
- */
+/** Flies the couriers in after `delay` ms, staggered. Resolves when all have landed. */
 export async function launchCouriers(
   links: readonly HTMLElement[],
   delay: number,
@@ -90,7 +82,7 @@ export async function launchCouriers(
     for (let k = 0; k <= steps; k++) {
       const u = k / steps;
       const {x, y, eased} = path(u);
-      // Nose down while fast, a brief nose-up flare to brake, then level.
+      // Nose down while fast, nose up to brake, then level.
       const flare = Math.pow(Math.sin(Math.PI * clamp((u - 0.38) / 0.62, 0, 1)), 2);
       const pitch = direction * (8 * (1 - eased) * (1 - eased) - 4.5 * flare);
       keyframes.push({
@@ -109,7 +101,7 @@ export async function launchCouriers(
       swing(path, duration).map((angle) => ({rotate: `${angle.toFixed(3)}deg`})),
       {...timing, duration: duration + SETTLE},
     );
-    // Firefly lanterns kindle as they settle (invisible by day).
+    // Firefly lanterns light up on landing; hidden by day.
     for (const lantern of link.querySelectorAll('.firefly-halo, .firefly-lantern')) {
       lantern.animate(
         [

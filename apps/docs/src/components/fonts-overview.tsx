@@ -19,7 +19,6 @@ const glyphs = [
   '0123456789 &@#%?!(){}[]',
 ];
 
-/** Links separated by commas. */
 function Links({
   links,
   code = false,
@@ -115,7 +114,7 @@ function Family({family}: {readonly family: FontFamily}): React.JSX.Element {
   );
 }
 
-/** How to load the fonts, then a specimen and facts per family. Static HTML; `scripts/copy-buttons.ts` runs the copy button. */
+/** Static HTML; `scripts/copy-buttons.ts` handles the copy button. */
 export function FontsOverview({page}: FontsOverviewProps): React.JSX.Element {
   return (
     <>

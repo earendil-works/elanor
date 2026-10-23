@@ -7,26 +7,23 @@ import Courier from './courier.astro';
 import {COURIERS} from './couriers.ts';
 import './garden.css';
 
-// Insects render at most ~53 CSS px wide; 240 px covers 3x displays and zoom.
+// Insects render at most ~53 CSS px wide; 240 px covers 3x displays.
 const [bee, firefly, aura] = await Promise.all([
   getImage({src: beeSource, width: 240, format: 'webp'}),
   getImage({src: fireflySource, width: 240, format: 'webp'}),
-  // Blurred by 22 px in dark mode, so a small copy is indistinguishable.
+  // Blurred by 22 px, so a small copy suffices.
   getImage({src: flowerSource, width: 320, format: 'webp'}),
 ]);
 
-// The flower is 72% of the garden: up to 518 px, 612 px on very wide screens,
-// and 425 px or 72vw on small screens (see garden.css).
+// Rendered sizes of `.flower-art` in garden.css.
 const FLOWER_SIZES = '(max-width: 700px) min(72vw, 425px), (min-width: 1700px) 612px, 518px';
-// Up to the painting's full 1254 px. A literal: reading properties of the imported image
-// would make Astro ship the 1.6 MB original alongside the optimized copies.
+// Literal widths: reading the imported image's properties makes Astro ship the original too.
 const FLOWER_WIDTHS = [400, 600, 800, 1000, 1254];
 ---
 
 <script is:inline>
-  // Decides before the garden is parsed whether the intro plays. It plays on a new visit
-  // or a reload (`?intro` forces it), but not when arriving from another docs page or via
-  // back/forward, and never with reduced motion. A safety timeout drops it if it stalls.
+  // Runs before the garden is parsed. The intro plays on a new visit, a reload, or `?intro`;
+  // not after another docs page, on back/forward, or with reduced motion.
   (() => {
     const root = document.documentElement;
     let play = true;

@@ -85,18 +85,18 @@ const groups: DocsNavigationGroup[] = [
   <body class="docs-layout">
     <div data-docs-swap="mobile-navigation">
       <DocsMobileNavigation groups={groups} current={current} mark={mark} client:load>
-        {/* A slot stays static HTML, so the color scheme script owns its state without hydration. */}
+        {/* Slotted, so it stays static HTML for the color scheme script. */}
         <ColorSchemeToggle slot="actions" />
       </DocsMobileNavigation>
     </div>
     <aside>
       <div class="docs-aside-actions">
-        {/* A full load: the homepage has its own layout without the client router. */}
+        {/* Full load: the homepage doesn't use the client router. */}
         <SiteIdentity mark={mark} data-astro-reload />
         <ColorSchemeToggle />
       </div>
       <div data-docs-swap="navigation">
-        {/* Persisted, so opened sections stay open across client-side navigation. */}
+        {/* Persisted, so open sections stay open across client-side navigation. */}
         <DocsSideNavigation
           groups={groups}
           current={current}

@@ -1,12 +1,12 @@
 const nextFrame = () => new Promise((resolve) => requestAnimationFrame(resolve));
 
-/** Scrolls the desktop navigation so the current page's link is visible. */
+/** Scrolls the desktop sidebar to the current page's link. */
 async function revealCurrentLink(): Promise<void> {
   const navigation = document.querySelector('[data-docs-swap="navigation"]');
   // Hidden on narrow screens.
   if (!navigation?.getClientRects().length) return;
 
-  // After client-side navigation, the persisted sidebar re-renders and may open a section.
+  // Wait for the persisted sidebar to re-render and open the current section.
   await nextFrame();
   await nextFrame();
   await Promise.allSettled(

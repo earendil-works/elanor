@@ -5,10 +5,7 @@ import {type ApiToken, type ApiTokenValue, loadTokens} from './api.ts';
 import {fontsDist} from './packages.ts';
 import {firstFamily, tokenAreaHref, tokenAreaPage, tokenBrandOptions} from './token-pages.ts';
 
-/*
- * Data for the fonts page, read at build time: each family's faces and files from its stylesheet in
- * `@earendil-works/elanor-fonts`, and the tokens that name the family in each brand's catalogue.
- */
+// Fonts page data, read at build time from the fonts package and each brand's token catalogue.
 
 interface FamilySpec {
   readonly stylesheet: string;
@@ -40,7 +37,7 @@ const familySpecs: readonly FamilySpec[] = [
 
 const licensesHref = 'https://github.com/earendil-works/elanor/blob/main/packages/fonts/licenses';
 
-/** Where the docs serve the desktop font files (`pages/fonts/files/[file].ts`). */
+/** Served by `pages/fonts/files/[file].ts`. */
 const fontDownloadHref = (file: string) => `/fonts/files/${file}`;
 
 export interface FontLink {
@@ -131,13 +128,13 @@ const exists = (path: string) =>
     () => false,
   );
 
-/** The desktop file next to a web font, e.g. `CommitMono-400-Regular.otf`. */
+/** The `.otf` next to a web font, if any. */
 async function desktopFile(file: string): Promise<string | undefined> {
   const otf = file.replace(/\.[^.]+$/, '.otf');
   return (await exists(resolve(fontsDist, 'files', otf))) ? otf : undefined;
 }
 
-/** Every desktop file the fonts page links, for the download route. */
+/** Every desktop file, for the download route. */
 export async function fontDownloads(): Promise<string[]> {
   const files: string[] = [];
   for (const spec of familySpecs) {
@@ -253,7 +250,7 @@ async function family(spec: FamilySpec, brands: readonly BrandTypography[]): Pro
     style: rule.style,
     synthesized: false,
   }));
-  // Text styles ask for bold; without a bold file, show what the browser makes of it.
+  // Text styles use bold; without a bold file, show the synthesized face.
   if (!rules.some((rule) => Number(rule.weight) >= 600))
     faces.push({label: '700, synthesized', weight: '700', style: 'normal', synthesized: true});
 

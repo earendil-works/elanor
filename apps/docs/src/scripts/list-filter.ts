@@ -1,17 +1,16 @@
 /*
- * Filters static overview lists, such as the components overview and the token pages. Markup:
+ * Filters static lists. Markup:
  *
- * - `data-filter="<noun>"` on the root; the noun names the items in the status, e.g. "components".
- * - `data-filter-search` on the search input.
- * - `data-filter-group` on each group, labelled by its first heading. A group that is a `<details>` opens
- *   while the search matches something in it, and returns to how it was when the search is cleared.
- * - Optional `data-filter-section` around groups; it hides when none of its groups match.
- * - `data-filter-item` on each item; `data-filter-text` adds text to match beyond the visible text, and
- *   `data-filter-count` counts an item as several, such as a token row with its states.
- * - Optional: `data-filter-status` (live count), `data-filter-empty` (shown when nothing matches),
- *   `data-filter-query` (the query, inside the empty state), and `data-filter-clear` (clears the search).
+ * - `data-filter="<noun>"` on the root; the noun is used in the status, e.g. "3 of 61 components".
+ * - `data-filter-search` on the input.
+ * - `data-filter-group` on each group, labelled by its first heading. `<details>` groups open while they
+ *   have matches and return to their previous state when the search is cleared.
+ * - `data-filter-item` on each item. `data-filter-text` adds hidden match text; `data-filter-count`
+ *   counts the item as several.
+ * - Optional: `data-filter-section` (hides when none of its groups match), `data-filter-status`,
+ *   `data-filter-empty`, `data-filter-query` (shows the query), and `data-filter-clear`.
  *
- * Listeners are delegated, so they survive client-side page swaps; `?q=` pre-fills the search on each page load.
+ * Delegated, so it survives page swaps. `?q=` pre-fills the search.
  */
 
 const SEARCH = '[data-filter-search]';
@@ -20,7 +19,7 @@ function terms(query: string): readonly string[] {
   return query.toLowerCase().trim().split(/\s+/).filter(Boolean);
 }
 
-/** Shows items whose text, extra filter text, or group label contains every search term. */
+/** Shows items whose text, filter text, or group label contains every search term. */
 function filter(input: HTMLInputElement): void {
   const root = input.closest<HTMLElement>('[data-filter]');
   if (!root) return;
@@ -57,7 +56,7 @@ function filter(input: HTMLInputElement): void {
     status.textContent = words.length > 0 ? `${shown} of ${total} ${root.dataset.filter}` : '';
 }
 
-/** Opens a group for the search, remembering whether it was open before the search. */
+/** Opens a group for the search and remembers its previous state. */
 function reveal(group: HTMLDetailsElement, open: boolean): void {
   if (open) {
     if (!('filterWasOpen' in group.dataset)) group.dataset.filterWasOpen = String(group.open);
@@ -90,7 +89,7 @@ function prefill(): void {
   if (!input) return;
   const initial = new URLSearchParams(window.location.search).get('q');
   if (initial) input.value = initial;
-  // The browser may also restore a typed query, such as after going back.
+  // The browser may restore a typed query, e.g. after going back.
   if (input.value) filter(input);
 }
 

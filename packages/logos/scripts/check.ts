@@ -1,4 +1,5 @@
-// Validates that every source is clean and links only to existing logo tokens; only a painting's mark has fixed colors.
+// Validates that every source is clean and links only to existing logo tokens. Only a painting's
+// mark may have fixed colors.
 import {readdir, readFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 

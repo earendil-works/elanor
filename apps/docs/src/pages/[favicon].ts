@@ -5,10 +5,10 @@ import type {APIRoute, GetStaticPaths} from 'astro';
 
 import {logoContentType, logosDist, siteFavicons} from '../lib/packages.ts';
 
-// Serves the flower's favicons from the site root, where browsers and the web manifest look for them.
+// Browsers and the web manifest look for favicons at the site root.
 export const getStaticPaths = (async () =>
   Object.entries(await siteFavicons())
-    // The head snippet documents the tags; the layouts render them.
+    // The head tags are rendered by site-head.astro.
     .filter(([key]) => key !== 'html')
     .map(([, path]) => ({
       params: {favicon: basename(path)},

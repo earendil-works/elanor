@@ -1,11 +1,10 @@
-/* Interface chrome around the garden. The illustration itself lives in garden.css. */
 .home {
   .header {
     display: flex;
     align-items: center;
     justify-content: space-between;
     gap: var(--semantic-dimension-space-gap-medium);
-    /* Matches the docs sidebar, so the identity stays in place across the crossfade. */
+    /* Matches the docs sidebar, so the logo stays in place across the crossfade. */
     padding: var(--semantic-dimension-space-padding-x-large);
     background: transparent;
   }
@@ -31,7 +30,7 @@
     color: var(--semantic-color-text-secondary);
   }
 
-  /* Component display rules would otherwise override the attribute. */
+  /* Button's display rule would override `hidden`. */
   .replay[hidden] {
     display: none;
   }
@@ -46,21 +45,19 @@
   }
 
   .skipLink:not(:focus) {
-    /* Hidden without introducing another focus target or changing document flow. */
     clip-path: inset(50%);
   }
 
-  /* The intro is motion, so there is nothing to replay. */
+  /* The intro doesn't play with reduced motion. */
   @media (prefers-reduced-motion: reduce) {
     .replay {
       display: none;
     }
   }
 
-  /* Where the docs switch to their mobile header. */
+  /* Matches the docs mobile header. */
   @media (width < 64rem /* token: semantic.dimension.breakpoint.medium */) {
     .header {
-      /* Matches the docs mobile header. */
       block-size: var(--semantic-dimension-size-top-navigation);
       padding: var(--semantic-dimension-space-padding-medium)
         var(--semantic-dimension-space-padding-x-large);

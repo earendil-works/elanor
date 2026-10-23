@@ -7,11 +7,10 @@ interface LinkCardProps {
   readonly href: string;
   readonly title: ReactNode;
   readonly level?: 2 | 3 | 4;
-  /** Text below the title. */
   readonly children?: ReactNode;
 }
 
-/** A bordered card that is one link, for overview pages. */
+/** A card that is one link. */
 export function LinkCard({href, title, level = 3, children}: LinkCardProps): React.JSX.Element {
   return (
     // oxlint-disable-next-line jsx-a11y/control-has-associated-label -- Card renders the title and text into the link.

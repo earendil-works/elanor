@@ -9,16 +9,11 @@ import {SiteIdentity} from '../site-identity.tsx';
 import styles from './home-page.module.css';
 
 interface HomePageProps {
-  /** The flower, shown beside the wordmark. */
   readonly mark: SiteMark;
-  /** The garden navigation. */
   readonly children: ReactNode;
 }
 
-/**
- * Homepage frame around the garden. Rendered to static HTML; the garden scripts reveal
- * and wire the replay button, and the color scheme script handles the toggle.
- */
+/** Static HTML: the garden scripts wire the replay button, the color scheme script the toggle. */
 export function HomePage({mark, children}: HomePageProps): React.JSX.Element {
   return (
     <Layout.Root className={`${styles.home} garden-page`}>

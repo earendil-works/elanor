@@ -9,7 +9,6 @@ declare global {
   }
 }
 
-/** Night is slower and calmer than day. */
 const TIMING = {
   light: {bloom: 1900, couriersDelay: 600, flight: 1650},
   dark: {bloom: 2300, couriersDelay: 750, flight: 2000},
@@ -28,9 +27,9 @@ async function play({reference, damp, couriers}: IntroElements): Promise<void> {
   try {
     await reference.decode();
   } catch {
-    // An undecodable image bleeds in as nothing; the safety timeout still ends the intro.
+    // Play on without the painting.
   }
-  // Too late: the safety timeout already revealed the page statically.
+  // The safety timeout already ended the intro.
   if (!root.classList.contains('intro')) return;
   clearTimeout(window.elanorIntro);
 
@@ -47,7 +46,7 @@ async function play({reference, damp, couriers}: IntroElements): Promise<void> {
 
   const timing = TIMING[currentColorScheme()];
   const flights = launchCouriers(couriers, timing.couriersDelay, timing.flight);
-  // The atmosphere (halo, center light, pollen) fades in while the tips finish.
+  // The halo, center light, and pollen fade in while the petal tips finish.
   await paintBloom(reference, timing.bloom, {
     onSettling: () => root.classList.add('intro-settling'),
   }).catch((error: unknown) => console.warn('Elanor: skipped bloom.', error));
@@ -55,11 +54,7 @@ async function play({reference, damp, couriers}: IntroElements): Promise<void> {
   await flights;
 }
 
-/**
- * Plays the arrival when the inline head script asked for it with `.intro`: the flower
- * bleeds in while the couriers fly to their petals. A damp spot holds the stage if the
- * painting is slow to arrive.
- */
+/** Plays the intro if the head script set `.intro`. */
 export function playIntro(elements: IntroElements): void {
   if (!root.classList.contains('intro')) return;
   play(elements).catch(end);

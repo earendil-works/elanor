@@ -8,7 +8,7 @@ import styles from './components-overview.module.css';
 export interface ComponentSummary {
   readonly id: string;
   readonly name: string;
-  /** One sentence or paragraph; text in backticks renders as inline code. */
+  /** Backticks render as inline code. */
   readonly description: string;
 }
 
@@ -34,10 +34,7 @@ function Description({text}: {readonly text: string}): React.JSX.Element {
   );
 }
 
-/**
- * Every component as a card, grouped by category. It renders as static HTML; `scripts/list-filter.ts`
- * filters it through the `data-filter-*` attributes.
- */
+/** Static HTML; `scripts/list-filter.ts` filters it through the `data-filter-*` attributes. */
 export function ComponentsOverview({groups}: ComponentsOverviewProps): React.JSX.Element {
   const total = groups.reduce((sum, group) => sum + group.components.length, 0);
 

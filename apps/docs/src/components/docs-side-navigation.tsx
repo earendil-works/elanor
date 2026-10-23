@@ -7,7 +7,7 @@ export interface DocsNavigationLink {
   readonly label: string;
 }
 
-/** Links under a title that opens and closes. */
+/** A collapsible group of links. */
 export interface DocsNavigationSection {
   readonly type: 'section';
   readonly id: string;
@@ -48,10 +48,10 @@ export function DocsSideNavigation({
   current,
   onNavigate,
 }: DocsSideNavigationProps): React.JSX.Element {
-  // Only the current page's section starts open, so the server and client render the same.
+  // Only the current page's section starts open, so server and client render the same.
   const [open, setOpen] = useState(() => withSection(new Set(), sectionOf(groups, current)));
   const [previous, setPrevious] = useState(current);
-  // A persisted sidebar gets a new `current` on client-side navigation; open its section too.
+  // The persisted sidebar gets a new `current` on client-side navigation.
   if (current !== previous) {
     setPrevious(current);
     setOpen((sections) => withSection(sections, sectionOf(groups, current)));
@@ -92,7 +92,6 @@ export function DocsSideNavigation({
                     <SideNavigation.CollapsibleTrigger>
                       {item.label}
                     </SideNavigation.CollapsibleTrigger>
-                    {/* Find in page can still reach and open a closed section. */}
                     <SideNavigation.CollapsiblePanel hiddenUntilFound>
                       <SideNavigation.List>{item.links.map(renderLink)}</SideNavigation.List>
                     </SideNavigation.CollapsiblePanel>

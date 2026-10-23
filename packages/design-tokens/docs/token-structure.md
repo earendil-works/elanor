@@ -109,6 +109,6 @@ Register new shared files in the appropriate resolver `set` or `modifier` and in
 
 ## Brand overrides
 
-Only Lefos and Elanor currently have overrides (Elanor only its page backgrounds and wordmark color); Radius, Pi, and Earendil use the shared baseline unchanged. Every brand still has its own resolver and CSS entry point, so a brand can diverge later without changing consumers.
+Only Lefos and Elanor currently have overrides (Elanor: page backgrounds and wordmark color); Radius, Pi, and Earendil use the shared baseline unchanged. Every brand still has its own resolver and CSS entry point, so a brand can diverge later without changing consumers.
 
 For an override, add only values that differ under `tokens/<brand>/`, register the source after its shared equivalent, and place its set after shared layers in `resolutionOrder`. Do not copy shared defaults into brand files; copies drift.

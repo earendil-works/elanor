@@ -18,10 +18,7 @@ function along(a: Point, c: Point, b: Point, s: number): Point {
 
 const SEGMENTS = 16;
 
-/**
- * A plant fibre rather than a hairline: the filled outline of the sagging curve,
- * fine at the claw, fuller where it is tied to the paper, with a faint twist.
- */
+/** The thread as a filled outline: thin at the claw, wider at the paper. */
 function fibre(a: Point, c: Point, b: Point): string {
   const start: string[] = [];
   const end: string[] = [];
@@ -41,8 +38,7 @@ function fibre(a: Point, c: Point, b: Point): string {
   return `M${start.join('L')}L${end.reverse().join('L')}Z`;
 }
 
-// At night the silk occasionally catches the lanterns: a faint sheen drifts from claw
-// to paper. One thread at a time, picked pseudo-randomly per slot, with quiet pauses.
+// In dark mode a sheen runs along one pseudo-random thread per slot, with pauses.
 const GLINT_SLOT = 6.5;
 const GLINT_TRAVEL = 0.5;
 const GLINT_PEAK = 0.42;
@@ -91,11 +87,8 @@ function carrierOf(link: HTMLElement) {
 }
 
 /**
- * Ties each paper to its insect's claws and redraws the threads every frame as the
- * rig flies, sways, and switches between bee and firefly.
- *
- * Zero-size HTML anchors measure the rendered feet, paper, and carrier frame, because
- * browsers report SVG transforms of mirrored CSS ancestors inconsistently.
+ * Redraws each paper's threads to its insect's claws every frame. Positions come from zero-size HTML
+ * anchors, because browsers report SVG transforms under mirrored CSS ancestors inconsistently.
  */
 export function connectPapers(garden: HTMLElement, links: readonly HTMLElement[]): void {
   const carriers = links.map(carrierOf);
@@ -112,7 +105,7 @@ export function connectPapers(garden: HTMLElement, links: readonly HTMLElement[]
     if (!visible || stopped || document.hidden) return;
     const now = performance.now() / 1000;
 
-    // Read every geometry value before writing any path, to avoid layout thrashing.
+    // Read all geometry before writing, to avoid layout thrashing.
     const drawings = carriers.flatMap((carrier, index) => {
       const width = carrier.flight.clientWidth;
       const height = carrier.flight.clientHeight;
@@ -132,7 +125,7 @@ export function connectPapers(garden: HTMLElement, links: readonly HTMLElement[]
         const rect = rectOf(element);
         return new DOMPoint(rect.x, rect.y).matrixTransform(inverse);
       };
-      // Mid cross-fade the threads follow whichever insect is more visible.
+      // During the bee/firefly crossfade, follow the more visible insect.
       const blend = Number(getComputedStyle(carrier.firefly).opacity);
       const feet = carrier.beeGrips
         .map((grip, i) => {
@@ -173,7 +166,7 @@ export function connectPapers(garden: HTMLElement, links: readonly HTMLElement[]
     if (!reducedMotion.matches) schedule();
   }
 
-  // The insect sits on top of the paper, so its height positions the rig.
+  // The paper's height positions the insect above it.
   const papers = new ResizeObserver((entries) => {
     for (const entry of entries) {
       const carrier = carriers.find((item) => item.paper === entry.target);

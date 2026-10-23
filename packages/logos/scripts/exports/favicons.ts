@@ -14,7 +14,7 @@ export interface FaviconsOptions {
    * Defaults to the color symbols.
    */
   treatments?: {light: TreatmentId; dark: TreatmentId};
-  /** Brands that differ, e.g. a painting: its own treatments, and no SVG favicon when `svg` is false. */
+  /** Per-brand overrides, e.g. for a painting; `svg: false` skips the SVG favicon. */
   brands?: Partial<
     Record<BrandId, {treatments?: {light: TreatmentId; dark: TreatmentId}; svg?: false}>
   >;

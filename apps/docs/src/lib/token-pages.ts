@@ -1,10 +1,6 @@
 import {type ApiToken, type ApiTokenValue, loadTokens, tokenBrands} from './api.ts';
 
-/*
- * Data for the token pages: each area's tokens in sections and groups, with every value resolved at build
- * time into the text and preview a page shows. Values are literal values from each brand's catalogue, so a
- * brand's page never needs that brand's stylesheet.
- */
+// Token page data, resolved at build time from each brand's catalogue, so a page needs no brand stylesheet.
 
 /** The brand the docs themselves use, and the base other brands are compared with. */
 export const defaultTokenBrand = 'radius';
@@ -26,10 +22,7 @@ export function tokenBrandLabel(brand: string): string {
 interface GroupSpec {
   readonly id: string;
   readonly label: string;
-  /**
-   * Tokens at or below these paths belong to the group; across all groups, the longest matching prefix
-   * wins. Entries follow the order of the prefixes.
-   */
+  /** Tokens at or below these paths; the longest match across groups wins. Entries follow prefix order. */
   readonly prefixes: readonly string[];
   /** Draw every length on the shared scale; otherwise each is drawn at true size if it fits. */
   readonly scaled?: boolean;
@@ -54,7 +47,6 @@ const group = (id: string, label: string, ...prefixes: string[]): GroupSpec => (
   label,
   prefixes,
 });
-/** A group whose lengths all use the shared scale, so they compare with each other. */
 const scaledGroup = (id: string, label: string, ...prefixes: string[]): GroupSpec => ({
   ...group(id, label, ...prefixes),
   scaled: true,
@@ -286,7 +278,6 @@ const areaSpecs: readonly AreaSpec[] = [
     summary: 'Transitions, and how far things move.',
     tier: 'semantic',
     sections: [
-      // One section: the page shows its groups without a section heading.
       section(
         'motion',
         'Motion',
@@ -302,7 +293,7 @@ const areaSpecs: readonly AreaSpec[] = [
     summary: 'The raw palette and scales that semantic tokens point to.',
     tier: 'primitive',
     sections: [
-      // Each palette gets a group per brand; see primitiveSections.
+      // primitiveSections adds a group per palette before this one.
       section('colors', 'Colors', group('base-colors', 'Base colors', 'primitive.color')),
       section(
         'space-and-size',
@@ -352,7 +343,7 @@ export const tokenAreas: readonly TokenArea[] = areaSpecs.map(({id, label, summa
 
 export const tokenAreaHref = (brand: string, area: string) => `/tokens/${brand}/${area}/`;
 
-/** Short notes about a brand's area, shown above its tokens. */
+/** Shown above a brand's area tokens. */
 const brandNotes: Readonly<Record<string, Readonly<Record<string, string>>>> = {
   lefos: {typography: 'DepartureMono has one weight, so browsers synthesize bold.'},
 };
@@ -441,7 +432,7 @@ export type TokenPreview =
       readonly change: 'travel' | 'scale';
       /** A block, a key cap that presses down, or a popup that also fades in. */
       readonly sample: 'block' | 'key' | 'popup';
-      /** Where the sample rests in the static preview: a `translate` or `scale` value. */
+      /** The start position, shown in the static preview: a `translate` or `scale` value. */
       readonly from: string;
       /** Room around the sample for its travel. */
       readonly room: string;
@@ -492,7 +483,6 @@ export interface TokenEntry {
 export interface TokenGroup {
   readonly id: string;
   readonly label: string;
-  /** Palettes show as a grid of swatches; everything else as rows. */
   readonly layout: 'rows' | 'swatches';
   /** For color groups, each entry's base color in light and dark, for the summary. */
   readonly strip: ReadonlyArray<{readonly light: string; readonly dark: string}>;
@@ -540,7 +530,7 @@ export interface TokenBrandOption {
   readonly enabled: boolean;
 }
 
-/** Every brand, the default first; brands identical to the default are disabled. */
+/** The default brand first; brands identical to it are disabled. */
 export async function tokenBrandOptions(): Promise<TokenBrandOption[]> {
   const base = new Map((await brandTokens(defaultTokenBrand)).map((t) => [t.path, signature(t)]));
   const brands = (await tokenBrands()).sort((a, b) =>
@@ -717,7 +707,7 @@ function lengthPreview(frame: LengthFrame, token: ApiToken, scaled: boolean): To
   return {kind: 'scaled', size: `${Math.round(share * 1000) / 10}%`, width: 0};
 }
 
-/** The preview for what a length is for, with the space it takes. */
+/** A preview of how the length is used, e.g. padding as an inset, with the width it needs. */
 function rolePreview(
   frame: LengthFrame,
   path: string,
@@ -786,7 +776,7 @@ function timingOf(token: ApiToken | undefined): MotionTiming | undefined {
 
 /** How a motion value plays when no transition shares its name; tokens don't say how they move. */
 const neutralTiming: MotionTiming = {duration: 300, delay: 0, easing: 'ease-out'};
-/** Keys press instantly; the preview holds the key down for a moment. */
+/** Keys press instantly; the preview holds the key down so the press shows. */
 const keyPressTiming: MotionTiming = {duration: 600, delay: 0, easing: 'linear'};
 
 interface BuildContext {

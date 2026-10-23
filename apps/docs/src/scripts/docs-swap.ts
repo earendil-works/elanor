@@ -7,7 +7,7 @@ document.addEventListener('astro:before-swap', (event) => {
     const nextDocument = event.newDocument;
 
     swapFunctions.deselectScripts(nextDocument);
-    // The color scheme is resolved on the client; keep it when root attributes are swapped.
+    // The color scheme is set on the client; keep it when root attributes are swapped.
     const colorScheme = document.documentElement.dataset.colorScheme;
     if (colorScheme) nextDocument.documentElement.dataset.colorScheme = colorScheme;
     swapFunctions.swapRootAttributes(nextDocument);
@@ -27,7 +27,7 @@ document.addEventListener('astro:before-swap', (event) => {
 
     restoreFocus();
 
-    // Page scripts sit outside the regions. Add the next page's new ones; Astro runs them after the swap.
+    // Page scripts sit outside the swapped regions. Add new ones; Astro runs them after the swap.
     for (const script of nextDocument.body.querySelectorAll<HTMLScriptElement>(':scope > script')) {
       if (!('astroExec' in script.dataset)) document.body.append(script);
     }

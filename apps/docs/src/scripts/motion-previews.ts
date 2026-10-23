@@ -1,11 +1,7 @@
-/*
- * Plays the motion token previews on the token pages. Each preview animates with its token's literal
- * duration, delay, and easing. Previews always play in full, also with reduced motion: they only run when
- * asked to, and showing the motion is their purpose.
- */
+// Motion token previews, played with each token's duration, delay, and easing. They ignore reduced motion:
+// they only play on request, and showing the motion is their purpose.
 
 type Role = 'slide' | 'fade' | 'feedback' | 'pulse' | 'stale';
-/** Travel and scale values: the sample moves from where it starts to rest; a key presses down. */
 type ValueRole = 'travel' | 'scale' | 'press';
 
 const valueRoles: ReadonlySet<string> = new Set<ValueRole>(['travel', 'scale', 'press']);
@@ -17,7 +13,7 @@ function valueKeyframes(role: ValueRole, from: string): Keyframe[] {
     case 'scale':
       return [{scale: from}, {scale: 1}];
     case 'press': {
-      // Up at rest, then pressed in by the travel and the thicker bottom edge, as in KeyboardShortcut.
+      // Pressed by its travel and a thicker bottom edge, as in KeyboardShortcut.
       const rest = {
         translate: '0 0',
         borderBlockEndWidth: 'var(--semantic-dimension-border-width-medium)',
@@ -51,7 +47,6 @@ function playValue(preview: HTMLElement, target: HTMLElement, role: ValueRole): 
     easing,
     fill: 'forwards',
   });
-  // Popups also fade in.
   if (fadeDuration)
     target.animate([{opacity: 0}, {opacity: 1}], {
       duration: Number(fadeDuration),

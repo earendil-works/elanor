@@ -6,14 +6,13 @@ interface StaticCopyButtonProps {
   /** Text written to the clipboard. */
   readonly value: string;
   readonly 'aria-label'?: string;
-  /** The element that names what is copied, such as the code next to the button. */
+  /** The element that shows what is copied. */
   readonly 'aria-describedby'?: string;
 }
 
 /**
- * A copy button that renders as static HTML, for pages that list many values. `scripts/copy-buttons.ts`
- * copies `data-copy-value` and announces the result in the page's `[data-copy-status]` region, with the same
- * labels and timing as CopyButton. The icons are shared SVG masks, not inline SVG per button.
+ * CopyButton without hydration, for pages with many values; `scripts/copy-buttons.ts` handles it.
+ * The icons are shared SVG masks, not inline SVG per button.
  */
 export function StaticCopyButton({
   value,
@@ -45,7 +44,7 @@ export function StaticCopyButton({
   );
 }
 
-/** The live region that copy buttons announce in; render one per page. */
+/** The live region for copy results; render one per page. */
 export function CopyStatus(): React.JSX.Element {
   return <span role="status" className={styles.status} data-copy-status />;
 }

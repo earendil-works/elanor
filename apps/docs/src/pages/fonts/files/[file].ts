@@ -6,7 +6,6 @@ import type {APIRoute, GetStaticPaths} from 'astro';
 import {fontDownloads} from '../../../lib/fonts.ts';
 import {fontsDist} from '../../../lib/packages.ts';
 
-/** Desktop font files linked from the fonts page. */
 export const getStaticPaths = (async () =>
   (await fontDownloads()).map((file) => ({params: {file}}))) satisfies GetStaticPaths;
 

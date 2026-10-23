@@ -21,10 +21,7 @@ interface BrandPickerProps {
   readonly area: string;
 }
 
-/**
- * Links to the same area for each brand, styled like tabs. Changing brand loads another page, so it is
- * navigation with `aria-current`, not a tab list. Brands without their own values are disabled.
- */
+/** Links styled like tabs: changing brand loads another page, so it is navigation, not a tab list. */
 export function BrandPicker({brands, current, area}: BrandPickerProps): React.JSX.Element {
   return (
     <nav aria-label="Brand" className={styles.brands}>
@@ -40,7 +37,7 @@ export function BrandPicker({brands, current, area}: BrandPickerProps): React.JS
                 {brand.label}
               </a>
             ) : (
-              // A disabled link: announced as a link, not focusable or clickable.
+              // Announced as a link, but not focusable or clickable.
               <span className={styles.brand} role="link" aria-disabled="true">
                 {brand.label}
               </span>
@@ -56,7 +53,7 @@ const icon = (name: string) => ({maskImage: `url(/api/icons/${name}.svg)`});
 
 function EasingCurve({bezier}: {readonly bezier: readonly number[]}): React.JSX.Element {
   const [x1 = 0, y1 = 0, x2 = 1, y2 = 1] = bezier.map((n) => Math.round(n * 1000) / 10);
-  // Progress runs bottom to top; the box leaves room for curves that overshoot.
+  // Progress runs bottom to top; the viewBox leaves room for overshoot.
   return (
     <svg className={styles.curve} viewBox="-4 -44 108 148" aria-hidden="true">
       <rect
@@ -93,10 +90,7 @@ function PlayButton({nameId}: {readonly nameId: string}): React.JSX.Element {
   );
 }
 
-/**
- * A travel or scale value: the sample where it starts, over a dashed outline where it comes to rest.
- * Playing moves it to rest; values at rest have nothing to play.
- */
+/** The sample at its start position, over a dashed outline at rest. Playing moves it to rest. */
 function MotionValue({
   preview,
   nameId,
@@ -135,7 +129,7 @@ function MotionValue({
 
 const sample = 'Sphinx of black quartz, judge my vow.';
 
-/** A color over a scheme's canvas, so translucent colors show as they render. */
+/** Layers the color over the scheme's canvas, so translucent colors render as in use. */
 const onCanvas = (color: string, canvas: string) => ({
   background: `linear-gradient(${color}, ${color}), ${canvas}`,
 });
@@ -349,13 +343,12 @@ function Name({entry, id}: {readonly entry: TokenEntry; readonly id: string}): R
   );
 }
 
-/** A token, or a token with its states: one line per state, each with its own variable and values. */
+/** A token, with one line per state if it has states. */
 function EntryRow({entry}: {readonly entry: TokenEntry}): React.JSX.Element {
   const nameId = `${entry.id}-name`;
   const filterText = entry.states.map((state) => state.path).join(' ');
   const description = entry.description ? (
     <p className={styles.description}>
-      {/* Text in backticks names another token or value. */}
       {entry.description
         .split('`')
         .map((part, index) => (index % 2 === 1 ? <code key={index}>{part}</code> : part))}
@@ -450,7 +443,7 @@ function Swatch({entry}: {readonly entry: TokenEntry}): React.JSX.Element {
   );
 }
 
-/** The group's colors in its summary: light above dark, or one row for a palette. */
+/** Light above dark, or one row for a palette. */
 function Strip({group}: {readonly group: TokenGroup}): React.JSX.Element | null {
   if (group.strip.length === 0) return null;
   const palette = group.layout === 'swatches';
@@ -530,12 +523,11 @@ function Section({section}: {readonly section: TokenSection}): React.JSX.Element
 }
 
 /**
- * One area's tokens in sections of collapsed groups, as static HTML. `scripts/list-filter.ts` filters it,
- * `scripts/token-groups.ts` opens groups, `scripts/copy-buttons.ts` copies, and
- * `scripts/motion-previews.ts` plays the motion previews.
+ * Static HTML, driven by `scripts/list-filter.ts`, `scripts/token-groups.ts`, `scripts/copy-buttons.ts`,
+ * and `scripts/motion-previews.ts`.
  */
 export function TokenArea({page}: {readonly page: TokenAreaPage}): React.JSX.Element {
-  // An area with one section shows its groups without a section heading.
+  // A single section gets no section heading.
   const [only] = page.sections.length === 1 ? page.sections : [];
   return (
     <div className={styles.area} data-filter="tokens">

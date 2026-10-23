@@ -1,4 +1,4 @@
-/** Side length, in pixels, of the original flower painting the landmarks below were measured on. */
+/** Side length of the painting the landmarks below were measured on. */
 const ARTWORK_SIZE = 1254;
 
 /** Where the five petals meet, as fractions of the painting. */
@@ -13,7 +13,7 @@ const TIPS = [
   [24, 650],
 ] as const;
 
-/** The pollen canvas overhangs the painting by 12% on each side. */
+/** The pollen canvas extends 12% past the painting on each side. */
 export const PAD = 1.24;
 
 const AXES = TIPS.map(([x, y]) => {
@@ -23,16 +23,9 @@ const AXES = TIPS.map(([x, y]) => {
   return [dx / length, dy / length] as const;
 });
 
-/**
- * The petal under a point of the painting, or -1 for transparent paper and the stamens.
- *
- * @param u Horizontal position, 0–1 across the painting.
- * @param v Vertical position, 0–1 down the painting.
- * @param alpha Painting alpha at that point, 0–255.
- */
+/** The petal index at (u, v), as fractions of the painting; -1 for transparent pixels and the stamens. */
 export function petalAt(u: number, v: number, alpha: number): number {
   if (alpha < 20 || u < 0 || v < 0 || u > 1 || v > 1) return -1;
-  // The painted stamens stay a decorative center.
   if (Math.hypot((u - 0.52) / 0.115, (v - 0.585) / 0.115) < 1) return -1;
   const x = (u - CORE[0]) * 2;
   const y = (CORE[1] - v) * 2;

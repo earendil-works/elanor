@@ -15,9 +15,8 @@ import {SiteIdentity} from './site-identity.tsx';
 interface DocsMobileNavigationProps {
   readonly groups: readonly DocsNavigationGroup[];
   readonly current: string;
-  /** The flower beside the wordmark. */
   readonly mark: SiteMark;
-  /** Static actions before the menu button, passed from Astro as the `actions` slot. */
+  /** Static HTML from Astro's `actions` slot, before the menu button. */
   readonly actions?: React.ReactNode;
 }
 

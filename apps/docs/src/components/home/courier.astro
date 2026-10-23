@@ -9,7 +9,7 @@ interface Props extends Courier {
 
 const {index, label, href, beeSrc, fireflySrc} = Astro.props;
 
-// Each carrier keeps its own rhythm so the five never move in step.
+// Per-courier offsets, so the couriers never move in step.
 const PAPER_TILTS = [-2, 3, -3, 2, -1];
 const rig = {
   // Couriers on the right face left, toward the flower.
@@ -24,7 +24,6 @@ const rig = {
 <a class="courier" data-courier={index} href={href} style={rig}>
   <span class="courier-flight">
     <span class="insect-rig" aria-hidden="true">
-      {/* Watercolor bodies with independent veined wings rigged at the thorax. */}
       <svg class="bee" viewBox="0 0 200 150" fill="none">
         <defs>
           <linearGradient
@@ -95,7 +94,7 @@ const rig = {
           ry="8"
           fill={`url(#lantern-core-${index})`}></ellipse>
       </svg>
-      {/* Threads hold at the hind and front claws, so the paper hangs balanced. */}
+      {/* Thread anchors at the hind and front claws. */}
       <span class="grip-anchor" data-grip="bee" style="left: 32.2%; top: 83.2%"></span>
       <span class="grip-anchor" data-grip="bee" style="left: 74.35%; top: 73.07%"></span>
       <span class="grip-anchor" data-grip="firefly" style="left: 30.6%; top: 74.6%"></span>

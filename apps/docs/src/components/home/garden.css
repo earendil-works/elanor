@@ -1,14 +1,13 @@
-/* stylelint-disable design-tokens/no-hardcoded-token-values, design-tokens/no-non-token-custom-properties -- Homepage illustration: the watercolor palette, paper, thread, and lantern colors, the hand-tuned artwork geometry, and the motion timings belong to the artwork, not the UI token scale. Local properties carry per-courier rig values set in markup and by the garden scripts. Interface chrome around the garden uses tokens in home-page.module.css. */
+/* stylelint-disable design-tokens/no-hardcoded-token-values, design-tokens/no-non-token-custom-properties -- Artwork colors, geometry, and timings are not UI tokens. Local properties hold per-courier values set by the markup and the garden scripts. */
 
-/* Elanor's light canvas (moonstone, shared with Lefos); replaces the docs canvas on the homepage only. */
+/* Elanor's canvas colors; the docs load the Radius tokens. */
 .garden-page {
-  /* Couriers fly in from beyond the viewport; clip without creating a scroll container. */
+  /* Couriers start off-screen; `clip` avoids a scroll container. */
   overflow: clip;
   background: #ebe7e4;
 }
 
-/* Night falls as a wash over the paper. Opacity, not background-color: Chrome composites
-   background-color transitions and can flash the starting color for a frame when they end. */
+/* A fading overlay, because Chrome can flash the start color at the end of a background-color transition. */
 .garden-page::before {
   position: fixed;
   inset: 0;
@@ -24,7 +23,7 @@
   opacity: 1;
 }
 
-/* Interface text fades with the wash, so it keeps its contrast mid-switch. */
+/* Same timing as the overlay, so text keeps its contrast mid-switch. */
 .garden-page > header :is(a, button),
 .garden-page > [data-replay-intro] {
   transition: color 1.3s ease;
@@ -60,7 +59,6 @@
   aspect-ratio: 1;
 }
 
-/* The original painting never changes shape; the bleed canvas hands back to it. */
 .flower-reference,
 .flower-bleed {
   position: absolute;
@@ -77,7 +75,7 @@
   filter: brightness(0.86) saturate(0.62) contrast(0.98);
 }
 
-/* Warm halo; fully transparent before its rectangular paint bounds. */
+/* Warm halo; the gradient fades out before the box edge. */
 .flower-art::before {
   position: absolute;
   inset-inline-start: 52%;
@@ -147,7 +145,7 @@
   opacity: 1;
 }
 
-/* Intro: the head script adds `.intro`; the bleed canvas paints the flower in. */
+/* `.intro` is set by the head script in home-garden.astro. */
 .intro .flower-reference,
 .intro:not(.intro-settling) :is(.flower-aura, .center-light, .pollen-canvas) {
   opacity: 0 !important;
@@ -161,7 +159,7 @@
   opacity: 0;
 }
 
-/* Holds the stage while a slow connection delivers the painting. Fast loads never show it. */
+/* Placeholder while a slow connection loads the painting. */
 .flower-damp {
   position: absolute;
   inset: -8%;
@@ -193,7 +191,7 @@
     damp-breathe 3.4s ease-in-out 1.95s infinite alternate;
 }
 
-/* Each carrier floats inside a stationary, generous navigation target. */
+/* The link is a fixed hit area; the insect moves inside it. */
 .courier {
   --paper-height: 32px;
   --insect-size: clamp(32px, 8.5cqw, 64px);
@@ -367,7 +365,7 @@
   opacity: 0.72;
 }
 
-/* Zero-size HTML points measure the rendered feet, paper corners, and carrier frame. */
+/* Zero-size points measured by tethers.ts. */
 .grip-anchor,
 .thread-frame,
 .paper-anchor {

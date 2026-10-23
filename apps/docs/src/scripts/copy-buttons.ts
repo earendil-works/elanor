@@ -1,7 +1,5 @@
-/*
- * Static copy buttons (`components/static-copy-button.tsx`), with CopyButton's labels and timing. One
- * delegated listener serves every button, including those swapped in by client-side navigation.
- */
+// For `components/static-copy-button.tsx`, with CopyButton's labels and timing.
+// Delegated, so it survives page swaps.
 
 const COPIED = 'Copied.';
 const ERROR = 'Could not copy. Try again or copy manually.';
@@ -10,7 +8,7 @@ const resets = new WeakMap<HTMLElement, ReturnType<typeof setTimeout>>();
 function announce(message: string): void {
   const status = document.querySelector('[data-copy-status]');
   if (!status) return;
-  // Clear first so the same message is announced again on a second copy.
+  // Clear first, so a repeated message is announced again.
   status.textContent = '';
   requestAnimationFrame(() => {
     status.textContent = message;

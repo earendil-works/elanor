@@ -10,7 +10,7 @@
   font: var(--semantic-typography-ui-secondary);
 }
 
-/* Brand picker: links that look like Tabs. */
+/* Brand picker */
 .brandList {
   display: flex;
   flex-wrap: wrap;
@@ -72,7 +72,6 @@
   }
 }
 
-/* Search and the Expand all button share a row. */
 .toolbar {
   display: flex;
   flex-wrap: wrap;
@@ -104,7 +103,7 @@
   display: none;
 }
 
-/* Groups: a summary row with the label, count, and colors; closed by default. */
+/* Groups */
 .group {
   container: token-group / inline-size;
   border-block-end: var(--semantic-dimension-border-width-small) solid
@@ -178,7 +177,7 @@
 
 .stripCell {
   display: flex;
-  /* Cells shrink evenly on narrow screens, so every color stays visible. */
+  /* Cells shrink evenly, so every color stays visible on narrow screens. */
   flex: 0 1 auto;
   flex-direction: column;
   inline-size: var(--semantic-dimension-size-small);
@@ -213,7 +212,6 @@
 }
 
 .rows {
-  /* Groups whose previews need more room set a wider column inline. */
   /* stylelint-disable-next-line design-tokens/no-non-token-custom-properties -- Group preview column, set inline by token-area.tsx. */
   --preview-size: calc(var(--semantic-dimension-size-x-large) * 2);
 
@@ -226,7 +224,7 @@
     var(--semantic-dimension-space-padding-x-large);
 }
 
-/* Rows: the name, variable, and description, then the values, then the preview. Narrow rows stack them. */
+/* Rows: info, values, preview; stacked on narrow screens. */
 .row {
   display: grid;
   grid-template-areas:
@@ -255,7 +253,7 @@
     var(--semantic-color-border-secondary);
 }
 
-/* The header uses the row's columns, so its description stays clear of the preview column. */
+/* Shares the row's columns, so the description stays clear of the preview. */
 .entryHeader {
   display: grid;
   grid-template-columns: minmax(0, 1fr);
@@ -273,8 +271,8 @@
 }
 
 /*
- * Wide rows indent their content to the group title (chevron and its gap) and end before the edge, while
- * the dividers stay full width. The gutters are tracks, so the indent can differ from the gap between columns.
+ * Indents content to the group title and keeps dividers full width. The gutters are tracks, so the
+ * indent can differ from the column gap.
  */
 @container token-rows (min-width: 48rem /* token: semantic.dimension.breakpoint.small */) {
   .row,
@@ -459,7 +457,7 @@
   font: var(--semantic-typography-heading-app-5);
 }
 
-/* Body text at the line height, wrapped in the column so the space between lines shows. */
+/* Wraps within the column, so the line spacing shows. */
 .lines {
   display: block;
   /* stylelint-disable-next-line design-tokens/no-non-token-custom-properties -- Group preview column, set inline by token-area.tsx. */
@@ -468,7 +466,7 @@
   color: var(--semantic-color-text-primary);
 }
 
-/* Lengths at true size, except scaled ones; scaled ones show their full width as a track. */
+/* Lengths */
 .barTrack {
   display: block;
   inline-size: 100%;
@@ -558,10 +556,10 @@
   background: var(--semantic-color-background-fill-primary);
 }
 
-/* Travel and scale: the sample where it starts, over a dashed outline where it rests. */
+/* Travel and scale */
 .motionValue {
   display: grid;
-  /* The button's column stays when there is nothing to play, so samples line up. */
+  /* The button column stays when there is nothing to play, so samples line up. */
   grid-template-columns: var(--semantic-dimension-size-small) auto;
   align-items: center;
   gap: var(--semantic-dimension-space-gap-small);
@@ -601,7 +599,7 @@
   box-shadow: var(--semantic-shadow-popup);
 }
 
-/* A key cap, as in KeyboardShortcut, shown pressed: in by its travel and by its thicker bottom edge. */
+/* A pressed key cap, as in KeyboardShortcut. */
 .rest[data-sample='key'],
 .mover[data-sample='key'] {
   inline-size: var(--semantic-dimension-size-medium);
@@ -685,7 +683,7 @@
   }
 }
 
-/* Palettes: a grid of swatches. */
+/* Palettes */
 .tiles {
   display: grid;
   grid-template-columns: repeat(

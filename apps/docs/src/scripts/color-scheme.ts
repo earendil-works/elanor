@@ -9,7 +9,7 @@ const TOGGLE_SELECTOR = '[data-color-scheme-toggle]';
 const root = document.documentElement;
 const system = matchMedia('(prefers-color-scheme: dark)');
 
-/** The resolved scheme; the head script always sets the attribute before first paint. */
+/** Set by the head script before first paint. */
 export function currentColorScheme(): ColorScheme {
   return root.dataset.colorScheme === 'dark' ? 'dark' : 'light';
 }
@@ -27,11 +27,11 @@ function save(scheme: ColorScheme): void {
   try {
     localStorage.setItem(STORAGE_KEY, scheme);
   } catch {
-    // Without storage the choice lasts for this page only.
+    // Without storage, the choice lasts for this page only.
   }
 }
 
-/** Toggles are server-rendered without state; this keeps every copy in sync. */
+/** Toggles render without state; this syncs every copy. */
 function syncToggles(): void {
   const pressed = String(currentColorScheme() === 'dark');
   for (const toggle of document.querySelectorAll(TOGGLE_SELECTOR)) {
@@ -47,7 +47,7 @@ function apply(scheme: ColorScheme): void {
   syncToggles();
 }
 
-// Delegated, so toggles inside swapped regions and hydrated islands need no wiring.
+// Delegated, so swapped and hydrated toggles need no wiring.
 document.addEventListener('click', (event) => {
   if (!(event.target instanceof Element) || !event.target.closest(TOGGLE_SELECTOR)) return;
   const scheme = currentColorScheme() === 'dark' ? 'light' : 'dark';

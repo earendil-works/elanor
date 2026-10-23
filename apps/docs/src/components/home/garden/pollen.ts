@@ -20,19 +20,13 @@ export interface PollenFrame {
   readonly size: number;
   /** Seconds; a fixed value draws a still frame. */
   readonly time: number;
-  /** 0 by day, 1 by night; blends palette and glow. */
+  /** 0 in light mode, 1 in dark mode; values between blend. */
   readonly night: number;
-  /** 0–1 brief brightening after the color scheme changes. */
+  /** 0–1; a brief brightening after the color scheme changes. */
   readonly ignition: number;
 }
 
-/**
- * Pollen drifting outward from the stamens on slow, seeded orbits: amber specks by day,
- * warm glowing motes by night.
- *
- * @param canvas The square canvas overlaying the painting.
- * @returns A function that draws one frame.
- */
+/** Seeded pollen drifting out from the stamens. Returns a function that draws one frame on `canvas`. */
 export function createPollen(canvas: HTMLCanvasElement): (frame: PollenFrame) => void {
   const context = canvas.getContext('2d');
   if (!context) throw new Error('Canvas 2D is unavailable.');
@@ -70,7 +64,6 @@ export function createPollen(canvas: HTMLCanvasElement): (frame: PollenFrame) =>
             (core * (0.62 + night * 0.36) + halo * (0.075 + night * 0.48) + corona * night * 0.16) *
             (1 + ignition * 0.35),
         );
-        // Day amber blends to a warm night glow; the hot core whitens at night.
         const hot = core * night * 0.82;
         const red = mix(mix(0.57, 1, night), 1, hot);
         const green = mix(mix(0.36, 0.8 + random * 0.12, night), 0.99, hot);

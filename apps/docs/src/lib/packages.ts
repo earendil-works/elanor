@@ -68,7 +68,7 @@ export function logoContentType(path: string): string {
   return contentType;
 }
 
-/** The site's favicons: the Elanor brand's, from the logo package's manifest, by manifest key. */
+/** The Elanor brand's favicon files, by manifest key. */
 export async function siteFavicons(): Promise<Record<string, string>> {
   const manifest = JSON.parse(
     await readFile(resolve(logosDist, 'manifest.json'), 'utf8'),

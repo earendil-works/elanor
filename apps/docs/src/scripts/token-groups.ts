@@ -1,8 +1,5 @@
-/*
- * The collapsed token groups (`components/token-area.tsx`): the Expand all button, and opening the group a
- * link points into, such as an alias link or a shared `#--token` URL. Listeners are delegated, so they
- * survive client-side page swaps.
- */
+// Token groups in `components/token-area.tsx`: Expand all, and opening the group a URL hash points into.
+// Delegated, so it survives page swaps.
 
 const GROUP = 'details[data-filter-group]';
 
@@ -10,7 +7,7 @@ function groups(): HTMLDetailsElement[] {
   return [...document.querySelectorAll<HTMLDetailsElement>(GROUP)].filter((group) => !group.hidden);
 }
 
-/** The button offers to collapse once every visible group is open. */
+/** Shows "Collapse all" once every visible group is open. */
 function syncToggle(): void {
   const button = document.querySelector<HTMLElement>('[data-groups-toggle]');
   if (!button) return;

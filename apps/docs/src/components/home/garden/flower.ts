@@ -3,7 +3,7 @@ import {petalAt} from './geometry.ts';
 import {createPollen} from './pollen.ts';
 
 const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
-/** Pollen drifts slowly; ~30 fps is indistinguishable and halves the work. */
+/** ~30 fps; pollen moves slowly enough. */
 const FRAME_INTERVAL = 32;
 const IGNITION = 1800;
 
@@ -18,7 +18,7 @@ interface FlowerElements {
   readonly onSelect: (petal: number) => void;
 }
 
-/** Reads the painting's alpha so petals respond only where there is paint. */
+/** The painting's alpha, so only painted pixels count as petals. */
 function readAlpha(reference: HTMLImageElement): ImageData {
   const source = document.createElement('canvas');
   source.width = reference.naturalWidth;
@@ -29,10 +29,7 @@ function readAlpha(reference: HTMLImageElement): ImageData {
   return context.getImageData(0, 0, source.width, source.height);
 }
 
-/**
- * Makes the petals clickable and starts the pollen once the painting has decoded.
- * Pollen pauses off-screen, in background tabs, and after the page is hidden.
- */
+/** Makes the petals interactive and starts the pollen. Pollen pauses while off-screen or hidden. */
 export async function bringFlowerToLife({
   garden,
   art,
@@ -95,7 +92,7 @@ export async function bringFlowerToLife({
     }
     const dt = Math.min(0.1, Math.max(0.001, (now - lastTime) / 1000));
     lastTime = now;
-    // Night eases in and out with the color scheme rather than snapping.
+    // Ease toward the color scheme instead of switching.
     const target = currentColorScheme() === 'dark' ? 1 : 0;
     night = still ? target : night + (target - night) * (1 - Math.exp(-dt * 3.2));
     try {

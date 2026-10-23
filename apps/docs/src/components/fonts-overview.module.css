@@ -13,7 +13,7 @@
   max-inline-size: var(--semantic-dimension-size-max-width-content-medium);
 }
 
-/* The family comes from an inline style on the specimen; text in it sets size and weight only. */
+/* The font family is set inline; text inside sets only size and weight. */
 .specimen {
   display: flex;
   flex-direction: column;

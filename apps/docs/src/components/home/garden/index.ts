@@ -2,7 +2,7 @@ import {bringFlowerToLife} from './flower.ts';
 import {playIntro} from './intro.ts';
 import {connectPapers} from './tethers.ts';
 
-/** Wires up the homepage garden rendered by `home-garden.astro`. */
+/** Starts the garden rendered by `home-garden.astro`. */
 export function plantGarden(): void {
   const garden = document.querySelector<HTMLElement>('.garden');
   const art = garden?.querySelector<HTMLElement>('.flower-art');
@@ -13,7 +13,7 @@ export function plantGarden(): void {
 
   connectPapers(garden, couriers);
   playIntro({reference, damp: garden.querySelector('.flower-damp'), couriers});
-  // Petals mirror their courier: hovering one highlights it, clicking one follows it.
+  // Hovering a petal highlights its courier; clicking follows its link.
   bringFlowerToLife({
     garden,
     art,
@@ -24,7 +24,7 @@ export function plantGarden(): void {
     onSelect: (petal) => couriers[petal]?.click(),
   }).catch((error: unknown) => console.warn('Elanor: flower is static.', error));
 
-  // Reloading is a deliberate arrival, so the intro plays again.
+  // A reload plays the intro.
   const replay = document.querySelector<HTMLButtonElement>('[data-replay-intro]');
   if (replay) {
     replay.hidden = false;

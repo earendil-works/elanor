@@ -9,7 +9,6 @@ interface SiteIdentityProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
   readonly mark: SiteMark;
 }
 
-/** The flower and wordmark, linking home. */
 export function SiteIdentity({mark, className, ...props}: SiteIdentityProps): React.JSX.Element {
   return (
     <Link

@@ -1,7 +1,4 @@
-/**
- * Component categories in display order. Each component page sets one as `category` in its front
- * matter; the docs group the sidebar, the components overview, and llms.txt by it.
- */
+/** In display order. Each component page sets one as `category` in its front matter. */
 export const componentCategories = [
   'layout',
   'navigation',
