@@ -15,6 +15,7 @@ import {
   type PartName,
   parts,
   type Treatment,
+  treatments,
 } from '../../config.js';
 import {translatePath} from './path-data.js';
 import {parseSource, type SourceArtwork, type SourcePath} from './svg.js';
@@ -31,6 +32,12 @@ export const kinds: LogoKind[] = [
     (lockup): LogoKind => `${lockupKindPrefix}${lockup}`,
   ),
 ];
+
+/** A brand's color treatments; a painting has no one-color version. */
+export function brandTreatments(brand: BrandId): readonly Treatment[] {
+  const brandConfig: BrandConfig = brands[brand];
+  return brandConfig.painting ? treatments.filter(({monochrome}) => !monochrome) : treatments;
+}
 
 /** The lockup a kind composes, or undefined for the symbol alone. */
 export function lockupOf(kind: LogoKind): LockupName | undefined {
@@ -204,7 +211,7 @@ export function tokenHex(tokens: TokenCatalog, token: string, scheme: Scheme): s
   return hex;
 }
 
-/** Replaces token links with the treatment's colors. Monochrome paints every shape with one color. */
+/** Replaces token links with the treatment's colors; fixed colors stay. Monochrome paints every shape with one color. */
 export function colorArtwork(
   artwork: Artwork,
   treatment: Treatment,
@@ -213,13 +220,11 @@ export function colorArtwork(
   return {
     width: artwork.width,
     height: artwork.height,
-    paths: artwork.paths.map(({token, d, fillRule}) => ({
+    paths: artwork.paths.map(({token, color, d, fillRule}) => ({
       d,
-      fill: tokenHex(
-        tokens,
-        treatment.monochrome ? logoTokens.monochrome : token,
-        treatment.scheme,
-      ),
+      fill: treatment.monochrome
+        ? tokenHex(tokens, logoTokens.monochrome, treatment.scheme)
+        : (color ?? tokenHex(tokens, token, treatment.scheme)),
       ...(fillRule ? {fillRule} : {}),
     })),
   };

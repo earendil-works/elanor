@@ -37,9 +37,15 @@ describe('sources', () => {
     expect(serializeSource(parseSource(source, 'test'))).toBe(source);
   });
 
-  test('reject anything but token-linked paths', () => {
+  test('fixed colors round-trip as colors', () => {
+    const painted = source.replace('{semantic.color.logo.symbol.1}', '#4d9abf');
+    expect(parseSource(painted, 'test').paths).toEqual([{color: '#4d9abf', d: 'M0 0H1Z'}]);
+    expect(serializeSource(parseSource(painted, 'test'))).toBe(painted);
+  });
+
+  test('reject anything but token-linked or fixed-color paths', () => {
     expect(() =>
-      parseSource(source.replace('{semantic.color.logo.symbol.1}', '#4d9abf'), 'test'),
+      parseSource(source.replace('{semantic.color.logo.symbol.1}', 'red'), 'test'),
     ).toThrow();
     expect(() => parseSource(source.replace('<path ', '<path id="x" '), 'test')).toThrow();
     expect(() => parseSource(source.replace('</svg>', '<g/>\n</svg>'), 'test')).toThrow();

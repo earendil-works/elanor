@@ -1,8 +1,15 @@
-// Validates that every source is clean and links only to existing logo tokens.
+// Validates that every source is clean and links only to existing logo tokens; only a painting's mark has fixed colors.
 import {readdir, readFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 
-import {type BrandId, brands, logoTokens, type PartName, parts} from '../config.js';
+import {
+  type BrandConfig,
+  type BrandId,
+  brands,
+  logoTokens,
+  type PartName,
+  parts,
+} from '../config.js';
 import {loadTokens, sourceDirectory} from './lib/compose.js';
 import {translatePath} from './lib/path-data.js';
 import {parseSource} from './lib/svg.js';
@@ -18,6 +25,7 @@ for (const entry of await readdir(sourceDirectory, {withFileTypes: true})) {
   if (!entry.isDirectory()) throw new Error(`sources/${brand}: unexpected file`);
   if (!(brand in brands)) throw new Error(`sources/${brand}: unknown brand; add it to config.ts`);
   const tokens = await loadTokens(brand as BrandId);
+  const brandConfig: BrandConfig = brands[brand as BrandId];
   for (const file of await readdir(resolve(sourceDirectory, brand))) {
     if (isHidden(file)) continue;
     if (!partNames.some((part) => file === `${part}.svg`))
@@ -27,7 +35,12 @@ for (const entry of await readdir(sourceDirectory, {withFileTypes: true})) {
       `${brand}/${file}`,
     );
     for (const path of artwork.paths) {
-      if (!path.token.startsWith(`${logoTokens.group}.`) || !tokens.tokens[path.token]) {
+      if (path.token === undefined) {
+        if (!brandConfig.painting || file !== 'mark.svg')
+          throw new Error(
+            `sources/${brand}/${file}: fixed color ${path.color}; only a painting's mark may have them`,
+          );
+      } else if (!path.token.startsWith(`${logoTokens.group}.`) || !tokens.tokens[path.token]) {
         throw new Error(`sources/${brand}/${file}: fill links to unknown logo token ${path.token}`);
       }
       translatePath(path.d, 1, 1); // throws on unsupported path data

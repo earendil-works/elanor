@@ -207,6 +207,30 @@ describe('built exports', () => {
     ]);
   });
 
+  test('the painting gets color logos as SVG and PNG, profile pictures, and raster favicons', async () => {
+    const manifest = JSON.parse(await readFile(resolve(dist, 'manifest.json'), 'utf8'));
+    const elanor = manifest.brands.find((brand: {id: string}) => brand.id === 'elanor');
+    expect(elanor.backgrounds).toEqual({light: '#ebe7e4', dark: '#141a17'});
+    expect(new Set(elanor.assets.map((asset: {treatment: string}) => asset.treatment))).toEqual(
+      new Set(['on-light', 'on-dark']),
+    );
+    for (const asset of elanor.assets)
+      expect(Object.keys(asset.files).sort()).toEqual(['png', 'svg']);
+    expect(elanor.avatars).toHaveLength(4);
+    expect(elanor.favicons.svg).toBeUndefined();
+    expect(elanor.favicons.ico).toBe('favicons/elanor/favicon.ico');
+    // The painting keeps its colors; the wordmark follows the scheme.
+    const dark = await readFile(
+      resolve(dist, 'svg/elanor/elanor-logo-wordmark-horizontal-on-dark.svg'),
+      'utf8',
+    );
+    expect(dark).toContain('fill="#b05e1c"');
+    expect(dark).toContain('fill="#f6f6f6"');
+    expect(manifest.pressKits.elanor).toBeUndefined();
+    const artwork = JSON.parse(await readFile(resolve(dist, 'artwork.json'), 'utf8'));
+    expect(artwork.brands.elanor).toBeUndefined();
+  });
+
   test('favicons are monochrome, and the SVG favicon switches to white in dark mode', async () => {
     for (const brand of ['earendil', 'pi']) {
       const svg = await readFile(resolve(dist, `favicons/${brand}/favicon.svg`), 'utf8');

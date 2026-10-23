@@ -10,9 +10,12 @@ import {
   print,
 } from './scripts/exports/index.js';
 
-/** Press kits, and the brands each one covers. The Earendil kit is the company kit with every brand. */
+/** Brands with the full set of files. Elanor's painting gets only SVG, PNG, profile pictures, and favicons. */
+const kitBrands: BrandId[] = ['earendil', 'pi', 'radius', 'lefos'];
+
+/** Press kits, and the brands each one covers. The Earendil kit is the company kit with every kit brand. */
 const kits = {
-  earendil: ['earendil', 'pi', 'radius', 'lefos'],
+  earendil: kitBrands,
   pi: ['pi'],
   radius: ['radius'],
   lefos: ['lefos'],
@@ -25,13 +28,14 @@ const kits = {
  * plugin and list it here.
  */
 export const exportPlugins: ExportPlugin[] = [
-  logoFiles({formats: ['svg', 'png'], png: {scale: 2, maxDimension: 4096}}),
+  logoFiles({formats: {svg: {brands: kitBrands}, png: {}}, png: {scale: 2, maxDimension: 4096}}),
   pngHeights({
     name: 'email-signature',
-    select: {kinds: ['logo-wordmark-horizontal'], treatments: ['on-light']},
+    select: {brands: kitBrands, kinds: ['logo-wordmark-horizontal'], treatments: ['on-light']},
     heights: [32, 64],
   }),
   print({
+    select: {brands: kitBrands},
     // White prints no ink, so on dark backgrounds it knocks out to the paper.
     profiles: {psoCoatedV3: 'FOGRA51', psoUncoatedV3: 'FOGRA52'},
     // The 560-unit symbol frame prints 40 mm wide by default; the PDFs are vectors and scale freely.
@@ -39,6 +43,8 @@ export const exportPlugins: ExportPlugin[] = [
   }),
   favicons({
     treatments: {light: 'monochrome-on-light', dark: 'monochrome-on-dark'},
+    // The painting has no one-color version, and its SVG is too large for a favicon.
+    brands: {elanor: {treatments: {light: 'on-light', dark: 'on-dark'}, svg: false}},
     svgSize: 32,
     icoSizes: [16, 32, 48],
     appleTouchSize: 180,

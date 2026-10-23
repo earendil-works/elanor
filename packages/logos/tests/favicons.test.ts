@@ -32,7 +32,19 @@ describe('favicon tags', () => {
     }
   });
 
+  test('leave out the SVG favicon when there is none', () => {
+    const raster = {
+      ico: files.ico,
+      appleTouchIcon: files.appleTouchIcon,
+      webmanifest: files.webmanifest,
+    };
+    expect(faviconTags(raster, '1.2.3')).not.toContain('image/svg+xml');
+  });
+
   test('match the head snippet in the build', async () => {
+    expect(await faviconHead('elanor')).toBe(
+      await readFile(resolve(import.meta.dirname, '../dist/favicons/elanor/head.html'), 'utf8'),
+    );
     expect(await faviconHead('pi')).toBe(
       await readFile(resolve(import.meta.dirname, '../dist/favicons/pi/head.html'), 'utf8'),
     );

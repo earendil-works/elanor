@@ -2,6 +2,7 @@ import {basename} from 'node:path';
 
 import {type BrandId, brands} from '../../config.js';
 import {faviconTags, packageVersion} from '../../src/favicons.js';
+import type {ColoredArtwork} from '../lib/compose.js';
 import {createIco} from '../lib/containers.js';
 import {circleSafeFrame, frameSvg, renderPng, squareFrame} from '../lib/raster.js';
 import type {ExportPlugin, TreatmentId} from './plugin.js';
@@ -13,6 +14,10 @@ export interface FaviconsOptions {
    * Defaults to the color symbols.
    */
   treatments?: {light: TreatmentId; dark: TreatmentId};
+  /** Brands that differ, e.g. a painting: its own treatments, and no SVG favicon when `svg` is false. */
+  brands?: Partial<
+    Record<BrandId, {treatments?: {light: TreatmentId; dark: TreatmentId}; svg?: false}>
+  >;
   /** Pixel size of the SVG favicon. */
   svgSize: number;
   icoSizes: number[];
@@ -33,39 +38,24 @@ export function favicons(options: FaviconsOptions): ExportPlugin {
       // Favicon URLs carry the package version, so browsers fetch updated icons.
       const version = await packageVersion();
       for (const brand of Object.keys(brands) as BrandId[]) {
-        const treatments = options.treatments ?? {light: 'on-light', dark: 'on-dark'};
+        const brandOptions = options.brands?.[brand];
+        const treatments = brandOptions?.treatments ??
+          options.treatments ?? {light: 'on-light', dark: 'on-dark'};
         const light = context.mark(brand, treatments.light).colored;
         const dark = context.mark(brand, treatments.dark).colored;
-        if (light.paths.length !== dark.paths.length) {
-          throw new Error(
-            `${brand}: the ${treatments.light} and ${treatments.dark} symbols must share their paths for the SVG favicon`,
-          );
-        }
         const directory = `favicons/${brand}`;
         const files: Record<string, string> = {};
         const background = await context.background(brand, 'light');
-
-        // The SVG favicon switches to the dark colors with the browser's color scheme:
-        // paths whose color changes get a class named after their dark color.
-        const darkFills = new Set<string>();
-        const themed = {
-          ...light,
-          paths: light.paths.map((path, index) => {
-            const darkFill = dark.paths[index]!.fill;
-            if (darkFill === path.fill) return path;
-            darkFills.add(darkFill);
-            return {...path, className: classFor(darkFill)};
-          }),
-        };
-        const rules = [...darkFills].map((fill) => `.${classFor(fill)}{fill:${fill}}`).join('');
-        const svgFrame = squareFrame(light, options.svgSize, 0);
-        files.svg = await context.write(
-          `${directory}/favicon.svg`,
-          frameSvg(
-            themed,
-            rules ? {...svgFrame, style: `@media (prefers-color-scheme:dark){${rules}}`} : svgFrame,
-          ),
-        );
+        if (brandOptions?.svg !== false)
+          files.svg = await context.write(
+            `${directory}/favicon.svg`,
+            svgFavicon(
+              light,
+              dark,
+              options.svgSize,
+              `${brand}: the ${treatments.light} and ${treatments.dark} symbols`,
+            ),
+          );
 
         const icoImages = [];
         for (const size of options.icoSizes)
@@ -115,7 +105,7 @@ export function favicons(options: FaviconsOptions): ExportPlugin {
           faviconTags(
             {
               ico: basename(files.ico),
-              svg: basename(files.svg),
+              ...(files.svg ? {svg: basename(files.svg)} : {}),
               appleTouchIcon: basename(files.appleTouchIcon),
               webmanifest: basename(files.webmanifest),
             },
@@ -126,6 +116,34 @@ export function favicons(options: FaviconsOptions): ExportPlugin {
       }
     },
   };
+}
+
+/** An SVG favicon that switches to the dark symbol's colors with the browser's color scheme. */
+function svgFavicon(
+  light: ColoredArtwork,
+  dark: ColoredArtwork,
+  size: number,
+  label: string,
+): string {
+  if (light.paths.length !== dark.paths.length)
+    throw new Error(`${label} must share their paths for the SVG favicon`);
+  // Paths whose color changes get a class named after their dark color.
+  const darkFills = new Set<string>();
+  const themed = {
+    ...light,
+    paths: light.paths.map((path, index) => {
+      const darkFill = dark.paths[index]!.fill;
+      if (darkFill === path.fill) return path;
+      darkFills.add(darkFill);
+      return {...path, className: classFor(darkFill)};
+    }),
+  };
+  const rules = [...darkFills].map((fill) => `.${classFor(fill)}{fill:${fill}}`).join('');
+  const frame = squareFrame(light, size, 0);
+  return frameSvg(
+    themed,
+    rules ? {...frame, style: `@media (prefers-color-scheme:dark){${rules}}`} : frame,
+  );
 }
 
 function classFor(fill: string): string {
