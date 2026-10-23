@@ -374,12 +374,6 @@
     font: var(--semantic-typography-ui-secondary);
   }
 
-  .description code {
-    color: var(--semantic-color-text-code);
-    font-family: var(--semantic-font-family-code);
-    font-size: 0.875em;
-  }
-
   .values {
     display: grid;
     grid-area: values;

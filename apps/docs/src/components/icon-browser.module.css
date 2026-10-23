@@ -5,7 +5,12 @@
     display: grid;
     grid-template-columns: repeat(12, minmax(0, 1fr));
     align-items: start;
-    column-gap: var(--semantic-dimension-space-gap-medium);
+    gap: var(--semantic-dimension-space-gap-large) var(--semantic-dimension-space-gap-medium);
+  }
+
+  /* Full width, like the other searches. */
+  .search {
+    grid-column: 1 / -1;
   }
 
   .main {

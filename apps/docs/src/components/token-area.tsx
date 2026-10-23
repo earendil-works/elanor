@@ -11,6 +11,7 @@ import type {
   TokenState,
 } from '../lib/token-pages.ts';
 import {tokenAreaHref} from '../lib/token-pages.ts';
+import {CodeText} from './code-text.tsx';
 import {CopyStatus, StaticCopyButton} from './static-copy-button.tsx';
 
 import styles from './token-area.module.css';
@@ -349,9 +350,7 @@ function EntryRow({entry}: {readonly entry: TokenEntry}): React.JSX.Element {
   const filterText = entry.states.map((state) => state.path).join(' ');
   const description = entry.description ? (
     <p className={styles.description}>
-      {entry.description
-        .split('`')
-        .map((part, index) => (index % 2 === 1 ? <code key={index}>{part}</code> : part))}
+      <CodeText text={entry.description} />
     </p>
   ) : null;
 
@@ -426,9 +425,7 @@ function Swatch({entry}: {readonly entry: TokenEntry}): React.JSX.Element {
             {state.cssVariable}
           </code>
           {entry.step}
-          {entry.brandSpecific ? (
-            <span className="visually-hidden"> Brand-specific</span>
-          ) : null}
+          {entry.brandSpecific ? <span className="visually-hidden"> Brand-specific</span> : null}
         </span>
         <StaticCopyButton
           value={state.cssVariable}
@@ -510,7 +507,7 @@ function Section({section}: {readonly section: TokenSection}): React.JSX.Element
   const headingId = `section-${section.id}`;
   return (
     <section className={styles.section} aria-labelledby={headingId} data-filter-section>
-      <Heading level={2} size={3} id={headingId}>
+      <Heading level={2} size={4} id={headingId}>
         {section.label}
       </Heading>
       <div className={styles.groups}>

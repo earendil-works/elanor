@@ -125,22 +125,23 @@ export function IconBrowser(): React.JSX.Element {
 
   return (
     <div className={styles.browser}>
+      <Search
+        rootClassName={styles.search}
+        aria-label="Search icons"
+        placeholder={
+          index
+            ? `Search ${index.length} icons by name or keyword…`
+            : loadFailed
+              ? 'Search icons…'
+              : 'Loading icons…'
+        }
+        value={query}
+        onChange={(event) => {
+          setQuery(event.currentTarget.value);
+          setLimit(PAGE_SIZE);
+        }}
+      />
       <div className={styles.main}>
-        <Search
-          aria-label="Search icons"
-          placeholder={
-            index
-              ? `Search ${index.length} icons by name or keyword…`
-              : loadFailed
-                ? 'Search icons…'
-                : 'Loading icons…'
-          }
-          value={query}
-          onChange={(event) => {
-            setQuery(event.currentTarget.value);
-            setLimit(PAGE_SIZE);
-          }}
-        />
         {loadFailed ? (
           <Stack gap="small" align="start">
             <Text role="alert">Could not load icons. Please try again.</Text>

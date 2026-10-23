@@ -1,6 +1,7 @@
 import {SearchOffIcon} from '@earendil-works/elanor-icons-boiled-react';
-import {Button, EmptyState, Grid, Heading, InlineCode, Search} from '@earendil-works/elanor-react';
+import {Button, EmptyState, Grid, Heading, Search} from '@earendil-works/elanor-react';
 
+import {CodeText} from './code-text.tsx';
 import {LinkCard} from './link-card.tsx';
 
 import styles from './components-overview.module.css';
@@ -20,18 +21,6 @@ export interface ComponentGroupSummary {
 
 interface ComponentsOverviewProps {
   readonly groups: readonly ComponentGroupSummary[];
-}
-
-function Description({text}: {readonly text: string}): React.JSX.Element {
-  return (
-    <p>
-      {text
-        .split('`')
-        .map((part, index) =>
-          index % 2 === 1 ? <InlineCode key={index}>{part}</InlineCode> : part,
-        )}
-    </p>
-  );
 }
 
 /** Static HTML; `scripts/list-filter.ts` filters it through the `data-filter-*` attributes. */
@@ -65,7 +54,9 @@ export function ComponentsOverview({groups}: ComponentsOverviewProps): React.JSX
                 data-filter-item
               >
                 <LinkCard href={`/components/${component.id}/`} title={component.name}>
-                  <Description text={component.description} />
+                  <p>
+                    <CodeText text={component.description} />
+                  </p>
                 </LinkCard>
               </Grid.Item>
             ))}

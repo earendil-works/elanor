@@ -47,7 +47,7 @@ const widePreview = [
 const tokenBrand = /^\/tokens\/([^/]+)\//.exec(current)?.[1] ?? defaultTokenBrand;
 const link = (href: string, label: string): DocsNavigationLink => ({type: 'link', href, label});
 const groups: DocsNavigationGroup[] = [
-  {label: 'Brand', items: [link('/brand/', 'Logos')]},
+  {label: 'Brand', items: [link('/brand/', 'Overview')]},
   {label: 'Foundations', items: [link('/fonts/', 'Fonts'), link('/icons/', 'Icons')]},
   {
     label: 'Tokens',

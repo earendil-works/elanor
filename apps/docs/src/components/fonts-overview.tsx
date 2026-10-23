@@ -49,7 +49,7 @@ function Family({family}: {readonly family: FontFamily}): React.JSX.Element {
   const fontFamily = `"${family.name}"`;
   return (
     <section className={styles.section} aria-labelledby={family.id}>
-      <Heading level={2} size={3} id={family.id}>
+      <Heading level={2} size={4} id={family.id}>
         {family.name}
       </Heading>
       <Text>{family.role}</Text>
@@ -119,7 +119,7 @@ export function FontsOverview({page}: FontsOverviewProps): React.JSX.Element {
   return (
     <>
       <section className={styles.use} aria-labelledby="use">
-        <Heading level={2} size={3} id="use">
+        <Heading level={2} size={4} id="use">
           Use
         </Heading>
         <Text>Import the fonts your brand uses, once, at the app’s entry.</Text>
