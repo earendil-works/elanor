@@ -11,6 +11,7 @@ import {DocsSideNavigation, type DocsNavigationSection} from '../components/docs
 import {DocsMobileNavigation} from '../components/docs-mobile-navigation.tsx';
 import {componentGroups} from '../lib/component-groups.ts';
 import {componentName} from '../lib/component-name.ts';
+import {defaultTokenBrand, tokenAreaHref, tokenAreas} from '../lib/token-pages.ts';
 
 interface Props {
   title: string;
@@ -31,12 +32,21 @@ const widePreview = [
   '/components/container/',
   '/components/sidebar/',
 ].includes(current);
+// Token links stay on the brand of the current token page.
+const tokenBrand = /^\/tokens\/([^/]+)\//.exec(current)?.[1] ?? defaultTokenBrand;
 const sections: DocsNavigationSection[] = [
   {
     label: 'Brand',
     links: [{href: '/brand/', label: 'Logos'}],
   },
   {label: 'Foundations', links: [{href: '/icons/', label: 'Icons'}]},
+  {
+    label: 'Tokens',
+    links: [
+      {href: '/tokens/', label: 'Overview'},
+      ...tokenAreas.map((area) => ({href: tokenAreaHref(tokenBrand, area.id), label: area.label})),
+    ],
+  },
   {label: 'Components', links: [{href: '/components/', label: 'Overview'}]},
   ...(await componentGroups()).map((group) => ({
     label: group.label,

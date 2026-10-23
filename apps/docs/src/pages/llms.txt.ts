@@ -49,6 +49,6 @@ ${components}
 ## Optional
 
 - [API index](/api/index.json): the indexes above as JSON.
-- [Icon browser](/icons/) and [logo page](/brand/): HTML pages for people.
+- [Token pages](/tokens/), [icon browser](/icons/), and [logo page](/brand/): HTML pages for people.
 `);
 };
