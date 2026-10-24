@@ -20,6 +20,10 @@
     resize: vertical;
   }
 
+  .monospace {
+    font: var(--semantic-typography-code-primary);
+  }
+
   .textarea::placeholder {
     color: var(--semantic-color-text-secondary);
   }
