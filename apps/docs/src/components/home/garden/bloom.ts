@@ -11,6 +11,7 @@ const LEAF_DELAY = 0.24;
 const SOFT = 0.075;
 /** Progress at which the halo, center light, and pollen fade in. */
 const SETTLING = 0.72;
+const HANDOFF = 250;
 
 function hash(x: number, y: number): number {
   const h = Math.sin(x * 127.1 + y * 311.7) * 43758.5453;
@@ -174,7 +175,7 @@ interface BloomOptions {
   readonly onSettling?: () => void;
 }
 
-/** Paints `reference` in on a canvas above it, then removes the canvas. `reference` must be decoded. */
+/** Paints `reference` in on a canvas above it, then fades out the canvas. `reference` must be decoded. */
 export function paintBloom(
   reference: HTMLImageElement,
   duration: number,
@@ -272,8 +273,15 @@ export function paintBloom(
       if (progress < 1) {
         requestAnimationFrame(frame);
       } else {
-        canvas.remove();
         resolve();
+        const remove = () => canvas.remove();
+        canvas
+          .animate([{opacity: 1}, {opacity: 0}], {
+            duration: HANDOFF,
+            easing: 'ease-out',
+            fill: 'forwards',
+          })
+          .finished.then(remove, remove);
       }
     };
     requestAnimationFrame(frame);
