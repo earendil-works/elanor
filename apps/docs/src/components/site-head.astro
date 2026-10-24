@@ -8,14 +8,15 @@ import {loadTokens} from '../lib/api.ts';
 import {logosDist, siteFavicons} from '../lib/packages.ts';
 
 interface Props {
-  /** The page's own title; the site name is added. */
-  title: string;
+  /** The page's own title; the site name is added. Without one, the title is the site name. */
+  title?: string;
   /** The token brand the layout loads, for the browser's theme color. */
   tokens?: 'radius' | 'elanor';
 }
 
 const {title, tokens = 'radius'} = Astro.props;
 const name = 'Elanor';
+const fullTitle = title ? `${title} · ${name}` : name;
 const canvas = (await loadTokens(tokens)).find(
   (token) => token.path === 'semantic.color.background.canvas',
 );
@@ -34,7 +35,7 @@ const url = new URL(Astro.url.pathname, site);
   @layer elanor, base, components, utilities;
 </style>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>{`${title} · ${name}`}</title>
+<title>{fullTitle}</title>
 {/* The color scheme scripts pick the light or dark value. */}
 <meta
   name="theme-color"
@@ -46,7 +47,7 @@ const url = new URL(Astro.url.pathname, site);
 <Fragment set:html={favicons} />
 <meta property="og:type" content="website" />
 <meta property="og:site_name" content={name} />
-<meta property="og:title" content={title} />
+<meta property="og:title" content={fullTitle} />
 <meta property="og:description" content={description} />
 <meta property="og:url" content={url.href} />
 <meta property="og:image" content={image.href} />
