@@ -1,6 +1,6 @@
 # `@earendil-works/elanor-fonts`
 
-Self-hosted Earendil and Commit Mono fonts with `@font-face` CSS.
+Self-hosted Earendil, Commit Mono, and DepartureMono fonts with `@font-face` CSS.
 
 ```sh
 pnpm add @earendil-works/elanor-fonts
@@ -13,13 +13,16 @@ import '@earendil-works/elanor-fonts/earendil.css';
 import '@earendil-works/elanor-fonts/commit-mono.css';
 ```
 
-| Export            | CSS family    | Weights       | Styles         |
-| ----------------- | ------------- | ------------- | -------------- |
-| `earendil.css`    | `Earendil`    | 400, 700      | normal, italic |
-| `commit-mono.css` | `Commit Mono` | 300, 400, 700 | normal         |
+| Export               | CSS family      | Weights       | Styles         |
+| -------------------- | --------------- | ------------- | -------------- |
+| `earendil.css`       | `Earendil`      | 400, 700      | normal, italic |
+| `commit-mono.css`    | `Commit Mono`   | 300, 400, 700 | normal         |
+| `departure-mono.css` | `DepartureMono` | 400           | normal         |
+
+DepartureMono is the Lefos mono font. Import it only in apps that use the Lefos tokens. It has one weight, so browsers synthesize bold.
 
 CSS uses relative URLs and `font-display: swap`. Without a bundler, serve the CSS and `files/` directory together.
 
-For preloading or custom CSS, import `@earendil-works/elanor-fonts/files/<filename>`.
+For preloading or custom CSS, import `@earendil-works/elanor-fonts/files/<filename>`. Commit Mono also ships its original `.otf` files for desktop installs; the CSS uses WOFF2.
 
-Both families use SIL OFL 1.1. Include `licenses/earendil.txt` and `licenses/commit-mono.txt` when redistributing them.
+All families use SIL OFL 1.1. Include the matching file from `licenses/` when redistributing them.

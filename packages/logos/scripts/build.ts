@@ -2,17 +2,18 @@ import {mkdir, rm, writeFile} from 'node:fs/promises';
 import {resolve} from 'node:path';
 
 import {
+  type BrandConfig,
   type BrandId,
   brands,
   clearSpace,
   gridUnit,
   type LockupName,
   logoTokens,
-  treatments,
 } from '../config.js';
 import {
   type Artwork,
   brandBackground,
+  brandTreatments,
   colorArtwork,
   composeArtwork,
   kinds,
@@ -37,6 +38,7 @@ const artwork: Record<
 > = {};
 
 for (const brand of Object.keys(brands) as BrandId[]) {
+  const brandConfig: BrandConfig = brands[brand];
   const tokens = await loadTokens(brand);
   const assets: unknown[] = [];
   const artworkKinds: (typeof artwork)[string]['kinds'] = {};
@@ -45,12 +47,12 @@ for (const brand of Object.keys(brands) as BrandId[]) {
 
   for (const kind of kinds) {
     const color = await composeArtwork(brand, kind, false);
-    const monochrome = await composeArtwork(brand, kind, true);
+    const monochrome = brandConfig.painted ? color : await composeArtwork(brand, kind, true);
     const lockup = lockupOf(kind);
     artworkKinds[kind] = {...(lockup ? {lockup} : {}), color, monochrome};
-    for (const path of color.paths) usedTokens.add(path.token);
+    for (const path of color.paths) if (path.token) usedTokens.add(path.token);
 
-    for (const treatment of treatments) {
+    for (const treatment of brandTreatments(brand)) {
       const id = `${brand}-${kind}-${treatment.id}`;
       const file = `svg/${brand}/${id}.svg`;
       const colored = colorArtwork(treatment.monochrome ? monochrome : color, treatment, tokens);
@@ -82,7 +84,8 @@ for (const brand of Object.keys(brands) as BrandId[]) {
         {light: tokenHex(tokens, token, 'light'), dark: tokenHex(tokens, token, 'dark')},
       ]),
   );
-  artwork[brand] = {colors, kinds: artworkKinds};
+  // Painted artwork is too large for a React component.
+  if (!brandConfig.painted) artwork[brand] = {colors, kinds: artworkKinds};
 }
 
 await writeFile(

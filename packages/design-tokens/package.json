@@ -16,6 +16,7 @@
     "./pi.css": "./dist/pi/tokens.css",
     "./earendil.css": "./dist/earendil/tokens.css",
     "./lefos.css": "./dist/lefos/tokens.css",
+    "./elanor.css": "./dist/elanor/tokens.css",
     "./*.catalog.json": "./dist/*/tokens.catalog.json"
   },
   "scripts": {
@@ -23,11 +24,12 @@
     "generate": "tsx generation/src/generate.ts",
     "generate:check": "tsx generation/src/generate.ts --check",
     "build": "pnpm run build:all",
-    "build:all": "pnpm run clean && pnpm run build:radius && pnpm run build:pi && pnpm run build:earendil && pnpm run build:lefos",
+    "build:all": "pnpm run clean && pnpm run build:radius && pnpm run build:pi && pnpm run build:earendil && pnpm run build:lefos && pnpm run build:elanor",
     "build:radius": "rm -rf dist/radius && tz build -c terrazzo.radius.config.ts && tsx scripts/validate-catalogue.ts radius",
     "build:pi": "rm -rf dist/pi && tz build -c terrazzo.pi.config.ts && tsx scripts/validate-catalogue.ts pi",
     "build:earendil": "rm -rf dist/earendil && tz build -c terrazzo.earendil.config.ts && tsx scripts/validate-catalogue.ts earendil",
     "build:lefos": "rm -rf dist/lefos && tz build -c terrazzo.lefos.config.ts && tsx scripts/validate-catalogue.ts lefos",
+    "build:elanor": "rm -rf dist/elanor && tz build -c terrazzo.elanor.config.ts && tsx scripts/validate-catalogue.ts elanor",
     "check": "pnpm run lint && pnpm run check:types && pnpm run generate:check && pnpm run check:schema && pnpm run check:descriptions && pnpm run check:reduced-motion && pnpm run check:contrast && pnpm run check:terrazzo",
     "lint": "oxlint . --max-warnings 0 --report-unused-disable-directives",
     "check:types": "tsc",
@@ -35,7 +37,7 @@
     "check:contrast": "tsx scripts/check-color-contrast.ts",
     "check:descriptions": "tsx scripts/check-descriptions.ts",
     "check:reduced-motion": "tsx scripts/check-reduced-motion.ts",
-    "check:terrazzo": "tz check tokens/radius.resolver.json && tz check tokens/pi.resolver.json && tz check tokens/earendil.resolver.json && tz check tokens/lefos.resolver.json",
+    "check:terrazzo": "tz check tokens/radius.resolver.json && tz check tokens/pi.resolver.json && tz check tokens/earendil.resolver.json && tz check tokens/lefos.resolver.json && tz check tokens/elanor.resolver.json",
     "schemas:update": "tsx scripts/update-dtcg-schemas.ts"
   },
   "devDependencies": {

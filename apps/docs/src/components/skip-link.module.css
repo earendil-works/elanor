@@ -1,0 +1,10 @@
+@layer components {
+  .skipLink {
+    position: absolute;
+    inset-block-start: var(--semantic-dimension-space-padding-small);
+    inset-inline-start: var(--semantic-dimension-space-padding-x-large);
+    z-index: var(--semantic-number-layer-overlay);
+    padding: var(--semantic-dimension-space-padding-medium);
+    background: var(--semantic-color-background-canvas);
+  }
+}

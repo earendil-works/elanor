@@ -8,7 +8,8 @@ const distDirectory = resolve(packageDirectory, 'dist');
 /** File names of the favicons the `<head>` tags link to. */
 export interface FaviconFiles {
   ico: string;
-  svg: string;
+  /** Absent for brands without an SVG favicon, such as painted ones. */
+  svg?: string;
   appleTouchIcon: string;
   webmanifest: string;
 }
@@ -40,7 +41,7 @@ export function faviconTags(
   const url = (file: string) => `${prefix}${file}?v=${version}`;
   return [
     `<link rel="icon" href="${url(files.ico)}" sizes="32x32">`,
-    `<link rel="icon" href="${url(files.svg)}" type="image/svg+xml">`,
+    ...(files.svg ? [`<link rel="icon" href="${url(files.svg)}" type="image/svg+xml">`] : []),
     `<link rel="apple-touch-icon" href="${url(files.appleTouchIcon)}">`,
     `<link rel="manifest" href="${url(files.webmanifest)}">`,
     '',
@@ -69,7 +70,7 @@ function faviconFiles(favicons: Record<string, string>): FaviconFiles {
   };
   return {
     ico: name('ico'),
-    svg: name('svg'),
+    ...(favicons.svg ? {svg: name('svg')} : {}),
     appleTouchIcon: name('appleTouchIcon'),
     webmanifest: name('webmanifest'),
   };

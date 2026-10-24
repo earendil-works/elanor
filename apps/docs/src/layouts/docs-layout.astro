@@ -1,14 +1,27 @@
 ---
+import '../styles/global.css';
 import '@earendil-works/design-tokens/radius.css';
 import '@earendil-works/elanor-react/elanor.min.css';
 import '../styles/docs.css';
+import '../styles/view-transition.css';
 import '@earendil-works/elanor-fonts/earendil.css';
 import '@earendil-works/elanor-fonts/commit-mono.css';
-import {getCollection} from 'astro:content';
 import {ClientRouter} from 'astro:transitions';
-import {DocsSideNavigation, type DocsNavigationSection} from '../components/docs-side-navigation.tsx';
+import ColorSchemeScript from '../components/color-scheme-script.astro';
+import SiteHead from '../components/site-head.astro';
+import {ColorSchemeToggle} from '../components/color-scheme-toggle.tsx';
+import {
+  DocsSideNavigation,
+  type DocsNavigationGroup,
+  type DocsNavigationLink,
+} from '../components/docs-side-navigation.tsx';
 import {DocsMobileNavigation} from '../components/docs-mobile-navigation.tsx';
+import {SiteIdentity} from '../components/site-identity.tsx';
+import {SkipLink} from '../components/skip-link.tsx';
+import {componentGroups} from '../lib/component-groups.ts';
 import {componentName} from '../lib/component-name.ts';
+import {siteMark} from '../lib/site-mark.ts';
+import {defaultTokenBrand, tokenAreaHref, tokenAreas} from '../lib/token-pages.ts';
 
 interface Props {
   title: string;
@@ -21,6 +34,7 @@ interface Props {
 }
 
 const {title, current, wide = false, markdown} = Astro.props;
+const mark = await siteMark();
 // The Layout demo supplies the page's single main landmark.
 const ContentTag = current === '/components/layout/' ? 'div' : 'main';
 const widePreview = [
@@ -29,43 +43,71 @@ const widePreview = [
   '/components/container/',
   '/components/sidebar/',
 ].includes(current);
-const entries = await getCollection('components');
-
-const sections: DocsNavigationSection[] = [
+// Token links stay on the brand of the current token page.
+const tokenBrand = /^\/tokens\/([^/]+)\//.exec(current)?.[1] ?? defaultTokenBrand;
+const link = (href: string, label: string): DocsNavigationLink => ({type: 'link', href, label});
+const groups: DocsNavigationGroup[] = [
+  {label: 'Brand', items: [link('/brand/', 'Overview')]},
+  {label: 'Foundations', items: [link('/fonts/', 'Fonts'), link('/icons/', 'Icons')]},
   {
-    label: 'Brand',
-    links: [{href: '/brand/', label: 'Logos'}],
+    label: 'Tokens',
+    items: [
+      link('/tokens/', 'Overview'),
+      ...tokenAreas.map((area) => link(tokenAreaHref(tokenBrand, area.id), area.label)),
+    ],
   },
-  {label: 'Foundations', links: [{href: '/icons/', label: 'Icons'}]},
   {
     label: 'Components',
-    links: entries
-      .map((entry) => entry.id)
-      .sort()
-      .map((id) => ({href: `/components/${id}/`, label: componentName(id)})),
+    items: [
+      link('/components/', 'Overview'),
+      ...(await componentGroups()).map((group) => ({
+        type: 'section' as const,
+        id: group.category,
+        label: group.label,
+        links: group.entries.map((entry) =>
+          link(`/components/${entry.id}/`, componentName(entry.id)),
+        ),
+      })),
+    ],
   },
 ];
 ---
 
 <!doctype html>
-<html lang="en" data-color-scheme="light">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width" />
-    <title>{title}</title>
+    <SiteHead title={title} />
+    <ColorSchemeScript />
     {markdown && <link rel="alternate" type="text/markdown" href={markdown} />}
+    <slot name="head" />
     <ClientRouter />
   </head>
   <body class="docs-layout">
+    <SkipLink />
     <div data-docs-swap="mobile-navigation">
-      <DocsMobileNavigation sections={sections} current={current} client:load />
+      <DocsMobileNavigation groups={groups} current={current} mark={mark} client:load>
+        {/* Slotted, so it stays static HTML for the color scheme script. */}
+        <ColorSchemeToggle slot="actions" />
+      </DocsMobileNavigation>
     </div>
     <aside>
+      <div class="docs-aside-actions">
+        {/* Full load: the homepage doesn't use the client router. */}
+        <SiteIdentity mark={mark} data-astro-reload />
+        <ColorSchemeToggle />
+      </div>
       <div data-docs-swap="navigation">
-        <DocsSideNavigation sections={sections} current={current} />
+        {/* Persisted, so open sections stay open across client-side navigation. */}
+        <DocsSideNavigation
+          groups={groups}
+          current={current}
+          client:load
+          transition:persist="docs-side-navigation"
+        />
       </div>
     </aside>
-    <ContentTag data-docs-swap="content">
+    <ContentTag id="main" tabindex="-1" data-docs-swap="content">
       <div class:list={[wide ? 'wide' : 'preview']} data-wide={widePreview ? '' : undefined}>
         <slot />
       </div>
@@ -75,5 +117,7 @@ const sections: DocsNavigationSection[] = [
 
 
 <script>
+  import '../scripts/color-scheme.ts';
   import '../scripts/docs-swap.ts';
+  import '../scripts/reveal-current-link.ts';
 </script>

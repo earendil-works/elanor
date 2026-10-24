@@ -20,7 +20,7 @@ export default [
 ];
 ```
 
-Choose `radius`, `pi`, `earendil`, or `lefos`. Variables from other brands are unknown unless the selected catalogue also contains them.
+Choose `radius`, `pi`, `earendil`, `lefos`, or `elanor`. Variables from other brands are unknown unless the selected catalogue also contains them.
 
 ## Rules
 

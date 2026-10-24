@@ -47,6 +47,27 @@ function printProfileLabel(profile: string): string {
 }
 const fileName = (path: string) => path.split('/').at(-1);
 
+interface PreviewImage {
+  src: string;
+  srcSet?: string;
+  width: number;
+  height: number;
+}
+
+/** The 1×, 2×, and 3× preview PNGs when the logo has them, otherwise its SVG. */
+function previewImage(asset: LogoAsset): PreviewImage {
+  const preview = asset.files.preview;
+  if (!preview?.length)
+    return {src: url(asset.files.svg), width: asset.width, height: asset.height};
+  const [base] = preview.toSorted((a, b) => a.height - b.height);
+  return {
+    src: url(base!.path),
+    srcSet: preview.map((file) => `${url(file.path)} ${file.height / base!.height}x`).join(', '),
+    width: Math.round((base!.height * asset.width) / asset.height),
+    height: base!.height,
+  };
+}
+
 function describeIcon(key: string): {label: string; use: string; masked?: boolean} {
   const description = iconDescriptions[key];
   if (description) return description;
@@ -74,7 +95,7 @@ export function BrandLogos({brand, pressKit, children}: BrandLogosProps): React.
           {brand.name}
         </Heading>
         {pressKit ? (
-          <Link href={url(pressKit)} download>
+          <Link href={url(pressKit)} download data-astro-prefetch="false">
             Download press kit
           </Link>
         ) : null}
@@ -95,22 +116,24 @@ export function BrandLogos({brand, pressKit, children}: BrandLogosProps): React.
                     style={{background: brand.backgrounds[asset.scheme]}}
                   >
                     <img
-                      src={url(asset.files.svg)}
+                      {...previewImage(asset)}
+                      loading="lazy"
+                      decoding="async"
                       alt={`${brand.name} ${kindLabels[kind].toLowerCase()}, ${treatmentLabels[asset.treatment].toLowerCase()}`}
                     />
                   </div>
                   <Text>{treatmentLabels[asset.treatment]}</Text>
                   <Stack direction="row" gap="small" wrap="wrap">
-                    <Link href={url(asset.files.svg)} download>
+                    <Link href={url(asset.files.svg)} download data-astro-prefetch="false">
                       SVG
                     </Link>
                     {asset.files.png ? (
-                      <Link href={url(asset.files.png)} download>
+                      <Link href={url(asset.files.png)} download data-astro-prefetch="false">
                         PNG
                       </Link>
                     ) : null}
                     {Object.entries(asset.files.pdf ?? {}).map(([profile, path]) => (
-                      <Link key={profile} href={url(path)} download>
+                      <Link key={profile} href={url(path)} download data-astro-prefetch="false">
                         {printProfileLabel(profile)}
                       </Link>
                     ))}
@@ -129,20 +152,30 @@ export function BrandLogos({brand, pressKit, children}: BrandLogosProps): React.
           <ul className={styles.grid}>
             {avatarTreatments.map((treatment) => {
               const sizes = brand.avatars!.filter((avatar) => avatar.treatment === treatment);
-              const largest = sizes.reduce((a, b) => (b.size > a.size ? b : a));
+              // The smallest covers the 6rem preview on high-density screens.
+              const smallest = sizes.reduce((a, b) => (b.size < a.size ? b : a));
               return (
                 <li key={treatment} className={styles.tile}>
                   <div className={styles.preview}>
                     <img
                       className={styles.avatar}
-                      src={url(largest.path)}
+                      src={url(smallest.path)}
+                      width={smallest.size}
+                      height={smallest.size}
+                      loading="lazy"
+                      decoding="async"
                       alt={`${brand.name} avatar, ${treatment}`}
                     />
                   </div>
                   <Text>{treatmentLabels[treatment as LogoAsset['treatment']]}</Text>
                   <Stack direction="row" gap="small" wrap="wrap">
                     {sizes.map((avatar) => (
-                      <Link key={avatar.path} href={url(avatar.path)} download>
+                      <Link
+                        key={avatar.path}
+                        href={url(avatar.path)}
+                        download
+                        data-astro-prefetch="false"
+                      >
                         {avatar.size} px
                       </Link>
                     ))}
@@ -165,15 +198,20 @@ export function BrandLogos({brand, pressKit, children}: BrandLogosProps): React.
               return (
                 <li key={key} className={`${styles.tile} ${styles.small}`}>
                   <div className={styles.preview} style={{background: brand.backgrounds.light}}>
+                    {/* Favicons are square; the stylesheet sets their size. */}
                     <img
                       className={masked ? styles.round : undefined}
                       src={url(path)}
+                      width={48}
+                      height={48}
+                      loading="lazy"
+                      decoding="async"
                       alt={`${brand.name} ${label.toLowerCase()}`}
                     />
                   </div>
                   <Text>{label}</Text>
                   <Text className={styles.note}>{use}</Text>
-                  <Link href={url(path)} download>
+                  <Link href={url(path)} download data-astro-prefetch="false">
                     {fileName(path)}
                   </Link>
                 </li>
@@ -185,7 +223,7 @@ export function BrandLogos({brand, pressKit, children}: BrandLogosProps): React.
               <Text>
                 Put the files in your site's root, with{' '}
                 {brand.favicons?.webmanifest ? (
-                  <Link href={url(brand.favicons.webmanifest)} download>
+                  <Link href={url(brand.favicons.webmanifest)} download data-astro-prefetch="false">
                     site.webmanifest
                   </Link>
                 ) : (

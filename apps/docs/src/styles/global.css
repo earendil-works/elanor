@@ -1,0 +1,32 @@
+/* Base styles and utilities for both layouts. The layer order is set in components/site-head.astro. */
+
+@layer base {
+  *,
+  *::before,
+  *::after {
+    box-sizing: border-box;
+  }
+
+  body {
+    margin: 0;
+  }
+}
+
+@layer utilities {
+  /* Components set `display`, which would otherwise show hidden elements. `until-found` stays searchable. */
+  [hidden]:not([hidden='until-found']) {
+    display: none;
+  }
+
+  /* Read by screen readers but not shown; shown again while focused, e.g. a skip link. */
+  .visually-hidden:not(:focus-within, :active) {
+    position: absolute;
+    /* stylelint-disable design-tokens/no-hardcoded-token-values -- A 1px box keeps the text in the accessibility tree without taking space. */
+    inline-size: 1px;
+    block-size: 1px;
+    /* stylelint-enable design-tokens/no-hardcoded-token-values */
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+}

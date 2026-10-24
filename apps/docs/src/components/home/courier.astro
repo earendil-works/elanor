@@ -1,0 +1,127 @@
+---
+import type {Courier} from './couriers.ts';
+
+interface Props extends Courier {
+  readonly index: number;
+  readonly beeSrc: string;
+  readonly fireflySrc: string;
+}
+
+const {index, label, href, beeSrc, fireflySrc} = Astro.props;
+
+// Per-courier offsets, so the couriers never move in step.
+const PAPER_TILTS = [-2, 3, -3, 2, -1];
+const rig = {
+  // Couriers on the right face left, toward the flower.
+  '--heading': index === 1 || index === 2 ? '-1' : '1',
+  '--flight-time': `${(7.3 + index * 0.67).toFixed(2)}s`,
+  '--flight-delay': `${(-index * 2.71).toFixed(2)}s`,
+  '--paper-tilt': `${PAPER_TILTS[index] ?? 0}deg`,
+  '--pulse-delay': `${(-index * 0.83).toFixed(2)}s`,
+};
+---
+
+<a class="courier" data-courier={index} href={href} style={rig}>
+  <span class="courier-flight">
+    <span class="insect-rig" aria-hidden="true">
+      <svg class="bee" viewBox="0 0 200 150" fill="none">
+        <defs>
+          <linearGradient
+            id={`bee-wing-${index}`}
+            x1="111"
+            y1="59"
+            x2="44"
+            y2="6"
+            gradientUnits="userSpaceOnUse"
+          >
+            <stop stop-color="#c5b993" stop-opacity=".24"></stop>
+            <stop offset=".5" stop-color="#e8ede3" stop-opacity=".64"></stop>
+            <stop offset="1" stop-color="#f5f3e6" stop-opacity=".8"></stop>
+          </linearGradient>
+        </defs>
+        <g class="wing-wash" stroke="#b0b4a1" stroke-width="1" fill={`url(#bee-wing-${index})`}>
+          <path d="M115 63C95 62 44 40 32 16 27 4 42 2 55 9c25 13 46 33 60 54Z"></path>
+          <path d="M115 63C96 57 67 39 62 14 61 4 72 7 80 17c17 19 28 33 35 46Z"></path>
+        </g>
+        <g class="wing wing-far" stroke="#a8ac95" stroke-width="1.2" fill={`url(#bee-wing-${index})`}>
+          <path d="M115 63C96 57 67 39 62 14 61 4 72 7 80 17c17 19 28 33 35 46Z"></path>
+          <path d="M113 60 70 14m29 30-18-4m2-12-1 12-9-6m26 10-2 9" stroke-width=".65" fill="none"
+          ></path>
+        </g>
+        <g
+          class="wing wing-near"
+          stroke="#9c9e86"
+          stroke-width="1.25"
+          fill={`url(#bee-wing-${index})`}
+        >
+          <path d="M115 63C95 62 44 40 32 16 27 4 42 2 55 9c25 13 46 33 60 54Z"></path>
+          <path
+            d="M113 60C88 40 61 18 37 11m59 36-22 3-20-14m20 14-4-15-19-6m19 6-8-15m34 27-3-11m-39 0-13-4"
+            stroke-width=".7"
+            fill="none"></path>
+        </g>
+        <image href={beeSrc} x="17.64" y="30.06" width="165.05" height="110.03"></image>
+      </svg>
+      <svg class="firefly" viewBox="0 0 200 150" fill="none">
+        <defs>
+          <radialGradient id={`lantern-${index}`}>
+            <stop stop-color="#f3f6c0" stop-opacity=".8"></stop>
+            <stop offset=".38" stop-color="#d5e99b" stop-opacity=".3"></stop>
+            <stop offset="1" stop-color="#c5e28b" stop-opacity="0"></stop>
+          </radialGradient>
+          <radialGradient id={`lantern-core-${index}`}>
+            <stop stop-color="#f4f7c6" stop-opacity=".85"></stop>
+            <stop offset=".65" stop-color="#dfefa5" stop-opacity=".45"></stop>
+            <stop offset="1" stop-color="#d3e68c" stop-opacity="0"></stop>
+          </radialGradient>
+        </defs>
+        <ellipse class="firefly-halo" cx="31" cy="88" rx="31" ry="24" fill={`url(#lantern-${index})`}
+        ></ellipse>
+        <g class="wing wing-far" stroke="#a9b79c" stroke-width=".8" fill="#b7c2a0" fill-opacity=".23">
+          <path d="M117 69C91 56 64 24 73 13c10-12 36 28 44 56Z"></path>
+          <path d="m115 65-35-45m18 29-11-8m11 8-1-15" fill="none" stroke-width=".5"></path>
+        </g>
+        <g class="wing wing-near" stroke="#b2bda2" stroke-width=".8" fill="#b7c2a0" fill-opacity=".28">
+          <path d="M117 69C91 66 49 41 42 22c-7-18 20-7 32 4 17 15 29 28 43 43Z"></path>
+          <path d="M114 67 51 23m44 32-22-7m4-9-4 9-13-9" fill="none" stroke-width=".55"></path>
+        </g>
+        <image href={fireflySrc} x="18.25" y="46" width="163.5" height="81.75"></image>
+        <ellipse
+          class="firefly-lantern"
+          cx="31"
+          cy="88"
+          rx="12"
+          ry="8"
+          fill={`url(#lantern-core-${index})`}></ellipse>
+      </svg>
+      {/* Thread anchors at the hind and front claws. */}
+      <span class="grip-anchor" data-grip="bee" style="left: 32.2%; top: 83.2%"></span>
+      <span class="grip-anchor" data-grip="bee" style="left: 74.35%; top: 73.07%"></span>
+      <span class="grip-anchor" data-grip="firefly" style="left: 30.6%; top: 74.6%"></span>
+      <span class="grip-anchor" data-grip="firefly" style="left: 71.8%; top: 73.8%"></span>
+    </span>
+    <span class="thread-frame frame-origin" aria-hidden="true"></span>
+    <span class="thread-frame frame-x" aria-hidden="true"></span>
+    <span class="thread-frame frame-y" aria-hidden="true"></span>
+    <svg class="paper-threads" aria-hidden="true">
+      <defs>
+        <radialGradient id={`glint-${index}`}>
+          <stop stop-color="#f6f8dc" stop-opacity=".8"></stop>
+          <stop offset=".3" stop-color="#e8f0bc" stop-opacity=".35"></stop>
+          <stop offset="1" stop-color="#d3e68c" stop-opacity="0"></stop>
+        </radialGradient>
+      </defs>
+      <path class="paper-thread"></path>
+      <path class="paper-thread"></path>
+      <circle class="thread-glint" r="2.2" fill={`url(#glint-${index})`} opacity="0"></circle>
+      <circle class="thread-glint" r="2.2" fill={`url(#glint-${index})`} opacity="0"></circle>
+    </svg>
+    <span class="paper-wrap">
+      <span class="paper">
+        {label}
+        <span class="paper-anchor paper-anchor-start" aria-hidden="true"></span>
+        <span class="paper-anchor paper-anchor-end" aria-hidden="true"></span>
+      </span>
+    </span>
+  </span>
+</a>

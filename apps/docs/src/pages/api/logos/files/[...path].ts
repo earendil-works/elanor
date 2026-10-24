@@ -1,22 +1,9 @@
 import {readFile} from 'node:fs/promises';
-import {extname, resolve} from 'node:path';
+import {resolve} from 'node:path';
 
 import type {APIRoute, GetStaticPaths} from 'astro';
 
-import {listFiles, logosDist} from '../../../../lib/packages.ts';
-
-/** Every file type the logo build writes. Browsers only render SVG images served with their type. */
-const contentTypes: Record<string, string> = {
-  '.svg': 'image/svg+xml',
-  '.png': 'image/png',
-  '.ico': 'image/x-icon',
-  '.pdf': 'application/pdf',
-  '.zip': 'application/zip',
-  '.json': 'application/json',
-  '.webmanifest': 'application/manifest+json',
-  '.md': 'text/markdown; charset=utf-8',
-  '.html': 'text/html; charset=utf-8',
-};
+import {listFiles, logoContentType, logosDist} from '../../../../lib/packages.ts';
 
 // Serves the built logo package: SVGs, kits, press kits, and the manifest.
 export const getStaticPaths = (async () =>
@@ -24,10 +11,7 @@ export const getStaticPaths = (async () =>
 
 export const GET: APIRoute = async ({params}) => {
   const path = params.path!;
-  const contentType = contentTypes[extname(path)];
-  if (!contentType)
-    throw new Error(`No content type for logo file ${path}; add its extension to contentTypes`);
   return new Response(await readFile(resolve(logosDist, path)), {
-    headers: {'Content-Type': contentType},
+    headers: {'Content-Type': logoContentType(path)},
   });
 };

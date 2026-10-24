@@ -60,62 +60,64 @@ const parts = orderedApi(page, body);
 }
 
 <style>
-  .api {
-    container-type: inline-size;
-    inline-size: 100%;
-  }
-
-  .api th[scope='row'] {
-    white-space: nowrap;
-  }
-
-  .required {
-    display: block;
-    color: var(--semantic-color-text-secondary);
-    font: var(--semantic-typography-ui-tertiary);
-  }
-
-  .api td,
-  .api th {
-    padding-block: var(--semantic-dimension-space-padding-xx-small);
-    padding-inline-end: var(--semantic-dimension-space-padding-medium);
-    text-align: start;
-    vertical-align: top;
-  }
-
-  /* Narrow screens: one block per prop instead of a table wider than the screen.
-     Container queries can't use var(), so the threshold is the token's resolved value. */
-  @container (width < 40rem /* token: semantic.dimension.breakpoint.xSmall */) {
-    .api :is(table, tbody, tr, th, td) {
-      display: block;
+  @layer components {
+    .api {
+      container-type: inline-size;
+      inline-size: 100%;
     }
 
-    .api thead {
-      position: absolute;
-      inline-size: var(--semantic-dimension-border-width-small);
-      block-size: var(--semantic-dimension-border-width-small);
-      overflow: hidden;
-      clip-path: inset(50%);
+    .api th[scope='row'] {
       white-space: nowrap;
     }
 
-    .api tr {
-      padding-block: var(--semantic-dimension-space-padding-medium);
-      border-block-end: var(--semantic-dimension-border-width-small) solid
-        var(--semantic-color-border-secondary);
-    }
-
-    .api :is(td, th) {
-      padding-inline-end: 0;
-    }
-
-    .api td[data-label]::before {
-      content: attr(data-label) ': ';
+    .required {
+      display: block;
       color: var(--semantic-color-text-secondary);
+      font: var(--semantic-typography-ui-tertiary);
     }
 
-    .api td[data-empty] {
-      display: none;
+    .api td,
+    .api th {
+      padding-block: var(--semantic-dimension-space-padding-xx-small);
+      padding-inline-end: var(--semantic-dimension-space-padding-medium);
+      text-align: start;
+      vertical-align: top;
+    }
+
+    /* Narrow screens: one block per prop instead of a table wider than the screen.
+       Container queries can't use var(), so the threshold is the token's resolved value. */
+    @container (width < 40rem /* token: semantic.dimension.breakpoint.xSmall */) {
+      .api :is(table, tbody, tr, th, td) {
+        display: block;
+      }
+
+      .api thead {
+        position: absolute;
+        inline-size: var(--semantic-dimension-border-width-small);
+        block-size: var(--semantic-dimension-border-width-small);
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+      }
+
+      .api tr {
+        padding-block: var(--semantic-dimension-space-padding-medium);
+        border-block-end: var(--semantic-dimension-border-width-small) solid
+          var(--semantic-color-border-secondary);
+      }
+
+      .api :is(td, th) {
+        padding-inline-end: 0;
+      }
+
+      .api td[data-label]::before {
+        content: attr(data-label) ': ';
+        color: var(--semantic-color-text-secondary);
+      }
+
+      .api td[data-empty] {
+        display: none;
+      }
     }
   }
 </style>

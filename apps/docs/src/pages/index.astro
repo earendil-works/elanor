@@ -1,8 +1,14 @@
 ---
+import HomeGarden from '../components/home/home-garden.astro';
+import {HomePage} from '../components/home/home-page.tsx';
 import HomeLayout from '../layouts/home-layout.astro';
-import {DocsHome} from '../components/docs-home.tsx';
+import {siteMark} from '../lib/site-mark.ts';
+
+const mark = await siteMark();
 ---
 
 <HomeLayout>
-  <DocsHome />
+  <HomePage mark={mark}>
+    <HomeGarden />
+  </HomePage>
 </HomeLayout>

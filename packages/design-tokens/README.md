@@ -10,7 +10,7 @@ Import exactly one brand stylesheet:
 @import '@earendil-works/design-tokens/radius.css';
 ```
 
-Other entry points: `pi.css`, `earendil.css`, `lefos.css`.
+Other entry points: `pi.css`, `earendil.css`, `lefos.css`, `elanor.css`.
 
 Light semantic colors are the default. Dark overrides apply automatically through `prefers-color-scheme: dark`.
 
@@ -27,7 +27,7 @@ pnpm tokens:check:contrast # Check semantic color contrast only
 pnpm tokens:build          # Build all brands
 ```
 
-For one brand, use `pnpm tokens:build:radius`, `pnpm tokens:build:pi`, `pnpm tokens:build:earendil`, or `pnpm tokens:build:lefos`.
+For one brand, use `pnpm tokens:build:radius`, `pnpm tokens:build:pi`, `pnpm tokens:build:earendil`, `pnpm tokens:build:lefos`, or `pnpm tokens:build:elanor`.
 
 Edit [recipes](generation/recipes), not generated values. Shared settings live in [`generation/config.json`](generation/config.json); recipe paths mirror their output under `tokens/`.
 

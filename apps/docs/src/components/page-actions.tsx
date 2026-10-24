@@ -8,8 +8,6 @@ import {
 import {Button, Menu} from '@earendil-works/elanor-react';
 import {useRef, useState} from 'react';
 
-import styles from './page-actions.module.css';
-
 interface PageActionsProps {
   /** Site-relative path of the page's Markdown version, such as `/components/button.md`. */
   readonly markdownPath: string;
@@ -72,7 +70,7 @@ export function PageActions({markdownPath, markdownUrl}: PageActionsProps): Reac
           </Menu.Positioner>
         </Menu.Portal>
       </Menu.Root>
-      <span role="status" className={styles.status}>
+      <span role="status" className="visually-hidden">
         {copied ? 'Copied.' : ''}
       </span>
     </>

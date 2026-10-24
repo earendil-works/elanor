@@ -1,6 +1,6 @@
 @font-face {
   font-family: 'Commit Mono';
-  src: url('./files/CommitMono-300-Regular.otf') format('opentype');
+  src: url('./files/CommitMono-300-Regular.woff2') format('woff2');
   font-weight: 300;
   font-style: normal;
   font-display: swap;
@@ -8,7 +8,7 @@
 
 @font-face {
   font-family: 'Commit Mono';
-  src: url('./files/CommitMono-400-Regular.otf') format('opentype');
+  src: url('./files/CommitMono-400-Regular.woff2') format('woff2');
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -16,7 +16,7 @@
 
 @font-face {
   font-family: 'Commit Mono';
-  src: url('./files/CommitMono-700-Regular.otf') format('opentype');
+  src: url('./files/CommitMono-700-Regular.woff2') format('woff2');
   font-weight: 700;
   font-style: normal;
   font-display: swap;

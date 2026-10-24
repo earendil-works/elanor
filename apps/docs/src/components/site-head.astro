@@ -1,0 +1,56 @@
+---
+// Head tags shared by both layouts.
+import {readFile} from 'node:fs/promises';
+import {resolve} from 'node:path';
+
+import socialCard from '../assets/social-card.png';
+import {loadTokens} from '../lib/api.ts';
+import {logosDist, siteFavicons} from '../lib/packages.ts';
+
+interface Props {
+  /** The page's own title; the site name is added. */
+  title: string;
+  /** The token brand the layout loads, for the browser's theme color. */
+  tokens?: 'radius' | 'elanor';
+}
+
+const {title, tokens = 'radius'} = Astro.props;
+const name = 'Elanor';
+const canvas = (await loadTokens(tokens)).find(
+  (token) => token.path === 'semantic.color.background.canvas',
+);
+const themeColor = {light: canvas?.hex, dark: canvas?.contexts?.colorScheme?.dark?.hex ?? canvas?.hex};
+const description = "Earendil's design system.";
+// Favicon tags written by the logo build.
+const favicons = await readFile(resolve(logosDist, (await siteFavicons()).html!), 'utf8');
+const site = Astro.site ?? Astro.url;
+// Hashed URL, so social sites refetch a changed card.
+const image = new URL(socialCard.src, site);
+const url = new URL(Astro.url.pathname, site);
+---
+
+{/* Inline and first, so the order holds before any bundled or hoisted styles. */}
+<style is:inline>
+  @layer elanor, base, components, utilities;
+</style>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>{`${title} · ${name}`}</title>
+{/* The color scheme scripts pick the light or dark value. */}
+<meta
+  name="theme-color"
+  content={themeColor.light}
+  data-light={themeColor.light}
+  data-dark={themeColor.dark}
+/>
+<meta name="description" content={description} />
+<Fragment set:html={favicons} />
+<meta property="og:type" content="website" />
+<meta property="og:site_name" content={name} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={url.href} />
+<meta property="og:image" content={image.href} />
+<meta property="og:image:width" content={String(socialCard.width)} />
+<meta property="og:image:height" content={String(socialCard.height)} />
+<meta property="og:image:alt" content={`The ${name} flower beside the word ${name}.`} />
+<meta name="twitter:card" content="summary_large_image" />

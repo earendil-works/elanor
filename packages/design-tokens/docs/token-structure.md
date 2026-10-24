@@ -23,10 +23,12 @@ packages/design-tokens/tokens/
 ├── pi/
 ├── earendil/
 ├── lefos/
+├── elanor/
 ├── radius.resolver.json
 ├── pi.resolver.json
 ├── earendil.resolver.json
-└── lefos.resolver.json
+├── lefos.resolver.json
+└── elanor.resolver.json
 ```
 
 Empty semantic files are unregistered placeholders containing only metadata (`$schema`, `$type`). Before populating and registering one, move its root `$type` to the typed group; see [File organization](#file-organization).
@@ -107,6 +109,6 @@ Register new shared files in the appropriate resolver `set` or `modifier` and in
 
 ## Brand overrides
 
-Only Lefos currently has overrides; Radius, Pi, and Earendil use the shared baseline unchanged. Every brand still has its own resolver and CSS entry point, so a brand can diverge later without changing consumers.
+Only Lefos and Elanor currently have overrides (Elanor: page backgrounds and wordmark color); Radius, Pi, and Earendil use the shared baseline unchanged. Every brand still has its own resolver and CSS entry point, so a brand can diverge later without changing consumers.
 
 For an override, add only values that differ under `tokens/<brand>/`, register the source after its shared equivalent, and place its set after shared layers in `resolutionOrder`. Do not copy shared defaults into brand files; copies drift.

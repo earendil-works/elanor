@@ -1,0 +1,19 @@
+@layer components {
+  .overview {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-gap-x-large);
+  }
+
+  .group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-gap-medium);
+  }
+
+  .list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+}

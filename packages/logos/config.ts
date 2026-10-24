@@ -27,6 +27,8 @@ export interface LockupRule {
 
 export interface BrandConfig {
   name: string;
+  /** The mark is painted: fixed colors, color treatments only, no React components. */
+  painted?: boolean;
   /** Overrides of the shared lockup rules. */
   lockups?: Partial<Record<LockupName, Partial<LockupRule>>>;
 }
@@ -51,6 +53,13 @@ export const brands = {
   pi: {name: 'Pi'},
   radius: {name: 'Radius'},
   lefos: {name: 'Lefos'},
+  elanor: {
+    name: 'Elanor',
+    painted: true,
+    // The mark's frame is centered on the stamens, so it extends past the petals on the right and
+    // bottom; the gaps subtract that extra space.
+    lockups: {horizontal: {gap: 184.5}, vertical: {gap: 85}},
+  },
 } as const satisfies Record<string, BrandConfig>;
 
 export type BrandId = keyof typeof brands;

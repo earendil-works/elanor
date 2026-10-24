@@ -1,0 +1,17 @@
+---
+// Sets the color scheme before first paint. Keep the storage key in sync with src/scripts/color-scheme.ts.
+---
+
+<script is:inline>
+  (() => {
+    let saved = null;
+    try {
+      saved = localStorage.getItem('elanor-color-scheme');
+    } catch {}
+    const system = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+    const scheme = saved === 'dark' || saved === 'light' ? saved : system;
+    document.documentElement.dataset.colorScheme = scheme;
+    const themeColor = document.querySelector('meta[name="theme-color"]');
+    if (themeColor) themeColor.content = themeColor.dataset[scheme];
+  })();
+</script>

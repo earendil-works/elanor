@@ -23,6 +23,7 @@ export function print(options: PrintOptions): ExportPlugin {
         for (const [profile, outputCondition] of Object.entries(options.profiles)) {
           const paths = asset.source.paths.map(({d, token, fillRule}) => {
             const linked = asset.treatment.monochrome ? logoTokens.monochrome : token;
+            if (!linked) throw new Error(`${asset.id} has fixed colors, which have no CMYK build`);
             const primitive = tokenInScheme(tokens, linked, asset.treatment.scheme)?.aliasOf;
             const print = primitive
               ? tokens.tokens[primitive]?.extensions?.[PRINT_EXTENSION_KEY]

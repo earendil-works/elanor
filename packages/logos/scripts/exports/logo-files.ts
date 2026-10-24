@@ -3,8 +3,8 @@ import {renderPng, tightFrame} from '../lib/raster.js';
 import type {Asset, AssetSelector, ExportPlugin} from './plugin.js';
 
 export interface LogoFilesOptions {
-  select?: AssetSelector;
-  formats: Array<'svg' | 'png'>;
+  /** The formats to write, each for the assets its selector picks. */
+  formats: Partial<Record<'svg' | 'png', AssetSelector>>;
   /** PNGs render at `scale` pixels per source unit, capped so neither side exceeds `maxDimension`. */
   png: {scale: number; maxDimension: number};
 }
@@ -16,24 +16,28 @@ const kitPath = (asset: Asset, extension: string) =>
 export function logoFiles(options: LogoFilesOptions): ExportPlugin {
   return {
     name: 'logo-files',
-    kitContents: `its logos as ${options.formats.map((format) => format.toUpperCase()).join(' and ')}`,
+    kitContents: `its logos as ${Object.keys(options.formats)
+      .map((format) => format.toUpperCase())
+      .join(' and ')}`,
     async run(context) {
-      for (const asset of context.select(options.select)) {
-        const files = context.assetManifest(asset).files;
-        if (options.formats.includes('svg'))
-          files.kitSvg = await context.write(kitPath(asset, 'svg'), serializeSvg(asset.colored));
-        if (options.formats.includes('png')) {
-          const {width, height} = asset.colored;
-          const scale = Math.min(
-            options.png.scale,
-            options.png.maxDimension / Math.max(width, height),
-          );
-          const png = await renderPng(
-            asset.colored,
-            tightFrame(asset.colored, Math.round(width * scale), Math.round(height * scale)),
-          );
-          files.png = await context.write(kitPath(asset, 'png'), png);
-        }
+      const {svg, png} = options.formats;
+      for (const asset of svg ? context.select(svg) : []) {
+        context.assetManifest(asset).files.kitSvg = await context.write(
+          kitPath(asset, 'svg'),
+          serializeSvg(asset.colored),
+        );
+      }
+      for (const asset of png ? context.select(png) : []) {
+        const {width, height} = asset.colored;
+        const scale = Math.min(
+          options.png.scale,
+          options.png.maxDimension / Math.max(width, height),
+        );
+        const image = await renderPng(
+          asset.colored,
+          tightFrame(asset.colored, Math.round(width * scale), Math.round(height * scale)),
+        );
+        context.assetManifest(asset).files.png = await context.write(kitPath(asset, 'png'), image);
       }
     },
   };

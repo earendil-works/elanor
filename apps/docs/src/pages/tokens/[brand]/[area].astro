@@ -1,0 +1,42 @@
+---
+// For Lefos; browsers only download fonts that the page's text uses.
+import '@earendil-works/elanor-fonts/departure-mono.css';
+import {Heading, Text} from '@earendil-works/elanor-react';
+import {BrandPicker, TokenArea} from '../../../components/token-area.tsx';
+import DocsLayout from '../../../layouts/docs-layout.astro';
+import {
+  tokenAreaHref,
+  tokenAreaPage,
+  tokenAreaPaths,
+  tokenBrandLabel,
+  tokenBrandOptions,
+} from '../../../lib/token-pages.ts';
+
+export async function getStaticPaths() {
+  return (await tokenAreaPaths()).map((params) => ({params}));
+}
+
+const {brand, area} = Astro.params;
+const page = await tokenAreaPage(brand, area);
+const brands = await tokenBrandOptions();
+---
+
+<DocsLayout
+  title={`${page.area.label} tokens · ${tokenBrandLabel(brand)}`}
+  current={tokenAreaHref(brand, area)}
+  wide
+>
+  <div class="page grid-page">
+    <Heading level={1} size={1}>{page.area.label}</Heading>
+    <Text>{page.area.summary}</Text>
+    <BrandPicker brands={brands} current={brand} area={area} />
+    <TokenArea page={page} />
+  </div>
+</DocsLayout>
+
+<script>
+  import '../../../scripts/list-filter.ts';
+  import '../../../scripts/copy-buttons.ts';
+  import '../../../scripts/motion-previews.ts';
+  import '../../../scripts/token-groups.ts';
+</script>

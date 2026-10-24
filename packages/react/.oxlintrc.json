@@ -21,6 +21,15 @@
   },
   "overrides": [
     {
+      // Demos pass empty elements to `render`, such as `render={<a href="#" />}`; the component renders
+      // its children into them, which these rules can't see. Demo links use "#".
+      "files": ["src/*/examples/**"],
+      "rules": {
+        "jsx-a11y/anchor-is-valid": "off",
+        "jsx-a11y/control-has-associated-label": "off"
+      }
+    },
+    {
       "files": ["src/**/*.{js,jsx,ts,tsx,mjs,cjs,mts,cts}"],
       "excludeFiles": ["src/*/examples/**"],
       "rules": {

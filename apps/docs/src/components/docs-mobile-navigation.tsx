@@ -2,23 +2,29 @@ import {CloseIcon, MenuIcon} from '@earendil-works/elanor-icons-boiled-react';
 import {
   Drawer,
   IconButton,
-  Link,
   Stack,
   TopNavigation,
   type DrawerRootActions,
 } from '@earendil-works/elanor-react';
 import {useEffect, useRef} from 'react';
 
-import {DocsSideNavigation, type DocsNavigationSection} from './docs-side-navigation.tsx';
+import type {SiteMark} from '../lib/site-mark.ts';
+import {DocsSideNavigation, type DocsNavigationGroup} from './docs-side-navigation.tsx';
+import {SiteIdentity} from './site-identity.tsx';
 
 interface DocsMobileNavigationProps {
-  readonly sections: readonly DocsNavigationSection[];
+  readonly groups: readonly DocsNavigationGroup[];
   readonly current: string;
+  readonly mark: SiteMark;
+  /** Static HTML from Astro's `actions` slot, before the menu button. */
+  readonly actions?: React.ReactNode;
 }
 
 export function DocsMobileNavigation({
-  sections,
+  groups,
   current,
+  mark,
+  actions,
 }: DocsMobileNavigationProps): React.JSX.Element {
   const actionsRef = useRef<DrawerRootActions>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -28,7 +34,7 @@ export function DocsMobileNavigation({
     const breakpoint = getComputedStyle(document.documentElement).getPropertyValue(
       '--semantic-dimension-breakpoint-medium',
     );
-    const desktop = window.matchMedia(`(min-width: ${breakpoint.trim()})`);
+    const desktop = window.matchMedia(`(width >= ${breakpoint.trim()})`);
     const close = () => actionsRef.current?.close();
     const onBreakpointChange = () => {
       if (desktop.matches) close();
@@ -45,11 +51,10 @@ export function DocsMobileNavigation({
     <Drawer.Root swipeDirection="left" actionsRef={actionsRef}>
       <TopNavigation.Root className="docs-mobile-header">
         <TopNavigation.Identity>
-          <Link href="/" data-astro-reload>
-            Elanor
-          </Link>
+          <SiteIdentity mark={mark} data-astro-reload />
         </TopNavigation.Identity>
         <TopNavigation.Actions>
+          {actions}
           <Drawer.Trigger ref={triggerRef} render={<IconButton aria-label="Open navigation" />}>
             <MenuIcon />
           </Drawer.Trigger>
@@ -76,7 +81,7 @@ export function DocsMobileNavigation({
                   </Drawer.Close>
                 </Stack>
                 <DocsSideNavigation
-                  sections={sections}
+                  groups={groups}
                   current={current}
                   onNavigate={() => actionsRef.current?.close()}
                 />

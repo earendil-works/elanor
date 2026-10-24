@@ -1,10 +1,11 @@
 import {mkdir, writeFile} from 'node:fs/promises';
 import {dirname, resolve} from 'node:path';
 
-import {type BrandId, brands, type LogoKind, type Treatment, treatments} from '../../config.js';
+import {type BrandId, brands, type LogoKind, type Treatment} from '../../config.js';
 import {
   type Artwork,
   brandBackground,
+  brandTreatments,
   type ColoredArtwork,
   colorArtwork,
   composeArtwork,
@@ -94,7 +95,7 @@ export async function createExportContext(
   for (const brand of Object.keys(brands) as BrandId[]) {
     const tokens = await loadTokens(brand);
     for (const kind of kinds) {
-      for (const treatment of treatments) {
+      for (const treatment of brandTreatments(brand)) {
         const source = await composeArtwork(brand, kind, treatment.monochrome);
         assets.push({
           id: `${brand}-${kind}-${treatment.id}`,

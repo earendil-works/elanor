@@ -20,13 +20,26 @@ const families = [
   {
     entry: 'commit-mono',
     family: 'Commit Mono',
-    format: 'opentype',
-    signature: 'OTTO',
+    format: 'woff2',
+    signature: 'wOF2',
     faces: [
-      ['CommitMono-300-Regular.otf', 300, 'normal'],
-      ['CommitMono-400-Regular.otf', 400, 'normal'],
-      ['CommitMono-700-Regular.otf', 700, 'normal'],
+      ['CommitMono-300-Regular.woff2', 300, 'normal'],
+      ['CommitMono-400-Regular.woff2', 400, 'normal'],
+      ['CommitMono-700-Regular.woff2', 700, 'normal'],
     ],
+    // The original OpenType files, for desktop installs; the CSS uses WOFF2.
+    downloads: [
+      'CommitMono-300-Regular.otf',
+      'CommitMono-400-Regular.otf',
+      'CommitMono-700-Regular.otf',
+    ],
+  },
+  {
+    entry: 'departure-mono',
+    family: 'DepartureMono',
+    format: 'woff2',
+    signature: 'wOF2',
+    faces: [['DepartureMono-Regular.woff2', 400, 'normal']],
   },
 ];
 
@@ -85,12 +98,22 @@ for (const {entry, family, format, signature, faces} of families) {
   });
 }
 
+test('desktop downloads are OpenType files', async () => {
+  for (const file of families.flatMap(({downloads = []}) => downloads)) {
+    const asset = new URL(`files/${file}`, root);
+    assert.equal(import.meta.resolve(`${manifest.name}/files/${file}`), asset.href);
+    assert.equal((await readFile(asset)).toString('ascii', 0, 4), 'OTTO');
+  }
+});
+
 test('package preserves CSS side effects and covers every font asset', async () => {
   assert.deepEqual(manifest.sideEffects, ['**/*.css']);
   assert.equal(manifest.license, 'OFL-1.1');
   assert.deepEqual(manifest.files, ['*.css', 'files', 'licenses', 'README.md']);
   assert.deepEqual(
     (await readdir(new URL('files/', root))).sort(),
-    families.flatMap(({faces}) => faces.map(([file]) => file)).sort(),
+    families
+      .flatMap(({faces, downloads = []}) => [...faces.map(([file]) => file), ...downloads])
+      .sort(),
   );
 });

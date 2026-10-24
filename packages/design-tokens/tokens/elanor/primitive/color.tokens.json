@@ -1,0 +1,22 @@
+{
+  "$schema": "https://designtokens.org/schemas/2025.10/format.json",
+  "primitive": {
+    "color": {
+      "$type": "color",
+      "moonstone": {
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.9302, 0.0059, 59.65],
+          "hex": "#ebe7e4"
+        }
+      },
+      "night": {
+        "$value": {
+          "colorSpace": "oklch",
+          "components": [0.2104, 0.0108, 163.73],
+          "hex": "#141a17"
+        }
+      }
+    }
+  }
+}

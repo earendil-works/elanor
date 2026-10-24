@@ -1,0 +1,40 @@
+---
+import {Heading, InlineCode, Link, Text} from '@earendil-works/elanor-react';
+import {
+  ComponentsOverview,
+  type ComponentGroupSummary,
+} from '../../components/components-overview.tsx';
+import DocsLayout from '../../layouts/docs-layout.astro';
+import {componentDescription} from '../../lib/component-docs.ts';
+import {componentGroups} from '../../lib/component-groups.ts';
+import {componentName} from '../../lib/component-name.ts';
+
+const groups: ComponentGroupSummary[] = (await componentGroups()).map((group) => ({
+  category: group.category,
+  label: group.label,
+  components: group.entries.map((entry) => ({
+    id: entry.id,
+    name: componentName(entry.id),
+    description: componentDescription(entry),
+  })),
+}));
+const total = groups.reduce((sum, group) => sum + group.components.length, 0);
+---
+
+<DocsLayout title="Components" current="/components/" wide>
+  <div class="page grid-page">
+    <Heading level={1} size={1}>Components</Heading>
+    <Text>
+      {total} React components from <InlineCode>@earendil-works/elanor-react</InlineCode>, built on
+      Base UI and styled with the design tokens. Start with the <Link
+        href="https://github.com/earendil-works/elanor/blob/main/packages/react/docs/application-setup.md"
+        >application setup</Link
+      >.
+    </Text>
+    <ComponentsOverview groups={groups} />
+  </div>
+</DocsLayout>
+
+<script>
+  import '../../scripts/list-filter.ts';
+</script>
