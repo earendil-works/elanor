@@ -70,7 +70,7 @@ export function PopoverStaticTrigger({ref, ...props}: PopoverStaticTriggerProps)
 
 export interface PopoverStaticPositionerProps extends HTMLAttributes<HTMLDivElement> {
   readonly ref?: Ref<HTMLDivElement> | undefined;
-  readonly side?: Extract<BasePopover.Positioner.Props['side'], 'top' | 'bottom'>;
+  readonly side?: BasePopover.Positioner.Props['side'];
   readonly align?: BasePopover.Positioner.Props['align'];
   readonly sideOffset?: Extract<BasePopover.Positioner.Props['sideOffset'], number>;
 }
@@ -92,8 +92,8 @@ export function PopoverStaticPositioner({
       id={positionerId}
       popover="auto"
       data-elanor="popover"
-      data-side={side}
-      data-align={align}
+      data-elanor-side={side}
+      data-elanor-align={align}
       data-elanor-side-offset={sideOffset}
       // The browser's popover box, without its frame; the popup draws the frame.
       style={{padding: 0, border: 0, background: 'none', overflow: 'visible', ...style}}

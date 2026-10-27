@@ -11,6 +11,9 @@ function popupOf(positioner: HTMLElement): HTMLElement {
 // Keeps the popover this far from the window's edges, like the React positioner.
 const collisionPadding = 5;
 
+const tabbable =
+  'a[href], button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])';
+
 /**
  * Opens, places, and closes a server-rendered `Popover.StaticPositioner` without React. Without
  * the behavior, it is a native `popover="auto"`, centered in the window.
@@ -41,25 +44,53 @@ export function createPopover(positioner: HTMLElement): Behavior {
     if (!trigger) return;
     const anchor = trigger.getBoundingClientRect();
     const offset = Number(positioner.dataset.elanorSideOffset ?? 0);
-    const align = positioner.dataset.align ?? 'center';
-    const below = window.innerHeight - anchor.bottom - offset - collisionPadding;
-    const above = anchor.top - offset - collisionPadding;
-    const height = positioner.offsetHeight;
-    // Flips to the other side when the preferred one is too small and the other has more room.
-    let side = positioner.dataset.side === 'top' ? 'top' : 'bottom';
-    if (side === 'bottom' && height > below && above > below) side = 'top';
-    else if (side === 'top' && height > above && below > above) side = 'bottom';
-
-    const width = positioner.offsetWidth;
+    const align = positioner.dataset.elanorAlign ?? 'center';
+    const requested = positioner.dataset.elanorSide ?? 'bottom';
     const rtl = getComputedStyle(trigger).direction === 'rtl';
-    const start = rtl ? anchor.right - width : anchor.left;
-    const end = rtl ? anchor.left : anchor.right - width;
-    const center = anchor.left + (anchor.width - width) / 2;
-    const left = Math.min(
-      Math.max(align === 'start' ? start : align === 'end' ? end : center, collisionPadding),
-      window.innerWidth - width - collisionPadding,
-    );
-    const top = side === 'bottom' ? anchor.bottom + offset : anchor.top - offset - height;
+    const width = positioner.offsetWidth;
+    const height = positioner.offsetHeight;
+    const room = {
+      top: anchor.top - offset - collisionPadding,
+      bottom: window.innerHeight - anchor.bottom - offset - collisionPadding,
+      left: anchor.left - offset - collisionPadding,
+      right: window.innerWidth - anchor.right - offset - collisionPadding,
+    };
+    const opposite = {top: 'bottom', bottom: 'top', left: 'right', right: 'left'} as const;
+    // Logical sides follow the writing direction.
+    let side: keyof typeof room =
+      requested === 'inline-start'
+        ? rtl
+          ? 'right'
+          : 'left'
+        : requested === 'inline-end'
+          ? rtl
+            ? 'left'
+            : 'right'
+          : requested === 'top' || requested === 'left' || requested === 'right'
+            ? requested
+            : 'bottom';
+    const resolved = side;
+    // Flips to the other side when the preferred one is too small and the other has more room.
+    const vertical = side === 'top' || side === 'bottom';
+    if ((vertical ? height : width) > room[side] && room[opposite[side]] > room[side]) {
+      side = opposite[side];
+    }
+
+    let top: number;
+    let left: number;
+    if (vertical) {
+      const start = rtl ? anchor.right - width : anchor.left;
+      const end = rtl ? anchor.left : anchor.right - width;
+      const center = anchor.left + (anchor.width - width) / 2;
+      left = align === 'start' ? start : align === 'end' ? end : center;
+      top = side === 'bottom' ? anchor.bottom + offset : anchor.top - offset - height;
+    } else {
+      const center = anchor.top + (anchor.height - height) / 2;
+      top = align === 'start' ? anchor.top : align === 'end' ? anchor.bottom - height : center;
+      left = side === 'right' ? anchor.right + offset : anchor.left - offset - width;
+    }
+    left = Math.min(Math.max(left, collisionPadding), window.innerWidth - width - collisionPadding);
+    top = Math.min(Math.max(top, collisionPadding), window.innerHeight - height - collisionPadding);
 
     positioner.style.inset = 'auto';
     positioner.style.margin = '0';
@@ -69,15 +100,25 @@ export function createPopover(positioner: HTMLElement): Behavior {
     positioner.style.setProperty('--anchor-height', `${anchor.height}px`);
     positioner.style.setProperty(
       '--available-width',
-      `${window.innerWidth - 2 * collisionPadding}px`,
+      `${vertical ? window.innerWidth - 2 * collisionPadding : room[side]}px`,
     );
-    positioner.style.setProperty('--available-height', `${side === 'bottom' ? below : above}px`);
     positioner.style.setProperty(
-      '--transform-origin',
-      `${anchor.left + anchor.width / 2 - left}px ${side === 'bottom' ? -offset : height + offset}px`,
+      '--available-height',
+      `${vertical ? room[side] : window.innerHeight - 2 * collisionPadding}px`,
     );
+    const originX = vertical
+      ? `${anchor.left + anchor.width / 2 - left}px`
+      : `${side === 'right' ? -offset : width + offset}px`;
+    const originY = vertical
+      ? `${side === 'bottom' ? -offset : height + offset}px`
+      : `${anchor.top + anchor.height / 2 - top}px`;
+    positioner.style.setProperty('--transform-origin', `${originX} ${originY}`);
+    // A logical side is reported as requested, or as its opposite after a flip.
+    const logical = requested === 'inline-start' || requested === 'inline-end';
+    const flippedLogical = requested === 'inline-start' ? 'inline-end' : 'inline-start';
+    const reported = logical ? (side === resolved ? requested : flippedLogical) : side;
     for (const element of [positioner, popup]) {
-      element.dataset.side = side;
+      element.dataset.side = reported;
       element.dataset.align = align;
     }
   }
@@ -96,7 +137,9 @@ export function createPopover(positioner: HTMLElement): Behavior {
     return current === change;
   }
 
-  function open(from: HTMLButtonElement): void {
+  // Like the React popover: focus goes to the first focusable element, or to the popup when it
+  // opened by touch.
+  function open(from: HTMLButtonElement, byTouch: boolean): void {
     change += 1;
     trigger = from;
     popup.removeAttribute('data-ending-style');
@@ -107,7 +150,8 @@ export function createPopover(positioner: HTMLElement): Behavior {
     setOpenState(true);
     void popup.offsetHeight;
     popup.removeAttribute('data-starting-style');
-    popup.focus({preventScroll: true});
+    const first = byTouch ? null : popup.querySelector<HTMLElement>(tabbable);
+    (first ?? popup).focus({preventScroll: true});
     ownerDocument.addEventListener('pointerdown', onOutsidePress, true);
     ownerDocument.addEventListener('keydown', onKeyDown);
     window.addEventListener('resize', place);
@@ -136,7 +180,7 @@ export function createPopover(positioner: HTMLElement): Behavior {
     // The behavior opens and closes instead of the browser, to place and animate the popover.
     event.preventDefault();
     if (button.popoverTargetAction === 'hide' || (isOpen() && button === trigger)) close(true);
-    else open(button);
+    else open(button, event instanceof PointerEvent && event.pointerType === 'touch');
   }
 
   function onOutsidePress(event: PointerEvent): void {
