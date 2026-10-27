@@ -47,6 +47,7 @@ export function createTopNavigationMenu(popup: HTMLElement): Behavior {
   }
 
   function open(): void {
+    opener = null;
     show(defaultPanel);
     popup.showPopover();
     setOpenState(true);
@@ -84,11 +85,19 @@ export function createTopNavigationMenu(popup: HTMLElement): Behavior {
         ?.focus({preventScroll: true});
       return;
     }
-    const back = event.target.closest('[data-elanor-back]');
-    const parent = back?.closest<HTMLElement>('[data-elanor-panel]')?.dataset.elanorParent;
-    if (parent) {
+    const leaving = event.target
+      .closest('[data-elanor-back]')
+      ?.closest<HTMLElement>('[data-elanor-panel]');
+    const parent = leaving?.dataset.elanorParent;
+    if (leaving && parent) {
+      // Without an opener, the menu opened on this panel: focus the item that leads to it.
+      const item =
+        opener ??
+        show(parent)?.querySelector<HTMLElement>(
+          `[data-elanor-panel-trigger="${leaving.dataset.elanorPanel}"]`,
+        );
       show(parent);
-      opener?.focus({preventScroll: true});
+      item?.focus({preventScroll: true});
       return;
     }
     const plain =
