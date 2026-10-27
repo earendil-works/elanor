@@ -56,7 +56,7 @@
     {
       // Behaviors run on pages without React, so they import neither React nor Base UI, nor any
       // component, only other behaviors.
-      "files": ["src/behaviors.ts", "src/**/*.behavior.ts", "src/utils/enhance.ts"],
+      "files": ["src/**/*.behavior.ts", "src/utils/enhance.ts"],
       "rules": {
         "eslint/no-restricted-imports": [
           "error",

@@ -34,10 +34,10 @@ When the value depends on the page, such as an absolute URL, pass a function to 
 
 ## Static rendering
 
-On pages rendered on the server without React in the browser, the behavior from `@earendil-works/elanor-react/behaviors` copies instead. The button carries what it needs: `data-elanor="copy-button"` and its value, labels, and state as attributes. Bind it once the page has loaded:
+On pages rendered on the server without React in the browser, its behavior, `createCopyButton`, copies instead. The button carries what it needs: `data-elanor="copy-button"` and its value, labels, and state as attributes. Bind it once the page has loaded:
 
 ```ts
-import {createCopyButton, enhance} from '@earendil-works/elanor-react/behaviors';
+import {createCopyButton, enhance} from '@earendil-works/elanor-react';
 
 enhance({'copy-button': createCopyButton});
 ```
