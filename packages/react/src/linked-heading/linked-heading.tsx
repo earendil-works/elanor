@@ -13,6 +13,8 @@ export type LinkedHeadingProps = HeadingProps & {
   readonly linkLabel: string;
   /** Announced after the link is copied. */
   readonly copiedLabel?: string;
+  /** The page's own behaviors for the wrapper, attached after the linked heading's. */
+  readonly 'data-elanor'?: string;
 };
 
 /**
@@ -24,11 +26,15 @@ export function LinkedHeading({
   id,
   linkLabel,
   copiedLabel = 'Link copied.',
+  'data-elanor': pageBehaviors,
   className,
   ...props
 }: LinkedHeadingProps) {
   return (
-    <div className={classes(styles.root, className)} data-elanor="linked-heading">
+    <div
+      className={classes(styles.root, className)}
+      data-elanor={pageBehaviors ? `linked-heading ${pageBehaviors}` : 'linked-heading'}
+    >
       {/* Focusable without joining the tab order, so a tap on the heading reveals the button. */}
       <Heading tabIndex={-1} {...props} id={id} className={styles.heading} />
       <CopyButton
