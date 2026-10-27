@@ -1,0 +1,47 @@
+---
+category: overlays
+---
+
+# Collapsible
+
+A trigger that shows and hides a panel. Unstyled, like Base UI's Collapsible, so components and applications bring their own look; for a styled one, use [Progressive disclosure](/components/progressive-disclosure/).
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Collapsible} from '@earendil-works/elanor-react';
+
+<Collapsible.Root>
+  <Collapsible.Trigger />
+  <Collapsible.Panel />
+</Collapsible.Root>;
+```
+
+`defaultOpen` starts the panel open; `open` and `onOpenChange` control it. To animate the panel, give it `height: var(--collapsible-panel-height)`, `overflow: hidden`, and a height transition, and a height of 0 with `data-starting-style` and `data-ending-style`, as the demo's stylesheet does.
+
+## Find in page
+
+With `hiddenUntilFound`, the browser's find in page searches a closed panel and opens it on a match. Leave the panel closed and search this page for a word in it.
+
+<Demo example="./examples/hidden-until-found.tsx" />
+
+## Static rendering
+
+On pages rendered on the server without React in the browser, use the static parts. They render the same markup, and the behavior opens and closes the panel with the same states, so the same stylesheet animates it:
+
+```tsx
+<Collapsible.StaticRoot defaultOpen persist="docs-guides">
+  <Collapsible.StaticTrigger />
+  <Collapsible.StaticPanel hiddenUntilFound />
+</Collapsible.StaticRoot>
+```
+
+```ts
+import {createCollapsible, enhance} from '@earendil-works/elanor-react';
+
+enhance({collapsible: createCollapsible});
+```
+
+`persist` remembers whether the panel is open in the browser's local storage under its key and restores it when the behavior attaches; attach it before the first paint, right after the markup, so the panel doesn't change visibly. Without the behavior, closed panels stay hidden.
