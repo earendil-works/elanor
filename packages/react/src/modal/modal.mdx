@@ -59,4 +59,4 @@ import {createModal, enhance} from '@earendil-works/elanor-react';
 enhance({modal: createModal});
 ```
 
-The popup is a native modal dialog: the browser traps focus, makes the page inert, and returns focus when it closes. Its buttons open and close it through invoker commands, also without the behavior. The behavior animates opening and closing like the React parts and closes it on Escape and on a press on the backdrop. To close it from a script, call the dialog's `requestClose()`, which closes it the same way as Escape.
+The popup is a native modal dialog: the browser traps focus, makes the page inert, and returns focus when it closes. Its buttons open and close it through invoker commands, also without the behavior. The behavior animates opening and closing like the React parts and closes it on Escape and on a press on the backdrop. To close it from a script, call the dialog's `requestClose()`, which closes it the same way as Escape. Give `StaticRoot` an `id` to open the dialog from other buttons too, with `commandfor` and `command="show-modal"`.
