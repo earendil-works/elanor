@@ -4,7 +4,6 @@ import {useEffect, useRef, useState, type ReactNode} from 'react';
 
 import {IconButton, type IconButtonProps} from '../icon-button/icon-button.tsx';
 import {mergeClassName} from '../utils/class-names.ts';
-import {readConfirmationDuration} from '../utils/durations.ts';
 
 import styles from './copy-button.module.css';
 
@@ -51,7 +50,10 @@ export function CopyButton({
   }, [status]);
 
   async function copy(button: HTMLElement): Promise<void> {
-    confirmationDuration.current = readConfirmationDuration(button);
+    // `semantic.duration.confirmation`, otherwise 2000ms. Minified CSS may write it in seconds.
+    const token = getComputedStyle(button).getPropertyValue('--semantic-duration-confirmation');
+    const duration = Number.parseFloat(token) * (token.trim().endsWith('ms') ? 1 : 1000) || 2000;
+    confirmationDuration.current = duration;
     try {
       await navigator.clipboard.writeText(typeof value === 'function' ? value() : value);
     } catch (error) {

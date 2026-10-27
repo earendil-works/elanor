@@ -1,4 +1,3 @@
-import {readConfirmationDuration} from '../utils/durations.ts';
 import type {Behavior} from '../utils/enhance.ts';
 
 type CopyState = 'idle' | 'copied' | 'error';
@@ -30,7 +29,10 @@ export function createCopyButton(button: HTMLElement): Behavior {
     else button.setAttribute('title', title);
     if (status) status.textContent = feedback;
     if (state === 'copied') {
-      resetTimer = setTimeout(() => setState('idle'), readConfirmationDuration(button));
+      // `semantic.duration.confirmation`, otherwise 2000ms. Minified CSS may write it in seconds.
+      const token = getComputedStyle(button).getPropertyValue('--semantic-duration-confirmation');
+      const duration = Number.parseFloat(token) * (token.trim().endsWith('ms') ? 1 : 1000) || 2000;
+      resetTimer = setTimeout(() => setState('idle'), duration);
     }
   }
 
