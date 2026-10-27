@@ -1,14 +1,10 @@
 import type {Button as BaseButton} from '@base-ui/react/button';
 import {CheckIcon, ContentCopyIcon} from '@earendil-works/elanor-icons-react';
-import {useEffect, useState, type ReactNode} from 'react';
+import {useEffect, useRef, useState, type ReactNode} from 'react';
 
 import {IconButton, type IconButtonProps} from '../icon-button/icon-button.tsx';
 import {mergeClassName} from '../utils/class-names.ts';
-import {
-  copiedStateDuration,
-  defaultCopiedLabel,
-  defaultErrorLabel,
-} from './copy-button.behavior.ts';
+import {readConfirmationDuration} from '../utils/durations.ts';
 
 import styles from './copy-button.module.css';
 
@@ -32,8 +28,8 @@ export function CopyButton({
   ref,
   value,
   icon = <ContentCopyIcon />,
-  copiedLabel = defaultCopiedLabel,
-  errorLabel = defaultErrorLabel,
+  copiedLabel = 'Copied.',
+  errorLabel = 'Could not copy. Try again or copy manually.',
   onCopySuccess,
   onCopyError,
   onClick,
@@ -45,14 +41,17 @@ export function CopyButton({
   ...props
 }: CopyButtonProps) {
   const [status, setStatus] = useState<'idle' | 'copied' | 'error'>('idle');
+  // How long the copied state lasts, read from the pressed button's tokens.
+  const confirmationDuration = useRef(0);
 
   useEffect(() => {
     if (status !== 'copied') return;
-    const timeout = setTimeout(() => setStatus('idle'), copiedStateDuration);
+    const timeout = setTimeout(() => setStatus('idle'), confirmationDuration.current);
     return () => clearTimeout(timeout);
   }, [status]);
 
-  async function copy(): Promise<void> {
+  async function copy(button: HTMLElement): Promise<void> {
+    confirmationDuration.current = readConfirmationDuration(button);
     try {
       await navigator.clipboard.writeText(typeof value === 'function' ? value() : value);
     } catch (error) {
@@ -84,7 +83,7 @@ export function CopyButton({
         onClick={(event) => {
           onClick?.(event);
           if (!event.defaultPrevented && !event.baseUIHandlerPrevented && !disabled) {
-            void copy();
+            void copy(event.currentTarget);
           }
         }}
       >

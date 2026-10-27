@@ -53,7 +53,8 @@ Each component directory has a `<component>.mdx` page and an `examples/` directo
 Behaviors make components work on pages rendered on the server without React in the browser.
 
 - Put a component's behavior next to it as `<component>.behavior.ts`, a factory `create<Component>(element)` that returns `{destroy()}`, and export it from `src/index.ts`. `utils/enhance.ts` binds behaviors to elements by `data-elanor`.
-- Behaviors import no React, Base UI, icons, or `.tsx` files (lint enforces it), so a page's bundler leaves React out when it imports only behaviors from the package root. React components may import from their behavior, such as shared timing or labels.
+- Behaviors import no React, Base UI, icons, or `.tsx` files (lint enforces it), so a page's bundler leaves React out when it imports only behaviors from the package root.
+- The behavior gets everything from the markup, and the component does not import its behavior. Labels and options travel as attributes; timing comes from tokens, read from the element's computed style through a helper in `utils/`.
 - The component renders the behavior's markup contract: `data-elanor="<behavior>"`, options as `data-elanor-*` attributes, and states in the attributes the component already renders, such as `data-copy-state`. Document the contract in the factory's JSDoc. Class names are hashed, so behaviors never select by class.
 - Render every state the stylesheet needs without React, such as both icons of a toggle, so CSS can switch them by attribute.
 

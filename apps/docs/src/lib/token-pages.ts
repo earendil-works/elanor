@@ -275,7 +275,7 @@ const areaSpecs: readonly AreaSpec[] = [
   {
     id: 'motion',
     label: 'Motion',
-    summary: 'Transitions, and how far things move.',
+    summary: 'Transitions, how far things move, and how long states last.',
     tier: 'semantic',
     sections: [
       section(
@@ -284,6 +284,7 @@ const areaSpecs: readonly AreaSpec[] = [
         group('movement', 'Movement', 'semantic.transition.movement'),
         group('state', 'Fades & state changes', 'semantic.transition'),
         group('travel', 'Travel', 'semantic.dimension.travel'),
+        group('durations', 'State durations', 'semantic.duration'),
       ),
     ],
   },

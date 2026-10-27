@@ -17,6 +17,7 @@ packages/design-tokens/tokens/
 │       │   └── dark.tokens.json
 │       ├── dimension.tokens.json
 │       ├── number.tokens.json
+│       ├── duration.tokens.json
 │       ├── fontFamily.tokens.json
 │       └── typography.tokens.json
 ├── radius/                         # Brand overrides

@@ -77,6 +77,7 @@ The first category selects the type vocabulary:
 | `semantic`  | `fontWeight`   | `emphasis`, `ui`                                                 |
 | `semantic`  | `typography`   | `code`, `heading`, `primary`, `prose`, `secondary`, `ui`         |
 | `semantic`  | `transition`   | `feedback`, `fade`, `movement`, `pulse`, `stale`                 |
+| `semantic`  | `duration`     | `confirmation`                                                   |
 
 Context-neutral tokens stand directly under their category because they apply in any text context: `semantic.fontWeight.emphasis`, and `semantic.typography.primary` and `.secondary`, which the `textContext` modifier resolves to the UI styles in interfaces and the prose styles in long-form content. `fontWeight.ui.*` and `typography.ui.*` are for interface text only.
 
@@ -192,6 +193,8 @@ semantic.transition.movement.drawer
 ```
 
 Items under `movement` name a purpose (`popup`, `disclosure`, `indicator`) or, as component tokens, a component (`drawer`, `navigationMenu`, `tableOfContents.indicator`). Add a component item only when no shared purpose fits. How far something moves uses the same item names in its own category: `semantic.number.scale.popup` and `semantic.dimension.travel.popup`, with `rest` for the value when nothing moves. Direction is a sign in the component, and rotation stays structural (DTCG has no angle type).
+
+Durations of states rather than motion are `semantic.duration` tokens, not transitions: `semantic.duration.confirmation` is how long a confirmation, such as a copy button's check, stays before the control returns to rest. Nothing animates over it, so it stays the same when the reader prefers reduced motion. Components that time a state in JavaScript read it from the element's computed style.
 
 Primitive easings are named by shape, never by use: `primitive.cubicBezier.<direction>[.<curve>]`. Directions are `linear`, `easeIn`, `easeOut`, and `easeInOut`; `$root` is the CSS keyword curve; curve families from gentle to strong are `quad`, `cubic`, `quart`, `quint`, and `expo`, and `back` overshoots. Add only standard curves.
 

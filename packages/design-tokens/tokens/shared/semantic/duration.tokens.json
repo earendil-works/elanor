@@ -1,0 +1,13 @@
+{
+  "$schema": "https://designtokens.org/schemas/2025.10/format.json",
+  "semantic": {
+    "duration": {
+      "$type": "duration",
+      "$description": "Durations of states rather than motion: how long something stays before it changes back. Unlike transitions, they stay the same when the reader prefers reduced motion.",
+      "confirmation": {
+        "$value": "{primitive.duration.2000}",
+        "$description": "Use for how long a confirmation stays, such as a copy button's check after copying, before the control returns to its resting state."
+      }
+    }
+  }
+}
