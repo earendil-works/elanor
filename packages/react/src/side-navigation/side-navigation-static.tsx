@@ -12,13 +12,16 @@ import {SideNavigationRoot, type SideNavigationRootProps} from './side-navigatio
 import styles from './side-navigation.module.css';
 
 export interface SideNavigationStaticRootProps extends SideNavigationRootProps {
-  /** Keeps the navigation's scroll position across pages in session storage under this key. */
+  /**
+   * Keeps the navigation's scroll position and its sections' `persist`ed states across pages, in
+   * session storage under this key.
+   */
   readonly persist?: string;
 }
 
 /**
- * A side navigation for pages without React in the browser; `createSideNavigation` scrolls the
- * current page into view.
+ * A side navigation for pages without React in the browser; `createSideNavigation` restores it
+ * and scrolls the current page into view.
  */
 export function SideNavigationStaticRoot({persist, ...props}: SideNavigationStaticRootProps) {
   return (
@@ -26,13 +29,23 @@ export function SideNavigationStaticRoot({persist, ...props}: SideNavigationStat
   );
 }
 
-export type SideNavigationStaticCollapsibleProps = CollapsibleStaticRootProps;
+export interface SideNavigationStaticCollapsibleProps extends CollapsibleStaticRootProps {
+  /** Remembers whether the section is open under this name, with the root's `persist`. */
+  readonly persist?: string;
+}
 
 export function SideNavigationStaticCollapsible({
+  persist,
   className,
   ...props
 }: SideNavigationStaticCollapsibleProps) {
-  return <Collapsible.StaticRoot {...props} className={classes(styles.collapsible, className)} />;
+  return (
+    <Collapsible.StaticRoot
+      {...props}
+      data-elanor-section={persist}
+      className={classes(styles.collapsible, className)}
+    />
+  );
 }
 
 export type SideNavigationStaticCollapsibleTriggerProps = CollapsibleStaticTriggerProps;

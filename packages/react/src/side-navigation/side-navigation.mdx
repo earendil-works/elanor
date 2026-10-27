@@ -59,7 +59,7 @@ On pages rendered on the server without React in the browser, use the static roo
 <SideNavigation.StaticRoot aria-label="Documentation" persist="docs">
   <SideNavigation.List>
     <SideNavigation.Item>
-      <SideNavigation.StaticCollapsible defaultOpen persist="docs-guides">
+      <SideNavigation.StaticCollapsible defaultOpen persist="guides">
         <SideNavigation.StaticCollapsibleTrigger>Guides</SideNavigation.StaticCollapsibleTrigger>
         <SideNavigation.StaticCollapsiblePanel>
           <SideNavigation.List>…</SideNavigation.List>
@@ -76,4 +76,4 @@ import {createCollapsible, createSideNavigation, enhance} from '@earendil-works/
 enhance({'side-navigation': createSideNavigation, collapsible: createCollapsible});
 ```
 
-Sections open and close like [Collapsible](/components/collapsible/)'s static parts, and `persist` on a section remembers it; a section with the current page stays open. `persist` on the root keeps the navigation's scroll position across pages, and the current page's link scrolls into view when it is hidden.
+Sections open and close like [Collapsible](/components/collapsible/)'s static parts. With `persist` on the root, the navigation keeps its scroll position and the states of sections with a `persist` name across pages, in session storage; a section with the current page stays open. The current page's link scrolls into view when it is hidden.
