@@ -25,15 +25,12 @@ function useStaticCollapsible(part: string): StaticCollapsibleContextValue {
 export interface CollapsibleStaticRootProps
   extends HTMLAttributes<HTMLDivElement>, Pick<BaseCollapsible.Root.Props, 'defaultOpen'> {
   readonly ref?: Ref<HTMLDivElement> | undefined;
-  /** Remembers whether the panel is open in local storage under this key. */
-  readonly persist?: string;
 }
 
 /** A collapsible for pages without React in the browser; `createCollapsible` makes it work. */
 export function CollapsibleStaticRoot({
   ref,
   defaultOpen = false,
-  persist,
   ...props
 }: CollapsibleStaticRootProps) {
   const panelId = useId();
@@ -43,7 +40,6 @@ export function CollapsibleStaticRoot({
         {...props}
         ref={ref}
         data-elanor="collapsible"
-        data-elanor-persist={persist}
         data-open={defaultOpen ? '' : undefined}
         data-closed={defaultOpen ? undefined : ''}
       />

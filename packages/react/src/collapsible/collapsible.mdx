@@ -32,7 +32,7 @@ With `hiddenUntilFound`, the browser's find in page searches a closed panel and 
 On pages rendered on the server without React in the browser, use the static parts. They render the same markup, and the behavior opens and closes the panel with the same states, so the same stylesheet animates it:
 
 ```tsx
-<Collapsible.StaticRoot defaultOpen persist="docs-guides">
+<Collapsible.StaticRoot defaultOpen>
   <Collapsible.StaticTrigger />
   <Collapsible.StaticPanel hiddenUntilFound />
 </Collapsible.StaticRoot>
@@ -44,4 +44,4 @@ import {createCollapsible, enhance} from '@earendil-works/elanor-react';
 enhance({collapsible: createCollapsible});
 ```
 
-`persist` remembers whether the panel is open in the browser's local storage under its key and restores it when the behavior attaches; attach it before the first paint, right after the markup, so the panel doesn't change visibly. Without the behavior, closed panels stay hidden.
+Without the behavior, closed panels stay hidden.

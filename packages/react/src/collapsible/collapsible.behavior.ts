@@ -17,10 +17,6 @@ function partsOf(root: HTMLElement): {trigger: HTMLElement; panel: HTMLElement} 
 /** Opens and closes a server-rendered `Collapsible.StaticRoot` without React. */
 export function createCollapsible(root: HTMLElement): Behavior {
   const {trigger, panel} = partsOf(root);
-  const storageKey =
-    root.dataset.elanorPersist === undefined
-      ? null
-      : `elanor:collapsible:${root.dataset.elanorPersist}`;
   const hiddenValue = panel.hasAttribute('data-elanor-hidden-until-found') ? 'until-found' : '';
   let change = 0;
 
@@ -83,27 +79,17 @@ export function createCollapsible(root: HTMLElement): Behavior {
     panel.removeAttribute('data-ending-style');
   }
 
-  function remember(isOpen: boolean): void {
-    if (storageKey) localStorage.setItem(storageKey, isOpen ? 'open' : 'closed');
-  }
-
   function onClick(event: MouseEvent): void {
     if (event.defaultPrevented || trigger.matches(':disabled')) return;
-    const next = !root.hasAttribute('data-open');
-    if (next) open(true);
-    else close(true);
-    remember(next);
+    if (root.hasAttribute('data-open')) close(true);
+    else open(true);
   }
 
   function onBeforeMatch(): void {
     open(false);
-    remember(true);
   }
 
-  const stored = storageKey ? localStorage.getItem(storageKey) : null;
-  if (stored === 'open' && root.hasAttribute('data-closed')) open(false);
-  else if (stored === 'closed' && root.hasAttribute('data-open')) close(false);
-  else if (root.hasAttribute('data-closed')) panel.setAttribute('hidden', hiddenValue);
+  if (root.hasAttribute('data-closed')) panel.setAttribute('hidden', hiddenValue);
 
   trigger.addEventListener('click', onClick);
   panel.addEventListener('beforematch', onBeforeMatch);
