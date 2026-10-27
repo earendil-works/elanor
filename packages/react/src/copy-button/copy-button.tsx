@@ -4,7 +4,6 @@ import {useEffect, useRef, useState, type ReactNode} from 'react';
 
 import {IconButton, type IconButtonProps} from '../icon-button/icon-button.tsx';
 import {mergeClassName} from '../utils/class-names.ts';
-import {readConfirmationDuration} from '../utils/durations.ts';
 
 import styles from './copy-button.module.css';
 
@@ -41,7 +40,8 @@ export function CopyButton({
   ...props
 }: CopyButtonProps) {
   const [status, setStatus] = useState<'idle' | 'copied' | 'error'>('idle');
-  // How long the copied state lasts, read from the pressed button's tokens.
+  // How long the copied state lasts: `semantic.duration.confirmation` on the pressed button, in ms;
+  // 2000 when the tokens aren't loaded.
   const confirmationDuration = useRef(0);
 
   useEffect(() => {
@@ -51,7 +51,10 @@ export function CopyButton({
   }, [status]);
 
   async function copy(button: HTMLElement): Promise<void> {
-    confirmationDuration.current = readConfirmationDuration(button);
+    confirmationDuration.current =
+      Number.parseFloat(
+        getComputedStyle(button).getPropertyValue('--semantic-duration-confirmation'),
+      ) || 2000;
     try {
       await navigator.clipboard.writeText(typeof value === 'function' ? value() : value);
     } catch (error) {
