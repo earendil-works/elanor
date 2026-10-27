@@ -11,9 +11,11 @@ export default function TopNavigationCentered() {
         </TopNavigation.Identity>
         <TopNavigation.Navigation className={styles.navigation}>
           <nav aria-label="Main" className={styles.links}>
-            <Link href="#">Product</Link>
-            <Link href="#">Pricing</Link>
-            <Link href="#">Docs</Link>
+            <TopNavigation.Link href="#">Product</TopNavigation.Link>
+            <TopNavigation.Link href="#">Pricing</TopNavigation.Link>
+            <TopNavigation.Link href="#" active>
+              Docs
+            </TopNavigation.Link>
           </nav>
         </TopNavigation.Navigation>
         <TopNavigation.Actions className={styles.actions}>

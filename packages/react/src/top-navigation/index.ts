@@ -3,6 +3,8 @@ export {
   TopNavigationIdentity as Identity,
   TopNavigationNavigation as Navigation,
   TopNavigationActions as Actions,
+  TopNavigationLink as Link,
+  TopNavigationActionButton as ActionButton,
 } from './top-navigation.tsx';
 export {
   TopNavigationMenu as Menu,

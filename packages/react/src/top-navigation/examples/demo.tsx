@@ -1,3 +1,4 @@
+import {SearchIcon} from '@earendil-works/elanor-icons-react';
 import {Link, TopNavigation} from '@earendil-works/elanor-react';
 
 import styles from './top-navigation.module.css';
@@ -10,13 +11,17 @@ export default function TopNavigationDemo() {
       </TopNavigation.Identity>
       <TopNavigation.Navigation>
         <nav aria-label="Main" className={styles.links}>
-          <Link href="#">Product</Link>
-          <Link href="#">Pricing</Link>
-          <Link href="#">Docs</Link>
+          <TopNavigation.Link href="#">Product</TopNavigation.Link>
+          <TopNavigation.Link href="#">Pricing</TopNavigation.Link>
+          <TopNavigation.Link href="#" active>
+            Docs
+          </TopNavigation.Link>
         </nav>
       </TopNavigation.Navigation>
       <TopNavigation.Actions>
-        <Link href="#">Contact sales</Link>
+        <TopNavigation.ActionButton aria-label="Search">
+          <SearchIcon aria-hidden />
+        </TopNavigation.ActionButton>
         <Link href="#">Sign in</Link>
       </TopNavigation.Actions>
     </TopNavigation.Root>

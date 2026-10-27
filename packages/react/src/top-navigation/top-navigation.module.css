@@ -24,4 +24,66 @@
     max-inline-size: 100%;
     overflow-wrap: anywhere;
   }
+
+  /* Links: secondary text, primary on hover and for the current page. They are as tall as the
+     bar's controls, so the whole height is the hit area. */
+  .link {
+    display: flex;
+    align-items: center;
+    block-size: var(--semantic-dimension-size-large);
+    color: var(--semantic-color-text-secondary);
+    text-decoration: none;
+    white-space: nowrap;
+  }
+
+  .link:is([aria-current='page'], [aria-current='true']) {
+    color: var(--semantic-color-text-primary);
+  }
+
+  .link:focus-visible {
+    border-radius: var(--semantic-dimension-radius-small);
+    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline-offset: var(--semantic-dimension-border-width-medium);
+  }
+
+  /* Action buttons match the menu's trigger. */
+  .actionButton {
+    display: grid;
+    flex: none;
+    place-items: center;
+    inline-size: var(--semantic-dimension-size-large);
+    block-size: var(--semantic-dimension-size-large);
+    padding: 0;
+    border: 0;
+    border-radius: var(--semantic-dimension-radius-small);
+    background: var(--semantic-color-background-fill-ghost-neutral);
+    color: var(--semantic-color-icon-secondary);
+    cursor: pointer;
+  }
+
+  .actionButton > svg {
+    inline-size: var(--semantic-dimension-size-icon);
+    block-size: var(--semantic-dimension-size-icon);
+  }
+
+  @media (hover: hover) {
+    .link:hover {
+      color: var(--semantic-color-text-primary);
+    }
+
+    .actionButton:hover:not([data-disabled]) {
+      background: var(--semantic-color-background-fill-ghost-neutral-hover);
+      color: var(--semantic-color-icon-primary);
+    }
+  }
+
+  .actionButton:focus-visible {
+    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline-offset: calc(-1 * var(--semantic-dimension-border-width-large));
+  }
+
+  .actionButton[data-disabled] {
+    cursor: default;
+    opacity: var(--semantic-number-opacity-disabled);
+  }
 }
