@@ -156,7 +156,7 @@ export type {
   ModalStaticTitleProps,
   ModalStaticTriggerProps,
 } from './modal/modal-static.tsx';
-export {createModal, modalCloseEvent} from './modal/modal.behavior.ts';
+export {createModal} from './modal/modal.behavior.ts';
 export type {
   SideNavigationStaticCollapsiblePanelProps,
   SideNavigationStaticCollapsibleProps,

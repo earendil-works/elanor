@@ -1,12 +1,8 @@
 import type {Behavior} from '../utils/enhance.ts';
 
-/** Event that closes an open static modal when dispatched on its dialog. */
-export const modalCloseEvent = 'elanor:modal-close';
-
 /**
  * Opens and closes a server-rendered `Modal.StaticPopup` without React, animating both. Without
- * the behavior, its buttons open and close the native dialog through invoker commands. Dispatch
- * `modalCloseEvent` on the dialog to close it.
+ * the behavior, its buttons open and close the native dialog through invoker commands.
  */
 export function createModal(element: HTMLElement): Behavior {
   if (!(element instanceof HTMLDialogElement)) {
@@ -106,7 +102,6 @@ export function createModal(element: HTMLElement): Behavior {
   }
 
   for (const button of buttons) button.addEventListener('click', onButtonClick);
-  dialog.addEventListener(modalCloseEvent, close);
   dialog.addEventListener('cancel', onCancel);
   dialog.addEventListener('pointerdown', onPointerDown);
   dialog.addEventListener('click', onClick);
@@ -116,7 +111,6 @@ export function createModal(element: HTMLElement): Behavior {
       // Stops transitions still running from finishing the open or close.
       change++;
       for (const button of buttons) button.removeEventListener('click', onButtonClick);
-      dialog.removeEventListener(modalCloseEvent, close);
       dialog.removeEventListener('cancel', onCancel);
       dialog.removeEventListener('pointerdown', onPointerDown);
       dialog.removeEventListener('click', onClick);

@@ -1,4 +1,3 @@
-import {modalCloseEvent} from '../modal/modal.behavior.ts';
 import type {Behavior} from '../utils/enhance.ts';
 
 export interface SearchDialogStaticResult {
@@ -20,22 +19,24 @@ const maximumResults = 10;
 const minimumQueryLength = 2;
 const searchDelay = 150;
 
-function partsOf(dialog: HTMLElement): {
+function partsOf(element: HTMLElement): {
+  dialog: HTMLDialogElement;
   input: HTMLInputElement;
   list: HTMLElement;
   template: HTMLTemplateElement;
 } {
-  const input = dialog.querySelector('input[role="combobox"]');
-  const list = dialog.querySelector('[role="listbox"]');
-  const template = dialog.querySelector('template[data-elanor-search-template]');
+  const input = element.querySelector('input[role="combobox"]');
+  const list = element.querySelector('[role="listbox"]');
+  const template = element.querySelector('template[data-elanor-search-template]');
   if (
+    !(element instanceof HTMLDialogElement) ||
     !(input instanceof HTMLInputElement) ||
     !(list instanceof HTMLElement) ||
     !(template instanceof HTMLTemplateElement)
   ) {
     throw new Error('SearchDialog.StaticPopup needs a StaticInput and a StaticList.');
   }
-  return {input, list, template};
+  return {dialog: element, input, list, template};
 }
 
 /**
@@ -45,10 +46,10 @@ function partsOf(dialog: HTMLElement): {
  * new tab. Opening and closing come from `createModal`.
  */
 export function createSearchDialog(
-  dialog: HTMLElement,
+  element: HTMLElement,
   source: SearchDialogStaticSource,
 ): Behavior {
-  const {input, list, template} = partsOf(dialog);
+  const {dialog, input, list, template} = partsOf(element);
   const status = dialog.querySelector('[data-elanor-search-status]');
   const messages = [...dialog.querySelectorAll<HTMLElement>('[data-elanor-search-state]')];
   const queryOutputs = [...dialog.querySelectorAll('[data-elanor-search-query]')];
@@ -208,7 +209,8 @@ export function createSearchDialog(
     const plain =
       event.button === 0 && !event.metaKey && !event.ctrlKey && !event.shiftKey && !event.altKey;
     if (plain && event.target instanceof Element && event.target.closest('[role="option"]')) {
-      dialog.dispatchEvent(new Event(modalCloseEvent));
+      // Closes like Escape, so the modal behavior animates it.
+      dialog.requestClose();
     }
   }
 
