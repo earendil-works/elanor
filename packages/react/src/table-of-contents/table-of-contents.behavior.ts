@@ -67,7 +67,8 @@ export function createTableOfContents(root: HTMLElement): Behavior {
     const offset = Number.parseFloat(getComputedStyle(page).scrollPaddingTop) || 0;
     let current = entries[0];
     for (const entry of entries) {
-      if (entry.heading.getBoundingClientRect().top - offset > 1) break;
+      // A few pixels of slack: jumping to a heading can land it just below the padding.
+      if (entry.heading.getBoundingClientRect().top - offset > 4) break;
       current = entry;
     }
     setActive(current);
