@@ -156,7 +156,7 @@ export type {
   ModalStaticTitleProps,
   ModalStaticTriggerProps,
 } from './modal/modal-static.tsx';
-export {createModal} from './modal/modal.behavior.ts';
+export {createModal, modalCloseEvent} from './modal/modal.behavior.ts';
 export type {
   SideNavigationStaticCollapsiblePanelProps,
   SideNavigationStaticCollapsibleProps,
@@ -175,6 +175,24 @@ export {
   tableOfContentsChangeEvent,
 } from './table-of-contents/table-of-contents.behavior.ts';
 export {createTableOfContentsMenu} from './table-of-contents/table-of-contents-menu.behavior.ts';
+export type {
+  SearchDialogStaticCloseProps,
+  SearchDialogStaticInputProps,
+  SearchDialogStaticListProps,
+  SearchDialogStaticMessageProps,
+  SearchDialogStaticMessageState,
+  SearchDialogStaticPopupProps,
+  SearchDialogStaticQueryProps,
+  SearchDialogStaticResultsProps,
+  SearchDialogStaticRootProps,
+  SearchDialogStaticStatusProps,
+  SearchDialogStaticTriggerProps,
+} from './search-dialog/search-dialog-static.tsx';
+export {createSearchDialog} from './search-dialog/search-dialog.behavior.ts';
+export type {
+  SearchDialogStaticResult,
+  SearchDialogStaticSource,
+} from './search-dialog/search-dialog.behavior.ts';
 
 export {enhance} from './utils/enhance.ts';
 export type {Behavior, BehaviorFactory} from './utils/enhance.ts';
