@@ -28,7 +28,7 @@ Each component directory has a `<component>.mdx` page and an `examples/` directo
 
 - Within a component, import implementation files directly, never its own barrel. Across components, use their local entry point when present, otherwise a direct file. Never import the package-wide entry point from library implementations. Examples and documentation are exempt.
 - Keep runtime dependencies between components acyclic.
-- Expose JavaScript and types through the package root (`src/index.ts`); keep component subpaths private.
+- Expose JavaScript and types through the package root (`src/index.ts`); keep component subpaths private. Behaviors are the one other entry point: `src/behaviors.ts`, published as `@earendil-works/elanor-react/behaviors`.
 - Use explicit value and type exports. For compounds, export named parts from a local `index.ts` barrel and re-export it with `export * as Name` from the package root. Do not use wildcard re-exports (`export * from`) or assemble runtime compound objects.
 - Expose compound parts only through their namespace, not prefixed component aliases at the package root. Keep public prop and event types as named type exports.
 - Preserve native ESM namespaces in build output. Member-level tree-shaking depends on the consumer's bundler.
@@ -47,6 +47,16 @@ Each component directory has a `<component>.mdx` page and an `examples/` directo
 - Preserve supported refs, event details, and controlled/uncontrolled behavior when wrapping Base UI.
 - Restrict an upstream capability only for a concrete Elanor requirement, with matching types and runtime handling.
 - Use semantic elements and preserve accessible names, label associations, keyboard behavior, and focus management. Don't replace native or Base UI behavior with custom handlers unnecessarily.
+
+## Behaviors
+
+Behaviors make components work on pages rendered on the server without React in the browser.
+
+- Put a component's behavior next to it as `<component>.behavior.ts`, a factory `create<Component>(element)` that returns `{destroy()}`, and export it from `src/behaviors.ts`. `utils/enhance.ts` binds behaviors to elements by `data-elanor`.
+- Behaviors import no React, Base UI, icons, or `.tsx` files (lint enforces it). React components may import from their behavior, such as shared timing or labels.
+- The component renders the behavior's markup contract: `data-elanor="<behavior>"`, options as `data-elanor-*` attributes, and states in the attributes the component already renders, such as `data-copy-state`. Document the contract at the top of the behavior file. Class names are hashed, so behaviors never select by class.
+- Render every state the stylesheet needs without React, such as both icons of a toggle, so CSS can switch them by attribute.
+- Test behaviors in `tests/` against the component's server-rendered markup (`renderToStaticMarkup`), in `happy-dom`.
 
 ## CSS
 

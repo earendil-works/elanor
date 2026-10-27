@@ -8,7 +8,7 @@ import manifest from './package.json' with {type: 'json'};
 const external = Object.keys({...manifest.dependencies, ...manifest.peerDependencies});
 
 export default defineConfig({
-  input: 'src/index.ts',
+  input: ['src/index.ts', 'src/behaviors.ts'],
   external: (id) => external.some((name) => id === name || id.startsWith(`${name}/`)),
   output: {
     dir: 'dist',

@@ -17,6 +17,12 @@
       "import": "./dist/index.js",
       "default": "./dist/index.js"
     },
+    "./behaviors": {
+      "source": "./src/behaviors.ts",
+      "types": "./dist/behaviors.d.ts",
+      "import": "./dist/behaviors.js",
+      "default": "./dist/behaviors.js"
+    },
     "./elanor.min.css": "./dist/elanor.min.css"
   },
   "publishConfig": {
@@ -25,6 +31,11 @@
         "types": "./dist/index.d.ts",
         "import": "./dist/index.js",
         "default": "./dist/index.js"
+      },
+      "./behaviors": {
+        "types": "./dist/behaviors.d.ts",
+        "import": "./dist/behaviors.js",
+        "default": "./dist/behaviors.js"
       },
       "./elanor.min.css": "./dist/elanor.min.css"
     }
@@ -37,6 +48,7 @@
     "check": "pnpm run lint && pnpm run generate:css:check && pnpm run check:types",
     "check:prepare": "pnpm --filter @earendil-works/elanor-icons-react... run build",
     "check:types": "pnpm run check:prepare && tsc -p tsconfig.json --noEmit",
+    "test": "pnpm run check:prepare && vitest run --dir tests",
     "lint": "pnpm run lint:oxlint && pnpm run lint:stylelint",
     "lint:oxlint": "oxlint . --max-warnings 0 --report-unused-disable-directives",
     "lint:stylelint": "pnpm run lint:stylelint:prepare && stylelint \"src/**/*.css\" --max-warnings 0",
@@ -58,11 +70,13 @@
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "autoprefixer": "10.6.1",
+    "happy-dom": "^21.0.3",
     "postcss": "8.5.29",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
     "rollup": "4.64.0",
     "rollup-plugin-postcss": "4.0.2",
-    "stylelint": "^17.15.0"
+    "stylelint": "^17.15.0",
+    "vitest": "^5.0.4"
   }
 }

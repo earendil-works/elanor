@@ -1,7 +1,14 @@
+import type {Button as BaseButton} from '@base-ui/react/button';
 import {CheckIcon, ContentCopyIcon} from '@earendil-works/elanor-icons-react';
 import {useEffect, useState, type ReactNode} from 'react';
 
 import {IconButton, type IconButtonProps} from '../icon-button/icon-button.tsx';
+import {mergeClassName} from '../utils/class-names.ts';
+import {
+  copiedStateDuration,
+  defaultCopiedLabel,
+  defaultErrorLabel,
+} from './copy-button.behavior.ts';
 
 import styles from './copy-button.module.css';
 
@@ -25,12 +32,13 @@ export function CopyButton({
   ref,
   value,
   icon = <ContentCopyIcon />,
-  copiedLabel = 'Copied.',
-  errorLabel = 'Could not copy. Try again or copy manually.',
+  copiedLabel = defaultCopiedLabel,
+  errorLabel = defaultErrorLabel,
   onCopySuccess,
   onCopyError,
   onClick,
   disabled,
+  className,
   children,
   'aria-label': label = 'Copy',
   title,
@@ -40,7 +48,7 @@ export function CopyButton({
 
   useEffect(() => {
     if (status !== 'copied') return;
-    const timeout = setTimeout(() => setStatus('idle'), 2000);
+    const timeout = setTimeout(() => setStatus('idle'), copiedStateDuration);
     return () => clearTimeout(timeout);
   }, [status]);
 
@@ -66,7 +74,13 @@ export function CopyButton({
         aria-label={label}
         title={feedback || title || label}
         disabled={disabled}
+        className={mergeClassName<BaseButton.State>(styles.button, className)}
         data-copy-state={status}
+        // The behavior contract, for pages rendered on the server (`copy-button.behavior.ts`).
+        data-elanor="copy-button"
+        data-elanor-copy-value={typeof value === 'string' ? value : undefined}
+        data-elanor-copied-label={copiedLabel}
+        data-elanor-error-label={errorLabel}
         onClick={(event) => {
           onClick?.(event);
           if (!event.defaultPrevented && !event.baseUIHandlerPrevented && !disabled) {
@@ -74,7 +88,14 @@ export function CopyButton({
           }
         }}
       >
-        {children ?? (status === 'copied' ? <CheckIcon /> : icon)}
+        {/* Both icons render, and the stylesheet shows one by `data-copy-state`, so the markup
+            works without React too. */}
+        {children ?? (
+          <>
+            {icon}
+            <CheckIcon className={styles.copiedIcon} />
+          </>
+        )}
       </IconButton>
       <span role="status" className={styles.status}>
         {feedback}

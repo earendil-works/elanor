@@ -1,4 +1,10 @@
 @layer elanor.components {
+  /* The button renders its icon and a check, and shows the check while copied. */
+  .button:not([data-copy-state='copied']) > .copiedIcon,
+  .button[data-copy-state='copied'] > :has(~ .copiedIcon) {
+    display: none;
+  }
+
   .status {
     position: absolute;
     /* stylelint-disable design-tokens/no-hardcoded-token-values -- A fixed 1px box keeps the live region accessible without affecting layout. */
