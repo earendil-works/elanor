@@ -18,7 +18,6 @@
   rotate: -90deg;
 }
 
-/* The panel grows and shrinks to its measured height. */
 .panel {
   height: var(--collapsible-panel-height);
   overflow: hidden;

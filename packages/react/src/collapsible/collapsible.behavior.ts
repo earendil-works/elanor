@@ -1,6 +1,6 @@
 import type {Behavior} from '../utils/enhance.ts';
 
-// The root's own trigger, not one of a nested collapsible, and the panel it controls.
+// The root's own trigger, not a nested collapsible's.
 function partsOf(root: HTMLElement): {trigger: HTMLElement; panel: HTMLElement} {
   const trigger = [...root.querySelectorAll<HTMLElement>('[aria-controls]')].find(
     (element) => element.closest('[data-elanor~="collapsible"]') === root,
@@ -14,18 +14,7 @@ function partsOf(root: HTMLElement): {trigger: HTMLElement; panel: HTMLElement} 
   return {trigger, panel};
 }
 
-/**
- * Makes a server-rendered `Collapsible.StaticRoot` open and close without React. It finds the
- * root's trigger by `aria-controls` and the panel by that id, and sets the states Base UI's
- * Collapsible sets, so the same stylesheet works for both: `data-open` or `data-closed` on the root
- * and panel, `aria-expanded` and `data-panel-open` on the trigger, and on the panel
- * `--collapsible-panel-height` with `data-starting-style` while opening and `data-ending-style`
- * while closing. The panel is hidden once its transitions end.
- *
- * With `data-elanor-persist` on the root, the open state is stored in local storage under that key
- * and restored when the behavior attaches. With `data-elanor-hidden-until-found` on the panel, a
- * closed panel is `hidden="until-found"`, so find in page searches it and opens it on a match.
- */
+/** Opens and closes a server-rendered `Collapsible.StaticRoot` without React. */
 export function createCollapsible(root: HTMLElement): Behavior {
   const {trigger, panel} = partsOf(root);
   const storageKey =
@@ -33,7 +22,6 @@ export function createCollapsible(root: HTMLElement): Behavior {
       ? null
       : `elanor:collapsible:${root.dataset.elanorPersist}`;
   const hiddenValue = panel.hasAttribute('data-elanor-hidden-until-found') ? 'until-found' : '';
-  // Counts changes, so a transition that ends after a newer change leaves the panel alone.
   let change = 0;
 
   function setOpenState(open: boolean): void {
@@ -45,7 +33,6 @@ export function createCollapsible(root: HTMLElement): Behavior {
     trigger.toggleAttribute('data-panel-open', open);
   }
 
-  // Resolves once the panel's transitions end, with whether no newer change happened meanwhile.
   async function transitionsEnd(current: number): Promise<boolean> {
     await Promise.allSettled(panel.getAnimations().map((animation) => animation.finished));
     return current === change;
@@ -53,7 +40,7 @@ export function createCollapsible(root: HTMLElement): Behavior {
 
   function open(animate: boolean): void {
     const current = ++change;
-    // A panel still closing grows back from its current height instead of starting at zero.
+    // A panel still closing grows back from its current height.
     const closing = panel.getAnimations().length > 0;
     setOpenState(true);
     panel.removeAttribute('hidden');
@@ -65,7 +52,7 @@ export function createCollapsible(root: HTMLElement): Behavior {
     panel.style.setProperty('--collapsible-panel-height', `${panel.scrollHeight}px`);
     if (!closing) {
       panel.setAttribute('data-starting-style', '');
-      // Applies the starting style before removing it, so the height transitions from zero.
+      // Forces the starting style to apply before it is removed.
       void panel.offsetHeight;
       panel.removeAttribute('data-starting-style');
     }
@@ -81,7 +68,6 @@ export function createCollapsible(root: HTMLElement): Behavior {
       hide();
       return;
     }
-    // From `auto`, the height needs a length to transition from.
     panel.style.setProperty('--collapsible-panel-height', `${panel.scrollHeight}px`);
     void panel.offsetHeight;
     panel.setAttribute('data-ending-style', '');
@@ -90,7 +76,7 @@ export function createCollapsible(root: HTMLElement): Behavior {
     });
   }
 
-  // A panel hidden until found keeps its box, so it drops the measured height to take no space.
+  // `hidden="until-found"` keeps the box, so the measured height must go.
   function hide(): void {
     panel.style.removeProperty('--collapsible-panel-height');
     panel.setAttribute('hidden', hiddenValue);
@@ -109,7 +95,6 @@ export function createCollapsible(root: HTMLElement): Behavior {
     remember(next);
   }
 
-  // Find in page found text in the closed panel; the browser shows it, and the panel opens.
   function onBeforeMatch(): void {
     open(false);
     remember(true);

@@ -1,3 +1,4 @@
+import type {Collapsible as BaseCollapsible} from '@base-ui/react/collapsible';
 import {
   createContext,
   useContext,
@@ -21,22 +22,14 @@ function useStaticCollapsible(part: string): StaticCollapsibleContextValue {
   return collapsible;
 }
 
-export interface CollapsibleStaticRootProps extends HTMLAttributes<HTMLDivElement> {
+export interface CollapsibleStaticRootProps
+  extends HTMLAttributes<HTMLDivElement>, Pick<BaseCollapsible.Root.Props, 'defaultOpen'> {
   readonly ref?: Ref<HTMLDivElement> | undefined;
-  /** Whether the panel is open when the page loads. */
-  readonly defaultOpen?: boolean;
-  /**
-   * Remembers whether the panel is open in the browser's local storage under this key, and
-   * restores it when the behavior attaches.
-   */
+  /** Remembers whether the panel is open in local storage under this key. */
   readonly persist?: string;
 }
 
-/**
- * A collapsible for pages rendered on the server without React in the browser. It renders the
- * markup of `Root`, `Trigger`, and `Panel`, and `createCollapsible` opens and closes it. Put a
- * `StaticTrigger` and a `StaticPanel` inside.
- */
+/** A collapsible for pages without React in the browser; `createCollapsible` makes it work. */
 export function CollapsibleStaticRoot({
   ref,
   defaultOpen = false,
@@ -62,7 +55,6 @@ export interface CollapsibleStaticTriggerProps extends ButtonHTMLAttributes<HTML
   readonly ref?: Ref<HTMLButtonElement> | undefined;
 }
 
-/** Opens and closes the panel. */
 export function CollapsibleStaticTrigger({ref, ...props}: CollapsibleStaticTriggerProps) {
   const {open, panelId} = useStaticCollapsible('StaticTrigger');
   return (
@@ -77,16 +69,11 @@ export function CollapsibleStaticTrigger({ref, ...props}: CollapsibleStaticTrigg
   );
 }
 
-export interface CollapsibleStaticPanelProps extends HTMLAttributes<HTMLDivElement> {
+export interface CollapsibleStaticPanelProps
+  extends HTMLAttributes<HTMLDivElement>, Pick<BaseCollapsible.Panel.Props, 'hiddenUntilFound'> {
   readonly ref?: Ref<HTMLDivElement> | undefined;
-  /**
-   * Lets the browser's find in page search the closed panel and open it on a match, through
-   * `hidden="until-found"`. Without the behavior, the closed panel is hidden.
-   */
-  readonly hiddenUntilFound?: boolean;
 }
 
-/** The content that opens and closes. */
 export function CollapsibleStaticPanel({
   ref,
   hiddenUntilFound = false,
@@ -98,7 +85,7 @@ export function CollapsibleStaticPanel({
       {...props}
       ref={ref}
       id={panelId}
-      // React renders only a plain `hidden`; the behavior turns it into `hidden="until-found"`.
+      // React can't render `hidden="until-found"`; the behavior sets it.
       hidden={!open}
       data-open={open ? '' : undefined}
       data-closed={open ? undefined : ''}
