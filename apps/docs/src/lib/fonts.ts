@@ -16,8 +16,8 @@ interface FamilySpec {
 
 const familySpecs: readonly FamilySpec[] = [
   {
-    stylesheet: 'earendil.css',
-    license: 'earendil.txt',
+    stylesheet: 'mallos-serif.css',
+    license: 'mallos-serif.txt',
     role: 'Serif for text and headings.',
     sample: 'Sphinx of black quartz, judge my vow.',
   },
@@ -119,6 +119,8 @@ function faceRules(css: string, stylesheet: string): FaceRule[] {
   });
 }
 
+/** `400` → `['400']`; a variable range `400 700` → `['400', '700']`. */
+const weightsOf = (weight: string) => weight.split(/\s+/);
 const faceLabel = (weight: string, style: string) =>
   style === 'normal' ? weight : `${weight} ${style}`;
 const kilobytes = (bytes: number) => Math.round(bytes / 1000);
@@ -244,14 +246,17 @@ async function family(spec: FamilySpec, brands: readonly BrandTypography[]): Pro
       ? `1 ${formats} file, ${low} KB`
       : `${rules.length} ${formats} files, ${low === high ? low : `${low}–${high}`} KB each`;
 
-  const faces: FontFace[] = rules.map((rule) => ({
-    label: faceLabel(rule.weight, rule.style),
-    weight: rule.weight,
-    style: rule.style,
-    synthesized: false,
-  }));
+  // A variable font's face covers a weight range (`400 700`): show its lightest and boldest weight.
+  const faces: FontFace[] = rules.flatMap((rule) =>
+    weightsOf(rule.weight).map((weight) => ({
+      label: faceLabel(weight, rule.style),
+      weight,
+      style: rule.style,
+      synthesized: false,
+    })),
+  );
   // Text styles use bold; without a bold file, show the synthesized face.
-  if (!rules.some((rule) => Number(rule.weight) >= 600))
+  if (!rules.some((rule) => Math.max(...weightsOf(rule.weight).map(Number)) >= 600))
     faces.push({label: '700, synthesized', weight: '700', style: 'normal', synthesized: true});
 
   const downloads: FontLink[] = [];

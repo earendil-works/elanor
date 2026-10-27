@@ -10,7 +10,7 @@ interface FontsOverviewProps {
   readonly page: FontsPage;
 }
 
-const usage = `@import '@earendil-works/elanor-fonts/earendil.css';
+const usage = `@import '@earendil-works/elanor-fonts/mallos-serif.css';
 @import '@earendil-works/elanor-fonts/commit-mono.css';`;
 
 const glyphs = [
