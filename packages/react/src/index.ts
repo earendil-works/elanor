@@ -148,6 +148,15 @@ export type {
   PopoverStaticTriggerProps,
 } from './popover/popover-static.tsx';
 export {createPopover} from './popover/popover.behavior.ts';
+export type {
+  ModalStaticCloseProps,
+  ModalStaticDescriptionProps,
+  ModalStaticPopupProps,
+  ModalStaticRootProps,
+  ModalStaticTitleProps,
+  ModalStaticTriggerProps,
+} from './modal/modal-static.tsx';
+export {createModal} from './modal/modal.behavior.ts';
 
 export {enhance} from './utils/enhance.ts';
 export type {Behavior, BehaviorFactory} from './utils/enhance.ts';

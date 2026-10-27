@@ -34,3 +34,29 @@ import {Modal} from '@earendil-works/elanor-react';
 The modal moves focus inside, keeps it there, and returns it to the trigger on close. Escape and clicking the backdrop close it.
 
 `Modal.Close` closes the modal; render it as a [Button](/components/button/) or an [Icon button](/components/icon-button/). Title and Description name and describe the dialog for screen readers.
+
+## Static rendering
+
+On pages rendered on the server without React in the browser, use the static parts. `Body` and `Actions` stay the same. Bind the behavior once the page has loaded:
+
+```tsx
+<Modal.StaticRoot>
+  <Modal.StaticTrigger />
+  <Modal.StaticPopup>
+    <Modal.StaticTitle />
+    <Modal.StaticDescription />
+    <Modal.Body />
+    <Modal.Actions>
+      <Modal.StaticClose />
+    </Modal.Actions>
+  </Modal.StaticPopup>
+</Modal.StaticRoot>
+```
+
+```ts
+import {createModal, enhance} from '@earendil-works/elanor-react';
+
+enhance({modal: createModal});
+```
+
+The popup is a native modal dialog: the browser traps focus, makes the page inert, and returns focus when it closes. Its buttons open and close it through invoker commands, also without the behavior. The behavior animates opening and closing like the React parts and closes it on Escape and on a press on the backdrop.
