@@ -21,6 +21,8 @@ export interface CopyButtonProps extends Omit<IconButtonProps, 'value'> {
   readonly errorLabel?: string;
   readonly onCopySuccess?: () => void;
   readonly onCopyError?: (error: Error) => void;
+  /** The page's own behaviors for the button, attached after the copy button's. */
+  readonly 'data-elanor'?: string;
 }
 
 export function CopyButton({
@@ -36,6 +38,7 @@ export function CopyButton({
   className,
   children,
   'aria-label': label = 'Copy',
+  'data-elanor': pageBehaviors,
   title,
   ...props
 }: CopyButtonProps) {
@@ -76,7 +79,7 @@ export function CopyButton({
         disabled={disabled}
         className={mergeClassName<BaseButton.State>(styles.button, className)}
         data-copy-state={status}
-        data-elanor="copy-button"
+        data-elanor={pageBehaviors ? `copy-button ${pageBehaviors}` : 'copy-button'}
         data-elanor-copy-value={typeof value === 'string' ? value : undefined}
         data-elanor-copied-label={copiedLabel}
         data-elanor-error-label={errorLabel}

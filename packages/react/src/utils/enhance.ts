@@ -7,7 +7,7 @@ export type BehaviorFactory = (element: HTMLElement) => Behavior;
 /** Attaches each behavior once to the elements in `scope` that name it in `data-elanor`. */
 export function enhance(
   behaviors: Readonly<Record<string, BehaviorFactory>>,
-  scope: ParentNode = document,
+  scope: Pick<ParentNode, 'querySelectorAll'> = document,
 ): Behavior[] {
   const created: Behavior[] = [];
   for (const element of scope.querySelectorAll<HTMLElement>('[data-elanor]')) {
