@@ -1,4 +1,5 @@
-import type {HTMLAttributes, Ref} from 'react';
+import type {ScrollArea as BaseScrollArea} from '@base-ui/react/scroll-area';
+import {createContext, useContext, type CSSProperties, type HTMLAttributes, type Ref} from 'react';
 
 import {classes} from '../utils/class-names.ts';
 
@@ -8,10 +9,7 @@ export interface ScrollAreaStaticPartProps extends HTMLAttributes<HTMLDivElement
   readonly ref?: Ref<HTMLDivElement> | undefined;
 }
 
-/**
- * A scroll area for pages without React in the browser; `createScrollArea` makes it work. Vertical
- * scrolling only.
- */
+/** A scroll area for pages without React in the browser; `createScrollArea` makes it work. */
 export function ScrollAreaStaticRoot({ref, className, style, ...props}: ScrollAreaStaticPartProps) {
   return (
     <div
@@ -19,7 +17,14 @@ export function ScrollAreaStaticRoot({ref, className, style, ...props}: ScrollAr
       {...props}
       ref={ref}
       className={classes(styles.root, className)}
-      style={{position: 'relative', ...style}}
+      style={
+        {
+          position: 'relative',
+          '--scroll-area-corner-height': '0px',
+          '--scroll-area-corner-width': '0px',
+          ...style,
+        } as CSSProperties
+      }
       data-elanor="scroll-area"
     />
   );
@@ -58,18 +63,30 @@ export function ScrollAreaStaticContent({
   );
 }
 
+export interface ScrollAreaStaticScrollbarProps extends ScrollAreaStaticPartProps {
+  readonly orientation?: BaseScrollArea.Scrollbar.Props['orientation'];
+}
+
+const OrientationContext = /* @__PURE__ */ createContext<'vertical' | 'horizontal'>('vertical');
+
 export function ScrollAreaStaticScrollbar({
   ref,
+  orientation = 'vertical',
   className,
   style,
+  children,
   ...props
-}: ScrollAreaStaticPartProps) {
+}: ScrollAreaStaticScrollbarProps) {
+  const position =
+    orientation === 'vertical'
+      ? {top: 0, bottom: 'var(--scroll-area-corner-height)', insetInlineEnd: 0}
+      : {insetInlineStart: 0, insetInlineEnd: 'var(--scroll-area-corner-width)', bottom: 0};
   return (
     <div
       aria-hidden="true"
       {...props}
       ref={ref}
-      data-orientation="vertical"
+      data-orientation={orientation}
       className={classes(styles.scrollbar, className)}
       // Hidden until the behavior finds overflowing content.
       style={{
@@ -77,12 +94,12 @@ export function ScrollAreaStaticScrollbar({
         position: 'absolute',
         touchAction: 'none',
         userSelect: 'none',
-        top: 0,
-        bottom: 0,
-        insetInlineEnd: 0,
+        ...position,
         ...style,
       }}
-    />
+    >
+      <OrientationContext.Provider value={orientation}>{children}</OrientationContext.Provider>
+    </div>
   );
 }
 
@@ -92,13 +109,39 @@ export function ScrollAreaStaticThumb({
   style,
   ...props
 }: ScrollAreaStaticPartProps) {
+  const orientation = useContext(OrientationContext);
   return (
     <div
       {...props}
       ref={ref}
-      data-orientation="vertical"
+      data-orientation={orientation}
       className={classes(styles.thumb, className)}
-      style={{height: 'var(--scroll-area-thumb-height)', ...style}}
+      style={
+        orientation === 'vertical'
+          ? {height: 'var(--scroll-area-thumb-height)', ...style}
+          : {width: 'var(--scroll-area-thumb-width)', ...style}
+      }
+    />
+  );
+}
+
+/** Where the two scrollbars meet, shown while both are. */
+export function ScrollAreaStaticCorner({ref, style, ...props}: ScrollAreaStaticPartProps) {
+  return (
+    <div
+      aria-hidden="true"
+      {...props}
+      ref={ref}
+      data-elanor-scroll-area-corner=""
+      style={{
+        display: 'none',
+        position: 'absolute',
+        bottom: 0,
+        insetInlineEnd: 0,
+        width: 'var(--scroll-area-corner-width)',
+        height: 'var(--scroll-area-corner-height)',
+        ...style,
+      }}
     />
   );
 }

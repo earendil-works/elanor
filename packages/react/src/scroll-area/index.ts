@@ -16,4 +16,5 @@ export {
   ScrollAreaStaticContent as StaticContent,
   ScrollAreaStaticScrollbar as StaticScrollbar,
   ScrollAreaStaticThumb as StaticThumb,
+  ScrollAreaStaticCorner as StaticCorner,
 } from './scroll-area-static.tsx';

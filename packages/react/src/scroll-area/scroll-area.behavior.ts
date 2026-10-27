@@ -6,65 +6,112 @@ const scrollingDuration = 500;
 const scrollEndDelay = 100;
 const minimumThumbSize = 16;
 
-function partsOf(root: HTMLElement): {
-  viewport: HTMLElement;
-  scrollbar: HTMLElement;
-  thumb: HTMLElement;
-} {
-  const viewport = root.firstElementChild;
-  const scrollbar = root.querySelector(':scope > [data-orientation="vertical"]');
-  const thumb = scrollbar?.firstElementChild;
-  if (
-    !(viewport instanceof HTMLElement) ||
-    !(scrollbar instanceof HTMLElement) ||
-    !(thumb instanceof HTMLElement)
-  ) {
-    throw new Error('ScrollArea.StaticRoot needs a StaticViewport and a StaticScrollbar.');
-  }
-  return {viewport, scrollbar, thumb};
+type Orientation = 'vertical' | 'horizontal';
+
+interface Axis {
+  readonly orientation: Orientation;
+  readonly scrollbar: HTMLElement;
+  readonly thumb: HTMLElement;
+  thumbSize: number;
+  trackSize: number;
 }
 
-/** Drives a server-rendered `ScrollArea.StaticRoot`'s scrollbar without React. */
+function partsOf(root: HTMLElement): {
+  viewport: HTMLElement;
+  axes: Axis[];
+  corner: HTMLElement | null;
+} {
+  const viewport = root.firstElementChild;
+  if (!(viewport instanceof HTMLElement)) {
+    throw new Error('ScrollArea.StaticRoot needs a StaticViewport.');
+  }
+  const axes = (['vertical', 'horizontal'] as const).flatMap((orientation): Axis[] => {
+    const scrollbar = root.querySelector(`:scope > [data-orientation="${orientation}"]`);
+    const thumb = scrollbar?.firstElementChild;
+    if (!(scrollbar instanceof HTMLElement) || !(thumb instanceof HTMLElement)) return [];
+    return [{orientation, scrollbar, thumb, thumbSize: 0, trackSize: 0}];
+  });
+  const corner = root.querySelector<HTMLElement>(':scope > [data-elanor-scroll-area-corner]');
+  return {viewport, axes, corner};
+}
+
+/** Drives a server-rendered `ScrollArea.StaticRoot`'s scrollbars without React. */
 export function createScrollArea(root: HTMLElement): Behavior {
-  const {viewport, scrollbar, thumb} = partsOf(root);
-  let thumbSize = 0;
-  let trackSize = 0;
+  const {viewport, axes, corner} = partsOf(root);
   let scrollingTimer: ReturnType<typeof setTimeout> | undefined;
   let scrollEndTimer: ReturnType<typeof setTimeout> | undefined;
   // Only the reader's scrolling shows `data-scrolling`, not scrolls the page makes itself.
   let readerScrolling = false;
-  let drag: {pointerY: number; scrollTop: number} | null = null;
+  let drag: {axis: Axis; pointer: number; scroll: number} | null = null;
+
+  const vertical = (axis: Axis): boolean => axis.orientation === 'vertical';
+  const rtl = (): boolean => getComputedStyle(viewport).direction === 'rtl';
+
+  function maxScroll(axis: Axis): number {
+    return vertical(axis)
+      ? viewport.scrollHeight - viewport.clientHeight
+      : viewport.scrollWidth - viewport.clientWidth;
+  }
+
+  // How far the viewport has scrolled from its start; in right-to-left, `scrollLeft` is negative.
+  function scrolled(axis: Axis): number {
+    return vertical(axis) ? viewport.scrollTop : Math.abs(viewport.scrollLeft);
+  }
 
   function toggle(name: string, on: boolean, elements: HTMLElement[]): void {
     for (const element of elements) element.toggleAttribute(name, on);
   }
 
-  function maxScroll(): number {
-    return viewport.scrollHeight - viewport.clientHeight;
+  function updateAxis(axis: Axis): boolean {
+    const max = maxScroll(axis);
+    const overflows = max > 0;
+    const letter = vertical(axis) ? 'y' : 'x';
+    const parts = [root, viewport, axis.scrollbar];
+    toggle(`data-has-overflow-${letter}`, overflows, parts);
+    toggle(`data-overflow-${letter}-start`, overflows && scrolled(axis) > 0, parts);
+    toggle(`data-overflow-${letter}-end`, overflows && scrolled(axis) < max - 1, parts);
+    axis.scrollbar.style.display = overflows ? '' : 'none';
+    if (!overflows) return false;
+    const style = getComputedStyle(axis.scrollbar);
+    const size = vertical(axis) ? viewport.clientHeight : viewport.clientWidth;
+    const scrollSize = vertical(axis) ? viewport.scrollHeight : viewport.scrollWidth;
+    axis.trackSize = vertical(axis)
+      ? axis.scrollbar.clientHeight -
+        Number.parseFloat(style.paddingTop) -
+        Number.parseFloat(style.paddingBottom)
+      : axis.scrollbar.clientWidth -
+        Number.parseFloat(style.paddingLeft) -
+        Number.parseFloat(style.paddingRight);
+    axis.thumbSize = Math.max(minimumThumbSize, (axis.trackSize * size) / scrollSize);
+    const room = axis.trackSize - axis.thumbSize;
+    const progress = scrolled(axis) / max;
+    if (vertical(axis)) {
+      axis.scrollbar.style.setProperty('--scroll-area-thumb-height', `${axis.thumbSize}px`);
+      axis.thumb.style.transform = `translate3d(0, ${room * progress}px, 0)`;
+    } else {
+      axis.scrollbar.style.setProperty('--scroll-area-thumb-width', `${axis.thumbSize}px`);
+      // In right-to-left, the thumb already starts at the right and moves left.
+      const offset = rtl() ? -room * progress : room * progress;
+      axis.thumb.style.transform = `translate3d(${offset}px, 0, 0)`;
+    }
+    return true;
   }
 
   function update(): void {
-    const max = maxScroll();
-    const overflows = max > 0;
-    const parts = [root, viewport, scrollbar];
-    toggle('data-has-overflow-y', overflows, parts);
-    toggle('data-overflow-y-start', overflows && viewport.scrollTop > 0, parts);
-    toggle('data-overflow-y-end', overflows && viewport.scrollTop < max, parts);
-    scrollbar.style.display = overflows ? '' : 'none';
-    viewport.tabIndex = overflows ? 0 : -1;
-    if (!overflows) return;
-    const style = getComputedStyle(scrollbar);
-    trackSize =
-      scrollbar.clientHeight -
-      Number.parseFloat(style.paddingTop) -
-      Number.parseFloat(style.paddingBottom);
-    thumbSize = Math.max(
-      minimumThumbSize,
-      (trackSize * viewport.clientHeight) / viewport.scrollHeight,
+    const shown = axes.map(updateAxis);
+    const both = axes.length === 2 && shown.every(Boolean);
+    const verticalBar = axes.find(vertical)?.scrollbar;
+    const horizontalBar = axes.find((axis) => !vertical(axis))?.scrollbar;
+    root.style.setProperty(
+      '--scroll-area-corner-width',
+      `${both ? verticalBar?.offsetWidth : 0}px`,
     );
-    const offset = ((trackSize - thumbSize) * viewport.scrollTop) / max;
-    scrollbar.style.setProperty('--scroll-area-thumb-height', `${thumbSize}px`);
-    thumb.style.transform = `translate3d(0, ${offset}px, 0)`;
+    root.style.setProperty(
+      '--scroll-area-corner-height',
+      `${both ? horizontalBar?.offsetHeight : 0}px`,
+    );
+    if (corner) corner.style.display = both ? '' : 'none';
+    viewport.tabIndex = shown.some(Boolean) ? 0 : -1;
   }
 
   function onReaderInput(): void {
@@ -76,51 +123,70 @@ export function createScrollArea(root: HTMLElement): Behavior {
     clearTimeout(scrollEndTimer);
     scrollEndTimer = setTimeout(() => (readerScrolling = false), scrollEndDelay);
     if (!readerScrolling) return;
-    toggle('data-scrolling', true, [root, scrollbar, thumb]);
+    const parts = [root, ...axes.flatMap((axis) => [axis.scrollbar, axis.thumb])];
+    toggle('data-scrolling', true, parts);
     clearTimeout(scrollingTimer);
-    scrollingTimer = setTimeout(
-      () => toggle('data-scrolling', false, [root, scrollbar, thumb]),
-      scrollingDuration,
-    );
+    scrollingTimer = setTimeout(() => toggle('data-scrolling', false, parts), scrollingDuration);
   }
 
-  function scrollPerPixel(): number {
-    return maxScroll() / Math.max(trackSize - thumbSize, 1);
+  function scrollPerPixel(axis: Axis): number {
+    return maxScroll(axis) / Math.max(axis.trackSize - axis.thumbSize, 1);
+  }
+
+  function axisOf(event: Event): Axis | undefined {
+    return axes.find((axis) => axis.scrollbar === event.currentTarget);
+  }
+
+  function scrollTo(axis: Axis, value: number): void {
+    if (vertical(axis)) viewport.scrollTop = value;
+    else viewport.scrollLeft = value;
   }
 
   function onPointerDown(event: PointerEvent): void {
-    if (event.button !== 0) return;
+    const axis = axisOf(event);
+    if (!axis || event.button !== 0) return;
     event.preventDefault();
     readerScrolling = true;
-    if (event.target !== thumb) {
+    if (event.target !== axis.thumb) {
       // Pressing the track centers the thumb on the pointer.
-      const trackTop =
-        scrollbar.getBoundingClientRect().top +
-        Number.parseFloat(getComputedStyle(scrollbar).paddingTop);
-      viewport.scrollTop = (event.clientY - trackTop - thumbSize / 2) * scrollPerPixel();
+      const box = axis.scrollbar.getBoundingClientRect();
+      const style = getComputedStyle(axis.scrollbar);
+      const start = vertical(axis)
+        ? box.top + Number.parseFloat(style.paddingTop)
+        : box.left + Number.parseFloat(style.paddingLeft);
+      const offset = (vertical(axis) ? event.clientY : event.clientX) - start - axis.thumbSize / 2;
+      const room = axis.trackSize - axis.thumbSize;
+      const distance = !vertical(axis) && rtl() ? -(room - offset) : offset;
+      scrollTo(axis, distance * scrollPerPixel(axis));
     }
-    drag = {pointerY: event.clientY, scrollTop: viewport.scrollTop};
-    scrollbar.setPointerCapture(event.pointerId);
+    drag = {
+      axis,
+      pointer: vertical(axis) ? event.clientY : event.clientX,
+      scroll: vertical(axis) ? viewport.scrollTop : viewport.scrollLeft,
+    };
+    axis.scrollbar.setPointerCapture(event.pointerId);
   }
 
   function onPointerMove(event: PointerEvent): void {
     if (!drag) return;
-    viewport.scrollTop = drag.scrollTop + (event.clientY - drag.pointerY) * scrollPerPixel();
+    const pointer = vertical(drag.axis) ? event.clientY : event.clientX;
+    scrollTo(drag.axis, drag.scroll + (pointer - drag.pointer) * scrollPerPixel(drag.axis));
   }
 
   function onPointerUp(event: PointerEvent): void {
     drag = null;
-    if (scrollbar.hasPointerCapture(event.pointerId)) {
-      scrollbar.releasePointerCapture(event.pointerId);
+    const axis = axisOf(event);
+    if (axis?.scrollbar.hasPointerCapture(event.pointerId)) {
+      axis.scrollbar.releasePointerCapture(event.pointerId);
     }
   }
 
   function onPointerEnter(): void {
-    scrollbar.toggleAttribute('data-hovering', true);
+    for (const axis of axes) axis.scrollbar.toggleAttribute('data-hovering', true);
   }
 
   function onPointerLeave(): void {
-    scrollbar.toggleAttribute('data-hovering', false);
+    for (const axis of axes) axis.scrollbar.toggleAttribute('data-hovering', false);
   }
 
   const resizeObserver = new ResizeObserver(update);
@@ -132,10 +198,12 @@ export function createScrollArea(root: HTMLElement): Behavior {
     viewport.addEventListener(type, onReaderInput, {passive: true});
   }
   viewport.addEventListener('scroll', onScroll, {passive: true});
-  scrollbar.addEventListener('pointerdown', onPointerDown);
-  scrollbar.addEventListener('pointermove', onPointerMove);
-  scrollbar.addEventListener('pointerup', onPointerUp);
-  scrollbar.addEventListener('pointercancel', onPointerUp);
+  for (const axis of axes) {
+    axis.scrollbar.addEventListener('pointerdown', onPointerDown);
+    axis.scrollbar.addEventListener('pointermove', onPointerMove);
+    axis.scrollbar.addEventListener('pointerup', onPointerUp);
+    axis.scrollbar.addEventListener('pointercancel', onPointerUp);
+  }
   root.addEventListener('pointerenter', onPointerEnter);
   root.addEventListener('pointerleave', onPointerLeave);
   viewport.toggleAttribute('data-native-scrollbar-hidden', true);
@@ -148,10 +216,12 @@ export function createScrollArea(root: HTMLElement): Behavior {
       resizeObserver.disconnect();
       for (const type of readerInputs) viewport.removeEventListener(type, onReaderInput);
       viewport.removeEventListener('scroll', onScroll);
-      scrollbar.removeEventListener('pointerdown', onPointerDown);
-      scrollbar.removeEventListener('pointermove', onPointerMove);
-      scrollbar.removeEventListener('pointerup', onPointerUp);
-      scrollbar.removeEventListener('pointercancel', onPointerUp);
+      for (const axis of axes) {
+        axis.scrollbar.removeEventListener('pointerdown', onPointerDown);
+        axis.scrollbar.removeEventListener('pointermove', onPointerMove);
+        axis.scrollbar.removeEventListener('pointerup', onPointerUp);
+        axis.scrollbar.removeEventListener('pointercancel', onPointerUp);
+      }
       root.removeEventListener('pointerenter', onPointerEnter);
       root.removeEventListener('pointerleave', onPointerLeave);
       viewport.removeAttribute('data-native-scrollbar-hidden');

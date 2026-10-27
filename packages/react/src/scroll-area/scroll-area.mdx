@@ -59,7 +59,7 @@ Don't wrap an element that already has `overflow: auto`. [Sidebar](/components/s
 
 ## Static rendering
 
-On pages rendered on the server without React in the browser, use the static parts, and bind their behavior once the page has loaded. They scroll vertically only.
+On pages rendered on the server without React in the browser, use the static parts, and bind their behavior once the page has loaded. For both axes, add a horizontal `StaticScrollbar` and a `StaticCorner`.
 
 ```tsx
 <ScrollArea.StaticRoot>
@@ -69,6 +69,10 @@ On pages rendered on the server without React in the browser, use the static par
   <ScrollArea.StaticScrollbar>
     <ScrollArea.StaticThumb />
   </ScrollArea.StaticScrollbar>
+  <ScrollArea.StaticScrollbar orientation="horizontal">
+    <ScrollArea.StaticThumb />
+  </ScrollArea.StaticScrollbar>
+  <ScrollArea.StaticCorner />
 </ScrollArea.StaticRoot>
 ```
 
