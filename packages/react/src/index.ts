@@ -663,6 +663,8 @@ export type {
   TopNavigationMenuCollapsiblePanelProps,
   TopNavigationMenuCollapsibleProps,
   TopNavigationMenuCollapsibleTriggerProps,
+  TopNavigationMenuGroupLabelProps,
+  TopNavigationMenuGroupProps,
   TopNavigationMenuItemProps,
   TopNavigationMenuLinkProps,
   TopNavigationMenuListProps,

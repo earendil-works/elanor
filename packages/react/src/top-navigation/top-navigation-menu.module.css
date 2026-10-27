@@ -100,6 +100,26 @@
     translate: 100% 0;
   }
 
+  /* Groups sit apart like the side navigation's; their labels line up with the items' text. */
+  .group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-gap-xx-small);
+  }
+
+  .group + .group,
+  .group + .list,
+  .list + .group {
+    margin-block-start: var(--semantic-dimension-space-gap-large);
+  }
+
+  .groupLabel {
+    padding-block: var(--semantic-dimension-space-control-padding-block-small);
+    padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-ui-label);
+  }
+
   .list {
     display: flex;
     flex-direction: column;
