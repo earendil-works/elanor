@@ -2,13 +2,7 @@ import type {Behavior} from '../utils/enhance.ts';
 
 type CopyState = 'idle' | 'copied' | 'error';
 
-/**
- * Makes a server-rendered `CopyButton` copy without React. It reads the markup `CopyButton`
- * renders: the value in `data-elanor-copy-value` (only a string `value` is rendered), the labels in
- * `data-elanor-copied-label` and `data-elanor-error-label`, and the `role="status"` element after
- * the button. Like the component, it sets `data-copy-state` to `copied`, back to `idle` after
- * `semantic.duration.confirmation`, or `error`, and shows the feedback in the button's `title` and the status element.
- */
+/** Makes a server-rendered `CopyButton` copy without React. */
 export function createCopyButton(button: HTMLElement): Behavior {
   const status =
     button.nextElementSibling?.getAttribute('role') === 'status' ? button.nextElementSibling : null;
@@ -29,7 +23,7 @@ export function createCopyButton(button: HTMLElement): Behavior {
     else button.setAttribute('title', title);
     if (status) status.textContent = feedback;
     if (state === 'copied') {
-      // `semantic.duration.confirmation`, otherwise 2000ms. Minified CSS may write it in seconds.
+      // Minified CSS may write the token in seconds.
       const token = getComputedStyle(button).getPropertyValue('--semantic-duration-confirmation');
       const duration = Number.parseFloat(token) * (token.trim().endsWith('ms') ? 1 : 1000) || 2000;
       resetTimer = setTimeout(() => setState('idle'), duration);

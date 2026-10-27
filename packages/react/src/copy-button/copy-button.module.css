@@ -1,5 +1,4 @@
 @layer elanor.components {
-  /* The button renders its icon and a check, and shows the check while copied. */
   .button:not([data-copy-state='copied']) > .copiedIcon,
   .button[data-copy-state='copied'] > :has(~ .copiedIcon) {
     display: none;

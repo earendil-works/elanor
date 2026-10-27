@@ -1,19 +1,10 @@
-/** An attached behavior. */
 export interface Behavior {
-  /** Removes the behavior's listeners and timers. */
   destroy(): void;
 }
 
-/** Attaches a behavior to an element that names it in `data-elanor`. */
 export type BehaviorFactory = (element: HTMLElement) => Behavior;
 
-/**
- * Attaches the registry's behaviors to the server-rendered components in `scope`. Components name
- * their behaviors in `data-elanor`, separated by spaces like a class list. Each behavior attaches
- * once per element and is recorded in `data-elanor-enhanced`, so calling `enhance` again, such as
- * after adding content, skips enhanced elements. Names missing from the registry are left alone,
- * so a page can bind its own behaviors.
- */
+/** Attaches each behavior once to the elements in `scope` that name it in `data-elanor`. */
 export function enhance(
   behaviors: Readonly<Record<string, BehaviorFactory>>,
   scope: ParentNode = document,

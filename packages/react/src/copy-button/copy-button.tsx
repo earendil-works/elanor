@@ -40,7 +40,6 @@ export function CopyButton({
   ...props
 }: CopyButtonProps) {
   const [status, setStatus] = useState<'idle' | 'copied' | 'error'>('idle');
-  // How long the copied state lasts, read from the pressed button's tokens.
   const confirmationDuration = useRef(0);
 
   useEffect(() => {
@@ -50,7 +49,7 @@ export function CopyButton({
   }, [status]);
 
   async function copy(button: HTMLElement): Promise<void> {
-    // `semantic.duration.confirmation`, otherwise 2000ms. Minified CSS may write it in seconds.
+    // Minified CSS may write the token in seconds.
     const token = getComputedStyle(button).getPropertyValue('--semantic-duration-confirmation');
     const duration = Number.parseFloat(token) * (token.trim().endsWith('ms') ? 1 : 1000) || 2000;
     confirmationDuration.current = duration;
@@ -77,7 +76,6 @@ export function CopyButton({
         disabled={disabled}
         className={mergeClassName<BaseButton.State>(styles.button, className)}
         data-copy-state={status}
-        // The behavior contract, for pages rendered on the server (`copy-button.behavior.ts`).
         data-elanor="copy-button"
         data-elanor-copy-value={typeof value === 'string' ? value : undefined}
         data-elanor-copied-label={copiedLabel}
@@ -89,8 +87,6 @@ export function CopyButton({
           }
         }}
       >
-        {/* Both icons render, and the stylesheet shows one by `data-copy-state`, so the markup
-            works without React too. */}
         {children ?? (
           <>
             {icon}
