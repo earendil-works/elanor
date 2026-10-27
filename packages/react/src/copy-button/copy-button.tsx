@@ -23,6 +23,10 @@ export interface CopyButtonProps extends Omit<IconButtonProps, 'value'> {
   readonly onCopyError?: (error: Error) => void;
   /** The page's own behaviors for the button, attached after the copy button's. */
   readonly 'data-elanor'?: string;
+  /**
+   * A link the behavior copies as an absolute URL on static pages, for a `value` that is a function.
+   */
+  readonly 'data-elanor-copy-link'?: string;
 }
 
 function subscribeToNothing(): () => void {
@@ -43,6 +47,7 @@ export function CopyButton({
   children,
   'aria-label': label = 'Copy',
   'data-elanor': pageBehaviors,
+  'data-elanor-copy-link': copyLink,
   title,
   ...props
 }: CopyButtonProps) {
@@ -92,6 +97,7 @@ export function CopyButton({
         data-copy-state={status}
         data-elanor={classes(rendersContract && 'copy-button', pageBehaviors) || undefined}
         data-elanor-copy-value={rendersContract && typeof value === 'string' ? value : undefined}
+        data-elanor-copy-link={rendersContract ? copyLink : undefined}
         data-elanor-copied-label={rendersContract ? copiedLabel : undefined}
         data-elanor-error-label={rendersContract ? errorLabel : undefined}
         onClick={(event) => {

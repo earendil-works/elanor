@@ -27,3 +27,13 @@ The button shows on hover, on keyboard focus, after a tap or click on the headin
 Inside [Prose](/components/prose/), a linked heading gets the same space as a plain heading of its level.
 
 <Demo example="./examples/prose.tsx" />
+
+## Static rendering
+
+On pages rendered on the server without React in the browser, the same component works with two behaviors: the copy button's, which copies the heading's absolute URL, and the linked heading's, which moves the page to the heading.
+
+```ts
+import {createCopyButton, createLinkedHeading, enhance} from '@earendil-works/elanor-react';
+
+enhance({'copy-button': createCopyButton, 'linked-heading': createLinkedHeading});
+```

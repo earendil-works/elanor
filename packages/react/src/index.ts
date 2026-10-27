@@ -115,6 +115,7 @@ export type {CodeSnippetProps} from './code-snippet/code-snippet.tsx';
 export {CopyButton} from './copy-button/copy-button.tsx';
 export type {CopyButtonProps} from './copy-button/copy-button.tsx';
 export {createCopyButton} from './copy-button/copy-button.behavior.ts';
+export {createLinkedHeading} from './linked-heading/linked-heading.behavior.ts';
 
 export type {
   CollapsiblePanelProps,

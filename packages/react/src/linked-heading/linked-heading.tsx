@@ -28,7 +28,7 @@ export function LinkedHeading({
   ...props
 }: LinkedHeadingProps) {
   return (
-    <div className={classes(styles.root, className)}>
+    <div className={classes(styles.root, className)} data-elanor="linked-heading">
       {/* Focusable without joining the tab order, so a tap on the heading reveals the button. */}
       <Heading tabIndex={-1} {...props} id={id} className={styles.heading} />
       <CopyButton
@@ -37,6 +37,7 @@ export function LinkedHeading({
         aria-label={linkLabel}
         copiedLabel={copiedLabel}
         className={styles.button}
+        data-elanor-copy-link={`#${id}`}
         onClick={() => {
           window.location.hash = id;
         }}
