@@ -52,4 +52,4 @@ import {createPopover, enhance} from '@earendil-works/elanor-react';
 enhance({popover: createPopover});
 ```
 
-The positioner is a native popover in the top layer. The behavior places it next to the trigger on any `side`, flipping when the other side has more room, and opens and closes it with the same states and animation as the React parts; Escape and a press outside close it, and focus moves to the first focusable element. Without the behavior, the browser opens it in the middle of the window.
+The positioner is a native popover in the top layer. The behavior places it next to the trigger on any `side`, flipping when the other side has more room, and opens and closes it with the same states and animation as the React parts; Escape and a press outside close it, and focus moves to the first focusable element. Without the behavior, the browser opens it in the middle of the window. Give `StaticRoot` an `id` to open the popover from other buttons too, with `popovertarget`.
