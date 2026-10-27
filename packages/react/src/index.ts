@@ -157,6 +157,13 @@ export type {
   ModalStaticTriggerProps,
 } from './modal/modal-static.tsx';
 export {createModal} from './modal/modal.behavior.ts';
+export type {
+  SideNavigationStaticCollapsiblePanelProps,
+  SideNavigationStaticCollapsibleProps,
+  SideNavigationStaticCollapsibleTriggerProps,
+  SideNavigationStaticRootProps,
+} from './side-navigation/side-navigation-static.tsx';
+export {createSideNavigation} from './side-navigation/side-navigation.behavior.ts';
 
 export {enhance} from './utils/enhance.ts';
 export type {Behavior, BehaviorFactory} from './utils/enhance.ts';

@@ -9,3 +9,10 @@ export {
   SideNavigationCollapsibleTrigger as CollapsibleTrigger,
   SideNavigationCollapsiblePanel as CollapsiblePanel,
 } from './side-navigation.tsx';
+
+export {
+  SideNavigationStaticRoot as StaticRoot,
+  SideNavigationStaticCollapsible as StaticCollapsible,
+  SideNavigationStaticCollapsibleTrigger as StaticCollapsibleTrigger,
+  SideNavigationStaticCollapsiblePanel as StaticCollapsiblePanel,
+} from './side-navigation-static.tsx';
