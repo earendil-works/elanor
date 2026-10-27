@@ -15,7 +15,7 @@ Requires React 19. Styles are precompiled; consumers do not need CSS Modules sup
 Install the [fonts](https://github.com/earendil-works/elanor/tree/main/packages/fonts) and [brand tokens](https://github.com/earendil-works/elanor/tree/main/packages/design-tokens) from the internal package source, then import them once:
 
 ```tsx
-import '@earendil-works/elanor-fonts/earendil.css';
+import '@earendil-works/elanor-fonts/mallos-serif.css';
 import '@earendil-works/elanor-fonts/commit-mono.css';
 import '@earendil-works/design-tokens/radius.css';
 import '@earendil-works/elanor-react/elanor.min.css';

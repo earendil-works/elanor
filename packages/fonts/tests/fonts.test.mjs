@@ -6,15 +6,14 @@ const root = new URL('../', import.meta.url);
 const manifest = JSON.parse(await readFile(new URL('package.json', root), 'utf8'));
 const families = [
   {
-    entry: 'earendil',
-    family: 'Earendil',
+    entry: 'mallos-serif',
+    family: 'Mallos Serif',
     format: 'woff2',
     signature: 'wOF2',
+    // Variable fonts: one file per style covers the weight range.
     faces: [
-      ['Earendil-Regular.woff2', 400, 'normal'],
-      ['Earendil-Italic.woff2', 400, 'italic'],
-      ['Earendil-Bold.woff2', 700, 'normal'],
-      ['Earendil-BoldItalic.woff2', 700, 'italic'],
+      ['MallosSerif-Variable.woff2', '400 700', 'normal'],
+      ['MallosSerif-Italic-Variable.woff2', '400 700', 'italic'],
     ],
   },
   {
