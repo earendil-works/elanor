@@ -9,8 +9,19 @@ export interface ScrollAreaStaticPartProps extends HTMLAttributes<HTMLDivElement
   readonly ref?: Ref<HTMLDivElement> | undefined;
 }
 
+export interface ScrollAreaStaticRootProps extends ScrollAreaStaticPartProps {
+  /** The page's own behaviors for this element, attached after the component's. */
+  readonly 'data-elanor'?: string;
+}
+
 /** A scroll area for pages without React in the browser; `createScrollArea` makes it work. */
-export function ScrollAreaStaticRoot({ref, className, style, ...props}: ScrollAreaStaticPartProps) {
+export function ScrollAreaStaticRoot({
+  'data-elanor': pageBehaviors,
+  ref,
+  className,
+  style,
+  ...props
+}: ScrollAreaStaticRootProps) {
   return (
     <div
       role="presentation"
@@ -25,7 +36,7 @@ export function ScrollAreaStaticRoot({ref, className, style, ...props}: ScrollAr
           ...style,
         } as CSSProperties
       }
-      data-elanor="scroll-area"
+      data-elanor={pageBehaviors ? `scroll-area ${pageBehaviors}` : 'scroll-area'}
     />
   );
 }

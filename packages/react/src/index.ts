@@ -134,6 +134,7 @@ export type {
 export {createCollapsible} from './collapsible/collapsible.behavior.ts';
 export type {
   ScrollAreaStaticPartProps,
+  ScrollAreaStaticRootProps,
   ScrollAreaStaticScrollbarProps,
 } from './scroll-area/scroll-area-static.tsx';
 export {createScrollArea} from './scroll-area/scroll-area.behavior.ts';
