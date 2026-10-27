@@ -104,6 +104,45 @@ const MenuLink = createLink(TopNavigation.MenuLink);
 <MenuLink to="/docs/rollbacks">Rollbacks</MenuLink>;
 ```
 
+### Static rendering
+
+On pages rendered on the server without React in the browser, use the static menu parts; `MenuList` and `MenuItem` stay the same:
+
+```tsx
+<TopNavigation.StaticMenu defaultPanel="main">
+  <TopNavigation.StaticMenuTrigger aria-label="Navigation menu" />
+  <TopNavigation.StaticMenuPopup aria-label="Navigation menu">
+    <nav aria-label="Main">
+      <TopNavigation.StaticMenuPanel panel="main">
+        <TopNavigation.MenuList>
+          <TopNavigation.MenuItem>
+            <TopNavigation.StaticMenuPanelTrigger panel="docs">
+              Docs
+            </TopNavigation.StaticMenuPanelTrigger>
+          </TopNavigation.MenuItem>
+        </TopNavigation.MenuList>
+      </TopNavigation.StaticMenuPanel>
+      <TopNavigation.StaticMenuPanel panel="docs" parent="main" backLabel="Main menu">
+        <TopNavigation.StaticMenuCollapsible>
+          <TopNavigation.StaticMenuCollapsibleTrigger>
+            Guides
+          </TopNavigation.StaticMenuCollapsibleTrigger>
+          <TopNavigation.StaticMenuCollapsiblePanel>…</TopNavigation.StaticMenuCollapsiblePanel>
+        </TopNavigation.StaticMenuCollapsible>
+      </TopNavigation.StaticMenuPanel>
+    </nav>
+  </TopNavigation.StaticMenuPopup>
+</TopNavigation.StaticMenu>
+```
+
+```ts
+import {createCollapsible, createTopNavigationMenu, enhance} from '@earendil-works/elanor-react';
+
+enhance({'top-navigation-menu': createTopNavigationMenu, collapsible: createCollapsible});
+```
+
+The popup is a native popover. The behavior opens and closes it like the React menu: Escape and choosing a link close it, presses outside leave it open, panels slide with the same focus moves, and each opening starts at `defaultPanel`. Without the behavior, the trigger still opens and closes it.
+
 ## Responsive navigation
 
 On desktop, destinations are in a [Sidebar](/components/sidebar/) and resources in the header. Below `semantic.dimension.breakpoint.medium`, both move into a [Drawer](/components/drawer/). They share the current selection; the sidebar's collapsed state stays separate from the drawer's open state.

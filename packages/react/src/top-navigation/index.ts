@@ -17,3 +17,15 @@ export {
   TopNavigationMenuCollapsibleTrigger as MenuCollapsibleTrigger,
   TopNavigationMenuCollapsiblePanel as MenuCollapsiblePanel,
 } from './top-navigation-menu.tsx';
+
+export {
+  TopNavigationStaticMenu as StaticMenu,
+  TopNavigationStaticMenuTrigger as StaticMenuTrigger,
+  TopNavigationStaticMenuPopup as StaticMenuPopup,
+  TopNavigationStaticMenuPanel as StaticMenuPanel,
+  TopNavigationStaticMenuPanelTrigger as StaticMenuPanelTrigger,
+  TopNavigationStaticMenuLink as StaticMenuLink,
+  TopNavigationStaticMenuCollapsible as StaticMenuCollapsible,
+  TopNavigationStaticMenuCollapsibleTrigger as StaticMenuCollapsibleTrigger,
+  TopNavigationStaticMenuCollapsiblePanel as StaticMenuCollapsiblePanel,
+} from './top-navigation-menu-static.tsx';

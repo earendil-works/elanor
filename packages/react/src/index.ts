@@ -190,6 +190,18 @@ export type {
 } from './search-dialog/search-dialog-static.tsx';
 export {createSearchDialog} from './search-dialog/search-dialog.behavior.ts';
 export type {
+  TopNavigationStaticMenuCollapsiblePanelProps,
+  TopNavigationStaticMenuCollapsibleProps,
+  TopNavigationStaticMenuCollapsibleTriggerProps,
+  TopNavigationStaticMenuLinkProps,
+  TopNavigationStaticMenuPanelProps,
+  TopNavigationStaticMenuPanelTriggerProps,
+  TopNavigationStaticMenuPopupProps,
+  TopNavigationStaticMenuProps,
+  TopNavigationStaticMenuTriggerProps,
+} from './top-navigation/top-navigation-menu-static.tsx';
+export {createTopNavigationMenu} from './top-navigation/top-navigation-menu.behavior.ts';
+export type {
   SearchDialogStaticResult,
   SearchDialogStaticSource,
 } from './search-dialog/search-dialog.behavior.ts';
