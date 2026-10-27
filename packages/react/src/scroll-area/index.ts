@@ -9,3 +9,11 @@ export {
 } from './scroll-area.tsx';
 
 export const Corner = BaseScrollArea.Corner;
+
+export {
+  ScrollAreaStaticRoot as StaticRoot,
+  ScrollAreaStaticViewport as StaticViewport,
+  ScrollAreaStaticContent as StaticContent,
+  ScrollAreaStaticScrollbar as StaticScrollbar,
+  ScrollAreaStaticThumb as StaticThumb,
+} from './scroll-area-static.tsx';

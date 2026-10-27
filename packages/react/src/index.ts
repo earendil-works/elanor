@@ -132,6 +132,8 @@ export type {
   CollapsibleStaticTriggerProps,
 } from './collapsible/collapsible-static.tsx';
 export {createCollapsible} from './collapsible/collapsible.behavior.ts';
+export type {ScrollAreaStaticPartProps} from './scroll-area/scroll-area-static.tsx';
+export {createScrollArea} from './scroll-area/scroll-area.behavior.ts';
 
 export {enhance} from './utils/enhance.ts';
 export type {Behavior, BehaviorFactory} from './utils/enhance.ts';
