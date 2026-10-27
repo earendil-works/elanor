@@ -8,17 +8,30 @@ import {TableOfContents, type TableOfContentsRootProps} from './table-of-content
 
 import styles from './table-of-contents.module.css';
 
-export type TableOfContentsStaticRootProps = TableOfContentsRootProps;
+export interface TableOfContentsStaticRootProps extends TableOfContentsRootProps {
+  /** The page's own behaviors for this element, attached after the component's. */
+  readonly 'data-elanor'?: string;
+}
 
 /**
  * A table of contents for pages without React in the browser; `createTableOfContents` marks the
  * section in view.
  */
-export function TableOfContentsStaticRoot(props: TableOfContentsStaticRootProps) {
-  return <TableOfContents {...props} data-elanor="table-of-contents" />;
+export function TableOfContentsStaticRoot({
+  'data-elanor': pageBehaviors,
+  ...props
+}: TableOfContentsStaticRootProps) {
+  return (
+    <TableOfContents
+      {...props}
+      data-elanor={pageBehaviors ? `table-of-contents ${pageBehaviors}` : 'table-of-contents'}
+    />
+  );
 }
 
 export interface TableOfContentsStaticMenuProps extends HTMLAttributes<HTMLDivElement> {
+  /** The page's own behaviors for this element, attached after the component's. */
+  readonly 'data-elanor'?: string;
   readonly ref?: Ref<HTMLDivElement> | undefined;
 }
 
@@ -27,6 +40,7 @@ export interface TableOfContentsStaticMenuProps extends HTMLAttributes<HTMLDivEl
  * `createTableOfContentsMenu`, `createPopover`, and `createTableOfContents` make it work.
  */
 export function TableOfContentsStaticMenu({
+  'data-elanor': pageBehaviors,
   ref,
   className,
   children,
@@ -37,7 +51,9 @@ export function TableOfContentsStaticMenu({
       {...props}
       ref={ref}
       className={classes(styles.menu, className)}
-      data-elanor="table-of-contents-menu"
+      data-elanor={
+        pageBehaviors ? `table-of-contents-menu ${pageBehaviors}` : 'table-of-contents-menu'
+      }
     >
       <Popover.StaticRoot>{children}</Popover.StaticRoot>
     </div>
@@ -77,9 +93,12 @@ export interface TableOfContentsStaticMenuPopupProps extends HTMLAttributes<HTML
   readonly ref?: Ref<HTMLElement> | undefined;
   /** Accessible name of the popup and the list's `nav`. */
   readonly label?: string;
+  /** The page's own behaviors for the list's `nav`, attached after the component's. */
+  readonly 'data-elanor'?: string;
 }
 
 export function TableOfContentsStaticMenuPopup({
+  'data-elanor': pageBehaviors,
   ref,
   label = 'Table of contents',
   children,
@@ -94,7 +113,12 @@ export function TableOfContentsStaticMenuPopup({
         data-closed=""
         className={styles.menuPopup}
       >
-        <nav {...props} ref={ref} aria-label={label} data-elanor="table-of-contents">
+        <nav
+          {...props}
+          ref={ref}
+          aria-label={label}
+          data-elanor={pageBehaviors ? `table-of-contents ${pageBehaviors}` : 'table-of-contents'}
+        >
           {children}
         </nav>
       </div>
