@@ -57,3 +57,38 @@ For layouts without room for the list beside the content, `Menu` collapses the t
 Keep the trigger's text in sync with the `active` link. Assistive technology hears "Table of contents: " before it; change that with the trigger's `label`, and the list's name with the popup's `label`.
 
 The menu is a bar with separators above and below that sticks to the top of its scroll container, the document or a scrolling ancestor such as a drawer, on `semantic.number.layer.floating`, with a shadow that fades in as content scrolls beneath it. To stick below a header, set `inset-block-start` in your CSS, such as `calc(var(--semantic-dimension-size-top-navigation) - var(--semantic-dimension-border-width-small))` below a top navigation: the bar sticks one border width higher, so the header's border covers its top separator.
+
+## Static rendering
+
+On pages rendered on the server without React in the browser, the behaviors follow the page instead of the application: the static root marks the section in view and moves the `Indicator`, and the static menu shows it in its trigger. Lists, items, links, and the indicator stay the same.
+
+```tsx
+<TableOfContents.StaticRoot>
+  <TableOfContents.List>…</TableOfContents.List>
+  <TableOfContents.Indicator />
+</TableOfContents.StaticRoot>
+
+<TableOfContents.StaticMenu>
+  <TableOfContents.StaticMenuTrigger>Overview</TableOfContents.StaticMenuTrigger>
+  <TableOfContents.StaticMenuPopup>
+    <TableOfContents.List>…</TableOfContents.List>
+  </TableOfContents.StaticMenuPopup>
+</TableOfContents.StaticMenu>
+```
+
+```ts
+import {
+  createPopover,
+  createTableOfContents,
+  createTableOfContentsMenu,
+  enhance,
+} from '@earendil-works/elanor-react';
+
+enhance({
+  'table-of-contents': createTableOfContents,
+  'table-of-contents-menu': createTableOfContentsMenu,
+  popover: createPopover,
+});
+```
+
+A section is in view once its heading reaches the page's `scroll-padding-top`, and the last one at the end of the page. The menu closes when a link is chosen or the page scrolls, and its bar's shadow fades in as content scrolls beneath it.

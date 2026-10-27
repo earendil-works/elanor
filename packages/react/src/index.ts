@@ -147,7 +147,7 @@ export type {
   PopoverStaticTitleProps,
   PopoverStaticTriggerProps,
 } from './popover/popover-static.tsx';
-export {createPopover} from './popover/popover.behavior.ts';
+export {createPopover, popoverCloseEvent} from './popover/popover.behavior.ts';
 export type {
   ModalStaticCloseProps,
   ModalStaticDescriptionProps,
@@ -164,6 +164,17 @@ export type {
   SideNavigationStaticRootProps,
 } from './side-navigation/side-navigation-static.tsx';
 export {createSideNavigation} from './side-navigation/side-navigation.behavior.ts';
+export type {
+  TableOfContentsStaticMenuPopupProps,
+  TableOfContentsStaticMenuProps,
+  TableOfContentsStaticMenuTriggerProps,
+  TableOfContentsStaticRootProps,
+} from './table-of-contents/table-of-contents-static.tsx';
+export {
+  createTableOfContents,
+  tableOfContentsChangeEvent,
+} from './table-of-contents/table-of-contents.behavior.ts';
+export {createTableOfContentsMenu} from './table-of-contents/table-of-contents-menu.behavior.ts';
 
 export {enhance} from './utils/enhance.ts';
 export type {Behavior, BehaviorFactory} from './utils/enhance.ts';
