@@ -57,6 +57,53 @@ Identity and actions on one row, navigation on the row below.
 
 <Demo example="./examples/stacked.tsx" />
 
+## Menu
+
+For narrow screens, `Menu` collapses the navigation into a menu below the bar. `MenuTrigger` shows the menu icon, and the close icon while the menu is open; `MenuPopup` fills the window below `semantic.dimension.size.topNavigation`. It is built on Base UI's Dialog without modality: Escape, the trigger, and choosing a link close it, and the bar's other controls, such as a theme switcher, stay usable and leave it open. Put the panels in a `nav` named like the navigation it replaces.
+
+<Demo example="./examples/menu.tsx" />
+
+```tsx
+<TopNavigation.Menu defaultPanel="main">
+  <TopNavigation.MenuTrigger aria-label="Navigation menu" />
+  <TopNavigation.MenuPopup aria-label="Navigation menu">
+    <nav aria-label="Main">
+      <TopNavigation.MenuPanel panel="main">
+        <TopNavigation.MenuList>
+          <TopNavigation.MenuItem>
+            <TopNavigation.MenuPanelTrigger panel="docs" />
+          </TopNavigation.MenuItem>
+        </TopNavigation.MenuList>
+      </TopNavigation.MenuPanel>
+      <TopNavigation.MenuPanel panel="docs" parent="main" backLabel="Main menu">
+        <TopNavigation.MenuList>
+          <TopNavigation.MenuItem>
+            <TopNavigation.MenuCollapsible>
+              <TopNavigation.MenuCollapsibleTrigger />
+              <TopNavigation.MenuCollapsiblePanel>
+                <TopNavigation.MenuList />
+              </TopNavigation.MenuCollapsiblePanel>
+            </TopNavigation.MenuCollapsible>
+          </TopNavigation.MenuItem>
+        </TopNavigation.MenuList>
+      </TopNavigation.MenuPanel>
+    </nav>
+  </TopNavigation.MenuPopup>
+</TopNavigation.Menu>
+```
+
+Panels hold the menu's levels. Each opening starts at `defaultPanel`; a `MenuPanelTrigger` slides to a nested panel, which starts with a back button and takes focus there. Panels slide with `semantic.transition.movement.disclosure`, instantly when the reader prefers reduced motion. One level of nesting. Within a panel, `MenuCollapsible` sections open in place, like [Side navigation](/components/side-navigation/)'s.
+
+Items are styled for the menu on their own, not shared with Side navigation. `active` marks the current page with `aria-current="page"`, or the panel trigger that contains it with `aria-current="true"`; a section that contains the current page is marked too. Render the menu and the wide navigation from the same data, and switch between them with your CSS at your breakpoint.
+
+`MenuLink` renders an `a` and passes its props and ref through, so a router can wrap it. A router link that sets `aria-current="page"` on the active link, like TanStack Router's, marks the current page without `active`:
+
+```tsx
+const MenuLink = createLink(TopNavigation.MenuLink);
+
+<MenuLink to="/docs/rollbacks">Rollbacks</MenuLink>;
+```
+
 ## Responsive navigation
 
 On desktop, destinations are in a [Sidebar](/components/sidebar/) and resources in the header. Below `semantic.dimension.breakpoint.medium`, both move into a [Drawer](/components/drawer/). They share the current selection; the sidebar's collapsed state stays separate from the drawer's open state.

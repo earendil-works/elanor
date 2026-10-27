@@ -1,0 +1,234 @@
+@layer elanor.components {
+  .trigger {
+    display: grid;
+    flex: none;
+    place-items: center;
+    inline-size: var(--semantic-dimension-size-large);
+    block-size: var(--semantic-dimension-size-large);
+    padding: 0;
+    border: 0;
+    border-radius: var(--semantic-dimension-radius-small);
+    background: var(--semantic-color-background-fill-ghost-neutral);
+    color: var(--semantic-color-icon-secondary);
+    cursor: pointer;
+  }
+
+  /* The menu icon turns into the close icon while the menu is open. */
+  .openIcon,
+  .closeIcon {
+    grid-area: 1 / 1;
+    inline-size: var(--semantic-dimension-size-icon);
+    block-size: var(--semantic-dimension-size-icon);
+  }
+
+  .closeIcon,
+  .trigger[data-popup-open] > .openIcon {
+    visibility: hidden;
+  }
+
+  .trigger[data-popup-open] > .closeIcon {
+    visibility: visible;
+  }
+
+  .trigger[data-popup-open] {
+    color: var(--semantic-color-icon-primary);
+  }
+
+  @media (hover: hover) {
+    .trigger:hover {
+      background: var(--semantic-color-background-fill-ghost-neutral-hover);
+      color: var(--semantic-color-icon-primary);
+    }
+  }
+
+  .trigger:focus-visible {
+    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline-offset: calc(-1 * var(--semantic-dimension-border-width-large));
+  }
+
+  /* The open menu fills the window below the top navigation. Its panels fill the menu, so the
+     `nav` around them needs no styles. */
+  .popup {
+    position: fixed;
+    inset: var(--semantic-dimension-size-top-navigation) 0 0;
+    z-index: var(--semantic-number-layer-floating);
+    overflow: hidden;
+    outline: 0;
+    background: var(--semantic-color-background-canvas);
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-ui-primary);
+  }
+
+  /* Panels slide sideways; reduced motion makes the slide instant through the token. Hidden
+     panels stay visible while they slide out, then hide. */
+  .panel {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-gap-xx-small);
+    padding-block: var(--semantic-dimension-space-padding-large)
+      var(--semantic-dimension-space-padding-xx-large);
+    padding-inline: var(--semantic-dimension-space-padding-x-large);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    transition: translate var(--semantic-transition-movement-disclosure);
+  }
+
+  /* Visibility stays visible for the whole transition, then switches. */
+  .panel:is([data-position='before'], [data-position='after']) {
+    visibility: hidden;
+    transition:
+      translate var(--semantic-transition-movement-disclosure),
+      visibility var(--semantic-transition-movement-disclosure);
+  }
+
+  .panel[data-position='before'] {
+    translate: -100% 0;
+  }
+
+  .panel[data-position='after'] {
+    translate: 100% 0;
+  }
+
+  .list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-gap-xx-small);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .item {
+    min-inline-size: 0;
+  }
+
+  /* Items: secondary text, the current page or section filled in primary text at the selected
+     weight, which keeps its fill on hover. */
+  .link,
+  .back {
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: var(--semantic-dimension-space-control-gap-large);
+    inline-size: 100%;
+    padding-block: var(--semantic-dimension-space-control-padding-block-small);
+    padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
+    border: 0;
+    border-radius: var(--semantic-dimension-radius-small);
+    background: var(--semantic-color-background-fill-ghost-neutral);
+    color: var(--semantic-color-text-secondary);
+    font: inherit;
+    text-align: start;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  .link:is([aria-current='page'], [aria-current='true']) {
+    background: var(--semantic-color-background-fill-ghost-neutral-active);
+    color: var(--semantic-color-text-primary);
+    font-weight: var(--semantic-font-weight-ui-selected);
+  }
+
+  /* The back button leads a nested panel in the selected weight, with room below it. Its label
+     centers in the row; its chevron sits at the start, in line with the items' text. A grid
+     places them: positioning the chevron absolutely kept WebKit from hitting the button. */
+  .back {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    margin-block-end: var(--semantic-dimension-space-gap-large);
+    color: var(--semantic-color-text-primary);
+    font-weight: var(--semantic-font-weight-ui-selected);
+  }
+
+  .back > .icon {
+    justify-self: start;
+  }
+
+  @media (hover: hover) {
+    .link:not([aria-current='page'], [aria-current='true']):hover,
+    .back:hover {
+      background: var(--semantic-color-background-fill-ghost-neutral-hover);
+    }
+  }
+
+  .link:focus-visible,
+  .back:focus-visible {
+    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline-offset: var(--semantic-dimension-border-width-medium);
+  }
+
+  .label {
+    flex: 1;
+    min-inline-size: 0;
+  }
+
+  .icon {
+    display: inline-flex;
+    flex: none;
+    inline-size: var(--semantic-dimension-size-icon);
+    block-size: var(--semantic-dimension-size-icon);
+    color: var(--semantic-color-icon-secondary);
+  }
+
+  .icon > svg {
+    display: block;
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  /* Collapsible sections inside a panel, built like SideNavigation's: the chevron points sideways
+     while closed, and the panel animates its measured height. */
+  .collapsible {
+    min-inline-size: 0;
+  }
+
+  .chevron {
+    transition: rotate var(--semantic-transition-movement-disclosure);
+  }
+
+  .collapsibleTrigger:not([data-panel-open]) .chevron {
+    rotate: -90deg;
+  }
+
+  /* A section that contains the current page is marked like the page itself. */
+  .collapsible:has(.link[aria-current='page']) > .collapsibleTrigger {
+    color: var(--semantic-color-text-primary);
+    font-weight: var(--semantic-font-weight-ui-selected);
+  }
+
+  .collapsiblePanel {
+    min-inline-size: 0;
+    height: var(--collapsible-panel-height);
+    overflow: hidden;
+    transition: height var(--semantic-transition-movement-disclosure);
+  }
+
+  .collapsiblePanel[data-starting-style],
+  .collapsiblePanel[data-ending-style] {
+    height: 0;
+  }
+
+  /* Space above the nested list, as content rather than padding, so a closed panel has none. */
+  .collapsiblePanel::before {
+    display: block;
+    padding-block-start: var(--semantic-dimension-space-padding-xx-small);
+    content: '';
+  }
+
+  /* Nested links indent only their text, so fills keep the full row width. */
+  .collapsiblePanel .link {
+    padding-inline-start: calc(
+      var(--semantic-dimension-space-control-padding-inline-small) +
+        var(--semantic-dimension-space-padding-x-large)
+    );
+  }
+
+  @media (forced-colors: active) {
+    .link:is([aria-current='page'], [aria-current='true']) {
+      outline: var(--semantic-dimension-border-width-default) solid Highlight;
+      outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
+    }
+  }
+}
