@@ -4,7 +4,7 @@ export {
   CollapsibleStaticRoot as StaticRoot,
   CollapsibleStaticTrigger as StaticTrigger,
   CollapsibleStaticPanel as StaticPanel,
-} from './collapsible.tsx';
+} from './collapsible-static.tsx';
 
 export const Root = BaseCollapsible.Root;
 export const Trigger = BaseCollapsible.Trigger;

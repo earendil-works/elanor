@@ -123,12 +123,14 @@ export type {
   CollapsibleRootChangeEventReason,
   CollapsibleRootProps,
   CollapsibleRootState,
-  CollapsibleStaticPanelProps,
-  CollapsibleStaticRootProps,
-  CollapsibleStaticTriggerProps,
   CollapsibleTriggerProps,
   CollapsibleTriggerState,
 } from './collapsible/collapsible.tsx';
+export type {
+  CollapsibleStaticPanelProps,
+  CollapsibleStaticRootProps,
+  CollapsibleStaticTriggerProps,
+} from './collapsible/collapsible-static.tsx';
 export {createCollapsible} from './collapsible/collapsible.behavior.ts';
 
 export {enhance} from './utils/enhance.ts';
