@@ -13,6 +13,18 @@ Earendil's design system. It provides UI building blocks; applications supply ro
 
 The [docs app](./apps/docs) runs on Astro.
 
+## Preview packages
+
+Every push to `main` publishes preview builds of `@earendil-works/elanor-react` and `@earendil-works/elanor-icons-react` to [pkg.earendil.com](https://pkg.earendil.com) ([workflow](./.github/workflows/preview-packages.yml)). Log in once with an Earendil Works account, then install the latest build of `main` or pin a commit:
+
+```sh
+npm login --registry=https://pkg.earendil.com
+npm i https://pkg.earendil.com/@earendil-works/elanor-react@main
+npm i https://pkg.earendil.com/@earendil-works/elanor-react@<full commit sha>
+```
+
+`elanor-react` installs the `elanor-icons-react` build of the same commit. Pin a full commit SHA where a lockfile is installed with `npm ci`; builds expire 30 days after upload. To publish another package, pack it in the workflow and add it to this repository's entry in `earendil-works/pkg` (`src/config.ts`).
+
 ## Development
 
 Requires Node.js ≥24.22.1 <25 and pnpm 12.8.2. pnpm only installs dependency versions published at least seven days ago (`pnpm-workspace.yaml`).
