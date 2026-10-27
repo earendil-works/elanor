@@ -54,9 +54,8 @@ Behaviors make components work on pages rendered on the server without React in 
 
 - Put a component's behavior next to it as `<component>.behavior.ts`, a factory `create<Component>(element)` that returns `{destroy()}`, and export it from `src/behaviors.ts`. `utils/enhance.ts` binds behaviors to elements by `data-elanor`.
 - Behaviors import no React, Base UI, icons, or `.tsx` files (lint enforces it). React components may import from their behavior, such as shared timing or labels.
-- The component renders the behavior's markup contract: `data-elanor="<behavior>"`, options as `data-elanor-*` attributes, and states in the attributes the component already renders, such as `data-copy-state`. Document the contract at the top of the behavior file. Class names are hashed, so behaviors never select by class.
+- The component renders the behavior's markup contract: `data-elanor="<behavior>"`, options as `data-elanor-*` attributes, and states in the attributes the component already renders, such as `data-copy-state`. Document the contract in the factory's JSDoc. Class names are hashed, so behaviors never select by class.
 - Render every state the stylesheet needs without React, such as both icons of a toggle, so CSS can switch them by attribute.
-- Test behaviors in `tests/` against the component's server-rendered markup (`renderToStaticMarkup`), in `happy-dom`.
 
 ## CSS
 

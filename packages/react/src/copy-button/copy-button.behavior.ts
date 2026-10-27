@@ -1,16 +1,3 @@
-// The copy button's behavior, without React, for pages rendered on the server. The React
-// component copies in its own click handler and shares the timing and default labels from here.
-//
-// Markup, as `CopyButton` renders it:
-// - a button with `data-elanor="copy-button"`, `data-copy-state="idle"`, and the text to copy in
-//   `data-elanor-copy-value` (only for a string `value`; a function can't be written to HTML);
-// - the feedback in `data-elanor-copied-label` and `data-elanor-error-label`;
-// - a `role="status"` element right after the button.
-//
-// Like the component, a copy sets `data-copy-state` to `copied`, back to `idle` after two seconds,
-// or to `error`, and shows the feedback in the button's `title` and the status element. The
-// stylesheet swaps the icons by `data-copy-state`.
-
 import type {Behavior} from '../utils/enhance.ts';
 
 /** How long the copied state lasts, in milliseconds. */
@@ -20,7 +7,13 @@ export const defaultErrorLabel = 'Could not copy. Try again or copy manually.';
 
 type CopyState = 'idle' | 'copied' | 'error';
 
-/** Copies the button's value when it is pressed and reports the result. */
+/**
+ * Makes a server-rendered `CopyButton` copy without React. It reads the markup `CopyButton`
+ * renders: the value in `data-elanor-copy-value` (only a string `value` is rendered), the labels in
+ * `data-elanor-copied-label` and `data-elanor-error-label`, and the `role="status"` element after
+ * the button. Like the component, it sets `data-copy-state` to `copied`, back to `idle` after two
+ * seconds, or `error`, and shows the feedback in the button's `title` and the status element.
+ */
 export function createCopyButton(button: HTMLElement): Behavior {
   const status =
     button.nextElementSibling?.getAttribute('role') === 'status' ? button.nextElementSibling : null;

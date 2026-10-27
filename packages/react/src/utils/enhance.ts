@@ -1,9 +1,3 @@
-// Binds Elanor's behaviors to components rendered on the server, for pages without React in the
-// browser. Components carry `data-elanor` with one or more behavior names separated by spaces,
-// like a class list; `enhance` attaches each named behavior once per element and records it in
-// `data-elanor-enhanced`, so calling it again, such as after adding content, skips elements it
-// already enhanced. Behaviors not in the registry are left alone, so a page can bind its own.
-
 /** An attached behavior. */
 export interface Behavior {
   /** Removes the behavior's listeners and timers. */
@@ -14,8 +8,11 @@ export interface Behavior {
 export type BehaviorFactory = (element: HTMLElement) => Behavior;
 
 /**
- * Attaches the registry's behaviors to the elements in `scope` that name them in `data-elanor`,
- * and returns them.
+ * Attaches the registry's behaviors to the server-rendered components in `scope`. Components name
+ * their behaviors in `data-elanor`, separated by spaces like a class list. Each behavior attaches
+ * once per element and is recorded in `data-elanor-enhanced`, so calling `enhance` again, such as
+ * after adding content, skips enhanced elements. Names missing from the registry are left alone,
+ * so a page can bind its own behaviors.
  */
 export function enhance(
   behaviors: Readonly<Record<string, BehaviorFactory>>,
