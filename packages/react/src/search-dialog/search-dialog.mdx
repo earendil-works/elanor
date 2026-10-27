@@ -99,4 +99,4 @@ enhance({
 });
 ```
 
-The popup is a native modal dialog, opened and closed like [Modal](/components/modal/)'s static parts. Each opening starts with an empty query; the source loads when the dialog first opens, and up to ten results show once the query has two characters, the first selected. `StaticMessage`s show per state: `idle`, `short`, `loading`, `empty`, and `error`. Keyboard shortcuts are the page's: open the dialog with its `showModal()`.
+The popup is a native modal dialog, opened and closed like [Modal](/components/modal/)'s static parts. Each opening starts with an empty query; the source loads when the dialog first opens, and up to ten results show once the query has two characters, the first selected. `StaticMessage`s show per state: `idle`, `short`, `loading`, `empty`, and `error`. Keyboard shortcuts are the page's: open the dialog with its `showModal()`. Give `StaticRoot` an `id` to open the dialog from other buttons too, with `commandfor` and `command="show-modal"`, and pass the page's own behaviors to `StaticPopup` in `data-elanor`.
