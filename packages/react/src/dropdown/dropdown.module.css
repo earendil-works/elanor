@@ -155,6 +155,7 @@
     justify-content: center;
     inline-size: var(--semantic-dimension-size-x-small);
     block-size: var(--semantic-dimension-size-x-small);
+    margin-block: calc((1lh - var(--semantic-dimension-size-x-small)) / 2);
     border-radius: var(--semantic-dimension-radius-full);
     color: var(--semantic-color-icon-radio-indicator);
   }
