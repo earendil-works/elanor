@@ -62,16 +62,25 @@ export function createScrollArea(root: HTMLElement): Behavior {
     for (const element of elements) element.toggleAttribute(name, on);
   }
 
-  function updateAxis(axis: Axis): boolean {
+  function overflowAttributes(axis: Axis): [string, string, string] {
+    const letter = vertical(axis) ? 'y' : 'x';
+    return [
+      `data-has-overflow-${letter}`,
+      `data-overflow-${letter}-start`,
+      `data-overflow-${letter}-end`,
+    ];
+  }
+
+  // Expects the scrollbar shown and the corner sized, so it measures the track the thumb moves in.
+  function updateAxis(axis: Axis): void {
     const max = maxScroll(axis);
     const overflows = max > 0;
-    const letter = vertical(axis) ? 'y' : 'x';
+    const [hasOverflow, overflowStart, overflowEnd] = overflowAttributes(axis);
     const parts = [root, viewport, axis.scrollbar];
-    toggle(`data-has-overflow-${letter}`, overflows, parts);
-    toggle(`data-overflow-${letter}-start`, overflows && scrolled(axis) > 0, parts);
-    toggle(`data-overflow-${letter}-end`, overflows && scrolled(axis) < max - 1, parts);
-    axis.scrollbar.style.display = overflows ? '' : 'none';
-    if (!overflows) return false;
+    toggle(hasOverflow, overflows, parts);
+    toggle(overflowStart, overflows && scrolled(axis) > 0, parts);
+    toggle(overflowEnd, overflows && scrolled(axis) < max - 1, parts);
+    if (!overflows) return;
     const style = getComputedStyle(axis.scrollbar);
     const size = vertical(axis) ? viewport.clientHeight : viewport.clientWidth;
     const scrollSize = vertical(axis) ? viewport.scrollHeight : viewport.scrollWidth;
@@ -94,11 +103,13 @@ export function createScrollArea(root: HTMLElement): Behavior {
       const offset = rtl() ? -room * progress : room * progress;
       axis.thumb.style.transform = `translate3d(${offset}px, 0, 0)`;
     }
-    return true;
   }
 
   function update(): void {
-    const shown = axes.map(updateAxis);
+    const shown = axes.map((axis) => maxScroll(axis) > 0);
+    for (const [index, axis] of axes.entries()) {
+      axis.scrollbar.style.display = shown[index] ? '' : 'none';
+    }
     const both = axes.length === 2 && shown.every(Boolean);
     const verticalBar = axes.find(vertical)?.scrollbar;
     const horizontalBar = axes.find((axis) => !vertical(axis))?.scrollbar;
@@ -111,6 +122,7 @@ export function createScrollArea(root: HTMLElement): Behavior {
       `${both ? horizontalBar?.offsetHeight : 0}px`,
     );
     if (corner) corner.style.display = both ? '' : 'none';
+    for (const axis of axes) updateAxis(axis);
     viewport.tabIndex = shown.some(Boolean) ? 0 : -1;
   }
 
@@ -169,6 +181,8 @@ export function createScrollArea(root: HTMLElement): Behavior {
 
   function onPointerMove(event: PointerEvent): void {
     if (!drag) return;
+    // A drag that pauses past the scroll-end delay is still the reader's.
+    readerScrolling = true;
     const pointer = vertical(drag.axis) ? event.clientY : event.clientX;
     scrollTo(drag.axis, drag.scroll + (pointer - drag.pointer) * scrollPerPixel(drag.axis));
   }
@@ -206,6 +220,7 @@ export function createScrollArea(root: HTMLElement): Behavior {
   }
   root.addEventListener('pointerenter', onPointerEnter);
   root.addEventListener('pointerleave', onPointerLeave);
+  const staticTabIndex = viewport.getAttribute('tabindex');
   viewport.toggleAttribute('data-native-scrollbar-hidden', true);
   update();
 
@@ -224,7 +239,26 @@ export function createScrollArea(root: HTMLElement): Behavior {
       }
       root.removeEventListener('pointerenter', onPointerEnter);
       root.removeEventListener('pointerleave', onPointerLeave);
+      // Back to the server-rendered markup, so the native scrollbars show alone and the behavior can
+      // attach again.
       viewport.removeAttribute('data-native-scrollbar-hidden');
+      if (staticTabIndex === null) viewport.removeAttribute('tabindex');
+      else viewport.setAttribute('tabindex', staticTabIndex);
+      root.style.setProperty('--scroll-area-corner-width', '0px');
+      root.style.setProperty('--scroll-area-corner-height', '0px');
+      if (corner) corner.style.display = 'none';
+      toggle('data-scrolling', false, [root]);
+      for (const axis of axes) {
+        for (const name of overflowAttributes(axis)) {
+          toggle(name, false, [root, viewport, axis.scrollbar]);
+        }
+        toggle('data-hovering', false, [axis.scrollbar]);
+        toggle('data-scrolling', false, [axis.scrollbar, axis.thumb]);
+        axis.scrollbar.style.display = 'none';
+        axis.scrollbar.style.removeProperty('--scroll-area-thumb-height');
+        axis.scrollbar.style.removeProperty('--scroll-area-thumb-width');
+        axis.thumb.style.removeProperty('transform');
+      }
     },
   };
 }
