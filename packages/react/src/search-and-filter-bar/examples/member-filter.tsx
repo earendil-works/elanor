@@ -14,7 +14,7 @@ export function MemberFilter({label, value, options, onChange}: MemberFilterProp
       items={options.map((option) => ({value: option, label: option}))}
       onValueChange={(next) => onChange(next ?? 'All')}
     >
-      <Dropdown.Trigger aria-label={`${label} filter`}>
+      <Dropdown.Trigger>
         <span>
           {label}: <Dropdown.Value />
         </span>
