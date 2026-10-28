@@ -10,6 +10,7 @@ import {
 import {
   createContext,
   useContext,
+  useId,
   useMemo,
   useRef,
   useState,
@@ -241,6 +242,53 @@ export function TopNavigationMenuPanel({
       ) : null}
       {children}
     </div>
+  );
+}
+
+/** The id of the current group's label. */
+const MenuGroupContext = /* @__PURE__ */ createContext<string | undefined>(undefined);
+
+export interface TopNavigationMenuGroupProps extends HTMLAttributes<HTMLDivElement> {
+  readonly ref?: Ref<HTMLDivElement> | undefined;
+}
+
+/**
+ * Groups lists in a panel under a `MenuGroupLabel`, which names the group.
+ * Every group needs exactly one label.
+ */
+export function TopNavigationMenuGroup({ref, className, ...props}: TopNavigationMenuGroupProps) {
+  const labelId = useId();
+  return (
+    <MenuGroupContext.Provider value={labelId}>
+      <div
+        role="group"
+        aria-labelledby={labelId}
+        {...props}
+        ref={ref}
+        className={classes(styles.group, className)}
+      />
+    </MenuGroupContext.Provider>
+  );
+}
+
+export interface TopNavigationMenuGroupLabelProps extends Omit<
+  HTMLAttributes<HTMLDivElement>,
+  'id'
+> {
+  readonly ref?: Ref<HTMLDivElement> | undefined;
+}
+
+export function TopNavigationMenuGroupLabel({
+  ref,
+  className,
+  ...props
+}: TopNavigationMenuGroupLabelProps) {
+  const labelId = useContext(MenuGroupContext);
+  if (labelId === undefined) {
+    throw new Error('TopNavigation.MenuGroupLabel must be inside TopNavigation.MenuGroup.');
+  }
+  return (
+    <div {...props} ref={ref} id={labelId} className={classes(styles.groupLabel, className)} />
   );
 }
 

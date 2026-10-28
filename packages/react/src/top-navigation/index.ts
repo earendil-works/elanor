@@ -10,6 +10,8 @@ export {
   TopNavigationMenuPopup as MenuPopup,
   TopNavigationMenuPanel as MenuPanel,
   TopNavigationMenuPanelTrigger as MenuPanelTrigger,
+  TopNavigationMenuGroup as MenuGroup,
+  TopNavigationMenuGroupLabel as MenuGroupLabel,
   TopNavigationMenuList as MenuList,
   TopNavigationMenuItem as MenuItem,
   TopNavigationMenuLink as MenuLink,

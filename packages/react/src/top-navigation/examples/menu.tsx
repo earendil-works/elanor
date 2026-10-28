@@ -3,7 +3,8 @@ import {useRef} from 'react';
 
 import styles from './menu.module.css';
 
-const guides = ['Getting started', 'Deploying a project', 'Rollbacks'];
+const start = ['Introduction', 'Installation'];
+const guides = ['Deploying a project', 'Rollbacks'];
 const reference = ['Command-line tool', 'Configuration file'];
 
 export default function TopNavigationMenuDemo() {
@@ -35,45 +36,55 @@ export default function TopNavigationMenuDemo() {
                   </TopNavigation.MenuList>
                 </TopNavigation.MenuPanel>
                 <TopNavigation.MenuPanel panel="docs" parent="main" backLabel="Main menu">
-                  <TopNavigation.MenuList>
-                    <TopNavigation.MenuItem>
-                      <TopNavigation.MenuLink href="#">Introduction</TopNavigation.MenuLink>
-                    </TopNavigation.MenuItem>
-                    <TopNavigation.MenuItem>
-                      <TopNavigation.MenuCollapsible defaultOpen>
-                        <TopNavigation.MenuCollapsibleTrigger>
-                          Guides
-                        </TopNavigation.MenuCollapsibleTrigger>
-                        <TopNavigation.MenuCollapsiblePanel>
-                          <TopNavigation.MenuList>
-                            {guides.map((page) => (
-                              <TopNavigation.MenuItem key={page}>
-                                <TopNavigation.MenuLink href="#" active={page === 'Rollbacks'}>
-                                  {page}
-                                </TopNavigation.MenuLink>
-                              </TopNavigation.MenuItem>
-                            ))}
-                          </TopNavigation.MenuList>
-                        </TopNavigation.MenuCollapsiblePanel>
-                      </TopNavigation.MenuCollapsible>
-                    </TopNavigation.MenuItem>
-                    <TopNavigation.MenuItem>
-                      <TopNavigation.MenuCollapsible>
-                        <TopNavigation.MenuCollapsibleTrigger>
-                          Reference
-                        </TopNavigation.MenuCollapsibleTrigger>
-                        <TopNavigation.MenuCollapsiblePanel>
-                          <TopNavigation.MenuList>
-                            {reference.map((page) => (
-                              <TopNavigation.MenuItem key={page}>
-                                <TopNavigation.MenuLink href="#">{page}</TopNavigation.MenuLink>
-                              </TopNavigation.MenuItem>
-                            ))}
-                          </TopNavigation.MenuList>
-                        </TopNavigation.MenuCollapsiblePanel>
-                      </TopNavigation.MenuCollapsible>
-                    </TopNavigation.MenuItem>
-                  </TopNavigation.MenuList>
+                  <TopNavigation.MenuGroup>
+                    <TopNavigation.MenuGroupLabel>Get started</TopNavigation.MenuGroupLabel>
+                    <TopNavigation.MenuList>
+                      {start.map((page) => (
+                        <TopNavigation.MenuItem key={page}>
+                          <TopNavigation.MenuLink href="#">{page}</TopNavigation.MenuLink>
+                        </TopNavigation.MenuItem>
+                      ))}
+                    </TopNavigation.MenuList>
+                  </TopNavigation.MenuGroup>
+                  <TopNavigation.MenuGroup>
+                    <TopNavigation.MenuGroupLabel>Learn</TopNavigation.MenuGroupLabel>
+                    <TopNavigation.MenuList>
+                      <TopNavigation.MenuItem>
+                        <TopNavigation.MenuCollapsible defaultOpen>
+                          <TopNavigation.MenuCollapsibleTrigger>
+                            Guides
+                          </TopNavigation.MenuCollapsibleTrigger>
+                          <TopNavigation.MenuCollapsiblePanel>
+                            <TopNavigation.MenuList>
+                              {guides.map((page) => (
+                                <TopNavigation.MenuItem key={page}>
+                                  <TopNavigation.MenuLink href="#" active={page === 'Rollbacks'}>
+                                    {page}
+                                  </TopNavigation.MenuLink>
+                                </TopNavigation.MenuItem>
+                              ))}
+                            </TopNavigation.MenuList>
+                          </TopNavigation.MenuCollapsiblePanel>
+                        </TopNavigation.MenuCollapsible>
+                      </TopNavigation.MenuItem>
+                      <TopNavigation.MenuItem>
+                        <TopNavigation.MenuCollapsible>
+                          <TopNavigation.MenuCollapsibleTrigger>
+                            Reference
+                          </TopNavigation.MenuCollapsibleTrigger>
+                          <TopNavigation.MenuCollapsiblePanel>
+                            <TopNavigation.MenuList>
+                              {reference.map((page) => (
+                                <TopNavigation.MenuItem key={page}>
+                                  <TopNavigation.MenuLink href="#">{page}</TopNavigation.MenuLink>
+                                </TopNavigation.MenuItem>
+                              ))}
+                            </TopNavigation.MenuList>
+                          </TopNavigation.MenuCollapsiblePanel>
+                        </TopNavigation.MenuCollapsible>
+                      </TopNavigation.MenuItem>
+                    </TopNavigation.MenuList>
+                  </TopNavigation.MenuGroup>
                 </TopNavigation.MenuPanel>
               </nav>
             </TopNavigation.MenuPopup>
