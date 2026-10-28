@@ -8,6 +8,8 @@ import {
   type Ref,
 } from 'react';
 
+import {classes} from '../utils/class-names.ts';
+
 interface StaticCollapsibleContextValue {
   readonly open: boolean;
   readonly panelId: string;
@@ -42,7 +44,7 @@ export function CollapsibleStaticRoot({
       <div
         {...props}
         ref={ref}
-        data-elanor={pageBehaviors ? `collapsible ${pageBehaviors}` : 'collapsible'}
+        data-elanor={classes('collapsible', pageBehaviors)}
         data-open={defaultOpen ? '' : undefined}
         data-closed={defaultOpen ? undefined : ''}
       />
@@ -64,6 +66,7 @@ export function CollapsibleStaticTrigger({ref, ...props}: CollapsibleStaticTrigg
       aria-expanded={open}
       aria-controls={panelId}
       data-panel-open={open ? '' : undefined}
+      data-elanor-collapsible-trigger=""
     />
   );
 }

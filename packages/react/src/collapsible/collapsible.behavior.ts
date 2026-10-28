@@ -2,7 +2,7 @@ import type {Behavior} from '../utils/enhance.ts';
 
 // The root's own trigger, not a nested collapsible's.
 function partsOf(root: HTMLElement): {trigger: HTMLElement; panel: HTMLElement} {
-  const trigger = [...root.querySelectorAll<HTMLElement>('[aria-controls]')].find(
+  const trigger = [...root.querySelectorAll<HTMLElement>('[data-elanor-collapsible-trigger]')].find(
     (element) => element.closest('[data-elanor~="collapsible"]') === root,
   );
   const panel = trigger
@@ -95,6 +95,8 @@ export function createCollapsible(root: HTMLElement): Behavior {
   panel.addEventListener('beforematch', onBeforeMatch);
   return {
     destroy() {
+      // Stops transitions still running from finishing the open or close.
+      change++;
       trigger.removeEventListener('click', onClick);
       panel.removeEventListener('beforematch', onBeforeMatch);
     },
