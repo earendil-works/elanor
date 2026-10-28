@@ -52,12 +52,7 @@
     inline-size: 100%;
     block-size: 100%;
     border-radius: var(--semantic-dimension-radius-full);
-    background: var(--semantic-color-border-primary);
-  }
-
-  .scrollbar[data-hovering] .thumb,
-  .thumb[data-scrolling] {
-    background: var(--semantic-color-background-fill-primary);
+    background: var(--semantic-color-background-fill-primary-neutral);
   }
 
   @media (forced-colors: active) {
@@ -67,11 +62,6 @@
 
     .thumb {
       background: ButtonText;
-    }
-
-    .scrollbar[data-hovering] .thumb,
-    .thumb[data-scrolling] {
-      background: Highlight;
     }
   }
 
