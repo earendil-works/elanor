@@ -11,6 +11,7 @@ interface FontsOverviewProps {
 }
 
 const usage = `@import '@earendil-works/elanor-fonts/mallos-serif.css';
+@import '@earendil-works/elanor-fonts/mallos-sans.css';
 @import '@earendil-works/elanor-fonts/commit-mono.css';`;
 
 const glyphs = [

@@ -22,6 +22,12 @@ const familySpecs: readonly FamilySpec[] = [
     sample: 'Sphinx of black quartz, judge my vow.',
   },
   {
+    stylesheet: 'mallos-sans.css',
+    license: 'mallos-sans.txt',
+    role: 'Sans-serif, an interim stand-in made from Source Sans 3.',
+    sample: 'Sphinx of black quartz, judge my vow.',
+  },
+  {
     stylesheet: 'commit-mono.css',
     license: 'commit-mono.txt',
     role: 'Monospace for code.',
@@ -100,22 +106,27 @@ interface FaceRule {
   readonly format: string;
 }
 
+/** The stylesheet's web font faces; faces of device fonts (`local()`, such as a metric-matched fallback) are skipped. */
 function faceRules(css: string, stylesheet: string): FaceRule[] {
-  return [...css.matchAll(/@font-face\s*\{([^}]*)\}/g)].map(([, block = '']) => {
+  const blocks = [...css.matchAll(/@font-face\s*\{([^}]*)\}/g)].map(([, block = '']) => block);
+  return blocks.flatMap((block) => {
     const read = (property: string) => {
       const value = new RegExp(`${property}:\\s*([^;]+);`).exec(block)?.[1]?.trim();
       if (!value) throw new Error(`${stylesheet}: @font-face without ${property}`);
       return value;
     };
+    if (read('src').startsWith('local(')) return [];
     const src = /url\('\.\/files\/([^']+)'\)\s*format\('([^']+)'\)/.exec(read('src'));
     if (!src?.[1] || !src[2]) throw new Error(`${stylesheet}: unexpected src ${read('src')}`);
-    return {
-      family: read('font-family').replaceAll(/['"]/g, ''),
-      weight: read('font-weight'),
-      style: read('font-style'),
-      file: src[1],
-      format: src[2],
-    };
+    return [
+      {
+        family: read('font-family').replaceAll(/['"]/g, ''),
+        weight: read('font-weight'),
+        style: read('font-style'),
+        file: src[1],
+        format: src[2],
+      },
+    ];
   });
 }
 
@@ -241,13 +252,18 @@ async function family(spec: FamilySpec, brands: readonly BrandTypography[]): Pro
   const low = Math.min(...sizes);
   const high = Math.max(...sizes);
   const formats = [...new Set(rules.map((rule) => rule.format.toUpperCase()))].join(', ');
+  // A face can be split into several files by unicode-range (Latin, Greek, Arabic …); each style is shown once.
+  const styles = [...new Map(rules.map((rule) => [`${rule.weight} ${rule.style}`, rule])).values()];
   const files =
     rules.length === 1
       ? `1 ${formats} file, ${low} KB`
-      : `${rules.length} ${formats} files, ${low === high ? low : `${low}–${high}`} KB each`;
+      : `${rules.length} ${formats} files, ${low === high ? low : `${low}–${high}`} KB each` +
+        (rules.length > styles.length
+          ? ', split by script: a page loads the ones its text needs'
+          : '');
 
   // A variable font's face covers a weight range (`400 700`): show its lightest and boldest weight.
-  const faces: FontFace[] = rules.flatMap((rule) =>
+  const faces: FontFace[] = styles.flatMap((rule) =>
     weightsOf(rule.weight).map((weight) => ({
       label: faceLabel(weight, rule.style),
       weight,
