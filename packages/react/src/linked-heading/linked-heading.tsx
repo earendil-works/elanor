@@ -1,4 +1,5 @@
 import {LinkIcon} from '@earendil-works/elanor-icons-react';
+import {useSyncExternalStore} from 'react';
 
 import {CopyButton} from '../copy-button/copy-button.tsx';
 import {Heading, type HeadingProps} from '../heading/heading.tsx';
@@ -13,7 +14,13 @@ export type LinkedHeadingProps = HeadingProps & {
   readonly linkLabel: string;
   /** Announced after the link is copied. */
   readonly copiedLabel?: string;
+  /** The page's own behaviors for the wrapper, attached after the linked heading's. */
+  readonly 'data-elanor'?: string;
 };
+
+function subscribeToNothing(): () => void {
+  return () => {};
+}
 
 /**
  * A heading followed by a button that copies the heading's link and moves the page to it. The
@@ -24,11 +31,23 @@ export function LinkedHeading({
   id,
   linkLabel,
   copiedLabel = 'Link copied.',
+  'data-elanor': pageBehaviors,
   className,
   ...props
 }: LinkedHeadingProps) {
+  // Like CopyButton's, the behavior's name is only rendered on the server, so it stands down once
+  // React hydrates.
+  const rendersContract = useSyncExternalStore(
+    subscribeToNothing,
+    () => false,
+    () => true,
+  );
+
   return (
-    <div className={classes(styles.root, className)}>
+    <div
+      className={classes(styles.root, className)}
+      data-elanor={classes(rendersContract && 'linked-heading', pageBehaviors) || undefined}
+    >
       {/* Focusable without joining the tab order, so a tap on the heading reveals the button. */}
       <Heading tabIndex={-1} {...props} id={id} className={styles.heading} />
       <CopyButton
@@ -37,6 +56,7 @@ export function LinkedHeading({
         aria-label={linkLabel}
         copiedLabel={copiedLabel}
         className={styles.button}
+        data-elanor-copy-link={`#${id}`}
         onClick={() => {
           window.location.hash = id;
         }}
