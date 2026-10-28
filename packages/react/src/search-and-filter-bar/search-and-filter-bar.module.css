@@ -21,24 +21,22 @@
 
   .filters {
     grid-column: span 8;
-    display: grid;
-    /* Four equal tracks each merge a two-column span of the eight-column slot. */
-    grid-template-columns: repeat(
-      auto-fit,
-      minmax(calc((100% - 3 * var(--semantic-dimension-space-gap-medium)) / 4), 1fr)
-    );
+    display: flex;
+    flex-wrap: wrap;
     gap: var(--semantic-dimension-space-gap-medium);
     align-items: start;
     min-inline-size: 0;
   }
 
-  .search > *,
-  .filters > * {
+  .search > * {
+    inline-size: 100%;
     min-inline-size: 0;
   }
 
-  .search > * {
-    inline-size: 100%;
+  /* Content width, up to half the slot. Skips Base UI's hidden inputs. */
+  .filters > :not(input) {
+    flex: 0 0 max-content;
+    max-inline-size: calc((100% - var(--semantic-dimension-space-gap-medium)) / 2);
   }
 
   .search:empty,
@@ -46,8 +44,11 @@
     display: none;
   }
 
-  .search:has(+ .filters:empty),
-  .search:empty + .filters {
+  /* A trigger keeps its column while the controls are in the drawer and the inline slot is empty. */
+  .search:last-child,
+  .layout:not(:has(> .trigger)) > .search:has(+ .filters:empty),
+  .search:empty + .filters,
+  .filters:first-child {
     grid-column: 1 / -1;
   }
 
@@ -62,17 +63,72 @@
       grid-column: 1 / -1;
     }
 
-    .filters {
-      grid-template-columns: repeat(
-        auto-fit,
-        minmax(calc((100% - var(--semantic-dimension-space-gap-medium)) / 2), 1fr)
-      );
+    .filters > :not(input) {
+      max-inline-size: 100%;
     }
   }
 
   @container (inline-size < 24rem) {
-    .filters {
-      grid-template-columns: minmax(0, 1fr);
+    .filters > :not(input) {
+      min-inline-size: 100%;
     }
+  }
+
+  .trigger {
+    display: none;
+  }
+
+  /* With a FiltersTrigger, narrow bars keep the search inline and move the filters into a drawer. */
+  @container (inline-size < 24rem) {
+    .layout:has(> .trigger) {
+      grid-template-columns: minmax(0, 1fr) auto;
+    }
+
+    .layout:has(> .trigger) > .search {
+      grid-column: auto;
+    }
+
+    .layout:has(> .trigger) > .filters {
+      display: none;
+    }
+
+    .trigger {
+      display: block;
+    }
+
+    .search:empty ~ .trigger,
+    .filters:first-child ~ .trigger {
+      grid-column: 1 / -1;
+    }
+  }
+
+  .drawerContent {
+    display: grid;
+    gap: var(--semantic-dimension-space-gap-large);
+  }
+
+  .filtersSlot {
+    display: grid;
+    gap: var(--semantic-dimension-space-gap-medium);
+  }
+
+  .filtersSlot > * {
+    min-inline-size: 0;
+  }
+
+  /* The drawer is at most 30rem wide, so its buttons always stack at full width. */
+  .filtersActions {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-control-gap-medium);
+  }
+
+  .visuallyHidden {
+    position: absolute;
+    inline-size: var(--semantic-dimension-border-width-small);
+    block-size: var(--semantic-dimension-border-width-small);
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
   }
 }

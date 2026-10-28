@@ -13,4 +13,5 @@ export const Trigger = BaseDrawer.Trigger;
 export const Portal = BaseDrawer.Portal;
 export const Content = BaseDrawer.Content;
 export const Close = BaseDrawer.Close;
+export const VirtualKeyboardProvider = BaseDrawer.VirtualKeyboardProvider;
 export const createHandle = BaseDrawer.createHandle;

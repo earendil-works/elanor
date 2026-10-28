@@ -26,9 +26,16 @@
     background: var(--semantic-color-background-fill-secondary);
     color: var(--semantic-color-text-primary);
     font: var(--semantic-typography-ui-primary);
+    overflow: hidden;
     text-align: start;
-    overflow-wrap: anywhere;
+    white-space: nowrap;
     cursor: pointer;
+  }
+
+  .trigger > :not(.icon) {
+    min-inline-size: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .trigger:where(:hover:not(:disabled, [data-disabled])) {
@@ -148,6 +155,7 @@
     justify-content: center;
     inline-size: var(--semantic-dimension-size-x-small);
     block-size: var(--semantic-dimension-size-x-small);
+    margin-block: calc((1lh - var(--semantic-dimension-size-x-small)) / 2);
     border-radius: var(--semantic-dimension-radius-full);
     color: var(--semantic-color-icon-radio-indicator);
   }

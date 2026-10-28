@@ -33,6 +33,8 @@ import {Dropdown} from '@earendil-works/elanor-react';
 
 `Value` shows the selected value. When values differ from their labels, pass `items` to Root, such as `items={[{value: 'alpha', label: 'Alpha'}]}`.
 
+The trigger stays on one line and truncates long values. Wrap its text in `Value` or an element, such as a `span`; bare text doesn't truncate and hides the icon. If you set `aria-label` on the trigger, include the value.
+
 The popup opens below the trigger, aligned to its start edge, and repositions when space is limited. Set `alignItemWithTrigger` on Positioner to overlap the trigger with the selected item instead.
 
 ## Item indicator
