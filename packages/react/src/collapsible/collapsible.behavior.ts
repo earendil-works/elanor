@@ -1,7 +1,13 @@
 import type {Behavior} from '../utils/enhance.ts';
 
+interface CollapsibleParts {
+  root: HTMLElement;
+  trigger: HTMLElement;
+  panel: HTMLElement;
+}
+
 // The root's own trigger, not a nested collapsible's.
-function partsOf(root: HTMLElement): {trigger: HTMLElement; panel: HTMLElement} {
+function partsOf(root: HTMLElement): CollapsibleParts {
   const trigger = [...root.querySelectorAll<HTMLElement>('[data-elanor-collapsible-trigger]')].find(
     (element) => element.closest('[data-elanor~="collapsible"]') === root,
   );
@@ -11,23 +17,51 @@ function partsOf(root: HTMLElement): {trigger: HTMLElement; panel: HTMLElement} 
   if (!trigger || !panel) {
     throw new Error('Collapsible.StaticRoot needs a StaticTrigger and a StaticPanel.');
   }
-  return {trigger, panel};
+  return {root, trigger, panel};
+}
+
+function setOpenState({root, trigger, panel}: CollapsibleParts, open: boolean): void {
+  for (const element of [root, panel]) {
+    element.toggleAttribute('data-open', open);
+    element.toggleAttribute('data-closed', !open);
+  }
+  trigger.setAttribute('aria-expanded', String(open));
+  trigger.toggleAttribute('data-panel-open', open);
+}
+
+function show(panel: HTMLElement): void {
+  panel.removeAttribute('hidden');
+  panel.removeAttribute('data-ending-style');
+}
+
+// `hidden="until-found"` keeps the box, so the measured height must go.
+function hide(panel: HTMLElement): void {
+  panel.style.removeProperty('--collapsible-panel-height');
+  panel.setAttribute(
+    'hidden',
+    panel.hasAttribute('data-elanor-hidden-until-found') ? 'until-found' : '',
+  );
+  panel.removeAttribute('data-ending-style');
+}
+
+/**
+ * Opens or closes a server-rendered `Collapsible.StaticRoot` at once, as when restoring its state
+ * on load, whether or not `createCollapsible` is attached to it yet.
+ */
+export function setCollapsibleOpen(root: HTMLElement, open: boolean): void {
+  const parts = partsOf(root);
+  setOpenState(parts, open);
+  if (open) {
+    show(parts.panel);
+    parts.panel.style.setProperty('--collapsible-panel-height', 'auto');
+  } else hide(parts.panel);
 }
 
 /** Opens and closes a server-rendered `Collapsible.StaticRoot` without React. */
 export function createCollapsible(root: HTMLElement): Behavior {
-  const {trigger, panel} = partsOf(root);
-  const hiddenValue = panel.hasAttribute('data-elanor-hidden-until-found') ? 'until-found' : '';
+  const parts = partsOf(root);
+  const {trigger, panel} = parts;
   let change = 0;
-
-  function setOpenState(open: boolean): void {
-    for (const element of [root, panel]) {
-      element.toggleAttribute('data-open', open);
-      element.toggleAttribute('data-closed', !open);
-    }
-    trigger.setAttribute('aria-expanded', String(open));
-    trigger.toggleAttribute('data-panel-open', open);
-  }
 
   async function transitionsEnd(current: number): Promise<boolean> {
     await Promise.allSettled(panel.getAnimations().map((animation) => animation.finished));
@@ -38,9 +72,8 @@ export function createCollapsible(root: HTMLElement): Behavior {
     const current = ++change;
     // A panel still closing grows back from its current height.
     const closing = panel.getAnimations().length > 0;
-    setOpenState(true);
-    panel.removeAttribute('hidden');
-    panel.removeAttribute('data-ending-style');
+    setOpenState(parts, true);
+    show(panel);
     if (!animate) {
       panel.style.setProperty('--collapsible-panel-height', 'auto');
       return;
@@ -59,24 +92,17 @@ export function createCollapsible(root: HTMLElement): Behavior {
 
   function close(animate: boolean): void {
     const current = ++change;
-    setOpenState(false);
+    setOpenState(parts, false);
     if (!animate) {
-      hide();
+      hide(panel);
       return;
     }
     panel.style.setProperty('--collapsible-panel-height', `${panel.scrollHeight}px`);
     void panel.offsetHeight;
     panel.setAttribute('data-ending-style', '');
     void transitionsEnd(current).then((latest) => {
-      if (latest) hide();
+      if (latest) hide(panel);
     });
-  }
-
-  // `hidden="until-found"` keeps the box, so the measured height must go.
-  function hide(): void {
-    panel.style.removeProperty('--collapsible-panel-height');
-    panel.setAttribute('hidden', hiddenValue);
-    panel.removeAttribute('data-ending-style');
   }
 
   function onClick(event: MouseEvent): void {
@@ -89,7 +115,7 @@ export function createCollapsible(root: HTMLElement): Behavior {
     open(false);
   }
 
-  if (root.hasAttribute('data-closed')) panel.setAttribute('hidden', hiddenValue);
+  if (root.hasAttribute('data-closed')) hide(panel);
 
   trigger.addEventListener('click', onClick);
   panel.addEventListener('beforematch', onBeforeMatch);

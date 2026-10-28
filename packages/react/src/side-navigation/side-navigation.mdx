@@ -50,3 +50,30 @@ Links with plain text are named from their text; give links with rich content an
 <Demo example="./examples/compact.tsx" />
 
 Compact navigation is one link wide: `semantic.dimension.size.medium` (32px). Switching `variant` keeps the same links, so focus and tab order are preserved. [Sidebar](/components/sidebar/) switches it when the sidebar collapses.
+
+## Static rendering
+
+On pages rendered on the server without React in the browser, use the static root and sections; lists, items, and links stay the same. Bind the behaviors right after the navigation's markup, so restored sections and the scroll position are in place before the first paint:
+
+```tsx
+<SideNavigation.StaticRoot aria-label="Documentation" persist="docs">
+  <SideNavigation.List>
+    <SideNavigation.Item>
+      <SideNavigation.StaticCollapsible defaultOpen persist="guides">
+        <SideNavigation.StaticCollapsibleTrigger>Guides</SideNavigation.StaticCollapsibleTrigger>
+        <SideNavigation.StaticCollapsiblePanel>
+          <SideNavigation.List>…</SideNavigation.List>
+        </SideNavigation.StaticCollapsiblePanel>
+      </SideNavigation.StaticCollapsible>
+    </SideNavigation.Item>
+  </SideNavigation.List>
+</SideNavigation.StaticRoot>
+```
+
+```ts
+import {createCollapsible, createSideNavigation, enhance} from '@earendil-works/elanor-react';
+
+enhance({'side-navigation': createSideNavigation, collapsible: createCollapsible});
+```
+
+Sections open and close like [Collapsible](/components/collapsible/)'s static parts. With `persist` on the root, the navigation keeps its scroll position and the states of sections with a `persist` name across pages, in session storage; a section with the current page stays open, and a section that find in page opens is remembered open. Where the browser blocks session storage, as with cookies blocked, or it is full, the navigation reports the error and works without keeping its state. The current page's link scrolls into view when it is hidden.
