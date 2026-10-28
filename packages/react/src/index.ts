@@ -138,6 +138,16 @@ export type {
   ScrollAreaStaticScrollbarProps,
 } from './scroll-area/scroll-area-static.tsx';
 export {createScrollArea} from './scroll-area/scroll-area.behavior.ts';
+export type {
+  PopoverStaticCloseProps,
+  PopoverStaticDescriptionProps,
+  PopoverStaticPopupProps,
+  PopoverStaticPositionerProps,
+  PopoverStaticRootProps,
+  PopoverStaticTitleProps,
+  PopoverStaticTriggerProps,
+} from './popover/popover-static.tsx';
+export {createPopover} from './popover/popover.behavior.ts';
 
 export {enhance} from './utils/enhance.ts';
 export type {Behavior, BehaviorFactory} from './utils/enhance.ts';

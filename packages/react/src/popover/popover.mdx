@@ -28,3 +28,28 @@ import {Popover} from '@earendil-works/elanor-react';
 ```
 
 The trigger opens the popover on click. Escape, clicking outside, or `Popover.Close` closes it and returns focus to the trigger.
+
+## Static rendering
+
+On pages rendered on the server without React in the browser, use the static parts, and bind their behavior once the page has loaded:
+
+```tsx
+<Popover.StaticRoot>
+  <Popover.StaticTrigger />
+  <Popover.StaticPositioner side="bottom" align="start" sideOffset={4}>
+    <Popover.StaticPopup>
+      <Popover.StaticTitle />
+      <Popover.StaticDescription />
+      <Popover.StaticClose />
+    </Popover.StaticPopup>
+  </Popover.StaticPositioner>
+</Popover.StaticRoot>
+```
+
+```ts
+import {createPopover, enhance} from '@earendil-works/elanor-react';
+
+enhance({popover: createPopover});
+```
+
+The positioner is a native popover in the top layer. The behavior places it next to the trigger on any `side`, flipping when the other side has more room, and opens and closes it with the same states and animation as the React parts; Escape and a press outside close it, and focus moves to the first focusable element. Without the behavior, the browser opens it in the middle of the window. Give `StaticRoot` an `id` to open the popover from other buttons too, with `popovertarget`.
