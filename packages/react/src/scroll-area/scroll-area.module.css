@@ -15,6 +15,15 @@
     border-radius: inherit;
   }
 
+  /* A static scroll area hides the native scrollbar once its behavior draws its own. */
+  .viewport[data-native-scrollbar-hidden] {
+    scrollbar-width: none;
+  }
+
+  .viewport[data-native-scrollbar-hidden]::-webkit-scrollbar {
+    display: none;
+  }
+
   .viewport:focus-visible {
     outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
     outline-offset: calc(-1 * var(--semantic-dimension-border-width-large));
