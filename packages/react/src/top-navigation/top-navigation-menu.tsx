@@ -30,7 +30,13 @@ interface MenuActions {
   readonly close: () => void;
   /** Slides to a nested panel and focuses its back button; going back focuses `opener` again. */
   readonly showPanel: (panel: string, opener: HTMLElement) => void;
-  readonly goBack: (parent: string) => void;
+  /**
+   * Slides back from `from` to `parent` and focuses the opener, or, when the menu opened on
+   * `from`, the item that leads to it.
+   */
+  readonly goBack: (parent: string, from: string) => void;
+  /** Records the item that leads to `panel`. */
+  readonly registerPanelTrigger: (panel: string, element: HTMLElement | null) => void;
   /** Attached to the current panel's back button. */
   readonly backButtonRef: RefObject<HTMLButtonElement | null>;
 }
@@ -75,6 +81,7 @@ export function TopNavigationMenu({
   const dialogActionsRef = actionsRef ?? ownActionsRef;
   const openerRef = useRef<HTMLElement>(null);
   const backButtonRef = useRef<HTMLButtonElement>(null);
+  const panelTriggersRef = useRef(new Map<string, HTMLElement>());
   // `null` until the reader slides, so each opening shows the current `defaultPanel`.
   const [panel, setPanel] = useState<string | null>(null);
 
@@ -87,9 +94,13 @@ export function TopNavigationMenu({
         flushSync(() => setPanel(next));
         backButtonRef.current?.focus({preventScroll: true});
       },
-      goBack: (parent) => {
+      goBack: (parent, from) => {
         flushSync(() => setPanel(parent));
-        openerRef.current?.focus({preventScroll: true});
+        (openerRef.current ?? panelTriggersRef.current.get(from))?.focus({preventScroll: true});
+      },
+      registerPanelTrigger: (triggerPanel, element) => {
+        if (element) panelTriggersRef.current.set(triggerPanel, element);
+        else panelTriggersRef.current.delete(triggerPanel);
       },
       backButtonRef,
     }),
@@ -106,7 +117,10 @@ export function TopNavigationMenu({
           disablePointerDismissal
           onOpenChangeComplete={(open) => {
             // Each opening starts at the default panel.
-            if (!open) setPanel(null);
+            if (!open) {
+              setPanel(null);
+              openerRef.current = null;
+            }
             onOpenChangeComplete?.(open);
           }}
         />
@@ -217,7 +231,7 @@ export function TopNavigationMenuPanel({
           ref={current ? actions.backButtonRef : undefined}
           type="button"
           className={styles.back}
-          onClick={() => actions.goBack(parent)}
+          onClick={() => actions.goBack(parent, panel)}
         >
           <span className={styles.icon} aria-hidden="true">
             <KeyboardArrowLeftIcon />
@@ -303,12 +317,17 @@ export function TopNavigationMenuPanelTrigger({
   onClick,
   ...props
 }: TopNavigationMenuPanelTriggerProps) {
-  const {showPanel} = useMenuActions('MenuPanelTrigger');
+  const {showPanel, registerPanelTrigger} = useMenuActions('MenuPanelTrigger');
   return (
     <button
       type="button"
       {...props}
-      ref={ref}
+      ref={(element) => {
+        registerPanelTrigger(panel, element);
+        if (typeof ref === 'function') return ref(element);
+        if (ref) ref.current = element;
+        return undefined;
+      }}
       aria-current={active ? 'true' : props['aria-current']}
       className={classes(styles.link, className)}
       onClick={(event) => {
