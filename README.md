@@ -15,7 +15,7 @@ The [docs app](./apps/docs) runs on Astro.
 
 ## Preview packages
 
-Every push to `main` publishes preview builds of `@earendil-works/elanor-react` and `@earendil-works/elanor-icons-react` to [pkg.earendil.com](https://pkg.earendil.com) ([workflow](./.github/workflows/preview-packages.yml)). Log in once with an Earendil Works account, then install the latest build of `main` or pin a commit:
+Every push to `main` publishes preview builds of the packages above to [pkg.earendil.com](https://pkg.earendil.com) ([workflow](./.github/workflows/preview-packages.yml)). Log in once with an Earendil Works account, then install the latest build of `main` or pin a commit:
 
 ```sh
 npm login --registry=https://pkg.earendil.com
@@ -23,7 +23,7 @@ npm i https://pkg.earendil.com/@earendil-works/elanor-react@main
 npm i https://pkg.earendil.com/@earendil-works/elanor-react@<full commit sha>
 ```
 
-`elanor-react` installs the `elanor-icons-react` build of the same commit. Pin a full commit SHA where a lockfile is installed with `npm ci`; builds expire 30 days after upload. To publish another package, pack it in the workflow and add it to this repository's entry in `earendil-works/pkg` (`src/config.ts`).
+Dependencies between Elanor packages install builds of the same commit, so `elanor-react` gets matching `elanor-icons-react`. Pin a full commit SHA where a lockfile is installed with `npm ci`; builds expire 30 days after upload. To publish a new package, add its directory to the workflow's pack step and its name to this repository's entry in `earendil-works/pkg` (`src/config.ts`).
 
 ## Development
 

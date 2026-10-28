@@ -1,6 +1,6 @@
-# Publishes preview builds of @earendil-works/elanor-react and @earendil-works/elanor-icons-react to pkg.earendil.com
-# on every push to main, moving their `main` ref. pkg.earendil.com only accepts uploads authenticated with the OIDC
-# token of this workflow on main, for the packages listed for this repository in earendil-works/pkg (src/config.ts).
+# Publishes preview builds of Elanor's packages to pkg.earendil.com on every push to main, moving their `main` ref.
+# pkg.earendil.com only accepts uploads authenticated with the OIDC token of this workflow on main, for the packages
+# listed for this repository in earendil-works/pkg (src/config.ts).
 #
 # The build job runs the code and has no id-token; the publish job only uploads the packed tarballs.
 
@@ -39,18 +39,35 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: pnpm --filter @earendil-works/elanor-react... --workspace-concurrency=1 run build
+        run: pnpm -r --filter './packages/**' --if-present --workspace-concurrency=1 run build
 
       - name: Pack
+        env:
+          BASE_URL: https://pkg.earendil.com
         run: |
           set -euo pipefail
-          # elanor-react installs the elanor-icons-react build of the same commit, not a released version.
-          manifest=packages/react/package.json
-          jq --arg url "https://pkg.earendil.com/@earendil-works/elanor-icons-react@$GITHUB_SHA" \
-            '.dependencies["@earendil-works/elanor-icons-react"] = $url' "$manifest" > "$RUNNER_TEMP/package.json"
-          mv "$RUNNER_TEMP/package.json" "$manifest"
+          # Keep in sync with this repository's packages in earendil-works/pkg (src/config.ts).
+          dirs=(
+            packages/design-tokens
+            packages/fonts
+            packages/icons/plain
+            packages/icons/plain/react
+            packages/icons/boiled
+            packages/icons/boiled/react
+            packages/logos
+            packages/logos/react
+            packages/react
+            packages/shiki-theme
+            packages/stylelint-plugin-design-tokens
+          )
+          names=$(for dir in "${dirs[@]}"; do jq .name "$dir/package.json"; done | jq -sc .)
           mkdir -p "$RUNNER_TEMP/packages"
-          for dir in packages/icons/plain/react packages/react; do
+          for dir in "${dirs[@]}"; do
+            # Dependencies on other Elanor packages install this commit's builds, not released versions.
+            jq --argjson names "$names" --arg base "$BASE_URL" --arg sha "$GITHUB_SHA" \
+              'if .dependencies then .dependencies |= with_entries(if (.key | IN($names[])) then .value = "\($base)/\(.key)@\($sha)" end) end' \
+              "$dir/package.json" > "$RUNNER_TEMP/package.json"
+            mv "$RUNNER_TEMP/package.json" "$dir/package.json"
             (cd "$dir" && pnpm pack --config.ignore-scripts=true --pack-destination "$RUNNER_TEMP/packages")
           done
 
