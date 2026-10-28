@@ -1,9 +1,9 @@
 import type {Button as BaseButton} from '@base-ui/react/button';
 import {CheckIcon, ContentCopyIcon} from '@earendil-works/elanor-icons-react';
-import {useEffect, useRef, useState, type ReactNode} from 'react';
+import {useEffect, useRef, useState, useSyncExternalStore, type ReactNode} from 'react';
 
 import {IconButton, type IconButtonProps} from '../icon-button/icon-button.tsx';
-import {mergeClassName} from '../utils/class-names.ts';
+import {classes, mergeClassName} from '../utils/class-names.ts';
 
 import styles from './copy-button.module.css';
 
@@ -25,6 +25,10 @@ export interface CopyButtonProps extends Omit<IconButtonProps, 'value'> {
   readonly 'data-elanor'?: string;
 }
 
+function subscribeToNothing(): () => void {
+  return () => {};
+}
+
 export function CopyButton({
   ref,
   value,
@@ -44,6 +48,13 @@ export function CopyButton({
 }: CopyButtonProps) {
   const [status, setStatus] = useState<'idle' | 'copied' | 'error'>('idle');
   const confirmationDuration = useRef(0);
+  // The behavior's contract is only rendered on the server and dropped once React hydrates, so the
+  // behavior stands down and client renders don't repeat the value in the DOM.
+  const rendersContract = useSyncExternalStore(
+    subscribeToNothing,
+    () => false,
+    () => true,
+  );
 
   useEffect(() => {
     if (status !== 'copied') return;
@@ -79,10 +90,10 @@ export function CopyButton({
         disabled={disabled}
         className={mergeClassName<BaseButton.State>(styles.button, className)}
         data-copy-state={status}
-        data-elanor={pageBehaviors ? `copy-button ${pageBehaviors}` : 'copy-button'}
-        data-elanor-copy-value={typeof value === 'string' ? value : undefined}
-        data-elanor-copied-label={copiedLabel}
-        data-elanor-error-label={errorLabel}
+        data-elanor={classes(rendersContract && 'copy-button', pageBehaviors) || undefined}
+        data-elanor-copy-value={rendersContract && typeof value === 'string' ? value : undefined}
+        data-elanor-copied-label={rendersContract ? copiedLabel : undefined}
+        data-elanor-error-label={rendersContract ? errorLabel : undefined}
         onClick={(event) => {
           onClick?.(event);
           if (!event.defaultPrevented && !event.baseUIHandlerPrevented && !disabled) {

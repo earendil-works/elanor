@@ -2,7 +2,10 @@ import type {Behavior} from '../utils/enhance.ts';
 
 type CopyState = 'idle' | 'copied' | 'error';
 
-/** Makes a server-rendered `CopyButton` copy without React. */
+/**
+ * Makes a server-rendered `CopyButton` copy without React. Once React hydrates the button, it drops
+ * `data-elanor-copy-value` and this behavior stands down.
+ */
 export function createCopyButton(button: HTMLElement): Behavior {
   const status =
     button.nextElementSibling?.getAttribute('role') === 'status' ? button.nextElementSibling : null;
@@ -42,7 +45,8 @@ export function createCopyButton(button: HTMLElement): Behavior {
 
   function onClick(event: MouseEvent): void {
     const value = button.dataset.elanorCopyValue;
-    if (event.defaultPrevented || button.matches(':disabled') || value === undefined) return;
+    if (event.defaultPrevented || value === undefined) return;
+    if (button.matches(':disabled, [data-disabled]')) return;
     void copy(value);
   }
 

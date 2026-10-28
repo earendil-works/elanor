@@ -42,4 +42,4 @@ import {createCopyButton, enhance} from '@earendil-works/elanor-react';
 enhance({'copy-button': createCopyButton});
 ```
 
-It copies, confirms, and announces like the React component. A function `value` only runs with React, so on static pages pass a string.
+It copies, confirms, and announces like the React component. A function `value` only runs with React, so on static pages pass a string. The server-rendered button repeats the value in an attribute; once React hydrates it, the attributes go away and the behavior stands down, so pages with both static buttons and hydrated ones can call `enhance` on the whole document.

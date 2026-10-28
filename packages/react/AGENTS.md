@@ -57,6 +57,7 @@ Behaviors make components work on pages rendered on the server without React in 
 - Components and static parts take a `data-elanor` prop and add the page's behavior names after their own, so pages can attach behaviors of their own to the same element.
 - The behavior gets everything from the markup, and the component does not import its behavior. Labels and options travel as attributes; timing comes from tokens, read from the element's computed style.
 - The component renders the behavior's markup contract: `data-elanor="<behavior>"`, options as `data-elanor-*` attributes, and states in the attributes the component already renders, such as `data-copy-state`. Document the contract in the factory's JSDoc. Class names are hashed, so behaviors never select by class.
+- Render the behavior's name and options only on the server (`useSyncExternalStore` with a server snapshot of `true`), so hydrated and client-rendered components drop them and their behavior stands down instead of handling events React already handles.
 - Render every state the stylesheet needs without React, such as both icons of a toggle, so CSS can switch them by attribute.
 
 ## CSS
