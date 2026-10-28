@@ -21,24 +21,22 @@
 
   .filters {
     grid-column: span 8;
-    display: grid;
-    /* Four equal tracks each merge a two-column span of the eight-column slot. */
-    grid-template-columns: repeat(
-      auto-fit,
-      minmax(calc((100% - 3 * var(--semantic-dimension-space-gap-medium)) / 4), 1fr)
-    );
+    display: flex;
+    flex-wrap: wrap;
     gap: var(--semantic-dimension-space-gap-medium);
     align-items: start;
     min-inline-size: 0;
   }
 
-  .search > *,
-  .filters > * {
+  .search > * {
+    inline-size: 100%;
     min-inline-size: 0;
   }
 
-  .search > * {
-    inline-size: 100%;
+  /* Content width, up to half the slot. Skips Base UI's hidden inputs. */
+  .filters > :not(input) {
+    flex: 0 0 max-content;
+    max-inline-size: calc((100% - var(--semantic-dimension-space-gap-medium)) / 2);
   }
 
   .search:empty,
@@ -65,17 +63,14 @@
       grid-column: 1 / -1;
     }
 
-    .filters {
-      grid-template-columns: repeat(
-        auto-fit,
-        minmax(calc((100% - var(--semantic-dimension-space-gap-medium)) / 2), 1fr)
-      );
+    .filters > :not(input) {
+      max-inline-size: 100%;
     }
   }
 
   @container (inline-size < 24rem) {
-    .filters {
-      grid-template-columns: minmax(0, 1fr);
+    .filters > :not(input) {
+      min-inline-size: 100%;
     }
   }
 

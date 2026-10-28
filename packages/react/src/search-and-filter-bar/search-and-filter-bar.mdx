@@ -25,6 +25,14 @@ import {Search, SearchAndFilterBar} from '@earendil-works/elanor-react';
 
 The bar only arranges its contents; the application filters the data. Give Root `role="search"` and an `aria-label`, and announce the number of results in a status region.
 
+## Filter widths
+
+Each filter is as wide as its content, up to half the filter area. Filters that don't fit wrap to the next row. Below 48rem a filter can take the full row; below 24rem each one does.
+
+Put controls directly in Filters. A wrapper element counts as one filter.
+
+<Demo example="./examples/content-width.tsx" />
+
 ## Narrow bars
 
 Add a FiltersTrigger and a FiltersDrawer, and bars narrower than 24rem keep the search and replace the filters with a button that opens them in a [Drawer](/components/drawer/). Without them, the filters stack in one column. A container query switches the layout, so it fits the bar's own width, including narrow columns on wide screens. The drawer closes when the bar grows past it, and focus moves to the inline filters.
