@@ -19,7 +19,7 @@ import {Heading, Prose, Text} from '@earendil-works/elanor-react';
 </Prose>;
 ```
 
-Prose renders a `div` with `data-text-context="prose"`, so `semantic.typography.primary` resolves to the prose style for [Text](/components/text/), [Link](/components/link/), [List](/components/list/), and [Table](/components/table/) inside. Use `render` for another element, such as `article`.
+Prose renders a `div` with `data-text-context="prose"`, so `semantic.typography.primary` resolves to the prose style for [Text](/components/text/), [Link](/components/link/), [List](/components/list/), and [Table](/components/table/) inside. Use `render` for another element, such as `article`. Inside, an element with `data-text-context="ui"` switches back to the UI style and keeps Prose's spacing out of its lists and quotations, such as an interface example in an article.
 
 ## Spacing
 

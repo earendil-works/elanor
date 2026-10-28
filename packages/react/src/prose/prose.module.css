@@ -3,7 +3,9 @@
    components, so these margins override the components' own `margin: 0` regardless of
    specificity. Every selector has the same specificity, so later rules win: the space below a
    heading comes last and keeps headings closest to the content they introduce. Headings may be
-   wrapped (for example with a link button), so they match directly or as a wrapper's child. */
+   wrapped (for example with a link button), so they match directly or as a wrapper's child.
+   Spacing stops at elements that switch back to the UI text context (`data-text-context="ui"`),
+   such as interface examples, whose list items and quotations are not prose. */
 
 @layer elanor.components, elanor.prose;
 
@@ -18,57 +20,73 @@
     margin-block: 0;
   }
 
-  :where(.root, .root li, .root blockquote) > * + * {
+  :where(.root, .root li, .root blockquote):where(:not(.root [data-text-context='ui'] *)) > * + * {
     margin-block-start: var(--semantic-dimension-space-flow-small);
   }
 
   /* Code blocks */
-  :where(.root, .root li, .root blockquote) > :where(*) + :where(pre),
-  :where(.root, .root li, .root blockquote) > :where(pre) + :where(*) {
+  :where(.root, .root li, .root blockquote):where(:not(.root [data-text-context='ui'] *))
+    > :where(*)
+    + :where(pre),
+  :where(.root, .root li, .root blockquote):where(:not(.root [data-text-context='ui'] *))
+    > :where(pre)
+    + :where(*) {
     margin-block-start: var(--semantic-dimension-space-flow-medium);
   }
 
   /* Quotations and media */
-  :where(.root, .root li, .root blockquote)
+  :where(.root, .root li, .root blockquote):where(:not(.root [data-text-context='ui'] *))
     > :where(*)
     + :where(blockquote, figure, img, p:has(> img:only-child)),
-  :where(.root, .root li, .root blockquote)
+  :where(.root, .root li, .root blockquote):where(:not(.root [data-text-context='ui'] *))
     > :where(blockquote, figure, img, p:has(> img:only-child))
     + :where(*) {
     margin-block-start: var(--semantic-dimension-space-flow-large);
   }
 
   /* Thematic breaks */
-  :where(.root, .root li, .root blockquote) > :where(*) + :where(hr, [role='separator']),
-  :where(.root, .root li, .root blockquote) > :where(hr, [role='separator']) + :where(*) {
+  :where(.root, .root li, .root blockquote):where(:not(.root [data-text-context='ui'] *))
+    > :where(*)
+    + :where(hr, [role='separator']),
+  :where(.root, .root li, .root blockquote):where(:not(.root [data-text-context='ui'] *))
+    > :where(hr, [role='separator'])
+    + :where(*) {
     margin-block-start: var(--semantic-dimension-space-flow-x-large);
   }
 
   /* Space above headings */
-  :where(.root, .root li, .root blockquote) > :where(*) + :where(h2, :has(> h2)) {
+  :where(.root, .root li, .root blockquote):where(:not(.root [data-text-context='ui'] *))
+    > :where(*)
+    + :where(h2, :has(> h2)) {
     margin-block-start: var(--semantic-dimension-space-flow-x-large);
   }
 
-  :where(.root, .root li, .root blockquote) > :where(*) + :where(h3, :has(> h3)) {
+  :where(.root, .root li, .root blockquote):where(:not(.root [data-text-context='ui'] *))
+    > :where(*)
+    + :where(h3, :has(> h3)) {
     margin-block-start: var(--semantic-dimension-space-flow-large);
   }
 
-  :where(.root, .root li, .root blockquote)
+  :where(.root, .root li, .root blockquote):where(:not(.root [data-text-context='ui'] *))
     > :where(*)
     + :where(h4, h5, h6, :has(> :is(h4, h5, h6))) {
     margin-block-start: var(--semantic-dimension-space-flow-medium);
   }
 
   /* Space below headings */
-  :where(.root, .root li, .root blockquote) > :where(h2, :has(> h2)) + :where(*) {
+  :where(.root, .root li, .root blockquote):where(:not(.root [data-text-context='ui'] *))
+    > :where(h2, :has(> h2))
+    + :where(*) {
     margin-block-start: var(--semantic-dimension-space-flow-medium);
   }
 
-  :where(.root, .root li, .root blockquote) > :where(h3, :has(> h3)) + :where(*) {
+  :where(.root, .root li, .root blockquote):where(:not(.root [data-text-context='ui'] *))
+    > :where(h3, :has(> h3))
+    + :where(*) {
     margin-block-start: var(--semantic-dimension-space-flow-small);
   }
 
-  :where(.root, .root li, .root blockquote)
+  :where(.root, .root li, .root blockquote):where(:not(.root [data-text-context='ui'] *))
     > :where(h4, h5, h6, :has(> :is(h4, h5, h6)))
     + :where(*) {
     margin-block-start: var(--semantic-dimension-space-flow-x-small);
@@ -77,7 +95,7 @@
   /* Inline content inside list items and quotations is part of a line, not a block, so it gets
      no flow space. Atomic inline boxes such as keyboard keys would otherwise take the margin and
      push their line down. */
-  :where(.root li, .root blockquote)
+  :where(.root li, .root blockquote):where(:not(.root [data-text-context='ui'] *))
     > :where(
       a,
       abbr,
