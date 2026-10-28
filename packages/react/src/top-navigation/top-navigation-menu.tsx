@@ -252,7 +252,10 @@ export interface TopNavigationMenuGroupProps extends HTMLAttributes<HTMLDivEleme
   readonly ref?: Ref<HTMLDivElement> | undefined;
 }
 
-/** Groups lists in a panel under a `MenuGroupLabel`, which names the group. */
+/**
+ * Groups lists in a panel under a `MenuGroupLabel`, which names the group.
+ * Every group needs exactly one label.
+ */
 export function TopNavigationMenuGroup({ref, className, ...props}: TopNavigationMenuGroupProps) {
   const labelId = useId();
   return (
@@ -281,6 +284,9 @@ export function TopNavigationMenuGroupLabel({
   ...props
 }: TopNavigationMenuGroupLabelProps) {
   const labelId = useContext(MenuGroupContext);
+  if (labelId === undefined) {
+    throw new Error('TopNavigation.MenuGroupLabel must be inside TopNavigation.MenuGroup.');
+  }
   return (
     <div {...props} ref={ref} id={labelId} className={classes(styles.groupLabel, className)} />
   );

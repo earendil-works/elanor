@@ -95,7 +95,7 @@ For narrow screens, `Menu` collapses the navigation into a menu below the bar. `
 </TopNavigation.Menu>
 ```
 
-Panels hold the menu's levels. Each opening starts at `defaultPanel`; a `MenuPanelTrigger` slides to a nested panel, which starts with a back button and takes focus there. Panels slide with `semantic.transition.movement.disclosure`, instantly when the reader prefers reduced motion. One level of nesting. Within a panel, `MenuCollapsible` sections open in place, like [Side navigation](/components/side-navigation/)'s, and `MenuGroup` gathers lists under a `MenuGroupLabel`, which names the group for assistive technology. Groups are optional.
+Panels hold the menu's levels. Each opening starts at `defaultPanel`; a `MenuPanelTrigger` slides to a nested panel, which starts with a back button and takes focus there. Panels slide with `semantic.transition.movement.disclosure`, instantly when the reader prefers reduced motion. One level of nesting. Within a panel, `MenuCollapsible` sections open in place, like [Side navigation](/components/side-navigation/)'s, and `MenuGroup` gathers lists under a `MenuGroupLabel`, which names the group for assistive technology. Groups are optional, but every group needs a label.
 
 Items are styled for the menu on their own, not shared with Side navigation. `active` marks the current page with `aria-current="page"`, or the panel trigger that contains it with `aria-current="true"`; a section that contains the current page is marked too. Render the menu and the wide navigation from the same data, and switch between them with your CSS at your breakpoint.
 
