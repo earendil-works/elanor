@@ -23,7 +23,7 @@ function partsOf(element: HTMLElement): {
   dialog: HTMLDialogElement;
   input: HTMLInputElement;
   list: HTMLElement;
-  template: HTMLTemplateElement;
+  optionTemplate: HTMLElement;
 } {
   const input = element.querySelector('input[role="combobox"]');
   const list = element.querySelector('[role="listbox"]');
@@ -36,7 +36,11 @@ function partsOf(element: HTMLElement): {
   ) {
     throw new Error('SearchDialog.StaticPopup needs a StaticInput and a StaticList.');
   }
-  return {dialog: element, input, list, template};
+  const optionTemplate = template.content.firstElementChild;
+  if (!(optionTemplate instanceof HTMLElement)) {
+    throw new Error("SearchDialog.StaticList's template needs an option element.");
+  }
+  return {dialog: element, input, list, optionTemplate};
 }
 
 /**
@@ -49,9 +53,10 @@ export function createSearchDialog(
   element: HTMLElement,
   source: SearchDialogStaticSource,
 ): Behavior {
-  const {dialog, input, list, template} = partsOf(element);
+  const {dialog, input, list, optionTemplate} = partsOf(element);
   const status = dialog.querySelector('[data-elanor-search-status]');
   const messages = [...dialog.querySelectorAll<HTMLElement>('[data-elanor-search-state]')];
+  const errorMessage = messages.find((message) => message.dataset.elanorSearchState === 'error');
   const queryOutputs = [...dialog.querySelectorAll('[data-elanor-search-query]')];
   let loading: Promise<void> | undefined;
   let loaded = false;
@@ -59,7 +64,9 @@ export function createSearchDialog(
   let options: HTMLElement[] = [];
   let selected = -1;
   let wasOpen = false;
+  let destroyed = false;
 
+  // Settles once per attempt, with `loaded` telling how; a failure is reported and allows retrying.
   function load(): Promise<void> {
     loading ??= source.load().then(
       () => {
@@ -67,7 +74,7 @@ export function createSearchDialog(
       },
       (error: unknown) => {
         loading = undefined;
-        throw error;
+        reportError(new Error("SearchDialog.StaticPopup's source failed to load.", {cause: error}));
       },
     );
     return loading;
@@ -106,8 +113,8 @@ export function createSearchDialog(
 
   function render(results: readonly SearchDialogStaticResult[]): void {
     options = results.slice(0, maximumResults).flatMap((result, index) => {
-      const option = template.content.firstElementChild?.cloneNode(true);
-      if (!(option instanceof HTMLElement)) return [];
+      const option = optionTemplate.cloneNode(true);
+      if (!(option instanceof HTMLElement)) throw new Error('A cloned option is an element.');
       option.id = `${list.id}-${index}`;
       option.setAttribute('href', result.url);
       for (const field of option.querySelectorAll<HTMLElement>('[data-elanor-search-field]')) {
@@ -138,14 +145,16 @@ export function createSearchDialog(
     }
     if (!loaded) {
       show('loading');
-      load().then(
-        () => {
-          if (input.value.trim() === query) run();
-        },
-        () => {
-          if (input.value.trim() === query) show('error');
-        },
-      );
+      announce('');
+      void load().then(() => {
+        if (destroyed || input.value.trim() !== query) return;
+        if (loaded) {
+          run();
+          return;
+        }
+        show('error');
+        announce(errorMessage?.textContent?.trim() || 'Search failed to load');
+      });
       return;
     }
     const results = source.search(query);
@@ -165,7 +174,7 @@ export function createSearchDialog(
     if (open && !wasOpen) {
       input.value = '';
       run();
-      load().catch(() => {});
+      void load();
       input.focus();
     }
     wasOpen = open;
@@ -223,6 +232,7 @@ export function createSearchDialog(
   onOpenChange();
   return {
     destroy() {
+      destroyed = true;
       clearTimeout(timer);
       openObserver.disconnect();
       input.removeEventListener('input', onInput);
