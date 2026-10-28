@@ -72,8 +72,24 @@ export function createTableOfContentsMenu(bar: HTMLElement): Behavior {
     if (!frame) frame = requestAnimationFrame(updateShadow);
   }
 
+  // Re-measure when the content around the bar changes size: the document's body, or the
+  // container and what it holds, since a scroller keeps its own size as its content grows,
+  // including children added later.
   const resizeObserver = new ResizeObserver(measure);
-  resizeObserver.observe(container ?? bar.ownerDocument.body);
+  const childObserver = new MutationObserver((records) => {
+    for (const record of records) {
+      for (const node of record.addedNodes) {
+        if (node instanceof Element) resizeObserver.observe(node);
+      }
+    }
+    measure();
+  });
+  if (container) {
+    for (const element of [container, ...container.children]) resizeObserver.observe(element);
+    childObserver.observe(container, {childList: true});
+  } else {
+    resizeObserver.observe(bar.ownerDocument.body);
+  }
   bar.addEventListener(tableOfContentsChangeEvent, onChange);
   positioner?.addEventListener('click', onListClick);
   scrollTarget.addEventListener('scroll', onScroll, {passive: true});
@@ -82,6 +98,7 @@ export function createTableOfContentsMenu(bar: HTMLElement): Behavior {
     destroy() {
       cancelAnimationFrame(frame);
       resizeObserver.disconnect();
+      childObserver.disconnect();
       bar.removeEventListener(tableOfContentsChangeEvent, onChange);
       positioner?.removeEventListener('click', onListClick);
       scrollTarget.removeEventListener('scroll', onScroll);

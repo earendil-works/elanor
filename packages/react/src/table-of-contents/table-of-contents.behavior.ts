@@ -8,10 +8,27 @@ interface Entry {
   readonly heading: HTMLElement;
 }
 
+// The ancestor the headings scroll in, or `null` for the document. Only one that overflows counts:
+// `overflow-x: hidden` alone turns `overflow-y` into `auto` on wrappers that never scroll.
+function scrollerOf(element: HTMLElement): HTMLElement | null {
+  const ownerDocument = element.ownerDocument;
+  for (let node = element.parentElement; node; node = node.parentElement) {
+    if (node === ownerDocument.body || node === ownerDocument.documentElement) return null;
+    if (
+      /auto|scroll|overlay/.test(getComputedStyle(node).overflowY) &&
+      node.scrollHeight > node.clientHeight
+    ) {
+      return node;
+    }
+  }
+  return null;
+}
+
 /**
  * Marks the link of the section in view in a server-rendered `TableOfContents.StaticRoot`, and
- * moves its `Indicator` there. A section is in view once its heading reaches the page's
- * `scroll-padding-top`; at the end of the page, the last one is. Dispatches
+ * moves its `Indicator` there. A section is in view once its heading reaches the
+ * `scroll-padding-top` of the headings' scroll container, the document or a scrolling ancestor;
+ * at the end of it, the last one is. Dispatches
  * `tableOfContentsChangeEvent` with the link as `detail`.
  */
 export function createTableOfContents(root: HTMLElement): Behavior {
@@ -59,13 +76,21 @@ export function createTableOfContents(root: HTMLElement): Behavior {
 
   function update(): void {
     frame = 0;
+    const first = entries[0];
+    if (!first) return;
+    const scroller = scrollerOf(first.heading);
     const page = ownerDocument.documentElement;
-    if (window.innerHeight + window.scrollY >= page.scrollHeight - 1) {
+    const atEnd = scroller
+      ? scroller.scrollTop + scroller.clientHeight >= scroller.scrollHeight - 1
+      : window.innerHeight + window.scrollY >= page.scrollHeight - 1;
+    if (atEnd) {
       setActive(entries.at(-1));
       return;
     }
-    const offset = Number.parseFloat(getComputedStyle(page).scrollPaddingTop) || 0;
-    let current = entries[0];
+    const scrollerTop = scroller ? scroller.getBoundingClientRect().top + scroller.clientTop : 0;
+    const padding = Number.parseFloat(getComputedStyle(scroller ?? page).scrollPaddingTop) || 0;
+    const offset = scrollerTop + padding;
+    let current = first;
     for (const entry of entries) {
       // A few pixels of slack: jumping to a heading can land it just below the padding.
       if (entry.heading.getBoundingClientRect().top - offset > 4) break;
@@ -80,7 +105,8 @@ export function createTableOfContents(root: HTMLElement): Behavior {
 
   const resizeObserver = new ResizeObserver(placeIndicator);
   resizeObserver.observe(root);
-  window.addEventListener('scroll', scheduleUpdate, {passive: true});
+  // Captured, so scrolling in an ancestor of the headings counts too.
+  window.addEventListener('scroll', scheduleUpdate, {capture: true, passive: true});
   window.addEventListener('resize', scheduleUpdate);
   window.addEventListener('hashchange', scheduleUpdate);
   update();
@@ -88,7 +114,7 @@ export function createTableOfContents(root: HTMLElement): Behavior {
     destroy() {
       cancelAnimationFrame(frame);
       resizeObserver.disconnect();
-      window.removeEventListener('scroll', scheduleUpdate);
+      window.removeEventListener('scroll', scheduleUpdate, {capture: true});
       window.removeEventListener('resize', scheduleUpdate);
       window.removeEventListener('hashchange', scheduleUpdate);
     },
