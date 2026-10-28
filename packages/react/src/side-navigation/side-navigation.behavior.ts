@@ -1,3 +1,4 @@
+import {setCollapsibleOpen} from '../collapsible/collapsible.behavior.ts';
 import type {Behavior} from '../utils/enhance.ts';
 
 interface StoredState {
@@ -13,39 +14,26 @@ function scrollContainerOf(element: HTMLElement): HTMLElement | null {
   return null;
 }
 
-// The section's own trigger and panel, not a nested section's.
-function partsOf(section: HTMLElement): {trigger: HTMLElement; panel: HTMLElement} | null {
-  const trigger = [...section.querySelectorAll<HTMLElement>('[aria-controls]')].find(
-    (element) => element.closest('[data-elanor-section]') === section,
+function isStorageError(error: unknown): error is DOMException {
+  return (
+    error instanceof DOMException &&
+    (error.name === 'SecurityError' || error.name === 'QuotaExceededError')
   );
-  const panel = trigger
-    ? section.ownerDocument.getElementById(trigger.getAttribute('aria-controls') ?? '')
-    : null;
-  return trigger && panel ? {trigger, panel} : null;
 }
 
-// Sets a section's state without animating, the way the collapsible behavior renders it.
-function setSectionOpen(section: HTMLElement, open: boolean): void {
-  const parts = partsOf(section);
-  if (!parts) return;
-  for (const element of [section, parts.panel]) {
-    element.toggleAttribute('data-open', open);
-    element.toggleAttribute('data-closed', !open);
-  }
-  parts.trigger.setAttribute('aria-expanded', String(open));
-  parts.trigger.toggleAttribute('data-panel-open', open);
-  parts.panel.style.removeProperty('--collapsible-panel-height');
-  if (open) parts.panel.removeAttribute('hidden');
-  else {
-    const untilFound = parts.panel.hasAttribute('data-elanor-hidden-until-found');
-    parts.panel.setAttribute('hidden', untilFound ? 'until-found' : '');
-  }
+function reportStorageError(error: DOMException): void {
+  reportError(
+    new Error(`SideNavigation.StaticRoot can't use session storage: ${error.name}.`, {
+      cause: error,
+    }),
+  );
 }
 
 /**
  * Restores a server-rendered `SideNavigation.StaticRoot` with `persist`: its sections' states
  * (a section with the current page stays open) and its scroll position, kept in session storage.
- * Then scrolls the current page's link into view when it is hidden.
+ * Then scrolls the current page's link into view when it is hidden. Where the browser blocks
+ * session storage or it is full, it reports the error and the navigation works without it.
  */
 export function createSideNavigation(root: HTMLElement): Behavior {
   const scrollContainer = scrollContainerOf(root);
@@ -53,18 +41,39 @@ export function createSideNavigation(root: HTMLElement): Behavior {
     root.dataset.elanorPersist === undefined
       ? null
       : `elanor:side-navigation:${root.dataset.elanorPersist}`;
-  const stored = storageKey ? sessionStorage.getItem(storageKey) : null;
+  // Blocked storage throws a SecurityError, as with cookies blocked or in a sandboxed iframe, and
+  // full storage a QuotaExceededError. Keeping state is optional, so these are reported and turn
+  // it off rather than stop the navigation and the behaviors attached after it.
+  let storage: Storage | null = null;
+  let stored: string | null = null;
+  if (storageKey) {
+    try {
+      storage = window.sessionStorage;
+      stored = storage.getItem(storageKey);
+    } catch (error) {
+      if (!isStorageError(error)) throw error;
+      reportStorageError(error);
+      storage = null;
+    }
+  }
   const state: StoredState = stored ? (JSON.parse(stored) as StoredState) : {sections: {}};
 
   function save(): void {
-    if (storageKey) sessionStorage.setItem(storageKey, JSON.stringify(state));
+    if (!storage || !storageKey) return;
+    try {
+      storage.setItem(storageKey, JSON.stringify(state));
+    } catch (error) {
+      if (!isStorageError(error)) throw error;
+      reportStorageError(error);
+      storage = null;
+    }
   }
 
   for (const section of root.querySelectorAll<HTMLElement>('[data-elanor-section]')) {
     const open = state.sections[section.dataset.elanorSection ?? ''];
     if (open === undefined) continue;
     if (!open && section.querySelector('[aria-current="page"]')) continue;
-    setSectionOpen(section, open);
+    setCollapsibleOpen(section, open);
   }
   if (scrollContainer && state.scrollTop !== undefined) {
     scrollContainer.scrollTop = state.scrollTop;
@@ -78,14 +87,26 @@ export function createSideNavigation(root: HTMLElement): Behavior {
     }
   }
 
-  // Records the reader's toggles: the section behavior has handled the click by now.
+  // Records the state of the section that owns `element`, which its behavior has set by now.
+  function record(element: Element): void {
+    const section = element.closest<HTMLElement>('[data-elanor~="collapsible"]');
+    const name = section?.dataset.elanorSection;
+    if (!section || name === undefined || !root.contains(section)) return;
+    state.sections[name] = section.hasAttribute('data-open');
+    save();
+  }
+
   function onClick(event: MouseEvent): void {
     const trigger =
-      event.target instanceof Element ? event.target.closest('[aria-controls]') : null;
-    const section = trigger?.closest<HTMLElement>('[data-elanor-section]');
-    if (!section || !storageKey || partsOf(section)?.trigger !== trigger) return;
-    state.sections[section.dataset.elanorSection ?? ''] = section.hasAttribute('data-open');
-    save();
+      event.target instanceof Element
+        ? event.target.closest('[data-elanor-collapsible-trigger]')
+        : null;
+    if (trigger) record(trigger);
+  }
+
+  // Find in page opens the panels that hide a match.
+  function onBeforeMatch(event: Event): void {
+    if (event.target instanceof Element) record(event.target);
   }
 
   function onPageHide(): void {
@@ -95,10 +116,12 @@ export function createSideNavigation(root: HTMLElement): Behavior {
   }
 
   root.addEventListener('click', onClick);
+  root.addEventListener('beforematch', onBeforeMatch);
   window.addEventListener('pagehide', onPageHide);
   return {
     destroy() {
       root.removeEventListener('click', onClick);
+      root.removeEventListener('beforematch', onBeforeMatch);
       window.removeEventListener('pagehide', onPageHide);
     },
   };
