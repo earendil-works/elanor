@@ -15,12 +15,20 @@ import {TopNavigation} from '@earendil-works/elanor-react';
 
 <TopNavigation.Root>
   <TopNavigation.Identity />
-  <TopNavigation.Navigation />
-  <TopNavigation.Actions />
+  <TopNavigation.Navigation>
+    <nav aria-label="Main">
+      <TopNavigation.Link href="/docs" active />
+    </nav>
+  </TopNavigation.Navigation>
+  <TopNavigation.Actions>
+    <TopNavigation.ActionButton aria-label="Search" />
+  </TopNavigation.Actions>
 </TopNavigation.Root>;
 ```
 
-Root renders a `header`; the regions render `div`s. Put links inside a `nav` with an `aria-label`, or use [Navigation menu](/components/navigation-menu/) for submenus. In a [Layout](/components/layout/), merge Root into the header with `<Layout.Header render={<TopNavigation.Root />}>`.
+Root renders a `header`; the regions render `div`s. Put links inside a `nav` with an `aria-label`, or use [Navigation menu](/components/navigation-menu/) for submenus.
+
+`Link` renders an `a` in `semantic.color.text.secondary`, `semantic.color.text.primary` on hover; `active` marks the current page or section with `aria-current="page"` in primary text. It passes its props and ref through, so a router can wrap it. `ActionButton` is an icon button for the bar's actions, such as search or a theme switch, styled like the menu's trigger: `semantic.dimension.size.large` square, its icon `semantic.dimension.size.icon`. It renders a `button`; name it with `aria-label`. In a [Layout](/components/layout/), merge Root into the header with `<Layout.Header render={<TopNavigation.Root />}>`.
 
 By default, the regions share one row, with free space between them, and wrap when space runs out. The navigation sits centered only when identity and actions have the same width; in the demo above, it is pushed left.
 

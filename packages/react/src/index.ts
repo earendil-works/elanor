@@ -630,8 +630,10 @@ export {Text} from './text/text.tsx';
 export type {TextProps} from './text/text.tsx';
 
 export type {
+  TopNavigationActionButtonProps,
   TopNavigationActionsProps,
   TopNavigationIdentityProps,
+  TopNavigationLinkProps,
   TopNavigationNavigationProps,
   TopNavigationRootProps,
 } from './top-navigation/top-navigation.tsx';
