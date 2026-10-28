@@ -15,3 +15,12 @@ export const Trigger = BaseDialog.Trigger;
 export const Portal = BaseDialog.Portal;
 export const Close = BaseDialog.Close;
 export const createHandle = BaseDialog.createHandle;
+
+export {
+  ModalStaticRoot as StaticRoot,
+  ModalStaticTrigger as StaticTrigger,
+  ModalStaticPopup as StaticPopup,
+  ModalStaticTitle as StaticTitle,
+  ModalStaticDescription as StaticDescription,
+  ModalStaticClose as StaticClose,
+} from './modal-static.tsx';

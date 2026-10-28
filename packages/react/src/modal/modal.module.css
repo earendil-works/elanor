@@ -98,4 +98,24 @@
   .popup[data-ending-style] {
     transform: scale(var(--semantic-number-scale-popup));
   }
+
+  /* The static modal is a native dialog: it stays hidden while closed, its backdrop is the
+     dialog's, and the page doesn't scroll behind it. */
+  dialog.popup:not([open]) {
+    display: none;
+  }
+
+  dialog.popup::backdrop {
+    background: var(--semantic-color-background-backdrop);
+    transition: opacity var(--semantic-transition-fade);
+  }
+
+  dialog.popup[data-starting-style]::backdrop,
+  dialog.popup[data-ending-style]::backdrop {
+    opacity: var(--semantic-number-opacity-hidden);
+  }
+
+  :root:has(dialog.popup:modal) {
+    overflow: hidden;
+  }
 }
