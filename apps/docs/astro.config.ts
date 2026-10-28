@@ -9,6 +9,7 @@ import {defineConfig} from 'astro/config';
 
 import {demos} from './plugins/demos.ts';
 import {iconImports} from './plugins/icon-imports.ts';
+import {pageScripts} from './plugins/page-scripts.ts';
 
 // Code blocks in MDX use the token-based theme, like the demo sources.
 const markdown = {shikiConfig: {theme: elanorTheme}};
@@ -26,6 +27,16 @@ export default defineConfig({
   integrations: [
     mdx(),
     react(),
+    pageScripts({
+      'navigation-behaviors': {
+        entry: fileURLToPath(new URL('./src/scripts/navigation-behaviors.ts', import.meta.url)),
+        type: 'classic',
+      },
+      'page-behaviors': {
+        entry: fileURLToPath(new URL('./src/scripts/page-behaviors.ts', import.meta.url)),
+        type: 'module',
+      },
+    }),
     sentry({
       // Astro is static; runtime server errors belong to the Hono Worker.
       enabled: {client: true, server: false},

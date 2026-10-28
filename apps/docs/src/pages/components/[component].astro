@@ -1,10 +1,14 @@
 ---
+import {dirname, resolve} from 'node:path';
 import {getCollection, render, type CollectionEntry} from 'astro:content';
-import ApiReference from '../../components/api-reference.astro';
+import {ApiReference, apiPartId} from '../../components/api-reference.tsx';
 import Demo from '../../components/demo.astro';
-import PageTitle from '../../components/page-title.astro';
+import DocsArticle from '../../components/docs-article.astro';
+import {OmittedTitle, docsMarkdownComponents} from '../../components/docs-markdown.tsx';
 import DocsLayout from '../../layouts/docs-layout.astro';
+import {orderedApi} from '../../lib/component-api.ts';
 import {componentName} from '../../lib/component-name.ts';
+import {lastUpdated} from '../../lib/last-updated.ts';
 
 interface Props {
   entry: CollectionEntry<'components'>;
@@ -20,14 +24,31 @@ export async function getStaticPaths() {
 }
 
 const {entry} = Astro.props;
-const {Content} = await render(entry);
+const {Content, headings} = await render(entry);
+const parts = orderedApi(entry.id, entry.body ?? '');
+const title = componentName(entry.id);
+const markdown = `/components/${entry.id}.md`;
+// The page shows the component's MDX, examples, and the API read from its sources.
+const updated = lastUpdated([dirname(resolve(entry.filePath ?? ''))]);
+const toc = [
+  ...headings
+    .filter((heading) => heading.depth === 2 || heading.depth === 3)
+    .map((heading) => ({depth: heading.depth, id: heading.slug, title: heading.text})),
+  ...(parts.length > 0
+    ? [
+        {depth: 2, id: 'api', title: 'API'},
+        ...parts.map((part) => ({depth: 3, id: apiPartId(part), title: part.name})),
+      ]
+    : []),
+];
+// Examples of page layouts use the full content width.
+const wide = ['layout', 'grid', 'container', 'sidebar'].includes(entry.id);
 ---
 
-<DocsLayout
-  title={componentName(entry.id)}
-  current={`/components/${entry.id}/`}
-  markdown={`/components/${entry.id}.md`}
->
-  <Content components={{Demo, h1: PageTitle}} />
-  <ApiReference page={entry.id} body={entry.body ?? ''} />
+<DocsLayout title={title} current={`/components/${entry.id}/`} markdown={markdown}>
+  <DocsArticle title={title} markdown={markdown} lastUpdated={updated} toc={toc} wide={wide}>
+    {/* The article renders the title. */}
+    <Content components={{...docsMarkdownComponents, Demo, h1: OmittedTitle}} />
+    <ApiReference parts={parts} />
+  </DocsArticle>
 </DocsLayout>

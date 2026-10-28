@@ -28,7 +28,7 @@ const guidelines = await loadGuidelines();
         const tags = headTags.get(brand.id);
         return (
           <BrandLogos brand={brand} pressKit={manifest.pressKits?.[brand.id]}>
-            {tags ? <HeadSnippet client:visible code={tags} /> : null}
+            {tags ? <HeadSnippet code={tags} /> : null}
           </BrandLogos>
         );
       })
