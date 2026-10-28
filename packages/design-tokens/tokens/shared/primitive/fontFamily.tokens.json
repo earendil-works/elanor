@@ -16,10 +16,10 @@
         ]
       },
       "serif": {
-        "$value": ["Mallos Serif", "Georgia", "serif"]
+        "$value": ["Mallos Serif", "Mallos Serif Fallback", "Georgia", "serif"]
       },
       "sansSerif": {
-        "$value": ["Inter", "Helvetica Neue", "Arial", "sans-serif"]
+        "$value": ["Mallos Sans", "Helvetica Neue", "Arial", "sans-serif"]
       }
     }
   }
