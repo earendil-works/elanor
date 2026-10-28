@@ -1,0 +1,34 @@
+.trigger {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--semantic-dimension-space-control-gap-small);
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--semantic-color-text-primary);
+  font: var(--semantic-typography-ui-primary);
+  cursor: pointer;
+}
+
+.chevron {
+  transition: rotate var(--semantic-transition-movement-disclosure);
+}
+
+.trigger:not([data-panel-open]) .chevron {
+  rotate: -90deg;
+}
+
+.panel {
+  height: var(--collapsible-panel-height);
+  overflow: hidden;
+  transition: height var(--semantic-transition-movement-disclosure);
+}
+
+.panel[data-starting-style],
+.panel[data-ending-style] {
+  height: 0;
+}
+
+.content {
+  padding-block-start: var(--semantic-dimension-space-padding-medium);
+}

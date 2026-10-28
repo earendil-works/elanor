@@ -1,4 +1,5 @@
 export * as Checkbox from './checkbox/index.ts';
+export * as Collapsible from './collapsible/index.ts';
 export * as Drawer from './drawer/index.ts';
 export * as Dropdown from './dropdown/index.ts';
 export * as SearchableDropdown from './dropdown/searchable-dropdown/index.ts';
@@ -114,6 +115,23 @@ export type {CodeSnippetProps} from './code-snippet/code-snippet.tsx';
 export {CopyButton} from './copy-button/copy-button.tsx';
 export type {CopyButtonProps} from './copy-button/copy-button.tsx';
 export {createCopyButton} from './copy-button/copy-button.behavior.ts';
+
+export type {
+  CollapsiblePanelProps,
+  CollapsiblePanelState,
+  CollapsibleRootChangeEventDetails,
+  CollapsibleRootChangeEventReason,
+  CollapsibleRootProps,
+  CollapsibleRootState,
+  CollapsibleTriggerProps,
+  CollapsibleTriggerState,
+} from './collapsible/collapsible.tsx';
+export type {
+  CollapsibleStaticPanelProps,
+  CollapsibleStaticRootProps,
+  CollapsibleStaticTriggerProps,
+} from './collapsible/collapsible-static.tsx';
+export {createCollapsible} from './collapsible/collapsible.behavior.ts';
 
 export {enhance} from './utils/enhance.ts';
 export type {Behavior, BehaviorFactory} from './utils/enhance.ts';
