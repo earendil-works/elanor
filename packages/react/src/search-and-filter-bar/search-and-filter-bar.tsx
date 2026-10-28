@@ -4,6 +4,7 @@ import {
   createContext,
   use,
   useEffect,
+  useMemo,
   useRef,
   useState,
   type ButtonHTMLAttributes,
@@ -79,11 +80,14 @@ export function SearchAndFilterBarRoot({
     return () => observer.disconnect();
   }, [drawerOpen]);
 
-  const context: SearchAndFilterBarContextValue = {
-    state: {filtersSlot},
-    actions: {setFiltersSlot},
-    meta: {triggerRef, filtersRef, focusInlineFiltersRef},
-  };
+  const context = useMemo<SearchAndFilterBarContextValue>(
+    () => ({
+      state: {filtersSlot},
+      actions: {setFiltersSlot},
+      meta: {triggerRef, filtersRef, focusInlineFiltersRef},
+    }),
+    [filtersSlot],
+  );
 
   return useRender({
     defaultTagName: 'div',
