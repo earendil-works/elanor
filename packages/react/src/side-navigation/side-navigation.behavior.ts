@@ -32,8 +32,10 @@ function reportStorageError(error: DOMException): void {
 /**
  * Restores a server-rendered `SideNavigation.StaticRoot` with `persist`: its sections' states
  * (a section with the current page stays open) and its scroll position, kept in session storage.
- * Then scrolls the current page's link into view when it is hidden. Where the browser blocks
- * session storage or it is full, it reports the error and the navigation works without it.
+ * Then scrolls the current page's link into view when it is hidden. The scroll position is saved
+ * when the page is hidden and on `destroy()`, so client-side routers that replace the navigation
+ * keep it too. Where the browser blocks session storage or it is full, it reports the error and
+ * the navigation works without it.
  */
 export function createSideNavigation(root: HTMLElement): Behavior {
   const scrollContainer = scrollContainerOf(root);
@@ -109,7 +111,7 @@ export function createSideNavigation(root: HTMLElement): Behavior {
     if (event.target instanceof Element) record(event.target);
   }
 
-  function onPageHide(): void {
+  function saveScrollPosition(): void {
     if (!scrollContainer) return;
     state.scrollTop = scrollContainer.scrollTop;
     save();
@@ -117,12 +119,14 @@ export function createSideNavigation(root: HTMLElement): Behavior {
 
   root.addEventListener('click', onClick);
   root.addEventListener('beforematch', onBeforeMatch);
-  window.addEventListener('pagehide', onPageHide);
+  window.addEventListener('pagehide', saveScrollPosition);
   return {
     destroy() {
+      // Client-side routers replace the navigation without leaving the page.
+      saveScrollPosition();
       root.removeEventListener('click', onClick);
       root.removeEventListener('beforematch', onBeforeMatch);
-      window.removeEventListener('pagehide', onPageHide);
+      window.removeEventListener('pagehide', saveScrollPosition);
     },
   };
 }
