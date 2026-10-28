@@ -59,6 +59,15 @@
     font: var(--semantic-typography-ui-primary);
   }
 
+  /* The static menu is a native popover: without the browser's frame and centering. */
+  .popup[popover] {
+    inline-size: auto;
+    block-size: auto;
+    margin: 0;
+    padding: 0;
+    border: 0;
+  }
+
   /* Panels slide sideways; reduced motion makes the slide instant through the token. Hidden
      panels stay visible while they slide out, then hide. */
   .panel {
