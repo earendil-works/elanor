@@ -20,3 +20,16 @@ export {
 } from './search-dialog.tsx';
 
 export const createHandle = BaseDialog.createHandle;
+
+export {
+  SearchDialogStaticRoot as StaticRoot,
+  SearchDialogStaticTrigger as StaticTrigger,
+  SearchDialogStaticPopup as StaticPopup,
+  SearchDialogStaticInput as StaticInput,
+  SearchDialogStaticClose as StaticClose,
+  SearchDialogStaticResults as StaticResults,
+  SearchDialogStaticStatus as StaticStatus,
+  SearchDialogStaticMessage as StaticMessage,
+  SearchDialogStaticQuery as StaticQuery,
+  SearchDialogStaticList as StaticList,
+} from './search-dialog-static.tsx';

@@ -122,6 +122,33 @@
     transform: scale(var(--semantic-number-scale-popup));
   }
 
+  /* The static dialog is a native dialog: hidden while closed, placed like the popup instead of
+     centered, with the backdrop on ::backdrop, and no page scrolling behind it. */
+  dialog.popup:not([open]) {
+    display: none;
+  }
+
+  dialog.popup {
+    inset-block-end: auto;
+    inline-size: auto;
+    margin-block: 0;
+    padding: 0;
+  }
+
+  dialog.popup::backdrop {
+    background: var(--semantic-color-background-backdrop);
+    transition: opacity var(--semantic-transition-fade);
+  }
+
+  dialog.popup[data-starting-style]::backdrop,
+  dialog.popup[data-ending-style]::backdrop {
+    opacity: var(--semantic-number-opacity-hidden);
+  }
+
+  :root:has(dialog.popup:modal) {
+    overflow: hidden;
+  }
+
   /* Rows line up with the results' text: their inline padding is the list's plus a result's. */
   .form {
     display: flex;
