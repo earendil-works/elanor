@@ -8,3 +8,10 @@ export {
   TableOfContentsMenuTrigger as MenuTrigger,
   TableOfContentsMenuPopup as MenuPopup,
 } from './table-of-contents.tsx';
+
+export {
+  TableOfContentsStaticRoot as StaticRoot,
+  TableOfContentsStaticMenu as StaticMenu,
+  TableOfContentsStaticMenuTrigger as StaticMenuTrigger,
+  TableOfContentsStaticMenuPopup as StaticMenuPopup,
+} from './table-of-contents-static.tsx';

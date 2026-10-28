@@ -22,9 +22,13 @@ function removeOpen(positioner: HTMLElement): void {
   if (index !== -1) openPositioners.splice(index, 1);
 }
 
+/** Event that closes an open static popover when dispatched on its positioner. */
+export const popoverCloseEvent = 'elanor:popover-close';
+
 /**
  * Opens, places, and closes a server-rendered `Popover.StaticPositioner` without React. Without
- * the behavior, it is a native `popover="auto"`, centered in the window.
+ * the behavior, it is a native `popover="auto"`, centered in the window. Dispatch
+ * `popoverCloseEvent` on the positioner to close it.
  */
 export function createPopover(positioner: HTMLElement): Behavior {
   const popup = popupOf(positioner);
@@ -224,12 +228,18 @@ export function createPopover(positioner: HTMLElement): Behavior {
     window.removeEventListener('scroll', place, true);
   }
 
+  function onCloseRequest(): void {
+    if (isOpen()) close(false);
+  }
+
   for (const button of buttons) button.addEventListener('click', onButtonClick);
+  positioner.addEventListener(popoverCloseEvent, onCloseRequest);
   return {
     destroy() {
       // Stops transitions still running from finishing the open or close.
       change++;
       for (const button of buttons) button.removeEventListener('click', onButtonClick);
+      positioner.removeEventListener(popoverCloseEvent, onCloseRequest);
       removeListeners();
       // Back to the server-rendered markup: a closed native popover the behavior can attach to again.
       setOpenState(false);
