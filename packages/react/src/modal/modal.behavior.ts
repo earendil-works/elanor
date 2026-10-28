@@ -68,26 +68,58 @@ export function createModal(element: HTMLElement): Behavior {
     close();
   }
 
-  // A press on the backdrop, which belongs to the dialog element.
-  function onClick(event: MouseEvent): void {
-    if (event.target !== dialog) return;
+  // The backdrop belongs to the dialog element, so a pointer on it targets the dialog outside its
+  // box.
+  function onBackdrop(event: MouseEvent): boolean {
+    if (event.target !== dialog) return false;
     const box = dialog.getBoundingClientRect();
-    const inside =
-      event.clientX >= box.left &&
-      event.clientX <= box.right &&
-      event.clientY >= box.top &&
-      event.clientY <= box.bottom;
-    if (!inside) close();
+    return (
+      event.clientX < box.left ||
+      event.clientX > box.right ||
+      event.clientY < box.top ||
+      event.clientY > box.bottom
+    );
+  }
+
+  let pressedOnBackdrop = false;
+
+  function onPointerDown(event: PointerEvent): void {
+    pressedOnBackdrop = onBackdrop(event);
+  }
+
+  // Like the React modal, only a press that starts and ends on the backdrop closes it, so dragging
+  // out of the dialog, such as when selecting text, keeps it open.
+  function onClick(event: MouseEvent): void {
+    const started = pressedOnBackdrop;
+    pressedOnBackdrop = false;
+    if (started && onBackdrop(event)) close();
+  }
+
+  // Form submissions and scripts can close the dialog without the behavior. The event arrives a
+  // task later, by when the dialog may have opened again.
+  function onClose(): void {
+    if (!dialog.open) setOpenState(false);
   }
 
   for (const button of buttons) button.addEventListener('click', onButtonClick);
   dialog.addEventListener('cancel', onCancel);
+  dialog.addEventListener('pointerdown', onPointerDown);
   dialog.addEventListener('click', onClick);
+  dialog.addEventListener('close', onClose);
   return {
     destroy() {
+      // Stops transitions still running from finishing the open or close.
+      change++;
       for (const button of buttons) button.removeEventListener('click', onButtonClick);
       dialog.removeEventListener('cancel', onCancel);
+      dialog.removeEventListener('pointerdown', onPointerDown);
       dialog.removeEventListener('click', onClick);
+      dialog.removeEventListener('close', onClose);
+      // Finishes a close in progress, so the dialog matches its state for the next behavior.
+      if (dialog.hasAttribute('data-ending-style')) dialog.close();
+      dialog.removeAttribute('data-starting-style');
+      dialog.removeAttribute('data-ending-style');
+      setOpenState(dialog.open);
     },
   };
 }
