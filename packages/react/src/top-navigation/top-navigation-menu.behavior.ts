@@ -56,10 +56,12 @@ export function createTopNavigationMenu(popup: HTMLElement): Behavior {
   }
 
   function close(returnFocus: boolean): void {
+    // Read before hiding, which moves focus out of the popup.
+    const focusInside = popup.contains(ownerDocument.activeElement);
     popup.hidePopover();
     setOpenState(false);
     ownerDocument.removeEventListener('keydown', onKeyDown);
-    if (returnFocus) triggers[0]?.focus();
+    if (returnFocus && focusInside) triggers[0]?.focus();
   }
 
   function onTriggerClick(event: MouseEvent): void {
@@ -71,6 +73,9 @@ export function createTopNavigationMenu(popup: HTMLElement): Behavior {
 
   function onKeyDown(event: KeyboardEvent): void {
     if (event.key !== 'Escape' || event.defaultPrevented) return;
+    // Escape elsewhere on the page belongs to whatever has focus there, such as another overlay.
+    const focused = ownerDocument.activeElement;
+    if (!popup.contains(focused) && !triggers.some((trigger) => trigger === focused)) return;
     event.preventDefault();
     close(true);
   }
@@ -111,7 +116,7 @@ export function createTopNavigationMenu(popup: HTMLElement): Behavior {
     destroy() {
       for (const trigger of triggers) trigger.removeEventListener('click', onTriggerClick);
       popup.removeEventListener('click', onPopupClick);
-      ownerDocument.removeEventListener('keydown', onKeyDown);
+      if (popup.matches(':popover-open')) close(false);
       popup.popover = 'auto';
     },
   };
