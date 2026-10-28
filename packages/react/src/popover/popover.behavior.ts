@@ -12,7 +12,15 @@ function popupOf(positioner: HTMLElement): HTMLElement {
 const collisionPadding = 5;
 
 const tabbable =
-  'a[href], button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])';
+  'a[href], button:not(:disabled), input:not(:disabled):not([type="hidden"]), select:not(:disabled), textarea:not(:disabled), [tabindex]:not([tabindex="-1"])';
+
+// The open popovers, most recent last, so Escape closes only the top one.
+const openPositioners: HTMLElement[] = [];
+
+function removeOpen(positioner: HTMLElement): void {
+  const index = openPositioners.indexOf(positioner);
+  if (index !== -1) openPositioners.splice(index, 1);
+}
 
 /**
  * Opens, places, and closes a server-rendered `Popover.StaticPositioner` without React. Without
@@ -47,8 +55,6 @@ export function createPopover(positioner: HTMLElement): Behavior {
     const align = positioner.dataset.elanorAlign ?? 'center';
     const requested = positioner.dataset.elanorSide ?? 'bottom';
     const rtl = getComputedStyle(trigger).direction === 'rtl';
-    const width = positioner.offsetWidth;
-    const height = positioner.offsetHeight;
     const room = {
       top: anchor.top - offset - collisionPadding,
       bottom: window.innerHeight - anchor.bottom - offset - collisionPadding,
@@ -70,11 +76,29 @@ export function createPopover(positioner: HTMLElement): Behavior {
             ? requested
             : 'bottom';
     const resolved = side;
-    // Flips to the other side when the preferred one is too small and the other has more room.
     const vertical = side === 'top' || side === 'bottom';
-    if ((vertical ? height : width) > room[side] && room[opposite[side]] > room[side]) {
+    const windowWidth = window.innerWidth - 2 * collisionPadding;
+    const windowHeight = window.innerHeight - 2 * collisionPadding;
+
+    // Sets the size limits the popup's styles read, then measures it within them.
+    function measure(availableWidth: number, availableHeight: number): [number, number] {
+      positioner.style.setProperty('--available-width', `${availableWidth}px`);
+      positioner.style.setProperty('--available-height', `${availableHeight}px`);
+      return [positioner.offsetWidth, positioner.offsetHeight];
+    }
+
+    // Flips to the other side when the popup at its natural size doesn't fit the preferred one and
+    // the other has more room.
+    const [naturalWidth, naturalHeight] = measure(windowWidth, windowHeight);
+    if (
+      (vertical ? naturalHeight : naturalWidth) > room[side] &&
+      room[opposite[side]] > room[side]
+    ) {
       side = opposite[side];
     }
+    const [width, height] = vertical
+      ? measure(windowWidth, room[side])
+      : measure(room[side], windowHeight);
 
     let top: number;
     let left: number;
@@ -98,14 +122,6 @@ export function createPopover(positioner: HTMLElement): Behavior {
     positioner.style.left = `${left}px`;
     positioner.style.setProperty('--anchor-width', `${anchor.width}px`);
     positioner.style.setProperty('--anchor-height', `${anchor.height}px`);
-    positioner.style.setProperty(
-      '--available-width',
-      `${vertical ? window.innerWidth - 2 * collisionPadding : room[side]}px`,
-    );
-    positioner.style.setProperty(
-      '--available-height',
-      `${vertical ? room[side] : window.innerHeight - 2 * collisionPadding}px`,
-    );
     const originX = vertical
       ? `${anchor.left + anchor.width / 2 - left}px`
       : `${side === 'right' ? -offset : width + offset}px`;
@@ -150,7 +166,13 @@ export function createPopover(positioner: HTMLElement): Behavior {
     setOpenState(true);
     void popup.offsetHeight;
     popup.removeAttribute('data-starting-style');
-    const first = byTouch ? null : popup.querySelector<HTMLElement>(tabbable);
+    removeOpen(positioner);
+    openPositioners.push(positioner);
+    const first = byTouch
+      ? undefined
+      : [...popup.querySelectorAll<HTMLElement>(tabbable)].find((element) =>
+          element.checkVisibility({visibilityProperty: true}),
+        );
     (first ?? popup).focus({preventScroll: true});
     ownerDocument.addEventListener('pointerdown', onOutsidePress, true);
     ownerDocument.addEventListener('keydown', onKeyDown);
@@ -162,10 +184,7 @@ export function createPopover(positioner: HTMLElement): Behavior {
     const current = ++change;
     setOpenState(false);
     popup.setAttribute('data-ending-style', '');
-    ownerDocument.removeEventListener('pointerdown', onOutsidePress, true);
-    ownerDocument.removeEventListener('keydown', onKeyDown);
-    window.removeEventListener('resize', place);
-    window.removeEventListener('scroll', place, true);
+    removeListeners();
     if (returnFocus && popup.contains(ownerDocument.activeElement)) trigger?.focus();
     void transitionsEnd(current).then((latest) => {
       if (!latest) return;
@@ -192,18 +211,44 @@ export function createPopover(positioner: HTMLElement): Behavior {
 
   function onKeyDown(event: KeyboardEvent): void {
     if (event.key !== 'Escape' || event.defaultPrevented) return;
+    if (openPositioners.at(-1) !== positioner) return;
     event.preventDefault();
     close(true);
+  }
+
+  function removeListeners(): void {
+    removeOpen(positioner);
+    ownerDocument.removeEventListener('pointerdown', onOutsidePress, true);
+    ownerDocument.removeEventListener('keydown', onKeyDown);
+    window.removeEventListener('resize', place);
+    window.removeEventListener('scroll', place, true);
   }
 
   for (const button of buttons) button.addEventListener('click', onButtonClick);
   return {
     destroy() {
+      // Stops transitions still running from finishing the open or close.
+      change++;
       for (const button of buttons) button.removeEventListener('click', onButtonClick);
-      ownerDocument.removeEventListener('pointerdown', onOutsidePress, true);
-      ownerDocument.removeEventListener('keydown', onKeyDown);
-      window.removeEventListener('resize', place);
-      window.removeEventListener('scroll', place, true);
+      removeListeners();
+      // Back to the server-rendered markup: a closed native popover the behavior can attach to again.
+      setOpenState(false);
+      popup.removeAttribute('data-starting-style');
+      popup.removeAttribute('data-ending-style');
+      for (const name of ['inset', 'margin', 'top', 'left']) positioner.style.removeProperty(name);
+      for (const name of [
+        'anchor-width',
+        'anchor-height',
+        'available-width',
+        'available-height',
+        'transform-origin',
+      ]) {
+        positioner.style.removeProperty(`--${name}`);
+      }
+      for (const element of [positioner, popup]) {
+        delete element.dataset.side;
+        delete element.dataset.align;
+      }
       positioner.popover = 'auto';
     },
   };
