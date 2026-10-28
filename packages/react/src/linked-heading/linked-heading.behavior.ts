@@ -7,15 +7,18 @@ import type {Behavior} from '../utils/enhance.ts';
 export function createLinkedHeading(root: HTMLElement): Behavior {
   const heading = root.querySelector('[id]');
   const button = root.querySelector('button');
+  if (!heading || !button)
+    throw new Error('LinkedHeading needs a heading with an id and a button.');
+  const {id} = heading;
 
   function onClick(): void {
-    if (heading) location.hash = heading.id;
+    location.hash = id;
   }
 
-  button?.addEventListener('click', onClick);
+  button.addEventListener('click', onClick);
   return {
     destroy() {
-      button?.removeEventListener('click', onClick);
+      button.removeEventListener('click', onClick);
     },
   };
 }
