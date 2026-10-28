@@ -31,3 +31,15 @@ When the value depends on the page, such as an absolute URL, pass a function to 
   aria-label="Copy link to Billing"
 />
 ```
+
+## Static rendering
+
+On pages rendered on the server without React in the browser, its behavior, `createCopyButton`, copies instead. The button carries what it needs: `data-elanor="copy-button"` and its value, labels, and state as attributes. Bind it once the page has loaded:
+
+```ts
+import {createCopyButton, enhance} from '@earendil-works/elanor-react';
+
+enhance({'copy-button': createCopyButton});
+```
+
+It copies, confirms, and announces like the React component. A function `value` only runs with React, so on static pages pass a string. The server-rendered button repeats the value in an attribute; once React hydrates it, the attributes go away and the behavior stands down, so pages with both static buttons and hydrated ones can call `enhance` on the whole document.

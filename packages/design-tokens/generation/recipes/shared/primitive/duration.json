@@ -1,5 +1,5 @@
 {
   "$schema": "../../../schemas/duration.recipe.schema.json",
   "path": ["primitive"],
-  "steps": [0, 150, 200, 300, 450, 600, 1000]
+  "steps": [0, 150, 200, 300, 450, 600, 1000, 2000]
 }

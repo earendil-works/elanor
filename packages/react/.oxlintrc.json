@@ -52,6 +52,34 @@
           }
         ]
       }
+    },
+    {
+      // Behaviors run on pages without React, so they import neither React nor Base UI, nor any
+      // component, only other behaviors.
+      "files": ["src/**/*.behavior.ts", "src/utils/enhance.ts"],
+      "rules": {
+        "eslint/no-restricted-imports": [
+          "error",
+          {
+            "paths": [
+              {
+                "name": "@earendil-works/elanor-react",
+                "message": "Import a component entry point or implementation file, not the package-wide entry point."
+              }
+            ],
+            "patterns": [
+              {
+                "regex": "^(?:\\.\\.?/)+(?:index(?:\\.[cm]?[jt]sx?)?)?$|^(?:\\.\\.?/)*\\.\\.?$",
+                "message": "Do not import your own or an ancestor entry point; use a direct file or another component's entry point."
+              },
+              {
+                "regex": "^(?:react|react-dom|@base-ui/|@earendil-works/elanor-icons-react)|\\.tsx$",
+                "message": "Behaviors run without React: import only other behaviors and utilities."
+              }
+            ]
+          }
+        ]
+      }
     }
   ]
 }
