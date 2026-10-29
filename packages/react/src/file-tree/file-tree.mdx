@@ -1,0 +1,73 @@
+---
+category: navigation
+---
+
+# File tree
+
+A tree of nested folders and files, for browsing the contents of an artifact or repository. For links between the areas of an app, use [Side navigation](/components/side-navigation/).
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {FileTree, type FileTreeItemState} from '@earendil-works/elanor-react';
+
+const renderItem = ({node}: FileTreeItemState) => (
+  <FileTree.Item>
+    <FileTree.ItemIcon />
+    <FileTree.ItemLabel>{node.name}</FileTree.ItemLabel>
+  </FileTree.Item>
+);
+
+<FileTree.Root aria-label="Files" items={items}>
+  {renderItem}
+</FileTree.Root>;
+```
+
+`items` is the nested data: each node has a unique `id` and a `name`, and a folder has `children`, even if empty. Keep the `items` reference stable between renders. Root calls its children once per visible row with the row's `node`, `level`, `isFolder`, `expanded`, and `current`; wrap the function in `useCallback`, because rows re-render when it changes. Name the tree with `aria-label`.
+
+`ItemIcon` shows a chevron and a folder icon on folders, and a file icon on files; pass an icon as its children to replace the folder or file icon. Each level indents by one icon width, with a guide line under the parent's chevron.
+
+## Open folders
+
+Clicking a folder opens or closes it, instantly; only its chevron turns, with `semantic.transition.movement.disclosure`. Pass `defaultExpanded` with the ids of folders open at first, or control them with `expanded` and `onExpandedChange`.
+
+<Demo example="./examples/controlled.tsx" />
+
+## Links and the current file
+
+Render a file's `Item` as a link with `render={<a href="…" />}`, so it opens with a click, Enter, or the browser's link menu. `currentId` marks that file with `aria-current="page"` and the `semantic.color.background.fill.ghost.neutral.active` fill. When it changes, the file's folders open, without closing others, and the file scrolls into view. Without a controlled `expanded`, its folders are open from the first render, also on the server.
+
+Names that don't fit end with an ellipsis. Hovering or focusing the row with the keyboard shows the full name over it.
+
+## Keyboard
+
+The tree is one Tab stop: the current file, or else the first row.
+
+| Key       | Action                                                |
+| --------- | ----------------------------------------------------- |
+| Up, Down  | Previous or next row                                  |
+| Home, End | First or last row                                     |
+| Right     | Opens a folder, or moves to its first child when open |
+| Left      | Closes a folder, or moves to the parent               |
+| Enter     | Opens or closes a folder, or follows a file's link    |
+| Space     | Opens or closes a folder                              |
+| Letters   | Next row whose name starts with the typed text        |
+| Escape    | Hides the full name                                   |
+
+Right and Left swap in right-to-left layouts.
+
+## Guide line
+
+Change the guide with `--file-tree-guide` on Root: an image one indent step wide (`semantic.dimension.size.xSmall` plus `semantic.dimension.borderWidth.default`) and one row tall, repeated once per level.
+
+```css
+.files {
+  --file-tree-guide: url('./guide.svg');
+}
+```
+
+## Large trees
+
+All visible rows are rendered, without virtualization. Moving between rows takes one frame at any size; first render takes about 45ms for 1,000 rows and 300ms for 10,000.

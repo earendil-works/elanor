@@ -8,6 +8,7 @@ export * as SearchDialog from './search-dialog/index.ts';
 export * as EmptyState from './empty-state/index.ts';
 export * as Field from './field/index.ts';
 export * as Fieldset from './fieldset/index.ts';
+export * as FileTree from './file-tree/index.ts';
 export * as Grid from './grid/index.ts';
 export * as KeyValue from './key-value/index.ts';
 export * as Layout from './layout/index.ts';
@@ -310,6 +311,15 @@ export type {
   FieldsetRootProps,
   FieldsetRootState,
 } from './fieldset/fieldset.tsx';
+
+export type {
+  FileTreeItemIconProps,
+  FileTreeItemLabelProps,
+  FileTreeItemProps,
+  FileTreeItemState,
+  FileTreeNode,
+  FileTreeRootProps,
+} from './file-tree/file-tree.tsx';
 
 export {Emphasis} from './emphasis/emphasis.tsx';
 export type {EmphasisProps} from './emphasis/emphasis.tsx';
