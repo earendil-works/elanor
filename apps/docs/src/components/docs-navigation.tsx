@@ -1,6 +1,6 @@
 import {ScrollArea, Separator, SideNavigation, TopNavigation} from '@earendil-works/elanor-react';
 
-import type {DocsNavigationItem, DocsSiteSection} from '../lib/docs-navigation.ts';
+import {hasSideNavigation, type DocsSiteSection} from '../lib/docs-navigation.ts';
 import {DocsSearchTrigger} from './docs-search.tsx';
 
 /*
@@ -8,14 +8,6 @@ import {DocsSearchTrigger} from './docs-search.tsx';
  * navigation on wide screens, and every section's pages in the top navigation's menu on narrow
  * ones. `scripts/navigation-behaviors.ts` makes both work before the first paint.
  */
-
-const containsCurrent = (item: DocsNavigationItem, current: string) =>
-  item.type === 'collapsible' && item.links.some((link) => link.href === current);
-
-/** Whether a section has a side navigation: a section with one page has none. */
-export const hasSideNavigation = (
-  section: DocsSiteSection | undefined,
-): section is DocsSiteSection => section !== undefined && section.items.length > 1;
 
 interface DocsSideNavigationProps {
   readonly section: DocsSiteSection;
@@ -35,42 +27,27 @@ export function DocsSideNavigation({section, current}: DocsSideNavigationProps):
         <ScrollArea.StaticViewport className="docs-navigation-viewport">
           <ScrollArea.StaticContent className="docs-navigation-content">
             <SideNavigation.StaticRoot aria-label={section.label} persist={`docs-${section.id}`}>
-              <SideNavigation.List>
-                {section.items.map((item) =>
-                  item.type === 'link' ? (
-                    <SideNavigation.Item key={item.href}>
-                      <SideNavigation.Link href={item.href} active={item.href === current}>
-                        {item.label}
-                      </SideNavigation.Link>
-                    </SideNavigation.Item>
-                  ) : (
-                    <SideNavigation.Item key={item.id}>
-                      <SideNavigation.StaticCollapsible
-                        defaultOpen={containsCurrent(item, current)}
-                        persist={item.id}
-                      >
-                        <SideNavigation.StaticCollapsibleTrigger>
-                          {item.label}
-                        </SideNavigation.StaticCollapsibleTrigger>
-                        <SideNavigation.StaticCollapsiblePanel hiddenUntilFound>
-                          <SideNavigation.List>
-                            {item.links.map((link) => (
-                              <SideNavigation.Item key={link.href}>
-                                <SideNavigation.Link
-                                  href={link.href}
-                                  active={link.href === current}
-                                >
-                                  {link.label}
-                                </SideNavigation.Link>
-                              </SideNavigation.Item>
-                            ))}
-                          </SideNavigation.List>
-                        </SideNavigation.StaticCollapsiblePanel>
-                      </SideNavigation.StaticCollapsible>
-                    </SideNavigation.Item>
-                  ),
-                )}
-              </SideNavigation.List>
+              {section.groups.map((group, index) => {
+                const labelId = `docs-navigation-${section.id}-${index}`;
+                return (
+                  <SideNavigation.Group key={group.label ?? index}>
+                    {group.label ? (
+                      <SideNavigation.GroupLabel id={labelId}>
+                        {group.label}
+                      </SideNavigation.GroupLabel>
+                    ) : null}
+                    <SideNavigation.List aria-labelledby={group.label ? labelId : undefined}>
+                      {group.links.map((link) => (
+                        <SideNavigation.Item key={link.href}>
+                          <SideNavigation.Link href={link.href} active={link.href === current}>
+                            {link.label}
+                          </SideNavigation.Link>
+                        </SideNavigation.Item>
+                      ))}
+                    </SideNavigation.List>
+                  </SideNavigation.Group>
+                );
+              })}
             </SideNavigation.StaticRoot>
           </ScrollArea.StaticContent>
         </ScrollArea.StaticViewport>
@@ -99,13 +76,14 @@ export function DocsMenuPanels({
   current,
   currentSection,
 }: DocsMenuProps): React.JSX.Element {
+  const withPanels = sections.filter(hasSideNavigation);
   return (
     <>
       <TopNavigation.StaticMenuPanel panel="main">
         <TopNavigation.MenuList>
           {sections.map((section) => (
             <TopNavigation.MenuItem key={section.id}>
-              {section.items.length > 1 ? (
+              {withPanels.includes(section) ? (
                 <TopNavigation.StaticMenuPanelTrigger
                   panel={section.id}
                   active={section.id === currentSection?.id}
@@ -124,46 +102,34 @@ export function DocsMenuPanels({
           ))}
         </TopNavigation.MenuList>
       </TopNavigation.StaticMenuPanel>
-      {sections.filter(hasSideNavigation).map((section) => (
+      {withPanels.map((section) => (
         <TopNavigation.StaticMenuPanel
           key={section.id}
           panel={section.id}
           parent="main"
           backLabel="Main menu"
         >
-          <TopNavigation.MenuList>
-            {section.items.map((item) =>
-              item.type === 'link' ? (
-                <TopNavigation.MenuItem key={item.href}>
-                  <TopNavigation.StaticMenuLink href={item.href} active={item.href === current}>
-                    {item.label}
-                  </TopNavigation.StaticMenuLink>
-                </TopNavigation.MenuItem>
-              ) : (
-                <TopNavigation.MenuItem key={item.id}>
-                  <TopNavigation.StaticMenuCollapsible defaultOpen={containsCurrent(item, current)}>
-                    <TopNavigation.StaticMenuCollapsibleTrigger>
-                      {item.label}
-                    </TopNavigation.StaticMenuCollapsibleTrigger>
-                    <TopNavigation.StaticMenuCollapsiblePanel>
-                      <TopNavigation.MenuList>
-                        {item.links.map((link) => (
-                          <TopNavigation.MenuItem key={link.href}>
-                            <TopNavigation.StaticMenuLink
-                              href={link.href}
-                              active={link.href === current}
-                            >
-                              {link.label}
-                            </TopNavigation.StaticMenuLink>
-                          </TopNavigation.MenuItem>
-                        ))}
-                      </TopNavigation.MenuList>
-                    </TopNavigation.StaticMenuCollapsiblePanel>
-                  </TopNavigation.StaticMenuCollapsible>
-                </TopNavigation.MenuItem>
-              ),
-            )}
-          </TopNavigation.MenuList>
+          {section.groups.map((group, index) => {
+            const list = (
+              <TopNavigation.MenuList>
+                {group.links.map((link) => (
+                  <TopNavigation.MenuItem key={link.href}>
+                    <TopNavigation.StaticMenuLink href={link.href} active={link.href === current}>
+                      {link.label}
+                    </TopNavigation.StaticMenuLink>
+                  </TopNavigation.MenuItem>
+                ))}
+              </TopNavigation.MenuList>
+            );
+            return group.label ? (
+              <TopNavigation.MenuGroup key={group.label}>
+                <TopNavigation.MenuGroupLabel>{group.label}</TopNavigation.MenuGroupLabel>
+                {list}
+              </TopNavigation.MenuGroup>
+            ) : (
+              <TopNavigation.MenuGroup key={index}>{list}</TopNavigation.MenuGroup>
+            );
+          })}
         </TopNavigation.StaticMenuPanel>
       ))}
     </>

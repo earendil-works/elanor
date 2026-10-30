@@ -9,20 +9,15 @@ import {defaultTokenBrand, tokenAreaHref, tokenAreas} from './token-pages.ts';
  */
 
 export interface DocsNavigationLink {
-  readonly type: 'link';
   readonly href: string;
   readonly label: string;
 }
 
-/** A collapsible group of links. */
-export interface DocsNavigationCollapsible {
-  readonly type: 'collapsible';
-  readonly id: string;
-  readonly label: string;
+/** Links under an optional label, such as a component category. */
+export interface DocsNavigationGroup {
+  readonly label?: string;
   readonly links: readonly DocsNavigationLink[];
 }
-
-export type DocsNavigationItem = DocsNavigationLink | DocsNavigationCollapsible;
 
 /** A section of the site: a top navigation item, and the side navigation of its pages. */
 export interface DocsSiteSection {
@@ -33,10 +28,10 @@ export interface DocsSiteSection {
   /** Paths the section's pages start with. */
   readonly paths: readonly string[];
   /** The section's pages; with more than one, the section has a side navigation. */
-  readonly items: readonly DocsNavigationItem[];
+  readonly groups: readonly DocsNavigationGroup[];
 }
 
-const link = (href: string, label: string): DocsNavigationLink => ({type: 'link', href, label});
+const link = (href: string, label: string): DocsNavigationLink => ({href, label});
 
 /**
  * The site's sections for the page at `current`. Token links stay on the brand of the current
@@ -45,22 +40,26 @@ const link = (href: string, label: string): DocsNavigationLink => ({type: 'link'
 export async function docsNavigation(current: string): Promise<DocsSiteSection[]> {
   const tokenBrand = /^\/tokens\/([^/]+)\//.exec(current)?.[1] ?? defaultTokenBrand;
   return [
-    {id: 'brand', label: 'Brand', href: '/brand/', paths: ['/brand/'], items: []},
+    {id: 'brand', label: 'Brand', href: '/brand/', paths: ['/brand/'], groups: []},
     {
       id: 'foundations',
       label: 'Foundations',
       href: '/fonts/',
       paths: ['/fonts/', '/icons/'],
-      items: [link('/fonts/', 'Fonts'), link('/icons/', 'Icons')],
+      groups: [{links: [link('/fonts/', 'Fonts'), link('/icons/', 'Icons')]}],
     },
     {
       id: 'tokens',
       label: 'Tokens',
       href: '/tokens/',
       paths: ['/tokens/'],
-      items: [
-        link('/tokens/', 'Overview'),
-        ...tokenAreas.map((area) => link(tokenAreaHref(tokenBrand, area.id), area.label)),
+      groups: [
+        {
+          links: [
+            link('/tokens/', 'Overview'),
+            ...tokenAreas.map((area) => link(tokenAreaHref(tokenBrand, area.id), area.label)),
+          ],
+        },
       ],
     },
     {
@@ -68,11 +67,9 @@ export async function docsNavigation(current: string): Promise<DocsSiteSection[]
       label: 'Components',
       href: '/components/',
       paths: ['/components/'],
-      items: [
-        link('/components/', 'Overview'),
-        ...(await componentGroups()).map((group): DocsNavigationCollapsible => ({
-          type: 'collapsible',
-          id: group.category,
+      groups: [
+        {links: [link('/components/', 'Overview')]},
+        ...(await componentGroups()).map((group) => ({
           label: group.label,
           links: group.entries.map((entry) =>
             link(`/components/${entry.id}/`, componentName(entry.id)),
@@ -89,4 +86,11 @@ export function currentSection(
   current: string,
 ): DocsSiteSection | undefined {
   return sections.find((section) => section.paths.some((path) => current.startsWith(path)));
+}
+
+/** Whether a section has a side navigation: a section with one page has none. */
+export function hasSideNavigation(
+  section: DocsSiteSection | undefined,
+): section is DocsSiteSection {
+  return section !== undefined && section.groups.flatMap((group) => group.links).length > 1;
 }

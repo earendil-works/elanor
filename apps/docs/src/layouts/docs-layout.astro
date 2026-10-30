@@ -12,10 +12,10 @@ import ColorSchemeScript from '../components/color-scheme-script.astro';
 import SiteHead from '../components/site-head.astro';
 import {DocsHeader} from '../components/docs-header.tsx';
 import {DocsContainer} from '../components/docs-layout-parts.tsx';
-import {DocsSideNavigation, hasSideNavigation} from '../components/docs-navigation.tsx';
+import {DocsSideNavigation} from '../components/docs-navigation.tsx';
 import {DocsSearchDialog} from '../components/docs-search.tsx';
 import {SkipLink} from '../components/skip-link.tsx';
-import {currentSection, docsNavigation} from '../lib/docs-navigation.ts';
+import {currentSection, docsNavigation, hasSideNavigation} from '../lib/docs-navigation.ts';
 import {siteMark} from '../lib/site-mark.ts';
 
 interface Props {

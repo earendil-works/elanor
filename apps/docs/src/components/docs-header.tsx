@@ -1,10 +1,10 @@
 import {SearchIcon} from '@earendil-works/elanor-icons-boiled-react';
 import {TopNavigation} from '@earendil-works/elanor-react';
 
-import type {DocsSiteSection} from '../lib/docs-navigation.ts';
+import {hasSideNavigation, type DocsSiteSection} from '../lib/docs-navigation.ts';
 import type {SiteMark} from '../lib/site-mark.ts';
 import {ColorSchemeToggle} from './color-scheme-toggle.tsx';
-import {DocsMenuPanels, hasSideNavigation} from './docs-navigation.tsx';
+import {DocsMenuPanels} from './docs-navigation.tsx';
 import {docsSearchId} from './docs-search.tsx';
 import {SiteIdentity} from './site-identity.tsx';
 
