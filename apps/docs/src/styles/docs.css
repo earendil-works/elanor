@@ -15,10 +15,8 @@
   }
 
   /* In-page jumps (the table of contents, heading links) scroll there smoothly and stop below
-     the top navigation. The scrollbar's space is always reserved, so the page doesn't shift when
-     it starts to scroll or a dialog locks scrolling. */
+     the top navigation. */
   html:has(.docs-layout) {
-    scrollbar-gutter: stable;
     scroll-padding-block-start: calc(
       var(--semantic-dimension-size-top-navigation) + var(--semantic-dimension-space-gap-large)
     );
