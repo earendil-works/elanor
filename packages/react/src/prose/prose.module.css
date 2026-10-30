@@ -20,107 +20,92 @@
     margin-block: 0;
   }
 
-  :where(.root, .root li, .root blockquote):where(:not(.root [data-text-context='ui'] *)) > * + * {
-    margin-block-start: var(--semantic-dimension-space-flow-small);
-  }
+  /* The scope ends at the children of elements that switch back to the UI text context, so
+     the switching element still takes its own space. A Prose inside such an element starts a
+     scope of its own. */
+  @scope (.root) to ([data-text-context='ui'] > *) {
+    :where(:scope, li, blockquote) > * + * {
+      margin-block-start: var(--semantic-dimension-space-flow-small);
+    }
 
-  /* Code blocks */
-  :where(.root, .root li, .root blockquote):where(:not(.root [data-text-context='ui'] *))
-    > :where(*)
-    + :where(pre),
-  :where(.root, .root li, .root blockquote):where(:not(.root [data-text-context='ui'] *))
-    > :where(pre)
-    + :where(*) {
-    margin-block-start: var(--semantic-dimension-space-flow-medium);
-  }
+    /* Code blocks */
+    :where(:scope, li, blockquote) > :where(*) + :where(pre),
+    :where(:scope, li, blockquote) > :where(pre) + :where(*) {
+      margin-block-start: var(--semantic-dimension-space-flow-medium);
+    }
 
-  /* Quotations and media */
-  :where(.root, .root li, .root blockquote):where(:not(.root [data-text-context='ui'] *))
-    > :where(*)
-    + :where(blockquote, figure, img, p:has(> img:only-child)),
-  :where(.root, .root li, .root blockquote):where(:not(.root [data-text-context='ui'] *))
-    > :where(blockquote, figure, img, p:has(> img:only-child))
-    + :where(*) {
-    margin-block-start: var(--semantic-dimension-space-flow-large);
-  }
+    /* Quotations and media */
+    :where(:scope, li, blockquote)
+      > :where(*)
+      + :where(blockquote, figure, img, p:has(> img:only-child)),
+    :where(:scope, li, blockquote)
+      > :where(blockquote, figure, img, p:has(> img:only-child))
+      + :where(*) {
+      margin-block-start: var(--semantic-dimension-space-flow-large);
+    }
 
-  /* Thematic breaks */
-  :where(.root, .root li, .root blockquote):where(:not(.root [data-text-context='ui'] *))
-    > :where(*)
-    + :where(hr, [role='separator']),
-  :where(.root, .root li, .root blockquote):where(:not(.root [data-text-context='ui'] *))
-    > :where(hr, [role='separator'])
-    + :where(*) {
-    margin-block-start: var(--semantic-dimension-space-flow-x-large);
-  }
+    /* Thematic breaks */
+    :where(:scope, li, blockquote) > :where(*) + :where(hr, [role='separator']),
+    :where(:scope, li, blockquote) > :where(hr, [role='separator']) + :where(*) {
+      margin-block-start: var(--semantic-dimension-space-flow-x-large);
+    }
 
-  /* Space above headings */
-  :where(.root, .root li, .root blockquote):where(:not(.root [data-text-context='ui'] *))
-    > :where(*)
-    + :where(h2, :has(> h2)) {
-    margin-block-start: var(--semantic-dimension-space-flow-x-large);
-  }
+    /* Space above headings */
+    :where(:scope, li, blockquote) > :where(*) + :where(h2, :has(> h2)) {
+      margin-block-start: var(--semantic-dimension-space-flow-x-large);
+    }
 
-  :where(.root, .root li, .root blockquote):where(:not(.root [data-text-context='ui'] *))
-    > :where(*)
-    + :where(h3, :has(> h3)) {
-    margin-block-start: var(--semantic-dimension-space-flow-large);
-  }
+    :where(:scope, li, blockquote) > :where(*) + :where(h3, :has(> h3)) {
+      margin-block-start: var(--semantic-dimension-space-flow-large);
+    }
 
-  :where(.root, .root li, .root blockquote):where(:not(.root [data-text-context='ui'] *))
-    > :where(*)
-    + :where(h4, h5, h6, :has(> :is(h4, h5, h6))) {
-    margin-block-start: var(--semantic-dimension-space-flow-medium);
-  }
+    :where(:scope, li, blockquote) > :where(*) + :where(h4, h5, h6, :has(> :is(h4, h5, h6))) {
+      margin-block-start: var(--semantic-dimension-space-flow-medium);
+    }
 
-  /* Space below headings */
-  :where(.root, .root li, .root blockquote):where(:not(.root [data-text-context='ui'] *))
-    > :where(h2, :has(> h2))
-    + :where(*) {
-    margin-block-start: var(--semantic-dimension-space-flow-medium);
-  }
+    /* Space below headings */
+    :where(:scope, li, blockquote) > :where(h2, :has(> h2)) + :where(*) {
+      margin-block-start: var(--semantic-dimension-space-flow-medium);
+    }
 
-  :where(.root, .root li, .root blockquote):where(:not(.root [data-text-context='ui'] *))
-    > :where(h3, :has(> h3))
-    + :where(*) {
-    margin-block-start: var(--semantic-dimension-space-flow-small);
-  }
+    :where(:scope, li, blockquote) > :where(h3, :has(> h3)) + :where(*) {
+      margin-block-start: var(--semantic-dimension-space-flow-small);
+    }
 
-  :where(.root, .root li, .root blockquote):where(:not(.root [data-text-context='ui'] *))
-    > :where(h4, h5, h6, :has(> :is(h4, h5, h6)))
-    + :where(*) {
-    margin-block-start: var(--semantic-dimension-space-flow-x-small);
-  }
+    :where(:scope, li, blockquote) > :where(h4, h5, h6, :has(> :is(h4, h5, h6))) + :where(*) {
+      margin-block-start: var(--semantic-dimension-space-flow-x-small);
+    }
 
-  /* Inline content inside list items and quotations is part of a line, not a block, so it gets
-     no flow space. Atomic inline boxes such as keyboard keys would otherwise take the margin and
-     push their line down. */
-  :where(.root li, .root blockquote):where(:not(.root [data-text-context='ui'] *))
-    > :where(
-      a,
-      abbr,
-      b,
-      br,
-      cite,
-      code,
-      data,
-      dfn,
-      em,
-      i,
-      kbd,
-      mark,
-      q,
-      s,
-      samp,
-      small,
-      span,
-      strong,
-      sub,
-      sup,
-      time,
-      u,
-      var
-    ) {
-    margin-block-start: 0;
+    /* Inline content inside list items and quotations is part of a line, not a block, so it gets
+       no flow space. Atomic inline boxes such as keyboard keys would otherwise take the margin and
+       push their line down. */
+    :where(li, blockquote)
+      > :where(
+        a,
+        abbr,
+        b,
+        br,
+        cite,
+        code,
+        data,
+        dfn,
+        em,
+        i,
+        kbd,
+        mark,
+        q,
+        s,
+        samp,
+        small,
+        span,
+        strong,
+        sub,
+        sup,
+        time,
+        u,
+        var
+      ) {
+      margin-block-start: 0;
+    }
   }
 }
