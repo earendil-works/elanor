@@ -26,6 +26,7 @@
     "@earendil-works/elanor-shiki-theme": "workspace:*",
     "@sentry/astro": "11.2.0",
     "astro": "^7.3.5",
+    "github-slugger": "^2.0.0",
     "minisearch": "^7.2.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",

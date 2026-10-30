@@ -1,5 +1,6 @@
 import type {APIRoute} from 'astro';
-import {getCollection, render} from 'astro:content';
+import {getCollection} from 'astro:content';
+import Slugger from 'github-slugger';
 import MiniSearch from 'minisearch';
 
 import {orderedApi} from '../lib/component-api.ts';
@@ -35,6 +36,23 @@ function excerpt(text: string, length = 200): string {
   return `${cut.slice(0, Math.max(cut.lastIndexOf(' '), length / 2))}…`;
 }
 
+/**
+ * The ids of the `##` headings, in order, as the page renders them: Astro slugs every heading's
+ * text with one GitHub slugger per page. Computed from the source, because rendering every page
+ * here would take seconds in development.
+ */
+function sectionAnchors(body: string): string[] {
+  const slugger = new Slugger();
+  const anchors: string[] = [];
+  for (const [, level = '', text = ''] of body
+    .replace(/^```[\s\S]*?^```$/gm, '')
+    .matchAll(/^(#{1,6}) (.+)$/gm)) {
+    const slug = slugger.slug(plainText(text));
+    if (level.length === 2) anchors.push(slug);
+  }
+  return anchors;
+}
+
 async function componentRecords(): Promise<DocsSearchRecord[]> {
   const records: DocsSearchRecord[] = [];
   for (const entry of await getCollection('components')) {
@@ -42,8 +60,7 @@ async function componentRecords(): Promise<DocsSearchRecord[]> {
     const pageTitle = componentName(entry.id);
     const groupTitle = componentCategoryLabels[entry.data.category];
     const url = `/components/${entry.id}/`;
-    // Section anchors as the page renders them, in the order of the `##` headings.
-    const anchors = (await render(entry)).headings.filter((heading) => heading.depth === 2);
+    const anchors = sectionAnchors(body);
     const [intro = '', ...sections] = body.replace(/^---[\s\S]*?^---$/m, '').split(/^## /m);
 
     const introText = plainText(intro.replace(/^# .*$/m, ''));
@@ -60,7 +77,7 @@ async function componentRecords(): Promise<DocsSearchRecord[]> {
       const [heading = '', ...lines] = section.split('\n');
       const title = plainText(heading);
       const text = plainText(lines.join('\n'));
-      const anchor = anchors[index]?.slug;
+      const anchor = anchors[index];
       records.push({
         id: `${url}#${anchor ?? index}`,
         url: anchor ? `${url}#${anchor}` : url,
