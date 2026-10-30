@@ -91,6 +91,19 @@ function prepareProseTextContextCss(contents: string): string {
 }
 
 /**
+ * Wraps UI text-context declarations for elements that switch back to UI.
+ *
+ * UI is the default at the root; an element with `data-text-context="ui"`
+ * restores it inside prose, such as an interface example in documentation.
+ *
+ * @param contents The declarations emitted by the CSS plugin.
+ * @returns A CSS rule scoped to the UI text context.
+ */
+function prepareUiTextContextCss(contents: string): string {
+  return `[data-text-context="ui"] {\n${indentDeclarations(contents)}\n}`;
+}
+
+/**
  * Wraps reduced-motion declarations in the reduced-motion media query.
  *
  * Transitions that move content resolve to their default timing at the root
@@ -126,7 +139,8 @@ export const contextActivation: Record<string, Record<string, string>> = {
  * semantic colors are emitted at the root. Dark semantic colors are emitted
  * for both the system preference and an explicit `data-color-scheme` override.
  * Context-dependent typography defaults to the UI context at the root and is
- * redefined under `data-text-context="prose"`. Transitions that move content
+ * redefined under `data-text-context="prose"`, and again under
+ * `data-text-context="ui"` for UI inside prose. Transitions that move content
  * are redefined as instant under
  * `prefers-reduced-motion: reduce`.
  */
@@ -140,6 +154,12 @@ export const cssPermutations: Permutation[] = [
     input: {colorScheme: 'dark'},
     include: [SEMANTIC_COLOR_TOKEN_PATTERN],
     prepare: prepareDarkColorSchemeCss,
+    transform: transformTransitionParts,
+  },
+  {
+    input: {textContext: 'ui'},
+    include: CONTEXTUAL_TYPOGRAPHY_TOKEN_PATTERNS,
+    prepare: prepareUiTextContextCss,
     transform: transformTransitionParts,
   },
   {

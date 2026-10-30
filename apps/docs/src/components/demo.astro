@@ -12,7 +12,8 @@ const {files} = Astro.props;
 const language = (name: string) => (name.endsWith('.css') ? 'css' : 'tsx');
 ---
 
-<div class="demo">
+{/* UI examples, also inside prose. */}
+<div class="demo" data-text-context="ui">
   <div class="demo-preview">
     <slot />
   </div>
@@ -23,7 +24,7 @@ const language = (name: string) => (name.endsWith('.css') ? 'css' : 'tsx');
         <div class="demo-file">
           <div class="demo-file-header">
             <span>{file.name}</span>
-            <CopyButton value={file.code} aria-label={`Copy ${file.name}`} client:visible />
+            <CopyButton value={file.code} aria-label={`Copy ${file.name}`} />
           </div>
           <Code code={file.code.trimEnd()} lang={language(file.name)} theme={elanorTheme} />
         </div>

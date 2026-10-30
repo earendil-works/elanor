@@ -1,5 +1,6 @@
 import {CodeSnippet, Grid, Heading, InlineCode, Link, Text} from '@earendil-works/elanor-react';
 
+import {HighlightedCode} from './highlighted-code.tsx';
 import {LinkCard} from './link-card.tsx';
 import {CopyStatus, StaticCopyButton} from './static-copy-button.tsx';
 
@@ -15,9 +16,11 @@ export interface TokenAreaSummary {
 
 interface TokensOverviewProps {
   readonly areas: readonly TokenAreaSummary[];
+  /** `tokensUsage`, highlighted. */
+  readonly usageHtml: string;
 }
 
-const usage = `@import '@earendil-works/design-tokens/radius.css';
+export const tokensUsage = `@import '@earendil-works/design-tokens/radius.css';
 
 .note {
   color: var(--semantic-color-text-secondary);
@@ -27,7 +30,7 @@ const stylelintHref =
   'https://github.com/earendil-works/elanor/blob/main/packages/stylelint-plugin-design-tokens/README.md';
 
 /** Static HTML; `scripts/copy-buttons.ts` handles the copy button. */
-export function TokensOverview({areas}: TokensOverviewProps): React.JSX.Element {
+export function TokensOverview({areas, usageHtml}: TokensOverviewProps): React.JSX.Element {
   return (
     <>
       <section className={styles.section} aria-labelledby="use">
@@ -43,13 +46,13 @@ export function TokensOverview({areas}: TokensOverviewProps): React.JSX.Element 
           id="token-usage"
           actions={
             <StaticCopyButton
-              value={usage}
+              value={tokensUsage}
               aria-label="Copy the example"
               aria-describedby="token-usage"
             />
           }
         >
-          {usage}
+          <HighlightedCode html={usageHtml} />
         </CodeSnippet>
         <CopyStatus />
         <Text>

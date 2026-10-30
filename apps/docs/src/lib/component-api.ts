@@ -403,23 +403,3 @@ export function partSummary(part: ApiPart): string {
   if (part.element) return `Renders ${part.element}. ${verb} its ${extras}.`;
   return `${verb} ${extras}.`;
 }
-
-const escapeHtml = (value: string) =>
-  value
-    .replaceAll('&', '&amp;')
-    .replaceAll('<', '&lt;')
-    .replaceAll('>', '&gt;')
-    .replaceAll('"', '&quot;');
-
-/** Converts the inline Markdown used in summaries and descriptions (code spans and links) to HTML. */
-export function inlineHtml(markdown: string): string {
-  return markdown
-    .split(/(`[^`]+`)/)
-    .map((segment) =>
-      segment.startsWith('`') && segment.endsWith('`') && segment.length > 1
-        ? `<code>${escapeHtml(segment.slice(1, -1))}</code>`
-        : escapeHtml(segment).replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2">$1</a>'),
-    )
-    .join('')
-    .replace(/\[<code>([^<]+)<\/code>\]\(([^)]+)\)/g, '<a href="$2"><code>$1</code></a>');
-}

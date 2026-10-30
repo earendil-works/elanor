@@ -1,128 +1,86 @@
+/*
+ * The docs' shell, with pi.dev's geometry: a sticky top navigation with a link to each section;
+ * from 61.625rem, a section with several pages has its side navigation (`size.sidebar`) fixed at
+ * the window's start below it. The content is Elanor's `Container`, centered in the window unless
+ * that would put it under the side navigation. Narrower, the top navigation's menu holds the
+ * sections and their pages. Articles sit on Elanor's 12-column `Grid`: from 75rem, nine columns
+ * for the article and three for the table of contents.
+ */
 @layer base {
   .docs-layout {
-    display: grid;
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-rows: auto 1fr;
-    min-height: 100vh;
+    min-block-size: 100dvh;
     background: var(--semantic-color-background-canvas);
     color: var(--semantic-color-text-primary);
     font: var(--semantic-typography-ui-primary);
   }
 
-  [data-docs-swap='content'] {
-    padding: var(--semantic-dimension-space-padding-x-large);
+  /* In-page jumps (the table of contents, heading links) scroll there smoothly and stop below
+     the top navigation. */
+  html:has(.docs-layout) {
+    scroll-padding-block-start: calc(
+      var(--semantic-dimension-size-top-navigation) + var(--semantic-dimension-space-gap-large)
+    );
   }
 
-  .docs-layout > aside {
-    display: none;
-    position: sticky;
-    inset-block-start: 0;
-    /* A fixed width, so opening a section with longer names doesn't move the content. */
-    inline-size: var(--semantic-dimension-size-sidebar);
-    block-size: 100vh;
-    min-block-size: 0;
-    overflow-y: auto;
-    scroll-padding-block: var(--semantic-dimension-space-padding-x-large);
-    padding: var(--semantic-dimension-space-padding-x-large);
-    border-inline-end: var(--semantic-dimension-border-width-default) solid;
-  }
-
-  .docs-aside-actions {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: var(--semantic-dimension-space-gap-medium);
-    margin-block-end: var(--semantic-dimension-space-gap-medium);
-  }
-
-  .preview {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    inline-size: 100%;
-    max-inline-size: var(--semantic-dimension-size-max-width-content-medium);
-  }
-
-  /* Keep docs flex items (including hydrated examples) within the content column. */
-  .preview,
-  .wide,
-  .page,
-  .prose {
-    min-inline-size: 0;
-  }
-
-  .preview > *,
-  .preview > astro-island > * {
-    min-inline-size: 0;
-    max-inline-size: 100%;
-  }
-
-  .preview pre.astro-code,
-  .prose pre {
-    min-inline-size: 0;
-    max-inline-size: 100%;
-    overflow-x: auto;
-  }
-
-  /* Code blocks written in MDX, such as usage snippets. */
-  .preview > pre.astro-code {
-    padding: var(--semantic-dimension-space-padding-x-large);
-    border-radius: var(--semantic-dimension-radius-medium);
-    font: var(--semantic-typography-code-secondary);
-  }
-
-  /* MDX tables have no wrapper; scroll the table locally, not the page. */
-  .preview > table,
-  .prose table {
-    display: block;
-    max-inline-size: 100%;
-    overflow-x: auto;
-  }
-
-  /* InlineCode styles for Markdown and generated HTML. */
-  .preview
-    > :where(p, ul, ol, dl, blockquote, table, h1, h2, h3, h4, h5, h6)
-    code:not(pre code, [data-variant]),
-  :where(.prose, .api) code:not(pre code, [data-variant]) {
-    color: var(--semantic-color-text-code);
-    font: inherit;
-    font-family: var(--semantic-font-family-code);
-    font-size: 0.875em;
-    overflow-wrap: anywhere;
-  }
-
-  /* Soft in prose; plain in headings and tables. */
-  .preview > :where(p, ul, ol, dl, blockquote) code:not(pre code, [data-variant]),
-  .prose :where(p, li, dd, blockquote) code:not(pre code, [data-variant]) {
-    padding-inline: var(--semantic-dimension-space-control-padding-inline-x-small);
-    border-radius: var(--semantic-dimension-radius-small);
-    background: var(--semantic-color-background-fill-secondary);
-  }
-
-  @media (forced-colors: active) {
-    .preview > :where(p, ul, ol, dl, blockquote) code:not(pre code, [data-variant]),
-    .prose :where(p, li, dd, blockquote) code:not(pre code, [data-variant]) {
-      outline: var(--semantic-dimension-border-width-small) solid CanvasText;
+  @media (prefers-reduced-motion: no-preference) {
+    html:has(.docs-layout) {
+      scroll-behavior: smooth;
     }
   }
 
-  .wide {
-    inline-size: 100%;
-    max-inline-size: var(--semantic-dimension-size-max-width-content-large);
+  /* The regions the client router swaps; without boxes, so the top navigation sticks to the page. */
+  [data-docs-swap='header'],
+  [data-docs-swap='search'] {
+    display: contents;
+  }
+
+  /* Top navigation */
+
+  .docs-header {
+    position: sticky;
+    z-index: var(--semantic-number-layer-sticky);
+    inset-block-start: 0;
+    padding-inline: var(--semantic-dimension-space-padding-x-large);
+    border-block-end: var(--semantic-dimension-border-width-small) solid
+      var(--semantic-color-border-secondary);
+    background: var(--semantic-color-background-canvas);
+  }
+
+  .docs-header-sections ul {
+    display: flex;
+    gap: var(--semantic-dimension-space-gap-large);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  /* Side navigation, from the wide layout */
+
+  .docs-navigation {
+    display: none;
+  }
+
+  /* Content */
+
+  .docs-main:focus {
+    outline: 0;
+  }
+
+  .docs-content {
+    padding-block: var(--semantic-dimension-space-padding-x-large)
+      var(--semantic-dimension-space-padding-xxxx-large);
   }
 
   .page {
     display: flex;
     flex-direction: column;
     gap: var(--semantic-dimension-space-gap-x-large);
+    min-inline-size: 0;
   }
 
-  /* Pages on the 12-column grid (1rem gutters) are at most 1216px wide; see brand-logos.module.css and icon-browser.module.css. */
-  .grid-page {
-    max-inline-size: var(--semantic-dimension-size-max-width-content-large);
-  }
-
+  /* Raw HTML long-form content, such as the brand guidelines. */
   .prose {
+    min-inline-size: 0;
     max-inline-size: var(--semantic-dimension-size-max-width-content-medium);
     font: var(--semantic-typography-prose-primary);
   }
@@ -131,37 +89,296 @@
     max-inline-size: 100%;
   }
 
-  .preview[data-wide] {
-    max-inline-size: none;
-    align-items: stretch;
+  .prose table {
+    display: block;
+    max-inline-size: 100%;
+    overflow-x: auto;
   }
 
-  .docs-navigation-layer {
-    /* Keep the absolute iOS backdrop anchored to the viewport. */
-    position: fixed;
-    inset: 0;
-    z-index: var(--semantic-number-layer-overlay);
+  .prose :where(p, li, dd, blockquote) code {
+    padding-inline: var(--semantic-dimension-space-control-padding-inline-x-small);
+    border-radius: var(--semantic-dimension-radius-small);
+    background: var(--semantic-color-background-fill-secondary);
+    color: var(--semantic-color-text-code);
+    font: inherit;
+    font-family: var(--semantic-font-family-code);
+    font-size: 0.875em;
+    overflow-wrap: anywhere;
   }
 
-  .docs-mobile-header {
-    padding: var(--semantic-dimension-space-padding-medium)
-      var(--semantic-dimension-space-padding-x-large);
-    border-block-end: var(--semantic-dimension-border-width-default) solid
-      var(--semantic-color-border-secondary);
-  }
-
-  @media (width >= 64rem /* token: semantic.dimension.breakpoint.medium */) {
-    .docs-layout {
-      grid-template-columns: max-content minmax(0, 1fr);
-      grid-template-rows: auto;
+  /* Forced colors drop the background, so an outline sets the code apart. */
+  @media (forced-colors: active) {
+    .prose :where(p, li, dd, blockquote) code {
+      outline: var(--semantic-dimension-border-width-small) solid CanvasText;
     }
+  }
 
-    .docs-layout > aside {
+  /* Articles: the title, a table of contents, and the content in `Prose` */
+
+  .docs-grid {
+    align-items: start;
+  }
+
+  .docs-article {
+    display: grid;
+    grid-column: 1 / -1;
+    row-gap: var(--semantic-dimension-space-gap-x-large);
+    min-inline-size: 0;
+    max-inline-size: var(--semantic-dimension-size-max-width-text);
+  }
+
+  /* Let the article's children shrink to its column, so wide code and tables scroll inside their
+     own boxes instead of widening the page. */
+  .docs-article > * {
+    min-inline-size: 0;
+  }
+
+  /* The title and its metadata sit close together, and so does whatever follows them. */
+  .docs-page-header {
+    display: grid;
+    row-gap: var(--semantic-dimension-space-gap-small);
+    margin-block-end: calc(
+      var(--semantic-dimension-space-gap-small) - var(--semantic-dimension-space-gap-x-large)
+    );
+  }
+
+  .docs-page-metadata {
+    display: flex;
+    align-items: center;
+    gap: var(--semantic-dimension-space-gap-small);
+    color: var(--semantic-color-text-secondary);
+    font: var(--semantic-typography-ui-secondary);
+  }
+
+  .docs-page-updated {
+    font: var(--semantic-typography-code-primary);
+  }
+
+  /* Shorter than the row, so it divides the items without reaching their edges. */
+  .docs-page-metadata-separator {
+    block-size: var(--semantic-dimension-size-x-small);
+  }
+
+  /* "Copy page" is a gray tertiary button; Elanor's tertiary button is the link color. */
+  .docs-copy-page {
+    box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+      var(--semantic-color-background-fill-ghost-neutral);
+    background: var(--semantic-color-background-fill-ghost-neutral);
+    color: var(--semantic-color-text-secondary);
+  }
+
+  @media (hover: hover) {
+    .docs-copy-page:hover:not([data-disabled]) {
+      box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+        var(--semantic-color-background-fill-ghost-neutral-hover);
+      background: var(--semantic-color-background-fill-ghost-neutral-hover);
+    }
+  }
+
+  .docs-copy-page:active:not([data-disabled]) {
+    box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+      var(--semantic-color-background-fill-ghost-neutral-active);
+    background: var(--semantic-color-background-fill-ghost-neutral-active);
+  }
+
+  /* The copy icon, then a check while the copy is confirmed. */
+  .docs-copy-page:not([data-copy-state='copied']) svg:last-of-type,
+  .docs-copy-page[data-copy-state='copied'] svg:first-of-type {
+    display: none;
+  }
+
+  /* Where the table of contents is a menu, it sticks under the top navigation; its top separator
+     divides the header from the content instead of the page's. */
+  .docs-toc-menu {
+    inset-block-start: calc(
+      var(--semantic-dimension-size-top-navigation) - var(--semantic-dimension-border-width-small)
+    );
+  }
+
+  .docs-article:has(.docs-toc-menu) .docs-page-separator {
+    display: none;
+  }
+
+  /* Jumps leave room for the menu too: its trigger, padding, and bottom separator. */
+  html:has(.docs-toc-menu) {
+    scroll-padding-block-start: calc(
+      var(--semantic-dimension-size-top-navigation) + var(--semantic-dimension-size-small) + 2 *
+        var(--semantic-dimension-space-padding-x-large) +
+        var(--semantic-dimension-border-width-small) + var(--semantic-dimension-space-gap-large)
+    );
+  }
+
+  .docs-toc-column {
+    display: none;
+  }
+
+  /* API tables: on narrow screens, one block per prop instead of a table wider than the screen.
+     Container queries can't use var(), so the threshold is the token's resolved value. */
+  .api-props {
+    container-type: inline-size;
+  }
+
+  .api-props th[scope='row'] {
+    white-space: nowrap;
+  }
+
+  .api-required {
+    display: block;
+    color: var(--semantic-color-text-secondary);
+    font: var(--semantic-typography-ui-tertiary);
+  }
+
+  @container (width < 40rem /* token: semantic.dimension.breakpoint.xSmall */) {
+    .api-props :is(table, tbody, tr, th, td) {
       display: block;
     }
 
-    [data-docs-swap='mobile-navigation'] {
+    .api-props thead {
+      position: absolute;
+      inline-size: var(--semantic-dimension-border-width-small);
+      block-size: var(--semantic-dimension-border-width-small);
+      overflow: hidden;
+      clip-path: inset(50%);
+      white-space: nowrap;
+    }
+
+    .api-props tr {
+      padding-block: var(--semantic-dimension-space-padding-medium);
+    }
+
+    .api-props :is(td, th) {
+      padding: 0;
+    }
+
+    .api-props td[data-label]::before {
+      content: attr(data-label) ': ';
+      color: var(--semantic-color-text-secondary);
+    }
+
+    .api-props td[data-empty] {
       display: none;
+    }
+  }
+
+  @media (width >= 48rem /* token: semantic.dimension.breakpoint.small */) {
+    .docs-content {
+      padding-block-start: var(--semantic-dimension-space-padding-xxx-large);
+    }
+  }
+
+  /* Narrow: identity and actions, with the sections and their pages in the menu. */
+  @media (width < 61.625rem) {
+    .docs-header-sections {
+      display: none;
+    }
+  }
+
+  /* Wide: the sections in the top navigation, and the current section's side navigation. */
+  @media (width >= 61.625rem) {
+    /* The sections sit centered between the identity and the actions; the menu is not used. */
+    .docs-header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    }
+
+    .docs-header-actions {
+      justify-self: end;
+    }
+
+    .docs-header-menu-trigger,
+    .docs-header-menu {
+      display: none;
+    }
+
+    .docs-navigation {
+      position: fixed;
+      /* Above the content, below the sticky top navigation. */
+      z-index: var(--semantic-number-layer-raised);
+      inset-block: var(--semantic-dimension-size-top-navigation) 0;
+      inset-inline-start: 0;
+      display: grid;
+      grid-template-rows: minmax(0, 1fr);
+      inline-size: var(--semantic-dimension-size-sidebar);
+      border-inline-end: var(--semantic-dimension-border-width-small) solid
+        var(--semantic-color-border-secondary);
+    }
+
+    /* The viewport holds the padding, so the scroll area's content brings none. Its scrollbar
+       lies over the end padding, so nothing shifts when a section opens. */
+    .docs-navigation-content {
+      padding: 0;
+    }
+
+    /* The first link lines up with the page title. */
+    .docs-navigation-viewport {
+      padding-block: var(--semantic-dimension-space-padding-xxx-large);
+      padding-inline: var(--semantic-dimension-space-padding-x-large);
+      overscroll-behavior: contain;
+    }
+
+    /* Like Elanor's Sidebar, the scrollbar shows only while the reader scrolls or drags it. */
+    @media (forced-colors: none) {
+      .docs-navigation-scrollbar:not([data-scrolling], :active) {
+        opacity: var(--semantic-number-opacity-hidden);
+        pointer-events: none;
+        transition: opacity var(--semantic-transition-fade);
+      }
+    }
+
+    /* Centered in the window like every other container, unless that would put the content under
+       the side navigation. */
+    .docs-layout:has(.docs-navigation) .docs-content {
+      inline-size: auto;
+      /* stylelint-disable design-tokens/token-property-compatibility -- The margins that center the content need its maximum width. */
+      margin-inline: max(
+          var(--semantic-dimension-size-sidebar),
+          calc(
+            (100% - var(--semantic-dimension-size-max-width-content-large)) / 2 -
+              var(--semantic-dimension-space-padding-x-large)
+          )
+        )
+        max(
+          var(--semantic-dimension-space-padding-none),
+          calc(
+            (100% - var(--semantic-dimension-size-max-width-content-large)) / 2 -
+              var(--semantic-dimension-space-padding-x-large)
+          )
+        );
+      /* stylelint-enable design-tokens/token-property-compatibility */
+    }
+  }
+
+  /* The article and the table of contents side by side, on nine and three columns. */
+  @media (width >= 75rem) {
+    .docs-article[data-toc] {
+      grid-column: 1 / span 9;
+    }
+
+    .docs-article[data-toc] .docs-toc-menu {
+      display: none;
+    }
+
+    .docs-article[data-toc] .docs-page-separator {
+      display: revert-layer;
+    }
+
+    html:has(.docs-article[data-toc]) {
+      scroll-padding-block-start: calc(
+        var(--semantic-dimension-size-top-navigation) + var(--semantic-dimension-space-gap-large)
+      );
+    }
+
+    .docs-toc-column {
+      position: sticky;
+      display: block;
+      grid-column: 10 / span 3;
+      inset-block-start: var(--semantic-dimension-size-top-navigation);
+      min-inline-size: 0;
+      max-block-size: calc(100dvh - var(--semantic-dimension-size-top-navigation));
+      padding-block: var(--semantic-dimension-space-padding-xxx-large);
+      margin-block-start: calc(-1 * var(--semantic-dimension-space-padding-xxx-large));
+      overflow-y: auto;
+      overscroll-behavior: contain;
     }
   }
 }

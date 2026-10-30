@@ -112,7 +112,7 @@
           }
         },
         "sidebar": {
-          "$value": "{primitive.dimension.5250}",
+          "$value": "{primitive.dimension.5850}",
           "$description": "Use as the default inline size for expanded side navigation and supporting page regions, independently of the main content grid."
         },
         "topNavigation": {

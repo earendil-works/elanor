@@ -7,70 +7,31 @@ import '../styles/view-transition.css';
 import '@earendil-works/elanor-fonts/mallos-serif.css';
 import '@earendil-works/elanor-fonts/commit-mono.css';
 import {ClientRouter} from 'astro:transitions';
+import {pageScriptsBase} from '../../plugins/page-scripts.ts';
 import ColorSchemeScript from '../components/color-scheme-script.astro';
 import SiteHead from '../components/site-head.astro';
-import {ColorSchemeToggle} from '../components/color-scheme-toggle.tsx';
-import {
-  DocsSideNavigation,
-  type DocsNavigationGroup,
-  type DocsNavigationLink,
-} from '../components/docs-side-navigation.tsx';
-import {DocsMobileNavigation} from '../components/docs-mobile-navigation.tsx';
-import {SiteIdentity} from '../components/site-identity.tsx';
+import {DocsHeader} from '../components/docs-header.tsx';
+import {DocsContainer} from '../components/docs-layout-parts.tsx';
+import {DocsSideNavigation} from '../components/docs-navigation.tsx';
+import {DocsSearchDialog} from '../components/docs-search.tsx';
 import {SkipLink} from '../components/skip-link.tsx';
-import {componentGroups} from '../lib/component-groups.ts';
-import {componentName} from '../lib/component-name.ts';
+import {currentSection, docsNavigation, hasSideNavigation} from '../lib/docs-navigation.ts';
 import {siteMark} from '../lib/site-mark.ts';
-import {defaultTokenBrand, tokenAreaHref, tokenAreas} from '../lib/token-pages.ts';
 
 interface Props {
   title: string;
   /** Path of the current page, used to mark it in the navigation. */
   current: string;
-  /** Pages with their own layout, such as grids, use the full content width. */
-  wide?: boolean;
   /** Markdown version of the page, advertised to agents in the head. */
   markdown?: string;
 }
 
-const {title, current, wide = false, markdown} = Astro.props;
+const {title, current, markdown} = Astro.props;
 const mark = await siteMark();
+const sections = await docsNavigation(current);
+const section = currentSection(sections, current);
 // The Layout demo supplies the page's single main landmark.
 const ContentTag = current === '/components/layout/' ? 'div' : 'main';
-const widePreview = [
-  '/components/layout/',
-  '/components/grid/',
-  '/components/container/',
-  '/components/sidebar/',
-].includes(current);
-// Token links stay on the brand of the current token page.
-const tokenBrand = /^\/tokens\/([^/]+)\//.exec(current)?.[1] ?? defaultTokenBrand;
-const link = (href: string, label: string): DocsNavigationLink => ({type: 'link', href, label});
-const groups: DocsNavigationGroup[] = [
-  {label: 'Brand', items: [link('/brand/', 'Overview')]},
-  {label: 'Foundations', items: [link('/fonts/', 'Fonts'), link('/icons/', 'Icons')]},
-  {
-    label: 'Tokens',
-    items: [
-      link('/tokens/', 'Overview'),
-      ...tokenAreas.map((area) => link(tokenAreaHref(tokenBrand, area.id), area.label)),
-    ],
-  },
-  {
-    label: 'Components',
-    items: [
-      link('/components/', 'Overview'),
-      ...(await componentGroups()).map((group) => ({
-        type: 'section' as const,
-        id: group.category,
-        label: group.label,
-        links: group.entries.map((entry) =>
-          link(`/components/${entry.id}/`, componentName(entry.id)),
-        ),
-      })),
-    ],
-  },
-];
 ---
 
 <!doctype html>
@@ -85,39 +46,33 @@ const groups: DocsNavigationGroup[] = [
   </head>
   <body class="docs-layout">
     <SkipLink />
-    <div data-docs-swap="mobile-navigation">
-      <DocsMobileNavigation groups={groups} current={current} mark={mark} client:load>
-        {/* Slotted, so it stays static HTML for the color scheme script. */}
-        <ColorSchemeToggle slot="actions" />
-      </DocsMobileNavigation>
+    {/* The client router swaps these regions (`scripts/docs-swap.ts`). */}
+    <div data-docs-swap="header">
+      <DocsHeader sections={sections} current={current} currentSection={section} mark={mark} />
     </div>
-    <aside>
-      <div class="docs-aside-actions">
-        {/* Full load: the homepage doesn't use the client router. */}
-        <SiteIdentity mark={mark} data-astro-reload />
-        <ColorSchemeToggle />
-      </div>
-      <div data-docs-swap="navigation">
-        {/* Persisted, so open sections stay open across client-side navigation. */}
-        <DocsSideNavigation
-          groups={groups}
-          current={current}
-          client:load
-          transition:persist="docs-side-navigation"
-        />
-      </div>
-    </aside>
-    <ContentTag id="main" tabindex="-1" data-docs-swap="content">
-      <div class:list={[wide ? 'wide' : 'preview']} data-wide={widePreview ? '' : undefined}>
+    <div data-docs-swap="navigation">
+      {
+        hasSideNavigation(section) && (
+          <DocsSideNavigation section={section} current={current} />
+        )
+      }
+    </div>
+    {/* Blocking, so the navigation's restored state is there before the first paint. */}
+    <script is:inline src={`${pageScriptsBase}navigation-behaviors.js`}></script>
+    <ContentTag id="main" tabindex="-1" class="docs-main" data-docs-swap="content">
+      <DocsContainer className="docs-content">
         <slot />
-      </div>
+      </DocsContainer>
     </ContentTag>
+    {/* Opened by the side navigation's search and the top navigation's search button. */}
+    <div data-docs-swap="search">
+      <DocsSearchDialog />
+    </div>
+    <script is:inline type="module" src={`${pageScriptsBase}page-behaviors.js`}></script>
   </body>
 </html>
-
 
 <script>
   import '../scripts/color-scheme.ts';
   import '../scripts/docs-swap.ts';
-  import '../scripts/reveal-current-link.ts';
 </script>

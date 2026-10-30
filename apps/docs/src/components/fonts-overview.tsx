@@ -2,15 +2,18 @@ import {CodeSnippet, Heading, InlineCode, KeyValue, Link, Text} from '@earendil-
 import {Fragment, type ReactElement, type ReactNode} from 'react';
 
 import type {FontFamily, FontsPage} from '../lib/fonts.ts';
+import {HighlightedCode} from './highlighted-code.tsx';
 import {CopyStatus, StaticCopyButton} from './static-copy-button.tsx';
 
 import styles from './fonts-overview.module.css';
 
 interface FontsOverviewProps {
   readonly page: FontsPage;
+  /** `fontsUsage`, highlighted. */
+  readonly usageHtml: string;
 }
 
-const usage = `@import '@earendil-works/elanor-fonts/mallos-serif.css';
+export const fontsUsage = `@import '@earendil-works/elanor-fonts/mallos-serif.css';
 @import '@earendil-works/elanor-fonts/commit-mono.css';`;
 
 const glyphs = [
@@ -129,7 +132,7 @@ function Family({family}: {readonly family: FontFamily}): React.JSX.Element {
 }
 
 /** Static HTML; `scripts/copy-buttons.ts` handles the copy button. */
-export function FontsOverview({page}: FontsOverviewProps): React.JSX.Element {
+export function FontsOverview({page, usageHtml}: FontsOverviewProps): React.JSX.Element {
   return (
     <>
       <section className={styles.use} aria-labelledby="use">
@@ -141,13 +144,13 @@ export function FontsOverview({page}: FontsOverviewProps): React.JSX.Element {
           id="font-usage"
           actions={
             <StaticCopyButton
-              value={usage}
+              value={fontsUsage}
               aria-label="Copy the example"
               aria-describedby="font-usage"
             />
           }
         >
-          {usage}
+          <HighlightedCode html={usageHtml} />
         </CodeSnippet>
         <CopyStatus />
         <Text>

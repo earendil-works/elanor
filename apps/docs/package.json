@@ -26,15 +26,19 @@
     "@earendil-works/elanor-shiki-theme": "workspace:*",
     "@sentry/astro": "11.2.0",
     "astro": "^7.3.5",
+    "github-slugger": "^2.0.0",
+    "minisearch": "^7.2.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
-    "sharp": "^0.35.5"
+    "sharp": "^0.35.5",
+    "shiki": "^4.4.3"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
     "@earendil-works/stylelint-plugin-design-tokens": "workspace:*",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
+    "esbuild": "^0.28.2",
     "magic-string": "^1.4.2",
     "postcss-html": "^2.0.0",
     "stylelint": "^17.15.0",
