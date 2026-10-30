@@ -1,7 +1,6 @@
-import {ScrollArea, Separator, SideNavigation, TopNavigation} from '@earendil-works/elanor-react';
+import {ScrollArea, SideNavigation, TopNavigation} from '@earendil-works/elanor-react';
 
 import {hasSideNavigation, type DocsSiteSection} from '../lib/docs-navigation.ts';
-import {DocsSearchTrigger} from './docs-search.tsx';
 
 /*
  * The documentation navigation on Elanor's static parts: the current section's pages as the side
@@ -15,14 +14,10 @@ interface DocsSideNavigationProps {
   readonly current: string;
 }
 
-/** The current section's pages with the search above them, fixed beside the content. */
+/** The current section's pages, fixed beside the content. */
 export function DocsSideNavigation({section, current}: DocsSideNavigationProps): React.JSX.Element {
   return (
     <div className="docs-navigation">
-      <div className="docs-navigation-search">
-        <DocsSearchTrigger />
-        <Separator />
-      </div>
       <ScrollArea.StaticRoot className="docs-navigation-scroll-area">
         <ScrollArea.StaticViewport className="docs-navigation-viewport">
           <ScrollArea.StaticContent className="docs-navigation-content">

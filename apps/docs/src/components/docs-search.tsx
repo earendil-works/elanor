@@ -10,29 +10,12 @@ import type {ReactNode} from 'react';
 /*
  * The docs search on Elanor's static search dialog. Results come from the site's search index
  * (`pages/search-index.json.ts`, searched by `scripts/docs-search-source.ts`), and keyboard
- * shortcuts open it (`scripts/docs-search.ts`). The trigger and the dialog render
- * separately, each in its own `SearchDialog.StaticRoot`, joined by the dialog's id.
+ * shortcuts open it (`scripts/docs-search.ts`), as does the top navigation's search button, which
+ * names the dialog's id.
  */
 
 export const docsSearchId = 'docs-search';
 export const docsSearchIndex = '/search-index.json';
-
-export function DocsSearchTrigger(): React.JSX.Element {
-  return (
-    <SearchDialog.StaticRoot id={docsSearchId}>
-      <SearchDialog.StaticTrigger
-        shortcut={
-          <KeyboardShortcut>
-            <KeyboardKey data-docs-shortcut-modifier="">Ctrl</KeyboardKey>
-            <KeyboardKey>K</KeyboardKey>
-          </KeyboardShortcut>
-        }
-      >
-        Search
-      </SearchDialog.StaticTrigger>
-    </SearchDialog.StaticRoot>
-  );
-}
 
 function DocsSearchMessage({
   state,

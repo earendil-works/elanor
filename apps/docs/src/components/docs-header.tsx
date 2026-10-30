@@ -11,8 +11,7 @@ import {SiteIdentity} from './site-identity.tsx';
 /*
  * The docs' top navigation on Elanor's `TopNavigation`, like pi.dev's: the identity, a link to
  * each section of the site, and the color scheme toggle. Below the wide layout, the links move into
- * the static menu, with each section's pages. The search button shows where the side navigation
- * and its search don't: on narrow screens and in sections with one page.
+ * the static menu, with each section's pages. The search button opens the search of all sections.
  */
 
 interface DocsHeaderProps {
@@ -60,9 +59,7 @@ export function DocsHeader({
       </TopNavigation.Navigation>
 
       <TopNavigation.Actions className="docs-header-actions">
-        <ColorSchemeToggle variant="top-navigation" />
         <TopNavigation.ActionButton
-          className="docs-header-search"
           commandfor={docsSearchId}
           command="show-modal"
           aria-haspopup="dialog"
@@ -71,6 +68,7 @@ export function DocsHeader({
         >
           <SearchIcon />
         </TopNavigation.ActionButton>
+        <ColorSchemeToggle variant="top-navigation" />
         <TopNavigation.StaticMenu
           defaultPanel={hasSideNavigation(currentSection) ? currentSection.id : 'main'}
         >

@@ -286,12 +286,10 @@
     }
 
     .docs-header-menu-trigger,
-    .docs-header-menu,
-    .docs-layout:has(.docs-navigation) .docs-header-search {
+    .docs-header-menu {
       display: none;
     }
 
-    /* The search stays at the top while the side navigation below it scrolls. */
     .docs-navigation {
       position: fixed;
       /* Above the content, below the sticky top navigation. */
@@ -299,17 +297,10 @@
       inset-block: var(--semantic-dimension-size-top-navigation) 0;
       inset-inline-start: 0;
       display: grid;
-      grid-template-rows: auto minmax(0, 1fr);
+      grid-template-rows: minmax(0, 1fr);
       inline-size: var(--semantic-dimension-size-sidebar);
       border-inline-end: var(--semantic-dimension-border-width-small) solid
         var(--semantic-color-border-secondary);
-    }
-
-    .docs-navigation-search {
-      display: grid;
-      gap: var(--semantic-dimension-space-gap-medium);
-      padding-block-start: var(--semantic-dimension-space-padding-xxx-large);
-      padding-inline: var(--semantic-dimension-space-padding-x-large);
     }
 
     /* The viewport holds the padding, so the scroll area's content brings none. Its scrollbar
@@ -318,9 +309,9 @@
       padding: 0;
     }
 
+    /* The first link lines up with the page title. */
     .docs-navigation-viewport {
-      padding-block: var(--semantic-dimension-space-padding-x-large)
-        var(--semantic-dimension-space-padding-xxx-large);
+      padding-block: var(--semantic-dimension-space-padding-xxx-large);
       padding-inline: var(--semantic-dimension-space-padding-x-large);
       overscroll-behavior: contain;
     }

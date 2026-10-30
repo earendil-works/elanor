@@ -1,7 +1,7 @@
 // The docs search's own behavior, on Elanor's static search dialog: opens it from the keyboard
 // (⌘K on Apple platforms, Ctrl+K elsewhere, and `/` outside text fields; Elanor leaves shortcuts
-// to the page), names the shortcut on the dialog's triggers (`aria-keyshortcuts`) and shows the
-// platform's modifier key. Enter without results submits the search form, which has nowhere to
+// to the page), and names the shortcut on the dialog's triggers (`aria-keyshortcuts` and their
+// tooltip). Enter without results submits the search form, which has nowhere to
 // go, so that stays on the page.
 import type {Behavior} from '@earendil-works/elanor-react';
 
@@ -23,8 +23,8 @@ export function createDocsSearch(element: HTMLElement): Behavior {
 
   for (const trigger of triggers()) {
     trigger.setAttribute('aria-keyshortcuts', apple ? 'Meta+K' : 'Control+K');
-    const modifier = trigger.querySelector('[data-docs-shortcut-modifier]');
-    if (modifier) modifier.textContent = apple ? '⌘' : 'Ctrl';
+    const label = trigger.getAttribute('aria-label');
+    if (label) trigger.title = `${label} (${apple ? '⌘K' : 'Ctrl+K'})`;
   }
 
   function onKeyDown(event: KeyboardEvent): void {
