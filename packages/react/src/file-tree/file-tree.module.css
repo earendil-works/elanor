@@ -1,0 +1,187 @@
+@layer elanor.components {
+  .root {
+    /*
+     * One tile per level, painted repeat-x. Override with any image (for example a hand-drawn SVG)
+     * that is one indent step wide and as tall as a row.
+     */
+    --file-tree-guide: linear-gradient(
+      to right,
+      var(--semantic-color-border-secondary) var(--semantic-dimension-border-width-default),
+      transparent var(--semantic-dimension-border-width-default)
+    );
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-gap-x-small);
+    min-inline-size: 0;
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-ui-primary);
+  }
+
+  .item {
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    align-items: center;
+    gap: var(--semantic-dimension-space-control-gap-large);
+    min-inline-size: 0;
+    padding-block: var(--semantic-dimension-space-control-padding-block-small);
+    padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
+    border-radius: var(--semantic-dimension-radius-small);
+    background: var(--semantic-color-background-fill-ghost-neutral);
+    color: inherit;
+    text-decoration: none;
+    cursor: pointer;
+    user-select: none;
+    outline: none;
+
+    &::before {
+      position: absolute;
+      /* Up through the gap above, so the guide runs unbroken from the parent folder's row. */
+      inset-block: calc(-1 * var(--semantic-dimension-space-gap-x-small)) 0;
+      /* Under the parent's chevron centre; one tile per level, each as wide as the indent step (Figma: 18px). */
+      inset-inline-start: calc(
+        var(--semantic-dimension-space-control-padding-inline-small) +
+          (var(--semantic-dimension-size-x-small) - var(--semantic-dimension-border-width-default)) /
+          2
+      );
+      inline-size: calc(
+        (var(--file-tree-level) - 1) *
+          (var(--semantic-dimension-size-x-small) + var(--semantic-dimension-border-width-default))
+      );
+      background: var(--file-tree-guide) repeat-x;
+      background-size: calc(
+          var(--semantic-dimension-size-x-small) + var(--semantic-dimension-border-width-default)
+        )
+        100%;
+      content: '';
+      pointer-events: none;
+    }
+
+    @media (hover: hover) {
+      &:hover {
+        background: var(--semantic-color-background-fill-ghost-neutral-hover);
+      }
+    }
+
+    &[data-current] {
+      background: var(--semantic-color-background-fill-ghost-neutral-active);
+      box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+        var(--semantic-color-background-fill-ghost-neutral-active);
+    }
+
+    &:focus-visible {
+      outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+      outline-offset: calc(-1 * var(--semantic-dimension-border-width-large));
+    }
+
+    @media (pointer: coarse) {
+      min-block-size: var(--semantic-dimension-size-medium);
+    }
+  }
+
+  .icons {
+    display: flex;
+    flex: none;
+    align-items: center;
+    justify-content: flex-end;
+    /* Indentation lives here, not on the row, so the label keeps its full width to truncate. */
+    inline-size: calc(
+      (var(--file-tree-level) - 1) *
+        (var(--semantic-dimension-size-x-small) + var(--semantic-dimension-border-width-default)) +
+        2 * var(--semantic-dimension-size-x-small) +
+        var(--semantic-dimension-space-control-gap-large)
+    );
+    gap: var(--semantic-dimension-space-control-gap-large);
+    color: var(--semantic-color-icon-primary);
+  }
+
+  .chevron,
+  .icon {
+    inline-size: var(--semantic-dimension-size-x-small);
+    block-size: var(--semantic-dimension-size-x-small);
+  }
+
+  .chevron {
+    transition: rotate var(--semantic-transition-movement-disclosure);
+
+    .item[data-expanded] & {
+      rotate: 90deg;
+    }
+
+    &:dir(rtl) {
+      rotate: 180deg;
+    }
+  }
+
+  .label {
+    overflow: hidden;
+    min-inline-size: 0;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Same look as the sidebar's compact tooltip. */
+  /*
+   * Laid over the cut-off label (the positioner puts the popup's box at the label's box), so the
+   * full name continues it in place. The negative margins pull the padding outside the label so
+   * the text lines up exactly; the border is an inset shadow (as on the current row) so it takes no space.
+   */
+  .tooltip {
+    box-sizing: border-box;
+    max-inline-size: min(
+      var(--semantic-dimension-size-max-width-content-small),
+      var(--available-width)
+    );
+    margin-block-start: calc(-1 * var(--semantic-dimension-space-control-padding-block-small));
+    margin-inline-start: calc(-1 * var(--semantic-dimension-space-control-padding-inline-small));
+    padding-block: var(--semantic-dimension-space-control-padding-block-small);
+    padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
+    border-radius: var(--semantic-dimension-radius-small);
+    box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+      var(--semantic-color-border-secondary);
+    background: var(--semantic-color-background-canvas);
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-ui-primary);
+    overflow-wrap: anywhere;
+    pointer-events: none;
+    transform-origin: var(--transform-origin);
+    transition:
+      transform var(--semantic-transition-movement-popup),
+      opacity var(--semantic-transition-fade);
+
+    &[data-starting-style],
+    &[data-ending-style] {
+      opacity: var(--semantic-number-opacity-hidden);
+      transform: scale(var(--semantic-number-scale-popup));
+    }
+
+    &[data-instant] {
+      transition: none;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .root {
+      --file-tree-guide: linear-gradient(
+        to right,
+        CanvasText var(--semantic-dimension-border-width-default),
+        transparent var(--semantic-dimension-border-width-default)
+      );
+    }
+
+    .item[data-current] {
+      outline: var(--semantic-dimension-border-width-default) solid Highlight;
+      outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
+    }
+
+    .item:focus-visible {
+      outline: var(--semantic-dimension-border-width-large) solid Highlight;
+    }
+
+    .tooltip {
+      outline: var(--semantic-dimension-border-width-default) solid CanvasText;
+      outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
+    }
+  }
+}

@@ -34,5 +34,8 @@ export default createStrictConfig({
     '--active-entry-height',
     // TableOfContents.Menu sets how far content has scrolled beneath its sticky bar (0 to 1).
     '--sticky-progress',
+    // FileTree.Item sets its depth; FileTree.Root exposes the indentation guide image for overriding.
+    '--file-tree-level',
+    '--file-tree-guide',
   ],
 });
