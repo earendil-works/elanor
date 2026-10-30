@@ -121,6 +121,11 @@
     min-inline-size: 0;
   }
 
+  .content .navigationItem {
+    inline-size: 100%;
+    justify-content: flex-start;
+  }
+
   @media (forced-colors: active) {
     .navigationItem::after {
       border-color: CanvasText;
