@@ -1,7 +1,12 @@
 ---
 import {Heading, Text} from '@earendil-works/elanor-react';
-import {TokensOverview, type TokenAreaSummary} from '../../components/tokens-overview.tsx';
+import {
+  TokensOverview,
+  tokensUsage,
+  type TokenAreaSummary,
+} from '../../components/tokens-overview.tsx';
 import DocsLayout from '../../layouts/docs-layout.astro';
+import {highlight} from '../../lib/highlight.ts';
 import {defaultTokenBrand, tokenAreaCounts, tokenAreaHref, tokenAreas} from '../../lib/token-pages.ts';
 
 const counts = await tokenAreaCounts(defaultTokenBrand);
@@ -10,6 +15,7 @@ const areas: TokenAreaSummary[] = tokenAreas.map((area) => ({
   href: tokenAreaHref(defaultTokenBrand, area.id),
   count: counts.get(area.id) ?? 0,
 }));
+const usageHtml = await highlight(tokensUsage, 'css');
 ---
 
 <DocsLayout title="Design tokens" current="/tokens/">
@@ -19,7 +25,7 @@ const areas: TokenAreaSummary[] = tokenAreas.map((area) => ({
       Named values for color, type, space, shape, and motion. Use semantic tokens in components;
       primitives are the raw values behind them.
     </Text>
-    <TokensOverview areas={areas} />
+    <TokensOverview areas={areas} usageHtml={usageHtml} />
   </div>
 </DocsLayout>
 

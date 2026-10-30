@@ -10,6 +10,8 @@ import {
 } from '@earendil-works/elanor-react';
 import {useDeferredValue, useEffect, useMemo, useRef, useState, type Ref} from 'react';
 
+import {HighlightedCode} from './highlighted-code.tsx';
+
 import styles from './icon-browser.module.css';
 
 type IndexEntry = readonly [name: string, tags: string, component: string];
@@ -72,7 +74,16 @@ function searchIcons(index: readonly IndexEntry[], query: string): readonly Inde
     .map(([entry]) => entry);
 }
 
-export function IconBrowser(): React.JSX.Element {
+/** The import line of an icon, with placeholders for the highlighter (`pages/icons.astro`). */
+export const iconImportTemplate =
+  "import {IconComponent} from '@earendil-works/elanor-icons-boiled-react/icon-name';";
+
+interface IconBrowserProps {
+  /** `iconImportTemplate`, highlighted. */
+  readonly importHtml: string;
+}
+
+export function IconBrowser({importHtml}: IconBrowserProps): React.JSX.Element {
   const [index, setIndex] = useState<IndexState>({status: 'loading'});
   const [query, setQuery] = useState('');
   const [limit, setLimit] = useState(PAGE_SIZE);
@@ -203,18 +214,27 @@ export function IconBrowser(): React.JSX.Element {
         </ul>
         <div ref={end} />
       </div>
-      {selected ? <SelectedIcon entry={selected} ref={sidebar} /> : null}
+      {selected ? <SelectedIcon entry={selected} importHtml={importHtml} ref={sidebar} /> : null}
     </div>
   );
 }
 
 interface SelectedIconProps {
   readonly entry: IndexEntry;
+  readonly importHtml: string;
   readonly ref: Ref<HTMLElement>;
 }
 
-function SelectedIcon({entry: [name, , component], ref}: SelectedIconProps): React.JSX.Element {
-  const importLine = `import {${component}} from '@earendil-works/elanor-icons-boiled-react/${name}';`;
+function SelectedIcon({
+  entry: [name, , component],
+  importHtml,
+  ref,
+}: SelectedIconProps): React.JSX.Element {
+  const importLine = iconImportTemplate
+    .replace('IconComponent', component)
+    .replace('icon-name', name);
+  // Icon names are kebab-case and components PascalCase, so they need no HTML escaping.
+  const html = importHtml.replace('IconComponent', component).replace('icon-name', name);
   return (
     <aside ref={ref} className={styles.sidebar} aria-label="Selected icon">
       <Stack gap="medium">
@@ -230,7 +250,7 @@ function SelectedIcon({entry: [name, , component], ref}: SelectedIconProps): Rea
           className={styles.snippet}
           actions={<CopyButton key={importLine} value={importLine} aria-label="Copy import" />}
         >
-          {importLine}
+          <HighlightedCode html={html} />
         </CodeSnippet>
         <Link href={`/api/icons/${name}.svg`} download data-astro-prefetch="false">
           Download SVG

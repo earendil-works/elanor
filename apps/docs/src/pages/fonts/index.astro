@@ -2,11 +2,13 @@
 // Only this page and the Lefos token pages load DepartureMono.
 import '@earendil-works/elanor-fonts/departure-mono.css';
 import {Heading, InlineCode, Text} from '@earendil-works/elanor-react';
-import {FontsOverview} from '../../components/fonts-overview.tsx';
+import {FontsOverview, fontsUsage} from '../../components/fonts-overview.tsx';
 import DocsLayout from '../../layouts/docs-layout.astro';
 import {fontsPage} from '../../lib/fonts.ts';
+import {highlight} from '../../lib/highlight.ts';
 
 const page = await fontsPage();
+const usageHtml = await highlight(fontsUsage, 'css');
 ---
 
 <DocsLayout title="Fonts" current="/fonts/">
@@ -15,7 +17,7 @@ const page = await fontsPage();
     <Text>
       Self-hosted fonts with <InlineCode>@font-face</InlineCode> CSS. The design tokens name them.
     </Text>
-    <FontsOverview page={page} />
+    <FontsOverview page={page} usageHtml={usageHtml} />
   </div>
 </DocsLayout>
 
