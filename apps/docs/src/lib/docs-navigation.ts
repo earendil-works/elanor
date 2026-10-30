@@ -3,8 +3,9 @@ import {componentName} from './component-name.ts';
 import {defaultTokenBrand, tokenAreaHref, tokenAreas} from './token-pages.ts';
 
 /*
- * The documentation's navigation, rendered as the side navigation on wide screens and in the top
- * navigation's menu on narrow ones. Server-only: the pages render it without React in the browser.
+ * The documentation's navigation: a top navigation item for each section of the site, and for a
+ * section with several pages, a side navigation of them on wide screens; narrower, the top
+ * navigation's menu holds both. Server-only: the pages render it without React in the browser.
  */
 
 export interface DocsNavigationLink {
@@ -14,44 +15,63 @@ export interface DocsNavigationLink {
 }
 
 /** A collapsible group of links. */
-export interface DocsNavigationSection {
-  readonly type: 'section';
+export interface DocsNavigationCollapsible {
+  readonly type: 'collapsible';
   readonly id: string;
   readonly label: string;
   readonly links: readonly DocsNavigationLink[];
 }
 
-export type DocsNavigationItem = DocsNavigationLink | DocsNavigationSection;
+export type DocsNavigationItem = DocsNavigationLink | DocsNavigationCollapsible;
 
-export interface DocsNavigationGroup {
+/** A section of the site: a top navigation item, and the side navigation of its pages. */
+export interface DocsSiteSection {
+  readonly id: string;
   readonly label: string;
+  /** Where the top navigation item leads. */
+  readonly href: string;
+  /** Paths the section's pages start with. */
+  readonly paths: readonly string[];
+  /** The section's pages; with more than one, the section has a side navigation. */
   readonly items: readonly DocsNavigationItem[];
 }
 
 const link = (href: string, label: string): DocsNavigationLink => ({type: 'link', href, label});
 
 /**
- * The navigation groups for the page at `current`. Token links stay on the brand of the current
+ * The site's sections for the page at `current`. Token links stay on the brand of the current
  * token page.
  */
-export async function docsNavigation(current: string): Promise<DocsNavigationGroup[]> {
+export async function docsNavigation(current: string): Promise<DocsSiteSection[]> {
   const tokenBrand = /^\/tokens\/([^/]+)\//.exec(current)?.[1] ?? defaultTokenBrand;
   return [
-    {label: 'Brand', items: [link('/brand/', 'Overview')]},
-    {label: 'Foundations', items: [link('/fonts/', 'Fonts'), link('/icons/', 'Icons')]},
+    {id: 'brand', label: 'Brand', href: '/brand/', paths: ['/brand/'], items: []},
     {
+      id: 'foundations',
+      label: 'Foundations',
+      href: '/fonts/',
+      paths: ['/fonts/', '/icons/'],
+      items: [link('/fonts/', 'Fonts'), link('/icons/', 'Icons')],
+    },
+    {
+      id: 'tokens',
       label: 'Tokens',
+      href: '/tokens/',
+      paths: ['/tokens/'],
       items: [
         link('/tokens/', 'Overview'),
         ...tokenAreas.map((area) => link(tokenAreaHref(tokenBrand, area.id), area.label)),
       ],
     },
     {
+      id: 'components',
       label: 'Components',
+      href: '/components/',
+      paths: ['/components/'],
       items: [
         link('/components/', 'Overview'),
-        ...(await componentGroups()).map((group): DocsNavigationSection => ({
-          type: 'section',
+        ...(await componentGroups()).map((group): DocsNavigationCollapsible => ({
+          type: 'collapsible',
           id: group.category,
           label: group.label,
           links: group.entries.map((entry) =>
@@ -61,4 +81,12 @@ export async function docsNavigation(current: string): Promise<DocsNavigationGro
       ],
     },
   ];
+}
+
+/** The section of the page at `current`. */
+export function currentSection(
+  sections: readonly DocsSiteSection[],
+  current: string,
+): DocsSiteSection | undefined {
+  return sections.find((section) => section.paths.some((path) => current.startsWith(path)));
 }

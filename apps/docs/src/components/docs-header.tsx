@@ -1,23 +1,26 @@
 import {SearchIcon} from '@earendil-works/elanor-icons-boiled-react';
 import {TopNavigation} from '@earendil-works/elanor-react';
 
-import type {DocsNavigationGroup} from '../lib/docs-navigation.ts';
+import type {DocsSiteSection} from '../lib/docs-navigation.ts';
 import type {SiteMark} from '../lib/site-mark.ts';
 import {ColorSchemeToggle} from './color-scheme-toggle.tsx';
-import {DocsMenuNavigation} from './docs-navigation.tsx';
+import {DocsMenuPanels, hasSideNavigation} from './docs-navigation.tsx';
 import {docsSearchId} from './docs-search.tsx';
 import {SiteIdentity} from './site-identity.tsx';
 
 /*
- * The docs' top navigation on narrow screens, where the side navigation leaves: Elanor's
- * `TopNavigation` with the identity, the color scheme toggle, a search button, and the static menu
- * with the documentation navigation. Wide screens have no top navigation.
+ * The docs' top navigation on Elanor's `TopNavigation`, like pi.dev's: the identity, a link to
+ * each section of the site, and the color scheme toggle. Below the wide layout, the links move into
+ * the static menu, with each section's pages. The search button shows where the side navigation
+ * and its search don't: on narrow screens and in sections with one page.
  */
 
 interface DocsHeaderProps {
-  readonly groups: readonly DocsNavigationGroup[];
+  readonly sections: readonly DocsSiteSection[];
   /** The current page's path. */
   readonly current: string;
+  /** The current page's section. */
+  readonly currentSection: DocsSiteSection | undefined;
   readonly mark: SiteMark;
 }
 
@@ -29,16 +32,37 @@ declare module 'react' {
   }
 }
 
-export function DocsHeader({groups, current, mark}: DocsHeaderProps): React.JSX.Element {
+export function DocsHeader({
+  sections,
+  current,
+  currentSection,
+  mark,
+}: DocsHeaderProps): React.JSX.Element {
   return (
     <TopNavigation.Root className="docs-header">
       <TopNavigation.Identity>
         {/* Full load: the homepage doesn't use the client router. */}
         <SiteIdentity mark={mark} data-astro-reload />
       </TopNavigation.Identity>
-      <TopNavigation.Actions>
+
+      <TopNavigation.Navigation className="docs-header-sections">
+        <nav aria-label="Sections">
+          <ul>
+            {sections.map((section) => (
+              <li key={section.id}>
+                <TopNavigation.Link href={section.href} active={section.id === currentSection?.id}>
+                  {section.label}
+                </TopNavigation.Link>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </TopNavigation.Navigation>
+
+      <TopNavigation.Actions className="docs-header-actions">
         <ColorSchemeToggle variant="top-navigation" />
         <TopNavigation.ActionButton
+          className="docs-header-search"
           commandfor={docsSearchId}
           command="show-modal"
           aria-haspopup="dialog"
@@ -47,13 +71,20 @@ export function DocsHeader({groups, current, mark}: DocsHeaderProps): React.JSX.
         >
           <SearchIcon />
         </TopNavigation.ActionButton>
-        <TopNavigation.StaticMenu defaultPanel="main">
-          <TopNavigation.StaticMenuTrigger aria-label="Navigation menu" />
-          <TopNavigation.StaticMenuPopup aria-label="Navigation menu">
+        <TopNavigation.StaticMenu
+          defaultPanel={hasSideNavigation(currentSection) ? currentSection.id : 'main'}
+        >
+          <TopNavigation.StaticMenuTrigger
+            className="docs-header-menu-trigger"
+            aria-label="Navigation menu"
+          />
+          <TopNavigation.StaticMenuPopup className="docs-header-menu" aria-label="Navigation menu">
             <nav aria-label="Documentation">
-              <TopNavigation.StaticMenuPanel panel="main">
-                <DocsMenuNavigation groups={groups} current={current} />
-              </TopNavigation.StaticMenuPanel>
+              <DocsMenuPanels
+                sections={sections}
+                current={current}
+                currentSection={currentSection}
+              />
             </nav>
           </TopNavigation.StaticMenuPopup>
         </TopNavigation.StaticMenu>

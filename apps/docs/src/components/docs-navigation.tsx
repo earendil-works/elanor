@@ -1,93 +1,76 @@
 import {ScrollArea, Separator, SideNavigation, TopNavigation} from '@earendil-works/elanor-react';
 
-import type {DocsNavigationGroup, DocsNavigationItem} from '../lib/docs-navigation.ts';
-import type {SiteMark} from '../lib/site-mark.ts';
-import {ColorSchemeToggle} from './color-scheme-toggle.tsx';
+import type {DocsNavigationItem, DocsSiteSection} from '../lib/docs-navigation.ts';
 import {DocsSearchTrigger} from './docs-search.tsx';
-import {SiteIdentity} from './site-identity.tsx';
 
 /*
- * The documentation navigation on Elanor's static parts, rendered twice from the same data: as the
- * side navigation on wide screens, and in the top navigation's menu on narrow ones.
- * `scripts/navigation-behaviors.ts` makes both work before the first paint.
+ * The documentation navigation on Elanor's static parts: the current section's pages as the side
+ * navigation on wide screens, and every section's pages in the top navigation's menu on narrow
+ * ones. `scripts/navigation-behaviors.ts` makes both work before the first paint.
  */
 
-interface DocsNavigationProps {
-  readonly groups: readonly DocsNavigationGroup[];
+const containsCurrent = (item: DocsNavigationItem, current: string) =>
+  item.type === 'collapsible' && item.links.some((link) => link.href === current);
+
+/** Whether a section has a side navigation: a section with one page has none. */
+export const hasSideNavigation = (
+  section: DocsSiteSection | undefined,
+): section is DocsSiteSection => section !== undefined && section.items.length > 1;
+
+interface DocsSideNavigationProps {
+  readonly section: DocsSiteSection;
   /** The current page's path. */
   readonly current: string;
 }
 
-const containsCurrent = (item: DocsNavigationItem, current: string) =>
-  item.type === 'section' && item.links.some((link) => link.href === current);
-
-/**
- * The side navigation with the identity, the color scheme toggle, and the search above it, all
- * fixed beside the content.
- */
-export function DocsSideNavigation({
-  groups,
-  current,
-  mark,
-}: DocsNavigationProps & {readonly mark: SiteMark}): React.JSX.Element {
+/** The current section's pages with the search above them, fixed beside the content. */
+export function DocsSideNavigation({section, current}: DocsSideNavigationProps): React.JSX.Element {
   return (
     <div className="docs-navigation">
-      <div className="docs-navigation-header">
-        <div className="docs-navigation-identity">
-          {/* Full load: the homepage doesn't use the client router. */}
-          <SiteIdentity mark={mark} data-astro-reload />
-          <ColorSchemeToggle />
-        </div>
+      <div className="docs-navigation-search">
         <DocsSearchTrigger />
         <Separator />
       </div>
       <ScrollArea.StaticRoot className="docs-navigation-scroll-area">
         <ScrollArea.StaticViewport className="docs-navigation-viewport">
           <ScrollArea.StaticContent className="docs-navigation-content">
-            <SideNavigation.StaticRoot aria-label="Documentation" persist="docs">
-              {groups.map((group, index) => (
-                <SideNavigation.Group key={group.label}>
-                  <SideNavigation.GroupLabel id={`docs-navigation-group-${index}`}>
-                    {group.label}
-                  </SideNavigation.GroupLabel>
-                  <SideNavigation.List aria-labelledby={`docs-navigation-group-${index}`}>
-                    {group.items.map((item) =>
-                      item.type === 'link' ? (
-                        <SideNavigation.Item key={item.href}>
-                          <SideNavigation.Link href={item.href} active={item.href === current}>
-                            {item.label}
-                          </SideNavigation.Link>
-                        </SideNavigation.Item>
-                      ) : (
-                        <SideNavigation.Item key={item.id}>
-                          <SideNavigation.StaticCollapsible
-                            defaultOpen={containsCurrent(item, current)}
-                            persist={item.id}
-                          >
-                            <SideNavigation.StaticCollapsibleTrigger>
-                              {item.label}
-                            </SideNavigation.StaticCollapsibleTrigger>
-                            <SideNavigation.StaticCollapsiblePanel hiddenUntilFound>
-                              <SideNavigation.List>
-                                {item.links.map((link) => (
-                                  <SideNavigation.Item key={link.href}>
-                                    <SideNavigation.Link
-                                      href={link.href}
-                                      active={link.href === current}
-                                    >
-                                      {link.label}
-                                    </SideNavigation.Link>
-                                  </SideNavigation.Item>
-                                ))}
-                              </SideNavigation.List>
-                            </SideNavigation.StaticCollapsiblePanel>
-                          </SideNavigation.StaticCollapsible>
-                        </SideNavigation.Item>
-                      ),
-                    )}
-                  </SideNavigation.List>
-                </SideNavigation.Group>
-              ))}
+            <SideNavigation.StaticRoot aria-label={section.label} persist={`docs-${section.id}`}>
+              <SideNavigation.List>
+                {section.items.map((item) =>
+                  item.type === 'link' ? (
+                    <SideNavigation.Item key={item.href}>
+                      <SideNavigation.Link href={item.href} active={item.href === current}>
+                        {item.label}
+                      </SideNavigation.Link>
+                    </SideNavigation.Item>
+                  ) : (
+                    <SideNavigation.Item key={item.id}>
+                      <SideNavigation.StaticCollapsible
+                        defaultOpen={containsCurrent(item, current)}
+                        persist={item.id}
+                      >
+                        <SideNavigation.StaticCollapsibleTrigger>
+                          {item.label}
+                        </SideNavigation.StaticCollapsibleTrigger>
+                        <SideNavigation.StaticCollapsiblePanel hiddenUntilFound>
+                          <SideNavigation.List>
+                            {item.links.map((link) => (
+                              <SideNavigation.Item key={link.href}>
+                                <SideNavigation.Link
+                                  href={link.href}
+                                  active={link.href === current}
+                                >
+                                  {link.label}
+                                </SideNavigation.Link>
+                              </SideNavigation.Item>
+                            ))}
+                          </SideNavigation.List>
+                        </SideNavigation.StaticCollapsiblePanel>
+                      </SideNavigation.StaticCollapsible>
+                    </SideNavigation.Item>
+                  ),
+                )}
+              </SideNavigation.List>
             </SideNavigation.StaticRoot>
           </ScrollArea.StaticContent>
         </ScrollArea.StaticViewport>
@@ -99,15 +82,57 @@ export function DocsSideNavigation({
   );
 }
 
-/** The menu's content: each group's label, then its pages and sections. */
-export function DocsMenuNavigation({groups, current}: DocsNavigationProps): React.JSX.Element {
+interface DocsMenuProps {
+  readonly sections: readonly DocsSiteSection[];
+  /** The current page's path. */
+  readonly current: string;
+  /** The current page's section. */
+  readonly currentSection: DocsSiteSection | undefined;
+}
+
+/**
+ * The menu's panels: the sections, each with several pages leading to a panel of them, like the
+ * side navigation. The menu opens on the current section's panel.
+ */
+export function DocsMenuPanels({
+  sections,
+  current,
+  currentSection,
+}: DocsMenuProps): React.JSX.Element {
   return (
     <>
-      {groups.map((group) => (
-        <TopNavigation.MenuGroup key={group.label}>
-          <TopNavigation.MenuGroupLabel>{group.label}</TopNavigation.MenuGroupLabel>
+      <TopNavigation.StaticMenuPanel panel="main">
+        <TopNavigation.MenuList>
+          {sections.map((section) => (
+            <TopNavigation.MenuItem key={section.id}>
+              {section.items.length > 1 ? (
+                <TopNavigation.StaticMenuPanelTrigger
+                  panel={section.id}
+                  active={section.id === currentSection?.id}
+                >
+                  {section.label}
+                </TopNavigation.StaticMenuPanelTrigger>
+              ) : (
+                <TopNavigation.StaticMenuLink
+                  href={section.href}
+                  active={section.id === currentSection?.id}
+                >
+                  {section.label}
+                </TopNavigation.StaticMenuLink>
+              )}
+            </TopNavigation.MenuItem>
+          ))}
+        </TopNavigation.MenuList>
+      </TopNavigation.StaticMenuPanel>
+      {sections.filter(hasSideNavigation).map((section) => (
+        <TopNavigation.StaticMenuPanel
+          key={section.id}
+          panel={section.id}
+          parent="main"
+          backLabel="Main menu"
+        >
           <TopNavigation.MenuList>
-            {group.items.map((item) =>
+            {section.items.map((item) =>
               item.type === 'link' ? (
                 <TopNavigation.MenuItem key={item.href}>
                   <TopNavigation.StaticMenuLink href={item.href} active={item.href === current}>
@@ -139,7 +164,7 @@ export function DocsMenuNavigation({groups, current}: DocsNavigationProps): Reac
               ),
             )}
           </TopNavigation.MenuList>
-        </TopNavigation.MenuGroup>
+        </TopNavigation.StaticMenuPanel>
       ))}
     </>
   );

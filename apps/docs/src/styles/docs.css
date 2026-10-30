@@ -1,8 +1,9 @@
 /*
- * The docs' shell, with pi.dev's geometry: from 61.625rem, the side navigation (`size.sidebar`) is fixed
- * at the window's start and the content is Elanor's `Container`, centered in the window unless
- * that would put it under the side navigation. Narrower, a sticky top navigation and its menu
- * replace the side navigation. Articles sit on Elanor's 12-column `Grid`: from 75rem, nine columns
+ * The docs' shell, with pi.dev's geometry: a sticky top navigation with a link to each section;
+ * from 61.625rem, a section with several pages has its side navigation (`size.sidebar`) fixed at
+ * the window's start below it. The content is Elanor's `Container`, centered in the window unless
+ * that would put it under the side navigation. Narrower, the top navigation's menu holds the
+ * sections and their pages. Articles sit on Elanor's 12-column `Grid`: from 75rem, nine columns
  * for the article and three for the table of contents.
  */
 @layer base {
@@ -33,7 +34,7 @@
     display: contents;
   }
 
-  /* Top navigation, below the wide layout */
+  /* Top navigation */
 
   .docs-header {
     position: sticky;
@@ -43,6 +44,14 @@
     border-block-end: var(--semantic-dimension-border-width-small) solid
       var(--semantic-color-border-secondary);
     background: var(--semantic-color-background-canvas);
+  }
+
+  .docs-header-sections ul {
+    display: flex;
+    gap: var(--semantic-dimension-space-gap-large);
+    margin: 0;
+    padding: 0;
+    list-style: none;
   }
 
   /* Side navigation, from the wide layout */
@@ -254,32 +263,37 @@
     }
   }
 
-  /* Wide: the side navigation, and no top navigation. */
+  /* Narrow: identity and actions, with the sections and their pages in the menu. */
+  @media (width < 61.625rem) {
+    .docs-header-sections {
+      display: none;
+    }
+  }
+
+  /* Wide: the sections in the top navigation, and the current section's side navigation. */
   @media (width >= 61.625rem) {
+    /* The sections sit centered between the identity and the actions; the menu is not used. */
     .docs-header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+    }
+
+    .docs-header-actions {
+      justify-self: end;
+    }
+
+    .docs-header-menu-trigger,
+    .docs-header-menu,
+    .docs-layout:has(.docs-navigation) .docs-header-search {
       display: none;
     }
 
-    html:has(.docs-layout) {
-      scroll-padding-block-start: var(--semantic-dimension-space-gap-large);
-    }
-
-    .docs-toc-menu {
-      inset-block-start: calc(-1 * var(--semantic-dimension-border-width-small));
-    }
-
-    html:has(.docs-toc-menu) {
-      scroll-padding-block-start: calc(
-        var(--semantic-dimension-size-small) + 2 * var(--semantic-dimension-space-padding-x-large) +
-          var(--semantic-dimension-border-width-small) + var(--semantic-dimension-space-gap-large)
-      );
-    }
-
-    /* The identity and the search stay at the top while the side navigation below them scrolls. */
+    /* The search stays at the top while the side navigation below it scrolls. */
     .docs-navigation {
       position: fixed;
+      /* Above the content, below the sticky top navigation. */
       z-index: var(--semantic-number-layer-raised);
-      inset-block: 0;
+      inset-block: var(--semantic-dimension-size-top-navigation) 0;
       inset-inline-start: 0;
       display: grid;
       grid-template-rows: auto minmax(0, 1fr);
@@ -288,18 +302,11 @@
         var(--semantic-color-border-secondary);
     }
 
-    .docs-navigation-header {
+    .docs-navigation-search {
       display: grid;
       gap: var(--semantic-dimension-space-gap-medium);
       padding-block-start: var(--semantic-dimension-space-padding-xxx-large);
       padding-inline: var(--semantic-dimension-space-padding-x-large);
-    }
-
-    .docs-navigation-identity {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--semantic-dimension-space-gap-medium);
     }
 
     /* The viewport holds the padding, so the scroll area's content brings none. Its scrollbar
@@ -326,7 +333,7 @@
 
     /* Centered in the window like every other container, unless that would put the content under
        the side navigation. */
-    .docs-content {
+    .docs-layout:has(.docs-navigation) .docs-content {
       inline-size: auto;
       /* stylelint-disable design-tokens/token-property-compatibility -- The margins that center the content need its maximum width. */
       margin-inline: max(
@@ -362,16 +369,18 @@
     }
 
     html:has(.docs-article[data-toc]) {
-      scroll-padding-block-start: var(--semantic-dimension-space-gap-large);
+      scroll-padding-block-start: calc(
+        var(--semantic-dimension-size-top-navigation) + var(--semantic-dimension-space-gap-large)
+      );
     }
 
     .docs-toc-column {
       position: sticky;
       display: block;
       grid-column: 10 / span 3;
-      inset-block-start: 0;
+      inset-block-start: var(--semantic-dimension-size-top-navigation);
       min-inline-size: 0;
-      max-block-size: 100dvh;
+      max-block-size: calc(100dvh - var(--semantic-dimension-size-top-navigation));
       padding-block: var(--semantic-dimension-space-padding-xxx-large);
       margin-block-start: calc(-1 * var(--semantic-dimension-space-padding-xxx-large));
       overflow-y: auto;

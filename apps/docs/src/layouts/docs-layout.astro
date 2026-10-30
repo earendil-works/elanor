@@ -12,10 +12,10 @@ import ColorSchemeScript from '../components/color-scheme-script.astro';
 import SiteHead from '../components/site-head.astro';
 import {DocsHeader} from '../components/docs-header.tsx';
 import {DocsContainer} from '../components/docs-layout-parts.tsx';
-import {DocsSideNavigation} from '../components/docs-navigation.tsx';
+import {DocsSideNavigation, hasSideNavigation} from '../components/docs-navigation.tsx';
 import {DocsSearchDialog} from '../components/docs-search.tsx';
 import {SkipLink} from '../components/skip-link.tsx';
-import {docsNavigation} from '../lib/docs-navigation.ts';
+import {currentSection, docsNavigation} from '../lib/docs-navigation.ts';
 import {siteMark} from '../lib/site-mark.ts';
 
 interface Props {
@@ -28,7 +28,8 @@ interface Props {
 
 const {title, current, markdown} = Astro.props;
 const mark = await siteMark();
-const groups = await docsNavigation(current);
+const sections = await docsNavigation(current);
+const section = currentSection(sections, current);
 // The Layout demo supplies the page's single main landmark.
 const ContentTag = current === '/components/layout/' ? 'div' : 'main';
 ---
@@ -47,10 +48,14 @@ const ContentTag = current === '/components/layout/' ? 'div' : 'main';
     <SkipLink />
     {/* The client router swaps these regions (`scripts/docs-swap.ts`). */}
     <div data-docs-swap="header">
-      <DocsHeader groups={groups} current={current} mark={mark} />
+      <DocsHeader sections={sections} current={current} currentSection={section} mark={mark} />
     </div>
     <div data-docs-swap="navigation">
-      <DocsSideNavigation groups={groups} current={current} mark={mark} />
+      {
+        hasSideNavigation(section) && (
+          <DocsSideNavigation section={section} current={current} />
+        )
+      }
     </div>
     {/* Blocking, so the navigation's restored state is there before the first paint. */}
     <script is:inline src={`${pageScriptsBase}navigation-behaviors.js`}></script>
