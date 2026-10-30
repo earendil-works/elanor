@@ -13,7 +13,9 @@ function isApplePlatform(): boolean {
 }
 
 export function createDocsSearch(element: HTMLElement): Behavior {
-  if (!(element instanceof HTMLDialogElement)) return {destroy() {}};
+  if (!(element instanceof HTMLDialogElement)) {
+    throw new TypeError('The docs search behavior needs the search dialog element.');
+  }
   const dialog = element;
   const apple = isApplePlatform();
   const triggers = () =>

@@ -27,7 +27,10 @@ enhancePages({
   'linked-heading': createLinkedHeading,
   'copy-page': createCopyPage,
   // The dialog names its search index.
-  'search-dialog': (element) =>
-    createSearchDialog(element, createDocsSearchSource(element.dataset.docsSearchIndex ?? '')),
+  'search-dialog': (element) => {
+    const indexUrl = element.dataset.docsSearchIndex;
+    if (!indexUrl) throw new Error('The docs search dialog names no search index.');
+    return createSearchDialog(element, createDocsSearchSource(indexUrl));
+  },
   'docs-search': createDocsSearch,
 });

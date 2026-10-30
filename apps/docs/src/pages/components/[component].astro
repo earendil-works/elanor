@@ -29,7 +29,8 @@ const parts = orderedApi(entry.id, entry.body ?? '');
 const title = componentName(entry.id);
 const markdown = `/components/${entry.id}.md`;
 // The page shows the component's MDX, examples, and the API read from its sources.
-const updated = lastUpdated([dirname(resolve(entry.filePath ?? ''))]);
+if (!entry.filePath) throw new Error(`The ${entry.id} page has no source file.`);
+const updated = lastUpdated([dirname(resolve(entry.filePath))]);
 const toc = [
   ...headings
     .filter((heading) => heading.depth === 2 || heading.depth === 3)
