@@ -120,10 +120,6 @@
     max-inline-size: var(--semantic-dimension-size-max-width-text);
   }
 
-  .docs-article[data-wide] {
-    max-inline-size: none;
-  }
-
   /* Let the article's children shrink to its column, so wide code and tables scroll inside their
      own boxes instead of widening the page. */
   .docs-article > * {

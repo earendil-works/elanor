@@ -41,12 +41,10 @@ const toc = [
       ]
     : []),
 ];
-// Examples of page layouts use the full content width.
-const wide = ['layout', 'grid', 'container', 'sidebar'].includes(entry.id);
 ---
 
 <DocsLayout title={title} current={`/components/${entry.id}/`} markdown={markdown}>
-  <DocsArticle title={title} markdown={markdown} lastUpdated={updated} toc={toc} wide={wide}>
+  <DocsArticle title={title} markdown={markdown} lastUpdated={updated} toc={toc}>
     {/* The article renders the title. */}
     <Content components={{...docsMarkdownComponents, Demo, h1: OmittedTitle}} />
     <ApiReference parts={parts} />

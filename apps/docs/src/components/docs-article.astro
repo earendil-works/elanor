@@ -16,22 +16,17 @@ interface Props {
   lastUpdated?: string | undefined;
   /** The page's sections, for its table of contents. */
   toc: readonly DocsTocEntry[];
-  /**
-   * For examples that need the full content width, such as page layouts: the table of contents
-   * stays a menu above the article.
-   */
-  wide?: boolean;
 }
 
 // A page's long-form content on the content grid: its title, a table of contents, and the
 // content in `Prose`. On wide screens, the article takes nine columns and the table of contents
 // the other three.
-const {title, markdown, lastUpdated, toc, wide = false} = Astro.props;
-const column = toc.length > 0 && !wide;
+const {title, markdown, lastUpdated, toc} = Astro.props;
+const column = toc.length > 0;
 ---
 
 <DocsGrid className="docs-grid">
-  <article class="docs-article" data-wide={wide ? '' : undefined} data-toc={column ? '' : undefined}>
+  <article class="docs-article" data-toc={column ? '' : undefined}>
     <DocsPageHeader title={title} markdown={markdown} lastUpdated={lastUpdated} />
     <Separator className="docs-page-separator" />
     {toc.length > 0 && <DocsTableOfContentsMenu entries={toc} />}
