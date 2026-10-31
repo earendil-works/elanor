@@ -1,0 +1,4 @@
+.stretch {
+  flex: 1 1 0;
+  inline-size: auto;
+}

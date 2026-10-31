@@ -1,0 +1,48 @@
+---
+category: forms
+---
+
+# OTP field
+
+A one-time code entered one character per slot. Supports paste and one-time-code autofill. For longer values, such as API keys, use [Input](/components/input/).
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Field, OTPField} from '@earendil-works/elanor-react';
+
+<Field.Root name="code">
+  <Field.Label>Verification code</Field.Label>
+  <OTPField.Root length={6}>
+    <OTPField.Input />
+    <OTPField.Input aria-label="Character 2 of 6" />
+    {/* … one Input per character */}
+  </OTPField.Root>
+</Field.Root>;
+```
+
+`Field.Label` labels the first slot; give the others an `aria-label`. The field submits one value under the `Field.Root`'s `name`.
+
+## Validation
+
+`validationType` defaults to `numeric` and sets a native pattern, so an incomplete code fails with `patternMismatch`. Give it a `Field.Error`, otherwise the browser's message shows.
+
+<Demo example="./examples/validation.tsx" />
+
+## Grouped
+
+<Demo example="./examples/grouped.tsx" />
+
+## Alphanumeric
+
+Use `validationType="alphanumeric"` for recovery and invite codes. `normalizeValue` runs on every edit, so it must return the same value when run twice; define it outside the component.
+
+<Demo example="./examples/alphanumeric.tsx" />
+
+## Full width
+
+Slots are square. Override their size with a class to fill the container.
+
+<Demo example="./examples/full-width.tsx" />

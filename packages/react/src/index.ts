@@ -17,6 +17,7 @@ export * as Menu from './menu/index.ts';
 export * as Meter from './meter/index.ts';
 export * as Modal from './modal/index.ts';
 export * as NavigationMenu from './navigation-menu/index.ts';
+export * as OTPField from './otp-field/index.ts';
 export * as PageHeader from './page-header/index.ts';
 export * as Pagination from './pagination/index.ts';
 export * as Popover from './popover/index.ts';
@@ -422,6 +423,21 @@ export type {
   NavigationMenuTriggerState,
   NavigationMenuViewportProps,
 } from './navigation-menu/navigation-menu.tsx';
+
+export type {
+  OTPFieldInputProps,
+  OTPFieldInputState,
+  OTPFieldRootChangeEventDetails,
+  OTPFieldRootChangeEventReason,
+  OTPFieldRootCompleteEventDetails,
+  OTPFieldRootCompleteEventReason,
+  OTPFieldRootInvalidEventDetails,
+  OTPFieldRootInvalidEventReason,
+  OTPFieldRootProps,
+  OTPFieldRootState,
+  OTPFieldSeparatorProps,
+  OTPFieldValidationType,
+} from './otp-field/otp-field.tsx';
 
 export type {
   PageHeaderActionsProps,

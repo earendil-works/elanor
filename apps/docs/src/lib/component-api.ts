@@ -3,6 +3,8 @@ import {resolve} from 'node:path';
 
 import ts from 'typescript';
 
+import {pascalName} from './component-name.ts';
+
 /** Props reference for the public React components, read from their TypeScript types. */
 
 export interface ApiProp {
@@ -173,7 +175,9 @@ function readPart(checker: ts.TypeChecker, name: string, exported: ts.Symbol): A
   const baseUi =
     usesBaseUi && component
       ? {
-          name: [pascal(component), baseUiPart && pascal(baseUiPart)].filter(Boolean).join('.'),
+          name: [pascalName(component), baseUiPart && pascalName(baseUiPart)]
+            .filter(Boolean)
+            .join('.'),
           url: `https://base-ui.com/react/components/${component}${baseUiPart ? `#${baseUiPart.replaceAll('-', '')}` : ''}`,
         }
       : undefined;
@@ -379,9 +383,6 @@ function jsxElement(implementation: ts.FunctionDeclaration | undefined): string 
 }
 
 const lowercase = (tag: string) => (/^[a-z][\w-]*$/.test(tag) ? tag : undefined);
-
-const pascal = (value: string) =>
-  value.replace(/(^|-)(\w)/g, (_, __, letter: string) => letter.toUpperCase());
 
 /** Parts in the order the page body first mentions them; unmentioned parts follow. */
 export function orderedApi(page: string, body: string): ApiPart[] {
