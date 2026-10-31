@@ -2,6 +2,7 @@ import {Button as BaseButton} from '@base-ui/react/button';
 import type {ReactNode} from 'react';
 
 import {mergeClassName} from '../utils/class-names.ts';
+import {ButtonContent} from './button-content.tsx';
 
 import styles from './button.module.css';
 
@@ -38,33 +39,12 @@ export function Button({
   focusableWhenDisabled = false,
   type = 'button',
   className,
+  children,
   ...props
 }: ButtonProps) {
-  const contentProps =
-    iconStart || iconEnd
-      ? {
-          children: (
-            <>
-              {iconStart ? (
-                <span className={styles.icon} aria-hidden="true">
-                  {iconStart}
-                </span>
-              ) : null}
-              {props.children}
-              {iconEnd ? (
-                <span className={styles.icon} aria-hidden="true">
-                  {iconEnd}
-                </span>
-              ) : null}
-            </>
-          ),
-        }
-      : {};
-
   return (
     <BaseButton
       {...props}
-      {...contentProps}
       ref={ref}
       type={type}
       disabled={disabled || pending}
@@ -76,6 +56,10 @@ export function Button({
       data-hierarchy={hierarchy}
       data-semantic={semantic}
       className={mergeClassName<BaseButton.State>(styles.root, className)}
-    />
+    >
+      <ButtonContent iconStart={iconStart} iconEnd={iconEnd}>
+        {children}
+      </ButtonContent>
+    </BaseButton>
   );
 }

@@ -4,7 +4,7 @@ category: actions
 
 # Button
 
-Triggers an action, such as saving a form or opening a dialog. For navigation, use [Link](/components/link/).
+Triggers an action, such as saving a form or opening a dialog. For navigation, use [Link](/components/link/), or [ButtonLink](#links) for a link that looks like a button.
 
 <Demo example="./examples/demo.tsx" />
 
@@ -47,6 +47,16 @@ Use `compact` in dense layouts, such as toolbars and table rows. The touch targe
 `pending` disables the button while an action runs, keeps it focusable, and sets `aria-busy`.
 
 <Demo example="./examples/pending.tsx" />
+
+## Links
+
+`ButtonLink` renders a plain `a` that looks like a Button, for navigation such as a call to action. It takes the same `hierarchy`, `semantic`, `density`, `iconStart`, and `iconEnd`, and keeps link semantics: screen readers announce it as a link, and Enter follows it. Don't pass a link to Button's `render`; that gives the `a` a button role.
+
+<Demo example="./examples/link.tsx" />
+
+ButtonLink passes its props and ref through to the `a`, so a router can wrap it, as with TanStack Router's `createLink`.
+
+A link can't be disabled or pending. When a destination isn't available, render a Button or text instead.
 
 ## Disabled
 

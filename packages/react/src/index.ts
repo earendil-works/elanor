@@ -88,6 +88,8 @@ export {Blockquote} from './blockquote/blockquote.tsx';
 export type {BlockquoteProps} from './blockquote/blockquote.tsx';
 
 export {Button} from './button/button.tsx';
+export {ButtonLink} from './button/button-link.tsx';
+export type {ButtonLinkProps} from './button/button-link.tsx';
 export type {
   ButtonDensity,
   ButtonHierarchy,
