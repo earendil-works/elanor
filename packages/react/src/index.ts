@@ -292,6 +292,10 @@ export type {
 } from './empty-state/empty-state.tsx';
 
 export type {
+  FieldControlChangeEventDetails,
+  FieldControlChangeEventReason,
+  FieldControlProps,
+  FieldControlState,
   FieldDescriptionProps,
   FieldDescriptionState,
   FieldErrorProps,

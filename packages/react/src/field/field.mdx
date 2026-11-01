@@ -26,3 +26,9 @@ import {Field, Input} from '@earendil-works/elanor-react';
 Field uses the control's native validation, such as `required` and `type="email"`. Give each `Field.Error` a `match` to show one message per failed rule. `validationMode="onBlur"` validates when focus leaves the control; the default validates on form submit.
 
 <Demo example="./examples/validation.tsx" />
+
+## Other controls
+
+Elanor's form controls, such as [Input](/components/input/), connect to Field on their own. For a native input type without an Elanor control, such as `color`, use `Field.Control`. It renders an unstyled `input` that Field labels and validates.
+
+<Demo example="./examples/control.tsx" />

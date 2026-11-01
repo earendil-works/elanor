@@ -7,5 +7,6 @@ export {
   FieldError as Error,
 } from './field.tsx';
 
+export const Control = BaseField.Control;
 export const Item = BaseField.Item;
 export const Validity = BaseField.Validity;

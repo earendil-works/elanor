@@ -1,0 +1,9 @@
+.color {
+  inline-size: var(--semantic-dimension-size-large);
+  block-size: var(--semantic-dimension-size-large);
+  padding: 0;
+  border: var(--semantic-dimension-border-width-default) solid
+    var(--semantic-color-border-secondary);
+  border-radius: var(--semantic-dimension-radius-small);
+  background: none;
+}
