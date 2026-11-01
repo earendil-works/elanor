@@ -634,17 +634,33 @@
     inline-size: 100%;
   }
 
-  .motionTrack {
-    display: flex;
+  .motionTrack,
+  .motionSurface {
     flex: 1;
-    align-items: center;
     min-inline-size: 0;
     max-inline-size: var(--semantic-dimension-size-max-width-content-small);
     block-size: var(--semantic-dimension-size-small);
+  }
+
+  .motionTrack {
+    display: flex;
+    align-items: center;
     padding-inline: var(--semantic-dimension-space-padding-xx-small);
     border: var(--semantic-dimension-border-width-small) solid
       var(--semantic-color-border-secondary);
     border-radius: var(--semantic-dimension-radius-full);
+  }
+
+  .motionSurface {
+    border-radius: var(--semantic-dimension-radius-small);
+    background: var(--semantic-color-background-fill-primary);
+  }
+
+  @media (forced-colors: active) {
+    .motionSurface {
+      background: CanvasText;
+      forced-color-adjust: none;
+    }
   }
 
   .motionTarget {

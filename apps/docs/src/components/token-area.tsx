@@ -283,9 +283,13 @@ function TokenPreview({
           data-opacity={preview.opacity}
         >
           <PlayButton nameId={nameId} />
-          <span className={styles.motionTrack} aria-hidden="true">
-            <span className={styles.motionTarget} data-motion-target />
-          </span>
+          {preview.role === 'slide' ? (
+            <span className={styles.motionTrack} aria-hidden="true">
+              <span className={styles.motionTarget} data-motion-target />
+            </span>
+          ) : (
+            <span className={styles.motionSurface} aria-hidden="true" data-motion-target />
+          )}
           <EasingCurve bezier={preview.bezier} />
         </span>
       );
