@@ -16,7 +16,7 @@ Install the [fonts](https://github.com/earendil-works/elanor/tree/main/packages/
 
 ```tsx
 import '@earendil-works/elanor-fonts/mallos-serif.css';
-import '@earendil-works/elanor-fonts/commit-mono.css';
+import '@earendil-works/elanor-fonts/mallos-mono.css';
 import '@earendil-works/design-tokens/radius.css';
 import '@earendil-works/elanor-react/elanor.min.css';
 import {Button} from '@earendil-works/elanor-react';
