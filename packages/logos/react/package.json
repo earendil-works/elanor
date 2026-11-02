@@ -1,7 +1,7 @@
 {
   "name": "@earendil-works/elanor-logos-react",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "description": "Earendil, Pi, Radius, and Lefos logos as React components.",
   "type": "module",
   "sideEffects": false,

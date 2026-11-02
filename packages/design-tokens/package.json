@@ -1,7 +1,7 @@
 {
   "name": "@earendil-works/design-tokens",
   "version": "1.0.0",
-  "private": true,
+  "private": false,
   "description": "W3C DTCG design tokens powered by Terrazzo.",
   "license": "ISC",
   "type": "commonjs",

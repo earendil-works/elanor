@@ -1,7 +1,7 @@
 {
   "name": "@earendil-works/elanor-logos",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "description": "Earendil, Pi, Radius, Lefos, and Elanor logos as SVG files.",
   "type": "module",
   "sideEffects": false,

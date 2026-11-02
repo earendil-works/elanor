@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "description": "A Shiki theme that colors code with Elanor's code syntax tokens.",
   "license": "ISC",
-  "private": true,
+  "private": false,
   "type": "module",
   "sideEffects": false,
   "files": [

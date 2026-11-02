@@ -1,7 +1,7 @@
 {
   "name": "@earendil-works/elanor-fonts",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "description": "Mallos Serif, Commit Mono, and DepartureMono fonts with self-hosted CSS entry points.",
   "license": "OFL-1.1",
   "type": "module",

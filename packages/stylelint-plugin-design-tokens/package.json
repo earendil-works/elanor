@@ -1,7 +1,7 @@
 {
   "name": "@earendil-works/stylelint-plugin-design-tokens",
   "version": "0.1.0",
-  "private": true,
+  "private": false,
   "description": "Stylelint rules for consuming generated DTCG design tokens.",
   "type": "module",
   "main": "./dist/index.js",
