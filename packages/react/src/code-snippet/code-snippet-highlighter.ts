@@ -3,10 +3,6 @@ import {createHighlighterCore, type HighlighterCore, type ThemedToken} from 'shi
 import {createJavaScriptRegexEngine} from 'shiki/engine/javascript';
 import {bundledLanguages, type BundledLanguage} from 'shiki/langs';
 
-// Shiki with Elanor's theme. CodeSnippet imports this module only when a snippet asks for
-// highlighting, so applications that never do don't load Shiki. The JavaScript regex engine needs
-// no WebAssembly. Each grammar loads when its language first appears; `bundledLanguages` keeps
-// grammars in separate chunks and knows aliases such as `ts`, `sh` and `yml`.
 
 let highlighter: Promise<HighlighterCore> | undefined;
 
