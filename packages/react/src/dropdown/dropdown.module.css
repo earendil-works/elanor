@@ -1,7 +1,7 @@
 @layer elanor.components {
   .label {
     color: var(--semantic-color-text-primary);
-    font: var(--semantic-typography-ui-primary);
+    font: var(--semantic-typography-ui-label);
   }
 
   .trigger {

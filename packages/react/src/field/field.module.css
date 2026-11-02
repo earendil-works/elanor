@@ -8,7 +8,7 @@
   }
 
   .label {
-    font: var(--semantic-typography-ui-primary);
+    font: var(--semantic-typography-ui-label);
   }
 
   .description,

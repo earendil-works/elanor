@@ -198,11 +198,11 @@
           "$value": {
             "fontFamily": "{semantic.fontFamily.ui}",
             "fontSize": "{primitive.dimension.fontSize.300}",
-            "fontWeight": "{primitive.fontWeight.600}",
+            "fontWeight": "{primitive.fontWeight.550}",
             "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
             "lineHeight": "{primitive.number.lineHeight.300}"
           },
-          "$description": "Use for structural interface labels, such as navigation and menu group labels and the table of contents title: the primary UI style's size in a heavier weight. Do not use for default interface copy."
+          "$description": "Use for interface labels: form field and fieldset labels, and structural labels such as navigation and menu group labels and the table of contents title. The primary UI style's size, half a step heavier than medium, so a label stands apart from the value beside it. Do not use for default interface copy."
         },
         "searchDialog": {
           "input": {
