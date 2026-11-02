@@ -35,7 +35,7 @@
     "generate:css": "node scripts/generate-layout-css.mjs",
     "generate:css:check": "node scripts/generate-layout-css.mjs --check",
     "check": "pnpm run lint && pnpm run generate:css:check && pnpm run check:types",
-    "check:prepare": "pnpm --filter @earendil-works/elanor-icons-react... run build",
+    "check:prepare": "pnpm --filter @earendil-works/elanor-icons-react... --filter @earendil-works/elanor-shiki-theme run build",
     "check:types": "pnpm run check:prepare && tsc -p tsconfig.json --noEmit",
     "lint": "pnpm run lint:oxlint && pnpm run lint:stylelint",
     "lint:oxlint": "oxlint . --max-warnings 0 --report-unused-disable-directives",
@@ -44,7 +44,9 @@
   },
   "dependencies": {
     "@base-ui/react": "1.8.0",
-    "@earendil-works/elanor-icons-react": "workspace:*"
+    "@earendil-works/elanor-icons-react": "workspace:*",
+    "@earendil-works/elanor-shiki-theme": "workspace:*",
+    "shiki": "^4.4.3"
   },
   "peerDependencies": {
     "react": "^19.0.0",

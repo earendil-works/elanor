@@ -29,3 +29,11 @@ Pass a [Copy button](/components/copy-button/) to `actions`. With a mouse, the a
 Code keeps its line breaks. Actions stay on the first line.
 
 <Demo example="./examples/multi-line.tsx" />
+
+## Syntax highlighting
+
+Set `language` to highlight the code in Elanor's code syntax colors, which follow the brand and the color scheme. It takes a [Shiki](https://shiki.style) language name or alias, such as `tsx`, `json` or `sh`. Leave it out for commands, keys and codes, which stay plain.
+
+<Demo example="./examples/syntax-highlighting.tsx" />
+
+Highlighting needs the code as a string child. Shiki loads only when a snippet asks for highlighting, and each language when it first appears; until then, on the server, and for a language Shiki doesn't know, the code shows as plain text.
