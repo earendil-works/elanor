@@ -32,19 +32,9 @@ const families = [
     files: [...split('MallosSans'), 'MallosSansArabic.woff2'],
   },
   {
-    entry: 'commit-mono',
-    families: {'Commit Mono': {}},
-    files: [
-      'CommitMono-300-Regular.woff2',
-      'CommitMono-400-Regular.woff2',
-      'CommitMono-700-Regular.woff2',
-    ],
-    // The original OpenType files, for desktop installs; the CSS uses WOFF2.
-    downloads: [
-      'CommitMono-300-Regular.otf',
-      'CommitMono-400-Regular.otf',
-      'CommitMono-700-Regular.otf',
-    ],
+    entry: 'mallos-mono',
+    families: {'Mallos Mono': {weight: '200 700'}},
+    files: split('MallosMono'),
   },
   {
     entry: 'departure-mono',

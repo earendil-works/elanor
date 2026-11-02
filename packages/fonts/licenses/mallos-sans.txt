@@ -1,5 +1,6 @@
 Mallos Sans 0.1 is a Modified Version of Source Sans 3 (Adobe, version 3.052, from github.com/google/fonts,
-ofl/sourcesans3), an interim stand-in until our own Mallos Sans is drawn. Changes: vertical metrics (ascent 937,
+ofl/sourcesans3), an interim stand-in until our own Mallos Sans is drawn. Changes: drawn 4% larger (Mallos Serif's
+x-height), vertical metrics (ascent 937,
 descent 313: natural line height 1.25, baseline unchanged), renamed, and split into Latin, Latin Extended,
 Vietnamese, Greek and Cyrillic files. Outlines, spacing, kerning and features are Source Sans 3. As the license
 asks, it does not use the Reserved Font Name "Source".

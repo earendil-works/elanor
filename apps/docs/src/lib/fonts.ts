@@ -28,8 +28,8 @@ const familySpecs: readonly FamilySpec[] = [
     sample: 'Sphinx of black quartz, judge my vow.',
   },
   {
-    stylesheet: 'commit-mono.css',
-    license: 'commit-mono.txt',
+    stylesheet: 'mallos-mono.css',
+    license: 'mallos-mono.txt',
     role: 'Monospace for code.',
     sample: 'if (count >= 10) stop();',
   },

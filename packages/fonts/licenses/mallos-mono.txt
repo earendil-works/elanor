@@ -1,3 +1,8 @@
+Mallos Mono 0.1 is a Modified Version of Commit Mono (Eigil Nikolajsen, version 1.143, the variable font from
+github.com/eigilnikolajsen/commit-mono, src/fonts/fontlab/CommitMonoV143-VF.ttf): drawn at Mallos Serif's x-height
+(94%), its regular weight (400) drawn at Commit Mono's 450 (200 and 700 unchanged), with Mallos Serif's line metrics
+(ascent 985, descent 215), renamed, and split into Latin, Latin Extended, Vietnamese, Greek and Cyrillic files.
+
 Copyright (c) 2023 Eigil Nikolajsen (eigi0088@gmail.com)
 
 This Font Software is licensed under the SIL Open Font License, Version 1.1. This license is copied below, and is also available with a FAQ at: http://scripts.sil.org/OFL
