@@ -79,7 +79,7 @@
 
   .code {
     font-family: var(--semantic-font-family-code);
-    font-size: 0.875em;
+    font-size: calc(var(--semantic-number-font-scale-inline-code) * 1em);
   }
 
   @container font-family (width >= 40rem /* token: semantic.dimension.breakpoint.xSmall */) {

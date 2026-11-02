@@ -4,35 +4,53 @@
   "primitive": {
     "fontWeight": {
       "$type": "fontWeight",
-      "thin": {
-        "$value": 100
+      "100": {
+        "$value": 100,
+        "$description": "Thin."
       },
-      "extraLight": {
-        "$value": 200
+      "200": {
+        "$value": 200,
+        "$description": "Extra light."
       },
-      "light": {
-        "$value": 300
+      "300": {
+        "$value": 300,
+        "$description": "Light."
       },
-      "normal": {
-        "$value": 400
+      "400": {
+        "$value": 400,
+        "$description": "Normal (regular)."
       },
-      "medium": {
-        "$value": 500
+      "450": {
+        "$value": 450,
+        "$description": "Half a step between 400 and 500. Needs a variable font; static fonts render the nearest weight."
       },
-      "semiBold": {
-        "$value": 600
+      "500": {
+        "$value": 500,
+        "$description": "Medium."
       },
-      "bold": {
-        "$value": 700
+      "550": {
+        "$value": 550,
+        "$description": "Half a step between 500 and 600. Needs a variable font; static fonts render the nearest weight."
       },
-      "extraBold": {
-        "$value": 800
+      "600": {
+        "$value": 600,
+        "$description": "Semi-bold."
       },
-      "black": {
-        "$value": 900
+      "700": {
+        "$value": 700,
+        "$description": "Bold."
       },
-      "extraBlack": {
-        "$value": 950
+      "800": {
+        "$value": 800,
+        "$description": "Extra bold."
+      },
+      "900": {
+        "$value": 900,
+        "$description": "Black."
+      },
+      "950": {
+        "$value": 950,
+        "$description": "Extra black."
       }
     }
   }

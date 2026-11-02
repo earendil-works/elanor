@@ -11,7 +11,7 @@
             "$value": {
               "fontFamily": "{semantic.fontFamily.prose}",
               "fontSize": "{primitive.dimension.fontSize.1700}",
-              "fontWeight": "{primitive.fontWeight.bold}",
+              "fontWeight": "{primitive.fontWeight.450}",
               "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
               "lineHeight": "{primitive.number.lineHeight.1700}"
             },
@@ -21,7 +21,7 @@
             "$value": {
               "fontFamily": "{semantic.fontFamily.prose}",
               "fontSize": "{primitive.dimension.fontSize.1500}",
-              "fontWeight": "{primitive.fontWeight.bold}",
+              "fontWeight": "{primitive.fontWeight.450}",
               "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
               "lineHeight": "{primitive.number.lineHeight.1500}"
             },
@@ -31,7 +31,7 @@
             "$value": {
               "fontFamily": "{semantic.fontFamily.prose}",
               "fontSize": "{primitive.dimension.fontSize.1300}",
-              "fontWeight": "{primitive.fontWeight.bold}",
+              "fontWeight": "{primitive.fontWeight.450}",
               "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
               "lineHeight": "{primitive.number.lineHeight.1300}"
             },
@@ -41,7 +41,7 @@
             "$value": {
               "fontFamily": "{semantic.fontFamily.prose}",
               "fontSize": "{primitive.dimension.fontSize.1100}",
-              "fontWeight": "{primitive.fontWeight.bold}",
+              "fontWeight": "{primitive.fontWeight.450}",
               "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
               "lineHeight": "{primitive.number.lineHeight.1100}"
             },
@@ -51,7 +51,7 @@
             "$value": {
               "fontFamily": "{semantic.fontFamily.prose}",
               "fontSize": "{primitive.dimension.fontSize.900}",
-              "fontWeight": "{primitive.fontWeight.bold}",
+              "fontWeight": "{primitive.fontWeight.500}",
               "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
               "lineHeight": "{primitive.number.lineHeight.900}"
             },
@@ -61,7 +61,7 @@
             "$value": {
               "fontFamily": "{semantic.fontFamily.prose}",
               "fontSize": "{primitive.dimension.fontSize.700}",
-              "fontWeight": "{primitive.fontWeight.bold}",
+              "fontWeight": "{primitive.fontWeight.500}",
               "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
               "lineHeight": "{primitive.number.lineHeight.700}"
             },
@@ -71,7 +71,7 @@
             "$value": {
               "fontFamily": "{semantic.fontFamily.prose}",
               "fontSize": "{primitive.dimension.fontSize.500}",
-              "fontWeight": "{primitive.fontWeight.bold}",
+              "fontWeight": "{primitive.fontWeight.550}",
               "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
               "lineHeight": "{primitive.number.lineHeight.500}"
             },
@@ -83,7 +83,7 @@
             "$value": {
               "fontFamily": "{semantic.fontFamily.ui}",
               "fontSize": "{primitive.dimension.fontSize.1000}",
-              "fontWeight": "{primitive.fontWeight.semiBold}",
+              "fontWeight": "{primitive.fontWeight.500}",
               "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
               "lineHeight": "{primitive.number.lineHeight.1000}"
             },
@@ -93,7 +93,7 @@
             "$value": {
               "fontFamily": "{semantic.fontFamily.ui}",
               "fontSize": "{primitive.dimension.fontSize.900}",
-              "fontWeight": "{primitive.fontWeight.semiBold}",
+              "fontWeight": "{primitive.fontWeight.500}",
               "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
               "lineHeight": "{primitive.number.lineHeight.900}"
             },
@@ -103,7 +103,7 @@
             "$value": {
               "fontFamily": "{semantic.fontFamily.ui}",
               "fontSize": "{primitive.dimension.fontSize.800}",
-              "fontWeight": "{primitive.fontWeight.semiBold}",
+              "fontWeight": "{primitive.fontWeight.500}",
               "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
               "lineHeight": "{primitive.number.lineHeight.800}"
             },
@@ -113,7 +113,7 @@
             "$value": {
               "fontFamily": "{semantic.fontFamily.ui}",
               "fontSize": "{primitive.dimension.fontSize.700}",
-              "fontWeight": "{primitive.fontWeight.semiBold}",
+              "fontWeight": "{primitive.fontWeight.550}",
               "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
               "lineHeight": "{primitive.number.lineHeight.700}"
             },
@@ -123,7 +123,7 @@
             "$value": {
               "fontFamily": "{semantic.fontFamily.ui}",
               "fontSize": "{primitive.dimension.fontSize.600}",
-              "fontWeight": "{primitive.fontWeight.semiBold}",
+              "fontWeight": "{primitive.fontWeight.550}",
               "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
               "lineHeight": "{primitive.number.lineHeight.600}"
             },
@@ -133,7 +133,7 @@
             "$value": {
               "fontFamily": "{semantic.fontFamily.ui}",
               "fontSize": "{primitive.dimension.fontSize.500}",
-              "fontWeight": "{primitive.fontWeight.semiBold}",
+              "fontWeight": "{primitive.fontWeight.600}",
               "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
               "lineHeight": "{primitive.number.lineHeight.500}"
             },
@@ -145,20 +145,20 @@
         "primary": {
           "$value": {
             "fontFamily": "{semantic.fontFamily.prose}",
-            "fontSize": "{primitive.dimension.fontSize.500}",
-            "fontWeight": "{primitive.fontWeight.normal}",
+            "fontSize": "{primitive.dimension.fontSize.400}",
+            "fontWeight": "{primitive.fontWeight.400}",
             "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
-            "lineHeight": "{primitive.number.lineHeight.500}"
+            "lineHeight": "{primitive.number.lineHeight.400}"
           },
           "$description": "Use for default body copy in long-form content."
         },
         "secondary": {
           "$value": {
             "fontFamily": "{semantic.fontFamily.prose}",
-            "fontSize": "{primitive.dimension.fontSize.400}",
-            "fontWeight": "{primitive.fontWeight.normal}",
+            "fontSize": "{primitive.dimension.fontSize.300}",
+            "fontWeight": "{primitive.fontWeight.400}",
             "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
-            "lineHeight": "{primitive.number.lineHeight.400}"
+            "lineHeight": "{primitive.number.lineHeight.300}"
           },
           "$description": "Use for supporting long-form content, such as annotations or ancillary copy. Use the primary prose style for default body copy."
         }
@@ -167,40 +167,40 @@
         "primary": {
           "$value": {
             "fontFamily": "{semantic.fontFamily.ui}",
-            "fontSize": "{primitive.dimension.fontSize.400}",
-            "fontWeight": "{primitive.fontWeight.normal}",
+            "fontSize": "{primitive.dimension.fontSize.300}",
+            "fontWeight": "{primitive.fontWeight.400}",
             "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
-            "lineHeight": "{primitive.number.lineHeight.400}"
+            "lineHeight": "{primitive.number.lineHeight.300}"
           },
           "$description": "Use for default text in application interfaces, including controls, labels, and navigation."
         },
         "secondary": {
           "$value": {
             "fontFamily": "{semantic.fontFamily.ui}",
-            "fontSize": "{primitive.dimension.fontSize.300}",
-            "fontWeight": "{primitive.fontWeight.normal}",
+            "fontSize": "{primitive.dimension.fontSize.200}",
+            "fontWeight": "{primitive.fontWeight.500}",
             "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
-            "lineHeight": "{primitive.number.lineHeight.300}"
+            "lineHeight": "{primitive.number.lineHeight.200}"
           },
-          "$description": "Use for supporting interface text, such as helper text or secondary labels. Use the primary UI style for default interface copy."
+          "$description": "Use for supporting interface text, such as helper text or secondary labels. A step heavier than the primary UI style, so the smaller size stays legible. Use the primary UI style for default interface copy."
         },
         "tertiary": {
           "$value": {
             "fontFamily": "{semantic.fontFamily.ui}",
-            "fontSize": "{primitive.dimension.fontSize.200}",
-            "fontWeight": "{primitive.fontWeight.normal}",
+            "fontSize": "{primitive.dimension.fontSize.100}",
+            "fontWeight": "{primitive.fontWeight.550}",
             "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
-            "lineHeight": "{primitive.number.lineHeight.200}"
+            "lineHeight": "{primitive.number.lineHeight.100}"
           },
-          "$description": "Use for the lowest-priority interface text, such as compact metadata or supplemental labels. Do not use when the primary or secondary UI style provides sufficient hierarchy."
+          "$description": "Use for the lowest-priority interface text, such as compact metadata or supplemental labels. A step and a half heavier than the primary UI style, so the smallest size stays legible. Do not use when the primary or secondary UI style provides sufficient hierarchy."
         },
         "label": {
           "$value": {
             "fontFamily": "{semantic.fontFamily.ui}",
-            "fontSize": "{primitive.dimension.fontSize.400}",
-            "fontWeight": "{primitive.fontWeight.bold}",
+            "fontSize": "{primitive.dimension.fontSize.300}",
+            "fontWeight": "{primitive.fontWeight.600}",
             "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
-            "lineHeight": "{primitive.number.lineHeight.400}"
+            "lineHeight": "{primitive.number.lineHeight.300}"
           },
           "$description": "Use for structural interface labels, such as navigation and menu group labels and the table of contents title: the primary UI style's size in a heavier weight. Do not use for default interface copy."
         },
@@ -209,7 +209,7 @@
             "$value": {
               "fontFamily": "{semantic.fontFamily.ui}",
               "fontSize": "{primitive.dimension.fontSize.500}",
-              "fontWeight": "{primitive.fontWeight.normal}",
+              "fontWeight": "{primitive.fontWeight.400}",
               "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
               "lineHeight": "{primitive.number.lineHeight.500}"
             },
@@ -222,7 +222,7 @@
           "$value": {
             "fontFamily": "{semantic.fontFamily.code}",
             "fontSize": "{primitive.dimension.fontSize.300}",
-            "fontWeight": "{primitive.fontWeight.normal}",
+            "fontWeight": "{primitive.fontWeight.400}",
             "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
             "lineHeight": "{primitive.number.lineHeight.300}"
           },
@@ -232,7 +232,7 @@
           "$value": {
             "fontFamily": "{semantic.fontFamily.code}",
             "fontSize": "{primitive.dimension.fontSize.200}",
-            "fontWeight": "{primitive.fontWeight.normal}",
+            "fontWeight": "{primitive.fontWeight.400}",
             "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
             "lineHeight": "{primitive.number.lineHeight.200}"
           },

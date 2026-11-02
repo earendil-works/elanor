@@ -52,7 +52,7 @@ const DEFAULT_TYPES: Record<string, string[]> = {
   'z-index': ['number'],
   'aspect-ratio': ['number'],
   'font-family': ['fontFamily'],
-  'font-size': ['dimension'],
+  'font-size': ['dimension', 'number'],
   'font-weight': ['fontWeight'],
   'line-height': ['number', 'dimension'],
   'letter-spacing': ['dimension'],

@@ -102,7 +102,7 @@
     color: var(--semantic-color-text-code);
     font: inherit;
     font-family: var(--semantic-font-family-code);
-    font-size: 0.875em;
+    font-size: calc(var(--semantic-number-font-scale-inline-code) * 1em);
     overflow-wrap: anywhere;
   }
 

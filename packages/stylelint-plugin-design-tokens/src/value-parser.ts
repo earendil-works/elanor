@@ -26,7 +26,14 @@ const NAMED_COLORS = new Set([
   'orange',
   'pink',
 ]);
-const DIMENSION = /^[-+]?(?:\d*\.)?\d+(px|rem)$/i;
+/**
+ * A length a token could hold: absolute (`px`, `rem`) or relative to the font (`em`, `ex`, `ch`,
+ * `cap`, `ic`, and their root forms). A font-relative length is still a chosen size; express it
+ * as a token, or as a token factor of `1em` (see `isTokenUnit`). `lh` is structural: one line.
+ */
+const DIMENSION = /^[-+]?(?:\d*\.)?\d+(px|r?em|r?ex|r?ch|r?cap|r?ic)$/i;
+/** The unit a token factor scales in `calc()`, such as `1em`. */
+const UNIT_LENGTH = /^1(?:r?em|r?ex|r?ch|r?cap|r?ic)$/i;
 /** A CSS time literal, such as `150ms` or `0.3s`. */
 export const TIME = /^[-+]?(?:\d*\.)?\d+m?s$/i;
 const EASING_KEYWORDS = /^(?:ease|ease-in|ease-out|ease-in-out|linear)$/i;
@@ -279,6 +286,26 @@ function tokenizableFontShorthandLiterals(value: string, policy: LiteralPolicy):
 }
 
 /**
+ * Checks whether a calc() operand is the unit a token factor scales, as in
+ * `calc(var(--semantic-number-font-scale-inline-code) * 1em)`: exactly one font-relative
+ * unit, multiplied by a var(). Any other font-relative length is a literal.
+ *
+ * @param operands The calc() operands without spaces and comments.
+ * @param index The operand to check.
+ * @returns Whether the operand only turns a token factor into a length.
+ */
+function isTokenUnit(operands: Node[], index: number): boolean {
+  const operand = operands[index];
+  if (operand?.type !== 'word' || !UNIT_LENGTH.test(operand.value)) return false;
+  const isVar = (node: Node | undefined): boolean =>
+    node?.type === 'function' && node.value.toLowerCase() === 'var';
+  return (
+    (operands[index - 1]?.value === '*' && isVar(operands[index - 2])) ||
+    (operands[index + 1]?.value === '*' && isVar(operands[index + 2]))
+  );
+}
+
+/**
  * Finds unique literal values that should be represented by design tokens.
  *
  * @param property The CSS property containing the value.
@@ -304,6 +331,10 @@ export function tokenizableLiterals(
       (child) => child.type !== 'space' && child.type !== 'comment',
     );
     for (const [index, operand] of operands.entries()) {
+      if (isTokenUnit(operands, index)) {
+        arithmeticScalars.add(operand);
+        continue;
+      }
       if (operand.type !== 'word' || !NUMBER.test(operand.value)) continue;
       const before = operands[index - 1]?.value;
       const after = operands[index + 1]?.value;
