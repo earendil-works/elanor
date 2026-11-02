@@ -3,6 +3,18 @@
   "version": "0.1.0",
   "description": "Material Symbols as React components.",
   "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/earendil-works/elanor.git",
+    "directory": "packages/icons/plain/react"
+  },
+  "homepage": "https://github.com/earendil-works/elanor/tree/main/packages/icons/plain/react#readme",
+  "bugs": {
+    "url": "https://github.com/earendil-works/elanor/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "sideEffects": false,
   "files": [

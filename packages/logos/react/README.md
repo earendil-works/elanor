@@ -1,6 +1,12 @@
 # `@earendil-works/elanor-logos-react`
 
-React components for the [Elanor logos](../README.md).
+React components for the Earendil, Pi, Radius, and Lefos logos.
+
+```sh
+npm install @earendil-works/elanor-logos-react react
+```
+
+No license is granted. Contact [brand@earendil.com](mailto:brand@earendil.com) for permission to use these logos.
 
 ## Exports
 

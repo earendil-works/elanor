@@ -1,7 +1,17 @@
 {
   "name": "@earendil-works/elanor-react",
   "version": "0.1.0",
-  "private": false,
+  "description": "Elanor React components built with Base UI and precompiled CSS.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/earendil-works/elanor.git",
+    "directory": "packages/react"
+  },
+  "homepage": "https://github.com/earendil-works/elanor/tree/main/packages/react#readme",
+  "bugs": {
+    "url": "https://github.com/earendil-works/elanor/issues"
+  },
   "type": "module",
   "files": [
     "dist",
@@ -20,6 +30,7 @@
     "./elanor.min.css": "./dist/elanor.min.css"
   },
   "publishConfig": {
+    "access": "public",
     "exports": {
       ".": {
         "types": "./dist/index.d.ts",
