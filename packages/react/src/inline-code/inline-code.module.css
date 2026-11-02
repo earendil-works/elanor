@@ -3,8 +3,7 @@
     color: var(--semantic-color-text-code);
     font: inherit;
     font-family: var(--semantic-font-family-code);
-    /* Monospace looks larger than text at the same size. */
-    font-size: 0.875em;
+    font-size: calc(var(--semantic-number-font-scale-inline-code) * 1em);
     /* Long identifiers break instead of widening narrow columns, such as in tables. */
     overflow-wrap: break-word;
   }

@@ -262,6 +262,12 @@
           }
         },
         "$description": "Transform scale factors where 1000 is an element's own size (a factor of 1), so 980 is 0.98."
+      },
+      "fontScale": {
+        "9375": {
+          "$value": 0.9375
+        },
+        "$description": "Font size factors relative to the surrounding text, where 10000 is the same size (a factor of 1), so 9375 is 0.9375."
       }
     }
   }
