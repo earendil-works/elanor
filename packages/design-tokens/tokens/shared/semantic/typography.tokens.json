@@ -178,21 +178,21 @@
           "$value": {
             "fontFamily": "{semantic.fontFamily.ui}",
             "fontSize": "{primitive.dimension.fontSize.200}",
-            "fontWeight": "{primitive.fontWeight.400}",
+            "fontWeight": "{primitive.fontWeight.500}",
             "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
             "lineHeight": "{primitive.number.lineHeight.200}"
           },
-          "$description": "Use for supporting interface text, such as helper text or secondary labels. Use the primary UI style for default interface copy."
+          "$description": "Use for supporting interface text, such as helper text or secondary labels. A step heavier than the primary UI style, so the smaller size stays legible. Use the primary UI style for default interface copy."
         },
         "tertiary": {
           "$value": {
             "fontFamily": "{semantic.fontFamily.ui}",
             "fontSize": "{primitive.dimension.fontSize.100}",
-            "fontWeight": "{primitive.fontWeight.400}",
+            "fontWeight": "{primitive.fontWeight.550}",
             "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
             "lineHeight": "{primitive.number.lineHeight.100}"
           },
-          "$description": "Use for the lowest-priority interface text, such as compact metadata or supplemental labels. Do not use when the primary or secondary UI style provides sufficient hierarchy."
+          "$description": "Use for the lowest-priority interface text, such as compact metadata or supplemental labels. A step and a half heavier than the primary UI style, so the smallest size stays legible. Do not use when the primary or secondary UI style provides sufficient hierarchy."
         },
         "label": {
           "$value": {
