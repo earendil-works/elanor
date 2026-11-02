@@ -27,8 +27,10 @@
 
   /* A 1em bar centered in each line box. */
   .line {
+    /* stylelint-disable design-tokens/no-hardcoded-token-values -- The bar stands in for one line of text, as tall as its font size. */
     block-size: 1em;
     margin-block: calc((1lh - 1em) / 2);
+    /* stylelint-enable design-tokens/no-hardcoded-token-values */
   }
 
   .line:last-child:not(:first-child) {

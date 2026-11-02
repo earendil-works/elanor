@@ -13,8 +13,10 @@
     content: '\201C' / '';
     position: absolute;
     /* Lifts the mark from the middle of its line box to the first line's cap height. */
+    /* stylelint-disable design-tokens/no-hardcoded-token-values -- Optical offsets of the quotation mark glyph, in its own size. */
     inset-block-start: -0.18em;
     inset-inline-start: -0.05em;
+    /* stylelint-enable design-tokens/no-hardcoded-token-values */
     color: var(--semantic-color-icon-secondary);
     font: var(--semantic-typography-heading-marketing-2);
   }

@@ -184,6 +184,31 @@ describe(noHardcodedTokenValuesName, () => {
     expect(text).toContain('number value "9"');
   });
 
+  it('finds font-relative lengths but allows them as the unit of a token factor', async () => {
+    const warnings = await lint(
+      `.a {
+      font-size: 0.875em;
+      inset-block-start: -0.18em;
+      max-inline-size: 60ch;
+      margin-block: calc((1lh - 1em) / 2);
+      padding-inline: calc(var(--semantic-dimension-space-padding-small) + 0.5ex);
+    }
+    .b {
+      font-size: calc(var(--semantic-number-font-scale-inline-code) * 1em);
+      inline-size: calc(1em * var(--semantic-number-scale-popup));
+      block-size: 1lh;
+    }`,
+      noHardcodedTokenValuesName,
+    );
+    expect(warnings.map((warning) => warning.text)).toEqual([
+      expect.stringContaining('"0.875em"'),
+      expect.stringContaining('"-0.18em"'),
+      expect.stringContaining('"60ch"'),
+      expect.stringContaining('"1em"'),
+      expect.stringContaining('"0.5ex"'),
+    ]);
+  });
+
   it('finds the correct literal categories in font shorthand', async () => {
     const warnings = await lint(
       `.a { font: 400 1rem/1.2 Inter, sans-serif; }`,
