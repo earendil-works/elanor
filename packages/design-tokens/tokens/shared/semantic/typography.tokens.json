@@ -198,7 +198,7 @@
           "$value": {
             "fontFamily": "{semantic.fontFamily.ui}",
             "fontSize": "{primitive.dimension.fontSize.300}",
-            "fontWeight": "{primitive.fontWeight.700}",
+            "fontWeight": "{primitive.fontWeight.600}",
             "letterSpacing": "{primitive.dimension.letterSpacing.normal}",
             "lineHeight": "{primitive.number.lineHeight.300}"
           },
