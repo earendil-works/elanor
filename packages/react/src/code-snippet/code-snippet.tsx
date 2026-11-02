@@ -1,4 +1,10 @@
-import {Suspense, use, type HTMLAttributes, type ReactNode, type Ref} from 'react';
+import {
+  useEffect,
+  useSyncExternalStore,
+  type HTMLAttributes,
+  type ReactNode,
+  type Ref,
+} from 'react';
 import type {ThemedToken} from 'shiki/core';
 import type {BundledLanguage} from 'shiki/langs';
 
@@ -34,9 +40,7 @@ export function CodeSnippet({
     <pre {...props} ref={ref} className={classes(styles.root, className)}>
       <code className={styles.code}>
         {language && typeof children === 'string' ? (
-          <Suspense fallback={children}>
-            <HighlightedCode code={children} language={language} />
-          </Suspense>
+          <HighlightedCode code={children} language={language} />
         ) : (
           children
         )}
@@ -48,16 +52,38 @@ export function CodeSnippet({
 
 /*
  * Highlighting is progressive. Shiki loads only when a snippet asks for highlighting, and each
- * grammar only when its language first appears. Until both are ready, and on the server, the
- * snippet shows the code as plain text, so the page doesn't shift; for an unknown language, or if
- * Shiki fails to load, the plain text stays.
+ * grammar only when its language first appears. Until both are ready, and on the server and during
+ * hydration, the snippet shows the code as plain text, so the page doesn't shift; for an unknown
+ * language the plain text stays. A failure to load or highlight is not caught: it surfaces as an
+ * unhandled rejection, the plain text stays, and the next mount tries again.
  *
- * `use` reads a promise cached per language and code: a promise created during render would
- * suspend forever. The cache keeps the most recent snippets, so returning to a page doesn't
- * highlight again. Tokens render as spans colored by Elanor's code syntax tokens, never as HTML.
+ * Tokens live in a cache shared by all snippets, so returning to a page shows them without
+ * highlighting again. Mounted snippets keep their entries; past the limit, the least recently used
+ * of the others are evicted. Tokens render as spans colored by Elanor's code syntax tokens, never
+ * as HTML.
  */
 function HighlightedCode({code, language}: {code: string; language: CodeSnippetLanguage}) {
-  const lines = use(highlight(code, language));
+  const key = `${language}\n${code}`;
+  const lines = useSyncExternalStore(
+    subscribe,
+    () => cache.get(key),
+    () => undefined,
+  );
+
+  useEffect(() => {
+    retain(key);
+    if (!cache.has(key)) {
+      void import('./code-snippet-highlighter.ts')
+        .then(({highlightCode}) => highlightCode(code, language))
+        .then((tokens) => {
+          if (tokens) {
+            remember(key, tokens);
+          }
+        });
+    }
+    return () => release(key);
+  }, [key, code, language]);
+
   if (!lines) {
     return code;
   }
@@ -75,19 +101,54 @@ function HighlightedCode({code, language}: {code: string; language: CodeSnippetL
 }
 
 const MAX_CACHED_SNIPPETS = 50;
-const cache = new Map<string, Promise<ThemedToken[][] | null>>();
+/** Tokens by language and code, least recently used first. */
+const cache = new Map<string, ThemedToken[][]>();
+/** How many mounted snippets show each entry, which keeps it from eviction. */
+const users = new Map<string, number>();
+const listeners = new Set<() => void>();
 
-function highlight(code: string, language: CodeSnippetLanguage) {
-  const key = `${language}\n${code}`;
-  let tokens = cache.get(key);
-  if (!tokens) {
-    tokens = import('./code-snippet-highlighter.ts')
-      .then(({highlightCode}) => highlightCode(code, language))
-      .catch(() => null);
-    cache.set(key, tokens);
-    if (cache.size > MAX_CACHED_SNIPPETS) {
-      cache.delete(cache.keys().next().value!);
+function subscribe(listener: () => void) {
+  listeners.add(listener);
+  return () => {
+    listeners.delete(listener);
+  };
+}
+
+function retain(key: string) {
+  users.set(key, (users.get(key) ?? 0) + 1);
+  const lines = cache.get(key);
+  if (lines) {
+    cache.delete(key);
+    cache.set(key, lines);
+  }
+}
+
+function release(key: string) {
+  const count = users.get(key)! - 1;
+  if (count === 0) {
+    users.delete(key);
+  } else {
+    users.set(key, count);
+  }
+  evict();
+}
+
+function remember(key: string, lines: ThemedToken[][]) {
+  cache.delete(key);
+  cache.set(key, lines);
+  evict();
+  for (const listener of listeners) {
+    listener();
+  }
+}
+
+function evict() {
+  for (const key of cache.keys()) {
+    if (cache.size <= MAX_CACHED_SNIPPETS) {
+      return;
+    }
+    if (!users.has(key)) {
+      cache.delete(key);
     }
   }
-  return tokens;
 }
