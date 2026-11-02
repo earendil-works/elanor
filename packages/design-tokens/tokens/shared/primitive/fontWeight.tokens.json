@@ -4,35 +4,45 @@
   "primitive": {
     "fontWeight": {
       "$type": "fontWeight",
-      "thin": {
-        "$value": 100
+      "100": {
+        "$value": 100,
+        "$description": "Thin."
       },
-      "extraLight": {
-        "$value": 200
+      "200": {
+        "$value": 200,
+        "$description": "Extra light."
       },
-      "light": {
-        "$value": 300
+      "300": {
+        "$value": 300,
+        "$description": "Light."
       },
-      "normal": {
-        "$value": 400
+      "400": {
+        "$value": 400,
+        "$description": "Normal (regular)."
       },
-      "medium": {
-        "$value": 500
+      "500": {
+        "$value": 500,
+        "$description": "Medium."
       },
-      "semiBold": {
-        "$value": 600
+      "600": {
+        "$value": 600,
+        "$description": "Semi-bold."
       },
-      "bold": {
-        "$value": 700
+      "700": {
+        "$value": 700,
+        "$description": "Bold."
       },
-      "extraBold": {
-        "$value": 800
+      "800": {
+        "$value": 800,
+        "$description": "Extra bold."
       },
-      "black": {
-        "$value": 900
+      "900": {
+        "$value": 900,
+        "$description": "Black."
       },
-      "extraBlack": {
-        "$value": 950
+      "950": {
+        "$value": 950,
+        "$description": "Extra black."
       }
     }
   }

@@ -202,7 +202,7 @@ Primitive easings are named by shape, never by use: `primitive.cubicBezier.<dire
 
 ### Magic-number scales
 
-Primitive numeric steps identify positions, not usage or literal units. Usually spaced by `100`, they leave room for intermediate steps; `0` may mean absence. Define generated intermediate steps in recipes, never by hand. Opacity, layer, scale, and duration are the direct-value exceptions below.
+Primitive numeric steps identify positions, not usage or literal units. Usually spaced by `100`, they leave room for intermediate steps; `0` may mean absence. Define generated intermediate steps in recipes, never by hand. Opacity, layer, scale, duration, and font weight are the direct-value exceptions below.
 
 A numeric step occupies one `state` part and cannot combine with another state:
 
@@ -253,6 +253,10 @@ For contextual alpha, keep the primitive opaque. Compose the semantic color usin
 ### Duration and transform scale
 
 `primitive.duration.<step>` is its value in milliseconds (`150` is `150ms`, `0` is instant). `primitive.number.scale.<step>` maps like opacity, with `1000` as an element's own size (`980` is `0.98`). See the [formulas](token-generation.md#duration-scale).
+
+### Font weight scale
+
+`primitive.fontWeight.<step>` is its CSS weight (`700` is bold), on the OpenType scale from `100` to `950`. Half steps such as `450` and `550` need a variable font; static fonts render the nearest weight.
 
 ### Layer scale
 
@@ -333,7 +337,7 @@ Reference a base as `{semantic.color.focusRing.$root}`. Inside a composite part,
 
 ## Rules
 
-- Use lower camel case (`fontSize`, `extraBold`, `iconButton`, `onDark`), except numeric steps and reserved `$root`.
+- Use lower camel case (`fontSize`, `letterSpacing`, `iconButton`, `onDark`), except numeric steps and reserved `$root`.
 - Match controlled spelling exactly; preserve CTI+ order and keep repeated roles consecutive.
 - Omit meaningless parts; never use `none` as a placeholder.
 - `primitive.dimension.100` is a token; `primitive.dimension` is only a group.
@@ -347,7 +351,7 @@ Additional name shapes:
 ```text
 primitive.color.transparent
 primitive.fontFamily.sansSerif
-primitive.fontWeight.extraBold
+primitive.fontWeight.700
 semantic.color.background.button.primary.strong.hover
 semantic.color.background.option.selected.hover
 semantic.color.background.menu.primary.trigger.icon.hover
