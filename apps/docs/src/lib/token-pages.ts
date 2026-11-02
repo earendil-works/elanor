@@ -167,7 +167,7 @@ const areaSpecs: readonly AreaSpec[] = [
   {
     id: 'typography',
     label: 'Typography',
-    summary: 'Text styles, headings, font families, and font weights.',
+    summary: 'Text styles, headings, font families, font weights, and font scales.',
     tier: 'semantic',
     sections: [
       section(
@@ -206,6 +206,7 @@ const areaSpecs: readonly AreaSpec[] = [
         'Fonts',
         group('families', 'Families', 'semantic.fontFamily'),
         group('weights', 'Weights', 'semantic.fontWeight'),
+        group('font-scales', 'Font scales', 'semantic.number.fontScale'),
       ),
     ],
   },
@@ -310,6 +311,7 @@ const areaSpecs: readonly AreaSpec[] = [
         group('weights', 'Weights', 'primitive.fontWeight'),
         group('line-heights', 'Line heights', 'primitive.number.lineHeight'),
         group('letter-spacing', 'Letter spacing', 'primitive.dimension.letterSpacing'),
+        group('font-scales', 'Font scales', 'primitive.number.fontScale'),
       ),
       section(
         'shape-and-depth',
