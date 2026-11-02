@@ -1,9 +1,13 @@
 import {Suspense, use, type HTMLAttributes, type ReactNode, type Ref} from 'react';
 import type {ThemedToken} from 'shiki/core';
+import type {BundledLanguage} from 'shiki/langs';
 
 import {classes} from '../utils/class-names.ts';
 
 import styles from './code-snippet.module.css';
+
+/** A language Shiki can highlight, by name or alias, such as `tsx`, `json` or `sh`. */
+export type CodeSnippetLanguage = BundledLanguage;
 
 export interface CodeSnippetProps extends Omit<HTMLAttributes<HTMLPreElement>, 'children'> {
   readonly ref?: Ref<HTMLPreElement> | undefined;
@@ -12,10 +16,10 @@ export interface CodeSnippetProps extends Omit<HTMLAttributes<HTMLPreElement>, '
   /** Controls at the end of the snippet, such as a copy button. */
   readonly actions?: ReactNode;
   /**
-   * Turns on syntax highlighting for this language: a Shiki language name or alias, such as
-   * `tsx`, `json` or `sh`. Leave it out for plain text, such as commands, keys and codes.
+   * Turns on syntax highlighting for this language. Leave it out for plain text, such as
+   * commands, keys and codes.
    */
-  readonly language?: string | undefined;
+  readonly language?: CodeSnippetLanguage | undefined;
 }
 
 export function CodeSnippet({
@@ -52,7 +56,7 @@ export function CodeSnippet({
  * suspend forever. The cache keeps the most recent snippets, so returning to a page doesn't
  * highlight again. Tokens render as spans colored by Elanor's code syntax tokens, never as HTML.
  */
-function HighlightedCode({code, language}: {code: string; language: string}) {
+function HighlightedCode({code, language}: {code: string; language: CodeSnippetLanguage}) {
   const lines = use(highlight(code, language));
   if (!lines) {
     return code;
@@ -73,7 +77,7 @@ function HighlightedCode({code, language}: {code: string; language: string}) {
 const MAX_CACHED_SNIPPETS = 50;
 const cache = new Map<string, Promise<ThemedToken[][] | null>>();
 
-function highlight(code: string, language: string) {
+function highlight(code: string, language: CodeSnippetLanguage) {
   const key = `${language}\n${code}`;
   let tokens = cache.get(key);
   if (!tokens) {

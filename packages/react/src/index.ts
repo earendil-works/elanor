@@ -115,7 +115,7 @@ export type {
 } from './checkbox/checkbox.tsx';
 
 export {CodeSnippet} from './code-snippet/code-snippet.tsx';
-export type {CodeSnippetProps} from './code-snippet/code-snippet.tsx';
+export type {CodeSnippetLanguage, CodeSnippetProps} from './code-snippet/code-snippet.tsx';
 
 export {CopyButton} from './copy-button/copy-button.tsx';
 export type {CopyButtonProps} from './copy-button/copy-button.tsx';

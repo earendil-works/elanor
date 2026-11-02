@@ -5,21 +5,23 @@ import {bundledLanguages, type BundledLanguage} from 'shiki/langs';
 
 let highlighter: Promise<HighlighterCore> | undefined;
 
-/** Tokens colored with Elanor's code syntax tokens, or null for a language Shiki doesn't know. */
+/**
+ * Tokens colored with Elanor's code syntax tokens, or null for a language Shiki doesn't know, as
+ * an unchecked string cast to the type can be.
+ */
 export async function highlightCode(
   code: string,
-  language: string,
+  language: BundledLanguage,
 ): Promise<ThemedToken[][] | null> {
   if (!Object.hasOwn(bundledLanguages, language)) {
     return null;
   }
-  const bundled = language as BundledLanguage;
   highlighter ??= createHighlighterCore({
     themes: [elanorTheme],
     langs: [],
     engine: createJavaScriptRegexEngine(),
   });
   const loaded = await highlighter;
-  await loaded.loadLanguage(bundledLanguages[bundled]);
-  return loaded.codeToTokensBase(code, {lang: bundled, theme: elanorTheme.name});
+  await loaded.loadLanguage(bundledLanguages[language]);
+  return loaded.codeToTokensBase(code, {lang: language, theme: elanorTheme.name});
 }
