@@ -13,8 +13,8 @@
           "$description": "Use for emphasized interface text."
         },
         "selected": {
-          "$value": "{primitive.fontWeight.600}",
-          "$description": "Use for the label of the selected or current item, such as the current page in navigation and the section that contains it."
+          "$value": "{primitive.fontWeight.550}",
+          "$description": "Use for the label of the selected or current item, such as the current page in navigation and the section that contains it. Between medium and semi-bold: the selected item also stands out by its fill or color."
         }
       }
     }
