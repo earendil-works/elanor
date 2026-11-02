@@ -20,9 +20,17 @@
         "$value": 400,
         "$description": "Normal (regular)."
       },
+      "450": {
+        "$value": 450,
+        "$description": "Half a step between 400 and 500. Needs a variable font; static fonts render the nearest weight."
+      },
       "500": {
         "$value": 500,
         "$description": "Medium."
+      },
+      "550": {
+        "$value": 550,
+        "$description": "Half a step between 500 and 600. Needs a variable font; static fonts render the nearest weight."
       },
       "600": {
         "$value": 600,
