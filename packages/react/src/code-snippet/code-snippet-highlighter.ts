@@ -3,7 +3,6 @@ import {createHighlighterCore, type HighlighterCore, type ThemedToken} from 'shi
 import {createJavaScriptRegexEngine} from 'shiki/engine/javascript';
 import {bundledLanguages, type BundledLanguage} from 'shiki/langs';
 
-
 let highlighter: Promise<HighlighterCore> | undefined;
 
 /** Tokens colored with Elanor's code syntax tokens, or null for a language Shiki doesn't know. */
