@@ -23,9 +23,7 @@ export default function DropdownSearchableFilter() {
                   {(groups: string[]) => groups[0] ?? 'All'}
                 </SearchableDropdown.Value>
               </span>
-              {selected.length > 1 ? (
-                <SearchableDropdown.ValueCount count={selected.length - 1} />
-              ) : null}
+              <SearchableDropdown.ValueCount count={selected.length - 1} />
               <SearchableDropdown.Icon />
             </SearchableDropdown.Trigger>
             <SearchableDropdown.Clear aria-label="Clear Groups filter" />

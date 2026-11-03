@@ -139,7 +139,7 @@ export function DropdownControl({ref, className, ...props}: DropdownControlProps
 
 export interface DropdownValueCountProps extends Omit<HTMLAttributes<HTMLSpanElement>, 'children'> {
   readonly ref?: Ref<HTMLSpanElement> | undefined;
-  /** How many other values are selected. Shown as “+2”. */
+  /** How many other values are selected, shown as “+2”. Nothing renders below 1. */
   readonly count: number;
   /**
    * What screen readers read instead of “+2”, after the value, so “developers +2” reads as
@@ -160,6 +160,8 @@ export function DropdownValueCount({
   className,
   ...props
 }: DropdownValueCountProps) {
+  if (count < 1) return null;
+
   return (
     <span {...props} ref={ref} className={classes(styles.valueCount, className)}>
       <span aria-hidden="true">+{count}</span>

@@ -14,7 +14,7 @@ export default function DropdownClearMultiple() {
             <Dropdown.Trigger density="compact">
               <Dropdown.Prefix>Groups:</Dropdown.Prefix>
               <Dropdown.Value>{(groups: string[]) => groups[0] ?? 'All'}</Dropdown.Value>
-              {selected.length > 1 ? <Dropdown.ValueCount count={selected.length - 1} /> : null}
+              <Dropdown.ValueCount count={selected.length - 1} />
               <Dropdown.Icon />
             </Dropdown.Trigger>
             <Dropdown.Clear aria-label="Clear Groups filter" />
