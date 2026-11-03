@@ -8,6 +8,7 @@ import {
   ClearContext,
   useClearableValue,
   useClearContext,
+  type ChangedValue,
   type DropdownClearProps,
   type DropdownControlProps,
 } from './dropdown-control.tsx';
@@ -52,13 +53,6 @@ export type SearchableDropdownRootProps<
   /** Only list navigation is supported; grid layouts are not. */
   readonly grid?: false;
 };
-
-/** What `onValueChange` receives: an array with `multiple`, otherwise one value or `null`. */
-type SearchableDropdownRootNextValue<
-  Value,
-  Multiple extends boolean | undefined,
-  Item,
-> = Parameters<NonNullable<SearchableDropdownRootProps<Value, Multiple, Item>['onValueChange']>>[0];
 
 export type SearchableDropdownLabelProps = BaseCombobox.Label.Props;
 export interface SearchableDropdownPrefixProps extends Omit<
@@ -115,8 +109,9 @@ export function SearchableDropdownRoot<
   const {value, changeValue, context} = useClearableValue({
     value: valueProp,
     defaultValue,
-    // `multiple` decides the value's shape at runtime; the type parameter mirrors it.
-    emptyValue: (multiple ? [] : null) as SearchableDropdownRootNextValue<Value, Multiple, Item>,
+    // SAFETY: `multiple` is the runtime value of the `Multiple` type parameter, so the empty
+    // value has the shape `onValueChange` expects.
+    emptyValue: (multiple ? [] : null) as ChangedValue<Value, Multiple>,
     disabled: Boolean(props.disabled || props.readOnly),
     onValueChange,
   });

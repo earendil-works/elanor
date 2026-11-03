@@ -16,6 +16,11 @@ import {classes, mergeClassName} from '../utils/class-names.ts';
 
 import styles from './dropdown-control.module.css';
 
+/** What Root's `onValueChange` receives: an array with `multiple`, otherwise a value or `null`. */
+export type ChangedValue<Value, Multiple extends boolean | undefined> =
+  | (Multiple extends true ? Value[] : Value)
+  | (Multiple extends true ? never : null);
+
 /** The details Root's `onValueChange` receives when Clear empties the value. */
 export type DropdownClearPressDetails = BaseUIChangeEventDetails<'clear-press'>;
 
@@ -158,7 +163,8 @@ export function DropdownClear({
   ...props
 }: DropdownClearProps) {
   const context = useClearContext('Clear');
-  if (!(visible ?? !context.empty)) return null;
+  const shown = visible ?? !context.empty;
+  if (!shown) return null;
 
   return (
     <BaseButton

@@ -14,6 +14,7 @@ import {
   ClearContext,
   useClearableValue,
   useClearContext,
+  type ChangedValue,
   type DropdownClearPressDetails,
 } from './dropdown-control.tsx';
 
@@ -41,21 +42,13 @@ export type DropdownRootChangeEventDetails =
   | BaseSelect.Root.ChangeEventDetails
   | DropdownClearPressDetails;
 
-/** What `onValueChange` receives: an array with `multiple`, otherwise one value or `null`. */
-type DropdownRootNextValue<Value, Multiple extends boolean | undefined> =
-  | (Multiple extends true ? Value[] : Value)
-  | (Multiple extends true ? never : null);
-
 export interface DropdownRootProps<
   Value,
   Multiple extends boolean | undefined = false,
 > extends Omit<BaseSelect.Root.Props<Value, Multiple>, 'onValueChange'> {
   /** Called when the value changes, including with `clear-press` when Clear empties it. */
   readonly onValueChange?:
-    | ((
-        value: DropdownRootNextValue<Value, Multiple>,
-        eventDetails: DropdownRootChangeEventDetails,
-      ) => void)
+    | ((value: ChangedValue<Value, Multiple>, eventDetails: DropdownRootChangeEventDetails) => void)
     | undefined;
 }
 export type DropdownLabelProps = BaseSelect.Label.Props;
@@ -95,7 +88,9 @@ export function DropdownRoot<Value, Multiple extends boolean | undefined = false
   const {value, changeValue, context} = useClearableValue({
     value: valueProp,
     defaultValue,
-    emptyValue: emptySelection<Value, Multiple>(multiple),
+    // SAFETY: `multiple` is the runtime value of the `Multiple` type parameter, so the empty
+    // value has the shape `onValueChange` expects.
+    emptyValue: (multiple ? [] : null) as ChangedValue<Value, Multiple>,
     disabled: Boolean(props.disabled || props.readOnly),
     onValueChange,
   });
@@ -107,13 +102,6 @@ export function DropdownRoot<Value, Multiple extends boolean | undefined = false
       </MultipleContext.Provider>
     </ClearContext>
   );
-}
-
-function emptySelection<Value, Multiple extends boolean | undefined>(
-  multiple: boolean,
-): DropdownRootNextValue<Value, Multiple> {
-  // `multiple` decides the value's shape at runtime; the type parameter mirrors it.
-  return (multiple ? [] : null) as DropdownRootNextValue<Value, Multiple>;
 }
 
 export function DropdownLabel({ref, className, ...props}: DropdownLabelProps) {
