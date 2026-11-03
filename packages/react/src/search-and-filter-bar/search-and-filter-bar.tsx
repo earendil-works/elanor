@@ -119,8 +119,16 @@ export function SearchAndFilterBarSearch({
   return <div {...props} ref={ref} className={classes(styles.search, className)} />;
 }
 
+export type SearchAndFilterBarFiltersLayout = 'content' | 'tracks';
+
 export interface SearchAndFilterBarFiltersProps extends HTMLAttributes<HTMLDivElement> {
   readonly ref?: Ref<HTMLDivElement> | undefined;
+  /**
+   * `content` sizes each filter to its content, up to half the filters' width. `tracks` puts
+   * the filters on the bar's grid: two tracks each from 64rem, four below, and the full width
+   * below 48rem.
+   */
+  readonly layout?: SearchAndFilterBarFiltersLayout;
 }
 
 /**
@@ -129,6 +137,7 @@ export interface SearchAndFilterBarFiltersProps extends HTMLAttributes<HTMLDivEl
  */
 export function SearchAndFilterBarFilters({
   ref,
+  layout = 'content',
   className,
   children,
   ...props
@@ -150,6 +159,7 @@ export function SearchAndFilterBarFilters({
     ref: ref ? [ref, filtersRef] : filtersRef,
     props: {
       ...props,
+      'data-layout': layout,
       className: classes(styles.filters, className),
       // One instance of the controls at a time keeps their IDs and label associations unique.
       children: filtersSlot ? createPortal(children, filtersSlot) : children,

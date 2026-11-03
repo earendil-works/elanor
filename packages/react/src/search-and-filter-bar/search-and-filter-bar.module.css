@@ -39,9 +39,29 @@
     max-inline-size: calc((100% - var(--semantic-dimension-space-gap-medium)) / 2);
   }
 
-  /* Centred on the filters' row, at its content width when the filters stack. */
+  /* Tracks: filters sit on the bar's grid instead of their content width. Each spans four
+     tracks, two per row; from 64rem, two tracks, four per row. Their widths don't change with
+     their values, so a row doesn't reflow when a value or a Clear button appears. */
+  .filters[data-layout='tracks'] {
+    display: grid;
+    grid-template-columns: subgrid;
+  }
+
+  .filters[data-layout='tracks'] > :not(input) {
+    grid-column: span 4;
+    max-inline-size: none;
+  }
+
+  @container (inline-size >= 64rem /* token: semantic.dimension.breakpoint.medium */) {
+    .filters[data-layout='tracks'] > :not(input) {
+      grid-column: span 2;
+    }
+  }
+
+  /* Centred on the filters' row, at its content width when the filters stack or sit on tracks. */
   .filters > .clearAll {
     align-self: center;
+    justify-self: start;
     min-inline-size: auto;
   }
 
@@ -71,6 +91,10 @@
 
     .filters > :not(input) {
       max-inline-size: 100%;
+    }
+
+    .filters[data-layout='tracks'] > :not(input) {
+      grid-column: 1 / -1;
     }
   }
 

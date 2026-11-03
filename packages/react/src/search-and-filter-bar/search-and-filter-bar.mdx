@@ -33,6 +33,10 @@ Put controls directly in Filters. A wrapper element counts as one filter.
 
 <Demo example="./examples/content-width.tsx" />
 
+For filters of one width that line up with the page grid, set `layout="tracks"` on Filters. The search spans four of the bar's twelve tracks and each filter spans two, up to four in a row, on bars 64rem and wider; narrower bars fit two filters in a row, and below 48rem each one takes the full row. A filter's width doesn't depend on its value, so the row doesn't move when a value or its Clear button appears; long values truncate instead.
+
+<Demo example="./examples/tracks.tsx" />
+
 ## Clear filters
 
 Put a ClearAll at the end of Filters while any filter is set, such as “Clear filters”, and clear every filter when it's pressed; keep the search. It's a compact tertiary button. When it's pressed, focus moves to the first filter, since the button goes away. Each filter can also clear itself with Dropdown's [`Clear`](/components/dropdown/#clear).

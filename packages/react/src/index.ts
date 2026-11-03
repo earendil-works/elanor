@@ -520,6 +520,7 @@ export type {
 export type {
   SearchAndFilterBarRootProps,
   SearchAndFilterBarSearchProps,
+  SearchAndFilterBarFiltersLayout,
   SearchAndFilterBarFiltersProps,
   SearchAndFilterBarClearAllProps,
   SearchAndFilterBarFiltersTriggerProps,
