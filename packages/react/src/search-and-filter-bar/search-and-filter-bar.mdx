@@ -33,6 +33,12 @@ Put controls directly in Filters. A wrapper element counts as one filter.
 
 <Demo example="./examples/content-width.tsx" />
 
+## Clear filters
+
+Put a ClearAll at the end of Filters while any filter is set, such as “Clear filters”, and clear every filter when it's pressed; keep the search. It's a compact tertiary button. When it's pressed, focus moves to the first filter, since the button goes away. Each filter can also clear itself with Dropdown's [`Clear`](/components/dropdown/#clear).
+
+ClearAll doesn't render in the filters drawer, which has its own Clear all in FiltersActions.
+
 ## Narrow bars
 
 Add a FiltersTrigger and a FiltersDrawer, and bars narrower than 24rem keep the search and replace the filters with a button that opens them in a [Drawer](/components/drawer/). Without them, the filters stack in one column. A container query switches the layout, so it fits the bar's own width, including narrow columns on wide screens. The drawer closes when the bar grows past it, and focus moves to the inline filters.

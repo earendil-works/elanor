@@ -39,6 +39,12 @@
     max-inline-size: calc((100% - var(--semantic-dimension-space-gap-medium)) / 2);
   }
 
+  /* Centred on the filters' row, at its content width when the filters stack. */
+  .filters > .clearAll {
+    align-self: center;
+    min-inline-size: auto;
+  }
+
   .search:empty,
   .filters:empty {
     display: none;

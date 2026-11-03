@@ -521,6 +521,7 @@ export type {
   SearchAndFilterBarRootProps,
   SearchAndFilterBarSearchProps,
   SearchAndFilterBarFiltersProps,
+  SearchAndFilterBarClearAllProps,
   SearchAndFilterBarFiltersTriggerProps,
   SearchAndFilterBarFiltersDrawerProps,
   SearchAndFilterBarFiltersSlotProps,
