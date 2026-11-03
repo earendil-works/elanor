@@ -48,11 +48,16 @@
     content: '';
   }
 
-  /* Touch screens get a target as large as other controls', as on Tabs and Radio. It's an
-     overlay, so the row keeps its height. */
+  /* Touch screens get a taller target, reaching half the medium gap above and below: rows of
+     filters a medium gap apart, as in Stack, Grid, and SearchAndFilterBar, touch but don't
+     overlap. It's an overlay, so the row keeps its height. */
   @media (pointer: coarse) {
     .trigger[data-density='compact']::after {
-      inset-block: calc((100% - var(--semantic-dimension-size-x-large)) / 2);
+      inset-block: calc(
+        -1 *
+          (var(--semantic-dimension-space-gap-medium) / 2 +
+            var(--semantic-dimension-border-width-default))
+      );
     }
   }
 

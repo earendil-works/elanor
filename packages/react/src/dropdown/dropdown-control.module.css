@@ -68,11 +68,16 @@
     content: '';
   }
 
+  /* On touch screens, as on compact triggers: half the medium gap above and below. */
   @media (pointer: coarse) {
     .clear::after,
     .control:has(> [data-density='compact']) > .clear::after {
       position: absolute;
-      inset-block: calc((100% - var(--semantic-dimension-size-x-large)) / 2);
+      inset-block: calc(
+        -1 *
+          (var(--semantic-dimension-space-gap-medium) / 2 +
+            var(--semantic-dimension-border-width-default))
+      );
       inset-inline: 0;
       content: '';
     }
