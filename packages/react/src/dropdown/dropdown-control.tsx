@@ -33,7 +33,7 @@ export const ClearContext = /* @__PURE__ */ createContext<ClearContextValue | nu
 
 export function useClearContext(part: string): ClearContextValue {
   const value = use(ClearContext);
-  if (!value) throw new Error(`${part} must be inside its Root.`);
+  if (!value) throw new Error(`${part} must be inside Dropdown.Root or SearchableDropdown.Root.`);
   return value;
 }
 
@@ -121,7 +121,7 @@ export interface DropdownControlProps extends HTMLAttributes<HTMLDivElement> {
  * Joins the trigger and Clear in one fill. `data-has-value` is set while a value is selected.
  */
 export function DropdownControl({ref, className, ...props}: DropdownControlProps) {
-  const {empty} = useClearContext('Dropdown.Control');
+  const {empty} = useClearContext('Control');
   return (
     <div
       {...props}
@@ -157,7 +157,7 @@ export function DropdownClear({
   onClick,
   ...props
 }: DropdownClearProps) {
-  const context = useClearContext('Dropdown.Clear');
+  const context = useClearContext('Clear');
   if (!(visible ?? !context.empty)) return null;
 
   return (

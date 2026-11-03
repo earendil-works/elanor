@@ -532,7 +532,9 @@ export type {SearchProps} from './search/search.tsx';
 
 export type {
   CreateSearchableDropdownItemsOptions,
+  SearchableDropdownClearProps,
   SearchableDropdownCollectionProps,
+  SearchableDropdownControlProps,
   SearchableDropdownEmptyProps,
   SearchableDropdownFilter,
   SearchableDropdownFilterOptions,
@@ -557,6 +559,7 @@ export type {
   SearchableDropdownPortalProps,
   SearchableDropdownPositionerProps,
   SearchableDropdownPositionerState,
+  SearchableDropdownPrefixProps,
   SearchableDropdownPrimitiveValue,
   SearchableDropdownRootActions,
   SearchableDropdownRootChangeEventDetails,

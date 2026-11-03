@@ -59,6 +59,21 @@
     text-overflow: ellipsis;
   }
 
+  /* The prefix stays whole while the value truncates. A word space apart, as in running
+     text; the value takes the free space, so the icon stays at the end. */
+  .prefix {
+    flex: none;
+    margin-inline-end: calc(
+      var(--semantic-dimension-space-control-gap-small) -
+        var(--semantic-dimension-space-control-gap-large)
+    );
+    color: var(--semantic-color-text-secondary);
+  }
+
+  .prefix + :not(.icon) {
+    flex-grow: 1;
+  }
+
   .trigger:where(:hover:not(:disabled, [data-disabled])) {
     border-color: var(--semantic-color-background-fill-secondary-hover);
     background: var(--semantic-color-background-fill-secondary-hover);

@@ -94,3 +94,7 @@ With `multiple`, the value is an array and `ItemIndicator` shows a checkbox.
 `SearchableDropdown` adds a filter input to the popup. Keep `Status` outside the popup so screen readers announce the selection after it closes. For a list that is always visible, see [Searchable list](/components/searchable-list/).
 
 <Demo example="./examples/searchable.tsx" />
+
+`SearchableDropdown` has the same `Prefix`, `Control` and `Clear`. Its `Value` renders no element of its own, so wrap it in a `span` to truncate it.
+
+<Demo example="./examples/searchable-filter.tsx" />

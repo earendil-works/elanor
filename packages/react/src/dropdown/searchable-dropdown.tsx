@@ -1,8 +1,16 @@
 import {Combobox as BaseCombobox} from '@base-ui/react/combobox';
 import {KeyboardArrowDownIcon, SearchIcon} from '@earendil-works/elanor-icons-react';
-import {createContext, useContext} from 'react';
+import {createContext, useContext, type Ref} from 'react';
 
 import {classes, mergeClassName} from '../utils/class-names.ts';
+import {useMergedRef} from '../utils/refs.ts';
+import {
+  ClearContext,
+  useClearableValue,
+  useClearContext,
+  type DropdownClearProps,
+  type DropdownControlProps,
+} from './dropdown-control.tsx';
 import type {DropdownTriggerDensity} from './dropdown.tsx';
 
 import styles from './searchable-dropdown.module.css';
@@ -45,7 +53,22 @@ export type SearchableDropdownRootProps<
   readonly grid?: false;
 };
 
+/** What `onValueChange` receives: an array with `multiple`, otherwise one value or `null`. */
+type SearchableDropdownRootNextValue<
+  Value,
+  Multiple extends boolean | undefined,
+  Item,
+> = Parameters<NonNullable<SearchableDropdownRootProps<Value, Multiple, Item>['onValueChange']>>[0];
+
 export type SearchableDropdownLabelProps = BaseCombobox.Label.Props;
+export interface SearchableDropdownPrefixProps extends Omit<
+  BaseCombobox.Label.Props,
+  'ref' | 'render'
+> {
+  readonly ref?: Ref<HTMLSpanElement> | undefined;
+}
+export type SearchableDropdownControlProps = DropdownControlProps;
+export type SearchableDropdownClearProps = DropdownClearProps;
 export type SearchableDropdownStatusProps = BaseCombobox.Status.Props;
 export interface SearchableDropdownTriggerProps extends BaseCombobox.Trigger.Props {
   /** `compact` removes block padding but keeps the touch target height. */
@@ -79,11 +102,33 @@ export function SearchableDropdownRoot<
   Value,
   Multiple extends boolean | undefined = false,
   Item = Value,
->(props: SearchableDropdownRootProps<Value, Multiple, Item>): React.JSX.Element {
+>({
+  value: valueProp,
+  defaultValue,
+  onValueChange,
+  ...props
+}: SearchableDropdownRootProps<Value, Multiple, Item>): React.JSX.Element {
+  const multiple = props.multiple ?? false;
+  const {value, changeValue, context} = useClearableValue({
+    value: valueProp,
+    defaultValue,
+    // `multiple` decides the value's shape at runtime; the type parameter mirrors it.
+    emptyValue: (multiple ? [] : null) as SearchableDropdownRootNextValue<Value, Multiple, Item>,
+    disabled: Boolean(props.disabled || props.readOnly),
+    onValueChange,
+  });
+
   return (
-    <MultipleContext.Provider value={props.multiple ?? false}>
-      <BaseCombobox.Root<Value, Multiple, Item> {...props} grid={false} />
-    </MultipleContext.Provider>
+    <ClearContext value={context}>
+      <MultipleContext.Provider value={multiple}>
+        <BaseCombobox.Root<Value, Multiple, Item>
+          {...props}
+          value={value}
+          onValueChange={changeValue}
+          grid={false}
+        />
+      </MultipleContext.Provider>
+    </ClearContext>
   );
 }
 
@@ -97,16 +142,43 @@ export function SearchableDropdownLabel({ref, className, ...props}: SearchableDr
   );
 }
 
+/**
+ * A muted label inside the trigger, before the value, such as "Groups:". It's Base UI's
+ * `Combobox.Label` rendered as a `<span>`, so use it instead of `Label`.
+ */
+export function SearchableDropdownPrefix({
+  ref,
+  className,
+  onPointerDown,
+  ...props
+}: SearchableDropdownPrefixProps) {
+  return (
+    <BaseCombobox.Label
+      {...props}
+      // Phrasing content inside the trigger's button. The trigger's `aria-labelledby` reads it
+      // as the name, so it's hidden from the trigger's content, which screen readers read as
+      // the value. Base UI's label cancels `pointerdown`, which keeps the trigger from opening,
+      // so its handler is replaced; `preventBaseUIHandler()` would also skip the trigger's.
+      render={(labelProps) => (
+        <span {...labelProps} ref={ref} aria-hidden="true" onPointerDown={onPointerDown} />
+      )}
+      className={mergeClassName<BaseCombobox.Label.State>(styles.prefix, className)}
+    />
+  );
+}
+
 export function SearchableDropdownTrigger({
   ref,
   density = 'default',
   className,
   ...props
 }: SearchableDropdownTriggerProps) {
+  const {triggerRef} = useClearContext('Trigger');
+  const mergedRef = useMergedRef(triggerRef, ref);
   return (
     <BaseCombobox.Trigger
       {...props}
-      ref={ref}
+      ref={mergedRef}
       data-density={density}
       className={mergeClassName<BaseCombobox.Trigger.State>(styles.trigger, className)}
     />

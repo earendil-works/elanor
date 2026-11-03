@@ -149,7 +149,7 @@ export function DropdownTrigger({
   className,
   ...props
 }: DropdownTriggerProps) {
-  const {triggerRef} = useClearContext('Dropdown.Trigger');
+  const {triggerRef} = useClearContext('Trigger');
   const mergedRef = useMergedRef(triggerRef, ref);
   return (
     <BaseSelect.Trigger

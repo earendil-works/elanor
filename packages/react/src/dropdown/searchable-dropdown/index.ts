@@ -3,6 +3,7 @@ import {Combobox as BaseCombobox} from '@base-ui/react/combobox';
 export {
   SearchableDropdownRoot as Root,
   SearchableDropdownLabel as Label,
+  SearchableDropdownPrefix as Prefix,
   SearchableDropdownTrigger as Trigger,
   SearchableDropdownIcon as Icon,
   SearchableDropdownPopup as Popup,
@@ -16,6 +17,7 @@ export {
   SearchableDropdownEmpty as Empty,
   SearchableDropdownStatus as Status,
 } from '../searchable-dropdown.tsx';
+export {DropdownControl as Control, DropdownClear as Clear} from '../dropdown-control.tsx';
 
 export const Value = BaseCombobox.Value;
 export const Portal = BaseCombobox.Portal;
