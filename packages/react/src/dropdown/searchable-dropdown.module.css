@@ -48,6 +48,14 @@
     content: '';
   }
 
+  /* Touch screens get a target as large as other controls', as on Tabs and Radio. It's an
+     overlay, so the row keeps its height. */
+  @media (pointer: coarse) {
+    .trigger[data-density='compact']::after {
+      inset-block: calc((100% - var(--semantic-dimension-size-x-large)) / 2);
+    }
+  }
+
   .trigger[data-density='compact'] .icon {
     inline-size: var(--semantic-dimension-size-x-small);
     block-size: var(--semantic-dimension-size-x-small);

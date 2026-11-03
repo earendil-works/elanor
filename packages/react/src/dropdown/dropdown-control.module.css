@@ -68,6 +68,16 @@
     content: '';
   }
 
+  @media (pointer: coarse) {
+    .clear::after,
+    .control:has(> [data-density='compact']) > .clear::after {
+      position: absolute;
+      inset-block: calc((100% - var(--semantic-dimension-size-x-large)) / 2);
+      inset-inline: 0;
+      content: '';
+    }
+  }
+
   .clear:where(:hover:not(:disabled, [data-disabled])) {
     border-color: var(--semantic-color-background-fill-secondary-hover);
     background: var(--semantic-color-background-fill-secondary-hover);

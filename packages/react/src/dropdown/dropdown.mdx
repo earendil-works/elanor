@@ -41,7 +41,7 @@ The popup opens below the trigger, aligned to its start edge, and repositions wh
 
 ## Density
 
-Use `compact` on the trigger in dense layouts, such as a filter beside a heading. It removes the block padding, so the trigger is one line of text high, with a smaller icon; the touch target keeps the default height. The popup's items keep their size. `SearchableDropdown.Trigger` takes the same `density`.
+Use `compact` on the trigger in dense layouts, such as a filter beside a heading. It removes the block padding, so the trigger is one line of text high, with a smaller icon; the touch target keeps the default height, and on touch screens grows to 48px, without moving what's around it. Clear's touch target does the same. The popup's items keep their size. `SearchableDropdown.Trigger` takes the same `density`.
 
 <Demo example="./examples/density.tsx" />
 
