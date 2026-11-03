@@ -41,19 +41,15 @@ export type DropdownRootChangeEventDetails =
   | BaseSelect.Root.ChangeEventDetails
   | DropdownClearPressDetails;
 
-type BaseRootProps<Value, Multiple extends boolean | undefined> = BaseSelect.Root.Props<
-  Value,
-  Multiple
->;
 /** What `onValueChange` receives: an array with `multiple`, otherwise one value or `null`. */
-type DropdownRootNextValue<Value, Multiple extends boolean | undefined> = Parameters<
-  NonNullable<BaseRootProps<Value, Multiple>['onValueChange']>
->[0];
+type DropdownRootNextValue<Value, Multiple extends boolean | undefined> =
+  | (Multiple extends true ? Value[] : Value)
+  | (Multiple extends true ? never : null);
 
 export interface DropdownRootProps<
   Value,
   Multiple extends boolean | undefined = false,
-> extends Omit<BaseRootProps<Value, Multiple>, 'onValueChange'> {
+> extends Omit<BaseSelect.Root.Props<Value, Multiple>, 'onValueChange'> {
   /** Called when the value changes, including with `clear-press` when Clear empties it. */
   readonly onValueChange?:
     | ((
