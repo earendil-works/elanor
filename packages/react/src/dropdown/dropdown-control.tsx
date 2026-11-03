@@ -174,7 +174,7 @@ export function DropdownClear({
       disabled={disabled || context.disabled}
       onClick={(event) => {
         onClick?.(event);
-        if (!event.defaultPrevented) context.clear(event);
+        context.clear(event);
       }}
       className={mergeClassName<BaseButton.State>(styles.clear, className)}
     >

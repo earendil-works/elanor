@@ -195,7 +195,7 @@ export function SearchAndFilterBarClearAll({
       density="compact"
       onClick={(event) => {
         onClick?.(event);
-        if (!event.defaultPrevented) focusFirst(filtersRef.current);
+        focusFirst(filtersRef.current);
       }}
       className={mergeClassName<ButtonState>(styles.clearAll, className)}
     />
