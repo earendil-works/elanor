@@ -5,6 +5,7 @@ export {
   DropdownLabel as Label,
   DropdownPrefix as Prefix,
   DropdownTrigger as Trigger,
+  DropdownValueCount as ValueCount,
   DropdownIcon as Icon,
   DropdownPositioner as Positioner,
   DropdownPopup as Popup,

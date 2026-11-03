@@ -4,7 +4,7 @@ import {useState} from 'react';
 const groups = ['developers', 'design', 'operations', 'support', 'marketing', 'finance'];
 
 export default function DropdownSearchableFilter() {
-  const [selected, setSelected] = useState(['developers']);
+  const [selected, setSelected] = useState(['developers', 'operations']);
 
   return (
     <Grid.Root>
@@ -19,8 +19,15 @@ export default function DropdownSearchableFilter() {
             <SearchableDropdown.Trigger density="compact">
               <SearchableDropdown.Prefix>Groups:</SearchableDropdown.Prefix>
               <span>
-                <SearchableDropdown.Value placeholder="All" />
+                <SearchableDropdown.Value>
+                  {(groups: string[]) => groups[0] ?? 'All'}
+                </SearchableDropdown.Value>
               </span>
+              {selected.length > 1 ? (
+                <SearchableDropdown.ValueCount>
+                  +{selected.length - 1}
+                </SearchableDropdown.ValueCount>
+              ) : null}
               <SearchableDropdown.Icon />
             </SearchableDropdown.Trigger>
             <SearchableDropdown.Clear aria-label="Clear Groups filter" />

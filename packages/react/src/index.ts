@@ -281,6 +281,7 @@ export type {
   DropdownTriggerDensity,
   DropdownTriggerProps,
   DropdownTriggerState,
+  DropdownValueCountProps,
   DropdownValueProps,
   DropdownValueState,
 } from './dropdown/dropdown.tsx';
@@ -573,6 +574,7 @@ export type {
   SearchableDropdownStatusProps,
   SearchableDropdownTriggerProps,
   SearchableDropdownTriggerState,
+  SearchableDropdownValueCountProps,
   SearchableDropdownValueProps,
 } from './dropdown/searchable-dropdown.tsx';
 

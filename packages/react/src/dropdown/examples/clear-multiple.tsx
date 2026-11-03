@@ -4,7 +4,7 @@ import {useState} from 'react';
 const groups = ['developers', 'design', 'operations', 'support'];
 
 export default function DropdownClearMultiple() {
-  const [selected, setSelected] = useState(['developers', 'design']);
+  const [selected, setSelected] = useState(['developers', 'design', 'support']);
 
   return (
     <Grid.Root>
@@ -13,7 +13,10 @@ export default function DropdownClearMultiple() {
           <Dropdown.Control>
             <Dropdown.Trigger density="compact">
               <Dropdown.Prefix>Groups:</Dropdown.Prefix>
-              <Dropdown.Value placeholder="All" />
+              <Dropdown.Value>{(groups: string[]) => groups[0] ?? 'All'}</Dropdown.Value>
+              {selected.length > 1 ? (
+                <Dropdown.ValueCount>+{selected.length - 1}</Dropdown.ValueCount>
+              ) : null}
               <Dropdown.Icon />
             </Dropdown.Trigger>
             <Dropdown.Clear aria-label="Clear Groups filter" />

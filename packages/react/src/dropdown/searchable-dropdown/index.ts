@@ -5,6 +5,7 @@ export {
   SearchableDropdownLabel as Label,
   SearchableDropdownPrefix as Prefix,
   SearchableDropdownTrigger as Trigger,
+  SearchableDropdownValueCount as ValueCount,
   SearchableDropdownIcon as Icon,
   SearchableDropdownPopup as Popup,
   SearchableDropdownInputGroup as InputGroup,

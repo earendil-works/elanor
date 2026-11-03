@@ -63,6 +63,8 @@ Name Clear with `aria-label`, such as “Clear Status filter”, and show the em
 
 <Demo example="./examples/clear.tsx" />
 
+With `multiple`, Clear empties the array. To fit several values in a narrow trigger, show the first one and a count of the others, such as “Groups: developers +2”: render the first value with `Value`'s children, and the count in `ValueCount` after it. Like the prefix, the count is muted and stays whole while the value truncates.
+
 <Demo example="./examples/clear-multiple.tsx" />
 
 ### Clear to a default
@@ -95,6 +97,6 @@ With `multiple`, the value is an array and `ItemIndicator` shows a checkbox.
 
 <Demo example="./examples/searchable.tsx" />
 
-`SearchableDropdown` has the same `Prefix`, `Control` and `Clear`. Its `Value` renders no element of its own, so wrap it in a `span` to truncate it.
+`SearchableDropdown` has the same `Prefix`, `ValueCount`, `Control` and `Clear`. Its `Value` renders no element of its own, so wrap it in a `span` to truncate it.
 
 <Demo example="./examples/searchable-filter.tsx" />
