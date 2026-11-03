@@ -3,6 +3,7 @@ import {Select as BaseSelect} from '@base-ui/react/select';
 export {
   DropdownRoot as Root,
   DropdownLabel as Label,
+  DropdownPrefix as Prefix,
   DropdownTrigger as Trigger,
   DropdownIcon as Icon,
   DropdownPositioner as Positioner,

@@ -1,6 +1,6 @@
 import {Select as BaseSelect} from '@base-ui/react/select';
 import {KeyboardArrowDownIcon} from '@earendil-works/elanor-icons-react';
-import {createContext, useContext, type ComponentPropsWithRef} from 'react';
+import {createContext, useContext, type ComponentPropsWithRef, type Ref} from 'react';
 
 import {classes, mergeClassName} from '../utils/class-names.ts';
 
@@ -30,6 +30,9 @@ export type DropdownRootProps<
   Multiple extends boolean | undefined = false,
 > = BaseSelect.Root.Props<Value, Multiple>;
 export type DropdownLabelProps = BaseSelect.Label.Props;
+export interface DropdownPrefixProps extends Omit<BaseSelect.Label.Props, 'ref' | 'render'> {
+  readonly ref?: Ref<HTMLSpanElement> | undefined;
+}
 export type DropdownTriggerDensity = 'compact' | 'default';
 
 export interface DropdownTriggerProps extends BaseSelect.Trigger.Props {
@@ -66,6 +69,28 @@ export function DropdownLabel({ref, className, ...props}: DropdownLabelProps) {
       {...props}
       ref={ref}
       className={mergeClassName<BaseSelect.Label.State>(styles.label, className)}
+    />
+  );
+}
+
+/**
+ * A muted label inside the trigger, before the value, such as "Date range:". It labels the
+ * dropdown, so use it instead of `Label`.
+ */
+export function DropdownPrefix({ref, className, onPointerDown, ...props}: DropdownPrefixProps) {
+  return (
+    <BaseSelect.Label
+      {...props}
+      // Phrasing content inside the trigger's button. The trigger's `aria-labelledby` reads it
+      // as the name, so it's hidden from the trigger's content, which screen readers read as
+      // the value.
+      render={<span ref={ref} aria-hidden="true" />}
+      onPointerDown={(event) => {
+        onPointerDown?.(event);
+        // Base UI's label prevents pointerdown, which would keep the trigger from opening.
+        event.preventBaseUIHandler();
+      }}
+      className={mergeClassName<BaseSelect.Label.State>(styles.prefix, className)}
     />
   );
 }

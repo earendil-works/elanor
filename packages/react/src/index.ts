@@ -269,6 +269,7 @@ export type {
   DropdownPortalProps,
   DropdownPositionerProps,
   DropdownPositionerState,
+  DropdownPrefixProps,
   DropdownRootActions,
   DropdownRootChangeEventDetails,
   DropdownRootChangeEventReason,

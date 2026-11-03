@@ -33,7 +33,9 @@ import {Dropdown} from '@earendil-works/elanor-react';
 
 `Value` shows the selected value. When values differ from their labels, pass `items` to Root, such as `items={[{value: 'alpha', label: 'Alpha'}]}`.
 
-The trigger stays on one line and truncates long values. Wrap its text in `Value` or an element, such as a `span`; bare text doesn't truncate and hides the icon. If you set `aria-label` on the trigger, include the value.
+The trigger stays on one line and truncates long values. Wrap its text in `Value` or an element, such as a `span`; bare text doesn't truncate and hides the icon.
+
+Name the dropdown with `Label` above the trigger, or with [`Prefix`](#prefix) inside it. Screen readers announce the label as the name, then the selected value. Without a visible label, set `aria-label` on the trigger and include the value: it's the only text on the trigger, and people using speech input say what they see.
 
 The popup opens below the trigger, aligned to its start edge, and repositions when space is limited. Set `alignItemWithTrigger` on Positioner to overlap the trigger with the selected item instead.
 
@@ -42,6 +44,14 @@ The popup opens below the trigger, aligned to its start edge, and repositions wh
 Use `compact` on the trigger in dense layouts, such as a filter beside a heading. It removes the block padding, so the trigger is one line of text high, with a smaller icon; the touch target keeps the default height. The popup's items keep their size. `SearchableDropdown.Trigger` takes the same `density`.
 
 <Demo example="./examples/density.tsx" />
+
+## Prefix
+
+`Prefix` labels the dropdown inside its trigger, before the value, such as a filter that reads "Date range: Last 30 days". Use it where there's no room for a label above, and keep it to a word or two. The prefix is muted and stays whole; only the value truncates. Pressing it opens the popup, like the rest of the trigger.
+
+Prefix and `Label` share the dropdown's one label, so use one of them, not both, and no `aria-label` on the trigger. Inside a `Field`, use Prefix instead of `Field.Label`.
+
+<Demo example="./examples/prefix.tsx" />
 
 ## Item indicator
 
