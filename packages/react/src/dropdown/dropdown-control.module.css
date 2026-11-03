@@ -83,6 +83,11 @@
     background: var(--semantic-color-background-fill-secondary-hover);
   }
 
+  .clear:where(:active:not(:disabled, [data-disabled])) {
+    border-color: var(--semantic-color-background-fill-secondary-active);
+    background: var(--semantic-color-background-fill-secondary-active);
+  }
+
   .clear:focus-visible {
     outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
     outline-offset: var(--semantic-dimension-border-width-medium);
