@@ -49,7 +49,7 @@ Use `compact` on the trigger in dense layouts, such as a filter beside a heading
 
 `Prefix` labels the dropdown inside its trigger, before the value, such as a filter that reads "Date range: Last 30 days". Use it where there's no room for a label above, and keep it to a word or two. The prefix is muted and stays whole; only the value truncates. Pressing it opens the popup, like the rest of the trigger.
 
-Prefix and `Label` share the dropdown's one label, so use one of them, not both, and no `aria-label` on the trigger. Inside a `Field`, use Prefix instead of `Field.Label`.
+Prefix and `Label` share the dropdown's one label, so use one of them. Don't set `aria-label` on the trigger as well; the label overrides it. Inside a `Field`, use Prefix instead of `Field.Label`.
 
 <Demo example="./examples/prefix.tsx" />
 

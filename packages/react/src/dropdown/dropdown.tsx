@@ -74,8 +74,8 @@ export function DropdownLabel({ref, className, ...props}: DropdownLabelProps) {
 }
 
 /**
- * A muted label inside the trigger, before the value, such as "Date range:". It labels the
- * dropdown, so use it instead of `Label`.
+ * A muted label inside the trigger, before the value, such as "Date range:". It's Base UI's
+ * `Select.Label` rendered as a `<span>`, so use it instead of `Label`.
  */
 export function DropdownPrefix({ref, className, onPointerDown, ...props}: DropdownPrefixProps) {
   return (
