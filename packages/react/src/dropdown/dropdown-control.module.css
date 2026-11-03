@@ -17,6 +17,25 @@
     border-end-end-radius: 0;
   }
 
+  /* After the value, a word space from it, as in running text. */
+  .valueCount {
+    flex: none;
+    margin-inline-start: calc(
+      var(--semantic-dimension-space-control-gap-small) -
+        var(--semantic-dimension-space-control-gap-large)
+    );
+    color: var(--semantic-color-text-secondary);
+  }
+
+  .visuallyHidden {
+    position: absolute;
+    inline-size: var(--semantic-dimension-border-width-small);
+    block-size: var(--semantic-dimension-border-width-small);
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
   /* Continues the trigger's fill after its chevron, behind a divider, as one control. */
   .clear {
     position: relative;

@@ -74,24 +74,13 @@
 
   /* The prefix and a value count stay whole while the value truncates, a word space from it,
      as in running text. */
-  .prefix,
-  .valueCount {
-    flex: none;
-    color: var(--semantic-color-text-secondary);
-  }
-
   .prefix {
+    flex: none;
     margin-inline-end: calc(
       var(--semantic-dimension-space-control-gap-small) -
         var(--semantic-dimension-space-control-gap-large)
     );
-  }
-
-  .valueCount {
-    margin-inline-start: calc(
-      var(--semantic-dimension-space-control-gap-small) -
-        var(--semantic-dimension-space-control-gap-large)
-    );
+    color: var(--semantic-color-text-secondary);
   }
 
   .trigger:where(:hover:not(:disabled, [data-disabled])) {

@@ -5,7 +5,6 @@ export {
   SearchableDropdownLabel as Label,
   SearchableDropdownPrefix as Prefix,
   SearchableDropdownTrigger as Trigger,
-  SearchableDropdownValueCount as ValueCount,
   SearchableDropdownIcon as Icon,
   SearchableDropdownPopup as Popup,
   SearchableDropdownInputGroup as InputGroup,
@@ -18,7 +17,11 @@ export {
   SearchableDropdownEmpty as Empty,
   SearchableDropdownStatus as Status,
 } from '../searchable-dropdown.tsx';
-export {DropdownControl as Control, DropdownClear as Clear} from '../dropdown-control.tsx';
+export {
+  DropdownControl as Control,
+  DropdownClear as Clear,
+  DropdownValueCount as ValueCount,
+} from '../dropdown-control.tsx';
 
 export const Value = BaseCombobox.Value;
 export const Portal = BaseCombobox.Portal;

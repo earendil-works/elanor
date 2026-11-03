@@ -5,7 +5,6 @@ export {
   DropdownLabel as Label,
   DropdownPrefix as Prefix,
   DropdownTrigger as Trigger,
-  DropdownValueCount as ValueCount,
   DropdownIcon as Icon,
   DropdownPositioner as Positioner,
   DropdownPopup as Popup,
@@ -15,7 +14,11 @@ export {
   DropdownGroupLabel as GroupLabel,
   DropdownSeparator as Separator,
 } from './dropdown.tsx';
-export {DropdownControl as Control, DropdownClear as Clear} from './dropdown-control.tsx';
+export {
+  DropdownControl as Control,
+  DropdownClear as Clear,
+  DropdownValueCount as ValueCount,
+} from './dropdown-control.tsx';
 
 export const Value = BaseSelect.Value;
 export const Portal = BaseSelect.Portal;

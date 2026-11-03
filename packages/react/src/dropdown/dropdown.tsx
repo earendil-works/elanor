@@ -1,12 +1,6 @@
 import {Select as BaseSelect} from '@base-ui/react/select';
 import {KeyboardArrowDownIcon} from '@earendil-works/elanor-icons-react';
-import {
-  createContext,
-  useContext,
-  type ComponentPropsWithRef,
-  type HTMLAttributes,
-  type Ref,
-} from 'react';
+import {createContext, useContext, type ComponentPropsWithRef, type Ref} from 'react';
 
 import {classes, mergeClassName} from '../utils/class-names.ts';
 import {useMergedRef} from '../utils/refs.ts';
@@ -63,9 +57,6 @@ export type DropdownTriggerDensity = 'compact' | 'default';
 export interface DropdownTriggerProps extends BaseSelect.Trigger.Props {
   /** `compact` removes block padding but keeps the touch target height. */
   readonly density?: DropdownTriggerDensity;
-}
-export interface DropdownValueCountProps extends HTMLAttributes<HTMLSpanElement> {
-  readonly ref?: Ref<HTMLSpanElement> | undefined;
 }
 export type DropdownIconProps = BaseSelect.Icon.Props;
 export type DropdownPositionerProps = BaseSelect.Positioner.Props;
@@ -153,14 +144,6 @@ export function DropdownTrigger({
       className={mergeClassName<BaseSelect.Trigger.State>(styles.trigger, className)}
     />
   );
-}
-
-/**
- * A muted count after the value, such as “+2” for the other selected values. It stays whole
- * while the value truncates.
- */
-export function DropdownValueCount({ref, className, ...props}: DropdownValueCountProps) {
-  return <span {...props} ref={ref} className={classes(styles.valueCount, className)} />;
 }
 
 export function DropdownIcon({ref, className, children, ...props}: DropdownIconProps) {

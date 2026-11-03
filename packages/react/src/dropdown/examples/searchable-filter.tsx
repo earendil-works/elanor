@@ -24,9 +24,7 @@ export default function DropdownSearchableFilter() {
                 </SearchableDropdown.Value>
               </span>
               {selected.length > 1 ? (
-                <SearchableDropdown.ValueCount>
-                  +{selected.length - 1}
-                </SearchableDropdown.ValueCount>
+                <SearchableDropdown.ValueCount count={selected.length - 1} />
               ) : null}
               <SearchableDropdown.Icon />
             </SearchableDropdown.Trigger>

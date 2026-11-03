@@ -63,7 +63,7 @@ Name Clear with `aria-label`, such as “Clear Status filter”, and show the em
 
 <Demo example="./examples/clear.tsx" />
 
-With `multiple`, Clear empties the array. To fit several values in a narrow trigger, show the first one and a count of the others, such as “Groups: developers +2”: render the first value with `Value`'s children, and the count in `ValueCount` after it. Like the prefix, the count is muted and stays whole while the value truncates.
+With `multiple`, Clear empties the array. To fit several values in a narrow trigger, show the first one and a count of the others, such as “Groups: developers +2”: render the first value with `Value`'s children, and the others' `count` in `ValueCount` after it. Like the prefix, the count is muted and stays whole while the value truncates. Screen readers read “developers and 2 more” instead; pass `label`, a function of the count, to translate it.
 
 <Demo example="./examples/clear-multiple.tsx" />
 

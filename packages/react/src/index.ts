@@ -281,7 +281,6 @@ export type {
   DropdownTriggerDensity,
   DropdownTriggerProps,
   DropdownTriggerState,
-  DropdownValueCountProps,
   DropdownValueProps,
   DropdownValueState,
 } from './dropdown/dropdown.tsx';
@@ -289,6 +288,7 @@ export type {
   DropdownClearPressDetails,
   DropdownClearProps,
   DropdownControlProps,
+  DropdownValueCountProps,
 } from './dropdown/dropdown-control.tsx';
 
 export type {

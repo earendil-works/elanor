@@ -137,6 +137,41 @@ export function DropdownControl({ref, className, ...props}: DropdownControlProps
   );
 }
 
+export interface DropdownValueCountProps extends Omit<HTMLAttributes<HTMLSpanElement>, 'children'> {
+  readonly ref?: Ref<HTMLSpanElement> | undefined;
+  /** How many other values are selected. Shown as “+2”. */
+  readonly count: number;
+  /**
+   * What screen readers read instead of “+2”, after the value, so “developers +2” reads as
+   * “developers and 2 more”.
+   * @default (count) => `and ${count} more`
+   */
+  readonly label?: ((count: number) => string) | undefined;
+}
+
+/**
+ * A muted count after the value, such as “+2” for the other selected values. It stays whole
+ * while the value truncates. Screen readers read its `label` instead, such as “and 2 more”.
+ */
+export function DropdownValueCount({
+  ref,
+  count,
+  label = englishMore,
+  className,
+  ...props
+}: DropdownValueCountProps) {
+  return (
+    <span {...props} ref={ref} className={classes(styles.valueCount, className)}>
+      <span aria-hidden="true">+{count}</span>
+      <span className={styles.visuallyHidden}>{label(count)}</span>
+    </span>
+  );
+}
+
+function englishMore(count: number): string {
+  return `and ${count} more`;
+}
+
 export interface DropdownClearProps extends Omit<BaseButton.Props, 'aria-label'> {
   /** Names the button, such as “Clear Status filter”. */
   readonly 'aria-label': string;

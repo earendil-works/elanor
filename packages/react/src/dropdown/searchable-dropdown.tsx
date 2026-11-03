@@ -1,6 +1,6 @@
 import {Combobox as BaseCombobox} from '@base-ui/react/combobox';
 import {KeyboardArrowDownIcon, SearchIcon} from '@earendil-works/elanor-icons-react';
-import {createContext, useContext, type HTMLAttributes, type Ref} from 'react';
+import {createContext, useContext, type Ref} from 'react';
 
 import {classes, mergeClassName} from '../utils/class-names.ts';
 import {useMergedRef} from '../utils/refs.ts';
@@ -11,6 +11,7 @@ import {
   type ChangedValue,
   type DropdownClearProps,
   type DropdownControlProps,
+  type DropdownValueCountProps,
 } from './dropdown-control.tsx';
 import type {DropdownTriggerDensity} from './dropdown.tsx';
 
@@ -63,13 +64,11 @@ export interface SearchableDropdownPrefixProps extends Omit<
 }
 export type SearchableDropdownControlProps = DropdownControlProps;
 export type SearchableDropdownClearProps = DropdownClearProps;
+export type SearchableDropdownValueCountProps = DropdownValueCountProps;
 export type SearchableDropdownStatusProps = BaseCombobox.Status.Props;
 export interface SearchableDropdownTriggerProps extends BaseCombobox.Trigger.Props {
   /** `compact` removes block padding but keeps the touch target height. */
   readonly density?: DropdownTriggerDensity;
-}
-export interface SearchableDropdownValueCountProps extends HTMLAttributes<HTMLSpanElement> {
-  readonly ref?: Ref<HTMLSpanElement> | undefined;
 }
 export type SearchableDropdownIconProps = BaseCombobox.Icon.Props;
 export type SearchableDropdownPopupProps = BaseCombobox.Popup.Props;
@@ -181,18 +180,6 @@ export function SearchableDropdownTrigger({
       className={mergeClassName<BaseCombobox.Trigger.State>(styles.trigger, className)}
     />
   );
-}
-
-/**
- * A muted count after the value, such as “+2” for the other selected values. It stays whole
- * while the value truncates.
- */
-export function SearchableDropdownValueCount({
-  ref,
-  className,
-  ...props
-}: SearchableDropdownValueCountProps) {
-  return <span {...props} ref={ref} className={classes(styles.valueCount, className)} />;
 }
 
 export function SearchableDropdownIcon({
