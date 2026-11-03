@@ -72,8 +72,8 @@
     text-overflow: ellipsis;
   }
 
-  /* The prefix and a value count stay whole while the value truncates, a word space from it,
-     as in running text. */
+  /* The prefix stays whole while the value truncates, a word space from it, as in running
+     text. */
   .prefix {
     flex: none;
     margin-inline-end: calc(

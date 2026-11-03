@@ -17,7 +17,7 @@
     border-end-end-radius: 0;
   }
 
-  /* After the value, a word space from it, as in running text. */
+  /* Stays whole while the value truncates, a word space after it, as in running text. */
   .valueCount {
     flex: none;
     margin-inline-start: calc(
