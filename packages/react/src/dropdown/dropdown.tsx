@@ -46,7 +46,10 @@ export interface DropdownRootProps<
   Value,
   Multiple extends boolean | undefined = false,
 > extends Omit<BaseSelect.Root.Props<Value, Multiple>, 'onValueChange'> {
-  /** Called when the value changes, including with `clear-press` when Clear empties it. */
+  /**
+   * Called when the value changes. When Clear empties it, the value is `null`, or `[]` with
+   * `multiple`, and the reason is `clear-press`.
+   */
   readonly onValueChange?:
     | ((value: ChangedValue<Value, Multiple>, eventDetails: DropdownRootChangeEventDetails) => void)
     | undefined;
