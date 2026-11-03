@@ -42,6 +42,8 @@ export type {
   GridColumns,
   GridSpan,
   GridResponsiveSpan,
+  GridStart,
+  GridResponsiveStart,
   GridBreakpoint,
   GridGap,
 } from './grid/grid.tsx';
