@@ -65,8 +65,8 @@ function resolveEnds(
       ends[breakpoint] = undefined;
       continue;
     }
-    // Starts that would overflow the row move back until the item fits.
-    const end = current === 'end' ? Infinity : current + tracks[breakpoint];
+    const end = current === 'end' ? -1 : current + tracks[breakpoint];
+    // Starts that would overflow the row move back until the item ends on its last line.
     ends[breakpoint] = end > counts[breakpoint] ? -1 : end;
   }
   return ends;
