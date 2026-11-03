@@ -25,6 +25,15 @@ export const packages = [
   ['@earendil-works/elanor-react', 'packages/react', ['LICENSE']],
 ];
 
+// Keep in sync with Elanor's entry in earendil-works/pkg (src/config.ts).
+export const previewPackages = [
+  ...packages.map(([name, directory]) => [name, directory]),
+  ['@earendil-works/elanor-icons', 'packages/icons/plain'],
+  ['@earendil-works/elanor-icons-boiled', 'packages/icons/boiled'],
+  ['@earendil-works/elanor-logos', 'packages/logos'],
+  ['@earendil-works/elanor-shiki-theme', 'packages/shiki-theme'],
+];
+
 export function tarballName(name, version) {
   const base = name.slice(1).replace('/', '-');
   return version === undefined ? `${base}.tgz` : `${base}-${version}.tgz`;

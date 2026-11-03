@@ -37,6 +37,7 @@ After npm succeeds, **Preview packages** creates the permanent `vX.Y.Z` pkg rele
 
 - npm failed: fix the cause and select **Re-run all jobs**. Already-published versions are skipped.
 - pkg failed after npm succeeded: select **Re-run all jobs** on that **Preview packages** run.
+- A tag is packed with its own package list, so packages added to `main` later are left out of its pkg release. Renaming or removing a package on `main` before the tag's pkg release finishes makes that release fail; it cannot be retried.
 - Do not rerun only a publish job.
 - If code or versions must change, merge a new commit and use a new tag. Never move tags or unpublish versions.
 
