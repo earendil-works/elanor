@@ -4,6 +4,10 @@
 
 ## Use
 
+```sh
+npm install @earendil-works/design-tokens
+```
+
 Import exactly one brand stylesheet:
 
 ```css

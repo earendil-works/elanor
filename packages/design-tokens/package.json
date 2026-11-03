@@ -1,9 +1,20 @@
 {
   "name": "@earendil-works/design-tokens",
-  "version": "1.0.0",
-  "private": true,
+  "version": "0.1.0",
   "description": "W3C DTCG design tokens powered by Terrazzo.",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/earendil-works/elanor.git",
+    "directory": "packages/design-tokens"
+  },
+  "homepage": "https://github.com/earendil-works/elanor/tree/main/packages/design-tokens#readme",
+  "bugs": {
+    "url": "https://github.com/earendil-works/elanor/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "commonjs",
   "files": [
     "dist"
