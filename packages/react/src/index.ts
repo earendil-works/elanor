@@ -275,6 +275,7 @@ export type {
   DropdownRootProps,
   DropdownSeparatorProps,
   DropdownSeparatorState,
+  DropdownTriggerDensity,
   DropdownTriggerProps,
   DropdownTriggerState,
   DropdownValueProps,

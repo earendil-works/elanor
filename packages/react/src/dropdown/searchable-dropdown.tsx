@@ -3,6 +3,7 @@ import {KeyboardArrowDownIcon, SearchIcon} from '@earendil-works/elanor-icons-re
 import {createContext, useContext} from 'react';
 
 import {classes, mergeClassName} from '../utils/class-names.ts';
+import type {DropdownTriggerDensity} from './dropdown.tsx';
 
 import styles from './searchable-dropdown.module.css';
 
@@ -46,7 +47,10 @@ export type SearchableDropdownRootProps<
 
 export type SearchableDropdownLabelProps = BaseCombobox.Label.Props;
 export type SearchableDropdownStatusProps = BaseCombobox.Status.Props;
-export type SearchableDropdownTriggerProps = BaseCombobox.Trigger.Props;
+export interface SearchableDropdownTriggerProps extends BaseCombobox.Trigger.Props {
+  /** `compact` removes block padding but keeps the touch target height. */
+  readonly density?: DropdownTriggerDensity;
+}
 export type SearchableDropdownIconProps = BaseCombobox.Icon.Props;
 export type SearchableDropdownPopupProps = BaseCombobox.Popup.Props;
 export type SearchableDropdownInputGroupProps = BaseCombobox.InputGroup.Props;
@@ -95,6 +99,7 @@ export function SearchableDropdownLabel({ref, className, ...props}: SearchableDr
 
 export function SearchableDropdownTrigger({
   ref,
+  density = 'default',
   className,
   ...props
 }: SearchableDropdownTriggerProps) {
@@ -102,6 +107,7 @@ export function SearchableDropdownTrigger({
     <BaseCombobox.Trigger
       {...props}
       ref={ref}
+      data-density={density}
       className={mergeClassName<BaseCombobox.Trigger.State>(styles.trigger, className)}
     />
   );

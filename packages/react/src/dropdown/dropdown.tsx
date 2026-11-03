@@ -30,7 +30,12 @@ export type DropdownRootProps<
   Multiple extends boolean | undefined = false,
 > = BaseSelect.Root.Props<Value, Multiple>;
 export type DropdownLabelProps = BaseSelect.Label.Props;
-export type DropdownTriggerProps = BaseSelect.Trigger.Props;
+export type DropdownTriggerDensity = 'compact' | 'default';
+
+export interface DropdownTriggerProps extends BaseSelect.Trigger.Props {
+  /** `compact` removes block padding but keeps the touch target height. */
+  readonly density?: DropdownTriggerDensity;
+}
 export type DropdownIconProps = BaseSelect.Icon.Props;
 export type DropdownPositionerProps = BaseSelect.Positioner.Props;
 export type DropdownPopupProps = BaseSelect.Popup.Props;
@@ -65,11 +70,17 @@ export function DropdownLabel({ref, className, ...props}: DropdownLabelProps) {
   );
 }
 
-export function DropdownTrigger({ref, className, ...props}: DropdownTriggerProps) {
+export function DropdownTrigger({
+  ref,
+  density = 'default',
+  className,
+  ...props
+}: DropdownTriggerProps) {
   return (
     <BaseSelect.Trigger
       {...props}
       ref={ref}
+      data-density={density}
       className={mergeClassName<BaseSelect.Trigger.State>(styles.trigger, className)}
     />
   );
