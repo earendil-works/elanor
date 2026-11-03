@@ -3,11 +3,11 @@ import {useState} from 'react';
 
 import {MemberFilter} from './member-filter.tsx';
 
-const owners = ['All', 'alexandra.morgan-whitfield@example.com', 'sam.rivera@example.com'];
+const owners = ['alexandra.morgan-whitfield@example.com', 'sam.rivera@example.com'];
 
 export default function SearchAndFilterBarContentWidth() {
   const [query, setQuery] = useState('');
-  const [owner, setOwner] = useState(owners[1] ?? 'All');
+  const [owner, setOwner] = useState<string | null>(owners[0] ?? null);
   const [source, setSource] = useState(['all']);
 
   return (

@@ -38,17 +38,17 @@ const members = [
 
 export default function SearchAndFilterBarDemo() {
   const [query, setQuery] = useState('');
-  const [status, setStatus] = useState('All');
-  const [role, setRole] = useState('All');
-  const [group, setGroup] = useState('All');
-  const [twoFactor, setTwoFactor] = useState('All');
+  const [status, setStatus] = useState<string | null>(null);
+  const [role, setRole] = useState<string | null>(null);
+  const [group, setGroup] = useState<string | null>(null);
+  const [twoFactor, setTwoFactor] = useState<string | null>(null);
   const matchingMembers = members.filter(
     (member) =>
       member.name.toLowerCase().includes(query.trim().toLowerCase()) &&
-      (status === 'All' || member.status === status) &&
-      (role === 'All' || member.role === role) &&
-      (group === 'All' || member.group === group) &&
-      (twoFactor === 'All' || member.twoFactor === twoFactor),
+      (status === null || member.status === status) &&
+      (role === null || member.role === role) &&
+      (group === null || member.group === group) &&
+      (twoFactor === null || member.twoFactor === twoFactor),
   );
 
   return (
@@ -66,25 +66,25 @@ export default function SearchAndFilterBarDemo() {
           <MemberFilter
             label="Status"
             value={status}
-            options={['All', 'Active', 'Invited', 'Suspended']}
+            options={['Active', 'Invited', 'Suspended']}
             onChange={setStatus}
           />
           <MemberFilter
             label="Role"
             value={role}
-            options={['All', 'Admin', 'Member', 'Viewer']}
+            options={['Admin', 'Member', 'Viewer']}
             onChange={setRole}
           />
           <MemberFilter
             label="Group"
             value={group}
-            options={['All', 'Engineering', 'Design', 'Operations']}
+            options={['Engineering', 'Design', 'Operations']}
             onChange={setGroup}
           />
           <MemberFilter
             label="2FA"
             value={twoFactor}
-            options={['All', 'Enabled', 'Disabled']}
+            options={['Enabled', 'Disabled']}
             onChange={setTwoFactor}
           />
         </SearchAndFilterBar.Filters>
