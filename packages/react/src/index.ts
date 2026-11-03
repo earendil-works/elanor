@@ -284,6 +284,11 @@ export type {
   DropdownValueProps,
   DropdownValueState,
 } from './dropdown/dropdown.tsx';
+export type {
+  DropdownClearPressDetails,
+  DropdownClearProps,
+  DropdownControlProps,
+} from './dropdown/dropdown-control.tsx';
 
 export type {
   EmptyStateActionsProps,

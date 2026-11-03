@@ -53,6 +53,24 @@ Prefix and `Label` share the dropdown's one label, so use one of them. Don't set
 
 <Demo example="./examples/prefix.tsx" />
 
+## Clear
+
+`Clear` is a button after the trigger that empties the dropdown and moves focus back to the trigger. It renders only while a value is selected. Put the trigger and Clear in `Control`, which joins them in one fill. Clear is a separate button, not part of the trigger, so it's the next stop when tabbing from the trigger.
+
+Use Clear for filters, where no value means no filter. Don't use it on view controls that always have a value, such as a date range or a sort order.
+
+Name Clear with `aria-label`, such as “Clear Status filter”, and show the empty value with `Value`'s `placeholder`, such as “All”. Clear calls Root's `onValueChange` with `null`, or an empty array with `multiple`, and the reason `clear-press`. It works with `value` and with `defaultValue`. A disabled or read-only Root disables Clear; a disabled `Field` doesn't, so disable the Root as well.
+
+<Demo example="./examples/clear.tsx" />
+
+<Demo example="./examples/clear-multiple.tsx" />
+
+### Clear to a default
+
+Some filters start at a value other than none, such as API keys that show only active ones. Set Clear's `visible` while the value differs from the default, including when it's empty, and set the default in `onValueChange` when the reason is `clear-press`. Name Clear for what it does, such as “Reset Status filter to Active”.
+
+<Demo example="./examples/clear-default.tsx" />
+
 ## Item indicator
 
 `ItemIndicator` marks the selected item. Put the label next to it in `ItemText`.

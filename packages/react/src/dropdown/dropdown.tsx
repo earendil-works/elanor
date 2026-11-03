@@ -3,13 +3,18 @@ import {KeyboardArrowDownIcon} from '@earendil-works/elanor-icons-react';
 import {createContext, useContext, type ComponentPropsWithRef, type Ref} from 'react';
 
 import {classes, mergeClassName} from '../utils/class-names.ts';
+import {useMergedRef} from '../utils/refs.ts';
+import {
+  ClearContext,
+  useClearableValue,
+  useClearContext,
+  type DropdownClearPressDetails,
+} from './dropdown-control.tsx';
 
 import styles from './dropdown.module.css';
 
 export type {
   SelectRootActions as DropdownRootActions,
-  SelectRootChangeEventReason as DropdownRootChangeEventReason,
-  SelectRootChangeEventDetails as DropdownRootChangeEventDetails,
   SelectLabelState as DropdownLabelState,
   SelectTriggerState as DropdownTriggerState,
   SelectValueState as DropdownValueState,
@@ -25,10 +30,32 @@ export type {
   SelectSeparatorState as DropdownSeparatorState,
 } from '@base-ui/react/select';
 
-export type DropdownRootProps<
+export type DropdownRootChangeEventReason = BaseSelect.Root.ChangeEventReason | 'clear-press';
+export type DropdownRootChangeEventDetails =
+  | BaseSelect.Root.ChangeEventDetails
+  | DropdownClearPressDetails;
+
+type BaseRootProps<Value, Multiple extends boolean | undefined> = BaseSelect.Root.Props<
+  Value,
+  Multiple
+>;
+/** What `onValueChange` receives: an array with `multiple`, otherwise one value or `null`. */
+type DropdownRootNextValue<Value, Multiple extends boolean | undefined> = Parameters<
+  NonNullable<BaseRootProps<Value, Multiple>['onValueChange']>
+>[0];
+
+export interface DropdownRootProps<
   Value,
   Multiple extends boolean | undefined = false,
-> = BaseSelect.Root.Props<Value, Multiple>;
+> extends Omit<BaseRootProps<Value, Multiple>, 'onValueChange'> {
+  /** Called when the value changes, including with `clear-press` when Clear empties it. */
+  readonly onValueChange?:
+    | ((
+        value: DropdownRootNextValue<Value, Multiple>,
+        eventDetails: DropdownRootChangeEventDetails,
+      ) => void)
+    | undefined;
+}
 export type DropdownLabelProps = BaseSelect.Label.Props;
 export interface DropdownPrefixProps extends Omit<BaseSelect.Label.Props, 'ref' | 'render'> {
   readonly ref?: Ref<HTMLSpanElement> | undefined;
@@ -53,14 +80,35 @@ export interface DropdownSeparatorProps extends Omit<BaseSelect.Separator.Props,
 
 const MultipleContext = /* @__PURE__ */ createContext(false);
 
-export function DropdownRoot<Value, Multiple extends boolean | undefined = false>(
-  props: DropdownRootProps<Value, Multiple>,
-): React.JSX.Element {
+export function DropdownRoot<Value, Multiple extends boolean | undefined = false>({
+  value: valueProp,
+  defaultValue,
+  onValueChange,
+  ...props
+}: DropdownRootProps<Value, Multiple>): React.JSX.Element {
+  const multiple = props.multiple ?? false;
+  const {value, changeValue, context} = useClearableValue({
+    value: valueProp,
+    defaultValue,
+    emptyValue: emptySelection<Value, Multiple>(multiple),
+    disabled: Boolean(props.disabled || props.readOnly),
+    onValueChange,
+  });
+
   return (
-    <MultipleContext.Provider value={props.multiple ?? false}>
-      <BaseSelect.Root<Value, Multiple> {...props} />
-    </MultipleContext.Provider>
+    <ClearContext value={context}>
+      <MultipleContext.Provider value={multiple}>
+        <BaseSelect.Root<Value, Multiple> {...props} value={value} onValueChange={changeValue} />
+      </MultipleContext.Provider>
+    </ClearContext>
   );
+}
+
+function emptySelection<Value, Multiple extends boolean | undefined>(
+  multiple: boolean,
+): DropdownRootNextValue<Value, Multiple> {
+  // `multiple` decides the value's shape at runtime; the type parameter mirrors it.
+  return (multiple ? [] : null) as DropdownRootNextValue<Value, Multiple>;
 }
 
 export function DropdownLabel({ref, className, ...props}: DropdownLabelProps) {
@@ -101,10 +149,12 @@ export function DropdownTrigger({
   className,
   ...props
 }: DropdownTriggerProps) {
+  const {triggerRef} = useClearContext('Dropdown.Trigger');
+  const mergedRef = useMergedRef(triggerRef, ref);
   return (
     <BaseSelect.Trigger
       {...props}
-      ref={ref}
+      ref={mergedRef}
       data-density={density}
       className={mergeClassName<BaseSelect.Trigger.State>(styles.trigger, className)}
     />
