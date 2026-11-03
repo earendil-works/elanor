@@ -131,13 +131,11 @@ export function DropdownPrefix({ref, className, onPointerDown, ...props}: Dropdo
       {...props}
       // Phrasing content inside the trigger's button. The trigger's `aria-labelledby` reads it
       // as the name, so it's hidden from the trigger's content, which screen readers read as
-      // the value.
-      render={<span ref={ref} aria-hidden="true" />}
-      onPointerDown={(event) => {
-        onPointerDown?.(event);
-        // Base UI's label prevents pointerdown, which would keep the trigger from opening.
-        event.preventBaseUIHandler();
-      }}
+      // the value. Base UI's label cancels `pointerdown`, which keeps the trigger from opening,
+      // so its handler is replaced; `preventBaseUIHandler()` would also skip the trigger's.
+      render={(labelProps) => (
+        <span {...labelProps} ref={ref} aria-hidden="true" onPointerDown={onPointerDown} />
+      )}
       className={mergeClassName<BaseSelect.Label.State>(styles.prefix, className)}
     />
   );
