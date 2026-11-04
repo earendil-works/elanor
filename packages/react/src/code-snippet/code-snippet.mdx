@@ -59,9 +59,12 @@ import elanorTheme from '@earendil-works/elanor-code-themes/highlights';
 import type {CodeHighlighter} from '@earendil-works/elanor-react';
 
 export const highlighter: CodeHighlighter = async (code, language) => {
+  // Loads Highlights when code first needs it.
   const {codeToTokens, isSupportedLanguage} = await import('@pierre/highlights');
   return isSupportedLanguage(language)
     ? codeToTokens(code, {lang: language, theme: elanorTheme, tokenizeMaxLineLength: 1000}).tokens
     : null;
 };
 ```
+
+Highlights needs WebAssembly with SIMD. Under a Content Security Policy, allow `'wasm-unsafe-eval'`.

@@ -6,7 +6,7 @@ export interface CodeToken {
   readonly color?: string | undefined;
 }
 
-/** Highlighted code: the tokens of each line. */
+/** Highlighted code: the tokens of each line, from one theme. */
 export type HighlightedLines = readonly (readonly CodeToken[])[];
 
 /**
