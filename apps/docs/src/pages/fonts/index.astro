@@ -8,7 +8,7 @@ import {fontsPage} from '../../lib/fonts.ts';
 import {highlight} from '../../lib/highlight.ts';
 
 const page = await fontsPage();
-const usageHtml = await highlight(fontsUsage, 'css');
+const usageLines = await highlight(fontsUsage, 'css');
 ---
 
 <DocsLayout title="Fonts" current="/fonts/">
@@ -17,7 +17,7 @@ const usageHtml = await highlight(fontsUsage, 'css');
     <Text>
       Self-hosted fonts with <InlineCode>@font-face</InlineCode> CSS. The design tokens name them.
     </Text>
-    <FontsOverview page={page} usageHtml={usageHtml} />
+    <FontsOverview page={page} usageLines={usageLines} />
   </div>
 </DocsLayout>
 

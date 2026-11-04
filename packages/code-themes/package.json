@@ -1,0 +1,35 @@
+{
+  "name": "@earendil-works/elanor-code-themes",
+  "version": "0.1.0",
+  "description": "Shiki and Highlights themes that color code with Elanor's code syntax tokens.",
+  "license": "ISC",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "exports": {
+    "./shiki": {
+      "types": "./dist/shiki.d.ts",
+      "default": "./dist/shiki.js"
+    },
+    "./highlights": {
+      "types": "./dist/highlights.d.ts",
+      "default": "./dist/highlights.js"
+    }
+  },
+  "scripts": {
+    "build": "rm -rf dist && tsc -p tsconfig.build.json",
+    "prepack": "pnpm run build",
+    "check": "tsc -p tsconfig.json --noEmit",
+    "test": "vitest run"
+  },
+  "devDependencies": {
+    "@pierre/highlights": "0.3.0",
+    "shiki": "^4.4.3",
+    "typescript": "^7.0.2",
+    "vitest": "^5.0.4"
+  }
+}

@@ -13,7 +13,7 @@ const headTags = new Map(
   await Promise.all(
     manifest.brands.map(async (brand) => {
       const code = brand.favicons?.html ? await readFile(resolve(logosDist, brand.favicons.html), 'utf8') : undefined;
-      return [brand.id, code ? {code, html: await highlight(code.trimEnd(), 'html')} : undefined] as const;
+      return [brand.id, code ? {code, lines: await highlight(code.trimEnd(), 'html')} : undefined] as const;
     }),
   ),
 );
@@ -32,7 +32,7 @@ const guidelines = await loadGuidelines();
         const tags = headTags.get(brand.id);
         return (
           <BrandLogos brand={brand} pressKit={manifest.pressKits?.[brand.id]}>
-            {tags ? <HeadSnippet code={tags.code} html={tags.html} /> : null}
+            {tags ? <HeadSnippet code={tags.code} lines={tags.lines} /> : null}
           </BrandLogos>
         );
       })
