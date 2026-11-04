@@ -41,7 +41,7 @@ export interface DropdownPrefixProps extends Omit<
   'ref' | 'render' | 'onPointerDown'
 > {
   readonly ref?: Ref<HTMLSpanElement> | undefined;
-  /** A plain React handler: Base UI's own label handler is replaced, so there's none to skip. */
+  /** A plain React handler; it replaces Base UI's label handler. */
   readonly onPointerDown?: PointerEventHandler<HTMLSpanElement> | undefined;
 }
 export type DropdownTriggerDensity = 'compact' | 'default';
@@ -84,22 +84,16 @@ export function DropdownLabel({ref, className, ...props}: DropdownLabelProps) {
   );
 }
 
-/**
- * A muted label inside the trigger, before the value, such as “Date range”, followed by a colon.
- * It's Base UI's `Select.Label` rendered as a `<span>` and takes its props, except `render`; use
- * it instead of `Label`. The colon isn't part of the trigger's name.
- */
+/** A label inside the trigger, before the value. Use it instead of `Label`. */
 export function DropdownPrefix({ref, className, onPointerDown, ...props}: DropdownPrefixProps) {
   return (
-    // Phrasing content inside the trigger's button. The trigger's `aria-labelledby` reads the
-    // label as its name, so the prefix is hidden from the trigger's content, which screen readers
-    // read as the value. The colon is drawn on this wrapper, outside the label, so it's not in
-    // the name.
+    // The trigger is named by `aria-labelledby`, so its content hides the prefix to read as the
+    // value alone. The colon is drawn on this wrapper, outside the name.
     <span className={styles.prefix} aria-hidden="true">
       <BaseSelect.Label
         {...props}
-        // Base UI's label cancels `pointerdown`, which keeps the trigger from opening, so its
-        // handler is replaced; `preventBaseUIHandler()` would also skip the trigger's.
+        // Base UI's label cancels `pointerdown`, which stops the trigger from opening.
+        // `preventBaseUIHandler()` would skip the trigger's handler too.
         render={(labelProps) => <span {...labelProps} ref={ref} onPointerDown={onPointerDown} />}
         className={className}
       />

@@ -149,8 +149,7 @@
     grid-column: span 12;
   }
 
-  /* Grid.Item start, as the line the item ends on. Each block's span rules set
-     `grid-column-start: span N` and reset the end; these follow them. */
+  /* Grid.Item start, as the end line. These follow each block's span rules. */
   .item[data-end-base='-1'] {
     grid-column-end: -1;
   }

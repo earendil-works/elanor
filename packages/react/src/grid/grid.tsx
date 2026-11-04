@@ -42,8 +42,8 @@ function resolveSpans(span: GridResponsiveSpan, counts: TrackCounts) {
   return {spans, tracks};
 }
 
-// Span rules set `grid-column-start: span N`, so a start travels as the line the item ends on:
-// `-1` for the end of the row. Full rows and `auto` set none.
+// Span rules set `grid-column-start: span N`, so a start is written as the end line; `-1` is the
+// row's end.
 function resolveEnds(
   start: GridResponsiveStart,
   spans: Record<GridBreakpoint, GridSpan>,
@@ -141,10 +141,7 @@ export interface GridItemProps extends useRender.ComponentProps<'div'> {
    * `{base: 'full', small: 6}`; each value applies until the next key.
    */
   readonly span?: GridResponsiveSpan;
-  /**
-   * Track to start on, or `end` to end on the row's last track. Keyed like `span`. Starts
-   * that would overflow the row move back until the item fits; full rows ignore them.
-   */
+  /** Track to start on, or `end` for the row's end. Keyed like `span`; full rows ignore it. */
   readonly start?: GridResponsiveStart;
 }
 

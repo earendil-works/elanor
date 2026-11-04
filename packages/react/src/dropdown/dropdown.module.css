@@ -32,9 +32,7 @@
     cursor: pointer;
   }
 
-  /* No block padding: 24px high with the default text and border. The pseudo-element keeps
-     the default touch target, as compact Buttons do; the trigger doesn't clip it, and its
-     children still truncate. */
+  /* The pseudo-element keeps the default touch target, as in compact Buttons. */
   .trigger[data-density='compact'] {
     position: relative;
     overflow: visible;
@@ -59,8 +57,7 @@
     text-overflow: ellipsis;
   }
 
-  /* The prefix stays whole while the value truncates. A word space apart, as in running
-     text; the value takes the free space, so the icon stays at the end. */
+  /* The prefix stays whole and sits a word space from the value. */
   .prefix {
     flex: none;
     margin-inline-end: calc(
@@ -70,7 +67,7 @@
     color: var(--semantic-color-text-secondary);
   }
 
-  /* Visual punctuation only: it's outside the label that names the trigger. */
+  /* Outside the label, so it's not in the trigger's name. */
   .prefix::after {
     content: ':';
   }
