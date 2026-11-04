@@ -10,8 +10,7 @@ export default function DropdownClearMultiple() {
           <Dropdown.Control>
             <Dropdown.Trigger density="compact">
               <Dropdown.Prefix>Groups</Dropdown.Prefix>
-              <Dropdown.Value>{(values: string[]) => values[0] ?? 'All'}</Dropdown.Value>
-              <Dropdown.ValueCount />
+              <Dropdown.Value placeholder="All" />
               <Dropdown.Icon />
             </Dropdown.Trigger>
             <Dropdown.Clear aria-label="Clear Groups filter" />

@@ -55,7 +55,7 @@ Prefix and `Label` share the dropdown's one label, so use one of them. Don't set
 
 ## Clear
 
-`Clear` is a button after the trigger that empties the dropdown and moves focus back to the trigger. It renders only while a value is selected. Put the trigger and Clear in `Control`, which joins them in one fill. Clear is a separate button, not part of the trigger, so it's the next stop when tabbing from the trigger.
+`Clear` is a button after the trigger that clears the dropdown's value and moves focus back to the trigger. It renders only while there's a value to clear. Put the trigger and Clear in `Control`, which joins them in one fill. Clear is a separate button, not part of the trigger, so it's the next stop when tabbing from the trigger.
 
 Use Clear for filters, where no value means no filter. Don't use it on view controls that always have a value, such as a date range or a sort order.
 
@@ -63,7 +63,7 @@ Name Clear with `aria-label`, such as “Clear Status filter”, and show the em
 
 <Demo example="./examples/clear.tsx" />
 
-With `multiple`, Clear empties the array. To fit several values in a narrow trigger, show the first one and a count of the others, such as “Groups: developers +2”: render the first value with `Value`'s children, and the others' `count` in `ValueCount` after it. Like the prefix, the count is muted and stays whole while the value truncates. Screen readers read “developers and 2 more” instead; pass `label`, a function of the count, to translate it.
+With `multiple`, Clear empties the array.
 
 <Demo example="./examples/clear-multiple.tsx" />
 
@@ -72,6 +72,12 @@ With `multiple`, Clear empties the array. To fit several values in a narrow trig
 Some filters start at a value other than none, such as API keys that show only active ones. Pass that default to Root as `clearValue`: Clear then shows while the value differs from it, including when nothing is selected, and sets it back with the reason `clear-press`. Name Clear for what it does, such as “Reset Status filter to Active”.
 
 <Demo example="./examples/clear-default.tsx" />
+
+## Value count
+
+To fit several values in a narrow trigger, show the first selected value and a count of the others, such as “Groups: developers +2”. Values are in the order they were selected. Render the first one with `Value`'s children, and put `ValueCount` after it: it counts the other selected values from Root, or shows its `count`. Like the prefix, the count is muted and stays whole while the value truncates. Screen readers read “developers and 2 more”; pass `label`, a function of the count, to translate it.
+
+<Demo example="./examples/value-count.tsx" />
 
 ## Item indicator
 
