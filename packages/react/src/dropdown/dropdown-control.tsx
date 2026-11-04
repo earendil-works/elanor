@@ -18,7 +18,7 @@ import {DisabledContext} from '../utils/disabled-context.ts';
 import styles from './dropdown-control.module.css';
 
 /** What Root's `onValueChange` receives: an array with `multiple`, otherwise a value or `null`. */
-export type ChangedValue<Value, Multiple extends boolean | undefined> =
+export type DropdownRootChangedValue<Value, Multiple extends boolean | undefined> =
   | (Multiple extends true ? Value[] : Value)
   | (Multiple extends true ? never : null);
 

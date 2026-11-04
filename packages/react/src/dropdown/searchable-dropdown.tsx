@@ -8,7 +8,7 @@ import {
   ClearContext,
   useClearableValue,
   useClearContext,
-  type ChangedValue,
+  type DropdownRootChangedValue,
   type DropdownClearProps,
   type DropdownControlProps,
   type DropdownValueCountProps,
@@ -64,6 +64,11 @@ export interface SearchableDropdownPrefixProps extends Omit<
   /** A plain React handler: Base UI's own label handler is replaced, so there's none to skip. */
   readonly onPointerDown?: PointerEventHandler<HTMLSpanElement> | undefined;
 }
+/** What Root's `onValueChange` receives: an array with `multiple`, otherwise a value or `null`. */
+export type SearchableDropdownRootChangedValue<
+  Value,
+  Multiple extends boolean | undefined,
+> = DropdownRootChangedValue<Value, Multiple>;
 export type SearchableDropdownControlProps = DropdownControlProps;
 export type SearchableDropdownClearProps = DropdownClearProps;
 export type SearchableDropdownValueCountProps = DropdownValueCountProps;
@@ -112,7 +117,7 @@ export function SearchableDropdownRoot<
     defaultValue,
     // SAFETY: `multiple` is the runtime value of the `Multiple` type parameter, so the empty
     // value has the shape `onValueChange` expects.
-    emptyValue: (multiple ? [] : null) as ChangedValue<Value, Multiple>,
+    emptyValue: (multiple ? [] : null) as SearchableDropdownRootChangedValue<Value, Multiple>,
     disabled: Boolean(props.disabled || props.readOnly),
     onValueChange,
   });

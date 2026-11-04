@@ -285,6 +285,7 @@ export type {
   DropdownValueState,
 } from './dropdown/dropdown.tsx';
 export type {
+  DropdownRootChangedValue,
   DropdownClearPressDetails,
   DropdownClearProps,
   DropdownControlProps,
@@ -567,6 +568,7 @@ export type {
   SearchableDropdownRootActions,
   SearchableDropdownRootChangeEventDetails,
   SearchableDropdownRootChangeEventReason,
+  SearchableDropdownRootChangedValue,
   SearchableDropdownRootHighlightEventDetails,
   SearchableDropdownRootHighlightEventReason,
   SearchableDropdownRootProps,

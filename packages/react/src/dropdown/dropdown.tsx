@@ -14,7 +14,7 @@ import {
   ClearContext,
   useClearableValue,
   useClearContext,
-  type ChangedValue,
+  type DropdownRootChangedValue,
   type DropdownClearPressDetails,
 } from './dropdown-control.tsx';
 
@@ -51,7 +51,10 @@ export interface DropdownRootProps<
    * `multiple`, and the reason is `clear-press`.
    */
   readonly onValueChange?:
-    | ((value: ChangedValue<Value, Multiple>, eventDetails: DropdownRootChangeEventDetails) => void)
+    | ((
+        value: DropdownRootChangedValue<Value, Multiple>,
+        eventDetails: DropdownRootChangeEventDetails,
+      ) => void)
     | undefined;
 }
 export type DropdownLabelProps = BaseSelect.Label.Props;
@@ -95,7 +98,7 @@ export function DropdownRoot<Value, Multiple extends boolean | undefined = false
     defaultValue,
     // SAFETY: `multiple` is the runtime value of the `Multiple` type parameter, so the empty
     // value has the shape `onValueChange` expects.
-    emptyValue: (multiple ? [] : null) as ChangedValue<Value, Multiple>,
+    emptyValue: (multiple ? [] : null) as DropdownRootChangedValue<Value, Multiple>,
     disabled: Boolean(props.disabled || props.readOnly),
     onValueChange,
   });
