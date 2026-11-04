@@ -3,6 +3,7 @@ import {FilterListIcon} from '@earendil-works/elanor-icons-react';
 import {
   Children,
   createContext,
+  isValidElement,
   use,
   useEffect,
   useMemo,
@@ -163,28 +164,63 @@ export function SearchAndFilterBarFilters({
       ...props,
       className: classes(styles.filters, layout === 'tracks' && styles.tracks, className),
       // One instance of the controls at a time keeps their IDs and label associations unique.
-      //
-      // With tracks, the bar's styles count these children to choose between one row, two rows
-      // and the drawer, and so whether the Filters button shows. While the drawer is open, the
-      // controls are in it, and the bar would count none: it would show the button only at the
-      // one-filter width, and the root's resize observer would close the drawer as soon as the
-      // bar grew past that, though the filters still don't fit. The drawer's own controls can't
-      // be counted instead: it renders outside the bar, so the bar's container queries and
-      // selectors don't reach it. The open state alone can't say when they'd fit again either.
-      // So an empty, hidden placeholder stands in for each filter, one per child, as the docs
-      // say each child of Filters is one filter.
-      children: filtersSlot ? (
-        <>
-          {createPortal(children, filtersSlot)}
-          {layout === 'tracks'
-            ? Children.toArray(children).map((_, index) => <span key={index} hidden />)
-            : null}
-        </>
-      ) : (
-        children
-      ),
+      children:
+        layout === 'tracks' ? (
+          <TrackedFilters filtersSlot={filtersSlot}>{children}</TrackedFilters>
+        ) : filtersSlot ? (
+          createPortal(children, filtersSlot)
+        ) : (
+          children
+        ),
     },
   });
+}
+
+interface TrackedFiltersProps {
+  readonly filtersSlot: HTMLElement | null;
+  readonly children?: ReactNode;
+}
+
+/**
+ * The filters of a tracks bar, one wrapper per filter.
+ *
+ * The bar's styles choose between one row, two rows and the drawer by counting the filters, with
+ * `:nth-child()` on the children of Filters, and that also decides whether the Filters button
+ * shows. A filter's own elements can't be counted: besides its control, a Dropdown renders Base
+ * UI's hidden input, and while its popup is open, focus guards and an owner span, all as siblings
+ * of the control. Counting those, a one-row bar jumped to two rows or the drawer as soon as a
+ * popup opened. So each child of Filters gets its own wrapper, the grid item, and whatever it
+ * renders stays inside: the bar counts exactly the children, as the docs say each child of
+ * Filters is one filter. `Children.toArray` drops `null` and `false`, so conditional filters
+ * count only while they render; a fragment or a component counts as one filter, whatever it
+ * renders, and one that renders nothing still takes a track.
+ *
+ * While the drawer is open, the controls render in its slot instead, but the wrappers stay,
+ * empty, so the count holds: the bar keeps showing the Filters button until it grows wide enough
+ * for the filters, and then the root's resize observer closes the drawer. Counting the drawer's
+ * controls instead wouldn't work, as it renders outside the bar, where the bar's container
+ * queries and selectors don't reach. The count is known on the server and on first paint; a
+ * registry of filters would only know it after an effect, and the layout would jump.
+ *
+ * Content bars don't count their filters, so they keep their children unwrapped.
+ */
+function TrackedFilters({filtersSlot, children}: TrackedFiltersProps) {
+  const filters = Children.toArray(children);
+  if (filtersSlot) {
+    return (
+      <>
+        {filters.map((filter, index) => (
+          <div key={isValidElement(filter) ? filter.key : index} className={styles.filter} />
+        ))}
+        {createPortal(children, filtersSlot)}
+      </>
+    );
+  }
+  return filters.map((filter, index) => (
+    <div key={isValidElement(filter) ? filter.key : index} className={styles.filter}>
+      {filter}
+    </div>
+  ));
 }
 
 export interface SearchAndFilterBarFiltersTriggerProps extends ButtonHTMLAttributes<HTMLButtonElement> {
