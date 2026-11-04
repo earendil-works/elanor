@@ -94,8 +94,16 @@
     content: '';
   }
 
-  /* On touch screens, as on compact triggers: half the medium gap above and below. */
+  /* On touch screens, as on compact triggers: half the medium gap above and below, for Clear and
+     for a default trigger beside it. The trigger shows its overflow so the overlay isn't
+     clipped; its children still truncate. */
   @media (pointer: coarse) {
+    .control > :not(.clear) {
+      position: relative;
+      overflow: visible;
+    }
+
+    .control > :not(.clear)::after,
     .clear::after,
     .control:has(> [data-density='compact']) > .clear::after {
       position: absolute;
