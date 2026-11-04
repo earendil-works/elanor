@@ -17,7 +17,7 @@ export default function GridStart() {
       <Grid.Item span={{base: 'full', xSmall: 4}} start={{xSmall: 'end'}}>
         <Dropdown.Root items={ranges} defaultValue="month">
           <Dropdown.Trigger density="compact">
-            <Dropdown.Prefix>Date range:</Dropdown.Prefix>
+            <Dropdown.Prefix>Date range</Dropdown.Prefix>
             <Dropdown.Value />
             <Dropdown.Icon />
           </Dropdown.Trigger>

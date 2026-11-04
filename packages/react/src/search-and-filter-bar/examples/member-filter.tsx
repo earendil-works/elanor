@@ -15,7 +15,7 @@ export function MemberFilter({label, value, options, onChange}: MemberFilterProp
       onValueChange={(next) => onChange(next ?? 'All')}
     >
       <Dropdown.Trigger>
-        <Dropdown.Prefix>{label}:</Dropdown.Prefix>
+        <Dropdown.Prefix>{label}</Dropdown.Prefix>
         <Dropdown.Value />
         <Dropdown.Icon />
       </Dropdown.Trigger>

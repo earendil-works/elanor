@@ -74,22 +74,25 @@ export function DropdownLabel({ref, className, ...props}: DropdownLabelProps) {
 }
 
 /**
- * A muted label inside the trigger, before the value, such as "Date range:". It's Base UI's
- * `Select.Label` rendered as a `<span>`, so use it instead of `Label`.
+ * A muted label inside the trigger, before the value, such as “Date range”, followed by a colon.
+ * It's Base UI's `Select.Label` rendered as a `<span>` and takes its props, except `render`; use
+ * it instead of `Label`. The colon isn't part of the trigger's name.
  */
 export function DropdownPrefix({ref, className, onPointerDown, ...props}: DropdownPrefixProps) {
   return (
-    <BaseSelect.Label
-      {...props}
-      // Phrasing content inside the trigger's button. The trigger's `aria-labelledby` reads it
-      // as the name, so it's hidden from the trigger's content, which screen readers read as
-      // the value. Base UI's label cancels `pointerdown`, which keeps the trigger from opening,
-      // so its handler is replaced; `preventBaseUIHandler()` would also skip the trigger's.
-      render={(labelProps) => (
-        <span {...labelProps} ref={ref} aria-hidden="true" onPointerDown={onPointerDown} />
-      )}
-      className={mergeClassName<BaseSelect.Label.State>(styles.prefix, className)}
-    />
+    // Phrasing content inside the trigger's button. The trigger's `aria-labelledby` reads the
+    // label as its name, so the prefix is hidden from the trigger's content, which screen readers
+    // read as the value. The colon is drawn on this wrapper, outside the label, so it's not in
+    // the name.
+    <span className={styles.prefix} aria-hidden="true">
+      <BaseSelect.Label
+        {...props}
+        // Base UI's label cancels `pointerdown`, which keeps the trigger from opening, so its
+        // handler is replaced; `preventBaseUIHandler()` would also skip the trigger's.
+        render={(labelProps) => <span {...labelProps} ref={ref} onPointerDown={onPointerDown} />}
+        className={className}
+      />
+    </span>
   );
 }
 
