@@ -4,6 +4,9 @@ import {CloseIcon} from '@earendil-works/elanor-icons-react';
 import {
   createContext,
   use,
+  useCallback,
+  useLayoutEffect,
+  useMemo,
   useRef,
   useState,
   type HTMLAttributes,
@@ -95,15 +98,27 @@ export function useClearableValue<
     if (!controlled && !details.isCanceled) setUncontrolledValue(next);
   }
 
-  function clear(event: MouseEvent<HTMLElement>) {
+  function clearNow(event: MouseEvent<HTMLElement>) {
     const details = createClearPressDetails(event.nativeEvent, event.currentTarget);
     changeValue(clearValue, details);
     if (!details.isCanceled) triggerRef.current?.focus();
   }
 
+  // The context changes only with what its parts show, so they don't re-render with every Root
+  // render. `clear` keeps one identity and calls this render's version, with the latest value,
+  // `clearValue` and `onValueChange`, through a ref updated once the render is committed.
+  const latestClear = useRef(clearNow);
+  useLayoutEffect(() => {
+    latestClear.current = clearNow;
+  });
+  const clear = useCallback((event: MouseEvent<HTMLElement>) => latestClear.current(event), []);
+
   const cleared = isSameSelection(value, clearValue, isItemEqualToValue);
   const selectedCount = isList(value) ? value.length : Number(value !== null);
-  const context: ClearContextValue = {cleared, selectedCount, disabled, clear, triggerRef};
+  const context = useMemo<ClearContextValue>(
+    () => ({cleared, selectedCount, disabled, clear, triggerRef}),
+    [cleared, selectedCount, disabled, clear],
+  );
   return {value, changeValue, context};
 }
 
