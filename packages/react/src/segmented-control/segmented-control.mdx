@@ -20,3 +20,9 @@ import {SegmentedControl} from '@earendil-works/elanor-react';
 ```
 
 The value is an array with one item, as in Base UI Toggle Group. Pressing the selected item would clear it; ignore empty values in `onValueChange` to keep one selected, as the demo does.
+
+## Density
+
+Use `compact` on Root beside compact controls, such as Dropdown filters in a [search and filter bar](/components/search-and-filter-bar/). It removes the items' block padding, so the control is as tall as a compact Dropdown trigger. Each item keeps a default item's touch target height, and on touch screens it reaches halfway into the medium gap above and below, as compact triggers do.
+
+<Demo example="./examples/density.tsx" />

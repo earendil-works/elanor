@@ -589,6 +589,7 @@ export type {
 
 export type {
   SegmentedControlChangeEventDetails,
+  SegmentedControlDensity,
   SegmentedControlChangeEventReason,
   SegmentedControlItemChangeEventDetails,
   SegmentedControlItemChangeEventReason,
