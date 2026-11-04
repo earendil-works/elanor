@@ -1,6 +1,12 @@
 import {Select as BaseSelect} from '@base-ui/react/select';
 import {KeyboardArrowDownIcon} from '@earendil-works/elanor-icons-react';
-import {createContext, useContext, type ComponentPropsWithRef, type Ref} from 'react';
+import {
+  createContext,
+  useContext,
+  type ComponentPropsWithRef,
+  type PointerEventHandler,
+  type Ref,
+} from 'react';
 
 import {classes, mergeClassName} from '../utils/class-names.ts';
 
@@ -30,8 +36,13 @@ export type DropdownRootProps<
   Multiple extends boolean | undefined = false,
 > = BaseSelect.Root.Props<Value, Multiple>;
 export type DropdownLabelProps = BaseSelect.Label.Props;
-export interface DropdownPrefixProps extends Omit<BaseSelect.Label.Props, 'ref' | 'render'> {
+export interface DropdownPrefixProps extends Omit<
+  BaseSelect.Label.Props,
+  'ref' | 'render' | 'onPointerDown'
+> {
   readonly ref?: Ref<HTMLSpanElement> | undefined;
+  /** A plain React handler: Base UI's own label handler is replaced, so there's none to skip. */
+  readonly onPointerDown?: PointerEventHandler<HTMLSpanElement> | undefined;
 }
 export type DropdownTriggerDensity = 'compact' | 'default';
 
