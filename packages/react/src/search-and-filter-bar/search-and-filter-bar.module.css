@@ -149,6 +149,9 @@
      - Otherwise, with a FiltersTrigger, the filters move into the drawer. Without one, the last
        layout stays and the controls shrink.
 
+     Up to eight filters: from nine, two rows would put them under the minimum before the drawer
+     takes over.
+
      The layout sets these properties for each mode; the parts read them. Container queries can't
      read properties, so the widths below are worked out from the 11.75rem minimum, the 16rem
      search and the 1rem gap. */
@@ -298,6 +301,26 @@
 
   @container (inline-size < 75.5rem) {
     .layout:has(> .trigger):has(> .tracks > :nth-child(6)) {
+      --tracks-wrap: nowrap;
+      --tracks-search-grow: 1;
+      --tracks-search-basis: 0;
+      --tracks-filters-display: none;
+      --tracks-trigger-display: flex;
+    }
+  }
+
+  @container (inline-size < 88.25rem) {
+    .layout:has(> .trigger):has(> .tracks > :nth-child(7)) {
+      --tracks-wrap: nowrap;
+      --tracks-search-grow: 1;
+      --tracks-search-basis: 0;
+      --tracks-filters-display: none;
+      --tracks-trigger-display: flex;
+    }
+  }
+
+  @container (inline-size < 101rem) {
+    .layout:has(> .trigger):has(> .tracks > :nth-child(8)) {
       --tracks-wrap: nowrap;
       --tracks-search-grow: 1;
       --tracks-search-basis: 0;

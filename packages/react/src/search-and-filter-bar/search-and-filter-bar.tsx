@@ -129,7 +129,7 @@ export interface SearchAndFilterBarFiltersProps extends HTMLAttributes<HTMLDivEl
    * `content` sizes each filter to its content, up to half the filters' width. `tracks` puts
    * the filters at the bar's end at a fixed width of at least 11.75rem, on the bar's twelve-track
    * grid from 75.5rem: one row while the search keeps 16rem, then the search above every filter at
-   * equal widths, then the filters drawer.
+   * equal widths, then the filters drawer. Up to eight filters.
    */
   readonly layout?: SearchAndFilterBarFiltersLayout;
 }
