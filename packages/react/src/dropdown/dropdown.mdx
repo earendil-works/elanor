@@ -69,7 +69,7 @@ With `multiple`, Clear empties the array. To fit several values in a narrow trig
 
 ### Clear to a default
 
-Some filters start at a value other than none, such as API keys that show only active ones. Set Clear's `visible` while the value differs from the default, including when it's empty, and set the default in `onValueChange` when the reason is `clear-press`. Name Clear for what it does, such as “Reset Status filter to Active”.
+Some filters start at a value other than none, such as API keys that show only active ones. Pass that default to Root as `clearValue`: Clear then shows while the value differs from it, including when nothing is selected, and sets it back with the reason `clear-press`. Name Clear for what it does, such as “Reset Status filter to Active”.
 
 <Demo example="./examples/clear-default.tsx" />
 

@@ -47,8 +47,8 @@ export interface DropdownRootProps<
   Multiple extends boolean | undefined = false,
 > extends Omit<BaseSelect.Root.Props<Value, Multiple>, 'onValueChange'> {
   /**
-   * Called when the value changes. When Clear empties it, the value is `null`, or `[]` with
-   * `multiple`, and the reason is `clear-press`.
+   * Called when the value changes. When Clear clears it, the value is `clearValue` and the
+   * reason is `clear-press`.
    */
   readonly onValueChange?:
     | ((
@@ -56,6 +56,12 @@ export interface DropdownRootProps<
         eventDetails: DropdownRootChangeEventDetails,
       ) => void)
     | undefined;
+  /**
+   * The value Clear sets, such as a filter's default. Clear shows while the value differs from
+   * it. Compared as Base UI compares items, with `isItemEqualToValue`.
+   * @default null, or [] with `multiple`
+   */
+  readonly clearValue?: DropdownRootChangedValue<Value, Multiple> | undefined;
 }
 export type DropdownLabelProps = BaseSelect.Label.Props;
 export interface DropdownPrefixProps extends Omit<
@@ -89,6 +95,7 @@ const MultipleContext = /* @__PURE__ */ createContext(false);
 export function DropdownRoot<Value, Multiple extends boolean | undefined = false>({
   value: valueProp,
   defaultValue,
+  clearValue,
   onValueChange,
   ...props
 }: DropdownRootProps<Value, Multiple>): React.JSX.Element {
@@ -99,6 +106,8 @@ export function DropdownRoot<Value, Multiple extends boolean | undefined = false
     // SAFETY: `multiple` is the runtime value of the `Multiple` type parameter, so the empty
     // value has the shape `onValueChange` expects.
     emptyValue: (multiple ? [] : null) as DropdownRootChangedValue<Value, Multiple>,
+    clearValue,
+    isItemEqualToValue: props.isItemEqualToValue,
     disabled: Boolean(props.disabled || props.readOnly),
     onValueChange,
   });

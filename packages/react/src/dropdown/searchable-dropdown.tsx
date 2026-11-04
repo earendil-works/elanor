@@ -53,6 +53,12 @@ export type SearchableDropdownRootProps<
 > = BaseCombobox.Root.Props<Value, Multiple, Item> & {
   /** Only list navigation is supported; grid layouts are not. */
   readonly grid?: false;
+  /**
+   * The value Clear sets, such as a filter's default. Clear shows while the value differs from
+   * it. Compared as Base UI compares items, with `isItemEqualToValue`.
+   * @default null, or [] with `multiple`
+   */
+  readonly clearValue?: SearchableDropdownRootChangedValue<Value, Multiple> | undefined;
 };
 
 export type SearchableDropdownLabelProps = BaseCombobox.Label.Props;
@@ -108,6 +114,7 @@ export function SearchableDropdownRoot<
 >({
   value: valueProp,
   defaultValue,
+  clearValue,
   onValueChange,
   ...props
 }: SearchableDropdownRootProps<Value, Multiple, Item>): React.JSX.Element {
@@ -118,6 +125,8 @@ export function SearchableDropdownRoot<
     // SAFETY: `multiple` is the runtime value of the `Multiple` type parameter, so the empty
     // value has the shape `onValueChange` expects.
     emptyValue: (multiple ? [] : null) as SearchableDropdownRootChangedValue<Value, Multiple>,
+    clearValue,
+    isItemEqualToValue: props.isItemEqualToValue,
     disabled: Boolean(props.disabled || props.readOnly),
     onValueChange,
   });

@@ -26,8 +26,10 @@ export type DropdownRootChangedValue<Value, Multiple extends boolean | undefined
 export type DropdownClearPressDetails = BaseUIChangeEventDetails<'clear-press'>;
 
 interface ClearContextValue {
-  /** Nothing is selected: `null`, or an empty array with `multiple`. */
-  readonly empty: boolean;
+  /** The value is the one Clear sets, so there's nothing to clear. */
+  readonly cleared: boolean;
+  /** Some value is selected. */
+  readonly selected: boolean;
   /** The Root is disabled or read-only. */
   readonly disabled: boolean;
   /** Empties the value through the Root's `onValueChange`, then focuses the trigger. */
@@ -43,11 +45,22 @@ export function useClearContext(part: string): ClearContextValue {
   return value;
 }
 
-interface ClearableValueOptions<Value, NextValue extends Value, Details> {
+/** One value, several with `multiple`, or none. */
+type Selection<Item> = Item | readonly Item[] | null;
+
+interface ClearableValueOptions<
+  Item,
+  Value extends Selection<Item>,
+  NextValue extends Value,
+  Details,
+> {
   readonly value: Value | undefined;
   readonly defaultValue: Value | undefined;
   /** `null`, or an empty array with `multiple`. */
   readonly emptyValue: NextValue;
+  /** What Clear sets instead of the empty value, such as a filter's default. */
+  readonly clearValue: NextValue | undefined;
+  readonly isItemEqualToValue: ((itemValue: Item, value: Item) => boolean) | undefined;
   readonly disabled: boolean;
   readonly onValueChange:
     | ((value: NextValue, details: Details | DropdownClearPressDetails) => void)
@@ -59,16 +72,19 @@ interface ClearableValueOptions<Value, NextValue extends Value, Details> {
  * from outside, so an uncontrolled Root keeps its value here and passes it to Base UI controlled.
  */
 export function useClearableValue<
-  Value,
+  Item,
+  Value extends Selection<Item>,
   NextValue extends Value,
   Details extends {readonly isCanceled: boolean},
 >({
   value: valueProp,
   defaultValue,
   emptyValue,
+  clearValue = emptyValue,
+  isItemEqualToValue = Object.is,
   disabled,
   onValueChange,
-}: ClearableValueOptions<Value, NextValue, Details>) {
+}: ClearableValueOptions<Item, Value, NextValue, Details>) {
   const [uncontrolledValue, setUncontrolledValue] = useState<Value>(defaultValue ?? emptyValue);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const controlled = valueProp !== undefined;
@@ -81,13 +97,32 @@ export function useClearableValue<
 
   function clear(event: MouseEvent<HTMLElement>) {
     const details = createClearPressDetails(event.nativeEvent, event.currentTarget);
-    changeValue(emptyValue, details);
+    changeValue(clearValue, details);
     if (!details.isCanceled) triggerRef.current?.focus();
   }
 
-  const empty = value === null || (Array.isArray(value) && value.length === 0);
-  const context: ClearContextValue = {empty, disabled, clear, triggerRef};
+  const cleared = isSameSelection(value, clearValue, isItemEqualToValue);
+  const selected = !isSameSelection(value, emptyValue, isItemEqualToValue);
+  const context: ClearContextValue = {cleared, selected, disabled, clear, triggerRef};
   return {value, changeValue, context};
+}
+
+/** The same items, in any order, as Base UI compares a selection with its items. */
+function isSameSelection<Item>(
+  a: Selection<Item>,
+  b: Selection<Item>,
+  isItemEqualToValue: (itemValue: Item, value: Item) => boolean,
+): boolean {
+  if (isList(a) || isList(b)) {
+    if (!isList(a) || !isList(b) || a.length !== b.length) return false;
+    return b.every((item) => a.some((other) => isItemEqualToValue(other, item)));
+  }
+  if (a === null || b === null) return a === b;
+  return isItemEqualToValue(a, b);
+}
+
+function isList<Item>(selection: Selection<Item>): selection is readonly Item[] {
+  return Array.isArray(selection);
 }
 
 /**
@@ -127,12 +162,12 @@ export interface DropdownControlProps extends HTMLAttributes<HTMLDivElement> {
  * Joins the trigger and Clear in one fill. `data-has-value` is set while a value is selected.
  */
 export function DropdownControl({ref, className, ...props}: DropdownControlProps) {
-  const {empty} = useClearContext('Control');
+  const {selected} = useClearContext('Control');
   return (
     <div
       {...props}
       ref={ref}
-      data-has-value={empty ? undefined : ''}
+      data-has-value={selected ? '' : undefined}
       className={classes(styles.control, className)}
     />
   );
@@ -178,21 +213,14 @@ function englishMore(count: number): string {
 export interface DropdownClearProps extends Omit<BaseButton.Props, 'aria-label'> {
   /** Names the button, such as “Clear Status filter”. */
   readonly 'aria-label': string;
-  /**
-   * Whether Clear renders. Set it for a filter with a default, to show Clear while the value
-   * differs from the default.
-   * @default true while a value is selected
-   */
-  readonly visible?: boolean | undefined;
 }
 
 /**
- * Empties the value and focuses the trigger. Renders only while a value is selected. Put it after
- * the trigger, inside Control.
+ * Clears the value, to none or Root's `clearValue`, and focuses the trigger. Renders only while
+ * there's something to clear. Put it after the trigger, inside Control.
  */
 export function DropdownClear({
   ref,
-  visible,
   className,
   children,
   disabled = false,
@@ -202,8 +230,7 @@ export function DropdownClear({
 }: DropdownClearProps) {
   const context = useClearContext('Clear');
   const fieldDisabled = use(DisabledContext);
-  const shown = visible ?? !context.empty;
-  if (!shown) return null;
+  if (context.cleared) return null;
 
   return (
     <BaseButton

@@ -9,8 +9,8 @@ const statuses = [
 const defaultStatus = ['active'];
 
 export default function DropdownClearDefault() {
+  // Unchecking every status shows all keys; Clear goes back to the default.
   const [status, setStatus] = useState(defaultStatus);
-  const isDefault = status.length === 1 && status[0] === 'active';
 
   return (
     <Grid.Root>
@@ -19,10 +19,8 @@ export default function DropdownClearDefault() {
           multiple
           items={statuses}
           value={status}
-          onValueChange={(next, details) =>
-            // Unchecking every status shows all keys; Clear goes back to the default.
-            setStatus(details.reason === 'clear-press' ? defaultStatus : next)
-          }
+          clearValue={defaultStatus}
+          onValueChange={setStatus}
         >
           <Dropdown.Control>
             <Dropdown.Trigger density="compact">
@@ -30,7 +28,7 @@ export default function DropdownClearDefault() {
               <Dropdown.Value placeholder="All" />
               <Dropdown.Icon />
             </Dropdown.Trigger>
-            <Dropdown.Clear visible={!isDefault} aria-label="Reset Status filter to Active" />
+            <Dropdown.Clear aria-label="Reset Status filter to Active" />
           </Dropdown.Control>
           <Dropdown.Portal>
             <Dropdown.Positioner>
