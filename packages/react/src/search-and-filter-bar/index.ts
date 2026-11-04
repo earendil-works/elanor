@@ -2,7 +2,6 @@ export {
   SearchAndFilterBarRoot as Root,
   SearchAndFilterBarSearch as Search,
   SearchAndFilterBarFilters as Filters,
-  SearchAndFilterBarClearAll as ClearAll,
   SearchAndFilterBarFiltersTrigger as FiltersTrigger,
   SearchAndFilterBarFiltersDrawer as FiltersDrawer,
   SearchAndFilterBarFiltersSlot as FiltersSlot,

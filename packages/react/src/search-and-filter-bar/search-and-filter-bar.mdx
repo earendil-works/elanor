@@ -33,15 +33,9 @@ Put controls directly in Filters. A wrapper element counts as one filter.
 
 <Demo example="./examples/content-width.tsx" />
 
-For filters of one width that line up with the page grid, set `layout="tracks"` on Filters. The search spans four of the bar's twelve tracks and each filter spans two, up to four in a row, on bars 64rem and wider; narrower bars fit two filters in a row, and below 48rem each one takes the full row. A filter's width doesn't depend on its value, so the row doesn't move when a value or its Clear button appears; long values truncate instead. ClearAll takes the next track, so after a full row of filters it starts a row of its own. The demo is as wide as a desktop page; scroll it sideways.
+For filters of one width that line up with the page grid, set `layout="tracks"` on Filters. The search spans four of the bar's twelve tracks and each filter spans two, up to four in a row, on bars 64rem and wider; narrower bars fit two filters in a row, and below 48rem each one takes the full row. A filter's width doesn't depend on its value, so the row doesn't move when a value or its Clear button appears; long values truncate instead. The demo is as wide as a desktop page; scroll it sideways.
 
 <Demo example="./examples/tracks.tsx" />
-
-## Clear filters
-
-While any filter is set, put a ClearAll, such as “Clear filters”, at the end of Filters. When it's pressed, clear every filter but keep the search. It's a compact tertiary button, and it moves focus to the first filter, since the button goes away. Each filter can also clear itself with Dropdown's [`Clear`](/components/dropdown/#clear).
-
-ClearAll doesn't render in the filters drawer, which has its own Clear all in FiltersActions.
 
 ## Narrow bars
 

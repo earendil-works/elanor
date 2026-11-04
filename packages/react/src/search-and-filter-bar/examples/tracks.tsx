@@ -11,14 +11,6 @@ export default function SearchAndFilterBarTracks() {
   const [role, setRole] = useState<string | null>('Administrator');
   const [group, setGroup] = useState<string | null>(null);
   const [twoFactor, setTwoFactor] = useState<string | null>(null);
-  const filtered = [status, role, group, twoFactor].some((value) => value !== null);
-
-  function clearFilters() {
-    setStatus(null);
-    setRole(null);
-    setGroup(null);
-    setTwoFactor(null);
-  }
 
   return (
     <ScrollArea.Root>
@@ -58,11 +50,6 @@ export default function SearchAndFilterBarTracks() {
                 options={['Enabled', 'Disabled']}
                 onChange={setTwoFactor}
               />
-              {filtered ? (
-                <SearchAndFilterBar.ClearAll onClick={clearFilters}>
-                  Clear filters
-                </SearchAndFilterBar.ClearAll>
-              ) : null}
             </SearchAndFilterBar.Filters>
           </SearchAndFilterBar.Root>
         </ScrollArea.Content>

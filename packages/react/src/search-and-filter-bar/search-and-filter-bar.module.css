@@ -58,20 +58,6 @@
     }
   }
 
-  /* Centred on the filters' row, at its content width when the filters stack or sit on tracks. */
-  .filters > .clearAll {
-    align-self: center;
-    justify-self: start;
-    min-inline-size: auto;
-  }
-
-  /* On touch screens, as the filters' targets: half the medium gap above and below. */
-  @media (pointer: coarse) {
-    .filters > .clearAll[data-density='compact']::after {
-      inset-block: calc(-1 * var(--semantic-dimension-space-gap-medium) / 2);
-    }
-  }
-
   .search:empty,
   .filters:empty {
     display: none;

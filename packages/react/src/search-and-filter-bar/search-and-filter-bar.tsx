@@ -15,10 +15,10 @@ import {
 } from 'react';
 import {createPortal} from 'react-dom';
 
-import {Button, type ButtonProps, type ButtonState} from '../button/button.tsx';
+import {Button} from '../button/button.tsx';
 import type {DrawerPopupProps} from '../drawer/drawer.tsx';
 import * as Drawer from '../drawer/index.ts';
-import {classes, mergeClassName} from '../utils/class-names.ts';
+import {classes} from '../utils/class-names.ts';
 
 import styles from './search-and-filter-bar.module.css';
 
@@ -165,41 +165,6 @@ export function SearchAndFilterBarFilters({
       children: filtersSlot ? createPortal(children, filtersSlot) : children,
     },
   });
-}
-
-export interface SearchAndFilterBarClearAllProps extends Omit<
-  ButtonProps,
-  'hierarchy' | 'density'
-> {}
-
-/**
- * A compact tertiary button at the end of Filters for clearing every filter. Render it while a
- * filter is set, and clear the filters in `onClick`; it then moves focus to the first filter,
- * since the button goes away. It doesn't render in the filters drawer, which has FiltersActions.
- */
-export function SearchAndFilterBarClearAll({
-  className,
-  onClick,
-  ...props
-}: SearchAndFilterBarClearAllProps) {
-  const {
-    state: {filtersSlot},
-    meta: {filtersRef},
-  } = useSearchAndFilterBar('ClearAll');
-  if (filtersSlot) return null;
-
-  return (
-    <Button
-      {...props}
-      hierarchy="tertiary"
-      density="compact"
-      onClick={(event) => {
-        onClick?.(event);
-        focusFirst(filtersRef.current);
-      }}
-      className={mergeClassName<ButtonState>(styles.clearAll, className)}
-    />
-  );
 }
 
 export interface SearchAndFilterBarFiltersTriggerProps extends ButtonHTMLAttributes<HTMLButtonElement> {

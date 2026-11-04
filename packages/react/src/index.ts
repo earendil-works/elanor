@@ -523,7 +523,6 @@ export type {
   SearchAndFilterBarSearchProps,
   SearchAndFilterBarFiltersLayout,
   SearchAndFilterBarFiltersProps,
-  SearchAndFilterBarClearAllProps,
   SearchAndFilterBarFiltersTriggerProps,
   SearchAndFilterBarFiltersDrawerProps,
   SearchAndFilterBarFiltersSlotProps,

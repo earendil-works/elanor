@@ -62,11 +62,6 @@ export default function SearchAndFilterBarNarrow() {
             options={['Admin', 'Member', 'Viewer']}
             onChange={setRole}
           />
-          {activeFilters ? (
-            <SearchAndFilterBar.ClearAll onClick={clearFilters}>
-              Clear filters
-            </SearchAndFilterBar.ClearAll>
-          ) : null}
         </SearchAndFilterBar.Filters>
         <SearchAndFilterBar.FiltersTrigger>
           {activeFilters ? `Filters (${activeFilters})` : 'Filters'}

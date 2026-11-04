@@ -50,14 +50,6 @@ export default function SearchAndFilterBarDemo() {
       (group === null || member.group === group) &&
       (twoFactor === null || member.twoFactor === twoFactor),
   );
-  const filtered = [status, role, group, twoFactor].some((value) => value !== null);
-
-  function clearFilters() {
-    setStatus(null);
-    setRole(null);
-    setGroup(null);
-    setTwoFactor(null);
-  }
 
   return (
     <Stack align="stretch">
@@ -95,11 +87,6 @@ export default function SearchAndFilterBarDemo() {
             options={['Enabled', 'Disabled']}
             onChange={setTwoFactor}
           />
-          {filtered ? (
-            <SearchAndFilterBar.ClearAll onClick={clearFilters}>
-              Clear filters
-            </SearchAndFilterBar.ClearAll>
-          ) : null}
         </SearchAndFilterBar.Filters>
       </SearchAndFilterBar.Root>
       <Text role="status">
