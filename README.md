@@ -5,7 +5,7 @@ Earendil's design system. It provides UI building blocks; applications supply ro
 | Package                                                                 | npm name                                                                                                                                                 | Contents                                                         |
 | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
 | [React](./packages/react/README.md)                                     | `@earendil-works/elanor-react`                                                                                                                           | Components built with Base UI and CSS Modules                    |
-| [Fonts](./packages/fonts/README.md)                                     | `@earendil-works/elanor-fonts`                                                                                                                           | Earendil and Commit Mono                                         |
+| [Fonts](./packages/fonts/README.md)                                     | `@earendil-works/elanor-fonts`                                                                                                                           | Mallos Serif, Commit Mono, and DepartureMono                     |
 | [Icons](./packages/icons/README.md)                                     | `@earendil-works/elanor-icons`, `@earendil-works/elanor-icons-react`, `@earendil-works/elanor-icons-boiled`, `@earendil-works/elanor-icons-boiled-react` | Material Symbols, plain or with a hand-drawn boil, SVG and React |
 | [Logos](./packages/logos/README.md)                                     | `@earendil-works/elanor-logos`, `@earendil-works/elanor-logos-react`                                                                                     | Brand artwork, SVG and React                                     |
 | [Design tokens](./packages/design-tokens/README.md)                     | `@earendil-works/design-tokens`                                                                                                                          | Shared and brand-specific tokens, CSS exports                    |
@@ -15,15 +15,13 @@ The [docs app](./apps/docs) runs on Astro.
 
 ## Preview packages
 
-Every push to `main` publishes preview builds of the packages above to [pkg.earendil.com](https://pkg.earendil.com) ([workflow](./.github/workflows/preview-packages.yml)). Log in once with an Earendil Works account, then install the latest build of `main` or pin a commit:
+Successful main builds are published to [pkg.earendil.com](https://pkg.earendil.com), including raw SVG packages and the Shiki theme.
 
-```sh
-npm login --registry=https://pkg.earendil.com
-npm i https://pkg.earendil.com/@earendil-works/elanor-react@main
-npm i https://pkg.earendil.com/@earendil-works/elanor-react@<full commit sha>
-```
+`@main` points to the newest build. Builds expire after 30 days unless kept: versioned releases get a permanent `vX.Y.Z` label, and maintainers can keep a main build as `main-<first 12 SHA characters>` by running **Preview packages** with the commit SHA within 30 days.
 
-Dependencies between Elanor packages install builds of the same commit, so `elanor-react` gets matching `elanor-icons-react`. Pin a full commit SHA where a lockfile is installed with `npm ci`; builds expire 30 days after upload. To publish a new package, add its directory to the workflow's pack step and its name to this repository's entry in `earendil-works/pkg` (`src/config.ts`).
+Elanor dependencies use builds from the same commit. In lockfiles, pin a full SHA for short-term use, or a `main-…` or `vX.Y.Z` label for longer. Avoid `@main`: its contents change.
+
+To add a package, update `scripts/release/packages.mjs` and Elanor’s entry in `earendil-works/pkg/src/config.ts`.
 
 ## Development
 

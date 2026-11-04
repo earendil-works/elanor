@@ -3,14 +3,14 @@ import {
   CodeSnippet,
   CopyButton,
   Heading,
+  HighlightedCode,
   Link,
   Search,
   Stack,
   Text,
+  type HighlightedLines,
 } from '@earendil-works/elanor-react';
 import {useDeferredValue, useEffect, useMemo, useRef, useState, type Ref} from 'react';
-
-import {HighlightedCode} from './highlighted-code.tsx';
 
 import styles from './icon-browser.module.css';
 
@@ -80,10 +80,10 @@ export const iconImportTemplate =
 
 interface IconBrowserProps {
   /** `iconImportTemplate`, highlighted. */
-  readonly importHtml: string;
+  readonly importLines: HighlightedLines;
 }
 
-export function IconBrowser({importHtml}: IconBrowserProps): React.JSX.Element {
+export function IconBrowser({importLines}: IconBrowserProps): React.JSX.Element {
   const [index, setIndex] = useState<IndexState>({status: 'loading'});
   const [query, setQuery] = useState('');
   const [limit, setLimit] = useState(PAGE_SIZE);
@@ -214,27 +214,32 @@ export function IconBrowser({importHtml}: IconBrowserProps): React.JSX.Element {
         </ul>
         <div ref={end} />
       </div>
-      {selected ? <SelectedIcon entry={selected} importHtml={importHtml} ref={sidebar} /> : null}
+      {selected ? <SelectedIcon entry={selected} importLines={importLines} ref={sidebar} /> : null}
     </div>
   );
 }
 
 interface SelectedIconProps {
   readonly entry: IndexEntry;
-  readonly importHtml: string;
+  readonly importLines: HighlightedLines;
   readonly ref: Ref<HTMLElement>;
 }
 
 function SelectedIcon({
   entry: [name, , component],
-  importHtml,
+  importLines,
   ref,
 }: SelectedIconProps): React.JSX.Element {
   const importLine = iconImportTemplate
     .replace('IconComponent', component)
     .replace('icon-name', name);
-  // Icon names are kebab-case and components PascalCase, so they need no HTML escaping.
-  const html = importHtml.replace('IconComponent', component).replace('icon-name', name);
+  // Each placeholder is inside one token: the component name, and the module path.
+  const lines = importLines.map((line) =>
+    line.map((token) => ({
+      ...token,
+      content: token.content.replace('IconComponent', component).replace('icon-name', name),
+    })),
+  );
   return (
     <aside ref={ref} className={styles.sidebar} aria-label="Selected icon">
       <Stack gap="medium">
@@ -250,7 +255,7 @@ function SelectedIcon({
           className={styles.snippet}
           actions={<CopyButton key={importLine} value={importLine} aria-label="Copy import" />}
         >
-          <HighlightedCode html={html} />
+          <HighlightedCode lines={lines} />
         </CodeSnippet>
         <Link href={`/api/icons/${name}.svg`} download data-astro-prefetch="false">
           Download SVG

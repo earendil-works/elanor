@@ -5,14 +5,14 @@ React components built with Base UI and CSS Modules.
 ## Install
 
 ```sh
-pnpm add @earendil-works/elanor-react react react-dom
+npm install @earendil-works/elanor-react @earendil-works/elanor-fonts @earendil-works/design-tokens react react-dom
 ```
 
 Requires React 19. Styles are precompiled; consumers do not need CSS Modules support.
 
 ## Usage
 
-Install the [fonts](https://github.com/earendil-works/elanor/tree/main/packages/fonts) and [brand tokens](https://github.com/earendil-works/elanor/tree/main/packages/design-tokens) from the internal package source, then import them once:
+Import the fonts, one brand's tokens, and the component stylesheet once:
 
 ```tsx
 import '@earendil-works/elanor-fonts/mallos-serif.css';

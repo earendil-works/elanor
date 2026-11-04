@@ -1,7 +1,17 @@
 {
   "name": "@earendil-works/elanor-react",
   "version": "0.1.0",
-  "private": false,
+  "description": "Elanor React components built with Base UI and precompiled CSS.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/earendil-works/elanor.git",
+    "directory": "packages/react"
+  },
+  "homepage": "https://github.com/earendil-works/elanor/tree/main/packages/react#readme",
+  "bugs": {
+    "url": "https://github.com/earendil-works/elanor/issues"
+  },
   "type": "module",
   "files": [
     "dist",
@@ -20,6 +30,7 @@
     "./elanor.min.css": "./dist/elanor.min.css"
   },
   "publishConfig": {
+    "access": "public",
     "exports": {
       ".": {
         "types": "./dist/index.d.ts",
@@ -52,6 +63,7 @@
   },
   "devDependencies": {
     "@earendil-works/design-tokens": "workspace:*",
+    "@earendil-works/elanor-code-themes": "workspace:*",
     "@earendil-works/stylelint-plugin-design-tokens": "workspace:*",
     "@rollup/plugin-swc": "0.4.1",
     "@swc/core": "1.16.13",
@@ -63,6 +75,7 @@
     "react-dom": "^19.3.0",
     "rollup": "4.64.0",
     "rollup-plugin-postcss": "4.0.2",
+    "shiki": "^4.4.3",
     "stylelint": "^17.15.0"
   }
 }

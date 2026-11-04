@@ -15,7 +15,7 @@ const areas: TokenAreaSummary[] = tokenAreas.map((area) => ({
   href: tokenAreaHref(defaultTokenBrand, area.id),
   count: counts.get(area.id) ?? 0,
 }));
-const usageHtml = await highlight(tokensUsage, 'css');
+const usageLines = await highlight(tokensUsage, 'css');
 ---
 
 <DocsLayout title="Design tokens" current="/tokens/">
@@ -25,7 +25,7 @@ const usageHtml = await highlight(tokensUsage, 'css');
       Named values for color, type, space, shape, and motion. Use semantic tokens in components;
       primitives are the raw values behind them.
     </Text>
-    <TokensOverview areas={areas} usageHtml={usageHtml} />
+    <TokensOverview areas={areas} usageLines={usageLines} />
   </div>
 </DocsLayout>
 

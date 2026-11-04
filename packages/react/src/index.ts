@@ -118,6 +118,13 @@ export type {
 
 export {CodeSnippet} from './code-snippet/code-snippet.tsx';
 export type {CodeSnippetProps} from './code-snippet/code-snippet.tsx';
+export {HighlightedCode, useHighlightedCode} from './code-snippet/highlighted-code.tsx';
+export type {
+  CodeHighlighter,
+  CodeToken,
+  HighlightedCodeProps,
+  HighlightedLines,
+} from './code-snippet/highlighted-code.tsx';
 
 export {CopyButton} from './copy-button/copy-button.tsx';
 export type {CopyButtonProps} from './copy-button/copy-button.tsx';

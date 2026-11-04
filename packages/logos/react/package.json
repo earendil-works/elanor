@@ -1,8 +1,20 @@
 {
   "name": "@earendil-works/elanor-logos-react",
   "version": "0.1.0",
-  "private": true,
   "description": "Earendil, Pi, Radius, and Lefos logos as React components.",
+  "license": "UNLICENSED",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/earendil-works/elanor.git",
+    "directory": "packages/logos/react"
+  },
+  "homepage": "https://github.com/earendil-works/elanor/tree/main/packages/logos/react#readme",
+  "bugs": {
+    "url": "https://github.com/earendil-works/elanor/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "sideEffects": false,
   "files": [
