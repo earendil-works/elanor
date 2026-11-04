@@ -1,4 +1,11 @@
-import {ScrollArea, Search, SearchAndFilterBar, Stack} from '@earendil-works/elanor-react';
+import {
+  Button,
+  Drawer,
+  ScrollArea,
+  Search,
+  SearchAndFilterBar,
+  Stack,
+} from '@earendil-works/elanor-react';
 import {useState} from 'react';
 
 import {MemberFilter} from './member-filter.tsx';
@@ -43,6 +50,16 @@ function MembersBar({count}: {readonly count: number}) {
           />
         ))}
       </SearchAndFilterBar.Filters>
+      <SearchAndFilterBar.FiltersTrigger density="compact">
+        Filters
+      </SearchAndFilterBar.FiltersTrigger>
+      <SearchAndFilterBar.FiltersDrawer>
+        <Drawer.Title>Filters</Drawer.Title>
+        <SearchAndFilterBar.FiltersSlot />
+        <SearchAndFilterBar.FiltersActions>
+          <Drawer.Close render={<Button />}>Show members</Drawer.Close>
+        </SearchAndFilterBar.FiltersActions>
+      </SearchAndFilterBar.FiltersDrawer>
     </SearchAndFilterBar.Root>
   );
 }
