@@ -28,6 +28,12 @@
     color: var(--semantic-color-text-secondary);
   }
 
+  /* "+2", not "2+", in right-to-left text. */
+  .valueCountNumber {
+    direction: ltr;
+    unicode-bidi: isolate;
+  }
+
   .visuallyHidden {
     position: absolute;
     inline-size: var(--semantic-dimension-border-width-small);

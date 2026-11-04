@@ -204,7 +204,9 @@ export function DropdownValueCount({
 
   return (
     <span {...props} ref={ref} className={classes(styles.valueCount, className)}>
-      <span aria-hidden="true">+{count}</span>
+      <span className={styles.valueCountNumber} aria-hidden="true">
+        +{count}
+      </span>
       <span className={styles.visuallyHidden}>{label(count)}</span>
     </span>
   );
