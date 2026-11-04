@@ -15,7 +15,7 @@ import {
 } from 'react';
 import {createPortal} from 'react-dom';
 
-import {Button} from '../button/button.tsx';
+import {Button, type ButtonDensity} from '../button/button.tsx';
 import type {DrawerPopupProps} from '../drawer/drawer.tsx';
 import * as Drawer from '../drawer/index.ts';
 import {classes} from '../utils/class-names.ts';
@@ -169,6 +169,8 @@ export function SearchAndFilterBarFilters({
 
 export interface SearchAndFilterBarFiltersTriggerProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   readonly ref?: Ref<HTMLButtonElement> | undefined;
+  /** `compact` makes the button as tall as compact controls, but keeps the touch target height. */
+  readonly density?: ButtonDensity;
 }
 
 /**
@@ -177,6 +179,7 @@ export interface SearchAndFilterBarFiltersTriggerProps extends ButtonHTMLAttribu
  */
 export function SearchAndFilterBarFiltersTrigger({
   ref,
+  density = 'default',
   ...props
 }: SearchAndFilterBarFiltersTriggerProps) {
   const {
@@ -187,7 +190,14 @@ export function SearchAndFilterBarFiltersTrigger({
       <Drawer.Trigger
         {...props}
         ref={ref}
-        render={<Button ref={triggerRef} hierarchy="secondary" iconStart={<FilterListIcon />} />}
+        render={
+          <Button
+            ref={triggerRef}
+            hierarchy="secondary"
+            density={density}
+            iconStart={<FilterListIcon />}
+          />
+        }
       />
     </div>
   );
