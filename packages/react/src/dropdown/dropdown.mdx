@@ -59,7 +59,7 @@ Prefix and `Label` share the dropdown's one label, so use one of them. Don't set
 
 Use Clear for filters, where no value means no filter. Don't use it on view controls that always have a value, such as a date range or a sort order.
 
-Name Clear with `aria-label`, such as “Clear Status filter”, and show the empty value with `Value`'s `placeholder`, such as “All”. Clear calls Root's `onValueChange` with `null`, or an empty array with `multiple`, and the reason `clear-press`. It works with `value` and with `defaultValue`. A disabled or read-only Root disables Clear; a disabled `Field` doesn't, so disable the Root as well.
+Name Clear with `aria-label`, such as “Clear Status filter”, and show the empty value with `Value`'s `placeholder`, such as “All”. Clear calls Root's `onValueChange` with `null`, or an empty array with `multiple`, and the reason `clear-press`. It works with `value` and with `defaultValue`. A disabled or read-only Root, or a disabled `Field` or `Fieldset` around it, disables Clear.
 
 <Demo example="./examples/clear.tsx" />
 

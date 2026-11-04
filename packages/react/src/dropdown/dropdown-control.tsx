@@ -13,6 +13,7 @@ import {
 } from 'react';
 
 import {classes, mergeClassName} from '../utils/class-names.ts';
+import {DisabledContext} from '../utils/disabled-context.ts';
 
 import styles from './dropdown-control.module.css';
 
@@ -200,6 +201,7 @@ export function DropdownClear({
   ...props
 }: DropdownClearProps) {
   const context = useClearContext('Clear');
+  const fieldDisabled = use(DisabledContext);
   const shown = visible ?? !context.empty;
   if (!shown) return null;
 
@@ -208,7 +210,7 @@ export function DropdownClear({
       {...props}
       ref={ref}
       type={type}
-      disabled={disabled || context.disabled}
+      disabled={disabled || context.disabled || fieldDisabled}
       onClick={(event) => {
         onClick?.(event);
         context.clear(event);
