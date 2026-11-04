@@ -40,15 +40,15 @@ A capped Container leaves 76rem for content, so `large` and `xLarge` apply only 
 
 ## Start
 
-`start` places an item on a track, or with `end`, at the end of its row, such as a filter beside a heading. Key it by breakpoint like `span`. Below, the filter takes a full row in narrow grids and ends the heading's row from `xSmall` on, with no empty item to push it there.
+`start` places an item on a track, or with `end`, at the end of its row. Key it by breakpoint like `span`. Below, the filter takes a full row in narrow grids and ends the heading's row from `xSmall` on.
 
 <Demo example="./examples/start.tsx" />
 
-`start` moves an item along its row, never before earlier items: one that can't start after the previous item begins a new row. Screen readers and keyboard focus follow the source order, so put items in the order they're read.
+An item never moves before the previous one; if it can't start after it, it begins a new row. Screen readers and keyboard focus follow source order.
 
 ## Columns
 
-Spans larger than `columns` are clamped to the column count, and starts move back until the item fits.
+Spans larger than `columns` are clamped to the column count. Starts move back until the item fits.
 
 <Demo example="./examples/columns.tsx" />
 
@@ -69,7 +69,7 @@ A `Grid.Root` inside an item starts a new grid: it has its own column count and 
 - Items and subgrids must be direct DOM children of their grid. Fragments are fine; wrapper elements are not.
 - Other children use native CSS Grid placement, without the full-row default or clamping.
 - Clamping reads `columns`, `span`, and `start`. If you set `grid-template-columns` or `grid-column` in CSS, handle all placement in CSS.
-- Grid keeps source order. `start` changes where an item sits in its row, not the order it's read in.
+- Grid keeps source order, including with `start`.
 
 ## Changing breakpoints
 

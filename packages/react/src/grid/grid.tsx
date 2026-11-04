@@ -24,12 +24,27 @@ function useTrackCounts(): TrackCounts {
   return counts;
 }
 
+// Gives every breakpoint a value: a record key applies until the next key, from `initial`.
+function resolveBreakpoints<Value extends number | string>(
+  value: Value | Partial<Record<GridBreakpoint, Value>>,
+  initial: Value,
+) {
+  let current = typeof value === 'object' ? initial : value;
+  // SAFETY: the loop below assigns every breakpoint before the record is read.
+  const resolved = {} as Record<GridBreakpoint, Value>;
+  for (const breakpoint of breakpoints) {
+    if (typeof value === 'object') current = value[breakpoint] ?? current;
+    resolved[breakpoint] = current;
+  }
+  return resolved;
+}
+
 function resolveSpans(span: GridResponsiveSpan, counts: TrackCounts) {
-  let current: GridSpan = typeof span === 'object' ? 'full' : span;
+  const values = resolveBreakpoints(span, 'full');
   const spans = {} as Record<GridBreakpoint, GridSpan>;
   const tracks = {} as TrackCounts;
   for (const breakpoint of breakpoints) {
-    if (typeof span === 'object') current = span[breakpoint] ?? current;
+    const current = values[breakpoint];
     if (current !== 'full' && (!Number.isInteger(current) || current < 1 || current > 12)) {
       throw new RangeError('Grid spans must be an integer from 1 to 12, or "full".');
     }
@@ -42,19 +57,19 @@ function resolveSpans(span: GridResponsiveSpan, counts: TrackCounts) {
   return {spans, tracks};
 }
 
-// Span rules set `grid-column-start: span N`, so a start travels as the line the item ends on:
-// `-1` for the end of the row. Full rows and `auto` set none.
+// Span rules set `grid-column-start: span N`, so a start is written as the end line; `-1` is the
+// row's end.
 function resolveEnds(
   start: GridResponsiveStart,
   spans: Record<GridBreakpoint, GridSpan>,
   tracks: TrackCounts,
   counts: TrackCounts,
 ) {
-  let current: GridStart = typeof start === 'object' ? 'auto' : start;
+  const starts = resolveBreakpoints(start, 'auto');
   // SAFETY: the loop below assigns every breakpoint before the record is read.
   const ends = {} as Record<GridBreakpoint, number | undefined>;
   for (const breakpoint of breakpoints) {
-    if (typeof start === 'object') current = start[breakpoint] ?? current;
+    const current = starts[breakpoint];
     if (
       current !== 'auto' &&
       current !== 'end' &&
@@ -141,10 +156,7 @@ export interface GridItemProps extends useRender.ComponentProps<'div'> {
    * `{base: 'full', small: 6}`; each value applies until the next key.
    */
   readonly span?: GridResponsiveSpan;
-  /**
-   * Track to start on, or `end` to end on the row's last track. Keyed like `span`. Starts
-   * that would overflow the row move back until the item fits; full rows ignore them.
-   */
+  /** Track to start on, or `end` for the row's end. Keyed like `span`; full rows ignore it. */
   readonly start?: GridResponsiveStart;
 }
 

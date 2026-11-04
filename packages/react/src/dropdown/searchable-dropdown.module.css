@@ -32,9 +32,7 @@
     cursor: pointer;
   }
 
-  /* No block padding: 24px high with the default text and border. The pseudo-element keeps
-     the default touch target, as compact Buttons do; the trigger doesn't clip it, and its
-     children still truncate. */
+  /* The pseudo-element keeps the default touch target, as in compact Buttons. */
   .trigger[data-density='compact'] {
     position: relative;
     overflow: visible;
