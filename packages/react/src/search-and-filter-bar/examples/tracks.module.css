@@ -1,6 +1,18 @@
-/* Demo only: a desktop-width bar, scrolled sideways on narrower screens, to show four filters
-   in a row. */
+/* Demo only: bar widths, scrolled sideways where the page is narrower. */
+/* stylelint-disable design-tokens/no-hardcoded-token-values -- Demo frame sizes. */
 .desktop {
-  /* stylelint-disable-next-line design-tokens/no-hardcoded-token-values -- Demo frame size. */
   inline-size: 76rem;
 }
+
+.oneRow {
+  inline-size: 52rem;
+}
+
+.twoRows {
+  inline-size: 40rem;
+}
+
+.drawer {
+  inline-size: 24rem;
+}
+/* stylelint-enable design-tokens/no-hardcoded-token-values */
