@@ -13,7 +13,7 @@ export default function DropdownClear() {
         <Dropdown.Root items={statuses} defaultValue="invited">
           <Dropdown.Control>
             <Dropdown.Trigger density="compact">
-              <Dropdown.Prefix>Status:</Dropdown.Prefix>
+              <Dropdown.Prefix>Status</Dropdown.Prefix>
               <Dropdown.Value placeholder="All" />
               <Dropdown.Icon />
             </Dropdown.Trigger>

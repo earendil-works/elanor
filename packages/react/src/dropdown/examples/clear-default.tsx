@@ -26,7 +26,7 @@ export default function DropdownClearDefault() {
         >
           <Dropdown.Control>
             <Dropdown.Trigger density="compact">
-              <Dropdown.Prefix>Status:</Dropdown.Prefix>
+              <Dropdown.Prefix>Status</Dropdown.Prefix>
               <Dropdown.Value placeholder="All" />
               <Dropdown.Icon />
             </Dropdown.Trigger>

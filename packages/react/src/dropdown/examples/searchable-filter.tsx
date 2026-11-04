@@ -17,7 +17,7 @@ export default function DropdownSearchableFilter() {
         >
           <SearchableDropdown.Control>
             <SearchableDropdown.Trigger density="compact">
-              <SearchableDropdown.Prefix>Groups:</SearchableDropdown.Prefix>
+              <SearchableDropdown.Prefix>Groups</SearchableDropdown.Prefix>
               <span>
                 <SearchableDropdown.Value>
                   {(groups: string[]) => groups[0] ?? 'All'}

@@ -83,6 +83,11 @@
     color: var(--semantic-color-text-secondary);
   }
 
+  /* Visual punctuation only: it's outside the label that names the trigger. */
+  .prefix::after {
+    content: ':';
+  }
+
   .trigger:where(:hover:not(:disabled, [data-disabled])) {
     border-color: var(--semantic-color-background-fill-secondary-hover);
     background: var(--semantic-color-background-fill-secondary-hover);

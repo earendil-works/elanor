@@ -12,7 +12,7 @@ export default function DropdownClearMultiple() {
         <Dropdown.Root multiple value={selected} onValueChange={setSelected}>
           <Dropdown.Control>
             <Dropdown.Trigger density="compact">
-              <Dropdown.Prefix>Groups:</Dropdown.Prefix>
+              <Dropdown.Prefix>Groups</Dropdown.Prefix>
               <Dropdown.Value>{(groups: string[]) => groups[0] ?? 'All'}</Dropdown.Value>
               <Dropdown.ValueCount count={selected.length - 1} />
               <Dropdown.Icon />

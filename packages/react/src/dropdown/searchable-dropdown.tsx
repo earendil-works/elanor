@@ -1,6 +1,6 @@
 import {Combobox as BaseCombobox} from '@base-ui/react/combobox';
 import {KeyboardArrowDownIcon, SearchIcon} from '@earendil-works/elanor-icons-react';
-import {createContext, useContext, type Ref} from 'react';
+import {createContext, useContext, type PointerEventHandler, type Ref} from 'react';
 
 import {classes, mergeClassName} from '../utils/class-names.ts';
 import {useMergedRef} from '../utils/refs.ts';
@@ -58,9 +58,11 @@ export type SearchableDropdownRootProps<
 export type SearchableDropdownLabelProps = BaseCombobox.Label.Props;
 export interface SearchableDropdownPrefixProps extends Omit<
   BaseCombobox.Label.Props,
-  'ref' | 'render'
+  'ref' | 'render' | 'onPointerDown'
 > {
   readonly ref?: Ref<HTMLSpanElement> | undefined;
+  /** A plain React handler: Base UI's own label handler is replaced, so there's none to skip. */
+  readonly onPointerDown?: PointerEventHandler<HTMLSpanElement> | undefined;
 }
 export type SearchableDropdownControlProps = DropdownControlProps;
 export type SearchableDropdownClearProps = DropdownClearProps;
@@ -140,8 +142,9 @@ export function SearchableDropdownLabel({ref, className, ...props}: SearchableDr
 }
 
 /**
- * A muted label inside the trigger, before the value, such as "Groups:". It's Base UI's
- * `Combobox.Label` rendered as a `<span>`, so use it instead of `Label`.
+ * A muted label inside the trigger, before the value, such as “Groups”, followed by a colon.
+ * It's Base UI's `Combobox.Label` rendered as a `<span>` and takes its props, except `render`;
+ * use it instead of `Label`. The colon isn't part of the trigger's name.
  */
 export function SearchableDropdownPrefix({
   ref,
@@ -150,17 +153,17 @@ export function SearchableDropdownPrefix({
   ...props
 }: SearchableDropdownPrefixProps) {
   return (
-    <BaseCombobox.Label
-      {...props}
-      // Phrasing content inside the trigger's button. The trigger's `aria-labelledby` reads it
-      // as the name, so it's hidden from the trigger's content, which screen readers read as
-      // the value. Base UI's label cancels `pointerdown`, which keeps the trigger from opening,
-      // so its handler is replaced; `preventBaseUIHandler()` would also skip the trigger's.
-      render={(labelProps) => (
-        <span {...labelProps} ref={ref} aria-hidden="true" onPointerDown={onPointerDown} />
-      )}
-      className={mergeClassName<BaseCombobox.Label.State>(styles.prefix, className)}
-    />
+    // As Dropdown.Prefix: the wrapper draws the colon outside the label that names the trigger,
+    // and keeps both out of the trigger's value.
+    <span className={styles.prefix} aria-hidden="true">
+      <BaseCombobox.Label
+        {...props}
+        // Base UI's label cancels `pointerdown`, which keeps the trigger from opening, so its
+        // handler is replaced; `preventBaseUIHandler()` would also skip the trigger's.
+        render={(labelProps) => <span {...labelProps} ref={ref} onPointerDown={onPointerDown} />}
+        className={className}
+      />
+    </span>
   );
 }
 
