@@ -112,6 +112,15 @@
     background: var(--semantic-color-background-fill-secondary-active);
   }
 
+  /* The joined control shares the trigger's open and invalid borders. */
+  .control:has(> [data-popup-open]) > .clear {
+    border-color: var(--semantic-color-focus-ring);
+  }
+
+  .control:has(> :is([data-invalid], [aria-invalid='true'])) > .clear {
+    border-color: var(--semantic-color-focus-ring-negative);
+  }
+
   .clear:focus-visible {
     outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
     outline-offset: var(--semantic-dimension-border-width-medium);
