@@ -15,6 +15,7 @@ export function useMergedRef<T>(a: Ref<T> | undefined, b: Ref<T> | undefined): R
 
 /** Sets a ref and returns how to unset it, following React 19's ref cleanup functions. */
 function setRef<T>(ref: Ref<T> | undefined, element: T): () => void {
+  // React's `Ref` union is only told apart at runtime, and Base UI has no public ref merger.
   if (typeof ref === 'function') {
     const cleanup = ref(element);
     return cleanup ?? (() => ref(null));
