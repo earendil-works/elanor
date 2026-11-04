@@ -1,4 +1,4 @@
-import elanorTheme from '@earendil-works/elanor-shiki-theme';
+import elanorTheme from '@earendil-works/elanor-code-themes/shiki';
 import {codeToHtml, type BundledLanguage} from 'shiki';
 
 /**

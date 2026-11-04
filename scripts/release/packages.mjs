@@ -31,7 +31,7 @@ export const previewPackages = [
   ['@earendil-works/elanor-icons', 'packages/icons/plain'],
   ['@earendil-works/elanor-icons-boiled', 'packages/icons/boiled'],
   ['@earendil-works/elanor-logos', 'packages/logos'],
-  ['@earendil-works/elanor-shiki-theme', 'packages/shiki-theme'],
+  ['@earendil-works/elanor-code-themes', 'packages/code-themes'],
 ];
 
 export function tarballName(name, version) {

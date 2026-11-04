@@ -1,5 +1,5 @@
 {
-  "name": "@earendil-works/elanor-shiki-theme",
+  "name": "@earendil-works/elanor-code-themes",
   "version": "0.1.0",
   "description": "A Shiki theme that colors code with Elanor's code syntax tokens.",
   "license": "ISC",
@@ -11,9 +11,9 @@
     "README.md"
   ],
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./dist/index.js"
+    "./shiki": {
+      "types": "./dist/shiki.d.ts",
+      "default": "./dist/shiki.js"
     }
   },
   "scripts": {
