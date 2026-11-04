@@ -1,6 +1,7 @@
 import {useRender} from '@base-ui/react/use-render';
 import {FilterListIcon} from '@earendil-works/elanor-icons-react';
 import {
+  Children,
   createContext,
   use,
   useEffect,
@@ -125,8 +126,9 @@ export interface SearchAndFilterBarFiltersProps extends HTMLAttributes<HTMLDivEl
   readonly ref?: Ref<HTMLDivElement> | undefined;
   /**
    * `content` sizes each filter to its content, up to half the filters' width. `tracks` puts
-   * the filters on the bar's grid: two tracks each from 64rem, four below, and the full width
-   * below 48rem.
+   * the filters at the bar's end at fixed widths, on the bar's twelve-track grid from 64rem: one
+   * row while the search keeps 16rem and each filter 10rem, then the search above every filter
+   * at equal widths, then the filters drawer.
    */
   readonly layout?: SearchAndFilterBarFiltersLayout;
 }
@@ -159,10 +161,20 @@ export function SearchAndFilterBarFilters({
     ref: ref ? [ref, filtersRef] : filtersRef,
     props: {
       ...props,
-      'data-layout': layout,
-      className: classes(styles.filters, className),
+      className: classes(styles.filters, layout === 'tracks' && styles.tracks, className),
       // One instance of the controls at a time keeps their IDs and label associations unique.
-      children: filtersSlot ? createPortal(children, filtersSlot) : children,
+      // With tracks, the bar's styles count the filters to choose their layout, so an empty
+      // placeholder stands in for each while they're in the drawer.
+      children: filtersSlot ? (
+        <>
+          {createPortal(children, filtersSlot)}
+          {layout === 'tracks'
+            ? Children.toArray(children).map((_, index) => <span key={index} hidden />)
+            : null}
+        </>
+      ) : (
+        children
+      ),
     },
   });
 }

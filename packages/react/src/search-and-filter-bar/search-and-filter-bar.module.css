@@ -39,25 +39,6 @@
     max-inline-size: calc((100% - var(--semantic-dimension-space-gap-medium)) / 2);
   }
 
-  /* Tracks: filters sit on the bar's grid instead of their content width. Each spans four
-     tracks, two per row; from 64rem, two tracks, four per row. Their widths don't change with
-     their values, so a row doesn't reflow when a value or a Clear button appears. */
-  .filters[data-layout='tracks'] {
-    display: grid;
-    grid-template-columns: subgrid;
-  }
-
-  .filters[data-layout='tracks'] > :not(input) {
-    grid-column: span 4;
-    max-inline-size: none;
-  }
-
-  @container (inline-size >= 64rem /* token: semantic.dimension.breakpoint.medium */) {
-    .filters[data-layout='tracks'] > :not(input) {
-      grid-column: span 2;
-    }
-  }
-
   .search:empty,
   .filters:empty {
     display: none;
@@ -84,10 +65,6 @@
 
     .filters > :not(input) {
       max-inline-size: 100%;
-    }
-
-    .filters[data-layout='tracks'] > :not(input) {
-      grid-column: 1 / -1;
     }
   }
 
@@ -121,21 +98,22 @@
     }
   }
 
-  /* With a FiltersTrigger, narrow bars keep the search inline and move the filters into a drawer. */
+  /* With a FiltersTrigger, narrow bars keep the search inline and move the filters into a drawer.
+     Bars with tracks choose by their number of filters instead, below. */
   @container (inline-size < 24rem) {
-    .layout:has(> .trigger) {
+    .layout:has(> .trigger):not(:has(> .tracks)) {
       grid-template-columns: minmax(0, 1fr) auto;
     }
 
-    .layout:has(> .trigger) > .search {
+    .layout:has(> .trigger):not(:has(> .tracks)) > .search {
       grid-column: auto;
     }
 
-    .layout:has(> .trigger) > .filters {
+    .layout:has(> .trigger):not(:has(> .tracks)) > .filters {
       display: none;
     }
 
-    .trigger {
+    .layout:not(:has(> .tracks)) > .trigger {
       display: block;
     }
 
@@ -148,10 +126,182 @@
   /* Too narrow for both side by side, such as a phone at 200% zoom: the Filters button goes
      under the search, so the search keeps a usable width. */
   @container (inline-size < 18rem) {
-    .layout:has(> .trigger) {
+    .layout:has(> .trigger):not(:has(> .tracks)) {
       grid-template-columns: minmax(0, 1fr);
     }
   }
+
+  /* stylelint-disable design-tokens/no-non-token-custom-properties -- Local properties that
+     each tracks mode sets and the bar's parts read. */
+  /* Tracks: one row, then two rows, then the drawer, choosing by the bar's width and its number
+     of filters. Widths don't depend on values, so a row doesn't reflow when a value or a Clear
+     button appears.
+
+     - One row: from 64rem, the Figma grid: the search on the first four of twelve tracks, and
+       each filter on two, ending at the bar's end. Narrower, each filter is 10rem and the search
+       takes the rest, while it keeps 16rem.
+     - Two rows: the search, then every filter at an equal width across the bar, while each keeps
+       10rem. There's never a third row, and one filter alone never takes a row.
+     - Otherwise, with a FiltersTrigger, the filters move into the drawer. Without one, the last
+       layout stays and the controls shrink.
+
+     The layout sets these properties for each mode; the parts read them. */
+  .layout:has(> .tracks) {
+    --tracks-column: calc((100cqi - 11 * var(--semantic-dimension-space-gap-medium)) / 12);
+    --tracks-wrap: nowrap;
+    --tracks-search-grow: 0;
+    --tracks-search-basis: calc(
+      4 * var(--tracks-column) + 3 * var(--semantic-dimension-space-gap-medium)
+    );
+    --tracks-filters-basis: auto;
+    --tracks-filters-display: grid;
+    --tracks-filter-width: calc(
+      2 * var(--tracks-column) + var(--semantic-dimension-space-gap-medium)
+    );
+    --tracks-trigger-display: none;
+
+    display: flex;
+    flex-wrap: var(--tracks-wrap);
+    align-items: start;
+  }
+
+  .layout:has(> .tracks) > .search {
+    flex: var(--tracks-search-grow) 1 var(--tracks-search-basis);
+  }
+
+  .layout > .tracks {
+    display: var(--tracks-filters-display);
+    flex: 0 0 var(--tracks-filters-basis);
+    grid-auto-columns: var(--tracks-filter-width);
+    grid-auto-flow: column;
+    margin-inline-start: auto;
+  }
+
+  .tracks > :not(input) {
+    min-inline-size: 0;
+    max-inline-size: none;
+  }
+
+  .layout:has(> .tracks) > .trigger {
+    display: var(--tracks-trigger-display);
+    flex: none;
+  }
+
+  /* One row below the Figma grid. */
+  @container (inline-size < 64rem /* token: semantic.dimension.breakpoint.medium */) {
+    .layout:has(> .tracks) {
+      --tracks-search-grow: 1;
+      --tracks-search-basis: 0;
+      --tracks-filter-width: 10rem;
+    }
+  }
+
+  /* Two rows: where one row no longer fits 16rem of search and 10rem per filter, each a 1rem
+     gap apart (16rem + 11rem per filter), and always from five filters. */
+  @container (inline-size < 38rem) {
+    .layout:has(> .tracks > :nth-child(2 of :not(input))) {
+      --tracks-wrap: wrap;
+      --tracks-search-basis: 100%;
+      --tracks-filters-basis: 100%;
+      --tracks-filter-width: minmax(0, 1fr);
+    }
+  }
+
+  @container (inline-size < 49rem) {
+    .layout:has(> .tracks > :nth-child(3 of :not(input))) {
+      --tracks-wrap: wrap;
+      --tracks-search-basis: 100%;
+      --tracks-filters-basis: 100%;
+      --tracks-filter-width: minmax(0, 1fr);
+    }
+  }
+
+  @container (inline-size < 60rem) {
+    .layout:has(> .tracks > :nth-child(4 of :not(input))) {
+      --tracks-wrap: wrap;
+      --tracks-search-basis: 100%;
+      --tracks-filters-basis: 100%;
+      --tracks-filter-width: minmax(0, 1fr);
+    }
+  }
+
+  .layout:has(> .tracks > :nth-child(5 of :not(input))) {
+    --tracks-wrap: wrap;
+    --tracks-search-basis: 100%;
+    --tracks-filters-basis: 100%;
+    --tracks-filter-width: minmax(0, 1fr);
+  }
+
+  /* The drawer, with a FiltersTrigger: where one filter no longer fits one row (27rem), or two
+     rows no longer fit 10rem per filter, each a 1rem gap apart (11rem per filter, less 1rem). */
+  @container (inline-size < 27rem) {
+    .layout:has(> .trigger):has(> .tracks):not(:has(> .tracks > :nth-child(2 of :not(input)))) {
+      --tracks-wrap: nowrap;
+      --tracks-search-grow: 1;
+      --tracks-search-basis: 0;
+      --tracks-filters-display: none;
+      --tracks-trigger-display: block;
+    }
+  }
+
+  @container (inline-size < 21rem) {
+    .layout:has(> .trigger):has(> .tracks > :nth-child(2 of :not(input))) {
+      --tracks-wrap: nowrap;
+      --tracks-search-grow: 1;
+      --tracks-search-basis: 0;
+      --tracks-filters-display: none;
+      --tracks-trigger-display: block;
+    }
+  }
+
+  @container (inline-size < 32rem) {
+    .layout:has(> .trigger):has(> .tracks > :nth-child(3 of :not(input))) {
+      --tracks-wrap: nowrap;
+      --tracks-search-grow: 1;
+      --tracks-search-basis: 0;
+      --tracks-filters-display: none;
+      --tracks-trigger-display: block;
+    }
+  }
+
+  @container (inline-size < 43rem) {
+    .layout:has(> .trigger):has(> .tracks > :nth-child(4 of :not(input))) {
+      --tracks-wrap: nowrap;
+      --tracks-search-grow: 1;
+      --tracks-search-basis: 0;
+      --tracks-filters-display: none;
+      --tracks-trigger-display: block;
+    }
+  }
+
+  @container (inline-size < 54rem) {
+    .layout:has(> .trigger):has(> .tracks > :nth-child(5 of :not(input))) {
+      --tracks-wrap: nowrap;
+      --tracks-search-grow: 1;
+      --tracks-search-basis: 0;
+      --tracks-filters-display: none;
+      --tracks-trigger-display: block;
+    }
+  }
+
+  @container (inline-size < 65rem) {
+    .layout:has(> .trigger):has(> .tracks > :nth-child(6 of :not(input))) {
+      --tracks-wrap: nowrap;
+      --tracks-search-grow: 1;
+      --tracks-search-basis: 0;
+      --tracks-filters-display: none;
+      --tracks-trigger-display: block;
+    }
+  }
+
+  /* Too narrow for the search and the Filters button side by side: the button goes under it. */
+  @container (inline-size < 18rem) {
+    .layout:has(> .trigger):has(> .tracks) {
+      --tracks-wrap: wrap;
+      --tracks-search-basis: 100%;
+    }
+  }
+  /* stylelint-enable design-tokens/no-non-token-custom-properties */
 
   .drawerContent {
     display: grid;
