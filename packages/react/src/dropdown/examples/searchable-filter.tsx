@@ -20,10 +20,10 @@ export default function DropdownSearchableFilter() {
               <SearchableDropdown.Prefix>Groups</SearchableDropdown.Prefix>
               <span>
                 <SearchableDropdown.Value>
-                  {(groups: string[]) => groups[0] ?? 'All'}
+                  {(values: string[]) => values[0] ?? 'All'}
                 </SearchableDropdown.Value>
               </span>
-              <SearchableDropdown.ValueCount count={selected.length - 1} />
+              <SearchableDropdown.ValueCount />
               <SearchableDropdown.Icon />
             </SearchableDropdown.Trigger>
             <SearchableDropdown.Clear aria-label="Clear Groups filter" />

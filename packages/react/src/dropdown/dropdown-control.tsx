@@ -28,8 +28,8 @@ export type DropdownClearPressDetails = BaseUIChangeEventDetails<'clear-press'>;
 interface ClearContextValue {
   /** The value is the one Clear sets, so there's nothing to clear. */
   readonly cleared: boolean;
-  /** Some value is selected. */
-  readonly selected: boolean;
+  /** How many values are selected: 0 or 1, or any number with `multiple`. */
+  readonly selectedCount: number;
   /** The Root is disabled or read-only. */
   readonly disabled: boolean;
   /** Empties the value through the Root's `onValueChange`, then focuses the trigger. */
@@ -102,8 +102,8 @@ export function useClearableValue<
   }
 
   const cleared = isSameSelection(value, clearValue, isItemEqualToValue);
-  const selected = !isSameSelection(value, emptyValue, isItemEqualToValue);
-  const context: ClearContextValue = {cleared, selected, disabled, clear, triggerRef};
+  const selectedCount = isList(value) ? value.length : Number(value !== null);
+  const context: ClearContextValue = {cleared, selectedCount, disabled, clear, triggerRef};
   return {value, changeValue, context};
 }
 
@@ -162,12 +162,12 @@ export interface DropdownControlProps extends HTMLAttributes<HTMLDivElement> {
  * Joins the trigger and Clear in one fill. `data-has-value` is set while a value is selected.
  */
 export function DropdownControl({ref, className, ...props}: DropdownControlProps) {
-  const {selected} = useClearContext('Control');
+  const {selectedCount} = useClearContext('Control');
   return (
     <div
       {...props}
       ref={ref}
-      data-has-value={selected ? '' : undefined}
+      data-has-value={selectedCount > 0 ? '' : undefined}
       className={classes(styles.control, className)}
     />
   );
@@ -175,27 +175,31 @@ export function DropdownControl({ref, className, ...props}: DropdownControlProps
 
 export interface DropdownValueCountProps extends Omit<HTMLAttributes<HTMLSpanElement>, 'children'> {
   readonly ref?: Ref<HTMLSpanElement> | undefined;
-  /** How many other values are selected, shown as “+2”. Nothing renders below 1. */
-  readonly count: number;
+  /**
+   * How many values to count, shown as “+2”. Nothing renders below 1.
+   * @default the selected values after the first
+   */
+  readonly count?: number | undefined;
   /**
    * What screen readers read instead of “+2”, after the value, so “developers +2” reads as
    * “developers and 2 more”.
-   * @default (count) => `and ${count} more`
    */
   readonly label?: ((count: number) => string) | undefined;
 }
 
 /**
- * A muted count after the value, such as “+2” for the other selected values. It stays whole
- * while the value truncates. Screen readers read its `label` instead, such as “and 2 more”.
+ * A muted count of the selected values after the first, such as “+2”, after the value. It stays
+ * whole while the value truncates. Screen readers read its `label` instead, such as “and 2 more”.
  */
 export function DropdownValueCount({
   ref,
-  count,
-  label = englishMore,
+  count: countProp,
+  label = (count) => `and ${count} more`,
   className,
   ...props
 }: DropdownValueCountProps) {
+  const {selectedCount} = useClearContext('ValueCount');
+  const count = countProp ?? selectedCount - 1;
   if (count < 1) return null;
 
   return (
@@ -204,10 +208,6 @@ export function DropdownValueCount({
       <span className={styles.visuallyHidden}>{label(count)}</span>
     </span>
   );
-}
-
-function englishMore(count: number): string {
-  return `and ${count} more`;
 }
 
 export interface DropdownClearProps extends Omit<BaseButton.Props, 'aria-label'> {

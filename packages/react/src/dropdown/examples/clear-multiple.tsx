@@ -1,20 +1,17 @@
 import {Dropdown, Grid} from '@earendil-works/elanor-react';
-import {useState} from 'react';
 
 const groups = ['developers', 'design', 'operations', 'support'];
 
 export default function DropdownClearMultiple() {
-  const [selected, setSelected] = useState(['developers', 'design', 'support']);
-
   return (
     <Grid.Root>
       <Grid.Item span={{base: 'full', xSmall: 4}}>
-        <Dropdown.Root multiple value={selected} onValueChange={setSelected}>
+        <Dropdown.Root multiple defaultValue={['developers', 'design', 'support']}>
           <Dropdown.Control>
             <Dropdown.Trigger density="compact">
               <Dropdown.Prefix>Groups</Dropdown.Prefix>
-              <Dropdown.Value>{(groups: string[]) => groups[0] ?? 'All'}</Dropdown.Value>
-              <Dropdown.ValueCount count={selected.length - 1} />
+              <Dropdown.Value>{(values: string[]) => values[0] ?? 'All'}</Dropdown.Value>
+              <Dropdown.ValueCount />
               <Dropdown.Icon />
             </Dropdown.Trigger>
             <Dropdown.Clear aria-label="Clear Groups filter" />
