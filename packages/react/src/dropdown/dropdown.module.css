@@ -46,9 +46,8 @@
     content: '';
   }
 
-  /* Touch screens get a taller target, reaching half the medium gap above and below: rows of
-     filters a medium gap apart, as in Stack, Grid, and SearchAndFilterBar, touch but don't
-     overlap. It's an overlay, so the row keeps its height. */
+  /* On touch screens, the target reaches half the medium gap above and below, so rows a medium
+     gap apart don't overlap. */
   @media (pointer: coarse) {
     .trigger[data-density='compact']::after {
       inset-block: calc(
@@ -119,8 +118,7 @@
     opacity: var(--semantic-number-opacity-disabled);
   }
 
-  /* The icon takes the free space before it, so it stays at the end and the text stays
-     together. */
+  /* Keeps the icon at the end. */
   .icon {
     display: inline-flex;
     flex: none;

@@ -87,10 +87,8 @@
     font: var(--semantic-typography-ui-primary);
   }
 
-  /* The input is the touch target, so it reaches past the root rather than a pseudo-element,
-     which would take the tap without focusing it: as tall as a default Search, and on touch
-     screens half the medium gap above and below, as compact Dropdown triggers do. Its padding
-     keeps the text in place, and its margin keeps the root's height. */
+  /* The input keeps the default touch target; a pseudo-element would take the tap
+     without focusing it. Padding keeps the text in place; margin keeps the root's height. */
   :where(.root[data-density='compact']) .input {
     margin-block: calc(-1 * var(--semantic-dimension-space-control-padding-block-small));
     padding-block: var(--semantic-dimension-space-control-padding-block-small);

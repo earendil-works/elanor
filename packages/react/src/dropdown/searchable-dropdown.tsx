@@ -66,7 +66,7 @@ export interface SearchableDropdownPrefixProps extends Omit<
   'ref' | 'render' | 'onPointerDown'
 > {
   readonly ref?: Ref<HTMLSpanElement> | undefined;
-  /** A plain React handler: Base UI's own label handler is replaced, so there's none to skip. */
+  /** A plain React handler; it replaces Base UI's label handler. */
   readonly onPointerDown?: PointerEventHandler<HTMLSpanElement> | undefined;
 }
 /** What Root's `onValueChange` receives: an array with `multiple`, otherwise a value or `null`. */
@@ -155,11 +155,7 @@ export function SearchableDropdownLabel({ref, className, ...props}: SearchableDr
   );
 }
 
-/**
- * A muted label inside the trigger, before the value, such as “Groups”, followed by a colon.
- * It's Base UI's `Combobox.Label` rendered as a `<span>` and takes its props, except `render`;
- * use it instead of `Label`. The colon isn't part of the trigger's name.
- */
+/** A label inside the trigger, before the value. Use it instead of `Label`. */
 export function SearchableDropdownPrefix({
   ref,
   className,
@@ -167,13 +163,12 @@ export function SearchableDropdownPrefix({
   ...props
 }: SearchableDropdownPrefixProps) {
   return (
-    // As Dropdown.Prefix: the wrapper draws the colon outside the label that names the trigger,
-    // and keeps both out of the trigger's value.
+    // As in Dropdown.Prefix: hidden from the value, with the colon outside the name.
     <span className={styles.prefix} aria-hidden="true">
       <BaseCombobox.Label
         {...props}
-        // Base UI's label cancels `pointerdown`, which keeps the trigger from opening, so its
-        // handler is replaced; `preventBaseUIHandler()` would also skip the trigger's.
+        // Base UI's label cancels `pointerdown`, which stops the trigger from opening.
+        // `preventBaseUIHandler()` would skip the trigger's handler too.
         render={(labelProps) => <span {...labelProps} ref={ref} onPointerDown={onPointerDown} />}
         className={className}
       />

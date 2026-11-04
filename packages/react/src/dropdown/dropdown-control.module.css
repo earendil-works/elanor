@@ -17,8 +17,7 @@
     border-end-end-radius: 0;
   }
 
-  /* Stays whole while the value truncates, a word space after it, as in running text. It
-     shrinks only once the value is gone, so the icon stays in a very narrow trigger. */
+  /* Stays whole and sits a word space after the value. */
   .valueCount {
     flex: 0 1 auto;
     margin-inline-start: calc(
@@ -94,9 +93,7 @@
     content: '';
   }
 
-  /* On touch screens, as on compact triggers: half the medium gap above and below, for Clear and
-     for a default trigger beside it. The trigger shows its overflow so the overlay isn't
-     clipped; its children still truncate. */
+  /* On touch screens, as on compact triggers, for Clear and a default trigger beside it. */
   @media (pointer: coarse) {
     .control > :not(.clear) {
       position: relative;
@@ -159,8 +156,7 @@
       outline-color: Highlight;
     }
 
-    /* The divider separates the parts, not the trigger's own border; its padding takes the
-       border's place, so the content doesn't move. */
+    /* The divider replaces the trigger's end border; padding keeps the content in place. */
     .control:has(> .clear) > :not(.clear) {
       padding-inline-end: var(--semantic-dimension-space-control-padding-inline-small);
       border-inline-end: 0;

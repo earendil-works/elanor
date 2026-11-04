@@ -27,10 +27,7 @@
     cursor: pointer;
   }
 
-  /* No block padding on the items: as tall as a compact Dropdown trigger beside it. Each item's
-     pseudo-element keeps a default item's target height, and on touch screens reaches half the
-     medium gap past the control, as compact Dropdown triggers do. It's an overlay, so the
-     control keeps its height. */
+  /* Each item's pseudo-element keeps the default touch target, as in compact Dropdown triggers. */
   :where(.root[data-density='compact']) .item {
     position: relative;
     padding-block: 0;

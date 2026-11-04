@@ -46,9 +46,8 @@
     content: '';
   }
 
-  /* Touch screens get a taller target, reaching half the medium gap above and below: rows of
-     filters a medium gap apart, as in Stack, Grid, and SearchAndFilterBar, touch but don't
-     overlap. It's an overlay, so the row keeps its height. */
+  /* On touch screens, the target reaches half the medium gap above and below, so rows a medium
+     gap apart don't overlap. */
   @media (pointer: coarse) {
     .trigger[data-density='compact']::after {
       inset-block: calc(
@@ -70,14 +69,13 @@
     text-overflow: ellipsis;
   }
 
-  /* The value shrinks first. Beside this factor, the prefix's and a value count's are too small
-     to cut them until the value is gone. Without specificity, so their own rules override it. */
+  /* The value shrinks first; the prefix and a value count give way only once it's gone. Without
+     specificity, so their own rules override it. */
   :where(.trigger > :not(.icon)) {
     flex-shrink: 10000;
   }
 
-  /* The prefix stays whole while the value truncates, a word space from it, as in running
-     text. It shrinks only once the value is gone, so the icon stays in a very narrow trigger. */
+  /* The prefix stays whole and sits a word space from the value. */
   .prefix {
     flex: 0 1 auto;
     margin-inline-end: calc(
@@ -87,7 +85,7 @@
     color: var(--semantic-color-text-secondary);
   }
 
-  /* Visual punctuation only: it's outside the label that names the trigger. */
+  /* Outside the label, so it's not in the trigger's name. */
   .prefix::after {
     content: ':';
   }
@@ -120,8 +118,7 @@
     opacity: var(--semantic-number-opacity-disabled);
   }
 
-  /* The icon takes the free space before it, so it stays at the end and the text stays
-     together. */
+  /* Keeps the icon at the end. */
   .icon {
     display: inline-flex;
     flex: none;

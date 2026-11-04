@@ -104,9 +104,8 @@ export function useClearableValue<
     if (!details.isCanceled) triggerRef.current?.focus();
   }
 
-  // The context changes only with what its parts show, so they don't re-render with every Root
-  // render. `clear` keeps one identity and calls this render's version, with the latest value,
-  // `clearValue` and `onValueChange`, through a ref updated once the render is committed.
+  // A stable `clear` that calls the latest render's version, so the context changes only with
+  // what its parts show.
   const latestClear = useRef(clearNow);
   useLayoutEffect(() => {
     latestClear.current = clearNow;
@@ -141,10 +140,8 @@ function isList<Item>(selection: Selection<Item>): selection is readonly Item[] 
 }
 
 /**
- * Base UI creates its event details with a factory on an internal subpath,
- * `@base-ui/react/internals/createBaseUIEventDetails`, which isn't covered by semver. This builds
- * the same object against the public type, so a Base UI upgrade that changes its shape fails to
- * type-check here instead of breaking at runtime.
+ * Base UI's own factory is on an internal subpath, outside semver. This builds the same object
+ * against the public type, so a shape change fails to type-check instead of breaking at runtime.
  */
 function createClearPressDetails(event: globalThis.MouseEvent, trigger: Element) {
   let canceled = false;
@@ -195,17 +192,11 @@ export interface DropdownValueCountProps extends Omit<HTMLAttributes<HTMLSpanEle
    * @default the selected values after the first
    */
   readonly count?: number | undefined;
-  /**
-   * What screen readers read instead of “+2”, after the value, so “developers +2” reads as
-   * “developers and 2 more”.
-   */
+  /** What screen readers read instead of “+2”, such as “and 2 more”. */
   readonly label?: ((count: number) => string) | undefined;
 }
 
-/**
- * A muted count of the selected values after the first, such as “+2”, after the value. It stays
- * whole while the value truncates. Screen readers read its `label` instead, such as “and 2 more”.
- */
+/** A muted count of the selected values after the first, such as “+2”. */
 export function DropdownValueCount({
   ref,
   count: countProp,
