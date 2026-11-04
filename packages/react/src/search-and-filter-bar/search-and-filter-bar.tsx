@@ -173,9 +173,9 @@ export interface SearchAndFilterBarClearAllProps extends Omit<
 > {}
 
 /**
- * Clears every filter, as a compact tertiary button at the end of Filters. Render it while a
- * filter is set. Pressing it moves focus to the first filter, since the button goes away. It
- * doesn't render in the filters drawer, which has FiltersActions instead.
+ * A compact tertiary button at the end of Filters for clearing every filter. Render it while a
+ * filter is set, and clear the filters in `onClick`; it then moves focus to the first filter,
+ * since the button goes away. It doesn't render in the filters drawer, which has FiltersActions.
  */
 export function SearchAndFilterBarClearAll({
   className,
