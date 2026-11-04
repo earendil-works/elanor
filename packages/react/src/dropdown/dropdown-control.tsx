@@ -22,7 +22,7 @@ export type DropdownRootChangedValue<Value, Multiple extends boolean | undefined
   | (Multiple extends true ? Value[] : Value)
   | (Multiple extends true ? never : null);
 
-/** The details Root's `onValueChange` receives when Clear empties the value. */
+/** The details Root's `onValueChange` receives when Clear clears the value. */
 export type DropdownClearPressDetails = BaseUIChangeEventDetails<'clear-press'>;
 
 interface ClearContextValue {
@@ -32,7 +32,7 @@ interface ClearContextValue {
   readonly selectedCount: number;
   /** The Root is disabled or read-only. */
   readonly disabled: boolean;
-  /** Empties the value through the Root's `onValueChange`, then focuses the trigger. */
+  /** Sets the clear value through the Root's `onValueChange`, then focuses the trigger. */
   readonly clear: (event: MouseEvent<HTMLElement>) => void;
   readonly triggerRef: RefObject<HTMLButtonElement | null>;
 }
@@ -68,7 +68,7 @@ interface ClearableValueOptions<
 }
 
 /**
- * Owns the Root's value so Clear can empty it. Base UI has no way to set an uncontrolled value
+ * Owns the Root's value so Clear can clear it. Base UI has no way to set an uncontrolled value
  * from outside, so an uncontrolled Root keeps its value here and passes it to Base UI controlled.
  */
 export function useClearableValue<
