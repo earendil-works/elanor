@@ -41,7 +41,7 @@ The popup opens below the trigger, aligned to its start edge, and repositions wh
 
 ## Density
 
-Use `compact` on the trigger in dense layouts, such as a filter beside a heading. The touch target keeps the default height, and on touch screens reaches into half the medium gap above and below. `SearchableDropdown.Trigger` takes the same `density`.
+Use `compact` on the trigger in dense layouts, such as a filter beside a heading. The touch target keeps the default height, and on touch screens extends half the medium gap above and below. `SearchableDropdown.Trigger` takes the same `density`.
 
 <Demo example="./examples/density.tsx" />
 
@@ -60,6 +60,8 @@ Use Prefix instead of `Label`, or instead of `Field.Label` inside a `Field`. It 
 Use Clear on filters, where no value means no filter, not on view controls that always have a value, such as a date range or a sort order.
 
 Name Clear with `aria-label`, such as “Clear Status filter”, and show the empty value with `Value`'s `placeholder`, such as “All”. Clear calls `onValueChange` with `null`, or `[]` with `multiple`, and the reason `clear-press`. A disabled or read-only Root, or a disabled `Field` or `Fieldset`, disables it. Its touch target matches the trigger's.
+
+When you control Root, pass `null` for no value, or `[]` with `multiple`, such as `value={search.status ?? null}`. `undefined` makes Root uncontrolled.
 
 <Demo example="./examples/clear.tsx" />
 
