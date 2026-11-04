@@ -1,6 +1,12 @@
 import {Select as BaseSelect} from '@base-ui/react/select';
 import {KeyboardArrowDownIcon} from '@earendil-works/elanor-icons-react';
-import {createContext, useContext, type ComponentPropsWithRef} from 'react';
+import {
+  createContext,
+  useContext,
+  type ComponentPropsWithRef,
+  type PointerEventHandler,
+  type Ref,
+} from 'react';
 
 import {classes, mergeClassName} from '../utils/class-names.ts';
 
@@ -30,7 +36,20 @@ export type DropdownRootProps<
   Multiple extends boolean | undefined = false,
 > = BaseSelect.Root.Props<Value, Multiple>;
 export type DropdownLabelProps = BaseSelect.Label.Props;
-export type DropdownTriggerProps = BaseSelect.Trigger.Props;
+export interface DropdownPrefixProps extends Omit<
+  BaseSelect.Label.Props,
+  'ref' | 'render' | 'onPointerDown'
+> {
+  readonly ref?: Ref<HTMLSpanElement> | undefined;
+  /** A plain React handler: Base UI's own label handler is replaced, so there's none to skip. */
+  readonly onPointerDown?: PointerEventHandler<HTMLSpanElement> | undefined;
+}
+export type DropdownTriggerDensity = 'compact' | 'default';
+
+export interface DropdownTriggerProps extends BaseSelect.Trigger.Props {
+  /** `compact` removes block padding but keeps the touch target height. */
+  readonly density?: DropdownTriggerDensity;
+}
 export type DropdownIconProps = BaseSelect.Icon.Props;
 export type DropdownPositionerProps = BaseSelect.Positioner.Props;
 export type DropdownPopupProps = BaseSelect.Popup.Props;
@@ -65,11 +84,40 @@ export function DropdownLabel({ref, className, ...props}: DropdownLabelProps) {
   );
 }
 
-export function DropdownTrigger({ref, className, ...props}: DropdownTriggerProps) {
+/**
+ * A muted label inside the trigger, before the value, such as “Date range”, followed by a colon.
+ * It's Base UI's `Select.Label` rendered as a `<span>` and takes its props, except `render`; use
+ * it instead of `Label`. The colon isn't part of the trigger's name.
+ */
+export function DropdownPrefix({ref, className, onPointerDown, ...props}: DropdownPrefixProps) {
+  return (
+    // Phrasing content inside the trigger's button. The trigger's `aria-labelledby` reads the
+    // label as its name, so the prefix is hidden from the trigger's content, which screen readers
+    // read as the value. The colon is drawn on this wrapper, outside the label, so it's not in
+    // the name.
+    <span className={styles.prefix} aria-hidden="true">
+      <BaseSelect.Label
+        {...props}
+        // Base UI's label cancels `pointerdown`, which keeps the trigger from opening, so its
+        // handler is replaced; `preventBaseUIHandler()` would also skip the trigger's.
+        render={(labelProps) => <span {...labelProps} ref={ref} onPointerDown={onPointerDown} />}
+        className={className}
+      />
+    </span>
+  );
+}
+
+export function DropdownTrigger({
+  ref,
+  density = 'default',
+  className,
+  ...props
+}: DropdownTriggerProps) {
   return (
     <BaseSelect.Trigger
       {...props}
       ref={ref}
+      data-density={density}
       className={mergeClassName<BaseSelect.Trigger.State>(styles.trigger, className)}
     />
   );

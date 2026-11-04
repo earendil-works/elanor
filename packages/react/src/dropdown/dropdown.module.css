@@ -32,10 +32,51 @@
     cursor: pointer;
   }
 
+  /* No block padding: 24px high with the default text and border. The pseudo-element keeps
+     the default touch target, as compact Buttons do; the trigger doesn't clip it, and its
+     children still truncate. */
+  .trigger[data-density='compact'] {
+    position: relative;
+    overflow: visible;
+    padding-block: 0;
+  }
+
+  .trigger[data-density='compact']::after {
+    position: absolute;
+    inset-block: calc(-1 * var(--semantic-dimension-space-control-padding-block-small));
+    inset-inline: 0;
+    content: '';
+  }
+
+  .trigger[data-density='compact'] .icon {
+    inline-size: var(--semantic-dimension-size-x-small);
+    block-size: var(--semantic-dimension-size-x-small);
+  }
+
   .trigger > :not(.icon) {
     min-inline-size: 0;
     overflow: hidden;
     text-overflow: ellipsis;
+  }
+
+  /* The prefix stays whole while the value truncates. A word space apart, as in running
+     text; the value takes the free space, so the icon stays at the end. */
+  .prefix {
+    flex: none;
+    margin-inline-end: calc(
+      var(--semantic-dimension-space-control-gap-small) -
+        var(--semantic-dimension-space-control-gap-large)
+    );
+    color: var(--semantic-color-text-secondary);
+  }
+
+  /* Visual punctuation only: it's outside the label that names the trigger. */
+  .prefix::after {
+    content: ':';
+  }
+
+  .prefix + :not(.icon) {
+    flex-grow: 1;
   }
 
   .trigger:where(:hover:not(:disabled, [data-disabled])) {

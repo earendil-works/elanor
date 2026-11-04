@@ -9,6 +9,8 @@ export type GridColumns = 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10 | 11 | 12;
 export type GridSpan = GridColumns | 'full';
 export type GridBreakpoint = 'base' | 'xSmall' | 'small' | 'medium' | 'large' | 'xLarge';
 export type GridResponsiveSpan = GridSpan | Partial<Record<GridBreakpoint, GridSpan>>;
+export type GridStart = GridColumns | 'auto' | 'end';
+export type GridResponsiveStart = GridStart | Partial<Record<GridBreakpoint, GridStart>>;
 export type GridGap = 'xxSmall' | 'xSmall' | 'small' | 'medium' | 'large' | 'xLarge';
 
 const breakpoints = ['base', 'xSmall', 'small', 'medium', 'large', 'xLarge'] as const;
@@ -38,6 +40,48 @@ function resolveSpans(span: GridResponsiveSpan, counts: TrackCounts) {
     spans[breakpoint] = current === 'full' ? 'full' : tracks[breakpoint];
   }
   return {spans, tracks};
+}
+
+// Span rules set `grid-column-start: span N`, so a start travels as the line the item ends on:
+// `-1` for the end of the row. Full rows and `auto` set none.
+function resolveEnds(
+  start: GridResponsiveStart,
+  spans: Record<GridBreakpoint, GridSpan>,
+  tracks: TrackCounts,
+  counts: TrackCounts,
+) {
+  let current: GridStart = typeof start === 'object' ? 'auto' : start;
+  // SAFETY: the loop below assigns every breakpoint before the record is read.
+  const ends = {} as Record<GridBreakpoint, number | undefined>;
+  for (const breakpoint of breakpoints) {
+    if (typeof start === 'object') current = start[breakpoint] ?? current;
+    if (
+      current !== 'auto' &&
+      current !== 'end' &&
+      (!Number.isInteger(current) || current < 1 || current > 12)
+    ) {
+      throw new RangeError('Grid starts must be an integer from 1 to 12, "auto", or "end".');
+    }
+    if (current === 'auto' || spans[breakpoint] === 'full') {
+      ends[breakpoint] = undefined;
+      continue;
+    }
+    const end = current === 'end' ? -1 : current + tracks[breakpoint];
+    // Starts that would overflow the row move back until the item ends on its last line.
+    ends[breakpoint] = end > counts[breakpoint] ? -1 : end;
+  }
+  return ends;
+}
+
+function endAttributes(ends: Record<GridBreakpoint, number | undefined>) {
+  return {
+    'data-end-base': ends.base,
+    'data-end-x-small': ends.xSmall,
+    'data-end-small': ends.small,
+    'data-end-medium': ends.medium,
+    'data-end-large': ends.large,
+    'data-end-x-large': ends.xLarge,
+  };
 }
 
 function spanAttributes(spans: Record<GridBreakpoint, GridSpan>) {
@@ -97,22 +141,48 @@ export interface GridItemProps extends useRender.ComponentProps<'div'> {
    * `{base: 'full', small: 6}`; each value applies until the next key.
    */
   readonly span?: GridResponsiveSpan;
+  /**
+   * Track to start on, or `end` to end on the row's last track. Keyed like `span`. Starts
+   * that would overflow the row move back until the item fits; full rows ignore them.
+   */
+  readonly start?: GridResponsiveStart;
 }
 
-export function GridItem({ref, span = 'full', render, className, ...props}: GridItemProps) {
-  const {spans} = resolveSpans(span, useTrackCounts());
+export function GridItem({
+  ref,
+  span = 'full',
+  start = 'auto',
+  render,
+  className,
+  ...props
+}: GridItemProps) {
+  const counts = useTrackCounts();
+  const {spans, tracks} = resolveSpans(span, counts);
   return useRender({
     defaultTagName: 'div',
     render,
     ref,
-    props: {...props, ...spanAttributes(spans), className: classes(styles.item, className)},
+    props: {
+      ...props,
+      ...spanAttributes(spans),
+      ...endAttributes(resolveEnds(start, spans, tracks, counts)),
+      className: classes(styles.item, className),
+    },
   });
 }
 
 export interface GridSubgridProps extends GridItemProps {}
 
-export function GridSubgrid({ref, span = 'full', render, className, ...props}: GridSubgridProps) {
-  const {spans, tracks} = resolveSpans(span, useTrackCounts());
+export function GridSubgrid({
+  ref,
+  span = 'full',
+  start = 'auto',
+  render,
+  className,
+  ...props
+}: GridSubgridProps) {
+  const counts = useTrackCounts();
+  const {spans, tracks} = resolveSpans(span, counts);
   const element = useRender({
     defaultTagName: 'div',
     render,
@@ -120,6 +190,7 @@ export function GridSubgrid({ref, span = 'full', render, className, ...props}: G
     props: {
       ...props,
       ...spanAttributes(spans),
+      ...endAttributes(resolveEnds(start, spans, tracks, counts)),
       className: classes(styles.item, styles.subgrid, className),
     },
   });
