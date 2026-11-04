@@ -13,7 +13,7 @@ export function MemberFilter({label, value, options, onChange}: MemberFilterProp
     <Dropdown.Root value={value} onValueChange={onChange}>
       <Dropdown.Control>
         <Dropdown.Trigger>
-          <Dropdown.Prefix>{label}:</Dropdown.Prefix>
+          <Dropdown.Prefix>{label}</Dropdown.Prefix>
           <Dropdown.Value placeholder="All" />
           <Dropdown.Icon />
         </Dropdown.Trigger>
