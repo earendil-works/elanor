@@ -139,6 +139,14 @@
     }
   }
 
+  /* Too narrow for both side by side, such as a phone at 200% zoom: the Filters button goes
+     under the search, so the search keeps a usable width. */
+  @container (inline-size < 18rem) {
+    .layout:has(> .trigger) {
+      grid-template-columns: minmax(0, 1fr);
+    }
+  }
+
   .drawerContent {
     display: grid;
     gap: var(--semantic-dimension-space-gap-large);

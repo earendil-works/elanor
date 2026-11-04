@@ -45,7 +45,7 @@ ClearAll doesn't render in the filters drawer, which has its own Clear all in Fi
 
 ## Narrow bars
 
-Add a FiltersTrigger and a FiltersDrawer, and bars narrower than 24rem keep the search and replace the filters with a button that opens them in a [Drawer](/components/drawer/). Without them, the filters stack in one column. A container query switches the layout, so it fits the bar's own width, including narrow columns on wide screens. The drawer closes when the bar grows past it, and focus moves to the inline filters.
+Add a FiltersTrigger and a FiltersDrawer, and bars narrower than 24rem keep the search and replace the filters with a button that opens them in a [Drawer](/components/drawer/). Below 18rem, such as on a phone zoomed to 200%, the button goes under the search. Without them, the filters stack in one column. A container query switches the layout, so it fits the bar's own width, including narrow columns on wide screens. The drawer closes when the bar grows past it, and focus moves to the inline filters.
 
 ```tsx
 <SearchAndFilterBar.FiltersTrigger>Filters (2)</SearchAndFilterBar.FiltersTrigger>
