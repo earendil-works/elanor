@@ -1,18 +1,18 @@
 /* Demo only: bar widths, scrolled sideways where the page is narrower. */
 /* stylelint-disable design-tokens/no-hardcoded-token-values -- Demo frame sizes. */
 .desktop {
-  inline-size: 76rem;
+  inline-size: 80rem;
 }
 
 .oneRow {
-  inline-size: 52rem;
+  inline-size: 60rem;
 }
 
 .twoRows {
-  inline-size: 40rem;
+  inline-size: 46rem;
 }
 
 .drawer {
-  inline-size: 24rem;
+  inline-size: 30rem;
 }
 /* stylelint-enable design-tokens/no-hardcoded-token-values */

@@ -35,17 +35,17 @@ Put controls directly in Filters. A wrapper element counts as one filter.
 
 <Demo example="./examples/content-width.tsx" />
 
-For filters of one width that line up with the page grid, set `layout="tracks"` on Filters. The filters sit at the end of the bar, and the search at its start. From 64rem the bar follows a twelve-track grid: the search spans four tracks and each filter two, ending on the last track. A filter's width doesn't depend on its value, so the row doesn't move when a value or its Clear button appears; long values truncate instead.
+For filters of one width that line up with the page grid, set `layout="tracks"` on Filters. The filters sit at the end of the bar, and the search at its start. On wide bars, from 77rem, the bar follows a twelve-track grid: the search spans four tracks and each filter two, ending on the last track. Below that, two tracks would be narrower than a filter's 12rem minimum, which fits values such as “Status: Pending” or “Role: Member +1”. A filter's width doesn't depend on its value, so the row doesn't move when a value or its Clear button appears; long values truncate instead.
 
 <Demo example="./examples/tracks.tsx" />
 
 Narrower bars keep the filters at the end, on as few rows as fit, choosing by their number of filters:
 
-- **One row** while the search keeps 16rem and each filter 10rem: the filters are 10rem, and the search takes the rest.
-- **Two rows** while each filter keeps 10rem: the search across the bar, then every filter at an equal width across the bar. One filter never takes a row of its own.
+- **One row** while the search keeps 16rem and each filter 12rem: the filters are 12rem, and the search takes the rest.
+- **Two rows** while each filter keeps 12rem: the search across the bar, then every filter at an equal width across the bar. One filter never takes a row of its own.
 - **The drawer** below that, with a FiltersTrigger. Without one, the last layout stays and the controls shrink.
 
-There's never a third row. With three filters, as below, that's one row from 49rem, two rows from 32rem, and the drawer below. Each child of Filters counts as one filter.
+There's never a third row. With three filters, as below, that's one row from 55rem, two rows from 38rem, and the drawer below. Each child of Filters counts as one filter.
 
 <Demo example="./examples/tracks-modes.tsx" />
 
