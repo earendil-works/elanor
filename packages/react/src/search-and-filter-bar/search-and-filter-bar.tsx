@@ -126,10 +126,9 @@ export type SearchAndFilterBarFiltersLayout = 'content' | 'tracks';
 export interface SearchAndFilterBarFiltersProps extends HTMLAttributes<HTMLDivElement> {
   readonly ref?: Ref<HTMLDivElement> | undefined;
   /**
-   * `content` sizes each filter to its content, up to half the filters' width. `tracks` puts
-   * the filters at the bar's end at a fixed width of at least 11.75rem, on the bar's twelve-track
-   * grid from 75.5rem: one row while the search keeps 16rem, then the search above every filter at
-   * equal widths, then the filters drawer. Up to eight filters.
+   * `content` sizes each filter to its content, up to half the filters' width. `tracks` gives
+   * up to eight filters one width, at least 11.75rem, at the bar's end: one row, then two rows,
+   * then the filters drawer.
    */
   readonly layout?: SearchAndFilterBarFiltersLayout;
 }
@@ -182,27 +181,9 @@ interface TrackedFiltersProps {
 }
 
 /**
- * The filters of a tracks bar, one wrapper per filter.
- *
- * The bar's styles choose between one row, two rows and the drawer by counting the filters, with
- * `:nth-child()` on the children of Filters, and that also decides whether the Filters button
- * shows. A filter's own elements can't be counted: besides its control, a Dropdown renders Base
- * UI's hidden input, and while its popup is open, focus guards and an owner span, all as siblings
- * of the control. Counting those, a one-row bar jumped to two rows or the drawer as soon as a
- * popup opened. So each child of Filters gets its own wrapper, the grid item, and whatever it
- * renders stays inside: the bar counts exactly the children, as the docs say each child of
- * Filters is one filter. `Children.toArray` drops `null` and `false`, so conditional filters
- * count only while they render; a fragment or a component counts as one filter, whatever it
- * renders, and one that renders nothing still takes a track.
- *
- * While the drawer is open, the controls render in its slot instead, but the wrappers stay,
- * empty, so the count holds: the bar keeps showing the Filters button until it grows wide enough
- * for the filters, and then the root's resize observer closes the drawer. Counting the drawer's
- * controls instead wouldn't work, as it renders outside the bar, where the bar's container
- * queries and selectors don't reach. The count is known on the server and on first paint; a
- * registry of filters would only know it after an effect, and the layout would jump.
- *
- * Content bars don't count their filters, so they keep their children unwrapped.
+ * Wraps each child of a tracks Filters, so the bar's `:nth-child()` rules count filters, not the
+ * hidden inputs, focus guards and spans a Dropdown renders beside its control. While the drawer
+ * is open, the controls render in its slot and the empty wrappers keep the count.
  */
 function TrackedFilters({filtersSlot, children}: TrackedFiltersProps) {
   const filters = Children.toArray(children);
