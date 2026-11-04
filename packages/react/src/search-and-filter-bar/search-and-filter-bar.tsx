@@ -163,8 +163,16 @@ export function SearchAndFilterBarFilters({
       ...props,
       className: classes(styles.filters, layout === 'tracks' && styles.tracks, className),
       // One instance of the controls at a time keeps their IDs and label associations unique.
-      // With tracks, the bar's styles count the filters to choose their layout, so an empty
-      // placeholder stands in for each while they're in the drawer.
+      //
+      // With tracks, the bar's styles count these children to choose between one row, two rows
+      // and the drawer, and so whether the Filters button shows. While the drawer is open, the
+      // controls are in it, and the bar would count none: it would show the button only at the
+      // one-filter width, and the root's resize observer would close the drawer as soon as the
+      // bar grew past that, though the filters still don't fit. The drawer's own controls can't
+      // be counted instead: it renders outside the bar, so the bar's container queries and
+      // selectors don't reach it. The open state alone can't say when they'd fit again either.
+      // So an empty, hidden placeholder stands in for each filter, one per child, as the docs
+      // say each child of Filters is one filter.
       children: filtersSlot ? (
         <>
           {createPortal(children, filtersSlot)}
