@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 
-/** A run of code in one color. Shiki's and Highlights' themed tokens are code tokens. */
+/** A run of code in one color. Shiki's and Highlights' tokens match this shape. */
 export interface CodeToken {
   readonly content: string;
   readonly color?: string | undefined;
@@ -10,9 +10,8 @@ export interface CodeToken {
 export type HighlightedLines = readonly (readonly CodeToken[])[];
 
 /**
- * Highlights code in the browser, resolving to null for code it can't highlight, such as an
- * unknown language. Create it once, outside components: `useHighlightedCode` highlights again
- * whenever it receives a different function.
+ * Highlights code in the browser. Resolves to null for code it can't highlight, such as an unknown
+ * language. Create it once, outside components: a new function highlights again.
  */
 export type CodeHighlighter = (code: string, language: string) => Promise<HighlightedLines | null>;
 
@@ -20,10 +19,7 @@ export interface HighlightedCodeProps {
   readonly lines: HighlightedLines;
 }
 
-/**
- * Highlighted lines as the content of a `CodeSnippet`. It renders the same on the server and in
- * the browser, so code highlighted ahead of time needs no JavaScript.
- */
+/** Renders highlighted lines inside a `CodeSnippet`, on the server or in the browser. */
 export function HighlightedCode({lines}: HighlightedCodeProps) {
   return lines.map((line, index) => (
     // Lines never reorder, so their position is a stable key.
@@ -45,9 +41,9 @@ interface Highlighted {
 }
 
 /**
- * Highlights code with `highlighter` once the component mounts. Until the lines are ready, on the
- * server, and for code the highlighter can't highlight, it returns undefined: show the plain
- * code. A failure is reported, and the code stays plain.
+ * Highlights code after the component mounts. Returns undefined until the lines are ready, on the
+ * server, and for code the highlighter can't highlight; show the plain code then. Failures are
+ * reported, and the code stays plain.
  */
 export function useHighlightedCode(
   code: string,
