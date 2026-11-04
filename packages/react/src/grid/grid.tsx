@@ -51,6 +51,7 @@ function resolveEnds(
   counts: TrackCounts,
 ) {
   let current: GridStart = typeof start === 'object' ? 'auto' : start;
+  // SAFETY: the loop below assigns every breakpoint before the record is read.
   const ends = {} as Record<GridBreakpoint, number | undefined>;
   for (const breakpoint of breakpoints) {
     if (typeof start === 'object') current = start[breakpoint] ?? current;
