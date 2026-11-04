@@ -531,7 +531,7 @@ export type {
 } from './search-and-filter-bar/search-and-filter-bar.tsx';
 
 export {Search} from './search/search.tsx';
-export type {SearchProps} from './search/search.tsx';
+export type {SearchDensity, SearchProps} from './search/search.tsx';
 
 export type {
   CreateSearchableDropdownItemsOptions,

@@ -8,6 +8,8 @@ import styles from './search.module.css';
 
 const inputTypes = ['text', 'search'] as const;
 
+export type SearchDensity = 'compact' | 'default';
+
 export interface SearchProps extends Omit<BaseInput.Props, 'type'> {
   readonly type?: (typeof inputTypes)[number];
   /** Decorative icon before the input. Defaults to a search icon. */
@@ -16,6 +18,8 @@ export interface SearchProps extends Omit<BaseInput.Props, 'type'> {
   readonly endAdornment?: ReactNode;
   /** Class name for the outer wrapper; `className` styles the input. */
   readonly rootClassName?: string;
+  /** `compact` removes block padding but keeps the touch target height. */
+  readonly density?: SearchDensity;
 }
 
 export function Search({
@@ -23,6 +27,7 @@ export function Search({
   icon,
   endAdornment,
   rootClassName,
+  density = 'default',
   className,
   type = 'search',
   ...props
@@ -34,7 +39,7 @@ export function Search({
   }
 
   return (
-    <span className={classes(styles.root, rootClassName)}>
+    <span data-density={density} className={classes(styles.root, rootClassName)}>
       <span className={styles.icon} aria-hidden="true">
         {icon ?? <SearchIcon />}
       </span>

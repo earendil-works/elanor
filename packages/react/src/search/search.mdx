@@ -18,6 +18,12 @@ import {Search} from '@earendil-works/elanor-react';
 
 The placeholder isn't a label; name the input with `aria-label` or a visible [Field](/components/field/) label. `className` styles the input and `rootClassName` the wrapper.
 
+## Density
+
+Use `compact` beside compact controls, such as Dropdown filters in a [search and filter bar](/components/search-and-filter-bar/). It removes the block padding, so the search is as tall as a compact Dropdown trigger. The input still takes taps at the default height, and on touch screens it reaches halfway into the medium gap above and below, as compact triggers do.
+
+<Demo example="./examples/density.tsx" />
+
 ## Filtering with a clear button
 
 Search hides the browser's built-in clear button, so it looks the same in every browser. To add one, pass it as `endAdornment`, which places content after the input. Return focus to the input after clearing, and announce the result count in a status region.
