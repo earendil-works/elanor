@@ -4,20 +4,27 @@ Requires Stylelint 17. Checks CSS against a generated token catalogue; no custom
 
 ## Setup
 
-Build the selected brand's tokens, then configure Stylelint:
+Install the plugin, tokens, and Stylelint:
+
+```sh
+npm install --save-dev @earendil-works/stylelint-plugin-design-tokens @earendil-works/design-tokens stylelint@^17
+```
+
+Configure Stylelint with the installed brand catalogue:
 
 ```js
+import {fileURLToPath} from 'node:url';
+
 import {createStrictConfig} from '@earendil-works/stylelint-plugin-design-tokens';
 
-export default [
-  createStrictConfig({
-    catalogue: new URL('./packages/design-tokens/dist/radius/tokens.catalog.json', import.meta.url)
-      .pathname,
-    foundationFiles: ['**/tokens.css', '**/foundation/**'],
-    ignoreFiles: ['**/tests/fixtures/**'],
-    allowCustomProperties: [], // Third-party variables only, e.g. '--vendor-*'.
-  }),
-];
+export default createStrictConfig({
+  catalogue: fileURLToPath(
+    import.meta.resolve('@earendil-works/design-tokens/radius.catalog.json'),
+  ),
+  foundationFiles: ['**/tokens.css', '**/foundation/**'],
+  ignoreFiles: ['**/tests/fixtures/**'],
+  allowCustomProperties: [], // Third-party variables only, e.g. '--vendor-*'.
+});
 ```
 
 Choose `radius`, `pi`, `earendil`, `lefos`, or `elanor`. Variables from other brands are unknown unless the selected catalogue also contains them.

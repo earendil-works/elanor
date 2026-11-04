@@ -4,7 +4,7 @@ import DocsLayout from '../layouts/docs-layout.astro';
 import {IconBrowser, iconImportTemplate} from '../components/icon-browser.tsx';
 import {highlight} from '../lib/highlight.ts';
 
-const importHtml = await highlight(iconImportTemplate, 'tsx');
+const importLines = await highlight(iconImportTemplate, 'tsx');
 ---
 
 <DocsLayout title="Icons" current="/icons/">
@@ -19,6 +19,6 @@ const importHtml = await highlight(iconImportTemplate, 'tsx');
   <div class="page grid-page">
     <Heading level={1} size={1}>Icons</Heading>
     <Text>Material Symbols with a hand-drawn boil. Select an icon for its React import and SVG.</Text>
-    <IconBrowser importHtml={importHtml} client:load />
+    <IconBrowser importLines={importLines} client:load />
   </div>
 </DocsLayout>

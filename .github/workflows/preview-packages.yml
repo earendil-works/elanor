@@ -1,9 +1,4 @@
-# Publishes preview builds of Elanor's packages to pkg.earendil.com on every push to main, moving their `main` ref.
-# pkg.earendil.com only accepts uploads authenticated with the OIDC token of this workflow on main, for the packages
-# listed for this repository in earendil-works/pkg (src/config.ts).
-#
-# The build job runs the code and has no id-token; the publish job only uploads the packed tarballs.
-
+# pkg only accepts uploads from this workflow on main; workflow_run releases tags under that identity.
 name: Preview packages
 
 on:
@@ -11,19 +6,38 @@ on:
     branches:
       - main
   workflow_dispatch:
+    inputs:
+      sha:
+        description: Full main commit SHA whose existing build to keep as main-<sha12>. Empty rebuilds main.
+        required: false
+        type: string
+  workflow_run:
+    workflows: [Publish npm packages]
+    types: [completed]
 
 permissions: {}
 
 jobs:
   build:
+    if: >-
+      github.ref == 'refs/heads/main' &&
+      !(github.event_name == 'workflow_dispatch' && inputs.sha) &&
+      (github.event_name != 'workflow_run' ||
+      (github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_repository.full_name == github.repository &&
+      startsWith(github.event.workflow_run.head_branch, 'v')))
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     permissions:
       contents: read
+    outputs:
+      artifact-id: ${{ steps.artifact.outputs.artifact-id }}
     steps:
-      - name: Check out repository
+      - name: Check out trusted workflow scripts
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: ${{ github.sha }}
           persist-credentials: false
 
       - name: Install pnpm
@@ -33,7 +47,19 @@ jobs:
         uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version-file: .nvmrc
-          cache: pnpm
+          package-manager-cache: false
+
+      - name: Verify build target
+        id: target
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/preview-packages.mjs target
+
+      - name: Check out verified commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ steps.target.outputs.sha }}
+          persist-credentials: false
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
@@ -41,86 +67,81 @@ jobs:
       - name: Build
         run: pnpm -r --filter './packages/**' --if-present --workspace-concurrency=1 run build
 
+      - name: Validate packages before retention
+        run: |
+          pnpm check
+          pnpm test
+
+      # This job has no OIDC token; pack with the target's own package list, which may predate main's.
       - name: Pack
         env:
-          BASE_URL: https://pkg.earendil.com
-        run: |
-          set -euo pipefail
-          # Keep in sync with this repository's packages in earendil-works/pkg (src/config.ts).
-          dirs=(
-            packages/design-tokens
-            packages/fonts
-            packages/icons/plain
-            packages/icons/plain/react
-            packages/icons/boiled
-            packages/icons/boiled/react
-            packages/logos
-            packages/logos/react
-            packages/react
-            packages/shiki-theme
-            packages/stylelint-plugin-design-tokens
-          )
-          names=$(for dir in "${dirs[@]}"; do jq .name "$dir/package.json"; done | jq -sc .)
-          mkdir -p "$RUNNER_TEMP/packages"
-          for dir in "${dirs[@]}"; do
-            # Dependencies on other Elanor packages install this commit's builds, not released versions.
-            jq --argjson names "$names" --arg base "$BASE_URL" --arg sha "$GITHUB_SHA" \
-              'if .dependencies then .dependencies |= with_entries(if (.key | IN($names[])) then .value = "\($base)/\(.key)@\($sha)" end) end' \
-              "$dir/package.json" > "$RUNNER_TEMP/package.json"
-            mv "$RUNNER_TEMP/package.json" "$dir/package.json"
-            (cd "$dir" && pnpm pack --config.ignore-scripts=true --pack-destination "$RUNNER_TEMP/packages")
-          done
+          HEAD_SHA: ${{ steps.target.outputs.sha }}
+        run: node scripts/preview-packages.mjs pack "$RUNNER_TEMP/packages" "$HEAD_SHA"
 
       - name: Upload the packages
+        id: artifact
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
-          name: packages
-          path: ${{ runner.temp }}/packages
+          name: packages-${{ github.run_attempt }}
+          path: ${{ runner.temp }}/packages/*.tgz
           retention-days: 7
+          compression-level: 0
           if-no-files-found: error
 
   publish:
     needs: build
-    if: github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
-      id-token: write # authenticate to pkg.earendil.com
+      contents: read
+      id-token: write
     steps:
+      - name: Check out trusted publishing script
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          package-manager-cache: false
+
       - name: Download the packages
         uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
         with:
-          name: packages
+          artifact-ids: ${{ needs.build.outputs.artifact-id }}
           path: ${{ runner.temp }}/packages
+          merge-multiple: true
 
       - name: Publish to pkg.earendil.com
         env:
-          DIR: ${{ runner.temp }}/packages
-          BASE_URL: https://pkg.earendil.com
-        run: |
-          set -euo pipefail
-          token=$(curl -sSf -H "Authorization: Bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            "$ACTIONS_ID_TOKEN_REQUEST_URL&audience=$BASE_URL" | jq -r .value)
-          echo "::add-mask::$token"
-          packages=()
-          for file in "$DIR"/*.tgz; do
-            package=$(tar -xOzf "$file" package/package.json | jq -r .name)
-            name=$(jq -rn --arg name "$package" '$name | @uri')
-            curl -sS --fail-with-body -X PUT -H "Authorization: Bearer $token" --data-binary "@$file" \
-              "$BASE_URL/_/upload/$GITHUB_SHA/$name?event=push"
-            echo
-            packages+=("$package")
-          done
-          jq -n --arg sha "$GITHUB_SHA" --argjson run "$GITHUB_RUN_ID" '{ sha: $sha, refs: ["main"], run: $run }' |
-            curl -sS --fail-with-body -X POST -H "Authorization: Bearer $token" --data-binary @- "$BASE_URL/_/refs"
-          echo
-          {
-            echo "### Preview packages"
-            echo
-            echo '```sh'
-            for package in "${packages[@]}"; do
-              echo "npm i $BASE_URL/$package@main   # latest build of main"
-              echo "npm i $BASE_URL/$package@$GITHUB_SHA"
-            done
-            echo '```'
-          } >> "$GITHUB_STEP_SUMMARY"
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/preview-packages.mjs publish "$RUNNER_TEMP/packages"
+
+  snapshot:
+    if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch' && inputs.sha
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      actions: read # confirm the commit's main build finished uploading
+      contents: read
+      id-token: write
+    steps:
+      - name: Check out trusted publishing script
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.sha }}
+          persist-credentials: false
+
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version-file: .nvmrc
+          package-manager-cache: false
+
+      - name: Keep the build on pkg.earendil.com
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node scripts/preview-packages.mjs snapshot

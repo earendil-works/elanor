@@ -29,3 +29,42 @@ Pass a [Copy button](/components/copy-button/) to `actions`. With a mouse, the a
 Code keeps its line breaks. Actions stay on the first line.
 
 <Demo example="./examples/multi-line.tsx" />
+
+## Syntax highlighting
+
+Pass highlighted lines to `HighlightedCode` as the snippet's content. Elanor includes no highlighter: use [Shiki](https://shiki.style) or [Highlights](https://diffs.com/docs#highlights) with a theme from `@earendil-works/elanor-code-themes`. The themes use the code syntax tokens, so colors follow the brand and the color scheme. Leave commands, keys and codes plain.
+
+On a server-rendered page, highlight on the server. The page then shows the colors without JavaScript:
+
+```tsx
+import elanorTheme from '@earendil-works/elanor-code-themes/shiki';
+import {CodeSnippet, HighlightedCode} from '@earendil-works/elanor-react';
+import {codeToTokensBase} from 'shiki';
+
+const lines = await codeToTokensBase(code, {lang: 'tsx', theme: elanorTheme});
+
+<CodeSnippet>
+  <HighlightedCode lines={lines} />
+</CodeSnippet>;
+```
+
+In the browser, `useHighlightedCode(code, language, highlighter)` highlights after the component mounts. The snippet shows plain code until then, and for languages the highlighter doesn't support. This demo's highlighter uses Shiki and loads each language on first use:
+
+<Demo example="./examples/syntax-highlighting.tsx" />
+
+A highlighter using Highlights:
+
+```ts
+import elanorTheme from '@earendil-works/elanor-code-themes/highlights';
+import type {CodeHighlighter} from '@earendil-works/elanor-react';
+
+export const highlighter: CodeHighlighter = async (code, language) => {
+  // Loads Highlights when code first needs it.
+  const {codeToTokens, isSupportedLanguage} = await import('@pierre/highlights');
+  return isSupportedLanguage(language)
+    ? codeToTokens(code, {lang: language, theme: elanorTheme, tokenizeMaxLineLength: 1000}).tokens
+    : null;
+};
+```
+
+Highlights needs WebAssembly with SIMD. Under a Content Security Policy, allow `'wasm-unsafe-eval'`.
