@@ -10,4 +10,3 @@
 .dev.vars*
 .env*
 apps/docs-worker/worker.generated.d.ts
-**/.vitest/
