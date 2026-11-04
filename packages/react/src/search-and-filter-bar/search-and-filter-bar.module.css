@@ -137,16 +137,21 @@
      of filters. Widths don't depend on values, so a row doesn't reflow when a value or a Clear
      button appears.
 
-     - One row: from 64rem, the Figma grid: the search on the first four of twelve tracks, and
-       each filter on two, ending at the bar's end. Narrower, each filter is 10rem and the search
-       takes the rest, while it keeps 16rem.
+     - One row: the Figma grid while two of its twelve tracks are at least a filter's minimum
+       width, from 77rem: the search on the first four tracks, and each filter on two, ending at
+       the bar's end. Narrower, each filter is at its minimum and the search takes the rest,
+       while it keeps 16rem.
      - Two rows: the search, then every filter at an equal width across the bar, while each keeps
-       10rem. There's never a third row, and one filter alone never takes a row.
+       its minimum. There's never a third row, and one filter alone never takes a row.
      - Otherwise, with a FiltersTrigger, the filters move into the drawer. Without one, the last
        layout stays and the controls shrink.
 
-     The layout sets these properties for each mode; the parts read them. */
+     The layout sets these properties for each mode; the parts read them. Container queries can't
+     read properties, so the widths below are worked out from the 12rem minimum, the 16rem
+     search and the 1rem gap. */
   .layout:has(> .tracks) {
+    /* Short enough for values such as "Status: Pending" or "Role: Member +1" with a Clear. */
+    --tracks-filter-min: 12rem;
     --tracks-column: calc((100cqi - 11 * var(--semantic-dimension-space-gap-medium)) / 12);
     --tracks-wrap: nowrap;
     --tracks-search-grow: 0;
@@ -187,18 +192,19 @@
     flex: none;
   }
 
-  /* One row below the Figma grid. */
-  @container (inline-size < 64rem /* token: semantic.dimension.breakpoint.medium */) {
+  /* One row below the Figma grid, where two tracks and their gap are under 12rem:
+     (77rem - 11 gaps) / 6 + 1 gap = 12rem. */
+  @container (inline-size < 77rem) {
     .layout:has(> .tracks) {
       --tracks-search-grow: 1;
       --tracks-search-basis: 0;
-      --tracks-filter-width: 10rem;
+      --tracks-filter-width: var(--tracks-filter-min);
     }
   }
 
-  /* Two rows: where one row no longer fits 16rem of search and 10rem per filter, each a 1rem
-     gap apart (16rem + 11rem per filter), and always from five filters. */
-  @container (inline-size < 38rem) {
+  /* Two rows: where one row no longer fits 16rem of search and 12rem per filter, each a 1rem
+     gap apart (16rem + 13rem per filter), and always from five filters. */
+  @container (inline-size < 42rem) {
     .layout:has(> .tracks > :nth-child(2 of :not(input))) {
       --tracks-wrap: wrap;
       --tracks-search-basis: 100%;
@@ -207,7 +213,7 @@
     }
   }
 
-  @container (inline-size < 49rem) {
+  @container (inline-size < 55rem) {
     .layout:has(> .tracks > :nth-child(3 of :not(input))) {
       --tracks-wrap: wrap;
       --tracks-search-basis: 100%;
@@ -216,7 +222,7 @@
     }
   }
 
-  @container (inline-size < 60rem) {
+  @container (inline-size < 68rem) {
     .layout:has(> .tracks > :nth-child(4 of :not(input))) {
       --tracks-wrap: wrap;
       --tracks-search-basis: 100%;
@@ -232,9 +238,9 @@
     --tracks-filter-width: minmax(0, 1fr);
   }
 
-  /* The drawer, with a FiltersTrigger: where one filter no longer fits one row (27rem), or two
-     rows no longer fit 10rem per filter, each a 1rem gap apart (11rem per filter, less 1rem). */
-  @container (inline-size < 27rem) {
+  /* The drawer, with a FiltersTrigger: where one filter no longer fits one row (29rem), or two
+     rows no longer fit 12rem per filter, each a 1rem gap apart (13rem per filter, less 1rem). */
+  @container (inline-size < 29rem) {
     .layout:has(> .trigger):has(> .tracks):not(:has(> .tracks > :nth-child(2 of :not(input)))) {
       --tracks-wrap: nowrap;
       --tracks-search-grow: 1;
@@ -244,7 +250,7 @@
     }
   }
 
-  @container (inline-size < 21rem) {
+  @container (inline-size < 25rem) {
     .layout:has(> .trigger):has(> .tracks > :nth-child(2 of :not(input))) {
       --tracks-wrap: nowrap;
       --tracks-search-grow: 1;
@@ -254,7 +260,7 @@
     }
   }
 
-  @container (inline-size < 32rem) {
+  @container (inline-size < 38rem) {
     .layout:has(> .trigger):has(> .tracks > :nth-child(3 of :not(input))) {
       --tracks-wrap: nowrap;
       --tracks-search-grow: 1;
@@ -264,7 +270,7 @@
     }
   }
 
-  @container (inline-size < 43rem) {
+  @container (inline-size < 51rem) {
     .layout:has(> .trigger):has(> .tracks > :nth-child(4 of :not(input))) {
       --tracks-wrap: nowrap;
       --tracks-search-grow: 1;
@@ -274,7 +280,7 @@
     }
   }
 
-  @container (inline-size < 54rem) {
+  @container (inline-size < 64rem) {
     .layout:has(> .trigger):has(> .tracks > :nth-child(5 of :not(input))) {
       --tracks-wrap: nowrap;
       --tracks-search-grow: 1;
@@ -284,7 +290,7 @@
     }
   }
 
-  @container (inline-size < 65rem) {
+  @container (inline-size < 77rem) {
     .layout:has(> .trigger):has(> .tracks > :nth-child(6 of :not(input))) {
       --tracks-wrap: nowrap;
       --tracks-search-grow: 1;
