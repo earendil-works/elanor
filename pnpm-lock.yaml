@@ -470,6 +470,9 @@ importers:
       '@earendil-works/design-tokens':
         specifier: workspace:*
         version: link:../design-tokens
+      '@earendil-works/elanor-code-themes':
+        specifier: workspace:*
+        version: link:../code-themes
       '@earendil-works/stylelint-plugin-design-tokens':
         specifier: workspace:*
         version: link:../stylelint-plugin-design-tokens
@@ -503,6 +506,9 @@ importers:
       rollup-plugin-postcss:
         specifier: 4.0.2
         version: 4.0.2(postcss@8.5.29)
+      shiki:
+        specifier: ^4.4.3
+        version: 4.4.3
       stylelint:
         specifier: ^17.15.0
         version: 17.15.0(typescript@7.0.2)

@@ -29,3 +29,39 @@ Pass a [Copy button](/components/copy-button/) to `actions`. With a mouse, the a
 Code keeps its line breaks. Actions stay on the first line.
 
 <Demo example="./examples/multi-line.tsx" />
+
+## Syntax highlighting
+
+Pass highlighted lines as the content, rendered by `HighlightedCode`. Elanor doesn't include a highlighter: [Shiki](https://shiki.style) and [Highlights](https://diffs.com/docs#highlights) both produce the lines, colored in the code syntax tokens by the themes in `@earendil-works/elanor-code-themes`, so highlighting follows the brand and the color scheme. Leave commands, keys and codes plain.
+
+Where the page is rendered ahead of time, highlight there, and the page needs no JavaScript to show the colors:
+
+```tsx
+import elanorTheme from '@earendil-works/elanor-code-themes/shiki';
+import {CodeSnippet, HighlightedCode} from '@earendil-works/elanor-react';
+import {codeToTokensBase} from 'shiki';
+
+const lines = await codeToTokensBase(code, {lang: 'tsx', theme: elanorTheme});
+
+<CodeSnippet>
+  <HighlightedCode lines={lines} />
+</CodeSnippet>;
+```
+
+In the browser, `useHighlightedCode` takes a highlighter, a function from code and language to lines, which loads the highlighter when code first needs it. The snippet shows the plain code until the lines are ready, and for a language the highlighter doesn't know.
+
+<Demo example="./examples/syntax-highlighting.tsx" />
+
+With Highlights, the highlighter is one call:
+
+```ts
+import elanorTheme from '@earendil-works/elanor-code-themes/highlights';
+import type {CodeHighlighter} from '@earendil-works/elanor-react';
+
+export const highlighter: CodeHighlighter = async (code, language) => {
+  const {codeToTokens, isSupportedLanguage} = await import('@pierre/highlights');
+  return isSupportedLanguage(language)
+    ? codeToTokens(code, {lang: language, theme: elanorTheme, tokenizeMaxLineLength: 1000}).tokens
+    : null;
+};
+```
