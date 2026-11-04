@@ -68,6 +68,8 @@ Add a FiltersTrigger and a FiltersDrawer, and bars narrower than 24rem keep the 
 
 While the drawer is open, the controls in Filters render in its FiltersSlot instead, so they mount again each time; control their values from the application. The page behind the drawer is inert, so FiltersStatus announces the results instead of the page's status region.
 
+FiltersTrigger also works on its own, inside any Drawer.Root, such as a page with a filters drawer but no bar. With `density="compact"` it's 24px high, like compact Search and Dropdown triggers, where a compact Button is 20px.
+
 FiltersActions stacks the buttons at full width. Put the primary action last, nearest the thumb, so the visual order matches the focus order. Keep Clear all focusable while disabled, so focus stays on it after clearing.
 
 <Demo example="./examples/narrow.tsx" />

@@ -231,32 +231,32 @@ export interface SearchAndFilterBarFiltersTriggerProps extends ButtonHTMLAttribu
 
 /**
  * Opens the filters drawer. Bars narrower than 24rem with a FiltersTrigger show it in place of the
- * inline filters.
+ * inline filters. Outside a bar, it opens the drawer of the Drawer.Root around it, such as a page's
+ * own filters drawer.
  */
 export function SearchAndFilterBarFiltersTrigger({
   ref,
   density = 'default',
   ...props
 }: SearchAndFilterBarFiltersTriggerProps) {
-  const {
-    meta: {triggerRef},
-  } = useSearchAndFilterBar('FiltersTrigger');
-  return (
-    <div className={styles.trigger}>
-      <Drawer.Trigger
-        {...props}
-        ref={ref}
-        render={
-          <Button
-            ref={triggerRef}
-            hierarchy="secondary"
-            density={density}
-            iconStart={<FilterListIcon />}
-          />
-        }
-      />
-    </div>
+  // Optional: the button also works on its own, with no bar to show or hide it.
+  const bar = use(SearchAndFilterBarContext);
+  const trigger = (
+    <Drawer.Trigger
+      {...props}
+      ref={ref}
+      render={
+        <Button
+          ref={bar?.meta.triggerRef}
+          hierarchy="secondary"
+          density={density}
+          iconStart={<FilterListIcon />}
+          className={styles.filtersButton}
+        />
+      }
+    />
   );
+  return bar ? <div className={styles.trigger}>{trigger}</div> : trigger;
 }
 
 export interface SearchAndFilterBarFiltersDrawerProps extends Omit<DrawerPopupProps, 'finalFocus'> {

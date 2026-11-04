@@ -84,11 +84,11 @@
   /* A compact button has no border, so a little block padding makes it as tall as the compact
      Search and Dropdown triggers beside it, which have one. Its overlay keeps their touch
      target: the default height, and on touch screens half the medium gap above and below. */
-  .trigger > [data-density='compact'] {
+  .filtersButton[data-density='compact'] {
     padding-block: var(--semantic-dimension-space-padding-xx-small);
   }
 
-  .trigger > [data-density='compact']::after {
+  .filtersButton[data-density='compact']::after {
     inset-block: calc(
       var(--semantic-dimension-space-padding-xx-small) -
         var(--semantic-dimension-space-control-padding-block-small)
@@ -96,7 +96,7 @@
   }
 
   @media (pointer: coarse) {
-    .trigger > [data-density='compact']::after {
+    .filtersButton[data-density='compact']::after {
       inset-block: calc(-1 * var(--semantic-dimension-space-gap-medium) / 2);
     }
   }
