@@ -14,6 +14,7 @@ export default function SearchAndFilterBarContentWidth() {
     <SearchAndFilterBar.Root role="search" aria-label="Component search and filters">
       <SearchAndFilterBar.Search>
         <Search
+          density="compact"
           aria-label="Search components"
           placeholder="Search components"
           value={query}
@@ -23,6 +24,7 @@ export default function SearchAndFilterBarContentWidth() {
       <SearchAndFilterBar.Filters>
         <MemberFilter label="Owner" value={owner} options={owners} onChange={setOwner} />
         <SegmentedControl.Root
+          density="compact"
           aria-label="Source"
           value={source}
           onValueChange={(next) => {

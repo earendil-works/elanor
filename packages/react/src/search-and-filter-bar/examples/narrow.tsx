@@ -43,6 +43,7 @@ export default function SearchAndFilterBarNarrow() {
       <SearchAndFilterBar.Root role="search" aria-label="Member search and filters">
         <SearchAndFilterBar.Search>
           <Search
+            density="compact"
             aria-label="Search members"
             placeholder="Search members"
             value={query}
@@ -63,7 +64,7 @@ export default function SearchAndFilterBarNarrow() {
             onChange={setRole}
           />
         </SearchAndFilterBar.Filters>
-        <SearchAndFilterBar.FiltersTrigger>
+        <SearchAndFilterBar.FiltersTrigger density="compact">
           {activeFilters ? `Filters (${activeFilters})` : 'Filters'}
         </SearchAndFilterBar.FiltersTrigger>
         <SearchAndFilterBar.FiltersDrawer>

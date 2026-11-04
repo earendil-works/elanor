@@ -19,6 +19,7 @@ export default function SearchAndFilterBarTracks() {
           <SearchAndFilterBar.Root role="search" aria-label="Member search and filters">
             <SearchAndFilterBar.Search>
               <Search
+                density="compact"
                 aria-label="Search members"
                 placeholder="Search members"
                 value={query}

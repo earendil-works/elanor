@@ -15,7 +15,7 @@ import {Search, SearchAndFilterBar} from '@earendil-works/elanor-react';
 
 <SearchAndFilterBar.Root role="search" aria-label="Member search and filters">
   <SearchAndFilterBar.Search>
-    <Search />
+    <Search density="compact" />
   </SearchAndFilterBar.Search>
   <SearchAndFilterBar.Filters>
     {/* Filter controls, such as Dropdowns */}
@@ -24,6 +24,8 @@ import {Search, SearchAndFilterBar} from '@earendil-works/elanor-react';
 ```
 
 The bar only arranges its contents; the application filters the data. Give Root `role="search"` and an `aria-label`, and announce the number of results in a status region.
+
+Use the compact density for everything in the bar, so the search, the filters, and the Filters button are all 24px high: `density="compact"` on Search, Dropdown triggers, SegmentedControl, and FiltersTrigger. Their touch targets keep the default height.
 
 ## Filter widths
 
@@ -42,7 +44,7 @@ For filters of one width that line up with the page grid, set `layout="tracks"` 
 Add a FiltersTrigger and a FiltersDrawer, and bars narrower than 24rem keep the search and replace the filters with a button that opens them in a [Drawer](/components/drawer/). Below 18rem, such as on a phone zoomed to 200%, the button goes under the search. Without them, the filters stack in one column. A container query switches the layout, so it fits the bar's own width, including narrow columns on wide screens. The drawer closes when the bar grows past it, and focus moves to the inline filters.
 
 ```tsx
-<SearchAndFilterBar.FiltersTrigger>Filters (2)</SearchAndFilterBar.FiltersTrigger>
+<SearchAndFilterBar.FiltersTrigger density="compact">Filters (2)</SearchAndFilterBar.FiltersTrigger>
 <SearchAndFilterBar.FiltersDrawer>
   <Drawer.Title>Filters</Drawer.Title>
   <SearchAndFilterBar.FiltersSlot />

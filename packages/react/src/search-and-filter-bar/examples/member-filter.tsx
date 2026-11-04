@@ -12,7 +12,7 @@ export function MemberFilter({label, value, options, onChange}: MemberFilterProp
   return (
     <Dropdown.Root value={value} onValueChange={onChange}>
       <Dropdown.Control>
-        <Dropdown.Trigger>
+        <Dropdown.Trigger density="compact">
           <Dropdown.Prefix>{label}</Dropdown.Prefix>
           <Dropdown.Value placeholder="All" />
           <Dropdown.Icon />
