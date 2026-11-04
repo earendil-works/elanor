@@ -29,7 +29,6 @@ export type {
   ComboboxLabelState as SearchableDropdownLabelState,
   ComboboxValueProps as SearchableDropdownValueProps,
   ComboboxPortalProps as SearchableDropdownPortalProps,
-  ComboboxPositionerProps as SearchableDropdownPositionerProps,
   ComboboxPositionerState as SearchableDropdownPositionerState,
   ComboboxGroupProps as SearchableDropdownGroupProps,
   ComboboxRootState as SearchableDropdownRootState,
@@ -84,6 +83,7 @@ export interface SearchableDropdownTriggerProps extends BaseCombobox.Trigger.Pro
   readonly density?: DropdownTriggerDensity;
 }
 export type SearchableDropdownIconProps = BaseCombobox.Icon.Props;
+export type SearchableDropdownPositionerProps = BaseCombobox.Positioner.Props;
 export type SearchableDropdownPopupProps = BaseCombobox.Popup.Props;
 export type SearchableDropdownInputGroupProps = BaseCombobox.InputGroup.Props;
 const inputTypes = ['text', 'search'] as const;
@@ -214,6 +214,15 @@ export function SearchableDropdownIcon({
       {children ?? <KeyboardArrowDownIcon />}
     </BaseCombobox.Icon>
   );
+}
+
+/** Places the popup below the trigger, aligned to its start edge, as Dropdown's. */
+export function SearchableDropdownPositioner({
+  ref,
+  align = 'start',
+  ...props
+}: SearchableDropdownPositionerProps) {
+  return <BaseCombobox.Positioner {...props} ref={ref} align={align} />;
 }
 
 export function SearchableDropdownPopup({ref, className, ...props}: SearchableDropdownPopupProps) {
