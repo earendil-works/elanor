@@ -14,8 +14,11 @@
     min-inline-size: 0;
   }
 
+  /* A flex container, so an inline-level control such as Search has no line box around it,
+     whose strut would make the slot taller than the control. */
   .search {
     grid-column: span 4;
+    display: flex;
     min-inline-size: 0;
   }
 
@@ -114,7 +117,7 @@
     }
 
     .layout:not(:has(> .tracks)) > .trigger {
-      display: block;
+      display: flex;
     }
 
     .search:empty ~ .trigger,
@@ -182,7 +185,9 @@
     margin-inline-start: auto;
   }
 
+  /* A flex container, as the search slot is, so an inline-level control adds no line box. */
   .tracks > .filter {
+    display: flex;
     min-inline-size: 0;
     max-inline-size: none;
   }
@@ -247,7 +252,7 @@
       --tracks-search-grow: 1;
       --tracks-search-basis: 0;
       --tracks-filters-display: none;
-      --tracks-trigger-display: block;
+      --tracks-trigger-display: flex;
     }
   }
 
@@ -257,7 +262,7 @@
       --tracks-search-grow: 1;
       --tracks-search-basis: 0;
       --tracks-filters-display: none;
-      --tracks-trigger-display: block;
+      --tracks-trigger-display: flex;
     }
   }
 
@@ -267,7 +272,7 @@
       --tracks-search-grow: 1;
       --tracks-search-basis: 0;
       --tracks-filters-display: none;
-      --tracks-trigger-display: block;
+      --tracks-trigger-display: flex;
     }
   }
 
@@ -277,7 +282,7 @@
       --tracks-search-grow: 1;
       --tracks-search-basis: 0;
       --tracks-filters-display: none;
-      --tracks-trigger-display: block;
+      --tracks-trigger-display: flex;
     }
   }
 
@@ -287,7 +292,7 @@
       --tracks-search-grow: 1;
       --tracks-search-basis: 0;
       --tracks-filters-display: none;
-      --tracks-trigger-display: block;
+      --tracks-trigger-display: flex;
     }
   }
 
@@ -297,7 +302,7 @@
       --tracks-search-grow: 1;
       --tracks-search-basis: 0;
       --tracks-filters-display: none;
-      --tracks-trigger-display: block;
+      --tracks-trigger-display: flex;
     }
   }
 
