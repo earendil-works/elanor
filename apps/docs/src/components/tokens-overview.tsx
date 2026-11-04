@@ -1,6 +1,14 @@
-import {CodeSnippet, Grid, Heading, InlineCode, Link, Text} from '@earendil-works/elanor-react';
+import {
+  CodeSnippet,
+  Grid,
+  Heading,
+  HighlightedCode,
+  InlineCode,
+  Link,
+  Text,
+  type HighlightedLines,
+} from '@earendil-works/elanor-react';
 
-import {HighlightedCode} from './highlighted-code.tsx';
 import {LinkCard} from './link-card.tsx';
 import {CopyStatus, StaticCopyButton} from './static-copy-button.tsx';
 
@@ -17,7 +25,7 @@ export interface TokenAreaSummary {
 interface TokensOverviewProps {
   readonly areas: readonly TokenAreaSummary[];
   /** `tokensUsage`, highlighted. */
-  readonly usageHtml: string;
+  readonly usageLines: HighlightedLines;
 }
 
 export const tokensUsage = `@import '@earendil-works/design-tokens/radius.css';
@@ -30,7 +38,7 @@ const stylelintHref =
   'https://github.com/earendil-works/elanor/blob/main/packages/stylelint-plugin-design-tokens/README.md';
 
 /** Static HTML; `scripts/copy-buttons.ts` handles the copy button. */
-export function TokensOverview({areas, usageHtml}: TokensOverviewProps): React.JSX.Element {
+export function TokensOverview({areas, usageLines}: TokensOverviewProps): React.JSX.Element {
   return (
     <>
       <section className={styles.section} aria-labelledby="use">
@@ -52,7 +60,7 @@ export function TokensOverview({areas, usageHtml}: TokensOverviewProps): React.J
             />
           }
         >
-          <HighlightedCode html={usageHtml} />
+          <HighlightedCode lines={usageLines} />
         </CodeSnippet>
         <CopyStatus />
         <Text>

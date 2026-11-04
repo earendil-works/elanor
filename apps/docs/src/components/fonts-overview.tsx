@@ -1,8 +1,16 @@
-import {CodeSnippet, Heading, InlineCode, KeyValue, Link, Text} from '@earendil-works/elanor-react';
+import {
+  CodeSnippet,
+  Heading,
+  HighlightedCode,
+  InlineCode,
+  KeyValue,
+  Link,
+  Text,
+  type HighlightedLines,
+} from '@earendil-works/elanor-react';
 import {Fragment, type ReactElement, type ReactNode} from 'react';
 
 import type {FontFamily, FontsPage} from '../lib/fonts.ts';
-import {HighlightedCode} from './highlighted-code.tsx';
 import {CopyStatus, StaticCopyButton} from './static-copy-button.tsx';
 
 import styles from './fonts-overview.module.css';
@@ -10,7 +18,7 @@ import styles from './fonts-overview.module.css';
 interface FontsOverviewProps {
   readonly page: FontsPage;
   /** `fontsUsage`, highlighted. */
-  readonly usageHtml: string;
+  readonly usageLines: HighlightedLines;
 }
 
 export const fontsUsage = `@import '@earendil-works/elanor-fonts/mallos-serif.css';
@@ -132,7 +140,7 @@ function Family({family}: {readonly family: FontFamily}): React.JSX.Element {
 }
 
 /** Static HTML; `scripts/copy-buttons.ts` handles the copy button. */
-export function FontsOverview({page, usageHtml}: FontsOverviewProps): React.JSX.Element {
+export function FontsOverview({page, usageLines}: FontsOverviewProps): React.JSX.Element {
   return (
     <>
       <section className={styles.use} aria-labelledby="use">
@@ -150,7 +158,7 @@ export function FontsOverview({page, usageHtml}: FontsOverviewProps): React.JSX.
             />
           }
         >
-          <HighlightedCode html={usageHtml} />
+          <HighlightedCode lines={usageLines} />
         </CodeSnippet>
         <CopyStatus />
         <Text>
