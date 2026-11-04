@@ -46,6 +46,18 @@
     content: '';
   }
 
+  /* On touch screens, the target reaches half the medium gap above and below, so rows a medium
+     gap apart don't overlap. */
+  @media (pointer: coarse) {
+    .trigger[data-density='compact']::after {
+      inset-block: calc(
+        -1 *
+          (var(--semantic-dimension-space-gap-medium) / 2 +
+            var(--semantic-dimension-border-width-default))
+      );
+    }
+  }
+
   .trigger[data-density='compact'] .icon {
     inline-size: var(--semantic-dimension-size-x-small);
     block-size: var(--semantic-dimension-size-x-small);
@@ -57,9 +69,15 @@
     text-overflow: ellipsis;
   }
 
+  /* The value shrinks first; the prefix and a value count give way only once it's gone. Without
+     specificity, so their own rules override it. */
+  :where(.trigger > :not(.icon)) {
+    flex-shrink: 10000;
+  }
+
   /* The prefix stays whole and sits a word space from the value. */
   .prefix {
-    flex: none;
+    flex: 0 1 auto;
     margin-inline-end: calc(
       var(--semantic-dimension-space-control-gap-small) -
         var(--semantic-dimension-space-control-gap-large)
@@ -70,10 +88,6 @@
   /* Outside the label, so it's not in the trigger's name. */
   .prefix::after {
     content: ':';
-  }
-
-  .prefix + :not(.icon) {
-    flex-grow: 1;
   }
 
   .trigger:where(:hover:not(:disabled, [data-disabled])) {
@@ -104,11 +118,13 @@
     opacity: var(--semantic-number-opacity-disabled);
   }
 
+  /* Keeps the icon at the end. */
   .icon {
     display: inline-flex;
     flex: none;
     align-items: center;
     justify-content: center;
+    margin-inline-start: auto;
     inline-size: var(--semantic-dimension-size-icon);
     block-size: var(--semantic-dimension-size-icon);
     color: var(--semantic-color-icon-primary);

@@ -9,13 +9,19 @@ import {
 } from 'react';
 
 import {classes, mergeClassName} from '../utils/class-names.ts';
+import {useMergedRef} from '../utils/refs.ts';
+import {
+  ClearContext,
+  useClearableValue,
+  useClearContext,
+  type DropdownRootChangedValue,
+  type DropdownClearPressDetails,
+} from './dropdown-control.tsx';
 
 import styles from './dropdown.module.css';
 
 export type {
   SelectRootActions as DropdownRootActions,
-  SelectRootChangeEventReason as DropdownRootChangeEventReason,
-  SelectRootChangeEventDetails as DropdownRootChangeEventDetails,
   SelectLabelState as DropdownLabelState,
   SelectTriggerState as DropdownTriggerState,
   SelectValueState as DropdownValueState,
@@ -31,10 +37,32 @@ export type {
   SelectSeparatorState as DropdownSeparatorState,
 } from '@base-ui/react/select';
 
-export type DropdownRootProps<
+export type DropdownRootChangeEventReason = BaseSelect.Root.ChangeEventReason | 'clear-press';
+export type DropdownRootChangeEventDetails =
+  | BaseSelect.Root.ChangeEventDetails
+  | DropdownClearPressDetails;
+
+export interface DropdownRootProps<
   Value,
   Multiple extends boolean | undefined = false,
-> = BaseSelect.Root.Props<Value, Multiple>;
+> extends Omit<BaseSelect.Root.Props<Value, Multiple>, 'onValueChange'> {
+  /**
+   * Called when the value changes. When Clear clears it, the value is `clearValue` and the
+   * reason is `clear-press`.
+   */
+  readonly onValueChange?:
+    | ((
+        value: DropdownRootChangedValue<Value, Multiple>,
+        eventDetails: DropdownRootChangeEventDetails,
+      ) => void)
+    | undefined;
+  /**
+   * The value Clear sets, such as a filter's default. Clear shows while the value differs from
+   * it. Compared as Base UI compares items, with `isItemEqualToValue`.
+   * @default null, or [] with `multiple`
+   */
+  readonly clearValue?: DropdownRootChangedValue<Value, Multiple> | undefined;
+}
 export type DropdownLabelProps = BaseSelect.Label.Props;
 export interface DropdownPrefixProps extends Omit<
   BaseSelect.Label.Props,
@@ -64,13 +92,32 @@ export interface DropdownSeparatorProps extends Omit<BaseSelect.Separator.Props,
 
 const MultipleContext = /* @__PURE__ */ createContext(false);
 
-export function DropdownRoot<Value, Multiple extends boolean | undefined = false>(
-  props: DropdownRootProps<Value, Multiple>,
-): React.JSX.Element {
+export function DropdownRoot<Value, Multiple extends boolean | undefined = false>({
+  value: valueProp,
+  defaultValue,
+  clearValue,
+  onValueChange,
+  ...props
+}: DropdownRootProps<Value, Multiple>): React.JSX.Element {
+  const multiple = props.multiple ?? false;
+  const {value, changeValue, context} = useClearableValue({
+    value: valueProp,
+    defaultValue,
+    // SAFETY: `multiple` is the runtime value of the `Multiple` type parameter, so the empty
+    // value has the shape `onValueChange` expects.
+    emptyValue: (multiple ? [] : null) as DropdownRootChangedValue<Value, Multiple>,
+    clearValue,
+    isItemEqualToValue: props.isItemEqualToValue,
+    disabled: Boolean(props.disabled || props.readOnly),
+    onValueChange,
+  });
+
   return (
-    <MultipleContext.Provider value={props.multiple ?? false}>
-      <BaseSelect.Root<Value, Multiple> {...props} />
-    </MultipleContext.Provider>
+    <ClearContext value={context}>
+      <MultipleContext.Provider value={multiple}>
+        <BaseSelect.Root<Value, Multiple> {...props} value={value} onValueChange={changeValue} />
+      </MultipleContext.Provider>
+    </ClearContext>
   );
 }
 
@@ -107,10 +154,12 @@ export function DropdownTrigger({
   className,
   ...props
 }: DropdownTriggerProps) {
+  const {triggerRef} = useClearContext('Trigger');
+  const mergedRef = useMergedRef(triggerRef, ref);
   return (
     <BaseSelect.Trigger
       {...props}
-      ref={ref}
+      ref={mergedRef}
       data-density={density}
       className={mergeClassName<BaseSelect.Trigger.State>(styles.trigger, className)}
     />

@@ -1,8 +1,18 @@
 import {Combobox as BaseCombobox} from '@base-ui/react/combobox';
 import {KeyboardArrowDownIcon, SearchIcon} from '@earendil-works/elanor-icons-react';
-import {createContext, useContext} from 'react';
+import {createContext, useContext, type PointerEventHandler, type Ref} from 'react';
 
 import {classes, mergeClassName} from '../utils/class-names.ts';
+import {useMergedRef} from '../utils/refs.ts';
+import {
+  ClearContext,
+  useClearableValue,
+  useClearContext,
+  type DropdownRootChangedValue,
+  type DropdownClearProps,
+  type DropdownControlProps,
+  type DropdownValueCountProps,
+} from './dropdown-control.tsx';
 import type {DropdownTriggerDensity} from './dropdown.tsx';
 
 import styles from './searchable-dropdown.module.css';
@@ -19,7 +29,6 @@ export type {
   ComboboxLabelState as SearchableDropdownLabelState,
   ComboboxValueProps as SearchableDropdownValueProps,
   ComboboxPortalProps as SearchableDropdownPortalProps,
-  ComboboxPositionerProps as SearchableDropdownPositionerProps,
   ComboboxPositionerState as SearchableDropdownPositionerState,
   ComboboxGroupProps as SearchableDropdownGroupProps,
   ComboboxRootState as SearchableDropdownRootState,
@@ -43,15 +52,38 @@ export type SearchableDropdownRootProps<
 > = BaseCombobox.Root.Props<Value, Multiple, Item> & {
   /** Only list navigation is supported; grid layouts are not. */
   readonly grid?: false;
+  /**
+   * The value Clear sets, such as a filter's default. Clear shows while the value differs from
+   * it. Compared as Base UI compares items, with `isItemEqualToValue`.
+   * @default null, or [] with `multiple`
+   */
+  readonly clearValue?: SearchableDropdownRootChangedValue<Value, Multiple> | undefined;
 };
 
 export type SearchableDropdownLabelProps = BaseCombobox.Label.Props;
+export interface SearchableDropdownPrefixProps extends Omit<
+  BaseCombobox.Label.Props,
+  'ref' | 'render' | 'onPointerDown'
+> {
+  readonly ref?: Ref<HTMLSpanElement> | undefined;
+  /** A plain React handler; it replaces Base UI's label handler. */
+  readonly onPointerDown?: PointerEventHandler<HTMLSpanElement> | undefined;
+}
+/** What Root's `onValueChange` receives: an array with `multiple`, otherwise a value or `null`. */
+export type SearchableDropdownRootChangedValue<
+  Value,
+  Multiple extends boolean | undefined,
+> = DropdownRootChangedValue<Value, Multiple>;
+export type SearchableDropdownControlProps = DropdownControlProps;
+export type SearchableDropdownClearProps = DropdownClearProps;
+export type SearchableDropdownValueCountProps = DropdownValueCountProps;
 export type SearchableDropdownStatusProps = BaseCombobox.Status.Props;
 export interface SearchableDropdownTriggerProps extends BaseCombobox.Trigger.Props {
   /** `compact` removes block padding but keeps the touch target height. */
   readonly density?: DropdownTriggerDensity;
 }
 export type SearchableDropdownIconProps = BaseCombobox.Icon.Props;
+export type SearchableDropdownPositionerProps = BaseCombobox.Positioner.Props;
 export type SearchableDropdownPopupProps = BaseCombobox.Popup.Props;
 export type SearchableDropdownInputGroupProps = BaseCombobox.InputGroup.Props;
 const inputTypes = ['text', 'search'] as const;
@@ -79,11 +111,37 @@ export function SearchableDropdownRoot<
   Value,
   Multiple extends boolean | undefined = false,
   Item = Value,
->(props: SearchableDropdownRootProps<Value, Multiple, Item>): React.JSX.Element {
+>({
+  value: valueProp,
+  defaultValue,
+  clearValue,
+  onValueChange,
+  ...props
+}: SearchableDropdownRootProps<Value, Multiple, Item>): React.JSX.Element {
+  const multiple = props.multiple ?? false;
+  const {value, changeValue, context} = useClearableValue({
+    value: valueProp,
+    defaultValue,
+    // SAFETY: `multiple` is the runtime value of the `Multiple` type parameter, so the empty
+    // value has the shape `onValueChange` expects.
+    emptyValue: (multiple ? [] : null) as SearchableDropdownRootChangedValue<Value, Multiple>,
+    clearValue,
+    isItemEqualToValue: props.isItemEqualToValue,
+    disabled: Boolean(props.disabled || props.readOnly),
+    onValueChange,
+  });
+
   return (
-    <MultipleContext.Provider value={props.multiple ?? false}>
-      <BaseCombobox.Root<Value, Multiple, Item> {...props} grid={false} />
-    </MultipleContext.Provider>
+    <ClearContext value={context}>
+      <MultipleContext.Provider value={multiple}>
+        <BaseCombobox.Root<Value, Multiple, Item>
+          {...props}
+          value={value}
+          onValueChange={changeValue}
+          grid={false}
+        />
+      </MultipleContext.Provider>
+    </ClearContext>
   );
 }
 
@@ -97,16 +155,39 @@ export function SearchableDropdownLabel({ref, className, ...props}: SearchableDr
   );
 }
 
+/** A label inside the trigger, before the value. Use it instead of `Label`. */
+export function SearchableDropdownPrefix({
+  ref,
+  className,
+  onPointerDown,
+  ...props
+}: SearchableDropdownPrefixProps) {
+  return (
+    // As in Dropdown.Prefix: hidden from the value, with the colon outside the name.
+    <span className={styles.prefix} aria-hidden="true">
+      <BaseCombobox.Label
+        {...props}
+        // Base UI's label cancels `pointerdown`, which stops the trigger from opening.
+        // `preventBaseUIHandler()` would skip the trigger's handler too.
+        render={(labelProps) => <span {...labelProps} ref={ref} onPointerDown={onPointerDown} />}
+        className={className}
+      />
+    </span>
+  );
+}
+
 export function SearchableDropdownTrigger({
   ref,
   density = 'default',
   className,
   ...props
 }: SearchableDropdownTriggerProps) {
+  const {triggerRef} = useClearContext('Trigger');
+  const mergedRef = useMergedRef(triggerRef, ref);
   return (
     <BaseCombobox.Trigger
       {...props}
-      ref={ref}
+      ref={mergedRef}
       data-density={density}
       className={mergeClassName<BaseCombobox.Trigger.State>(styles.trigger, className)}
     />
@@ -128,6 +209,15 @@ export function SearchableDropdownIcon({
       {children ?? <KeyboardArrowDownIcon />}
     </BaseCombobox.Icon>
   );
+}
+
+/** Places the popup below the trigger, aligned to its start edge, as Dropdown's. */
+export function SearchableDropdownPositioner({
+  ref,
+  align = 'start',
+  ...props
+}: SearchableDropdownPositionerProps) {
+  return <BaseCombobox.Positioner {...props} ref={ref} align={align} />;
 }
 
 export function SearchableDropdownPopup({ref, className, ...props}: SearchableDropdownPopupProps) {

@@ -2,23 +2,23 @@ import {Dropdown} from '@earendil-works/elanor-react';
 
 export interface MemberFilterProps {
   readonly label: string;
-  readonly value: string;
+  /** The selected option, or `null` for no filter. */
+  readonly value: string | null;
   readonly options: readonly string[];
-  readonly onChange: (value: string) => void;
+  readonly onChange: (value: string | null) => void;
 }
 
 export function MemberFilter({label, value, options, onChange}: MemberFilterProps) {
   return (
-    <Dropdown.Root
-      value={value}
-      items={options.map((option) => ({value: option, label: option}))}
-      onValueChange={(next) => onChange(next ?? 'All')}
-    >
-      <Dropdown.Trigger>
-        <Dropdown.Prefix>{label}</Dropdown.Prefix>
-        <Dropdown.Value />
-        <Dropdown.Icon />
-      </Dropdown.Trigger>
+    <Dropdown.Root value={value} onValueChange={onChange}>
+      <Dropdown.Control>
+        <Dropdown.Trigger density="compact">
+          <Dropdown.Prefix>{label}</Dropdown.Prefix>
+          <Dropdown.Value placeholder="All" />
+          <Dropdown.Icon />
+        </Dropdown.Trigger>
+        <Dropdown.Clear aria-label={`Clear ${label} filter`} />
+      </Dropdown.Control>
       <Dropdown.Portal>
         <Dropdown.Positioner alignItemWithTrigger={false}>
           <Dropdown.Popup>

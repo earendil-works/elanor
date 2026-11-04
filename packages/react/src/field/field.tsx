@@ -1,7 +1,8 @@
 import {Field as BaseField} from '@base-ui/react/field';
-import type {ComponentPropsWithRef} from 'react';
+import {use, type ComponentPropsWithRef} from 'react';
 
 import {mergeClassName} from '../utils/class-names.ts';
+import {DisabledContext} from '../utils/disabled-context.ts';
 
 import styles from './field.module.css';
 
@@ -28,12 +29,15 @@ export type FieldDescriptionProps = BaseField.Description.Props;
 export type FieldErrorProps = BaseField.Error.Props;
 
 export function FieldRoot({ref, className, ...props}: FieldRootProps) {
+  const disabled = use(DisabledContext) || Boolean(props.disabled);
   return (
-    <BaseField.Root
-      {...props}
-      ref={ref}
-      className={mergeClassName<BaseField.Root.State>(styles.root, className)}
-    />
+    <DisabledContext value={disabled}>
+      <BaseField.Root
+        {...props}
+        ref={ref}
+        className={mergeClassName<BaseField.Root.State>(styles.root, className)}
+      />
+    </DisabledContext>
   );
 }
 

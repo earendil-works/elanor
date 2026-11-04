@@ -14,6 +14,11 @@ export {
   DropdownGroupLabel as GroupLabel,
   DropdownSeparator as Separator,
 } from './dropdown.tsx';
+export {
+  DropdownControl as Control,
+  DropdownClear as Clear,
+  DropdownValueCount as ValueCount,
+} from './dropdown-control.tsx';
 
 export const Value = BaseSelect.Value;
 export const Portal = BaseSelect.Portal;

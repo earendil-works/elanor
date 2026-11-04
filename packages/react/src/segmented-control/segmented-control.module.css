@@ -27,6 +27,29 @@
     cursor: pointer;
   }
 
+  /* Each item's pseudo-element keeps the default touch target, as in compact Dropdown triggers. */
+  :where(.root[data-density='compact']) .item {
+    position: relative;
+    padding-block: 0;
+  }
+
+  :where(.root[data-density='compact']) .item::after {
+    position: absolute;
+    inset-block: calc(-1 * var(--semantic-dimension-space-padding-xx-small));
+    inset-inline: 0;
+    content: '';
+  }
+
+  @media (pointer: coarse) {
+    :where(.root[data-density='compact']) .item::after {
+      inset-block: calc(
+        -1 *
+          (var(--semantic-dimension-space-padding-xx-small) +
+            var(--semantic-dimension-space-gap-medium) / 2)
+      );
+    }
+  }
+
   .item[data-pressed] {
     background: var(--semantic-color-background-canvas);
     box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
