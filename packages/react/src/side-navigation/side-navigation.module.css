@@ -79,7 +79,8 @@
   }
 
   .link:focus-visible {
-    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline: var(--semantic-dimension-border-width-focus-ring) solid
+      var(--semantic-color-focus-ring);
     outline-offset: var(--semantic-dimension-border-width-medium);
   }
 
@@ -204,7 +205,7 @@
     }
 
     .link:focus-visible {
-      outline: var(--semantic-dimension-border-width-large) solid Highlight;
+      outline: var(--semantic-dimension-border-width-focus-ring) solid Highlight;
       outline-offset: var(--semantic-dimension-border-width-medium);
     }
   }

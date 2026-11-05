@@ -52,7 +52,8 @@
 
   .brand:focus-visible {
     border-radius: var(--semantic-dimension-radius-small);
-    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline: var(--semantic-dimension-border-width-focus-ring) solid
+      var(--semantic-color-focus-ring);
     outline-offset: var(--semantic-dimension-border-width-medium);
   }
 
@@ -128,7 +129,8 @@
 
   .summary:focus-visible {
     border-radius: var(--semantic-dimension-radius-small);
-    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline: var(--semantic-dimension-border-width-focus-ring) solid
+      var(--semantic-color-focus-ring);
     outline-offset: var(--semantic-dimension-border-width-medium);
   }
 
@@ -712,7 +714,8 @@
   }
 
   .tile:target .tileSwatch {
-    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline: var(--semantic-dimension-border-width-focus-ring) solid
+      var(--semantic-color-focus-ring);
     outline-offset: var(--semantic-dimension-border-width-medium);
   }
 

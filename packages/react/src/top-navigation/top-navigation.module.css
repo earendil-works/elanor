@@ -42,7 +42,8 @@
 
   .link:focus-visible {
     border-radius: var(--semantic-dimension-radius-small);
-    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline: var(--semantic-dimension-border-width-focus-ring) solid
+      var(--semantic-color-focus-ring);
     outline-offset: var(--semantic-dimension-border-width-medium);
   }
 
@@ -78,8 +79,9 @@
   }
 
   .actionButton:focus-visible {
-    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
-    outline-offset: calc(-1 * var(--semantic-dimension-border-width-large));
+    outline: var(--semantic-dimension-border-width-focus-ring) solid
+      var(--semantic-color-focus-ring);
+    outline-offset: calc(-1 * var(--semantic-dimension-border-width-focus-ring));
   }
 
   .actionButton[data-disabled] {
