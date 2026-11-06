@@ -308,20 +308,48 @@
     }
   }
 
-  /* The identity: the brand's symbol beside the site's name. */
+  /* The identity: the brand's symbol beside the site's name, set like the brand's horizontal
+     lockup (@earendil-works/elanor-logos), with the name in place of the wordmark. The lockups are
+     measured in the wordmark's cap height, so the symbol is sized and placed in the name's cap
+     height (`cap`):
+     - Earendil (also Elanor's docs): the 840-unit symbol frame beside 570-unit capitals, its
+       bottom 38 units below their baseline;
+     - Pi, Radius, Lefos: the 560-unit frame centered on 570-unit capitals, 5 units above their
+       baseline;
+     - all: 232 units between the frame and the wordmark. */
+  /* stylelint-disable design-tokens/no-hardcoded-token-values -- The lockups' proportions, in the name's cap height; no token measures type. */
   .docs-identity {
     display: inline-flex;
-    align-items: center;
-    gap: var(--semantic-dimension-space-gap-small);
+    align-items: baseline;
+    gap: calc(232 / 570 * 1cap);
     color: var(--semantic-color-text-primary);
     font: var(--semantic-typography-heading-app-4);
     text-decoration: none;
   }
 
+  /* Without a baseline of its own, the symbol's bottom sits on the name's baseline; the translation
+     moves it to its place in the lockup. */
   .docs-identity-mark {
     flex: none;
     inline-size: auto;
-    block-size: var(--semantic-dimension-size-small);
+    block-size: calc(560 / 570 * 1cap);
+    translate: 0 calc(-5 / 570 * 1cap);
+  }
+
+  .docs-identity[data-brand='earendil'] .docs-identity-mark {
+    block-size: calc(840 / 570 * 1cap);
+    translate: 0 calc(38 / 570 * 1cap);
+  }
+  /* stylelint-enable design-tokens/no-hardcoded-token-values */
+
+  /* A project's own logo (`logo` in elanor-docs.json) has no lockup to follow: centered, at the
+     height of the Pi, Radius, and Lefos symbols. */
+  .docs-identity:has(img.docs-identity-mark) {
+    align-items: center;
+  }
+
+  .docs-identity img.docs-identity-mark {
+    translate: none;
   }
 
   /* A logo with an image for each color scheme. */

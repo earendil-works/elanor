@@ -56,7 +56,13 @@ export function SiteIdentity({
     );
   }
   return (
-    <Link href={base} aria-label={`${name} documentation home`} className="docs-identity">
+    <Link
+      href={base}
+      aria-label={`${name} documentation home`}
+      className="docs-identity"
+      // The lockup's proportions in docs.css; Elanor's docs use the Earendil symbol.
+      data-brand={brand === 'elanor' ? 'earendil' : brand}
+    >
       {mark}
       {logo && logo.replacesName ? null : <span>{name}</span>}
     </Link>
