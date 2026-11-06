@@ -27,6 +27,26 @@ export interface DocsLink {
   readonly href: string;
 }
 
+/**
+ * An entry of the navigation: a page of the Markdown folder (`"guide/setup.md"`, or with its own
+ * label), a link elsewhere, or a section of entries that expands.
+ */
+export type NavigationItem =
+  | string
+  | {readonly page: string; readonly label?: string}
+  | {readonly link: string; readonly label: string}
+  | {
+      readonly section: string;
+      readonly items: readonly NavigationItem[];
+      /** Closed until opened, unless it holds the current page. Default: `false`. */
+      readonly collapsed?: boolean;
+    };
+
+/** The navigation's top level: entries, and groups of entries under a heading. */
+export type NavigationEntry =
+  | NavigationItem
+  | {readonly group: string; readonly items: readonly NavigationItem[]};
+
 /** An image of the Markdown folder as the logo, with a version for dark mode if it needs one. */
 export interface DocsLogo {
   /** The image, relative to the Markdown folder. */
@@ -76,6 +96,11 @@ export interface DocsKitOptions {
   readonly branch?: string;
   /** Show when each page last changed, from Git. Default: `true`. */
   readonly lastUpdated?: boolean;
+  /**
+   * The side navigation, in order. Pages it doesn't list are built but not linked. Default: from
+   * the folders, sorted by title.
+   */
+  readonly navigation?: readonly NavigationEntry[];
   /** Links in the top navigation, such as a changelog or a home page. */
   readonly links?: readonly DocsLink[];
   /** Stylesheets added after the kit's, relative to the Markdown folder. */
@@ -103,6 +128,7 @@ export interface ResolvedDocsConfig {
   /** The address of a file of the Markdown folder on GitHub when its path is appended, if known. */
   readonly sourceUrl: string | undefined;
   readonly lastUpdated: boolean;
+  readonly navigation: readonly NavigationEntry[] | undefined;
   readonly links: readonly DocsLink[];
   readonly customCss: readonly string[];
   readonly components: Partial<Record<ComponentSlot, string>>;
@@ -169,6 +195,44 @@ export function readConfigFile(docsDir: string): DocsKitOptions {
 function normalizeBase(path: string): string {
   const trimmed = path.replace(/^\/+|\/+$/g, '');
   return trimmed ? `/${trimmed}/` : '/';
+}
+
+/** Checks the shape of the navigation in elanor-docs.json, which is hand-written JSON. */
+function checkNavigation(entries: unknown): readonly NavigationEntry[] {
+  const fail = (path: string, problem: string): never => {
+    throw new Error(`The navigation in ${configFileName} ${problem} at ${path}.`);
+  };
+  const isText = (value: unknown) => typeof value === 'string' && value.length > 0;
+  const item = (value: unknown, path: string, top: boolean): void => {
+    if (isText(value)) return;
+    if (typeof value !== 'object' || value === null)
+      return fail(path, 'has neither a file nor an object');
+    const entry = value as Record<string, unknown>;
+    const list = (key: string) => {
+      if (!Array.isArray(entry.items)) fail(path, `has a ${key} without "items"`);
+      (entry.items as unknown[]).forEach((child, index) =>
+        item(child, `${path}.items[${index}]`, false),
+      );
+    };
+    if ('group' in entry) {
+      if (!top) fail(path, 'has a group inside another entry; use "section" there');
+      if (!isText(entry.group)) fail(path, 'has a group without a name');
+      list('group');
+    } else if ('section' in entry) {
+      if (!isText(entry.section)) fail(path, 'has a section without a name');
+      list('section');
+    } else if ('page' in entry) {
+      if (!isText(entry.page)) fail(path, 'has a page without a file');
+    } else if ('link' in entry) {
+      if (!isText(entry.link) || !isText(entry.label))
+        fail(path, 'has a link without "link" and "label"');
+    } else {
+      fail(path, 'has an entry that is no page, link, section, or group');
+    }
+  };
+  if (!Array.isArray(entries)) fail('the top', 'is not a list');
+  (entries as unknown[]).forEach((entry, index) => item(entry, `[${index}]`, true));
+  return entries as readonly NavigationEntry[];
 }
 
 /** Applies the defaults to `options`, read from the project at `cwd` and its Git repository. */
@@ -273,6 +337,7 @@ export function resolveConfig(cwd: string, options: DocsKitOptions = {}): Resolv
     repository,
     sourceUrl,
     lastUpdated: merged.lastUpdated ?? true,
+    navigation: merged.navigation === undefined ? undefined : checkNavigation(merged.navigation),
     links: merged.links ?? [],
     customCss: (merged.customCss ?? []).map(fromDocs),
     components,

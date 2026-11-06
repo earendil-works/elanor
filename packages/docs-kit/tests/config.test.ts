@@ -107,3 +107,30 @@ test('takes the logo and the favicon from images of the Markdown folder', () => 
   assert.throws(() => resolveConfig(project, {logo: 'brand/missing.svg'}), /does not exist/);
   assert.throws(() => resolveConfig(project, {favicon: 'index.md'}), /not an image/);
 });
+
+test('checks the navigation in elanor-docs.json', () => {
+  const project = mkdtempSync(join(tmpdir(), 'docs-kit-config-'));
+  const navigation = [
+    'index.md',
+    {
+      group: 'Guide',
+      items: [
+        {page: 'a.md', label: 'A'},
+        {section: 'More', items: ['b.md']},
+      ],
+    },
+    {link: 'https://example.com', label: 'Example'},
+  ];
+  assert.deepEqual(resolveConfig(project, {navigation}).navigation, navigation);
+  assert.throws(
+    () =>
+      resolveConfig(project, {
+        navigation: [{section: 'S', items: [{group: 'G', items: []}]}] as never,
+      }),
+    /group inside another entry/,
+  );
+  assert.throws(
+    () => resolveConfig(project, {navigation: [{title: 'x'}] as never}),
+    /no page, link/,
+  );
+});

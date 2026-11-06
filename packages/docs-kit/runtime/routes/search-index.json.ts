@@ -3,6 +3,7 @@ import MiniSearch from 'minisearch';
 
 import {config, getSite, renderOptions} from '../content/context.ts';
 import {renderPage} from '../content/markdown.ts';
+import {pagesOf} from '../content/nav.ts';
 import {docsSearchOptions, type DocsSearchRecord} from '../content/search-options.ts';
 
 /*
@@ -19,7 +20,7 @@ function excerpt(text: string, length = 200): string {
 export const GET: APIRoute = async () => {
   const site = getSite();
   const groups = new Map(
-    site.nav.flatMap((group) => group.links.map((link) => [link.page, group.label] as const)),
+    site.nav.flatMap((group) => pagesOf(group.items).map((page) => [page, group.label] as const)),
   );
   const records: DocsSearchRecord[] = [];
   for (const page of site.pages) {

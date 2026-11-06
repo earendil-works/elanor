@@ -3,7 +3,7 @@ import {join} from 'node:path';
 
 import config from 'virtual:elanor-docs/config';
 
-import type {DocsLink, ResolvedDocsLogo} from '../../src/config.ts';
+import type {DocsLink, NavigationEntry, ResolvedDocsLogo} from '../../src/config.ts';
 import type {RenderOptions} from './markdown.ts';
 import {loadSite, type Site} from './site.ts';
 
@@ -27,6 +27,7 @@ export interface RuntimeConfig {
   readonly repository: string | undefined;
   readonly sourceUrl: string | undefined;
   readonly lastUpdated: boolean;
+  readonly navigation: readonly NavigationEntry[] | undefined;
   readonly links: readonly DocsLink[];
   /** Folders inside the Markdown folder that hold no pages, such as the built site. */
   readonly exclude: readonly string[];
@@ -42,6 +43,7 @@ export function getSite(): Site {
     base: config.base,
     lastUpdated: config.lastUpdated,
     exclude: config.exclude,
+    navigation: config.navigation,
   });
 }
 

@@ -4,7 +4,7 @@ import {tmpdir} from 'node:os';
 import {dirname, join} from 'node:path';
 import test from 'node:test';
 
-import {firstParagraph, readSite, splitFrontmatter} from '../runtime/content/site.ts';
+import {firstParagraph, readSite, splitFrontmatter, type NavItem} from '../runtime/content/site.ts';
 
 function folder(files: Record<string, string>): string {
   const dir = mkdtempSync(join(tmpdir(), 'docs-kit-site-'));
@@ -55,58 +55,81 @@ test('takes titles from front matter, the first heading, or the file name', () =
   );
 });
 
-test('groups pages named by their front matter, ordered by their lowest order', () => {
-  const site = readSite(
-    options(
+/** The navigation as labels, sections as `[label, items]`. */
+function outline(items: readonly NavItem[]): unknown[] {
+  return items.map((item) =>
+    item.kind === 'section' ? [item.label, outline(item.items)] : item.label,
+  );
+}
+
+test('follows the navigation in elanor-docs.json', () => {
+  const site = readSite({
+    ...options(
       folder({
         'index.md': '# Home\n',
-        'cli.md': '---\nsidebar:\n  group: Using it\n  order: 2\n---\n# CLI\n',
-        'workloads.md': '---\nsidebar:\n  group: Using it\n  order: 1\n---\n# Workloads\n',
-        'sdk.md': '---\nsidebar:\n  group: SDK\n  order: 10\n  label: Overview\n---\n# SDK\n',
-        'sdk-vm.md': '---\nsidebar:\n  group: SDK\n  order: 11\n---\n# VM control\n',
-        'limits.md': '# Limitations\n',
+        'workloads.md': '# Workloads\n',
+        'cli.md': '# CLI\n',
+        'sdk.md': '# SDK\n',
+        'sdk-vm.md': '# VM control\n',
+        'unlisted.md': '# Unlisted\n',
       }),
     ),
-  );
+    navigation: [
+      'index.md',
+      {
+        group: 'Using it',
+        items: ['workloads.md', 'cli.md', {link: 'https://example.com', label: 'Blog'}],
+      },
+      {
+        group: 'SDK',
+        items: [
+          {page: 'sdk.md', label: 'Overview'},
+          {section: 'Advanced', collapsed: true, items: ['sdk-vm.md', 'missing.md']},
+        ],
+      },
+    ],
+  });
   assert.deepEqual(
-    site.nav.map((group) => [group.label, group.links.map((link) => link.label)]),
+    site.nav.map((group) => [group.label, outline(group.items)]),
     [
-      [undefined, ['Home', 'Limitations']],
-      ['Using it', ['Workloads', 'CLI']],
-      ['SDK', ['Overview', 'VM control']],
+      [undefined, ['Home']],
+      ['Using it', ['Workloads', 'CLI', 'Blog']],
+      ['SDK', ['Overview', ['Advanced', ['VM control']]]],
     ],
   );
+  assert.deepEqual(
+    site.sequence.map((page) => page.title),
+    ['Home', 'Workloads', 'CLI', 'SDK', 'VM control'],
+  );
+  assert.ok(site.byFile.has('unlisted.md'));
+  assert.match(site.warnings.join('\n'), /missing\.md/);
 });
 
-test('builds groups from folders, led by their index pages', () => {
+test('builds the navigation from the folders without one', () => {
   const site = readSite(
     options(
       folder({
         'index.md': '# Home\n',
         'faq.md': '# FAQ\n',
-        'about.md': '---\nsidebar:\n  order: 1\n---\n# About\n',
+        'about.md': '# About\n',
         'guide/index.md': '# Guide\n',
         'guide/b.md': '# Bravo\n',
         'guide/a.md': '# Alpha\n',
         'guide/deep/c.md': '# Charlie\n',
-        'hidden.md': '---\nsidebar:\n  hidden: true\n---\n# Hidden\n',
         'draft.md': '---\ndraft: true\n---\n# Draft\n',
       }),
     ),
   );
   assert.deepEqual(
-    site.nav.map((group) => [group.label, group.links.map((link) => link.label)]),
+    site.nav.map((group) => [group.label, outline(group.items)]),
     [
       [undefined, ['Home', 'About', 'FAQ']],
-      ['Guide', ['Overview', 'Alpha', 'Bravo', 'Charlie']],
+      ['Guide', ['Overview', 'Alpha', 'Bravo', ['Deep', ['Charlie']]]],
     ],
   );
-  assert.ok(site.byFile.has('hidden.md'));
+  const deep = site.nav[1]?.items.at(-1);
+  assert.equal(deep?.kind === 'section' && deep.collapsed, true);
   assert.ok(!site.byFile.has('draft.md'));
-  assert.deepEqual(
-    site.sequence.map((page) => page.title),
-    ['Home', 'About', 'FAQ', 'Guide', 'Alpha', 'Bravo', 'Charlie'],
-  );
 });
 
 test('splits front matter and finds a description', () => {

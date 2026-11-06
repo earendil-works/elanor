@@ -4,11 +4,15 @@ import {join, relative, resolve, sep} from 'node:path';
 
 import {parse as parseYaml} from 'yaml';
 
+import type {NavigationEntry} from '../../src/config.ts';
+import {configuredNavigation, folderNavigation, pagesOf, type NavGroup} from './nav.ts';
+
+export type {NavGroup, NavItem} from './nav.ts';
+
 /*
  * The site's pages and navigation, read from the Markdown folder. Every `.md` file is a page:
  * `guide/setup.md` is served at `guide/setup/`, an `index.md` (or a `README.md` without one beside
- * it) at its folder. The navigation comes from the pages' front matter and folders: the pages
- * without a group first, then the groups, each named by `sidebar.group` or by its folder.
+ * it) at its folder. `nav.ts` arranges them in the navigation.
  */
 
 export interface SiteOptions {
@@ -18,6 +22,8 @@ export interface SiteOptions {
   readonly lastUpdated: boolean;
   /** Folders inside the Markdown folder that hold no pages, such as the built site. */
   readonly exclude?: readonly string[];
+  /** The navigation from elanor-docs.json; without it, the folders make the navigation. */
+  readonly navigation?: readonly NavigationEntry[] | undefined;
 }
 
 /** Front matter the kit reads; the rest is kept for custom components. */
@@ -26,22 +32,6 @@ export interface PageFrontmatter {
   readonly description?: string;
   /** Left out of the site. */
   readonly draft?: boolean;
-  readonly sidebar?: {
-    /** The page's name in the navigation, if not its title. */
-    readonly label?: string;
-    /**
-     * The navigation group the page is in. Default: the page's top folder, named by its
-     * `index.md`; pages at the top have none.
-     */
-    readonly group?: string;
-    /**
-     * Sorts the pages of a group, lower first, then by name. A group sorts by its lowest order;
-     * pages without one come after those with one.
-     */
-    readonly order?: number;
-    /** Left out of the navigation; the page is still built. */
-    readonly hidden?: boolean;
-  };
   readonly [key: string]: unknown;
 }
 
@@ -59,17 +49,6 @@ export interface DocsPage {
   readonly body: string;
   /** The last commit that changed the file, as an ISO 8601 date. */
   readonly lastUpdated: string | undefined;
-}
-
-export interface NavLink {
-  readonly label: string;
-  readonly page: DocsPage;
-}
-
-export interface NavGroup {
-  /** A group's label; the first group of top-level pages has none. */
-  readonly label: string | undefined;
-  readonly links: readonly NavLink[];
 }
 
 export interface Site {
@@ -141,7 +120,7 @@ export function plainInline(text: string): string {
     .trim();
 }
 
-function humanize(name: string): string {
+export function humanize(name: string): string {
   const words = name.replace(/\.md$/i, '').replace(/[-_]+/g, ' ').trim();
   return words.charAt(0).toUpperCase() + words.slice(1);
 }
@@ -191,62 +170,6 @@ function commitDates(docsDir: string, warnings: string[]): Map<string, string> {
   return dates;
 }
 
-function sortLinks(links: NavLink[]): NavLink[] {
-  const order = (link: NavLink) => link.page.frontmatter.sidebar?.order ?? Number.POSITIVE_INFINITY;
-  return links.sort(
-    (a, b) => order(a) - order(b) || a.label.localeCompare(b.label, 'en', {numeric: true}),
-  );
-}
-
-function navigation(pages: readonly DocsPage[]): NavGroup[] {
-  const visible = pages.filter((page) => !page.frontmatter.sidebar?.hidden);
-  const folderIndexes = new Map(
-    visible
-      .filter((page) => page.slug && !page.slug.includes('/') && page.file.includes('/'))
-      .map((page) => [page.slug, page]),
-  );
-  const order = (page: DocsPage) => page.frontmatter.sidebar?.order ?? Number.POSITIVE_INFINITY;
-  const label = (page: DocsPage) => page.frontmatter.sidebar?.label ?? page.title;
-
-  const top: NavLink[] = [];
-  const groups = new Map<string, NavLink[]>();
-  for (const page of visible) {
-    const folder = page.file.includes('/') ? (page.file.split('/')[0] ?? '') : undefined;
-    const group =
-      page.frontmatter.sidebar?.group ??
-      (folder === undefined ? undefined : (folderIndexes.get(folder)?.title ?? humanize(folder)));
-    // A folder's own page leads its group as its overview.
-    const isOverview = folder !== undefined && folderIndexes.get(folder) === page;
-    const link = {
-      label: isOverview ? (page.frontmatter.sidebar?.label ?? 'Overview') : label(page),
-      page,
-    };
-    if (group === undefined) top.push(link);
-    else groups.set(group, [...(groups.get(group) ?? []), link]);
-  }
-
-  const sortGroup = (links: NavLink[]) => {
-    const overview = links.filter(
-      (link) =>
-        link.page.frontmatter.sidebar?.order === undefined &&
-        folderIndexes.get(link.page.slug) === link.page,
-    );
-    return [...overview, ...sortLinks(links.filter((link) => !overview.includes(link)))];
-  };
-  const home = top.filter((link) => link.page.slug === '');
-  const result: NavGroup[] = [
-    {label: undefined, links: [...home, ...sortLinks(top.filter((link) => link.page.slug !== ''))]},
-  ];
-  const sorted = [...groups].map(([groupLabel, links]) => ({
-    label: groupLabel,
-    order: Math.min(...links.map((link) => order(link.page))),
-    links: sortGroup(links),
-  }));
-  sorted.sort((a, b) => a.order - b.order || a.label.localeCompare(b.label, 'en', {numeric: true}));
-  result.push(...sorted.map(({label: groupLabel, links}) => ({label: groupLabel, links})));
-  return result.filter((group) => group.links.length > 0);
-}
-
 /** Reads the Markdown folder: its pages, their navigation, and what could not be read. */
 export function readSite(options: SiteOptions): Site {
   const {docsDir, base} = options;
@@ -290,8 +213,10 @@ export function readSite(options: SiteOptions): Site {
     byFile.set(file, page);
   }
 
-  const nav = navigation(pages);
-  const sequence = [...new Set(nav.flatMap((group) => group.links.map((entry) => entry.page)))];
+  const nav = options.navigation
+    ? configuredNavigation(options.navigation, byFile, warnings)
+    : folderNavigation(pages);
+  const sequence = [...new Set(nav.flatMap((group) => pagesOf(group.items)))];
   return {pages, nav, sequence, byFile, warnings};
 }
 

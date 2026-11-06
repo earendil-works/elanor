@@ -35,7 +35,7 @@ const favicon = config.favicon
   : `data:image/svg+xml,${encodeURIComponent(
       renderToStaticMarkup(createElement(brandSymbols[config.brand], {scheme: 'light'})),
     )}`;
-const hasSideNavigation = groups.flatMap((group) => group.links).length > 1;
+const hasSideNavigation = groups.reduce((count, group) => count + group.items.length, 0) > 1;
 ---
 
 <!doctype html>

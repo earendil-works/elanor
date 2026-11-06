@@ -22,6 +22,8 @@ export type {
   DocsKitOptions,
   DocsLink,
   DocsLogo,
+  NavigationEntry,
+  NavigationItem,
   ResolvedDocsConfig,
   ResolvedDocsLogo,
 } from './config.ts';

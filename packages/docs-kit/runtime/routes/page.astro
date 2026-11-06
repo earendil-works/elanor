@@ -35,7 +35,7 @@ const markdown = `${config.base}${page.file}`;
   title={page.title}
   description={page.description}
   current={page.url}
-  groups={navigationGroups(site)}
+  groups={navigationGroups(site, page.url)}
   page={page}
   markdown={markdown}
 >

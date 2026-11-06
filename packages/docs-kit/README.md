@@ -12,7 +12,7 @@ The command is also installed as `elanor-docs`. It runs [Astro](https://astro.bu
 ## What you get
 
 - **Pages:** every `.md` file. `guide/setup.md` is served at `guide/setup/`; `index.md` (or `README.md` without an `index.md` beside it) at its folder.
-- **Navigation:** from the folders and the pages' front matter: the top-level pages, then a group for each folder (led by its `index.md`) or for each `sidebar.group` the pages name, sorted by `sidebar.order`. A side navigation on wide screens, a menu on narrow ones, and links to the previous and next page.
+- **Navigation:** from `navigation` in `elanor-docs.json`, or without it, from the folders: the top-level pages, then a group for each folder (led by its `index.md`), its subfolders as sections that expand. A side navigation on wide screens, a menu on narrow ones, and links to the previous and next page.
 - **Page header:** the title, when the page last changed (from Git), and a button that copies its Markdown.
 - **Top navigation:** the project's name and brand symbol, configured links, search, a GitHub button for the repository, and the color scheme toggle.
 - **Table of contents:** the page's `##` and `###` headings, beside the content on wide screens, a menu above it on narrower ones. Headings get links to copy.
@@ -51,6 +51,7 @@ Put `elanor-docs.json` next to the Markdown. Every field is optional.
   "repository": "https://github.com/earendil-works/absurd",
   "branch": "main",
   "lastUpdated": true,
+  "navigation": ["index.md", {"group": "Guide", "items": ["quickstart.md", "concepts.md"]}],
   "links": [{"label": "Changelog", "href": "https://github.com/earendil-works/absurd/releases"}],
   "customCss": ["theme.css"],
   "components": {"Footer": "footer.astro"},
@@ -69,6 +70,7 @@ Put `elanor-docs.json` next to the Markdown. Every field is optional.
 | `repository`  | The repository's address, for the GitHub button and links to its files                                                                                                                                                                 |
 | `branch`      | The branch that links to the repository's files point at                                                                                                                                                                               |
 | `lastUpdated` | `false` hides the dates                                                                                                                                                                                                                |
+| `navigation`  | The side navigation, in order; see below. Default: from the folders, sorted by title                                                                                                                                                   |
 | `links`       | Links in the top navigation                                                                                                                                                                                                            |
 | `customCss`   | Stylesheets loaded after the kit's; use the design tokens' custom properties                                                                                                                                                           |
 | `components`  | Replace parts of the page, see below                                                                                                                                                                                                   |
@@ -81,13 +83,36 @@ Pages read YAML front matter:
 title: Setting up # Instead of the first heading
 description: How to set it up. # Instead of the first paragraph
 draft: true # Leave the page out
-sidebar:
-  label: Setup # The name in the navigation
-  group: Guide # The navigation group; default: the page's top folder
-  order: 1 # Sorts a group's pages, lower first, then by name; a group sorts by its lowest
-  hidden: true # Build the page, but leave it out of the navigation
 ---
 ```
+
+### Navigation
+
+`navigation` lists the side navigation in order, in one place. Pages it doesn't list are still built, but not linked from it.
+
+```json
+"navigation": [
+  "index.md",
+  {
+    "group": "Guide",
+    "items": [
+      "quickstart.md",
+      {"page": "concepts.md", "label": "Core concepts"},
+      {"section": "Advanced", "collapsed": true, "items": ["retries.md", "cancellation.md"]}
+    ]
+  },
+  {"group": "SDKs", "items": ["sdks/typescript.md", "sdks/python.md"]},
+  {"link": "https://github.com/earendil-works/absurd/releases", "label": "Changelog"}
+]
+```
+
+| Entry                            | What it is                                                                                                                                                       |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `"guide/setup.md"`               | A page, named by its title                                                                                                                                       |
+| `{"page": "…", "label": "…"}`    | A page with its own name                                                                                                                                         |
+| `{"link": "…", "label": "…"}`    | A link elsewhere                                                                                                                                                 |
+| `{"section": "…", "items": […]}` | A section that expands, at any depth. Open unless `"collapsed": true`; a section holding the current page is always open, and each section's state is remembered |
+| `{"group": "…", "items": […]}`   | A group under a heading; only at the top. Entries outside groups gather in a group without a heading                                                             |
 
 ### Replacing parts of the page
 
