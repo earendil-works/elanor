@@ -1,0 +1,14 @@
+---
+// The top navigation's identity: the brand's symbol and the site's name. Replace with
+// `components.Identity` for a logo of the project's own. Props: `page` and `config`.
+import type {RuntimeConfig} from '../../content/context.ts';
+import {SiteIdentity} from '../SiteIdentity.tsx';
+
+interface Props {
+  config: RuntimeConfig;
+}
+
+const {config} = Astro.props;
+---
+
+<SiteIdentity name={config.name} brand={config.brand} href={config.base} />
