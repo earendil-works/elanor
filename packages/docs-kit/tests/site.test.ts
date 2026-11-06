@@ -55,30 +55,30 @@ test('takes titles from front matter, the first heading, or the file name', () =
   );
 });
 
-test('follows SUMMARY.md, with its parts as groups', () => {
+test('groups pages named by their front matter, ordered by their lowest order', () => {
   const site = readSite(
     options(
       folder({
-        'SUMMARY.md':
-          '# Summary\n\n- [Home](index.md)\n\n# Guide\n\n- [Start](start.md)\n- [Draft]()\n- [Missing](missing.md)\n',
         'index.md': '# Home\n',
-        'start.md': '# Getting started\n',
-        'unlisted.md': '# Unlisted\n',
+        'cli.md': '---\nsidebar:\n  group: Using it\n  order: 2\n---\n# CLI\n',
+        'workloads.md': '---\nsidebar:\n  group: Using it\n  order: 1\n---\n# Workloads\n',
+        'sdk.md': '---\nsidebar:\n  group: SDK\n  order: 10\n  label: Overview\n---\n# SDK\n',
+        'sdk-vm.md': '---\nsidebar:\n  group: SDK\n  order: 11\n---\n# VM control\n',
+        'limits.md': '# Limitations\n',
       }),
     ),
   );
   assert.deepEqual(
     site.nav.map((group) => [group.label, group.links.map((link) => link.label)]),
     [
-      [undefined, ['Home']],
-      ['Guide', ['Start']],
+      [undefined, ['Home', 'Limitations']],
+      ['Using it', ['Workloads', 'CLI']],
+      ['SDK', ['Overview', 'VM control']],
     ],
   );
-  assert.equal(site.pages.length, 3);
-  assert.match(site.warnings.join('\n'), /missing\.md/);
 });
 
-test('builds the navigation from the folders without SUMMARY.md', () => {
+test('builds groups from folders, led by their index pages', () => {
   const site = readSite(
     options(
       folder({

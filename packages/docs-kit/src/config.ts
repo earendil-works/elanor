@@ -39,9 +39,9 @@ export interface DocsKitOptions {
   readonly brand?: Brand;
   /** Where the site is published, such as `https://earendil-works.github.io/absurd/`. Default: the GitHub Pages address of the Git remote. */
   readonly site?: string;
-  /** The repository's web address, for the source link and "Edit this page". Default: the Git remote, when it is on GitHub. */
+  /** The repository's web address, for the GitHub link and links to its files. Default: the Git remote, when it is on GitHub. */
   readonly repository?: string;
-  /** The branch "Edit this page" opens. Default: the remote's default branch, or `main`. */
+  /** The branch that links to the repository's files point at. Default: the remote's default branch, or `main`. */
   readonly branch?: string;
   /** Show when each page last changed, from Git. Default: `true`. */
   readonly lastUpdated?: boolean;
@@ -65,8 +65,8 @@ export interface ResolvedDocsConfig {
   /** The site's path, such as `/absurd/`; always ends with a slash. */
   readonly base: string;
   readonly repository: string | undefined;
-  /** The address that edits a file of the Markdown folder when its path is appended, if known. */
-  readonly editUrl: string | undefined;
+  /** The address of a file of the Markdown folder on GitHub when its path is appended, if known. */
+  readonly sourceUrl: string | undefined;
   readonly lastUpdated: boolean;
   readonly links: readonly DocsLink[];
   readonly customCss: readonly string[];
@@ -153,9 +153,9 @@ export function resolveConfig(cwd: string, options: DocsKitOptions = {}): Resolv
     : undefined;
   const branch = merged.branch ?? defaultBranch ?? 'main';
   const docsPath = repoRoot ? relative(repoRoot, docsDir).split(sep).join('/') : undefined;
-  const editUrl =
+  const sourceUrl =
     repository && docsPath !== undefined && /^https:\/\/github\.com\//.test(repository)
-      ? `${repository}/edit/${branch}/${docsPath ? `${docsPath}/` : ''}`
+      ? `${repository}/blob/${branch}/${docsPath ? `${docsPath}/` : ''}`
       : undefined;
 
   const packageJson =
@@ -203,7 +203,7 @@ export function resolveConfig(cwd: string, options: DocsKitOptions = {}): Resolv
     site,
     base,
     repository,
-    editUrl,
+    sourceUrl,
     lastUpdated: merged.lastUpdated ?? true,
     links: merged.links ?? [],
     customCss: (merged.customCss ?? []).map(fromDocs),

@@ -38,7 +38,7 @@ test('defaults a folder of Markdown outside Git', () => {
   assert.equal(config.name, 'Rocket sled');
   assert.equal(config.brand, 'earendil');
   assert.equal(config.base, '/');
-  assert.equal(config.editUrl, undefined);
+  assert.equal(config.sourceUrl, undefined);
   assert.equal(config.lastUpdated, true);
 });
 

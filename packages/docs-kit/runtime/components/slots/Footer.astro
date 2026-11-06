@@ -1,24 +1,4 @@
 ---
-// The footer of every page. Replace with `components.Footer`. Props: `page` and `config`.
-import {Link, Text} from '@earendil-works/elanor-react';
-import type {RuntimeConfig} from '../../content/context.ts';
-
-interface Props {
-  config: RuntimeConfig;
-}
-
-const {config} = Astro.props;
+// Empty by default. Replace with `components.Footer` in elanor-docs.json to show a footer below
+// every page. Props: `page` (the current page, if any) and `config`.
 ---
-
-<footer class="docs-footer">
-  <Text>
-    {
-      config.repository ? (
-        <Link href={config.repository}>{config.name} on GitHub</Link>
-      ) : (
-        config.name
-      )
-    }
-    · Built with <Link href="https://github.com/earendil-works/elanor/tree/main/packages/docs-kit">Elanor</Link>
-  </Text>
-</footer>

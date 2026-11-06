@@ -1,5 +1,5 @@
 import {execFileSync} from 'node:child_process';
-import {existsSync, readdirSync, readFileSync, statSync} from 'node:fs';
+import {readdirSync, readFileSync, statSync} from 'node:fs';
 import {join, relative, resolve, sep} from 'node:path';
 
 import {parse as parseYaml} from 'yaml';
@@ -7,8 +7,8 @@ import {parse as parseYaml} from 'yaml';
 /*
  * The site's pages and navigation, read from the Markdown folder. Every `.md` file is a page:
  * `guide/setup.md` is served at `guide/setup/`, an `index.md` (or a `README.md` without one beside
- * it) at its folder. The navigation follows `SUMMARY.md` (mdBook's format) when the folder has one,
- * and otherwise the folders: the top-level pages first, then a group for each folder.
+ * it) at its folder. The navigation comes from the pages' front matter and folders: the pages
+ * without a group first, then the groups, each named by `sidebar.group` or by its folder.
  */
 
 export interface SiteOptions {
@@ -29,7 +29,15 @@ export interface PageFrontmatter {
   readonly sidebar?: {
     /** The page's name in the navigation, if not its title. */
     readonly label?: string;
-    /** Sorts pages in automatic navigation; lower first, then by title. */
+    /**
+     * The navigation group the page is in. Default: the page's top folder, named by its
+     * `index.md`; pages at the top have none.
+     */
+    readonly group?: string;
+    /**
+     * Sorts the pages of a group, lower first, then by name. A group sorts by its lowest order;
+     * pages without one come after those with one.
+     */
     readonly order?: number;
     /** Left out of the navigation; the page is still built. */
     readonly hidden?: boolean;
@@ -75,7 +83,7 @@ export interface Site {
 }
 
 /** Files that describe the repository for its contributors and agents rather than its users. */
-const notPages = new Set(['SUMMARY.md', 'AGENTS.md', 'CLAUDE.md']);
+const notPages = new Set(['AGENTS.md', 'CLAUDE.md']);
 
 function markdownFiles(docsDir: string, exclude: readonly string[]): string[] {
   const files: string[] = [];
@@ -183,36 +191,6 @@ function commitDates(docsDir: string, warnings: string[]): Map<string, string> {
   return dates;
 }
 
-function parseSummary(
-  text: string,
-  byFile: ReadonlyMap<string, DocsPage>,
-  warnings: string[],
-): NavGroup[] {
-  const groups: {label: string | undefined; links: NavLink[]}[] = [{label: undefined, links: []}];
-  for (const line of text.split('\n')) {
-    const part = /^#{1,6}[ \t]+(.+?)[ \t#]*$/.exec(line);
-    if (part) {
-      const label = plainInline(part[1] ?? '');
-      // The summary's own title, `# Summary`, starts no group.
-      if (label.toLowerCase() !== 'summary') groups.push({label, links: []});
-      continue;
-    }
-    const item = /^\s*[-*+][ \t]+\[(.*?)\]\((.*?)\)\s*$/.exec(line);
-    if (!item) continue;
-    const [, label = '', target = ''] = item;
-    // A draft chapter, `- [Title]()`, has no page yet.
-    if (!target) continue;
-    const file = decodeURI(target.replace(/^\.\//, '').split('#')[0] ?? '');
-    const page = byFile.get(file);
-    if (!page) {
-      warnings.push(`SUMMARY.md links to ${target}, which is not a page.`);
-      continue;
-    }
-    groups.at(-1)?.links.push({label: plainInline(label), page});
-  }
-  return groups.filter((group) => group.links.length > 0);
-}
-
 function sortLinks(links: NavLink[]): NavLink[] {
   const order = (link: NavLink) => link.page.frontmatter.sidebar?.order ?? Number.POSITIVE_INFINITY;
   return links.sort(
@@ -220,47 +198,53 @@ function sortLinks(links: NavLink[]): NavLink[] {
   );
 }
 
-function automaticNav(pages: readonly DocsPage[]): NavGroup[] {
+function navigation(pages: readonly DocsPage[]): NavGroup[] {
   const visible = pages.filter((page) => !page.frontmatter.sidebar?.hidden);
-  const link = (page: DocsPage): NavLink => ({
-    label: page.frontmatter.sidebar?.label ?? page.title,
-    page,
-  });
-  const top: NavLink[] = [];
-  const folders = new Map<string, NavLink[]>();
-  for (const page of visible) {
-    // Top-level files are top-level pages; a folder's files, at any depth, make its group.
-    if (!page.file.includes('/')) {
-      top.push(link(page));
-    } else {
-      const folder = page.file.split('/')[0] ?? '';
-      folders.set(folder, [...(folders.get(folder) ?? []), link(page)]);
-    }
-  }
-  const home = top.filter((entry) => entry.page.slug === '');
-  const groups: NavGroup[] = [
-    {
-      label: undefined,
-      links: [...home, ...sortLinks(top.filter((entry) => entry.page.slug !== ''))],
-    },
-  ];
-  const folderGroups = [...folders].map(([folder, links]) => {
-    const index = links.find((entry) => entry.page.slug === folder);
-    const rest = sortLinks(links.filter((entry) => entry !== index));
-    return {
-      label: index?.page.title ?? humanize(folder),
-      order: index?.page.frontmatter.sidebar?.order ?? Number.POSITIVE_INFINITY,
-      // The folder's own page leads its group as its overview.
-      links: index
-        ? [{...index, label: index.page.frontmatter.sidebar?.label ?? 'Overview'}, ...rest]
-        : rest,
-    };
-  });
-  folderGroups.sort(
-    (a, b) => a.order - b.order || a.label.localeCompare(b.label, 'en', {numeric: true}),
+  const folderIndexes = new Map(
+    visible
+      .filter((page) => page.slug && !page.slug.includes('/') && page.file.includes('/'))
+      .map((page) => [page.slug, page]),
   );
-  groups.push(...folderGroups.map(({label, links}) => ({label, links})));
-  return groups.filter((group) => group.links.length > 0);
+  const order = (page: DocsPage) => page.frontmatter.sidebar?.order ?? Number.POSITIVE_INFINITY;
+  const label = (page: DocsPage) => page.frontmatter.sidebar?.label ?? page.title;
+
+  const top: NavLink[] = [];
+  const groups = new Map<string, NavLink[]>();
+  for (const page of visible) {
+    const folder = page.file.includes('/') ? (page.file.split('/')[0] ?? '') : undefined;
+    const group =
+      page.frontmatter.sidebar?.group ??
+      (folder === undefined ? undefined : (folderIndexes.get(folder)?.title ?? humanize(folder)));
+    // A folder's own page leads its group as its overview.
+    const isOverview = folder !== undefined && folderIndexes.get(folder) === page;
+    const link = {
+      label: isOverview ? (page.frontmatter.sidebar?.label ?? 'Overview') : label(page),
+      page,
+    };
+    if (group === undefined) top.push(link);
+    else groups.set(group, [...(groups.get(group) ?? []), link]);
+  }
+
+  const sortGroup = (links: NavLink[]) => {
+    const overview = links.filter(
+      (link) =>
+        link.page.frontmatter.sidebar?.order === undefined &&
+        folderIndexes.get(link.page.slug) === link.page,
+    );
+    return [...overview, ...sortLinks(links.filter((link) => !overview.includes(link)))];
+  };
+  const home = top.filter((link) => link.page.slug === '');
+  const result: NavGroup[] = [
+    {label: undefined, links: [...home, ...sortLinks(top.filter((link) => link.page.slug !== ''))]},
+  ];
+  const sorted = [...groups].map(([groupLabel, links]) => ({
+    label: groupLabel,
+    order: Math.min(...links.map((link) => order(link.page))),
+    links: sortGroup(links),
+  }));
+  sorted.sort((a, b) => a.order - b.order || a.label.localeCompare(b.label, 'en', {numeric: true}));
+  result.push(...sorted.map(({label: groupLabel, links}) => ({label: groupLabel, links})));
+  return result.filter((group) => group.links.length > 0);
 }
 
 /** Reads the Markdown folder: its pages, their navigation, and what could not be read. */
@@ -306,10 +290,7 @@ export function readSite(options: SiteOptions): Site {
     byFile.set(file, page);
   }
 
-  const summary = join(docsDir, 'SUMMARY.md');
-  const nav = existsSync(summary)
-    ? parseSummary(readFileSync(summary, 'utf8'), byFile, warnings)
-    : automaticNav(pages);
+  const nav = navigation(pages);
   const sequence = [...new Set(nav.flatMap((group) => group.links.map((entry) => entry.page)))];
   return {pages, nav, sequence, byFile, warnings};
 }

@@ -21,7 +21,7 @@ export interface RuntimeConfig {
   readonly site: string | undefined;
   readonly base: string;
   readonly repository: string | undefined;
-  readonly editUrl: string | undefined;
+  readonly sourceUrl: string | undefined;
   readonly lastUpdated: boolean;
   readonly links: readonly DocsLink[];
   /** Folders inside the Markdown folder that hold no pages, such as the built site. */
@@ -43,7 +43,7 @@ export function getSite(): Site {
 
 export const renderOptions: RenderOptions = {
   base: config.base,
-  sourceUrl: config.editUrl?.replace('/edit/', '/blob/'),
+  sourceUrl: config.sourceUrl,
   fileExists: (file) => {
     const path = join(config.docsDir, file);
     return existsSync(path) && statSync(path).isFile();

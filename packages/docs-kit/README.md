@@ -12,8 +12,9 @@ The command is also installed as `elanor-docs`. It runs [Astro](https://astro.bu
 ## What you get
 
 - **Pages:** every `.md` file. `guide/setup.md` is served at `guide/setup/`; `index.md` (or `README.md` without an `index.md` beside it) at its folder.
-- **Navigation:** from `SUMMARY.md` ([mdBook's format](https://rust-lang.github.io/mdBook/format/summary.html)) when the folder has one, otherwise from the folders: the top-level pages, then a group for each folder, led by its `index.md`. A side navigation on wide screens, a menu on narrow ones, and previous and next links.
-- **Page header:** the title, when the page last changed (from Git), a link that edits it on GitHub, and a button that copies its Markdown.
+- **Navigation:** from the folders and the pages' front matter: the top-level pages, then a group for each folder (led by its `index.md`) or for each `sidebar.group` the pages name, sorted by `sidebar.order`. A side navigation on wide screens, a menu on narrow ones, and links to the previous and next page.
+- **Page header:** the title, when the page last changed (from Git), and a button that copies its Markdown.
+- **Top navigation:** the project's name and brand symbol, configured links, search, a GitHub button for the repository, and the color scheme toggle.
 - **Table of contents:** the page's `##` and `###` headings, beside the content on wide screens, a menu above it on narrower ones. Headings get links to copy.
 - **Search:** a search dialog over every page and section (⌘K, Ctrl+K, or `/`).
 - **Markdown:** GitHub Flavored Markdown, inline HTML, code highlighted with Elanor's code colors, with copy buttons, and GitHub's alerts (`> [!NOTE]`, `[!TIP]`, `[!IMPORTANT]`, `[!WARNING]`, `[!CAUTION]`).
@@ -61,10 +62,10 @@ Put `elanor-docs.json` next to the Markdown. Every field is optional.
 | `description` | For search engines, link previews, and `llms.txt`                              |
 | `brand`       | The design tokens and symbol: `earendil`, `pi`, `radius`, `lefos`, or `elanor` |
 | `site`        | Where the site is published                                                    |
-| `repository`  | The repository's address, for the GitHub link and "Edit page"                  |
-| `branch`      | The branch "Edit page" opens                                                   |
+| `repository`  | The repository's address, for the GitHub button and links to its files         |
+| `branch`      | The branch that links to the repository's files point at                       |
 | `lastUpdated` | `false` hides the dates                                                        |
-| `links`       | Links in the top navigation; the repository is added as "GitHub"               |
+| `links`       | Links in the top navigation                                                    |
 | `customCss`   | Stylesheets loaded after the kit's; use the design tokens' custom properties   |
 | `components`  | Replace parts of the page, see below                                           |
 | `strict`      | Fail the build on broken links and other problems                              |
@@ -78,7 +79,8 @@ description: How to set it up. # Instead of the first paragraph
 draft: true # Leave the page out
 sidebar:
   label: Setup # The name in the navigation
-  order: 1 # Sorts the automatic navigation; lower first, then by title
+  group: Guide # The navigation group; default: the page's top folder
+  order: 1 # Sorts a group's pages, lower first, then by name; a group sorts by its lowest
   hidden: true # Build the page, but leave it out of the navigation
 ---
 ```
@@ -87,13 +89,13 @@ sidebar:
 
 `components` names `.astro` (or React) files, relative to the Markdown, that replace these parts:
 
-| Slot            | Default                                     |
-| --------------- | ------------------------------------------- |
-| `Head`          | Nothing; add tags such as analytics         |
-| `Identity`      | The brand's symbol and the site's name      |
-| `BeforeArticle` | Nothing; above every page's title           |
-| `AfterArticle`  | Nothing; after every page's content         |
-| `Footer`        | The repository link and "Built with Elanor" |
+| Slot            | Default                                |
+| --------------- | -------------------------------------- |
+| `Head`          | Nothing; add tags such as analytics    |
+| `Identity`      | The brand's symbol and the site's name |
+| `BeforeArticle` | Nothing; above every page's title      |
+| `AfterArticle`  | Nothing; after every page's content    |
+| `Footer`        | Nothing; below every page              |
 
 Each gets `config` (the resolved configuration) and `page` (the current page, absent on the 404 page) as props. They can import `@earendil-works/elanor-react` and the kit's own parts from `@earendil-works/elanor-docs-kit/components/*` without installing them:
 
@@ -104,7 +106,7 @@ import {Link, Text} from '@earendil-works/elanor-react';
 const {config} = Astro.props;
 ---
 
-<footer class="docs-footer">
+<footer>
   <Text>{config.name} is built by <Link href="https://earendil.com">Earendil</Link>.</Text>
 </footer>
 ```
@@ -175,6 +177,6 @@ jobs:
 ## Not yet
 
 - MDX and live examples.
-- Nested navigation groups: `SUMMARY.md` nesting is flattened.
+- Nested navigation groups.
 - Versioned docs and translations.
 - A social card image.

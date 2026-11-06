@@ -27,10 +27,7 @@ interface Props {
 const {title, description = config.description, current, groups, page, markdown} = Astro.props;
 const fullTitle = title && title !== config.name ? `${title} · ${config.name}` : config.name;
 const scripts = `${config.base}_scripts/`;
-const links: NavigationLink[] = [
-  ...config.links,
-  ...(config.repository ? [{label: 'GitHub', href: config.repository}] : []),
-];
+const links: NavigationLink[] = [...config.links];
 const canonical = config.site ? new URL(current, config.site).href : undefined;
 // The brand's symbol as the favicon, unless the Markdown folder has one.
 const favicon = `data:image/svg+xml,${encodeURIComponent(
@@ -87,7 +84,7 @@ const hasSideNavigation = groups.flatMap((group) => group.links).length > 1;
   </head>
   <body class="docs-layout">
     <SkipLink />
-    <DocsHeader groups={groups} links={links} current={current}>
+    <DocsHeader groups={groups} links={links} current={current} repository={config.repository}>
       <Identity slot="identity" config={config} page={page} />
     </DocsHeader>
     {hasSideNavigation && <DocsSideNavigation groups={groups} current={current} name={config.name} />}

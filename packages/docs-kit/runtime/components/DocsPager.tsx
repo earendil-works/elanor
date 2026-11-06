@@ -1,7 +1,8 @@
 /** @jsxImportSource react */
-import {Card} from '@earendil-works/elanor-react';
+import {ChevronLeftIcon} from '@earendil-works/elanor-icons-react/chevron-left';
+import {ChevronRightIcon} from '@earendil-works/elanor-icons-react/chevron-right';
 
-/** Links to the previous and the next page in the navigation's order, as linked cards. */
+/** Links to the previous and the next page in the navigation's order, below a separator. */
 
 export interface PagerLink {
   readonly href: string;
@@ -19,20 +20,22 @@ export function DocsPager({
   return (
     <nav className="docs-pager" aria-label="Previous and next page">
       {previous ? (
-        <Card
-          render={<a href={previous.href} rel="prev" />}
-          className="docs-pager-link docs-pager-previous"
-          label="Previous"
-          value={previous.title}
-        />
+        <a href={previous.href} rel="prev" className="docs-pager-link docs-pager-previous">
+          <span className="docs-pager-label">Previous</span>
+          <span className="docs-pager-title">
+            <ChevronLeftIcon />
+            {previous.title}
+          </span>
+        </a>
       ) : null}
       {next ? (
-        <Card
-          render={<a href={next.href} rel="next" />}
-          className="docs-pager-link docs-pager-next"
-          label="Next"
-          value={next.title}
-        />
+        <a href={next.href} rel="next" className="docs-pager-link docs-pager-next">
+          <span className="docs-pager-label">Next</span>
+          <span className="docs-pager-title">
+            {next.title}
+            <ChevronRightIcon />
+          </span>
+        </a>
       ) : null}
     </nav>
   );

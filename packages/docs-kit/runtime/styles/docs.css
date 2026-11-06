@@ -130,9 +130,8 @@
     }
   }
 
-  /* "Edit page" and "Copy page" are gray tertiary buttons; Elanor's tertiary button is the link
-     color. */
-  .docs-page-action {
+  /* "Copy page" is a gray tertiary button; Elanor's tertiary button is the link color. */
+  .docs-copy-page {
     box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
       var(--semantic-color-background-fill-ghost-neutral);
     background: var(--semantic-color-background-fill-ghost-neutral);
@@ -140,14 +139,14 @@
   }
 
   @media (hover: hover) {
-    .docs-page-action:hover:not([data-disabled]) {
+    .docs-copy-page:hover:not([data-disabled]) {
       box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
         var(--semantic-color-background-fill-ghost-neutral-hover);
       background: var(--semantic-color-background-fill-ghost-neutral-hover);
     }
   }
 
-  .docs-page-action:active:not([data-disabled]) {
+  .docs-copy-page:active:not([data-disabled]) {
     box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
       var(--semantic-color-background-fill-ghost-neutral-active);
     background: var(--semantic-color-background-fill-ghost-neutral-active);
@@ -190,9 +189,10 @@
     }
   }
 
-  /* Narrow: identity and actions, with the links and the pages in the menu. */
+  /* Narrow: identity and actions, with the links, the repository, and the pages in the menu. */
   @media (width < 61.625rem) {
-    .docs-header-links {
+    .docs-header-links,
+    .docs-header-github {
       display: none;
     }
   }
@@ -352,35 +352,58 @@
     color: var(--semantic-color-text-negative);
   }
 
-  /* Previous and next: linked cards side by side, the next one at the end. */
+  /* Previous and next: text links below a separator, the next one at the end. */
   .docs-pager {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: var(--semantic-dimension-space-gap-medium);
+    gap: var(--semantic-dimension-space-gap-large);
     margin-block-start: var(--semantic-dimension-space-gap-x-large);
+    padding-block-start: var(--semantic-dimension-space-padding-x-large);
+    border-block-start: var(--semantic-dimension-border-width-small) solid
+      var(--semantic-color-border-secondary);
   }
 
   .docs-pager-link {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: var(--semantic-dimension-space-gap-xx-small);
     min-inline-size: 0;
+    color: var(--semantic-color-text-primary);
     text-decoration: none;
   }
 
   .docs-pager-next {
     grid-column: 2;
+    align-items: end;
     text-align: end;
   }
 
-  .docs-footer {
-    margin-block-start: var(--semantic-dimension-space-padding-xxxx-large);
-    padding-block-start: var(--semantic-dimension-space-padding-large);
-    border-block-start: var(--semantic-dimension-border-width-small) solid
-      var(--semantic-color-border-secondary);
+  .docs-pager-label {
     color: var(--semantic-color-text-secondary);
     font: var(--semantic-typography-ui-secondary);
   }
 
-  .docs-footer > * {
-    font: inherit;
+  .docs-pager-title {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--semantic-dimension-space-gap-xx-small);
+    font: var(--semantic-typography-ui-primary);
+    font-weight: var(--semantic-font-weight-ui-selected);
+  }
+
+  .docs-pager-title > svg {
+    flex: none;
+    inline-size: var(--semantic-dimension-size-icon);
+    block-size: var(--semantic-dimension-size-icon);
+    color: var(--semantic-color-icon-secondary);
+  }
+
+  @media (hover: hover) {
+    .docs-pager-link:hover .docs-pager-title,
+    .docs-pager-link:hover .docs-pager-title > svg {
+      color: var(--semantic-color-text-link);
+    }
   }
 
   /* Tabs: a bordered box with a bar of ghost buttons; a code block alone in a panel fills it. */

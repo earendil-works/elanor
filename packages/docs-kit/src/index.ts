@@ -58,8 +58,8 @@ const contentTypes: Record<string, string> = {
 export function isPublishedFile(relativePath: string): boolean {
   const parts = relativePath.split(/[\\/]/);
   if (parts.some((part) => part.startsWith('.') || part === 'node_modules')) return false;
-  // The navigation, and instructions for the repository's agents.
-  if (['SUMMARY.md', 'AGENTS.md', 'CLAUDE.md'].includes(relativePath)) return false;
+  // Instructions for the repository's agents.
+  if (['AGENTS.md', 'CLAUDE.md'].includes(relativePath)) return false;
   return extname(relativePath).toLowerCase() in contentTypes;
 }
 

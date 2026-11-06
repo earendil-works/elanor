@@ -29,7 +29,6 @@ const {tree, toc} = await renderPage(page, site, renderOptions, problems);
 problems.forEach(warn);
 const {previous, next} = neighbors(site, page);
 const markdown = `${config.base}${page.file}`;
-const editUrl = config.editUrl ? `${config.editUrl}${page.file}` : undefined;
 ---
 
 <DocsLayout
@@ -47,7 +46,6 @@ const editUrl = config.editUrl ? `${config.editUrl}${page.file}` : undefined;
         title={page.title}
         markdown={markdown}
         lastUpdated={page.lastUpdated}
-        editUrl={editUrl}
       />
       <Separator className="docs-page-separator" />
       {toc.length > 0 && <DocsTableOfContentsMenu entries={toc} />}
