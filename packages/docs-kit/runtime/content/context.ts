@@ -3,7 +3,7 @@ import {join} from 'node:path';
 
 import config from 'virtual:elanor-docs/config';
 
-import type {DocsLink} from '../../src/config.ts';
+import type {DocsLink, ResolvedDocsLogo} from '../../src/config.ts';
 import type {RenderOptions} from './markdown.ts';
 import {loadSite, type Site} from './site.ts';
 
@@ -18,6 +18,10 @@ export interface RuntimeConfig {
   readonly name: string;
   readonly description: string | undefined;
   readonly brand: 'earendil' | 'pi' | 'radius' | 'lefos' | 'elanor';
+  /** The logo; `undefined` for the brand's symbol, `false` for none. */
+  readonly logo: ResolvedDocsLogo | false | undefined;
+  /** The favicon's path below the site's base; `undefined` for the brand's symbol. */
+  readonly favicon: string | undefined;
   readonly site: string | undefined;
   readonly base: string;
   readonly repository: string | undefined;

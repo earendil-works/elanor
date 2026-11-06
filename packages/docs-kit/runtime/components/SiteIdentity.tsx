@@ -19,21 +19,46 @@ export const brandSymbols: Record<RuntimeConfig['brand'], BrandSymbol> = {
   lefos: LefosSymbol,
 };
 
-/** The site's name beside its brand's symbol, linking to the home page. */
+/**
+ * The site's name beside its logo, linking to the home page. The logo is the brand's symbol, the
+ * project's own images (`logo` in elanor-docs.json, paths below the site's base), or none.
+ */
 export function SiteIdentity({
   name,
   brand,
-  href,
+  logo,
+  base,
 }: {
   readonly name: string;
   readonly brand: RuntimeConfig['brand'];
-  readonly href: string;
+  readonly logo: RuntimeConfig['logo'];
+  /** The site's base, which is also the home page's address. */
+  readonly base: string;
 }): React.JSX.Element {
   const Mark = brandSymbols[brand];
+  let mark: React.JSX.Element | null;
+  if (logo === false) {
+    mark = null;
+  } else if (logo === undefined) {
+    mark = <Mark className="docs-identity-mark" aria-hidden="true" />;
+  } else if (logo.dark === undefined) {
+    mark = <img className="docs-identity-mark" src={`${base}${logo.light}`} alt="" />;
+  } else {
+    mark = (
+      <>
+        <img
+          className="docs-identity-mark docs-identity-light"
+          src={`${base}${logo.light}`}
+          alt=""
+        />
+        <img className="docs-identity-mark docs-identity-dark" src={`${base}${logo.dark}`} alt="" />
+      </>
+    );
+  }
   return (
-    <Link href={href} aria-label={`${name} documentation home`} className="docs-identity">
-      <Mark className="docs-identity-mark" aria-hidden="true" />
-      <span>{name}</span>
+    <Link href={base} aria-label={`${name} documentation home`} className="docs-identity">
+      {mark}
+      {logo && logo.replacesName ? null : <span>{name}</span>}
     </Link>
   );
 }

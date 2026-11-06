@@ -21,7 +21,7 @@ The command is also installed as `elanor-docs`. It runs [Astro](https://astro.bu
 - **From MkDocs and Zensical:** Python-Markdown's tabs (`=== "TypeScript"`, kept in sync across a page and remembered) and admonitions (`!!! warning "Title"`, and `??? note` collapsed).
 - **Links:** relative links to other Markdown files point at their pages, links to images and other files of the folder at the copies the site publishes, and links outside the folder (`../src/main.ts`) at the repository on GitHub. Broken links are warnings, or errors with `--strict`.
 - **For agents:** every page's Markdown beside it (`guide/setup.md`), linked from the page, and an [`llms.txt`](https://llmstxt.org) that lists them.
-- **The rest:** light and dark color schemes, the brand's symbol as the favicon, a 404 page, canonical and social tags.
+- **The rest:** light and dark color schemes, the logo (or the brand's symbol) as the favicon, a 404 page, canonical and social tags.
 
 ## Defaults
 
@@ -45,6 +45,8 @@ Put `elanor-docs.json` next to the Markdown. Every field is optional.
   "name": "Absurd",
   "description": "A Postgres-native durable workflow system.",
   "brand": "earendil",
+  "logo": {"light": "brand/logo.svg", "dark": "brand/logo-dark.svg"},
+  "favicon": "brand/favicon.svg",
   "site": "https://earendil-works.github.io/absurd/",
   "repository": "https://github.com/earendil-works/absurd",
   "branch": "main",
@@ -56,19 +58,21 @@ Put `elanor-docs.json` next to the Markdown. Every field is optional.
 }
 ```
 
-| Field         | What it does                                                                   |
-| ------------- | ------------------------------------------------------------------------------ |
-| `name`        | Shown beside the brand's symbol and in page titles                             |
-| `description` | For search engines, link previews, and `llms.txt`                              |
-| `brand`       | The design tokens and symbol: `earendil`, `pi`, `radius`, `lefos`, or `elanor` |
-| `site`        | Where the site is published                                                    |
-| `repository`  | The repository's address, for the GitHub button and links to its files         |
-| `branch`      | The branch that links to the repository's files point at                       |
-| `lastUpdated` | `false` hides the dates                                                        |
-| `links`       | Links in the top navigation                                                    |
-| `customCss`   | Stylesheets loaded after the kit's; use the design tokens' custom properties   |
-| `components`  | Replace parts of the page, see below                                           |
-| `strict`      | Fail the build on broken links and other problems                              |
+| Field         | What it does                                                                                                                                                                                                                           |
+| ------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `name`        | Shown beside the brand's symbol and in page titles                                                                                                                                                                                     |
+| `description` | For search engines, link previews, and `llms.txt`                                                                                                                                                                                      |
+| `brand`       | The design tokens and symbol: `earendil`, `pi`, `radius`, `lefos`, or `elanor`                                                                                                                                                         |
+| `logo`        | The logo beside the name: an image of the Markdown folder (`"logo.svg"`), `{"light", "dark", "replacesName"}` for a dark-mode version or a wordmark that replaces the name, or `false` for the name alone. Default: the brand's symbol |
+| `favicon`     | An image of the Markdown folder. Default: the logo (unless it replaces the name), otherwise the brand's symbol                                                                                                                         |
+| `site`        | Where the site is published                                                                                                                                                                                                            |
+| `repository`  | The repository's address, for the GitHub button and links to its files                                                                                                                                                                 |
+| `branch`      | The branch that links to the repository's files point at                                                                                                                                                                               |
+| `lastUpdated` | `false` hides the dates                                                                                                                                                                                                                |
+| `links`       | Links in the top navigation                                                                                                                                                                                                            |
+| `customCss`   | Stylesheets loaded after the kit's; use the design tokens' custom properties                                                                                                                                                           |
+| `components`  | Replace parts of the page, see below                                                                                                                                                                                                   |
+| `strict`      | Fail the build on broken links and other problems                                                                                                                                                                                      |
 
 Pages read YAML front matter:
 

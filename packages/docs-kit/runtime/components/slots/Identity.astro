@@ -1,6 +1,6 @@
 ---
-// The top navigation's identity: the brand's symbol and the site's name. Replace with
-// `components.Identity` for a logo of the project's own. Props: `page` and `config`.
+// The top navigation's identity: the logo (`logo` in elanor-docs.json, or the brand's symbol) and
+// the site's name. Replace with `components.Identity` for anything else. Props: `page` and `config`.
 import type {RuntimeConfig} from '../../content/context.ts';
 import {SiteIdentity} from '../SiteIdentity.tsx';
 
@@ -11,4 +11,4 @@ interface Props {
 const {config} = Astro.props;
 ---
 
-<SiteIdentity name={config.name} brand={config.brand} href={config.base} />
+<SiteIdentity name={config.name} brand={config.brand} logo={config.logo} base={config.base} />

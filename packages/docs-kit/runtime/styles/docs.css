@@ -324,6 +324,12 @@
     block-size: var(--semantic-dimension-size-small);
   }
 
+  /* A logo with an image for each color scheme. */
+  :root[data-color-scheme='dark'] .docs-identity-light,
+  :root:not([data-color-scheme='dark']) .docs-identity-dark {
+    display: none;
+  }
+
   .docs-skip-link {
     position: absolute;
     inset-block-start: var(--semantic-dimension-space-padding-small);

@@ -1,6 +1,6 @@
 import {execFileSync} from 'node:child_process';
 import {existsSync, readFileSync} from 'node:fs';
-import {basename, dirname, isAbsolute, join, relative, resolve, sep} from 'node:path';
+import {basename, dirname, extname, isAbsolute, join, relative, resolve, sep} from 'node:path';
 
 /*
  * The docs kit's configuration: everything has a default, so a folder of Markdown is enough. A
@@ -27,6 +27,26 @@ export interface DocsLink {
   readonly href: string;
 }
 
+/** An image of the Markdown folder as the logo, with a version for dark mode if it needs one. */
+export interface DocsLogo {
+  /** The image, relative to the Markdown folder. */
+  readonly light: string;
+  /** The image in dark mode. Default: `light`. */
+  readonly dark?: string;
+  /** The image includes the name, such as a wordmark, so the name is not shown beside it. */
+  readonly replacesName?: boolean;
+}
+
+/** A logo with its images as paths below the site's base. */
+export interface ResolvedDocsLogo {
+  readonly light: string;
+  readonly dark: string | undefined;
+  readonly replacesName: boolean;
+}
+
+/** The image types a logo and a favicon can be, which the site publishes from the Markdown folder. */
+const imageExtensions = ['.svg', '.png', '.jpg', '.jpeg', '.webp', '.avif', '.gif', '.ico'];
+
 /** What a project can set, in `elanor-docs.json` or as the integration's options. */
 export interface DocsKitOptions {
   /** The Markdown folder. Default: `docs` if it exists, otherwise the project's folder. */
@@ -37,6 +57,17 @@ export interface DocsKitOptions {
   readonly description?: string;
   /** The design tokens' brand. Default: `earendil`. */
   readonly brand?: Brand;
+  /**
+   * The logo beside the name: an image of the Markdown folder (`"logo.svg"`), one for each color
+   * scheme (`{"light": "logo.svg", "dark": "logo-dark.svg"}`), or `false` for the name alone.
+   * Default: the brand's symbol.
+   */
+  readonly logo?: string | DocsLogo | false;
+  /**
+   * The favicon, an image of the Markdown folder. Default: the logo, unless it includes the name;
+   * otherwise the brand's symbol.
+   */
+  readonly favicon?: string;
   /** Where the site is published, such as `https://earendil-works.github.io/absurd/`. Default: the GitHub Pages address of the Git remote. */
   readonly site?: string;
   /** The repository's web address, for the GitHub link and links to its files. Default: the Git remote, when it is on GitHub. */
@@ -61,6 +92,10 @@ export interface ResolvedDocsConfig {
   readonly name: string;
   readonly description: string | undefined;
   readonly brand: Brand;
+  /** The logo; `undefined` for the brand's symbol, `false` for none. */
+  readonly logo: ResolvedDocsLogo | false | undefined;
+  /** The favicon's path below the site's base; `undefined` for the brand's symbol. */
+  readonly favicon: string | undefined;
   readonly site: string | undefined;
   /** The site's path, such as `/absurd/`; always ends with a slash. */
   readonly base: string;
@@ -195,11 +230,44 @@ export function resolveConfig(cwd: string, options: DocsKitOptions = {}): Resolv
     throw new Error(`Unknown brand "${merged.brand}"; the brands are ${brands.join(', ')}.`);
   }
 
+  /** An image of the Markdown folder, checked, as its path with `/` separators. */
+  const image = (field: string, path: string): string => {
+    const absolute = resolve(docsDir, path);
+    const rel = relative(docsDir, absolute).split(sep).join('/');
+    if (rel.startsWith('../') || isAbsolute(rel)) {
+      throw new Error(`The ${field} ${path} is outside the Markdown folder ${docsDir}.`);
+    }
+    if (!imageExtensions.includes(extname(rel).toLowerCase())) {
+      throw new Error(`The ${field} ${path} is not an image (${imageExtensions.join(', ')}).`);
+    }
+    if (!existsSync(absolute)) throw new Error(`The ${field} ${path} does not exist.`);
+    return rel;
+  };
+  const logoOption = merged.logo;
+  const logo: ResolvedDocsLogo | false | undefined =
+    logoOption === false || logoOption === undefined
+      ? logoOption
+      : typeof logoOption === 'string'
+        ? {light: image('logo', logoOption), dark: undefined, replacesName: false}
+        : {
+            light: image('logo', logoOption.light),
+            dark: logoOption.dark === undefined ? undefined : image('logo', logoOption.dark),
+            replacesName: logoOption.replacesName ?? false,
+          };
+  const favicon =
+    merged.favicon !== undefined
+      ? image('favicon', merged.favicon)
+      : logo && !logo.replacesName
+        ? logo.light
+        : undefined;
+
   return {
     docsDir,
     name,
     description: merged.description,
     brand: merged.brand ?? 'earendil',
+    logo,
+    favicon,
     site,
     base,
     repository,

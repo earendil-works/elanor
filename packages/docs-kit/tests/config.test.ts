@@ -71,3 +71,39 @@ test('rejects unknown component slots and brands', () => {
   );
   assert.throws(() => resolveConfig(project, {brand: 'acme' as never}), /acme/);
 });
+
+test('takes the logo and the favicon from images of the Markdown folder', () => {
+  const project = mkdtempSync(join(tmpdir(), 'docs-kit-config-'));
+  mkdirSync(join(project, 'docs/brand'), {recursive: true});
+  for (const file of ['logo.svg', 'logo-dark.svg', 'wordmark.svg', 'favicon.ico']) {
+    writeFileSync(join(project, 'docs/brand', file), '');
+  }
+  writeFileSync(join(project, 'outside.svg'), '');
+
+  assert.equal(resolveConfig(project).logo, undefined);
+  assert.equal(resolveConfig(project).favicon, undefined);
+  assert.equal(resolveConfig(project, {logo: false}).logo, false);
+
+  const simple = resolveConfig(project, {logo: 'brand/logo.svg'});
+  assert.deepEqual(simple.logo, {light: 'brand/logo.svg', dark: undefined, replacesName: false});
+  assert.equal(simple.favicon, 'brand/logo.svg');
+
+  const wordmark = resolveConfig(project, {
+    logo: {light: 'brand/wordmark.svg', dark: 'brand/logo-dark.svg', replacesName: true},
+  });
+  assert.equal(wordmark.favicon, undefined);
+  assert.equal(
+    resolveConfig(project, {
+      logo: {light: 'brand/wordmark.svg', replacesName: true},
+      favicon: 'brand/favicon.ico',
+    }).favicon,
+    'brand/favicon.ico',
+  );
+
+  assert.throws(
+    () => resolveConfig(project, {logo: '../outside.svg'}),
+    /outside the Markdown folder/,
+  );
+  assert.throws(() => resolveConfig(project, {logo: 'brand/missing.svg'}), /does not exist/);
+  assert.throws(() => resolveConfig(project, {favicon: 'index.md'}), /not an image/);
+});

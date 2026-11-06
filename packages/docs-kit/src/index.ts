@@ -16,7 +16,15 @@ import {
 import {pageScripts} from './page-scripts.ts';
 
 export {brands, componentSlots, resolveConfig} from './config.ts';
-export type {Brand, ComponentSlot, DocsKitOptions, DocsLink, ResolvedDocsConfig} from './config.ts';
+export type {
+  Brand,
+  ComponentSlot,
+  DocsKitOptions,
+  DocsLink,
+  DocsLogo,
+  ResolvedDocsConfig,
+  ResolvedDocsLogo,
+} from './config.ts';
 
 /*
  * The docs kit as an Astro integration, in the manner of Starlight: it adds the routes, the

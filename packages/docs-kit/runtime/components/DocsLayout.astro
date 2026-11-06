@@ -29,10 +29,12 @@ const fullTitle = title && title !== config.name ? `${title} · ${config.name}` 
 const scripts = `${config.base}_scripts/`;
 const links: NavigationLink[] = [...config.links];
 const canonical = config.site ? new URL(current, config.site).href : undefined;
-// The brand's symbol as the favicon, unless the Markdown folder has one.
-const favicon = `data:image/svg+xml,${encodeURIComponent(
-  renderToStaticMarkup(createElement(brandSymbols[config.brand], {scheme: 'light'})),
-)}`;
+// The configured favicon (or logo), or the brand's symbol.
+const favicon = config.favicon
+  ? `${config.base}${config.favicon}`
+  : `data:image/svg+xml,${encodeURIComponent(
+      renderToStaticMarkup(createElement(brandSymbols[config.brand], {scheme: 'light'})),
+    )}`;
 const hasSideNavigation = groups.flatMap((group) => group.links).length > 1;
 ---
 
