@@ -1,0 +1,63 @@
+---
+// Every page of the Markdown folder: the title and its metadata, the table of contents, the
+// content, and the links to the previous and next page.
+import {Separator} from '@earendil-works/elanor-react';
+import {AfterArticle, BeforeArticle} from 'virtual:elanor-docs/components';
+import DocsLayout from '../components/DocsLayout.astro';
+import {DocsGrid, DocsProse} from '../components/DocsLayoutParts.tsx';
+import {DocsMarkdown} from '../components/DocsMarkdown.tsx';
+import {DocsPageHeader} from '../components/DocsPageHeader.tsx';
+import {DocsPager} from '../components/DocsPager.tsx';
+import {DocsTableOfContents, DocsTableOfContentsMenu} from '../components/DocsTableOfContents.tsx';
+import {config, getSite, renderOptions} from '../content/context.ts';
+import {renderPage} from '../content/markdown.ts';
+import {navigationGroups, neighbors} from '../content/navigation.ts';
+import {warn} from '../content/warnings.ts';
+
+export function getStaticPaths() {
+  return getSite().pages.map((page) => ({params: {slug: page.slug || undefined}}));
+}
+
+// The page is looked up on each request, so the dev server follows added and renamed files.
+const site = getSite();
+const slug = Astro.params.slug ?? '';
+const page = site.pages.find((candidate) => candidate.slug === slug);
+if (!page) return new Response(null, {status: 404, statusText: 'Not found'});
+
+const problems: string[] = [];
+const {tree, toc} = await renderPage(page, site, renderOptions, problems);
+problems.forEach(warn);
+const {previous, next} = neighbors(site, page);
+const markdown = `${config.base}${page.file}`;
+---
+
+<DocsLayout
+  title={page.title}
+  description={page.description}
+  current={page.url}
+  groups={navigationGroups(site, page.url)}
+  page={page}
+  markdown={markdown}
+>
+  <DocsGrid className="docs-grid">
+    <article class="docs-article" data-toc={toc.length > 0 ? '' : undefined}>
+      <BeforeArticle config={config} page={page} />
+      <DocsPageHeader
+        title={page.title}
+        markdown={markdown}
+        lastUpdated={page.lastUpdated}
+      />
+      <Separator className="docs-page-separator" />
+      {toc.length > 0 && <DocsTableOfContentsMenu entries={toc} />}
+      <DocsProse>
+        <DocsMarkdown tree={tree} />
+      </DocsProse>
+      <AfterArticle config={config} page={page} />
+      <DocsPager
+        previous={previous && {href: previous.url, title: previous.title}}
+        next={next && {href: next.url, title: next.title}}
+      />
+    </article>
+    {toc.length > 0 && <DocsTableOfContents entries={toc} />}
+  </DocsGrid>
+</DocsLayout>

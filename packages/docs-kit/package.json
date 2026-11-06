@@ -1,0 +1,82 @@
+{
+  "name": "@earendil-works/elanor-docs-kit",
+  "version": "0.1.0",
+  "description": "A documentation site from a folder of Markdown, built with Elanor's components, tokens, and fonts.",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/earendil-works/elanor.git",
+    "directory": "packages/docs-kit"
+  },
+  "homepage": "https://github.com/earendil-works/elanor/tree/main/packages/docs-kit#readme",
+  "bugs": {
+    "url": "https://github.com/earendil-works/elanor/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "bin": {
+    "elanor-docs": "./dist/cli.js"
+  },
+  "files": [
+    "dist",
+    "runtime",
+    "README.md",
+    "LICENSE"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    },
+    "./components/*": "./runtime/components/*"
+  },
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "pnpm run clean && tsc -p tsconfig.build.json",
+    "check": "pnpm run lint && pnpm run check:types && pnpm run test",
+    "check:types": "pnpm run check:prepare && tsc -p tsconfig.json --noEmit",
+    "check:prepare": "pnpm --filter @earendil-works/elanor-docs-kit^... run build",
+    "lint": "pnpm run lint:oxlint && pnpm run lint:stylelint",
+    "lint:oxlint": "oxlint . --max-warnings 0 --report-unused-disable-directives",
+    "lint:stylelint": "pnpm run lint:stylelint:prepare && stylelint \"runtime/**/*.{css,astro}\" --max-warnings 0",
+    "lint:stylelint:prepare": "pnpm --filter @earendil-works/design-tokens run build:radius && pnpm --filter @earendil-works/stylelint-plugin-design-tokens run build",
+    "test": "node --test \"tests/*.test.ts\""
+  },
+  "dependencies": {
+    "@astrojs/react": "^7.0.0",
+    "@earendil-works/design-tokens": "workspace:*",
+    "@earendil-works/elanor-code-themes": "workspace:*",
+    "@earendil-works/elanor-fonts": "workspace:*",
+    "@earendil-works/elanor-icons-react": "workspace:*",
+    "@earendil-works/elanor-logos-react": "workspace:*",
+    "@earendil-works/elanor-react": "workspace:*",
+    "astro": "^7.3.5",
+    "esbuild": "^0.28.2",
+    "github-slugger": "^2.0.0",
+    "hast-util-to-jsx-runtime": "^2.3.6",
+    "minisearch": "^7.2.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0",
+    "rehype-raw": "^7.0.0",
+    "remark-gfm": "^4.0.1",
+    "remark-parse": "^11.0.0",
+    "remark-rehype": "^11.1.2",
+    "shiki": "^4.4.3",
+    "unified": "^11.0.5",
+    "unist-util-visit": "^5.1.0",
+    "yaml": "^2.9.1"
+  },
+  "devDependencies": {
+    "@earendil-works/stylelint-plugin-design-tokens": "workspace:*",
+    "@types/hast": "^3.0.5",
+    "@types/mdast": "^4.0.4",
+    "@types/node": "^24.19.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "postcss-html": "^2.0.0",
+    "stylelint": "^17.15.0",
+    "typescript": "^7.0.2"
+  }
+}

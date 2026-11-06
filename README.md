@@ -10,6 +10,7 @@ Earendil's design system. It provides UI building blocks; applications supply ro
 | [Logos](./packages/logos/README.md)                                     | `@earendil-works/elanor-logos`, `@earendil-works/elanor-logos-react`                                                                                     | Brand artwork, SVG and React                                     |
 | [Design tokens](./packages/design-tokens/README.md)                     | `@earendil-works/design-tokens`                                                                                                                          | Shared and brand-specific tokens, CSS exports                    |
 | [Stylelint plugin](./packages/stylelint-plugin-design-tokens/README.md) | `@earendil-works/stylelint-plugin-design-tokens`                                                                                                         | Token usage rules                                                |
+| [Docs kit](./packages/docs-kit/README.md)                               | `@earendil-works/elanor-docs-kit`                                                                                                                        | A docs site from a folder of Markdown, on Elanor's components    |
 
 The [docs app](./apps/docs) runs on Astro.
 

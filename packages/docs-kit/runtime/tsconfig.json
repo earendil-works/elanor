@@ -1,0 +1,16 @@
+// The runtime is published as source, which Vite compiles in the project that uses the kit. This
+// file keeps the project's own tsconfig.json from applying to it.
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "jsxImportSource": "react",
+    "allowImportingTsExtensions": true,
+    "verbatimModuleSyntax": true,
+    "strict": true,
+    "skipLibCheck": true,
+    "noEmit": true
+  }
+}
