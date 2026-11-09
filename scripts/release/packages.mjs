@@ -4,7 +4,14 @@ export const packages = [
   [
     '@earendil-works/elanor-fonts',
     'packages/fonts',
-    ['licenses/mallos-serif.txt', 'licenses/commit-mono.txt', 'licenses/departure-mono.txt'],
+    [
+      'licenses/simbelle-serif.txt',
+      'licenses/simbelle-serif-extended.txt',
+      'licenses/simbelle-arabic.txt',
+      'licenses/simbelle-sans.txt',
+      'licenses/simbelle-mono.txt',
+      'licenses/departure-mono.txt',
+    ],
   ],
   [
     '@earendil-works/elanor-icons-react',

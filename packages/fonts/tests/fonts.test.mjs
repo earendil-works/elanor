@@ -9,32 +9,48 @@ const pieces = ['latin', 'latin-ext', 'vietnamese', 'greek', 'cyrillic'];
 const split = (name, styles = ['', '-Italic']) =>
   styles.flatMap((style) => pieces.map((piece) => `${name}${style}-${piece}.woff2`));
 
+const latoWeights = {
+  Thin: 100,
+  ExtraLight: 200,
+  Light: 300,
+  Regular: 400,
+  Medium: 500,
+  SemiBold: 600,
+  Bold: 700,
+  ExtraBold: 800,
+  Black: 900,
+};
+
 // Each entry: its families with their weight descriptor, and the files its faces use. A family can consist of
 // several files, each limited to its own characters by unicode-range; `local` families come from the device.
 const families = [
   {
-    entry: 'mallos-serif',
+    entry: 'simbelle-serif',
     families: {
-      'Mallos Serif': {weight: '400 700'},
-      'Mallos Serif Fallback': {local: true},
+      'Simbelle Serif': {weight: '400 700'},
+      'Simbelle Serif Fallback': {local: true},
     },
     files: [
-      'MallosSerif-Variable.woff2',
-      'MallosSerif-Italic-Variable.woff2',
-      ...split('MallosSerifExtended'),
-      'MallosSerifArabic.woff2',
+      'SimbelleSerif.woff2',
+      'SimbelleSerif-Italic.woff2',
+      ...split('SimbelleSerifExtended'),
+      'SimbelleSerifArabic.woff2',
     ],
-    licenses: ['mallos-serif-extended', 'mallos-arabic'],
+    licenses: ['simbelle-serif-extended', 'simbelle-arabic'],
   },
   {
-    entry: 'mallos-sans',
-    families: {'Mallos Sans': {weight: '200 900'}},
-    files: [...split('MallosSans'), 'MallosSansArabic.woff2'],
+    // One file per Lato weight; the Arabic file is declared once per weight, so it joins each of them.
+    entry: 'simbelle-sans',
+    families: {'Simbelle Sans': {weights: Object.values(latoWeights).map(String)}},
+    files: [
+      ...Object.keys(latoWeights).flatMap((name) => split(`SimbelleSans-${name}`)),
+      'SimbelleSansArabic.woff2',
+    ],
   },
   {
-    entry: 'mallos-mono',
-    families: {'Mallos Mono': {weight: '200 700'}},
-    files: split('MallosMono'),
+    entry: 'simbelle-mono',
+    families: {'Simbelle Mono': {weight: '200 700'}},
+    files: split('SimbelleMono'),
   },
   {
     entry: 'departure-mono',
@@ -96,6 +112,7 @@ for (const {entry, families: names, files, licenses = []} of families) {
     const rules = await faces(entry);
     const used = new Set();
     const ranges = new Map();
+    const pieceWeights = new Map();
     for (const rule of rules) {
       const family = rule['font-family'].replaceAll("'", '');
       const spec = names[family];
@@ -118,22 +135,36 @@ for (const {entry, families: names, files, licenses = []} of families) {
       assert(file, `${entry}: unexpected src ${rule.src}`);
       assert.equal(rule['font-display'], 'swap');
       if (spec.weight) assert.equal(rule['font-weight'], spec.weight);
+      if (spec.weights) assert(spec.weights.includes(rule['font-weight']), rule['font-weight']);
       used.add(file);
       const asset = new URL(`files/${file}`, root);
       assert.equal(import.meta.resolve(`${manifest.name}/files/${file}`), asset.href);
       assert.equal((await readFile(asset)).toString('ascii', 0, 4), 'wOF2');
-      // Within a family and style, every character comes from one file only.
+      // Within a family, weight and style, every character comes from one file only.
       if (rule['unicode-range']) {
-        const key = `${family} ${rule['font-style']}`;
+        const key = `${family} ${rule['font-weight']} ${rule['font-style']}`;
         const seen = ranges.get(key) ?? new Set();
         for (const c of codePoints(rule['unicode-range'])) {
           assert(!seen.has(c), `${key}: U+${c.toString(16)} in two files`);
           seen.add(c);
         }
         ranges.set(key, seen);
+        // Browsers combine faces by unicode-range only when their descriptors are identical, so every piece of a
+        // family and style is declared for the same weights.
+        const piece = `${family} ${rule['font-style']}`;
+        const byRange = pieceWeights.get(piece) ?? new Map();
+        byRange.set(rule['unicode-range'], [
+          ...(byRange.get(rule['unicode-range']) ?? []),
+          rule['font-weight'],
+        ]);
+        pieceWeights.set(piece, byRange);
       }
     }
     assert.deepEqual([...used].sort(), [...files].sort());
+    for (const [piece, byRange] of pieceWeights) {
+      const [first, ...rest] = [...byRange.values()].map((weights) => weights.toSorted().join());
+      for (const weights of rest) assert.equal(weights, first, `${piece}: weights differ by piece`);
+    }
   });
 
   test(`${entry} ships its CSS and complete font licenses`, async () => {

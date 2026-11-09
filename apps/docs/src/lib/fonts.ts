@@ -16,20 +16,20 @@ interface FamilySpec {
 
 const familySpecs: readonly FamilySpec[] = [
   {
-    stylesheet: 'mallos-serif.css',
-    license: 'mallos-serif.txt',
+    stylesheet: 'simbelle-serif.css',
+    license: 'simbelle-serif.txt',
     role: 'Serif for text and headings.',
     sample: 'Sphinx of black quartz, judge my vow.',
   },
   {
-    stylesheet: 'mallos-sans.css',
-    license: 'mallos-sans.txt',
-    role: 'Sans-serif, an interim stand-in made from Source Sans 3.',
+    stylesheet: 'simbelle-sans.css',
+    license: 'simbelle-sans.txt',
+    role: 'Sans-serif, an interim stand-in made from Lato.',
     sample: 'Sphinx of black quartz, judge my vow.',
   },
   {
-    stylesheet: 'mallos-mono.css',
-    license: 'mallos-mono.txt',
+    stylesheet: 'simbelle-mono.css',
+    license: 'simbelle-mono.txt',
     role: 'Monospace for code.',
     sample: 'if (count >= 10) stop();',
   },

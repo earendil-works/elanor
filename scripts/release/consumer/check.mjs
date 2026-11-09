@@ -15,7 +15,7 @@ const result = await build({
 });
 assert.ok(Object.keys(result.metafile.outputs).some((path) => path.endsWith('.woff2')));
 
-for (const entry of ['mallos-serif', 'commit-mono', 'departure-mono']) {
+for (const entry of ['simbelle-serif', 'simbelle-sans', 'simbelle-mono', 'departure-mono']) {
   const url = import.meta.resolve(`@earendil-works/elanor-fonts/${entry}.css`);
   for (const [, path] of readFileSync(new URL(url), 'utf8').matchAll(
     /url\(['"]?([^'")]+)['"]?\)/g,

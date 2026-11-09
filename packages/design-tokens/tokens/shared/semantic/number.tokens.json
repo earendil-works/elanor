@@ -46,7 +46,7 @@
         "$description": "Font size factors for text set inside other text, relative to the size of the surrounding text.",
         "inlineCode": {
           "$value": "{primitive.number.fontScale.10000}",
-          "$description": "Component token for inline code, relative to the surrounding text, so code in a heading grows with it. 1: Mallos Mono is drawn at Mallos Serif's x-height, so code and text match at the same size."
+          "$description": "Component token for inline code, relative to the surrounding text, so code in a heading grows with it. 1: Simbelle Mono is drawn at Simbelle Serif's x-height, so code and text match at the same size."
         }
       },
       "layer": {

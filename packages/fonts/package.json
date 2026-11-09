@@ -1,7 +1,7 @@
 {
   "name": "@earendil-works/elanor-fonts",
   "version": "0.1.0",
-  "description": "Mallos Serif, Mallos Sans, Mallos Mono, and DepartureMono fonts with self-hosted CSS entry points.",
+  "description": "Simbelle Serif, Simbelle Sans, Simbelle Mono, and DepartureMono fonts with self-hosted CSS entry points.",
   "license": "OFL-1.1",
   "repository": {
     "type": "git",
@@ -26,9 +26,9 @@
     "README.md"
   ],
   "exports": {
-    "./mallos-serif.css": "./mallos-serif.css",
-    "./mallos-sans.css": "./mallos-sans.css",
-    "./mallos-mono.css": "./mallos-mono.css",
+    "./simbelle-serif.css": "./simbelle-serif.css",
+    "./simbelle-sans.css": "./simbelle-sans.css",
+    "./simbelle-mono.css": "./simbelle-mono.css",
     "./departure-mono.css": "./departure-mono.css",
     "./files/*": "./files/*",
     "./licenses/*": "./licenses/*"

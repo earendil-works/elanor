@@ -21,9 +21,9 @@ interface FontsOverviewProps {
   readonly usageLines: HighlightedLines;
 }
 
-export const fontsUsage = `@import '@earendil-works/elanor-fonts/mallos-serif.css';
-@import '@earendil-works/elanor-fonts/mallos-sans.css';
-@import '@earendil-works/elanor-fonts/mallos-mono.css';`;
+export const fontsUsage = `@import '@earendil-works/elanor-fonts/simbelle-serif.css';
+@import '@earendil-works/elanor-fonts/simbelle-sans.css';
+@import '@earendil-works/elanor-fonts/simbelle-mono.css';`;
 
 const glyphs = [
   'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
@@ -164,7 +164,7 @@ export function FontsOverview({page, usageLines}: FontsOverviewProps): React.JSX
         <CopyStatus />
         <Text>
           Lefos: import <InlineCode>departure-mono.css</InlineCode> instead of{' '}
-          <InlineCode>mallos-mono.css</InlineCode>.
+          <InlineCode>simbelle-mono.css</InlineCode>.
         </Text>
         {page.missing.map((font) => (
           <Text key={font.cssVariable}>
