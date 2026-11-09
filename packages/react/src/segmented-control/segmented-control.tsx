@@ -5,12 +5,16 @@ import {mergeClassName} from '../utils/class-names.ts';
 
 import styles from './segmented-control.module.css';
 
+export type SegmentedControlDensity = 'compact' | 'default';
+
 export type SegmentedControlRootProps<Value extends string = string> =
   BaseToggleGroup.Props<Value> & {
     /** Only horizontal is supported. */
     readonly orientation?: 'horizontal';
     /** One item is pressed at a time. */
     readonly multiple?: false;
+    /** `compact` removes the items' block padding but keeps their touch target height. */
+    readonly density?: SegmentedControlDensity;
   };
 export type SegmentedControlState = BaseToggleGroup.State;
 export type SegmentedControlChangeEventDetails = BaseToggleGroup.ChangeEventDetails;
@@ -22,6 +26,7 @@ export type SegmentedControlItemChangeEventReason = Toggle.ChangeEventReason;
 
 export function SegmentedControl<Value extends string = string>({
   ref,
+  density = 'default',
   className,
   ...props
 }: SegmentedControlRootProps<Value>): React.JSX.Element {
@@ -31,6 +36,7 @@ export function SegmentedControl<Value extends string = string>({
       orientation="horizontal"
       multiple={false}
       ref={ref}
+      data-density={density}
       className={mergeClassName<BaseToggleGroup.State>(styles.root, className)}
     />
   );

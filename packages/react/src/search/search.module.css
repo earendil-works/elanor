@@ -20,6 +20,11 @@
     color: var(--semantic-color-text-primary);
   }
 
+  /* No block padding: as tall as a compact Dropdown trigger beside it. */
+  .root[data-density='compact'] {
+    padding-block: 0;
+  }
+
   @media (hover: hover) {
     .root:where(:hover:not(:has(.input:disabled, .input[data-disabled]))) {
       border-color: var(--semantic-color-background-fill-secondary-hover);
@@ -33,7 +38,8 @@
   }
 
   .root:has(.input:focus-visible) {
-    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline: var(--semantic-dimension-border-width-focus-ring) solid
+      var(--semantic-color-focus-ring);
     outline-offset: var(--semantic-dimension-border-width-medium);
   }
 
@@ -80,6 +86,30 @@
     background: transparent;
     color: inherit;
     font: var(--semantic-typography-ui-primary);
+  }
+
+  /* The input keeps the default touch target; a pseudo-element would take the tap
+     without focusing it. Padding keeps the text in place; margin keeps the root's height. */
+  :where(.root[data-density='compact']) .input {
+    margin-block: calc(-1 * var(--semantic-dimension-space-control-padding-block-small));
+    padding-block: var(--semantic-dimension-space-control-padding-block-small);
+  }
+
+  @media (pointer: coarse) {
+    :where(.root[data-density='compact']) .input {
+      /* stylelint-disable design-tokens/token-property-compatibility -- The target's overhang,
+         not spacing: the same half gap and border as compact Dropdown triggers on touch screens. */
+      margin-block: calc(
+        -1 *
+          (var(--semantic-dimension-space-gap-medium) / 2 +
+            var(--semantic-dimension-border-width-default))
+      );
+      padding-block: calc(
+        var(--semantic-dimension-space-gap-medium) / 2 +
+          var(--semantic-dimension-border-width-default)
+      );
+      /* stylelint-enable design-tokens/token-property-compatibility */
+    }
   }
 
   /* Hide the built-in clear button so browsers match and a custom one isn't doubled. */

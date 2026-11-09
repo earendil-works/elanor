@@ -3,17 +3,18 @@ import {useState} from 'react';
 
 import {MemberFilter} from './member-filter.tsx';
 
-const owners = ['All', 'alexandra.morgan-whitfield@example.com', 'sam.rivera@example.com'];
+const owners = ['alexandra.morgan-whitfield@example.com', 'sam.rivera@example.com'];
 
 export default function SearchAndFilterBarContentWidth() {
   const [query, setQuery] = useState('');
-  const [owner, setOwner] = useState(owners[1] ?? 'All');
+  const [owner, setOwner] = useState<string | null>(owners[0] ?? null);
   const [source, setSource] = useState(['all']);
 
   return (
     <SearchAndFilterBar.Root role="search" aria-label="Component search and filters">
       <SearchAndFilterBar.Search>
         <Search
+          density="compact"
           aria-label="Search components"
           placeholder="Search components"
           value={query}
@@ -23,6 +24,7 @@ export default function SearchAndFilterBarContentWidth() {
       <SearchAndFilterBar.Filters>
         <MemberFilter label="Owner" value={owner} options={owners} onChange={setOwner} />
         <SegmentedControl.Root
+          density="compact"
           aria-label="Source"
           value={source}
           onValueChange={(next) => {

@@ -149,6 +149,55 @@
     grid-column: span 12;
   }
 
+  /* Grid.Item start, as the end line. These follow each block's span rules. */
+  .item[data-end-base='-1'] {
+    grid-column-end: -1;
+  }
+
+  .item[data-end-base='2'] {
+    grid-column-end: 2;
+  }
+
+  .item[data-end-base='3'] {
+    grid-column-end: 3;
+  }
+
+  .item[data-end-base='4'] {
+    grid-column-end: 4;
+  }
+
+  .item[data-end-base='5'] {
+    grid-column-end: 5;
+  }
+
+  .item[data-end-base='6'] {
+    grid-column-end: 6;
+  }
+
+  .item[data-end-base='7'] {
+    grid-column-end: 7;
+  }
+
+  .item[data-end-base='8'] {
+    grid-column-end: 8;
+  }
+
+  .item[data-end-base='9'] {
+    grid-column-end: 9;
+  }
+
+  .item[data-end-base='10'] {
+    grid-column-end: 10;
+  }
+
+  .item[data-end-base='11'] {
+    grid-column-end: 11;
+  }
+
+  .item[data-end-base='12'] {
+    grid-column-end: 12;
+  }
+
   @container elanor-grid (min-width: 40rem /* token: semantic.dimension.breakpoint.xSmall */) {
     .item[data-span-x-small='full'] {
       grid-column: 1 / -1;
@@ -200,6 +249,54 @@
 
     .item[data-span-x-small='12'] {
       grid-column: span 12;
+    }
+
+    .item[data-end-x-small='-1'] {
+      grid-column-end: -1;
+    }
+
+    .item[data-end-x-small='2'] {
+      grid-column-end: 2;
+    }
+
+    .item[data-end-x-small='3'] {
+      grid-column-end: 3;
+    }
+
+    .item[data-end-x-small='4'] {
+      grid-column-end: 4;
+    }
+
+    .item[data-end-x-small='5'] {
+      grid-column-end: 5;
+    }
+
+    .item[data-end-x-small='6'] {
+      grid-column-end: 6;
+    }
+
+    .item[data-end-x-small='7'] {
+      grid-column-end: 7;
+    }
+
+    .item[data-end-x-small='8'] {
+      grid-column-end: 8;
+    }
+
+    .item[data-end-x-small='9'] {
+      grid-column-end: 9;
+    }
+
+    .item[data-end-x-small='10'] {
+      grid-column-end: 10;
+    }
+
+    .item[data-end-x-small='11'] {
+      grid-column-end: 11;
+    }
+
+    .item[data-end-x-small='12'] {
+      grid-column-end: 12;
     }
   }
 
@@ -255,6 +352,54 @@
     .item[data-span-small='12'] {
       grid-column: span 12;
     }
+
+    .item[data-end-small='-1'] {
+      grid-column-end: -1;
+    }
+
+    .item[data-end-small='2'] {
+      grid-column-end: 2;
+    }
+
+    .item[data-end-small='3'] {
+      grid-column-end: 3;
+    }
+
+    .item[data-end-small='4'] {
+      grid-column-end: 4;
+    }
+
+    .item[data-end-small='5'] {
+      grid-column-end: 5;
+    }
+
+    .item[data-end-small='6'] {
+      grid-column-end: 6;
+    }
+
+    .item[data-end-small='7'] {
+      grid-column-end: 7;
+    }
+
+    .item[data-end-small='8'] {
+      grid-column-end: 8;
+    }
+
+    .item[data-end-small='9'] {
+      grid-column-end: 9;
+    }
+
+    .item[data-end-small='10'] {
+      grid-column-end: 10;
+    }
+
+    .item[data-end-small='11'] {
+      grid-column-end: 11;
+    }
+
+    .item[data-end-small='12'] {
+      grid-column-end: 12;
+    }
   }
 
   @container elanor-grid (min-width: 64rem /* token: semantic.dimension.breakpoint.medium */) {
@@ -308,6 +453,54 @@
 
     .item[data-span-medium='12'] {
       grid-column: span 12;
+    }
+
+    .item[data-end-medium='-1'] {
+      grid-column-end: -1;
+    }
+
+    .item[data-end-medium='2'] {
+      grid-column-end: 2;
+    }
+
+    .item[data-end-medium='3'] {
+      grid-column-end: 3;
+    }
+
+    .item[data-end-medium='4'] {
+      grid-column-end: 4;
+    }
+
+    .item[data-end-medium='5'] {
+      grid-column-end: 5;
+    }
+
+    .item[data-end-medium='6'] {
+      grid-column-end: 6;
+    }
+
+    .item[data-end-medium='7'] {
+      grid-column-end: 7;
+    }
+
+    .item[data-end-medium='8'] {
+      grid-column-end: 8;
+    }
+
+    .item[data-end-medium='9'] {
+      grid-column-end: 9;
+    }
+
+    .item[data-end-medium='10'] {
+      grid-column-end: 10;
+    }
+
+    .item[data-end-medium='11'] {
+      grid-column-end: 11;
+    }
+
+    .item[data-end-medium='12'] {
+      grid-column-end: 12;
     }
   }
 
@@ -363,6 +556,54 @@
     .item[data-span-large='12'] {
       grid-column: span 12;
     }
+
+    .item[data-end-large='-1'] {
+      grid-column-end: -1;
+    }
+
+    .item[data-end-large='2'] {
+      grid-column-end: 2;
+    }
+
+    .item[data-end-large='3'] {
+      grid-column-end: 3;
+    }
+
+    .item[data-end-large='4'] {
+      grid-column-end: 4;
+    }
+
+    .item[data-end-large='5'] {
+      grid-column-end: 5;
+    }
+
+    .item[data-end-large='6'] {
+      grid-column-end: 6;
+    }
+
+    .item[data-end-large='7'] {
+      grid-column-end: 7;
+    }
+
+    .item[data-end-large='8'] {
+      grid-column-end: 8;
+    }
+
+    .item[data-end-large='9'] {
+      grid-column-end: 9;
+    }
+
+    .item[data-end-large='10'] {
+      grid-column-end: 10;
+    }
+
+    .item[data-end-large='11'] {
+      grid-column-end: 11;
+    }
+
+    .item[data-end-large='12'] {
+      grid-column-end: 12;
+    }
   }
 
   @container elanor-grid (min-width: 96rem /* token: semantic.dimension.breakpoint.xLarge */) {
@@ -416,6 +657,54 @@
 
     .item[data-span-x-large='12'] {
       grid-column: span 12;
+    }
+
+    .item[data-end-x-large='-1'] {
+      grid-column-end: -1;
+    }
+
+    .item[data-end-x-large='2'] {
+      grid-column-end: 2;
+    }
+
+    .item[data-end-x-large='3'] {
+      grid-column-end: 3;
+    }
+
+    .item[data-end-x-large='4'] {
+      grid-column-end: 4;
+    }
+
+    .item[data-end-x-large='5'] {
+      grid-column-end: 5;
+    }
+
+    .item[data-end-x-large='6'] {
+      grid-column-end: 6;
+    }
+
+    .item[data-end-x-large='7'] {
+      grid-column-end: 7;
+    }
+
+    .item[data-end-x-large='8'] {
+      grid-column-end: 8;
+    }
+
+    .item[data-end-x-large='9'] {
+      grid-column-end: 9;
+    }
+
+    .item[data-end-x-large='10'] {
+      grid-column-end: 10;
+    }
+
+    .item[data-end-x-large='11'] {
+      grid-column-end: 11;
+    }
+
+    .item[data-end-x-large='12'] {
+      grid-column-end: 12;
     }
   }
 }

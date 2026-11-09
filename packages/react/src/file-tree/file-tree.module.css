@@ -71,8 +71,9 @@
     }
 
     &:focus-visible {
-      outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
-      outline-offset: calc(-1 * var(--semantic-dimension-border-width-large));
+      outline: var(--semantic-dimension-border-width-focus-ring) solid
+        var(--semantic-color-focus-ring);
+      outline-offset: calc(-1 * var(--semantic-dimension-border-width-focus-ring));
     }
 
     @media (pointer: coarse) {
@@ -176,7 +177,7 @@
     }
 
     .item:focus-visible {
-      outline: var(--semantic-dimension-border-width-large) solid Highlight;
+      outline: var(--semantic-dimension-border-width-focus-ring) solid Highlight;
     }
 
     .tooltip {

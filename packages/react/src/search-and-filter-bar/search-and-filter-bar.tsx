@@ -1,7 +1,9 @@
 import {useRender} from '@base-ui/react/use-render';
 import {FilterListIcon} from '@earendil-works/elanor-icons-react';
 import {
+  Children,
   createContext,
+  isValidElement,
   use,
   useEffect,
   useMemo,
@@ -15,7 +17,7 @@ import {
 } from 'react';
 import {createPortal} from 'react-dom';
 
-import {Button} from '../button/button.tsx';
+import {Button, type ButtonDensity} from '../button/button.tsx';
 import type {DrawerPopupProps} from '../drawer/drawer.tsx';
 import * as Drawer from '../drawer/index.ts';
 import {classes} from '../utils/class-names.ts';
@@ -119,8 +121,16 @@ export function SearchAndFilterBarSearch({
   return <div {...props} ref={ref} className={classes(styles.search, className)} />;
 }
 
+export type SearchAndFilterBarFiltersLayout = 'content' | 'tracks';
+
 export interface SearchAndFilterBarFiltersProps extends HTMLAttributes<HTMLDivElement> {
   readonly ref?: Ref<HTMLDivElement> | undefined;
+  /**
+   * `content` sizes each filter to its content, up to half the filters' width. `tracks` gives
+   * up to eight filters one width, at least 11.75rem, at the bar's end: one row, then two rows,
+   * then the filters drawer.
+   */
+  readonly layout?: SearchAndFilterBarFiltersLayout;
 }
 
 /**
@@ -129,6 +139,7 @@ export interface SearchAndFilterBarFiltersProps extends HTMLAttributes<HTMLDivEl
  */
 export function SearchAndFilterBarFilters({
   ref,
+  layout = 'content',
   className,
   children,
   ...props
@@ -150,37 +161,83 @@ export function SearchAndFilterBarFilters({
     ref: ref ? [ref, filtersRef] : filtersRef,
     props: {
       ...props,
-      className: classes(styles.filters, className),
+      className: classes(styles.filters, layout === 'tracks' && styles.tracks, className),
       // One instance of the controls at a time keeps their IDs and label associations unique.
-      children: filtersSlot ? createPortal(children, filtersSlot) : children,
+      children:
+        layout === 'tracks' ? (
+          <TrackedFilters filtersSlot={filtersSlot}>{children}</TrackedFilters>
+        ) : filtersSlot ? (
+          createPortal(children, filtersSlot)
+        ) : (
+          children
+        ),
     },
   });
 }
 
+interface TrackedFiltersProps {
+  readonly filtersSlot: HTMLElement | null;
+  readonly children?: ReactNode;
+}
+
+/**
+ * Wraps each child of a tracks Filters, so the bar's `:nth-child()` rules count filters, not the
+ * hidden inputs, focus guards and spans a Dropdown renders beside its control. While the drawer
+ * is open, the controls render in its slot and the empty wrappers keep the count.
+ */
+function TrackedFilters({filtersSlot, children}: TrackedFiltersProps) {
+  const filters = Children.toArray(children);
+  if (filtersSlot) {
+    return (
+      <>
+        {filters.map((filter, index) => (
+          <div key={isValidElement(filter) ? filter.key : index} className={styles.filter} />
+        ))}
+        {createPortal(children, filtersSlot)}
+      </>
+    );
+  }
+  return filters.map((filter, index) => (
+    <div key={isValidElement(filter) ? filter.key : index} className={styles.filter}>
+      {filter}
+    </div>
+  ));
+}
+
 export interface SearchAndFilterBarFiltersTriggerProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   readonly ref?: Ref<HTMLButtonElement> | undefined;
+  /** `compact` makes the button as tall as compact controls, but keeps the touch target height. */
+  readonly density?: ButtonDensity;
 }
 
 /**
  * Opens the filters drawer. Bars narrower than 24rem with a FiltersTrigger show it in place of the
- * inline filters.
+ * inline filters. Outside a bar, it opens the drawer of the Drawer.Root around it, such as a page's
+ * own filters drawer.
  */
 export function SearchAndFilterBarFiltersTrigger({
   ref,
+  density = 'default',
   ...props
 }: SearchAndFilterBarFiltersTriggerProps) {
-  const {
-    meta: {triggerRef},
-  } = useSearchAndFilterBar('FiltersTrigger');
-  return (
-    <div className={styles.trigger}>
-      <Drawer.Trigger
-        {...props}
-        ref={ref}
-        render={<Button ref={triggerRef} hierarchy="secondary" iconStart={<FilterListIcon />} />}
-      />
-    </div>
+  // Optional: the button also works on its own, with no bar to show or hide it.
+  const bar = use(SearchAndFilterBarContext);
+  const trigger = (
+    <Drawer.Trigger
+      {...props}
+      ref={ref}
+      render={
+        <Button
+          ref={bar?.meta.triggerRef}
+          hierarchy="secondary"
+          density={density}
+          iconStart={<FilterListIcon />}
+          className={styles.filtersButton}
+        />
+      }
+    />
   );
+  return bar ? <div className={styles.trigger}>{trigger}</div> : trigger;
 }
 
 export interface SearchAndFilterBarFiltersDrawerProps extends Omit<DrawerPopupProps, 'finalFocus'> {

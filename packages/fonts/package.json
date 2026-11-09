@@ -1,9 +1,20 @@
 {
   "name": "@earendil-works/elanor-fonts",
   "version": "0.1.0",
-  "private": true,
   "description": "Mallos Serif, Mallos Sans, Mallos Mono, and DepartureMono fonts with self-hosted CSS entry points.",
   "license": "OFL-1.1",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/earendil-works/elanor.git",
+    "directory": "packages/fonts"
+  },
+  "homepage": "https://github.com/earendil-works/elanor/tree/main/packages/fonts#readme",
+  "bugs": {
+    "url": "https://github.com/earendil-works/elanor/issues"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "sideEffects": [
     "**/*.css"

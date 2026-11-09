@@ -42,6 +42,8 @@ export type {
   GridColumns,
   GridSpan,
   GridResponsiveSpan,
+  GridStart,
+  GridResponsiveStart,
   GridBreakpoint,
   GridGap,
 } from './grid/grid.tsx';
@@ -116,6 +118,13 @@ export type {
 
 export {CodeSnippet} from './code-snippet/code-snippet.tsx';
 export type {CodeSnippetProps} from './code-snippet/code-snippet.tsx';
+export {HighlightedCode, useHighlightedCode} from './code-snippet/highlighted-code.tsx';
+export type {
+  CodeHighlighter,
+  CodeToken,
+  HighlightedCodeProps,
+  HighlightedLines,
+} from './code-snippet/highlighted-code.tsx';
 
 export {CopyButton} from './copy-button/copy-button.tsx';
 export type {CopyButtonProps} from './copy-button/copy-button.tsx';
@@ -269,17 +278,26 @@ export type {
   DropdownPortalProps,
   DropdownPositionerProps,
   DropdownPositionerState,
+  DropdownPrefixProps,
   DropdownRootActions,
   DropdownRootChangeEventDetails,
   DropdownRootChangeEventReason,
   DropdownRootProps,
   DropdownSeparatorProps,
   DropdownSeparatorState,
+  DropdownTriggerDensity,
   DropdownTriggerProps,
   DropdownTriggerState,
   DropdownValueProps,
   DropdownValueState,
 } from './dropdown/dropdown.tsx';
+export type {
+  DropdownRootChangedValue,
+  DropdownClearPressDetails,
+  DropdownClearProps,
+  DropdownControlProps,
+  DropdownValueCountProps,
+} from './dropdown/dropdown-control.tsx';
 
 export type {
   EmptyStateActionsProps,
@@ -510,6 +528,7 @@ export type {
 export type {
   SearchAndFilterBarRootProps,
   SearchAndFilterBarSearchProps,
+  SearchAndFilterBarFiltersLayout,
   SearchAndFilterBarFiltersProps,
   SearchAndFilterBarFiltersTriggerProps,
   SearchAndFilterBarFiltersDrawerProps,
@@ -519,11 +538,13 @@ export type {
 } from './search-and-filter-bar/search-and-filter-bar.tsx';
 
 export {Search} from './search/search.tsx';
-export type {SearchProps} from './search/search.tsx';
+export type {SearchDensity, SearchProps} from './search/search.tsx';
 
 export type {
   CreateSearchableDropdownItemsOptions,
+  SearchableDropdownClearProps,
   SearchableDropdownCollectionProps,
+  SearchableDropdownControlProps,
   SearchableDropdownEmptyProps,
   SearchableDropdownFilter,
   SearchableDropdownFilterOptions,
@@ -548,10 +569,12 @@ export type {
   SearchableDropdownPortalProps,
   SearchableDropdownPositionerProps,
   SearchableDropdownPositionerState,
+  SearchableDropdownPrefixProps,
   SearchableDropdownPrimitiveValue,
   SearchableDropdownRootActions,
   SearchableDropdownRootChangeEventDetails,
   SearchableDropdownRootChangeEventReason,
+  SearchableDropdownRootChangedValue,
   SearchableDropdownRootHighlightEventDetails,
   SearchableDropdownRootHighlightEventReason,
   SearchableDropdownRootProps,
@@ -561,6 +584,7 @@ export type {
   SearchableDropdownStatusProps,
   SearchableDropdownTriggerProps,
   SearchableDropdownTriggerState,
+  SearchableDropdownValueCountProps,
   SearchableDropdownValueProps,
 } from './dropdown/searchable-dropdown.tsx';
 
@@ -572,6 +596,7 @@ export type {
 
 export type {
   SegmentedControlChangeEventDetails,
+  SegmentedControlDensity,
   SegmentedControlChangeEventReason,
   SegmentedControlItemChangeEventDetails,
   SegmentedControlItemChangeEventReason,

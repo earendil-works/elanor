@@ -4,7 +4,7 @@ import styles from './stack.module.css';
 
 export default function StackGapAuto() {
   return (
-    <Stack direction="row" gap="auto" align="center">
+    <Stack direction="row" gap="auto" align="center" wrap="wrap">
       <Text className={styles.item}>Website redesign</Text>
       <Text className={styles.item}>3 open tasks</Text>
     </Stack>

@@ -3,7 +3,7 @@
 Self-hosted Mallos Serif, Mallos Sans, Mallos Mono, and DepartureMono fonts with `@font-face` CSS.
 
 ```sh
-pnpm add @earendil-works/elanor-fonts
+npm install @earendil-works/elanor-fonts
 ```
 
 Import once at the application entry:

@@ -1,0 +1,18 @@
+/* Demo only: bar widths, scrolled sideways where the page is narrower. */
+/* stylelint-disable design-tokens/no-hardcoded-token-values -- Demo frame sizes. */
+.desktop {
+  inline-size: 77.5rem;
+}
+
+.oneRow {
+  inline-size: 60rem;
+}
+
+.twoRows {
+  inline-size: 46rem;
+}
+
+.drawer {
+  inline-size: 30rem;
+}
+/* stylelint-enable design-tokens/no-hardcoded-token-values */

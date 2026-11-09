@@ -15,7 +15,7 @@ import {Search, SearchAndFilterBar} from '@earendil-works/elanor-react';
 
 <SearchAndFilterBar.Root role="search" aria-label="Member search and filters">
   <SearchAndFilterBar.Search>
-    <Search />
+    <Search density="compact" />
   </SearchAndFilterBar.Search>
   <SearchAndFilterBar.Filters>
     {/* Filter controls, such as Dropdowns */}
@@ -25,6 +25,8 @@ import {Search, SearchAndFilterBar} from '@earendil-works/elanor-react';
 
 The bar only arranges its contents; the application filters the data. Give Root `role="search"` and an `aria-label`, and announce the number of results in a status region.
 
+Set `density="compact"` on Search, Dropdown triggers, SegmentedControl, and FiltersTrigger, so everything in the bar is 24px high. Touch targets keep the default height.
+
 ## Filter widths
 
 Each filter is as wide as its content, up to half the filter area. Filters that don't fit wrap to the next row. Below 48rem a filter can take the full row; below 24rem each one does.
@@ -33,12 +35,26 @@ Put controls directly in Filters. A wrapper element counts as one filter.
 
 <Demo example="./examples/content-width.tsx" />
 
+For filters of one width on the page grid, set `layout="tracks"` on Filters. The search starts the bar and the filters end it. From 75.5rem the bar follows a twelve-track grid: the search spans four tracks and each filter two. Narrower bars keep each filter at its 11.75rem minimum, which fits values such as “Status: Pending” or “Role: Member +1”. A filter's width doesn't depend on its value, so the row doesn't move when a value or Clear appears; long values truncate.
+
+<Demo example="./examples/tracks.tsx" />
+
+The layout depends on the bar's width and its number of filters:
+
+- **One row** while the search keeps 16rem. The search takes the space the filters leave.
+- **Two rows** while each filter keeps 11.75rem: the search, then the filters at equal widths. One filter never takes a row of its own.
+- **The drawer** below that, with a FiltersTrigger. Without one, the last layout stays and the controls shrink.
+
+There's never a third row. With three filters, as below, that's one row from 54.25rem, two rows from 37.25rem, and the drawer below. Each child of Filters counts as one filter, up to eight.
+
+<Demo example="./examples/tracks-modes.tsx" />
+
 ## Narrow bars
 
-Add a FiltersTrigger and a FiltersDrawer, and bars narrower than 24rem keep the search and replace the filters with a button that opens them in a [Drawer](/components/drawer/). Without them, the filters stack in one column. A container query switches the layout, so it fits the bar's own width, including narrow columns on wide screens. The drawer closes when the bar grows past it, and focus moves to the inline filters.
+Add a FiltersTrigger and a FiltersDrawer, and bars narrower than 24rem keep the search and replace the filters with a button that opens them in a [Drawer](/components/drawer/). Without them, the filters stack in one column. With tracks, the drawer comes after two rows, as above. Below 18rem, such as on a phone at 200% zoom, the button goes under the search. A container query switches the layout, so it fits the bar's own width, including narrow columns on wide screens. The drawer closes when the bar grows past it, and focus moves to the inline filters.
 
 ```tsx
-<SearchAndFilterBar.FiltersTrigger>Filters (2)</SearchAndFilterBar.FiltersTrigger>
+<SearchAndFilterBar.FiltersTrigger density="compact">Filters (2)</SearchAndFilterBar.FiltersTrigger>
 <SearchAndFilterBar.FiltersDrawer>
   <Drawer.Title>Filters</Drawer.Title>
   <SearchAndFilterBar.FiltersSlot />
@@ -51,6 +67,8 @@ Add a FiltersTrigger and a FiltersDrawer, and bars narrower than 24rem keep the 
 ```
 
 While the drawer is open, the controls in Filters render in its FiltersSlot instead, so they mount again each time; control their values from the application. The page behind the drawer is inert, so FiltersStatus announces the results instead of the page's status region.
+
+FiltersTrigger also works without a bar, inside any Drawer.Root. With `density="compact"` it's 24px high, where a compact Button is 20px.
 
 FiltersActions stacks the buttons at full width. Put the primary action last, nearest the thumb, so the visual order matches the focus order. Keep Clear all focusable while disabled, so focus stays on it after clearing.
 

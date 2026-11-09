@@ -3,6 +3,7 @@ import {Select as BaseSelect} from '@base-ui/react/select';
 export {
   DropdownRoot as Root,
   DropdownLabel as Label,
+  DropdownPrefix as Prefix,
   DropdownTrigger as Trigger,
   DropdownIcon as Icon,
   DropdownPositioner as Positioner,
@@ -13,6 +14,11 @@ export {
   DropdownGroupLabel as GroupLabel,
   DropdownSeparator as Separator,
 } from './dropdown.tsx';
+export {
+  DropdownControl as Control,
+  DropdownClear as Clear,
+  DropdownValueCount as ValueCount,
+} from './dropdown-control.tsx';
 
 export const Value = BaseSelect.Value;
 export const Portal = BaseSelect.Portal;

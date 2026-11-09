@@ -32,9 +32,10 @@
     gap: var(--semantic-dimension-space-gap-x-large);
   }
 
+  /* The gap is the minimum space between children and wrapped lines. */
   .gapAuto {
     justify-content: space-between;
-    gap: 0;
+    gap: var(--semantic-dimension-space-gap-medium);
   }
 
   .alignStretch {

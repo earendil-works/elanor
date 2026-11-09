@@ -1,0 +1,166 @@
+@layer elanor.components {
+  .control {
+    display: flex;
+    align-items: stretch;
+    inline-size: 100%;
+    min-inline-size: 0;
+  }
+
+  /* The trigger takes the free space and truncates its value; Clear keeps its size. */
+  .control > :not(.clear) {
+    flex: 1 1 auto;
+    min-inline-size: 0;
+  }
+
+  .control:has(> .clear) > :not(.clear) {
+    border-start-end-radius: 0;
+    border-end-end-radius: 0;
+  }
+
+  /* Stays whole and sits a word space after the value. */
+  .valueCount {
+    flex: 0 1 auto;
+    margin-inline-start: calc(
+      var(--semantic-dimension-space-control-gap-small) -
+        var(--semantic-dimension-space-control-gap-large)
+    );
+    color: var(--semantic-color-text-secondary);
+  }
+
+  /* "+2", not "2+", in right-to-left text. */
+  .valueCountNumber {
+    direction: ltr;
+    unicode-bidi: isolate;
+  }
+
+  .visuallyHidden {
+    position: absolute;
+    inline-size: var(--semantic-dimension-border-width-small);
+    block-size: var(--semantic-dimension-border-width-small);
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  /* Continues the trigger's fill after its chevron, behind a divider, as one control. */
+  .clear {
+    position: relative;
+    box-sizing: border-box;
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    padding-block: 0;
+    padding-inline: var(--semantic-dimension-space-control-padding-inline-x-small)
+      calc(
+        var(--semantic-dimension-space-control-padding-inline-small) -
+          var(--semantic-dimension-border-width-default)
+      );
+    border: var(--semantic-dimension-border-width-default) solid
+      var(--semantic-color-background-fill-secondary);
+    border-inline-start: 0;
+    border-start-end-radius: var(--semantic-dimension-radius-small);
+    border-end-end-radius: var(--semantic-dimension-radius-small);
+    background: var(--semantic-color-background-fill-secondary);
+    color: var(--semantic-color-icon-primary);
+    cursor: pointer;
+  }
+
+  .clear > svg,
+  .clear > img {
+    display: block;
+    inline-size: var(--semantic-dimension-size-x-small);
+    block-size: var(--semantic-dimension-size-x-small);
+  }
+
+  /* Decorative divider, as tall as the icon. */
+  .clear::before {
+    position: absolute;
+    inset-block: 0;
+    inset-inline-start: 0;
+    block-size: var(--semantic-dimension-size-x-small);
+    margin-block: auto;
+    border-inline-start: var(--semantic-dimension-border-width-small) solid
+      var(--semantic-color-border-primary);
+    content: '';
+  }
+
+  /* Next to a compact trigger, the same overlay keeps the default touch target height. */
+  .control:has(> [data-density='compact']) > .clear::after {
+    position: absolute;
+    inset-block: calc(-1 * var(--semantic-dimension-space-control-padding-block-small));
+    inset-inline: 0;
+    content: '';
+  }
+
+  /* On touch screens, as on compact triggers, for Clear and a default trigger beside it. */
+  @media (pointer: coarse) {
+    .control > :not(.clear) {
+      position: relative;
+      overflow: visible;
+    }
+
+    .control > :not(.clear)::after,
+    .clear::after,
+    .control:has(> [data-density='compact']) > .clear::after {
+      position: absolute;
+      inset-block: calc(
+        -1 *
+          (var(--semantic-dimension-space-gap-medium) / 2 +
+            var(--semantic-dimension-border-width-default))
+      );
+      inset-inline: 0;
+      content: '';
+    }
+  }
+
+  .clear:where(:hover:not(:disabled, [data-disabled])) {
+    border-color: var(--semantic-color-background-fill-secondary-hover);
+    background: var(--semantic-color-background-fill-secondary-hover);
+  }
+
+  .clear:where(:active:not(:disabled, [data-disabled])) {
+    border-color: var(--semantic-color-background-fill-secondary-active);
+    background: var(--semantic-color-background-fill-secondary-active);
+  }
+
+  /* The joined control shares the trigger's open and invalid borders. */
+  .control:has(> [data-popup-open]) > .clear {
+    border-color: var(--semantic-color-focus-ring);
+  }
+
+  .control:has(> :is([data-invalid], [aria-invalid='true'])) > .clear {
+    border-color: var(--semantic-color-focus-ring-negative);
+  }
+
+  .clear:focus-visible {
+    outline: var(--semantic-dimension-border-width-focus-ring) solid
+      var(--semantic-color-focus-ring);
+    outline-offset: var(--semantic-dimension-border-width-medium);
+  }
+
+  .clear[data-disabled] {
+    cursor: not-allowed;
+    opacity: var(--semantic-number-opacity-disabled);
+  }
+
+  @media (forced-colors: active) {
+    .clear {
+      border-color: ButtonBorder;
+    }
+
+    .clear::before {
+      border-color: CanvasText;
+    }
+
+    .clear:focus-visible {
+      outline-color: Highlight;
+    }
+
+    /* The divider replaces the trigger's end border; padding keeps the content in place. */
+    .control:has(> .clear) > :not(.clear) {
+      padding-inline-end: var(--semantic-dimension-space-control-padding-inline-small);
+      border-inline-end: 0;
+    }
+  }
+}

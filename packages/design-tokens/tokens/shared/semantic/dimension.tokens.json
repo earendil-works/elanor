@@ -21,6 +21,10 @@
         "large": {
           "$value": "{primitive.dimension.borderWidth.300}",
           "$description": "Use for prominent borders that need the strongest visual emphasis."
+        },
+        "focusRing": {
+          "$value": "{primitive.dimension.borderWidth.200}",
+          "$description": "Use for the width of the keyboard-focus ring, whether it is drawn outside a control or inset within it."
         }
       },
       "breakpoint": {

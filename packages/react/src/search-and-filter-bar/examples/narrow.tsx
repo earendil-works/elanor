@@ -22,20 +22,20 @@ const members = [
 
 export default function SearchAndFilterBarNarrow() {
   const [query, setQuery] = useState('');
-  const [status, setStatus] = useState('All');
-  const [role, setRole] = useState('All');
+  const [status, setStatus] = useState<string | null>(null);
+  const [role, setRole] = useState<string | null>(null);
   const matching = members.filter(
     (member) =>
       member.name.toLowerCase().includes(query.trim().toLowerCase()) &&
-      (status === 'All' || member.status === status) &&
-      (role === 'All' || member.role === role),
+      (status === null || member.status === status) &&
+      (role === null || member.role === role),
   );
-  const activeFilters = [status, role].filter((value) => value !== 'All').length;
+  const activeFilters = [status, role].filter((value) => value !== null).length;
   const results = `${matching.length} ${matching.length === 1 ? 'member' : 'members'}`;
 
   function clearFilters() {
-    setStatus('All');
-    setRole('All');
+    setStatus(null);
+    setRole(null);
   }
 
   return (
@@ -43,6 +43,7 @@ export default function SearchAndFilterBarNarrow() {
       <SearchAndFilterBar.Root role="search" aria-label="Member search and filters">
         <SearchAndFilterBar.Search>
           <Search
+            density="compact"
             aria-label="Search members"
             placeholder="Search members"
             value={query}
@@ -53,17 +54,17 @@ export default function SearchAndFilterBarNarrow() {
           <MemberFilter
             label="Status"
             value={status}
-            options={['All', 'Active', 'Invited', 'Suspended']}
+            options={['Active', 'Invited', 'Suspended']}
             onChange={setStatus}
           />
           <MemberFilter
             label="Role"
             value={role}
-            options={['All', 'Admin', 'Member', 'Viewer']}
+            options={['Admin', 'Member', 'Viewer']}
             onChange={setRole}
           />
         </SearchAndFilterBar.Filters>
-        <SearchAndFilterBar.FiltersTrigger>
+        <SearchAndFilterBar.FiltersTrigger density="compact">
           {activeFilters ? `Filters (${activeFilters})` : 'Filters'}
         </SearchAndFilterBar.FiltersTrigger>
         <SearchAndFilterBar.FiltersDrawer>

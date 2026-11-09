@@ -25,7 +25,7 @@ Items span a full row unless `span` says otherwise. `render` lets another compon
 
 ## Breakpoints
 
-`span` keys are container breakpoints. They query the nearest `Grid.Root`, including from inside a subgrid.
+`span` and `start` keys are container breakpoints. They query the nearest `Grid.Root`, including from inside a subgrid.
 
 | Key      | Minimum grid width |
 | -------- | ------------------ |
@@ -38,9 +38,17 @@ Items span a full row unless `span` says otherwise. `render` lets another compon
 
 A capped Container leaves 76rem for content, so `large` and `xLarge` apply only when the cap is removed.
 
+## Start
+
+`start` places an item on a track, or with `end`, at the end of its row. Key it by breakpoint like `span`. Below, the filter takes a full row in narrow grids and ends the heading's row from `xSmall` on.
+
+<Demo example="./examples/start.tsx" />
+
+An item never moves before the previous one; if it can't start after it, it begins a new row. Screen readers and keyboard focus follow source order.
+
 ## Columns
 
-Spans larger than `columns` are clamped to the column count.
+Spans larger than `columns` are clamped to the column count. Starts move back until the item fits.
 
 <Demo example="./examples/columns.tsx" />
 
@@ -60,8 +68,8 @@ A `Grid.Root` inside an item starts a new grid: it has its own column count and 
 
 - Items and subgrids must be direct DOM children of their grid. Fragments are fine; wrapper elements are not.
 - Other children use native CSS Grid placement, without the full-row default or clamping.
-- Clamping reads `columns` and `span`. If you set `grid-template-columns` or `grid-column` in CSS, handle all placement in CSS.
-- Grid keeps source order.
+- Clamping reads `columns`, `span`, and `start`. If you set `grid-template-columns` or `grid-column` in CSS, handle all placement in CSS.
+- Grid keeps source order, including with `start`.
 
 ## Changing breakpoints
 

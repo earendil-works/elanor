@@ -42,8 +42,9 @@
   }
 
   .trigger:focus-visible {
-    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
-    outline-offset: calc(-1 * var(--semantic-dimension-border-width-large));
+    outline: var(--semantic-dimension-border-width-focus-ring) solid
+      var(--semantic-color-focus-ring);
+    outline-offset: calc(-1 * var(--semantic-dimension-border-width-focus-ring));
   }
 
   /* The open menu fills the window below the top navigation. Its panels fill the menu, so the
@@ -184,7 +185,8 @@
 
   .link:focus-visible,
   .back:focus-visible {
-    outline: var(--semantic-dimension-border-width-large) solid var(--semantic-color-focus-ring);
+    outline: var(--semantic-dimension-border-width-focus-ring) solid
+      var(--semantic-color-focus-ring);
     outline-offset: var(--semantic-dimension-border-width-medium);
   }
 

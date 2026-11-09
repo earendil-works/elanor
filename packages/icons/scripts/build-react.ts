@@ -17,6 +17,7 @@ await mkdir(outputDirectory, {recursive: true});
 await Promise.all([
   copyFile(resolve(iconsDirectory, 'LICENSE'), resolve(outputDirectory, 'LICENSE')),
   copyFile(resolve(iconsDirectory, 'NOTICE'), resolve(outputDirectory, 'NOTICE')),
+  copyFile(resolve(iconsDirectory, 'provenance.json'), resolve(outputDirectory, 'provenance.json')),
 ]);
 
 const svgFiles = (await readdir(svgDirectory).catch(() => []))
