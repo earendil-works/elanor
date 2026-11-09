@@ -25,32 +25,32 @@ const latoWeights = {
 // several files, each limited to its own characters by unicode-range; `local` families come from the device.
 const families = [
   {
-    entry: 'simbelle-serif',
+    entry: 'mallos-serif',
     families: {
-      'Simbelle Serif': {weight: '400 700'},
-      'Simbelle Serif Fallback': {local: true},
+      'Mallos Serif': {weight: '400 700'},
+      'Mallos Serif Fallback': {local: true},
     },
     files: [
-      'SimbelleSerif.woff2',
-      'SimbelleSerif-Italic.woff2',
-      ...split('SimbelleSerifExtended'),
-      'SimbelleSerifArabic.woff2',
+      'MallosSerif.woff2',
+      'MallosSerif-Italic.woff2',
+      ...split('MallosSerifExtended'),
+      'MallosSerifArabic.woff2',
     ],
-    licenses: ['simbelle-serif-extended', 'simbelle-arabic'],
+    licenses: ['mallos-serif-extended', 'mallos-arabic'],
   },
   {
     // One file per Lato weight; the Arabic file is declared once per weight, so it joins each of them.
-    entry: 'simbelle-sans',
-    families: {'Simbelle Sans': {weights: Object.values(latoWeights).map(String)}},
+    entry: 'mallos-sans',
+    families: {'Mallos Sans': {weights: Object.values(latoWeights).map(String)}},
     files: [
-      ...Object.keys(latoWeights).flatMap((name) => split(`SimbelleSans-${name}`)),
-      'SimbelleSansArabic.woff2',
+      ...Object.keys(latoWeights).flatMap((name) => split(`MallosSans-${name}`)),
+      'MallosSansArabic.woff2',
     ],
   },
   {
-    entry: 'simbelle-mono',
-    families: {'Simbelle Mono': {weight: '200 700'}},
-    files: split('SimbelleMono'),
+    entry: 'mallos-mono',
+    families: {'Mallos Mono': {weight: '200 700'}},
+    files: split('MallosMono'),
   },
   {
     entry: 'departure-mono',

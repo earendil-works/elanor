@@ -6,7 +6,7 @@
       "$type": "fontFamily",
       "mono": {
         "$value": [
-          "Simbelle Mono",
+          "Mallos Mono",
           "SFMono-Regular",
           "ui-monospace",
           "Menlo",
@@ -16,10 +16,10 @@
         ]
       },
       "serif": {
-        "$value": ["Simbelle Serif", "Simbelle Serif Fallback", "Georgia", "serif"]
+        "$value": ["Mallos Serif", "Mallos Serif Fallback", "Georgia", "serif"]
       },
       "sansSerif": {
-        "$value": ["Simbelle Sans", "Helvetica Neue", "Arial", "sans-serif"]
+        "$value": ["Mallos Sans", "Helvetica Neue", "Arial", "sans-serif"]
       }
     }
   }
