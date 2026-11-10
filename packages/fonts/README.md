@@ -21,7 +21,7 @@ import '@earendil-works/elanor-fonts/mallos-mono.css';
 | `mallos-mono.css`    | `Mallos Mono`   | 200–700 | normal, italic |
 | `departure-mono.css` | `DepartureMono` | 400     | normal         |
 
-Mallos Serif and Mallos Mono are variable fonts: one file per style covers every weight. Mallos Sans has one file per weight (100, 200, … 900); a weight in between uses the nearest file (550 uses 600). They are built in the [Mallos repository](https://github.com/earendil-works/mallos) (`fonts/web`, copied here unchanged), which also keeps the original files they are made from. Mallos Sans is an interim stand-in for our own sans, made from Lato; Mallos Mono is Commit Mono, adjusted to sit evenly in Mallos Serif text. Both match Mallos Serif's x-height.
+The Mallos fonts are variable fonts: one file per style covers every weight. They are built in the [Mallos repository](https://github.com/earendil-works/mallos) (`fonts/web`, copied here unchanged), which also keeps the original files they are made from. Mallos Sans is an interim stand-in for our own sans, made from Lato 3; Mallos Mono is Commit Mono, adjusted to sit evenly in Mallos Serif text. Both match Mallos Serif's x-height.
 
 All Mallos fonts have the same line metrics: their natural line height is 1.3, with capitals centred in the line, so mixed text and boxes line up.
 

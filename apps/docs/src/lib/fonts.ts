@@ -24,7 +24,7 @@ const familySpecs: readonly FamilySpec[] = [
   {
     stylesheet: 'mallos-sans.css',
     license: 'mallos-sans.txt',
-    role: 'Sans-serif, an interim stand-in made from Lato.',
+    role: 'Sans-serif, an interim stand-in made from Lato 3.',
     sample: 'Sphinx of black quartz, judge my vow.',
   },
   {

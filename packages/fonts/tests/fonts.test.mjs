@@ -9,18 +9,6 @@ const pieces = ['latin', 'latin-ext', 'vietnamese', 'greek', 'cyrillic'];
 const split = (name, styles = ['', '-Italic']) =>
   styles.flatMap((style) => pieces.map((piece) => `${name}${style}-${piece}.woff2`));
 
-const latoWeights = {
-  Thin: 100,
-  ExtraLight: 200,
-  Light: 300,
-  Regular: 400,
-  Medium: 500,
-  SemiBold: 600,
-  Bold: 700,
-  ExtraBold: 800,
-  Black: 900,
-};
-
 // Each entry: its families with their weight descriptor, and the files its faces use. A family can consist of
 // several files, each limited to its own characters by unicode-range; `local` families come from the device.
 const families = [
@@ -39,13 +27,9 @@ const families = [
     licenses: ['mallos-serif-extended', 'mallos-arabic'],
   },
   {
-    // One file per Lato weight; the Arabic file is declared once per weight, so it joins each of them.
     entry: 'mallos-sans',
-    families: {'Mallos Sans': {weights: Object.values(latoWeights).map(String)}},
-    files: [
-      ...Object.keys(latoWeights).flatMap((name) => split(`MallosSans-${name}`)),
-      'MallosSansArabic.woff2',
-    ],
+    families: {'Mallos Sans': {weight: '100 900'}},
+    files: [...split('MallosSans'), 'MallosSansArabic.woff2'],
   },
   {
     entry: 'mallos-mono',
@@ -135,7 +119,6 @@ for (const {entry, families: names, files, licenses = []} of families) {
       assert(file, `${entry}: unexpected src ${rule.src}`);
       assert.equal(rule['font-display'], 'swap');
       if (spec.weight) assert.equal(rule['font-weight'], spec.weight);
-      if (spec.weights) assert(spec.weights.includes(rule['font-weight']), rule['font-weight']);
       used.add(file);
       const asset = new URL(`files/${file}`, root);
       assert.equal(import.meta.resolve(`${manifest.name}/files/${file}`), asset.href);
