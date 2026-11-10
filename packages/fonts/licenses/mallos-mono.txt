@@ -1,9 +1,9 @@
 Mallos Mono is a Modified Version of Commit Mono (Eigil Nikolajsen, version 1.143, the variable font from
 github.com/eigilnikolajsen/commit-mono, src/fonts/fontlab/CommitMonoV143-VF.ttf; original file in
-https://github.com/earendil-works/mallos, sources/companions/CommitMono): drawn at Mallos Serif's x-height (94%),
-its regular weight (400) drawn at Commit Mono's 450 (200 and 700 unchanged), with Mallos Serif's line metrics
-(ascent 1035, descent 265: natural line height 1.3), renamed, and split into Latin, Latin Extended, Vietnamese,
-Greek and Cyrillic files.
+https://github.com/earendil-works/mallos, sources/MallosMono): drawn at Mallos Serif's x-height (94%), its regular
+weight (400) drawn at Commit Mono's 450 (200 and 700 unchanged), with Mallos Serif's line metrics (ascent 1035,
+descent 265: natural line height 1.3), renamed, and split into Latin, Latin Extended, Vietnamese, Greek and Cyrillic
+files.
 
 Copyright 2023 Commit Mono authors (https://github.com/eigilnikolajsen/commit-mono)
 

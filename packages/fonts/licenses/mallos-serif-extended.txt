@@ -1,5 +1,5 @@
 Mallos Serif Extended is a Modified Version of EB Garamond (version 1.003, from github.com/google/fonts,
-ofl/ebgaramond; original files in https://github.com/earendil-works/mallos, sources/companions/EBGaramond): only the
+ofl/ebgaramond; original files in https://github.com/earendil-works/mallos, sources/MallosSerifExtended): only the
 characters Mallos Serif lacks (Greek, Cyrillic, Vietnamese and more), weights 400-700, drawn 1.25 times larger
 (Mallos Serif's x-height), with Mallos Serif's line metrics (ascent 1035, descent 265: natural line height 1.3),
 renamed, and split into Latin, Latin Extended, Vietnamese, Greek and Cyrillic files.
