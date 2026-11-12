@@ -1,0 +1,46 @@
+---
+category: overlays
+---
+
+# Tooltip
+
+A short label that appears next to an element while the pointer rests on it or it has keyboard focus, such as the name of an icon button. Touch screens don't show tooltips, so they must not hold anything people need: for content to read or act on, use [Popover](/components/popover/); for a label that should always show, use a [Button](/components/button/) with visible text.
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Tooltip} from '@earendil-works/elanor-react';
+
+<Tooltip.Root>
+  <Tooltip.Trigger />
+  <Tooltip.Portal>
+    <Tooltip.Positioner>
+      <Tooltip.Popup />
+    </Tooltip.Positioner>
+  </Tooltip.Portal>
+</Tooltip.Root>;
+```
+
+`Tooltip.Trigger` renders a `<button>`; use `render` to attach the tooltip to an existing control instead, such as an [Icon button](/components/icon-button/). The tooltip is visual only and doesn't name its trigger, so give the trigger an `aria-label` that matches the tooltip's text.
+
+Hovering opens the tooltip after a short delay, set with `delay` on the trigger, and keyboard focus opens it too. Moving away, Escape, or a click on the trigger closes it. It opens above the trigger, far enough away not to cover its focus ring, and moves to stay in view; set `side` and `align` on the positioner to place it elsewhere.
+
+## Groups
+
+Wrap neighboring tooltips, such as a toolbar's, in `Tooltip.Provider`. Once one is open, the next opens without the delay. The provider's `delay` and `closeDelay` set the default timing for all of them. [Sidebar](/components/sidebar/) provides one for its content.
+
+<Demo example="./examples/groups.tsx" />
+
+## Keyboard shortcuts
+
+Show an action's shortcut after its name with [Keyboard shortcut](/components/keyboard-shortcut/), and name the keys on the trigger in `aria-keyshortcuts`, so screen readers announce them too. The application listens for the keys; `aria-keyshortcuts` only declares them.
+
+<Demo example="./examples/keyboard-shortcuts.tsx" />
+
+## Disabled triggers
+
+A natively disabled button can't take focus and doesn't respond to hover, so its tooltip can't open. Set `focusableWhenDisabled` on the button instead: it stays focusable and hoverable, and is announced as disabled.
+
+<Demo example="./examples/disabled.tsx" />

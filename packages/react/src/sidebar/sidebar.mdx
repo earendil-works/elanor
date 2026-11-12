@@ -37,7 +37,7 @@ import {Layout, SideNavigation, Sidebar} from '@earendil-works/elanor-react';
 
 Set `variant={collapsed ? 'compact' : 'default'}` on each [Side navigation](/components/side-navigation/), and give every link an icon or `compactContent` in both states. Don't swap in a different navigation tree when collapsing; the same links keep focus, tab order, and `aria-current`.
 
-Collapsed links show their label in a tooltip on hover and focus. Branding, project switchers, and account controls need their own compact form: keep the same control mounted and change only its decorative content. Before removing a control that only exists when expanded, move focus to one that persists.
+Collapsed links show their label in a [tooltip](/components/tooltip/) on hover and focus. Branding, project switchers, and account controls need their own compact form: keep the same control mounted and change only its decorative content. Before removing a control that only exists when expanded, move focus to one that persists.
 
 ## Controlled
 

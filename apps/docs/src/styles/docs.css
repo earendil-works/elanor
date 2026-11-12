@@ -14,6 +14,10 @@
     font: var(--semantic-typography-ui-primary);
   }
 
+  .docs-root {
+    isolation: isolate;
+  }
+
   /* In-page jumps (the table of contents, heading links) scroll there smoothly and stop below
      the top navigation. */
   html:has(.docs-layout) {

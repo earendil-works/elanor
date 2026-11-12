@@ -1,5 +1,7 @@
 @layer elanor.components {
-  .popup {
+  /* Zero specificity, so a class passed to the popup, such as FileTree's, overrides it whatever
+     the stylesheet order. */
+  :where(.popup) {
     box-sizing: border-box;
     max-inline-size: min(
       var(--semantic-dimension-size-max-width-content-small),
@@ -8,13 +10,20 @@
     max-block-size: var(--available-height);
     overflow: auto;
     overflow-wrap: anywhere;
-    padding: var(--semantic-dimension-space-padding-medium);
+    padding-block: calc(
+      var(--semantic-dimension-space-control-padding-block-small) -
+        var(--semantic-dimension-border-width-default)
+    );
+    padding-inline: calc(
+      var(--semantic-dimension-space-control-padding-inline-small) -
+        var(--semantic-dimension-border-width-default)
+    );
     border: var(--semantic-dimension-border-width-default) solid
       var(--semantic-color-border-secondary);
     border-radius: var(--semantic-dimension-radius-small);
     background: var(--semantic-color-background-canvas);
     color: var(--semantic-color-text-primary);
-    font: var(--semantic-typography-ui-primary);
+    font: var(--semantic-typography-ui-secondary);
   }
 
   @media (forced-colors: active) {

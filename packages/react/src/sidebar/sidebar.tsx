@@ -1,10 +1,10 @@
 import {Toggle} from '@base-ui/react/toggle';
-import {Tooltip} from '@base-ui/react/tooltip';
 import {useRender} from '@base-ui/react/use-render';
 import {DockToLeftIcon} from '@earendil-works/elanor-icons-react';
 import {createContext, useContext, useState, type ReactNode} from 'react';
 
 import * as ScrollArea from '../scroll-area/index.ts';
+import * as Tooltip from '../tooltip/index.ts';
 import {classes, mergeClassName} from '../utils/class-names.ts';
 import {CompactTooltip} from './compact-tooltip.tsx';
 

@@ -1,5 +1,6 @@
-import {Tooltip} from '@base-ui/react/tooltip';
 import {useSyncExternalStore} from 'react';
+
+import * as Tooltip from '../tooltip/index.ts';
 
 import styles from './file-tree.module.css';
 

@@ -34,6 +34,7 @@ export * as Switch from './switch/index.ts';
 export * as Table from './table/index.ts';
 export * as TableOfContents from './table-of-contents/index.ts';
 export * as Tabs from './tabs/index.ts';
+export * as Tooltip from './tooltip/index.ts';
 export * as TopNavigation from './top-navigation/index.ts';
 
 export type {
@@ -698,6 +699,22 @@ export type {
   TabsTabProps,
   TabsTabState,
 } from './tabs/tabs.tsx';
+
+export type {
+  TooltipHandle,
+  TooltipPopupProps,
+  TooltipPopupState,
+  TooltipPortalProps,
+  TooltipPositionerProps,
+  TooltipPositionerState,
+  TooltipProviderProps,
+  TooltipRootActions,
+  TooltipRootChangeEventDetails,
+  TooltipRootChangeEventReason,
+  TooltipRootProps,
+  TooltipTriggerProps,
+  TooltipTriggerState,
+} from './tooltip/tooltip.tsx';
 
 export {Strong} from './strong/strong.tsx';
 export type {StrongProps} from './strong/strong.tsx';
