@@ -1,5 +1,6 @@
 export * as Checkbox from './checkbox/index.ts';
 export * as Collapsible from './collapsible/index.ts';
+export * as ContextMenu from './context-menu/index.ts';
 export * as Drawer from './drawer/index.ts';
 export * as Dropdown from './dropdown/index.ts';
 export * as SearchableDropdown from './dropdown/searchable-dropdown/index.ts';
@@ -247,6 +248,18 @@ export type {
   MenuViewportProps,
   MenuViewportState,
 } from './menu/menu.tsx';
+
+export type {
+  ContextMenuPortalProps,
+  ContextMenuPositionerProps,
+  ContextMenuPositionerState,
+  ContextMenuRootActions,
+  ContextMenuRootChangeEventDetails,
+  ContextMenuRootChangeEventReason,
+  ContextMenuRootProps,
+  ContextMenuTriggerProps,
+  ContextMenuTriggerState,
+} from './context-menu/context-menu.tsx';
 
 export type {
   MeterIndicatorProps,

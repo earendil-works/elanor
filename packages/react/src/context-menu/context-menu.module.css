@@ -1,0 +1,9 @@
+@layer elanor.components {
+  /* A long press opens the menu, so it must not also select text. With a mouse, text in the
+     area stays selectable. */
+  @media (pointer: coarse) {
+    .trigger {
+      user-select: none;
+    }
+  }
+}
