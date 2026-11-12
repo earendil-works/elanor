@@ -123,10 +123,9 @@
   }
 
   /*
-   * Tooltip's popup, laid over the cut-off label (the positioner puts the popup's box at the
-   * label's box), so the full name continues it in place: in the label's type, with negative
-   * margins as wide as the popup's padding and border, so the text lines up exactly. It isn't
-   * capped at the room below the label, so a row at the window's bottom still shows its whole name.
+   * Laid over the cut-off label so the full name continues it in place: in the label's type, with
+   * negative margins equal to Tooltip's padding and border so the text lines up. Uncapped, because
+   * the room below the label is near zero for a row at the window's bottom.
    */
   .tooltip {
     max-block-size: none;

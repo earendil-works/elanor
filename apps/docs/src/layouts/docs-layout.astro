@@ -46,7 +46,7 @@ const ContentTag = current === '/components/layout/' ? 'div' : 'main';
   </head>
   <body class="docs-layout">
     <SkipLink />
-    {/* The page, isolated so the popups Base UI portals to the body stack above it. */}
+    {/* Isolated so popups portaled to the body paint above the header and side navigation. */}
     <div class="docs-root">
       {/* The client router swaps these regions (`scripts/docs-swap.ts`). */}
       <div data-docs-swap="header">

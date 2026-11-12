@@ -1,6 +1,6 @@
 @layer elanor.components {
-  /* Without specificity, so components that render the popup with a class of their own, such as
-     FileTree, override it regardless of stylesheet order. */
+  /* Zero specificity, so a class passed to the popup, such as FileTree's, overrides it whatever
+     the stylesheet order. */
   :where(.popup) {
     box-sizing: border-box;
     max-inline-size: min(
