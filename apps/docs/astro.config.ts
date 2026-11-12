@@ -6,7 +6,9 @@ import elanorTheme from '@earendil-works/elanor-code-themes/shiki';
 // oxlint-disable-next-line import/default -- The default export exists under Sentry's Node condition, not its browser entry.
 import sentry from '@sentry/astro';
 import {defineConfig} from 'astro/config';
+import autoprefixer from 'autoprefixer';
 
+import elanorReact from '../../packages/react/package.json' with {type: 'json'};
 import {demos} from './plugins/demos.ts';
 import {iconImports} from './plugins/icon-imports.ts';
 import {pageScripts} from './plugins/page-scripts.ts';
@@ -52,6 +54,9 @@ export default defineConfig({
   ],
   vite: {
     plugins: [demos(), iconImports()],
+    // Prefix like Elanor's build, for its components' source CSS in development and for the
+    // docs' own CSS, which target the same browsers.
+    css: {postcss: {plugins: [autoprefixer({overrideBrowserslist: elanorReact.browserslist})]}},
     resolve: {
       // The docs show the boiled icons, including inside Elanor's components, which
       // import the plain package. Resolve to the docs' own boiled dependency.

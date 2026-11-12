@@ -17,6 +17,13 @@
     "dist",
     "README.md"
   ],
+  "browserslist": [
+    "Chrome >= 111",
+    "Edge >= 111",
+    "Firefox >= 114",
+    "Safari >= 16.4",
+    "ios_saf >= 16.4"
+  ],
   "sideEffects": [
     "**/*.css"
   ],
