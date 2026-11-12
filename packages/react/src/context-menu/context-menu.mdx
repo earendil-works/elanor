@@ -1,0 +1,36 @@
+---
+category: overlays
+---
+
+# Context menu
+
+A list of actions, such as rename, that opens at the pointer when someone right-clicks an area, or long-presses it on a touch screen. For actions behind a visible button, use [Menu](/components/menu/).
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {ContextMenu} from '@earendil-works/elanor-react';
+
+<ContextMenu.Root>
+  <ContextMenu.Trigger />
+  <ContextMenu.Portal>
+    <ContextMenu.Positioner>
+      <ContextMenu.Popup>
+        <ContextMenu.Item />
+      </ContextMenu.Popup>
+    </ContextMenu.Positioner>
+  </ContextMenu.Portal>
+</ContextMenu.Root>;
+```
+
+`ContextMenu.Trigger` renders a `<div>`; use `render` to open the menu from an existing element instead, such as a tab or a list row. The popup opens at the pointer, or under the finger after a long press, and on touch screens the trigger's text isn't selected by the press. Choosing an item closes the menu. Run the action in the item's `onClick`.
+
+Apart from Root, Trigger, Portal, and Positioner, the parts are the [Menu](/components/menu/) parts, with the same icons, link items, groups, and separators.
+
+## Visible actions
+
+Right-click and long press are hidden gestures, and keyboards open a context menu only from a focused element. Offer the same actions in a visible place too, such as a [Menu](/components/menu/) behind an icon button. Both popups can render the same items.
+
+<Demo example="./examples/visible-actions.tsx" />

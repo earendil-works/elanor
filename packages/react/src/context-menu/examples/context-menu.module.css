@@ -1,0 +1,36 @@
+.area {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding-block: var(--semantic-dimension-space-padding-xx-large);
+  padding-inline: var(--semantic-dimension-space-padding-large);
+  border: var(--semantic-dimension-border-width-default) dashed
+    var(--semantic-color-border-secondary);
+  border-radius: var(--semantic-dimension-radius-medium);
+  color: var(--semantic-color-text-secondary);
+  font: var(--semantic-typography-ui-secondary);
+  text-align: center;
+  transition: border-color var(--semantic-transition-feedback);
+}
+
+.area[data-popup-open] {
+  border-color: var(--semantic-color-border-primary);
+}
+
+.row {
+  padding-block: var(--semantic-dimension-space-padding-xx-small);
+  padding-inline: var(--semantic-dimension-space-padding-small);
+  border-radius: var(--semantic-dimension-radius-small);
+}
+
+.row[data-popup-open] {
+  background: var(--semantic-color-background-fill-ghost-neutral-hover);
+}
+
+.name {
+  flex: 1;
+  min-inline-size: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

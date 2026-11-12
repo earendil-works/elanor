@@ -31,15 +31,8 @@ export default defineConfig({
       config: false,
       modules: true,
       plugins: [
-        autoprefixer({
-          overrideBrowserslist: [
-            'Chrome >= 111',
-            'Edge >= 111',
-            'Firefox >= 114',
-            'Safari >= 16.4',
-            'ios_saf >= 16.4',
-          ],
-        }),
+        // This package's `browserslist`, explicitly, so environment or stray configs can't change it.
+        autoprefixer({overrideBrowserslist: manifest.browserslist}),
       ],
       extract: 'elanor.min.css',
       inject: false,

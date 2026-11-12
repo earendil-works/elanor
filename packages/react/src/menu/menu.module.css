@@ -37,6 +37,8 @@
     color: var(--semantic-color-text-primary);
     text-decoration: none;
     cursor: default;
+    user-select: none;
+    touch-action: manipulation;
   }
 
   @media (hover: hover) {
@@ -107,6 +109,18 @@
     font: var(--semantic-typography-ui-label);
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  /* On touch screens, items are full touch targets and labels use the primary UI size, as
+     Dropdown's options do. */
+  @media (pointer: coarse) {
+    .popup {
+      font: var(--semantic-typography-ui-primary);
+    }
+
+    .item {
+      min-block-size: var(--semantic-dimension-size-x-large);
+    }
   }
 
   @media (forced-colors: active) {
