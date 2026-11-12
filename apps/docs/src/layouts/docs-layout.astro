@@ -46,24 +46,27 @@ const ContentTag = current === '/components/layout/' ? 'div' : 'main';
   </head>
   <body class="docs-layout">
     <SkipLink />
-    {/* The client router swaps these regions (`scripts/docs-swap.ts`). */}
-    <div data-docs-swap="header">
-      <DocsHeader sections={sections} current={current} currentSection={section} mark={mark} />
+    {/* The page, isolated so the popups Base UI portals to the body stack above it. */}
+    <div class="docs-root">
+      {/* The client router swaps these regions (`scripts/docs-swap.ts`). */}
+      <div data-docs-swap="header">
+        <DocsHeader sections={sections} current={current} currentSection={section} mark={mark} />
+      </div>
+      <div data-docs-swap="navigation">
+        {
+          hasSideNavigation(section) && (
+            <DocsSideNavigation section={section} current={current} />
+          )
+        }
+      </div>
+      {/* Blocking, so the navigation's restored state is there before the first paint. */}
+      <script is:inline src={`${pageScriptsBase}navigation-behaviors.js`}></script>
+      <ContentTag id="main" tabindex="-1" class="docs-main" data-docs-swap="content">
+        <DocsContainer className="docs-content">
+          <slot />
+        </DocsContainer>
+      </ContentTag>
     </div>
-    <div data-docs-swap="navigation">
-      {
-        hasSideNavigation(section) && (
-          <DocsSideNavigation section={section} current={current} />
-        )
-      }
-    </div>
-    {/* Blocking, so the navigation's restored state is there before the first paint. */}
-    <script is:inline src={`${pageScriptsBase}navigation-behaviors.js`}></script>
-    <ContentTag id="main" tabindex="-1" class="docs-main" data-docs-swap="content">
-      <DocsContainer className="docs-content">
-        <slot />
-      </DocsContainer>
-    </ContentTag>
     {/* Opened by the side navigation's search and the top navigation's search button. */}
     <div data-docs-swap="search">
       <DocsSearchDialog />
