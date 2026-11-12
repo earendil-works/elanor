@@ -1,6 +1,6 @@
 {
   "name": "@earendil-works/elanor-react",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Elanor React components built with Base UI and precompiled CSS.",
   "license": "MIT",
   "repository": {
