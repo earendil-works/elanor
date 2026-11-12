@@ -1,4 +1,4 @@
-import {existsSync, realpathSync} from 'node:fs';
+import {existsSync, readFileSync, realpathSync} from 'node:fs';
 import {resolve} from 'node:path';
 
 import ts from 'typescript';
@@ -148,25 +148,32 @@ function readPart(checker: ts.TypeChecker, name: string, exported: ts.Symbol): A
       props.push(readProp(checker, prop, inherited, elanorDefault));
     }
     for (const node of declarations) {
-      const match = /@base-ui\/react\/(?:esm\/)?([\w-]+)\/(?:([\w-]+)\/)?[\w.-]+$/.exec(
-        node.getSourceFile().fileName,
-      );
-      if (!match?.[1] || baseUiUtilities.has(match[1])) continue;
-      const key = match[2] ? `${match[1]}/${match[2]}` : match[1];
-      baseUiParts.set(key, (baseUiParts.get(key) ?? 0) + 1);
+      const key = baseUiLocation(node);
+      if (key) baseUiParts.set(key, (baseUiParts.get(key) ?? 0) + 1);
     }
   }
 
   const fileImports = baseUiImports(declaration.getSourceFile());
   const [mostCommon] = [...baseUiParts].sort((a, b) => b[1] - a[1]);
-  const baseUiFromProps = mostCommon?.[0].split('/');
-  const component =
-    baseUiFromProps?.[0] ?? fileImports.find((module) => !baseUiUtilities.has(module));
-  // Parts typed only with Base UI's shared props still match a same-named Base UI part.
-  const sameName = (name.split('.').at(-1) ?? '').replace(/(?<!^)[A-Z]/g, '-$&').toLowerCase();
+  // Link to the Base UI part as Elanor's code names it: the part a constant re-exports, or else
+  // the part a component renders, through the Elanor components it renders; of those, the one its
+  // props come from, if they come from one; otherwise the part most of its props come from. So
+  // SearchDialog.Status links to Autocomplete.Status, which Base UI declares as Combobox.Status,
+  // and Menu.Separator to Separator.
+  const references = baseUiReferences(checker, declaration);
+  const reference =
+    ts.isVariableDeclaration(declaration) || !mostCommon
+      ? references[0]
+      : references.find((item) => item.declared === mostCommon[0]);
+  const linked = reference && (hasSection(reference.link) ? reference.link : reference.declared);
+  const baseUiSource = (linked ?? mostCommon?.[0])?.split('/');
+  const component = baseUiSource?.[0] ?? fileImports.find((module) => !baseUiUtilities.has(module));
+  // Parts typed only with Base UI's shared props still match a same-named Base UI part, unless
+  // the name is the component's own, which its whole page documents.
+  const sameName = kebabName(name.split('.').at(-1) ?? '');
   const baseUiPart =
-    baseUiFromProps?.[1] ??
-    (component && baseUiRoot && existsSync(`${baseUiRoot}${component}/${sameName}`)
+    baseUiSource?.[1] ??
+    (component && sameName !== component && hasSection(`${component}/${sameName}`)
       ? sameName
       : undefined);
   const declaredInBaseUi = /@base-ui\/react\//.test(declaration.getSourceFile().fileName);
@@ -190,6 +197,15 @@ function readPart(checker: ts.TypeChecker, name: string, exported: ts.Symbol): A
     element: jsxElement(implementation) ?? element,
     render: !baseUi && hasBaseUiRender(propsType),
   };
+}
+
+/** The Base UI component, and part if any, that declares `node`, such as `menu/root`. */
+function baseUiLocation(node: ts.Node): string | undefined {
+  const match = /@base-ui\/react\/(?:esm\/)?([\w-]+)\/(?:([\w-]+)\/)?[\w.-]+$/.exec(
+    node.getSourceFile().fileName,
+  );
+  if (!match?.[1] || baseUiUtilities.has(match[1])) return;
+  return match[2] ? `${match[1]}/${match[2]}` : match[1];
 }
 
 /** True when props include Base UI's `render` prop, not an unrelated prop of that name. */
@@ -348,38 +364,125 @@ function refElement(checker: ts.TypeChecker, prop: ts.Symbol): string | undefine
 
 /** The element a function component renders: its outermost lowercase JSX tag or `useRender`'s `defaultTagName`. */
 function jsxElement(implementation: ts.FunctionDeclaration | undefined): string | undefined {
-  let found: string | undefined;
-  const outermost = (node: ts.Node): string | undefined => {
-    while (ts.isParenthesizedExpression(node)) node = node.expression;
-    if (ts.isJsxSelfClosingElement(node)) return lowercase(node.tagName.getText());
-    if (!ts.isJsxElement(node) && !ts.isJsxFragment(node)) return;
-    // Look through context providers and fragments to the first element they render.
-    const tag = ts.isJsxElement(node) ? node.openingElement.tagName.getText() : 'Fragment';
-    if (!/(?:^|\.)(?:Provider|Fragment)$/.test(tag)) return lowercase(tag);
-    const child = node.children.find(
-      (item) => ts.isJsxElement(item) || ts.isJsxSelfClosingElement(item),
-    );
-    return child && outermost(child);
-  };
-  const visit = (node: ts.Node): void => {
-    if (found) return;
+  if (!implementation) return;
+  for (const node of ownNodes(implementation)) {
     if (
       ts.isPropertyAssignment(node) &&
       node.name.getText() === 'defaultTagName' &&
       ts.isStringLiteral(node.initializer)
     ) {
-      found = node.initializer.text;
-      return;
+      return `\`<${node.initializer.text}>\``;
     }
-    if (ts.isReturnStatement(node) && node.expression) {
-      found = outermost(node.expression);
-      if (found) return;
-    }
-    if (ts.isFunctionLike(node) && node !== implementation) return;
-    ts.forEachChild(node, visit);
+    const tag =
+      ts.isReturnStatement(node) && node.expression ? outermostTag(node.expression) : undefined;
+    const element = tag && lowercase(tag.getText());
+    if (element) return `\`<${element}>\``;
+  }
+}
+
+interface BaseUiReference {
+  /** The part as Elanor imports it, such as `autocomplete/status`. */
+  readonly link: string;
+  /** The part that declares it, as in `baseUiLocation`, such as `combobox/status`. */
+  readonly declared: string | undefined;
+}
+
+/**
+ * The Base UI parts a part is built from, as Elanor's code names them: the one a constant
+ * re-exports, or the JSX elements a function component renders, in source order and through the
+ * Elanor components it renders.
+ */
+function baseUiReferences(checker: ts.TypeChecker, declaration: ts.Declaration): BaseUiReference[] {
+  if (ts.isVariableDeclaration(declaration)) {
+    const reference = declaration.initializer && baseUiReference(checker, declaration.initializer);
+    return reference ? [reference] : [];
+  }
+  if (!ts.isFunctionDeclaration(declaration)) return [];
+  return ownNodes(declaration).flatMap((node) => {
+    if (!ts.isJsxSelfClosingElement(node) && !ts.isJsxOpeningElement(node)) return [];
+    const {tagName} = node;
+    const reference = baseUiReference(checker, tagName);
+    if (reference) return [reference];
+    const symbol = checker.getSymbolAtLocation(
+      ts.isPropertyAccessExpression(tagName) ? tagName.name : tagName,
+    );
+    const component = symbol && resolveAlias(checker, symbol).valueDeclaration;
+    return component && isOwn(component) && ts.isFunctionDeclaration(component)
+      ? baseUiReferences(checker, component)
+      : [];
+  });
+}
+
+/** `BaseAutocomplete.Status`, or `BaseSeparator`, as a part of the Base UI module it's imported from. */
+function baseUiReference(
+  checker: ts.TypeChecker,
+  expression: ts.Node,
+): BaseUiReference | undefined {
+  const [namespace, member] = ts.isPropertyAccessExpression(expression)
+    ? [expression.expression, expression.name]
+    : [expression, undefined];
+  if (!ts.isIdentifier(namespace)) return;
+  const [imported] = checker.getSymbolAtLocation(namespace)?.declarations ?? [];
+  const specifier = imported && ts.findAncestor(imported, ts.isImportDeclaration)?.moduleSpecifier;
+  const module =
+    specifier && ts.isStringLiteral(specifier)
+      ? /^@base-ui\/react\/([\w-]+)$/.exec(specifier.text)?.[1]
+      : undefined;
+  if (!module || baseUiUtilities.has(module)) return;
+  const symbol = checker.getSymbolAtLocation(member ?? namespace);
+  const declaration = symbol && resolveAlias(checker, symbol).valueDeclaration;
+  return {
+    link: member ? `${module}/${kebabName(member.text)}` : module,
+    declared: declaration && baseUiLocation(declaration),
   };
-  if (implementation) visit(implementation);
-  return found && `\`<${found}>\``;
+}
+
+/** Whether Base UI's documentation has the page, and section if any, of `location`, such as `autocomplete/status`. */
+function hasSection(location: string): boolean {
+  const [component, part] = location.split('/');
+  const page = component ? baseUiPage(component) : undefined;
+  return page !== undefined && (!part || page.includes(`\n### ${pascalName(part)}\n`));
+}
+
+const baseUiPages = new Map<string, string | undefined>();
+
+/** Base UI's Markdown documentation of `component`, such as `menu`, if it has a page. */
+function baseUiPage(component: string): string | undefined {
+  if (!baseUiPages.has(component)) {
+    const file = `${baseUiRoot}docs/react/components/${component}.md`;
+    baseUiPages.set(component, existsSync(file) ? readFileSync(file, 'utf8') : undefined);
+  }
+  return baseUiPages.get(component);
+}
+
+const kebabName = (name: string) => name.replace(/(?<!^)[A-Z]/g, '-$&').toLowerCase();
+
+/** A function's nodes in source order, without the bodies of functions nested in it. */
+function ownNodes(implementation: ts.FunctionDeclaration): ts.Node[] {
+  const nodes: ts.Node[] = [];
+  const visit = (node: ts.Node): void => {
+    nodes.push(node);
+    if (!ts.isFunctionLike(node) || node === implementation) ts.forEachChild(node, visit);
+  };
+  visit(implementation);
+  return nodes;
+}
+
+/** The outermost JSX tag of an expression, looking through context providers and fragments. */
+function outermostTag(node: ts.Node): ts.JsxTagNameExpression | undefined {
+  while (ts.isParenthesizedExpression(node)) node = node.expression;
+  if (ts.isJsxSelfClosingElement(node)) return node.tagName;
+  if (
+    ts.isJsxElement(node) &&
+    !/(?:^|\.)(?:Provider|Fragment)$/.test(node.openingElement.tagName.getText())
+  ) {
+    return node.openingElement.tagName;
+  }
+  if (!ts.isJsxElement(node) && !ts.isJsxFragment(node)) return;
+  const child = node.children.find(
+    (item) => ts.isJsxElement(item) || ts.isJsxSelfClosingElement(item),
+  );
+  return child && outermostTag(child);
 }
 
 const lowercase = (tag: string) => (/^[a-z][\w-]*$/.test(tag) ? tag : undefined);
