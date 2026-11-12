@@ -134,7 +134,7 @@ export function SideNavigationLink({
     );
   }
   return (
-    <CompactTooltip enabled={compact} label={compactLabel}>
+    <CompactTooltip disabled={!compact} label={compactLabel}>
       <a
         {...props}
         ref={ref}
