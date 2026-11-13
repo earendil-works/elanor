@@ -2,6 +2,12 @@
 
 Logo and naming rules for {{names}}. For uses not covered here, email [brand@earendil.com](mailto:brand@earendil.com).
 
+## Third-party use
+
+Do not use these assets to suggest sponsorship, endorsement, or an affiliation with Earendil or any of its products that does not exist; make your own brand clearly distinct. Do not incorporate our names or logos into the name or logo of your own product or organization. You may use the names and unmodified supplied logos to accurately identify or discuss {{names}}.
+
+For co-branding, merchandise, or any use that could imply an official relationship, contact [brand@earendil.com](mailto:brand@earendil.com) before publishing. These guidelines do not change any rights you may have in software or other materials; permission to use software does not by itself grant permission to use a brand as your own.
+
 ## Names and relationship
 
 {{about}}
@@ -38,12 +44,6 @@ Leave **at least one grid unit around the entire asset**, including the wordmark
 ## Size and integrity
 
 Keep symbols recognizable and wordmarks legible. If a lockup is too small to read, use the symbol where context identifies it. Do not stretch, rotate, crop, add effects to, rearrange, or redraw the artwork.
-
-## Third-party use
-
-You may use the names and unmodified supplied logos to accurately identify or discuss {{names}}. Do not suggest sponsorship, endorsement, or an affiliation that does not exist; make your own brand clearly distinct. Do not incorporate our names or logos into the name or logo of your own product or organization.
-
-For co-branding, merchandise, or any use that could imply an official relationship, contact [brand@earendil.com](mailto:brand@earendil.com) before publishing. These guidelines do not change any rights you may have in software or other materials; permission to use software does not by itself grant permission to use a brand as your own.
 
 ## Files in this kit
 
