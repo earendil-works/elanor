@@ -22,7 +22,8 @@ interface FontsOverviewProps {
 }
 
 export const fontsUsage = `@import '@earendil-works/elanor-fonts/mallos-serif.css';
-@import '@earendil-works/elanor-fonts/commit-mono.css';`;
+@import '@earendil-works/elanor-fonts/mallos-sans.css';
+@import '@earendil-works/elanor-fonts/mallos-mono.css';`;
 
 const glyphs = [
   'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
@@ -163,7 +164,7 @@ export function FontsOverview({page, usageLines}: FontsOverviewProps): React.JSX
         <CopyStatus />
         <Text>
           Lefos: import <InlineCode>departure-mono.css</InlineCode> instead of{' '}
-          <InlineCode>commit-mono.css</InlineCode>.
+          <InlineCode>mallos-mono.css</InlineCode>.
         </Text>
         {page.missing.map((font) => (
           <Text key={font.cssVariable}>

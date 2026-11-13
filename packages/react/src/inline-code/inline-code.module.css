@@ -3,7 +3,6 @@
     color: var(--semantic-color-text-code);
     font: inherit;
     font-family: var(--semantic-font-family-code);
-    font-size: calc(var(--semantic-number-font-scale-inline-code) * 1em);
     /* Long identifiers break instead of widening narrow columns, such as in tables. */
     overflow-wrap: break-word;
   }

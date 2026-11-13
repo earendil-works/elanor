@@ -287,7 +287,7 @@ function tokenizableFontShorthandLiterals(value: string, policy: LiteralPolicy):
 
 /**
  * Checks whether a calc() operand is the unit a token factor scales, as in
- * `calc(var(--semantic-number-font-scale-inline-code) * 1em)`: exactly one font-relative
+ * `calc(1em * var(--semantic-number-scale-popup))`: exactly one font-relative
  * unit, multiplied by a var(). Any other font-relative length is a literal.
  *
  * @param operands The calc() operands without spaces and comments.
