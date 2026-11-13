@@ -82,6 +82,12 @@
     min-inline-size: 0;
   }
 
+  /* A short note under a page title, such as the brand page's usage notice. */
+  .page-note {
+    color: var(--semantic-color-text-secondary);
+    font: var(--semantic-typography-ui-secondary);
+  }
+
   /* Raw HTML long-form content, such as the brand guidelines. */
   .prose {
     min-inline-size: 0;
