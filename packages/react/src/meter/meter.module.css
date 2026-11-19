@@ -39,7 +39,8 @@
       outline-offset: calc(-1 * var(--semantic-dimension-border-width-small));
     }
 
-    .indicator {
+    /* As specific as the semantic colors, so every semantic gets the system color. */
+    .root[data-semantic] .indicator {
       background: Highlight;
       forced-color-adjust: none;
     }
