@@ -27,7 +27,7 @@ export interface ScrollAreaScrollbarProps extends BaseScrollArea.Scrollbar.Props
    * momentum, scroll keys) or the pointer is on it, then fades it out: for a large area that is read
    * more than scrolled, such as a conversation. Scrolling the reader didn't do (scroll calls, content
    * arriving, a resize) doesn't show it. It keeps its place while hidden, so the pointer finds it, and
-   * stays visible in forced colors.
+   * stays visible in forced colors. React parts only: `StaticScrollbar` has no `visibility`.
    */
   readonly visibility?: ScrollAreaScrollbarVisibility;
 }
