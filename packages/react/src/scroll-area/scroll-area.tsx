@@ -91,8 +91,9 @@ const HIDE_AFTER = 500;
 /** Scrolling this long (ms) after a wheel turn or a key is the reader's: the browser may animate it. */
 const WHEEL_INTENT = 250;
 const KEY_INTENT = 500;
-/** After a finger lifts, scrolling stays the reader's (momentum) until it pauses this long (ms). */
-const MOMENTUM_GAP = 150;
+/** Scrolling this long (ms) after a finger lifts is its momentum. A fixed deadline, so scrolls from
+ * code (a streaming transcript) can't keep the scrollbar visible. */
+const MOMENTUM = 1500;
 const SCROLL_KEYS = /^(?:Arrow(?:Up|Down|Left|Right)|Page(?:Up|Down)|Home|End| )$/;
 
 /** Typing in a field scrolls to its caret: that is the field's scrolling, not the reader's. */
@@ -118,48 +119,34 @@ function watchUserScrolling(
   let last = position();
   let intentUntil = 0;
   let touching = false;
-  let momentum = false;
   let hideTimer: ReturnType<typeof setTimeout> | undefined;
-  let momentumTimer: ReturnType<typeof setTimeout> | undefined;
-  const carryMomentum = () => {
-    clearTimeout(momentumTimer);
-    momentumTimer = setTimeout(() => {
-      momentum = false;
-    }, MOMENTUM_GAP);
+  const intend = (ms: number) => {
+    intentUntil = Math.max(intentUntil, performance.now() + ms);
   };
   const onScroll = () => {
     const now = position();
     if (now === last) return;
     last = now;
-    if (!touching && !momentum && performance.now() >= intentUntil) return;
-    if (momentum) carryMomentum();
+    if (!touching && performance.now() >= intentUntil) return;
     scrollbar.setAttribute('data-user-scrolling', '');
     clearTimeout(hideTimer);
     hideTimer = setTimeout(() => scrollbar.removeAttribute('data-user-scrolling'), HIDE_AFTER);
   };
-  const onScrollEnd = () => {
-    momentum = false;
-  };
-  const onWheel = () => {
-    intentUntil = performance.now() + WHEEL_INTENT;
-  };
+  const onWheel = () => intend(WHEEL_INTENT);
   const onKeyDown = (event: KeyboardEvent) => {
     if (event.defaultPrevented || isEditable(event.target) || !SCROLL_KEYS.test(event.key)) return;
-    intentUntil = performance.now() + KEY_INTENT;
+    intend(KEY_INTENT);
   };
   const onTouchStart = () => {
     touching = true;
-    momentum = false;
   };
   const onTouchEnd = (event: TouchEvent) => {
     if (event.touches.length > 0) return;
     touching = false;
-    momentum = true;
-    carryMomentum();
+    intend(MOMENTUM);
   };
   const passive = {passive: true} as const;
   viewport.addEventListener('scroll', onScroll, passive);
-  viewport.addEventListener('scrollend', onScrollEnd, passive);
   viewport.addEventListener('wheel', onWheel, passive);
   viewport.addEventListener('keydown', onKeyDown);
   viewport.addEventListener('touchstart', onTouchStart, passive);
@@ -167,14 +154,12 @@ function watchUserScrolling(
   viewport.addEventListener('touchcancel', onTouchEnd, passive);
   return () => {
     viewport.removeEventListener('scroll', onScroll);
-    viewport.removeEventListener('scrollend', onScrollEnd);
     viewport.removeEventListener('wheel', onWheel);
     viewport.removeEventListener('keydown', onKeyDown);
     viewport.removeEventListener('touchstart', onTouchStart);
     viewport.removeEventListener('touchend', onTouchEnd);
     viewport.removeEventListener('touchcancel', onTouchEnd);
     clearTimeout(hideTimer);
-    clearTimeout(momentumTimer);
     scrollbar.removeAttribute('data-user-scrolling');
   };
 }
