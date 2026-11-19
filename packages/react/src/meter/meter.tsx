@@ -37,21 +37,25 @@ export function MeterLabel({ref, className, ...props}: MeterLabelProps) {
   );
 }
 
+/** The range the indicator fills. Renders `data-meter-track`, through which containers style it. */
 export function MeterTrack({ref, className, ...props}: MeterTrackProps) {
   return (
     <BaseMeter.Track
       {...props}
       ref={ref}
+      data-meter-track=""
       className={mergeClassName<BaseMeter.Track.State>(styles.track, className)}
     />
   );
 }
 
+/** The filled part of the track. Renders `data-meter-indicator`, through which containers style it. */
 export function MeterIndicator({ref, className, ...props}: MeterIndicatorProps) {
   return (
     <BaseMeter.Indicator
       {...props}
       ref={ref}
+      data-meter-indicator=""
       className={mergeClassName<BaseMeter.Indicator.State>(styles.indicator, className)}
     />
   );
