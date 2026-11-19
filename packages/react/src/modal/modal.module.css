@@ -33,8 +33,7 @@
       var(--semantic-dimension-space-padding-xxx-large) -
         var(--semantic-dimension-border-width-default)
     );
-    border: var(--semantic-dimension-border-width-default) solid
-      var(--semantic-color-background-canvas);
+    border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-popup);
     border-radius: var(--semantic-dimension-radius-small);
     background: var(--semantic-color-background-canvas);
     color: var(--semantic-color-text-primary);
