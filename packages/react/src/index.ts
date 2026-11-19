@@ -376,7 +376,11 @@ export {Heading} from './heading/heading.tsx';
 export type {HeadingLevel, HeadingProps, HeadingSize, HeadingVariant} from './heading/heading.tsx';
 
 export {IconButton} from './icon-button/icon-button.tsx';
-export type {IconButtonProps} from './icon-button/icon-button.tsx';
+export type {
+  IconButtonDensity,
+  IconButtonHierarchy,
+  IconButtonProps,
+} from './icon-button/icon-button.tsx';
 
 export {Image} from './image/image.tsx';
 export type {ImageProps} from './image/image.tsx';

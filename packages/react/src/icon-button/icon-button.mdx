@@ -21,6 +21,18 @@ import {IconButton} from '@earendil-works/elanor-react';
 
 Icons are decorative by default, so the button needs an `aria-label`. To show the label on hover and focus, wrap the button in a [Tooltip](/components/tooltip/).
 
+## Density
+
+Unlike [Button](/components/button/), icon buttons default to `density="compact"`: the fill is the icon's size, for dense rows and toolbars. `density="default"` is the icon plus control padding, as tall as a default Button, for buttons that stand alone, such as a composer's.
+
+<Demo example="./examples/density.tsx" />
+
+## Hierarchy
+
+`tertiary`, the default, has no fill until hovered or pressed. `primary` has the primary fill, as on [Button](/components/button/), for the one main action of a view, such as sending a message. `secondary` has a surface and a hairline, for a button floating over content, such as one that scrolls to the latest message. Use `primary` and `secondary` with `density="default"`.
+
+<Demo example="./examples/hierarchy.tsx" />
+
 ## Changing the label
 
 When the action changes, update the icon and `aria-label` together.

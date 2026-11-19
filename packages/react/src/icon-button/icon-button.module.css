@@ -40,25 +40,82 @@
     block-size: var(--semantic-dimension-size-icon);
   }
 
+  .root[data-density='default'] {
+    inline-size: auto;
+    block-size: auto;
+    padding: var(--semantic-dimension-space-control-padding-block-small);
+  }
+
+  .root[data-density='default']::before {
+    inline-size: auto;
+    block-size: auto;
+  }
+
   @media (pointer: coarse) {
     .root {
       inline-size: var(--semantic-dimension-size-x-large);
       block-size: var(--semantic-dimension-size-x-large);
     }
+
+    .root[data-density='default'] {
+      inline-size: var(--semantic-dimension-size-x-large);
+      block-size: var(--semantic-dimension-size-x-large);
+    }
+
+    .root[data-density='default']::before {
+      inline-size: var(--semantic-dimension-size-medium);
+      block-size: var(--semantic-dimension-size-medium);
+    }
   }
 
   @media (hover: hover) {
-    .root:hover:not([data-disabled])::before {
+    .root[data-hierarchy='tertiary']:hover:not([data-disabled])::before {
       background: var(--semantic-color-background-fill-ghost-neutral-hover);
       box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
         var(--semantic-color-background-fill-ghost-neutral-hover);
     }
   }
 
-  .root:active:not([data-disabled])::before {
+  .root[data-hierarchy='tertiary']:active:not([data-disabled])::before {
     background: var(--semantic-color-background-fill-ghost-neutral-active);
     box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
       var(--semantic-color-background-fill-ghost-neutral-active);
+  }
+
+  .root[data-hierarchy='primary'] {
+    color: var(--semantic-color-icon-on-primary-fill);
+  }
+
+  .root[data-hierarchy='primary']::before {
+    background: var(--semantic-color-background-fill-primary);
+    transition: background-color var(--semantic-transition-feedback);
+  }
+
+  @media (hover: hover) {
+    .root[data-hierarchy='primary']:hover:not([data-disabled])::before {
+      background: var(--semantic-color-background-fill-primary-hover);
+    }
+  }
+
+  .root[data-hierarchy='primary']:active:not([data-disabled])::before {
+    background: var(--semantic-color-background-fill-primary-active);
+  }
+
+  .root[data-hierarchy='secondary']::before {
+    box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-small)
+      var(--semantic-color-border-secondary);
+    background: var(--semantic-color-background-surface);
+    transition: background-color var(--semantic-transition-feedback);
+  }
+
+  @media (hover: hover) {
+    .root[data-hierarchy='secondary']:hover:not([data-disabled])::before {
+      background: var(--semantic-color-background-fill-secondary-hover);
+    }
+  }
+
+  .root[data-hierarchy='secondary']:active:not([data-disabled])::before {
+    background: var(--semantic-color-background-fill-secondary-active);
   }
 
   .root:focus-visible {
