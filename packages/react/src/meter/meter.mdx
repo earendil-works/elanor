@@ -26,7 +26,7 @@ Meter adds no layout; arrange its parts with [Stack](/components/stack/). Withou
 
 ## Semantic
 
-`warning` and `negative` flag a value near or past a limit. Choose the thresholds in your application.
+`warning` and `negative` flag a value near or past a limit. Choose the thresholds in your application. For another color, give `Meter.Indicator` a class; it overrides `semantic`.
 
 <Demo example="./examples/semantic.tsx" />
 
@@ -35,6 +35,12 @@ Meter adds no layout; arrange its parts with [Stack](/components/stack/). Withou
 The track is `semantic.dimension.size.xxSmall` (8px) tall. For a thin meter, give `Meter.Track` a class that sets `block-size` to `semantic.dimension.size.xxxSmall` (4px); the indicator follows.
 
 <Demo example="./examples/thickness.tsx" />
+
+## Inline
+
+For a meter in a line of text, such as a status row, put the parts in a row Stack centred on the line, and use a thin, short track.
+
+<Demo example="./examples/inline.tsx" />
 
 ## Custom range
 
