@@ -1,0 +1,187 @@
+/* stylelint-disable design-tokens/no-non-token-custom-properties -- The field's geometry, derived
+   once from tokens and shared by the field, its buttons and the footer. Public: Panel sets
+   `--composer-text-inset` for you to read; `--composer-hang` and `--composer-footer-inset` are
+   yours to set and only read here. */
+@layer elanor.components {
+  /*
+   * `--composer-border` is the field's thin border and `--composer-radius` its corners', a message
+   * bubble's. `--composer-padding` is the field's padding, where its buttons sit; with the border,
+   * a fixed size. `--composer-icon-inset` is the distance from an IconButton's edge to its icon.
+   * `--composer-indent` indents the text to the icons' drawing, a quarter of an icon inside its box,
+   * so text and icons share an edge to the eye.
+   */
+  .panel,
+  .field {
+    --composer-border: var(--semantic-dimension-border-width-small);
+    --composer-radius: var(--semantic-dimension-radius-large);
+    --composer-padding: calc(
+      var(--semantic-dimension-space-padding-small) - var(--composer-border)
+    );
+    /* Mirrors IconButton's default density, the icon plus this padding. If it becomes
+       `size-medium`, use `calc((var(--semantic-dimension-size-medium) -
+       var(--semantic-dimension-size-icon)) / 2)`. */
+    --composer-icon-inset: var(--semantic-dimension-space-control-padding-block-small);
+    --composer-indent: calc(
+      var(--composer-icon-inset) + 0.25 * var(--semantic-dimension-size-icon)
+    );
+  }
+
+  /*
+   * Public: `--composer-text-inset` is the distance from the frame's edge to the text. The panel
+   * hangs out of its container by `--composer-hang`, none unless you set it.
+   */
+  .panel {
+    --composer-text-inset: calc(
+      var(--composer-padding) + var(--composer-border) + var(--composer-indent)
+    );
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-gap-small);
+    /* Size containment gives it no content width, so it takes its container's: a flex or grid
+       container that sized it to its content would collapse it. */
+    align-self: stretch;
+    justify-self: stretch;
+    min-inline-size: 0;
+    margin-inline: calc(-1 * var(--composer-hang, var(--semantic-dimension-space-padding-none)));
+    /* The footer follows the composer's width, not the window's. You can query it by name too. */
+    container: composer / inline-size;
+  }
+
+  /* A held finger is a press, not a selection of the buttons' and figures' words with the
+     system's menu. The text keeps its caret, selection and paste, and the header's notices stay
+     selectable, to copy an error. */
+  @media (pointer: coarse) {
+    .panel {
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .panel :where(.header, textarea, input, [contenteditable]:not([contenteditable='false'])) {
+      -webkit-touch-callout: default;
+      -webkit-user-select: text;
+      user-select: text;
+    }
+  }
+
+  /* An empty container takes no room, so it adds no gap. */
+  .header:empty,
+  .controls:empty,
+  .footer:empty {
+    display: none;
+  }
+
+  .header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-gap-small);
+    min-inline-size: 0;
+  }
+
+  /*
+   * No focus ring: the caret shows the focus. The border is the translucent edge, a step off both
+   * the fill and the page in every state and scheme, so it never changes.
+   */
+  .field {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-control-gap-small);
+    min-inline-size: 0;
+    padding: var(--composer-padding);
+    border: var(--composer-border) solid var(--semantic-color-border-edge);
+    border-radius: var(--composer-radius);
+    background: var(--semantic-color-background-fill-secondary);
+    color: var(--semantic-color-text-primary);
+    transition: background-color var(--semantic-transition-feedback);
+  }
+
+  /* Hovered and pressed only: the field doesn't change while a person writes. */
+  @media (hover: hover) {
+    .field:hover {
+      background: var(--semantic-color-background-fill-secondary-hover);
+    }
+  }
+
+  .field:is(:active, [data-pressed]) {
+    background: var(--semantic-color-background-fill-secondary-hover);
+  }
+
+  /* A radius inside another is the outer one less the space between them, so the curves of a
+     corner button and of the field's corner run alongside each other. A negative result is
+     clamped to none. */
+  .field [data-icon-button][data-density='default']::before {
+    border-radius: calc(var(--composer-radius) - var(--composer-border) - var(--composer-padding));
+  }
+
+  .controls {
+    display: flex;
+    align-items: center;
+    min-inline-size: 0;
+  }
+
+  /* Without specificity, so a gap from `render`, such as a Stack's, always wins. */
+  :where(.controls) {
+    gap: var(--semantic-dimension-space-control-gap-small);
+  }
+
+  /* As wide as their content, also controls that fill their container elsewhere. Without
+     specificity, so a child's own flex rules win. */
+  :where(.controls > *, .footer > *) {
+    flex: 0 1 content;
+  }
+
+  /*
+   * Layout only: its children keep their own text styles. Its first control's text, inside a small
+   * control's padding, follows the frame or the hang.
+   */
+  .footer {
+    display: flex;
+    flex-wrap: wrap;
+    /* Controls and figures differ in size; their texts share a line. */
+    align-items: baseline;
+    gap: var(--semantic-dimension-space-control-gap-medium)
+      var(--semantic-dimension-space-gap-small);
+    min-inline-size: 0;
+    /*
+     * Its controls' text sits `--composer-footer-inset` inside the frame, or on the hang if that's
+     * more. The default suits ghost controls, whose hover fill reaches past the frame.
+     */
+    margin-inline: calc(
+      max(
+          var(--composer-hang, var(--semantic-dimension-space-padding-none)),
+          var(--composer-footer-inset, var(--semantic-dimension-space-padding-xx-small))
+        ) -
+        var(--semantic-dimension-space-control-padding-inline-small)
+    );
+  }
+
+  /*
+   * In a narrow composer the footer stays on one line, its children closer together. They shrink
+   * and cut their text with an ellipsis; a child that must stay whole sets `flex: none`. Without
+   * specificity, so controls keep their own overflow. At 40rem, a phone in landscape or a narrow
+   * pane, a model picker, a level picker and a few figures stop fitting side by side at full size.
+   */
+  @container composer (inline-size <= 40rem) {
+    /* The controls' own padding spaces their texts. */
+    .footer {
+      flex-wrap: nowrap;
+      column-gap: 0;
+    }
+
+    :where(.footer > *) {
+      min-inline-size: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .field {
+      border-color: ButtonBorder;
+    }
+  }
+}
+/* stylelint-enable design-tokens/no-non-token-custom-properties */

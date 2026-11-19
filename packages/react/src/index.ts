@@ -1,6 +1,7 @@
 export * as Checkbox from './checkbox/index.ts';
 export * as Chip from './chip/index.ts';
 export * as Collapsible from './collapsible/index.ts';
+export * as Composer from './composer/index.ts';
 export * as ContextMenu from './context-menu/index.ts';
 export * as Drawer from './drawer/index.ts';
 export * as Dropdown from './dropdown/index.ts';
@@ -138,6 +139,14 @@ export type {
   HighlightedCodeProps,
   HighlightedLines,
 } from './code-snippet/highlighted-code.tsx';
+
+export type {
+  ComposerControlsProps,
+  ComposerFieldProps,
+  ComposerFooterProps,
+  ComposerHeaderProps,
+  ComposerPanelProps,
+} from './composer/composer.tsx';
 
 export {CopyButton} from './copy-button/copy-button.tsx';
 export type {CopyButtonProps} from './copy-button/copy-button.tsx';
