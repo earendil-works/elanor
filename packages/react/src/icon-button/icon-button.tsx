@@ -16,7 +16,7 @@ export interface IconButtonProps extends BaseButton.Props {
 
 /**
  * A button that shows only an icon. Needs an `aria-label`. Renders `data-density` and
- * `data-hierarchy`.
+ * `data-hierarchy`, and `data-icon-button`, through which containers style it.
  */
 export function IconButton({
   ref,
@@ -33,6 +33,7 @@ export function IconButton({
       ref={ref}
       type={type}
       disabled={disabled}
+      data-icon-button=""
       data-density={density}
       data-hierarchy={hierarchy}
       className={mergeClassName<BaseButton.State>(styles.root, className)}
