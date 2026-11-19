@@ -1,0 +1,68 @@
+---
+category: forms
+---
+
+# Composer
+
+The field where a chat message is written, with buttons to attach files and send inside its frame, and rows above and below for notices and the conversation's settings. For a plain multi-line field, use [Text area](/components/text-area/).
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Composer} from '@earendil-works/elanor-react';
+
+<Composer.Panel>
+  <Composer.Header />
+  <Composer.Field>
+    <Composer.Controls>
+      <Composer.ControlGroup />
+    </Composer.Controls>
+  </Composer.Field>
+  <Composer.Footer>
+    <Composer.Status>
+      <Composer.StatusItem />
+    </Composer.Status>
+  </Composer.Footer>
+</Composer.Panel>;
+```
+
+- **Panel** renders a `div` around the rows. Pass `render={<form />}` for a form.
+- **Header** is the row above the field, for notices, errors, and the message being replied to.
+- **Field** is the frame, which looks like one text field holding the text and the buttons. It has no focus ring; the caret shows the focus. Pressing anything in it other than the text keeps the focus where it is, so a phone's keyboard stays up.
+- **Controls** is the row of buttons inside the field. Use [Icon buttons](/components/icon-button/) with `density="default"`; on touch screens their larger targets hang over the field's edge and their neighbours, never over the text. **ControlGroup** keeps buttons together.
+- **Footer** is the row below the field, for the application's own controls, such as a model picker. It sets `--semantic-typography-ui-primary` to the secondary text style, so Elanor's controls in it are set in secondary text.
+- **Status** holds figures at the end of the footer, in tertiary text and tabular figures. **StatusItem** is one figure.
+
+The containers take any number of children in any order, and an empty one takes no room.
+
+## Controls
+
+The send or stop button sits at the end of `Controls`, alone or in a `ControlGroup`: mark it with `data-composer-submit` or `data-composer-stop` and put it last. Other controls start from the beginning of the row.
+
+<Demo example="./examples/controls.tsx" />
+
+## Header
+
+Put notices, errors about the last message, and the message being replied to in `Header`. It is as wide as the frame, and stacks its children with a gap.
+
+<Demo example="./examples/header.tsx" />
+
+## Footer
+
+Put the application's controls in `Footer`, and figures in `Status`: a [Meter](/components/meter/) for context used, `StatusItem` for the rest. `Status` lays out a meter's parts in a row with a short, thin track. A `neutral` meter there is grey, like the figures beside it; `warning` and `negative` keep their colour.
+
+<Demo example="./examples/footer.tsx" />
+
+### Narrow
+
+In a narrow composer the footer stays on one line: the figures keep their room, and the other children shrink and are cut with an ellipsis. It follows the composer's width, not the window's.
+
+<Demo example="./examples/narrow.tsx" />
+
+## Alignment
+
+By default the frame lines up with the content around it. Set `align="text"` on Panel to line up the field's text instead: the frame and the header extend past the content's edge, and the footer's first control lines up its text with the field's. Leave room at the container's sides for the frame to hang into.
+
+<Demo example="./examples/align.tsx" />
