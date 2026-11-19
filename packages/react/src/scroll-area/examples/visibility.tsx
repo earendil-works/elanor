@@ -7,7 +7,7 @@ export default function ScrollAreaVisibility() {
   const viewportRef = useRef<HTMLDivElement>(null);
 
   return (
-    <Stack gap="medium" align="stretch">
+    <Stack gap="medium">
       <ScrollArea.Root className={styles.frame}>
         <ScrollArea.Viewport ref={viewportRef} role="region" aria-label="Build log">
           <ScrollArea.Content className={styles.entries}>
@@ -22,17 +22,15 @@ export default function ScrollAreaVisibility() {
           <ScrollArea.Thumb />
         </ScrollArea.Scrollbar>
       </ScrollArea.Root>
-      <Stack direction="row" gap="small">
-        <Button
-          hierarchy="secondary"
-          onClick={() => {
-            const viewport = viewportRef.current;
-            viewport?.scrollTo({top: viewport.scrollHeight, behavior: 'smooth'});
-          }}
-        >
-          Jump to latest step
-        </Button>
-      </Stack>
+      <Button
+        hierarchy="secondary"
+        onClick={() => {
+          const viewport = viewportRef.current;
+          viewport?.scrollTo({top: viewport.scrollHeight, behavior: 'smooth'});
+        }}
+      >
+        Jump to latest step
+      </Button>
     </Stack>
   );
 }
