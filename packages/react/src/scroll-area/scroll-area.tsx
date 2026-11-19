@@ -86,17 +86,16 @@ export function ScrollAreaContent({ref, className, ...props}: ScrollAreaContentP
   );
 }
 
-/** The scrollbar stays this long (ms) after the reader's last scroll, as Base UI's `data-scrolling`. */
+/** How long (ms) the scrollbar stays after the reader's last scroll, as Base UI's `data-scrolling`. */
 const HIDE_AFTER = 500;
-/** Scrolling this long (ms) after a wheel turn or a key is the reader's: the browser may animate it. */
+/** How long (ms) scrolls after a wheel turn or a key count as the reader's; the browser may animate them. */
 const WHEEL_INTENT = 250;
 const KEY_INTENT = 500;
-/** Scrolling this long (ms) after a finger lifts is its momentum. A fixed deadline, so scrolls from
- * code (a streaming transcript) can't keep the scrollbar visible. */
+/** How long (ms) after a finger lifts its momentum may scroll. Fixed, so scrolls from code can't extend it. */
 const MOMENTUM = 1500;
 const SCROLL_KEYS = /^(?:Arrow(?:Up|Down|Left|Right)|Page(?:Up|Down)|Home|End| )$/;
 
-/** Typing in a field scrolls to its caret: that is the field's scrolling, not the reader's. */
+/** Typing in a field scrolls to its caret, which isn't the reader scrolling. */
 function isEditable(target: EventTarget | null): boolean {
   return (
     target instanceof HTMLElement &&
@@ -105,12 +104,12 @@ function isEditable(target: EventTarget | null): boolean {
 }
 
 /**
- * Sets `data-user-scrolling` on `scrollbar` while the reader scrolls `viewport` along its axis: by the
- * wheel, a finger and its momentum, or the keys. Base UI's `data-scrolling` also marks scrolls a
- * program makes, and content arriving or a resize would keep showing the scrollbar. Set on the
- * element directly, as it changes with every scroll. Returns what stops watching.
+ * Sets `data-reader-scrolling` on `scrollbar` while the reader scrolls `viewport` along its axis: the
+ * wheel, the scroll keys, or a finger and its momentum. Base UI's `data-scrolling` also marks scrolls
+ * from code within 100ms of any keydown, pointer movement or wheel (each further scroll restarts that
+ * window), and every scroll in touch mode. Returns what stops watching.
  */
-function watchUserScrolling(
+function watchReaderScrolling(
   scrollbar: HTMLElement,
   viewport: HTMLElement,
   vertical: boolean,
@@ -128,9 +127,9 @@ function watchUserScrolling(
     if (now === last) return;
     last = now;
     if (!touching && performance.now() >= intentUntil) return;
-    scrollbar.setAttribute('data-user-scrolling', '');
+    scrollbar.toggleAttribute('data-reader-scrolling', true);
     clearTimeout(hideTimer);
-    hideTimer = setTimeout(() => scrollbar.removeAttribute('data-user-scrolling'), HIDE_AFTER);
+    hideTimer = setTimeout(() => scrollbar.removeAttribute('data-reader-scrolling'), HIDE_AFTER);
   };
   const onWheel = () => intend(WHEEL_INTENT);
   const onKeyDown = (event: KeyboardEvent) => {
@@ -160,12 +159,12 @@ function watchUserScrolling(
     viewport.removeEventListener('touchend', onTouchEnd);
     viewport.removeEventListener('touchcancel', onTouchEnd);
     clearTimeout(hideTimer);
-    scrollbar.removeAttribute('data-user-scrolling');
+    scrollbar.removeAttribute('data-reader-scrolling');
   };
 }
 
 /**
- * Renders `data-visibility`, and with `visibility="scrolling"`, `data-user-scrolling` while the
+ * Renders `data-visibility`, and with `visibility="scrolling"`, `data-reader-scrolling` while the
  * reader scrolls.
  */
 export function ScrollAreaScrollbar({
@@ -180,7 +179,7 @@ export function ScrollAreaScrollbar({
   const watch = useCallback(
     (scrollbar: HTMLDivElement | null) => {
       if (visibility !== 'scrolling' || scrollbar === null || viewport === null) return;
-      return watchUserScrolling(scrollbar, viewport, vertical);
+      return watchReaderScrolling(scrollbar, viewport, vertical);
     },
     [visibility, viewport, vertical],
   );

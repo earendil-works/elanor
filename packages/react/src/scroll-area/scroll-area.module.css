@@ -75,7 +75,7 @@
   }
 
   /*
-   * `visibility="scrolling"`: hidden until the reader scrolls (`data-user-scrolling`, set by the
+   * `visibility="scrolling"`: hidden until the reader scrolls (`data-reader-scrolling`, set by the
    * component) or the pointer is on the scrollbar, which keeps its place so the pointer finds it. It
    * shows at once and fades out. Forced-colors users keep the always-visible scrollbar.
    */
@@ -84,13 +84,13 @@
       opacity: var(--semantic-number-opacity-hidden);
     }
 
-    .scrollbar[data-visibility='scrolling']:is(:hover, :active, [data-user-scrolling]) {
+    .scrollbar[data-visibility='scrolling']:is(:hover, :active, [data-reader-scrolling]) {
       opacity: var(--semantic-number-opacity-visible);
     }
   }
 
   /* It keeps fading out while the area scrolls by itself, where `data-scrolling` drops the transition. */
-  .scrollbar[data-visibility='scrolling'][data-scrolling]:not([data-user-scrolling]) {
+  .scrollbar[data-visibility='scrolling'][data-scrolling]:not([data-reader-scrolling]) {
     transition: opacity var(--semantic-transition-fade);
   }
 }
