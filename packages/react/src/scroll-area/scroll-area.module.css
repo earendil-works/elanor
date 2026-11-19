@@ -73,4 +73,36 @@
   .scrollbar[data-scrolling] {
     transition: none;
   }
+
+  /* Hidden by opacity, so it keeps its place for the pointer. Forced colors keep it shown. */
+  .scrollbar[data-visibility='scrolling'] {
+    transition: opacity var(--semantic-transition-fade);
+  }
+
+  .scrollbar[data-reader-scrolling] {
+    transition: none;
+  }
+
+  @media (forced-colors: none) {
+    .scrollbar[data-visibility='scrolling'] {
+      opacity: var(--semantic-number-opacity-hidden);
+    }
+
+    .scrollbar[data-visibility='scrolling']:is(:active, [data-reader-scrolling]) {
+      opacity: var(--semantic-number-opacity-visible);
+    }
+  }
+
+  @media (forced-colors: none) and (any-hover: hover) {
+    .scrollbar[data-visibility='scrolling']:hover {
+      opacity: var(--semantic-number-opacity-visible);
+    }
+  }
+
+  /* An invisible scrollbar still takes taps. */
+  @media (forced-colors: none) and (hover: none) {
+    .scrollbar[data-visibility='scrolling']:not([data-reader-scrolling], :active) {
+      pointer-events: none;
+    }
+  }
 }

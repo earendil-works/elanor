@@ -83,6 +83,7 @@ export type {
   ScrollAreaContentState,
   ScrollAreaScrollbarProps,
   ScrollAreaScrollbarState,
+  ScrollAreaScrollbarVisibility,
   ScrollAreaThumbProps,
   ScrollAreaThumbState,
   ScrollAreaCornerProps,
