@@ -22,12 +22,10 @@ export type ScrollAreaScrollbarVisibility = 'always' | 'scrolling';
 
 export interface ScrollAreaScrollbarProps extends BaseScrollArea.Scrollbar.Props {
   /**
-   * `always` shows the scrollbar whenever the content overflows, which says there is more, as in a
-   * short list. `scrolling` shows it only while the reader scrolls the area (wheel, touch and its
-   * momentum, scroll keys) or the pointer is on it, then fades it out: for a large area that is read
-   * more than scrolled, such as a conversation. Scrolling the reader didn't do (scroll calls, content
-   * arriving, a resize) doesn't show it. It keeps its place while hidden, so the pointer finds it, and
-   * stays visible in forced colors. React parts only: `StaticScrollbar` has no `visibility`.
+   * `always` shows the scrollbar whenever content overflows. `scrolling`, for a large area that is
+   * read more than scrolled such as a conversation, shows it only while the reader scrolls (wheel,
+   * touch, scroll keys) or points at it, then fades it out. Scrolling from code, typing in a field
+   * and resizes don't show it. Forced colors always show it. React parts only.
    */
   readonly visibility?: ScrollAreaScrollbarVisibility;
 }
@@ -38,10 +36,7 @@ interface ViewportContextValue {
   readonly setViewport: (viewport: HTMLDivElement | null) => void;
 }
 
-/**
- * The Root's viewport element, for a Scrollbar to watch the reader's scrolling; Base UI keeps its own
- * private. State, not a ref, so the Scrollbar starts watching whichever part mounts first.
- */
+/** Base UI's viewport ref is private. State, not a ref: the Scrollbar may mount first. */
 const ViewportContext = /* @__PURE__ */ createContext<ViewportContextValue | null>(null);
 
 function useViewportContext(): ViewportContextValue {
@@ -86,16 +81,16 @@ export function ScrollAreaContent({ref, className, ...props}: ScrollAreaContentP
   );
 }
 
-/** How long (ms) the scrollbar stays after the reader's last scroll, as Base UI's `data-scrolling`. */
+/** Base UI's `data-scrolling` timeout. */
 const HIDE_AFTER = 500;
-/** How long (ms) scrolls after a wheel turn or a key count as the reader's; the browser may animate them. */
+/** The browser may animate a wheel or key scroll: scrolls this soon after (ms) are the reader's. */
 const WHEEL_INTENT = 250;
 const KEY_INTENT = 500;
-/** How long (ms) after a finger lifts its momentum may scroll. Fixed, so scrolls from code can't extend it. */
+/** Momentum after a finger lifts (ms). A fixed deadline, so scrolls from code can't extend it. */
 const MOMENTUM = 1500;
 const SCROLL_KEYS = /^(?:Arrow(?:Up|Down|Left|Right)|Page(?:Up|Down)|Home|End| )$/;
 
-/** Typing in a field scrolls to its caret, which isn't the reader scrolling. */
+/** Typing scrolls a field to its caret; that isn't the reader scrolling. */
 function isEditable(target: EventTarget | null): boolean {
   return (
     target instanceof HTMLElement &&
@@ -104,10 +99,8 @@ function isEditable(target: EventTarget | null): boolean {
 }
 
 /**
- * Sets `data-reader-scrolling` on `scrollbar` while the reader scrolls `viewport` along its axis: the
- * wheel, the scroll keys, or a finger and its momentum. Base UI's `data-scrolling` also marks scrolls
- * from code within 100ms of any keydown, pointer movement or wheel (each further scroll restarts that
- * window), and every scroll in touch mode. Returns what stops watching.
+ * Base UI's `data-scrolling` also marks scrolls from code within 100ms of any keydown, pointer
+ * move or wheel (each further scroll restarts that window), and every scroll in touch mode.
  */
 function watchReaderScrolling(
   scrollbar: HTMLElement,
@@ -163,10 +156,7 @@ function watchReaderScrolling(
   };
 }
 
-/**
- * Renders `data-visibility`, and with `visibility="scrolling"`, `data-reader-scrolling` while the
- * reader scrolls.
- */
+/** Renders `data-visibility`, and `data-reader-scrolling` while the reader scrolls. */
 export function ScrollAreaScrollbar({
   ref,
   visibility = 'always',
@@ -175,7 +165,7 @@ export function ScrollAreaScrollbar({
 }: ScrollAreaScrollbarProps) {
   const {viewport} = useViewportContext();
   const vertical = props.orientation !== 'horizontal';
-  // A ref callback, not an effect: Base UI mounts the scrollbar's element only once content overflows.
+  // A ref callback, not an effect: Base UI mounts the element only once content overflows.
   const watch = useCallback(
     (scrollbar: HTMLDivElement | null) => {
       if (visibility !== 'scrolling' || scrollbar === null || viewport === null) return;

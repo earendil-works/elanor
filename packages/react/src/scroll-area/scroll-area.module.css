@@ -74,10 +74,7 @@
     transition: none;
   }
 
-  /*
-   * `visibility="scrolling"`: hidden until the reader scrolls or points at the scrollbar, which keeps
-   * its place so the pointer finds it. It shows at once and fades out. Forced colors keep it visible.
-   */
+  /* Hidden by opacity, so it keeps its place for the pointer. Forced colors keep it shown. */
   .scrollbar[data-visibility='scrolling'] {
     transition: opacity var(--semantic-transition-fade);
   }
@@ -102,7 +99,7 @@
     }
   }
 
-  /* Without hover, a hidden scrollbar would still take taps. */
+  /* An invisible scrollbar still takes taps. */
   @media (forced-colors: none) and (hover: none) {
     .scrollbar[data-visibility='scrolling']:not([data-reader-scrolling], :active) {
       pointer-events: none;
