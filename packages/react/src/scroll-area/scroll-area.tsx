@@ -93,17 +93,15 @@ const WHEEL_INTENT = 250;
 const KEY_INTENT = 500;
 /** After a finger lifts, scrolling stays the reader's (momentum) until it pauses this long (ms). */
 const MOMENTUM_GAP = 150;
-const SCROLL_KEYS = new Set([
-  'ArrowUp',
-  'ArrowDown',
-  'ArrowLeft',
-  'ArrowRight',
-  'PageUp',
-  'PageDown',
-  'Home',
-  'End',
-  ' ',
-]);
+const SCROLL_KEYS = /^(?:Arrow(?:Up|Down|Left|Right)|Page(?:Up|Down)|Home|End| )$/;
+
+/** Typing in a field scrolls to its caret: that is the field's scrolling, not the reader's. */
+function isEditable(target: EventTarget | null): boolean {
+  return (
+    target instanceof HTMLElement &&
+    (target.isContentEditable || target.matches('input, textarea, select'))
+  );
+}
 
 /**
  * Sets `data-user-scrolling` on `scrollbar` while the reader scrolls `viewport` along its axis: by the
@@ -146,7 +144,8 @@ function watchUserScrolling(
     intentUntil = performance.now() + WHEEL_INTENT;
   };
   const onKeyDown = (event: KeyboardEvent) => {
-    if (SCROLL_KEYS.has(event.key)) intentUntil = performance.now() + KEY_INTENT;
+    if (event.defaultPrevented || isEditable(event.target) || !SCROLL_KEYS.test(event.key)) return;
+    intentUntil = performance.now() + KEY_INTENT;
   };
   const onTouchStart = () => {
     touching = true;
