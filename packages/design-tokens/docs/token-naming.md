@@ -89,7 +89,7 @@ Omitted primitive categories have no `type`; continue with the next applicable p
 
 ## Border color roles
 
-`semantic.color.border.primary` provides clear boundaries and dividers. `border.secondary` is decorative: never use it as the only cue identifying a control. Status variants `information`, `warning`, `negative`, and `positive` describe meaning, not emphasis.
+`semantic.color.border.primary` provides clear boundaries and dividers. `border.secondary` is decorative: never use it as the only cue identifying a control. `border.popup` is the edge of a popup on the canvas color, such as a modal: the canvas color where dimming the page behind sets the popup apart, a visible line where it does not. Status variants `information`, `warning`, `negative`, and `positive` describe meaning, not emphasis.
 
 ## Focus ring color roles
 
