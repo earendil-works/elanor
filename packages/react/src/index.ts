@@ -1,4 +1,5 @@
 export * as Checkbox from './checkbox/index.ts';
+export * as Chip from './chip/index.ts';
 export * as Collapsible from './collapsible/index.ts';
 export * as ContextMenu from './context-menu/index.ts';
 export * as Drawer from './drawer/index.ts';
@@ -118,6 +119,15 @@ export type {
   CheckboxRootProps,
   CheckboxRootState,
 } from './checkbox/checkbox.tsx';
+
+export type {
+  ChipDensity,
+  ChipIconProps,
+  ChipLabelProps,
+  ChipRemoveProps,
+  ChipRootProps,
+  ChipVariant,
+} from './chip/chip.tsx';
 
 export {CodeSnippet} from './code-snippet/code-snippet.tsx';
 export type {CodeSnippetProps} from './code-snippet/code-snippet.tsx';
