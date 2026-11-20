@@ -1,0 +1,68 @@
+---
+category: content
+---
+
+# Chip
+
+A small rounded label for one item, such as a file, a quotation, or a filter, with an optional button to remove it. For an action, use a [Button](/components/button/).
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Chip} from '@earendil-works/elanor-react';
+
+<Chip.Root>
+  <Chip.Icon />
+  <Chip.Label />
+  <Chip.Remove />
+</Chip.Root>;
+```
+
+- **Root** renders a `<span>`; use `render` for an `<li>`. It stays on one line and is at most as wide as its container.
+- **Icon** holds a decorative icon before the label.
+- **Label** shortens its text with an ellipsis. A chip can have more than one; a label before another keeps its width, up to half the chip.
+- **Remove** is a button at the chip's end. Name it with `aria-label` after what it removes, such as "Remove design.pdf", and remove the item in `onClick`.
+
+## Variant
+
+`outline`, the default, is a bordered box. `soft` is a filled pill.
+
+<Demo example="./examples/variant.tsx" />
+
+## Density
+
+`compact` removes block padding and uses a smaller icon and Remove, so a chip fits a line of text.
+
+<Demo example="./examples/density.tsx" />
+
+## Icon
+
+An icon says what kind of item the chip is. It is hidden from screen readers; the label names the item.
+
+<Demo example="./examples/icon.tsx" />
+
+## Removable
+
+After a removal, move the focus to the next chip, or to a nearby control when none is left.
+
+<Demo example="./examples/removable.tsx" />
+
+## Quote
+
+Render the label as a `<q>` for a quotation, with the quote icon, so it reads as a quotation rather than a file. The quotation marks stay when the text is shortened. Screen readers read the whole label, so pass a short excerpt. Add a label before it to say what it is, such as "Quoted response:"; a label before another keeps its width, up to half the chip.
+
+<Demo example="./examples/quote.tsx" />
+
+## In text
+
+A chip flows in text like a word; it stays on one line and wraps as a whole. In running text, use `density="compact"`.
+
+<Demo example="./examples/in-text.tsx" />
+
+## In a list
+
+For a set of chips, such as attached files, render each as an `<li>` in a list, and name the list.
+
+<Demo example="./examples/list.tsx" />

@@ -1,0 +1,159 @@
+@layer elanor.components {
+  /* stylelint-disable design-tokens/no-non-token-custom-properties -- The edge width and the remove button's size, set per density. */
+
+  /*
+   * No fixed height, so chips grow with larger type: block padding sets it, or the remove button
+   * where there is one. The `outline` edge is an inset shadow, so it adds no height.
+   */
+  .root {
+    --chip-edge: var(--semantic-dimension-border-width-default);
+    --chip-remove-size: var(--semantic-dimension-size-small);
+
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--semantic-dimension-space-control-gap-small);
+    min-inline-size: 0;
+    max-inline-size: 100%;
+    margin: 0;
+    padding: 0;
+    padding-inline-start: var(--semantic-dimension-space-control-padding-inline-small);
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-ui-secondary);
+    /* `baseline` would align the leading icon's bottom edge, not the text. */
+    vertical-align: middle;
+    white-space: nowrap;
+  }
+
+  /* Compact fits a line of text: a thinner edge, a 12px icon and a 16px remove button. */
+  .root[data-density='compact'] {
+    --chip-edge: var(--semantic-dimension-border-width-small);
+    --chip-remove-size: var(--semantic-dimension-size-x-small);
+  }
+
+  .root[data-variant='outline'] {
+    border-radius: var(--semantic-dimension-radius-small);
+    background: var(--semantic-color-background-canvas);
+    box-shadow: inset 0 0 0 var(--chip-edge) var(--semantic-color-border-secondary);
+  }
+
+  .root[data-variant='soft'] {
+    border-radius: var(--semantic-dimension-radius-full);
+    background: var(--semantic-color-background-fill-secondary);
+  }
+
+  /* An icon's glyph sits inside its box, so a leading icon needs less padding than text. */
+  .root:has(> .icon:first-child) {
+    padding-inline-start: var(--semantic-dimension-space-control-padding-inline-x-small);
+  }
+
+  .root:not(:has(> .remove)) {
+    padding-inline-end: var(--semantic-dimension-space-control-padding-inline-small);
+  }
+
+  .root[data-density='default']:not(:has(> .remove)) {
+    padding-block: var(--semantic-dimension-space-control-padding-block-small);
+  }
+
+  .icon {
+    display: inline-flex;
+    flex: none;
+    inline-size: var(--semantic-dimension-size-x-small);
+    block-size: var(--semantic-dimension-size-x-small);
+    color: var(--semantic-color-icon-secondary);
+  }
+
+  .icon > svg,
+  .icon > img {
+    inline-size: 100%;
+    block-size: 100%;
+  }
+
+  .root[data-density='compact'] > .icon,
+  .root[data-density='compact'] > .remove > svg {
+    inline-size: var(--semantic-dimension-size-icon-small);
+    block-size: var(--semantic-dimension-size-icon-small);
+  }
+
+  /* Flex, so a `q`'s quotation marks are flex items and the ellipsis falls inside them. */
+  .label {
+    display: flex;
+    min-inline-size: 0;
+  }
+
+  /* A label before another keeps its width, up to half the chip. */
+  .label:has(~ .label) {
+    flex-shrink: 0;
+    max-inline-size: 50%;
+  }
+
+  /* Room for a last glyph that overhangs its advance (a serif "f"), without moving the layout. */
+  .text {
+    min-inline-size: 0;
+    margin-inline-end: calc(-1 * var(--semantic-dimension-space-padding-xx-small));
+    padding-inline-end: var(--semantic-dimension-space-padding-xx-small);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  /*
+   * The remove button sits flush at the chip's end, as tall as the chip, and its fill is concentric
+   * with that end: the whole end cap in `soft`, inside the edge in `outline`.
+   */
+  .root > .remove {
+    inline-size: var(--chip-remove-size);
+    block-size: var(--chip-remove-size);
+  }
+
+  .root > .remove::before {
+    inline-size: auto;
+    block-size: auto;
+    inset: 0;
+  }
+
+  .root[data-variant='soft'] > .remove,
+  .root[data-variant='soft'] > .remove::before {
+    border-radius: var(--semantic-dimension-radius-full);
+  }
+
+  /*
+   * The chip's radius minus the edge: concentric corners. The `calc` passes
+   * token-property-compatibility only because `--chip-edge` stands in for the border token.
+   */
+  .root[data-variant='outline'] > .remove::before {
+    inset: var(--chip-edge);
+    border-radius: calc(var(--semantic-dimension-radius-small) - var(--chip-edge));
+  }
+
+  /* IconButton's ghost fills don't show on the pill; use its own fill steps. */
+  @media (hover: hover) {
+    .root[data-variant='soft'] > .remove:hover:not([data-disabled])::before {
+      background: var(--semantic-color-background-fill-secondary-hover);
+      box-shadow: none;
+    }
+  }
+
+  .root[data-variant='soft'] > .remove:active:not([data-disabled])::before {
+    background: var(--semantic-color-background-fill-secondary-active);
+    box-shadow: none;
+  }
+
+  /* A 48px hit area on coarse pointers; the chip and the fill keep their size. */
+  @media (pointer: coarse) {
+    .root > .remove::after {
+      position: absolute;
+      inset: calc(50% - var(--semantic-dimension-size-x-large) / 2);
+      content: '';
+    }
+  }
+
+  /* Forced colours drop shadows: an outline draws the edge without changing the size. */
+  @media (forced-colors: active) {
+    .root {
+      outline: var(--chip-edge) solid CanvasText;
+      outline-offset: calc(-1 * var(--chip-edge));
+    }
+  }
+
+  /* stylelint-enable design-tokens/no-non-token-custom-properties */
+}

@@ -124,8 +124,14 @@
           "$description": "Use as the block size of the top navigation bar, including its bottom border and excluding any safe-area inset. Derive sticky offsets and scroll padding below the bar from it rather than repeating the value."
         },
         "icon": {
-          "$value": "{primitive.dimension.500}",
-          "$description": "Use for the box of an icon in a control or row, including Material's margin around the glyph. Checkbox, radio, and switch indicators and brand logos keep their own sizes."
+          "$root": {
+            "$value": "{primitive.dimension.500}",
+            "$description": "Use for the box of an icon in a control or row, including Material's margin around the glyph. Checkbox, radio, and switch indicators and brand logos keep their own sizes."
+          },
+          "small": {
+            "$value": "{primitive.dimension.300}",
+            "$description": "Use for an icon set in a line of secondary text."
+          }
         },
         "xxxSmall": {
           "$value": "{primitive.dimension.100}",
