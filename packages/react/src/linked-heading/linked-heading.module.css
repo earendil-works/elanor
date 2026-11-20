@@ -25,9 +25,9 @@
   }
 
   /* The button shows on hover, on keyboard focus, after a tap or click on the heading (which
-     takes focus), and while it reports a copy, on every device. Hidden, it ignores the pointer,
-     so a tap at the end of the heading reaches the heading. */
-  .root:not(:hover, :focus-within) > .button:not([data-copy-state='copied']) {
+     takes focus), and while it reports a copy or a failure, on every device. Hidden, it ignores the
+     pointer, so a tap at the end of the heading reaches the heading. */
+  .root:not(:hover, :focus-within) > .button[data-copy-state='idle'] {
     opacity: var(--semantic-number-opacity-hidden);
     pointer-events: none;
   }

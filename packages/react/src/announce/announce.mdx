@@ -1,0 +1,31 @@
+---
+category: feedback
+---
+
+# Announce
+
+Reads a short message to screen readers, such as "Draft saved." or "3 results", without moving focus. Use it for results shown only by a change of icon or color, or not at all, and for text that changes in place, such as a result count. Text that appears with the focus, such as a dialog's content, needs no announcing.
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {announce} from '@earendil-works/elanor-react';
+
+<Button onClick={(event) => announce('Draft saved.', event.currentTarget)}>Save draft</Button>;
+```
+
+```ts
+announce(message: string, from: Element, priority?: 'polite' | 'assertive'): void
+```
+
+`from` is the element the message is about, such as the pressed button, or `document.body`. Call it from event handlers or effects, not during render. The message is read about 200ms later; a newer call replaces one still waiting, so a count that changes on each keystroke is read once. In tests, advance timers. The text clears after five seconds.
+
+## Priority
+
+Messages are `polite` by default and wait for the current speech to finish. Use `'assertive'` only for urgent problems; it interrupts the current speech.
+
+## Modal dialogs
+
+An open modal dialog hides the rest of the page from screen readers. When `from` is inside an open native modal `<dialog>`, such as a static [Modal](/components/modal/), the message is read from inside that dialog. Elanor's React Modal keeps messages outside it audible. Modals that make the rest of the page `inert` may silence them.

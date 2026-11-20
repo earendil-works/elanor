@@ -4,7 +4,7 @@ category: actions
 
 # Copy button
 
-An icon button that copies a value to the clipboard and confirms the result. Use it next to IDs, keys, and commands.
+A button that copies a value to the clipboard and confirms the result. Use it next to IDs, keys, and commands.
 
 <Demo example="./examples/demo.tsx" />
 
@@ -16,9 +16,30 @@ import {CopyButton} from '@earendil-works/elanor-react';
 <CopyButton value="workspace-2048" aria-label="Copy workspace ID" />;
 ```
 
-Name the button after what it copies. On success, the icon changes to a check for two seconds; screen readers hear `copiedLabel`, or `errorLabel` if copying fails. Clipboard access requires HTTPS or localhost.
+Name the button after what it copies. On success, the icon changes to a check for two seconds; if copying fails, it changes to a red error icon until the next press. Screen readers hear `copiedLabel` or `errorLabel`. Clipboard access requires HTTPS or localhost.
+
+The icon-only button shows its name as a native `title`, which works on static pages too. For a styled hint in React, wrap it in a [Tooltip](/components/tooltip/) and pass `title=""`:
+
+```tsx
+<Tooltip.Root>
+  <Tooltip.Trigger
+    render={<CopyButton value="workspace-2048" aria-label="Copy workspace ID" title="" />}
+  />
+  <Tooltip.Portal>
+    <Tooltip.Positioner>
+      <Tooltip.Popup>Copy workspace ID</Tooltip.Popup>
+    </Tooltip.Positioner>
+  </Tooltip.Portal>
+</Tooltip.Root>
+```
 
 For code, pass a Copy button to [Code snippet](/components/code-snippet/)'s `actions`.
+
+## With text
+
+Pass text as children when an icon alone isn't clear. The button becomes a tertiary [Button](/components/button/) with the icon first. The text names it; to say what it copies, add an `aria-label` that starts with the text, such as "Copy install command". The text doesn't change after a copy, so the width stays.
+
+<Demo example="./examples/with-text.tsx" />
 
 ## Value from the browser
 
@@ -42,4 +63,4 @@ import {createCopyButton, enhance} from '@earendil-works/elanor-react';
 enhance({'copy-button': createCopyButton});
 ```
 
-It copies, confirms, and announces like the React component. A function `value` only runs with React, so on static pages pass a string. The server-rendered button repeats the value in an attribute; once React hydrates it, the attributes go away and the behavior stands down, so pages with both static buttons and hydrated ones can call `enhance` on the whole document.
+It copies, confirms, and announces like the React component, through [announce](/components/announce/). A function `value` only runs with React, so on static pages pass a string. The server-rendered button repeats the value in an attribute; once React hydrates it, the attributes go away and the behavior stands down, so pages with both static buttons and hydrated ones can call `enhance` on the whole document.

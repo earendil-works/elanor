@@ -234,6 +234,8 @@ export type {
   SearchDialogStaticSource,
 } from './search-dialog/search-dialog.behavior.ts';
 
+export {announce} from './announce/announce.ts';
+export type {AnnouncePriority} from './announce/announce.ts';
 export {enhance} from './utils/enhance.ts';
 export type {Behavior, BehaviorFactory} from './utils/enhance.ts';
 

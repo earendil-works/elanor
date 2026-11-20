@@ -10,7 +10,7 @@ import {
 } from '@earendil-works/elanor-react';
 
 import {LinkCard} from './link-card.tsx';
-import {CopyStatus, StaticCopyButton} from './static-copy-button.tsx';
+import {StaticCopyButton} from './static-copy-button.tsx';
 
 import styles from './tokens-overview.module.css';
 
@@ -62,7 +62,6 @@ export function TokensOverview({areas, usageLines}: TokensOverviewProps): React.
         >
           <HighlightedCode lines={usageLines} />
         </CodeSnippet>
-        <CopyStatus />
         <Text>
           Colors follow the system’s light or dark setting. To fix one, set{' '}
           <InlineCode>data-color-scheme</InlineCode> to <InlineCode>light</InlineCode> or{' '}
