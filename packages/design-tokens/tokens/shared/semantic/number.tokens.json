@@ -42,13 +42,6 @@
           "$description": "Component token for the size the navigation menu popup grows from as it opens."
         }
       },
-      "fontScale": {
-        "$description": "Font size factors for text set inside other text, relative to the size of the surrounding text.",
-        "inlineCode": {
-          "$value": "{primitive.number.fontScale.9375}",
-          "$description": "Component token for inline code, relative to the surrounding text, so code in a heading grows with it. Evens out the code typeface looking larger than the text typeface at the same size."
-        }
-      },
       "layer": {
         "$description": "Choose a stacking level by the relationship it expresses. Popups that use Base UI portals, native popovers, or `<dialog>` are layered automatically; do not give them a layer.",
         "background": {
