@@ -1,15 +1,15 @@
+import {announce} from '../announce/announce.ts';
 import type {Behavior} from '../utils/enhance.ts';
 
 type CopyState = 'idle' | 'copied' | 'error';
 
 /**
  * Makes a server-rendered `CopyButton` copy without React: its `data-elanor-copy-value`, or the
- * absolute URL of its `data-elanor-copy-link`. Once React hydrates the button, it drops both and
- * this behavior stands down.
+ * absolute URL of its `data-elanor-copy-link`. It sets `data-copy-state`, announces
+ * `data-elanor-copied-label` or `data-elanor-error-label`, and shows that label in an existing
+ * `title`. Once React hydrates the button, the `data-elanor-*` attributes go and it stands down.
  */
 export function createCopyButton(button: HTMLElement): Behavior {
-  const status =
-    button.nextElementSibling?.getAttribute('role') === 'status' ? button.nextElementSibling : null;
   const title = button.getAttribute('title');
   let resetTimer: ReturnType<typeof setTimeout> | undefined;
 
@@ -22,10 +22,9 @@ export function createCopyButton(button: HTMLElement): Behavior {
           ? (button.dataset.elanorErrorLabel ?? '')
           : '';
     button.dataset.copyState = state;
-    if (feedback) button.setAttribute('title', feedback);
-    else if (title === null) button.removeAttribute('title');
-    else button.setAttribute('title', title);
-    if (status) status.textContent = feedback;
+    if (title) button.setAttribute('title', feedback || title);
+    if (feedback) announce(feedback, button);
+    // Errors stay until the next press, so they aren't missed.
     if (state === 'copied') {
       // Minified CSS may write the token in seconds.
       const token = getComputedStyle(button).getPropertyValue('--semantic-duration-confirmation');

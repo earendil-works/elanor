@@ -12,7 +12,7 @@ import type {
 import {tokenAreaHref} from '../lib/token-pages.ts';
 import {CodeText} from './code-text.tsx';
 import {FilterEmptyState} from './filter-empty-state.tsx';
-import {CopyStatus, StaticCopyButton} from './static-copy-button.tsx';
+import {StaticCopyButton} from './static-copy-button.tsx';
 
 import styles from './token-area.module.css';
 
@@ -551,7 +551,6 @@ export function TokenArea({page}: {readonly page: TokenAreaPage}): React.JSX.Ele
         </Button>
       </div>
       <p role="status" className="visually-hidden" data-filter-status />
-      <CopyStatus />
       {only ? (
         <div className={styles.groups}>
           {only.groups.map((group) => (

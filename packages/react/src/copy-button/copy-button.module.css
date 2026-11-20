@@ -1,17 +1,20 @@
 @layer elanor.components {
-  .button:not([data-copy-state='copied']) > .copiedIcon,
-  .button[data-copy-state='copied'] > :has(~ .copiedIcon) {
+  /* Not child selectors: with text, the icons sit inside Button's icon span. */
+  .button:not([data-copy-state='copied']) .copiedIcon,
+  .button:not([data-copy-state='error']) .errorIcon,
+  .button:is([data-copy-state='copied'], [data-copy-state='error']) :has(~ .copiedIcon) {
     display: none;
   }
 
-  .status {
-    position: absolute;
-    /* stylelint-disable design-tokens/no-hardcoded-token-values -- A fixed 1px box keeps the live region accessible without affecting layout. */
-    inline-size: 1px;
-    block-size: 1px;
-    /* stylelint-enable design-tokens/no-hardcoded-token-values */
-    overflow: hidden;
-    clip-path: inset(50%);
-    white-space: nowrap;
+  /* On a primary fill the icon keeps its on-fill color for contrast; its shape shows the state. */
+  .button[data-copy-state='error']:not([data-hierarchy='primary']) .errorIcon {
+    color: var(--semantic-color-icon-negative);
+  }
+
+  /* Forced colors keep an SVG's own color; reset it, the shape shows the state. */
+  @media (forced-colors: active) {
+    .button[data-copy-state='error']:not([data-hierarchy='primary']) .errorIcon {
+      color: inherit;
+    }
   }
 }

@@ -35,27 +35,24 @@ export function DocsPageHeader({
           ) : null}
           {/* `scripts/copy-page.ts` copies the Markdown and shows the result. */}
           {markdown ? (
-            <>
-              <Button
-                hierarchy="tertiary"
-                iconStart={
-                  <>
-                    <ContentCopyIcon />
-                    <CheckIcon />
-                  </>
-                }
-                title="Copy this page as Markdown"
-                className="docs-copy-page"
-                data-elanor="copy-page"
-                data-copy-state="idle"
-                data-docs-copy-page={markdown}
-                data-docs-copied-label="Page copied as Markdown."
-                data-docs-error-label="Could not copy the page. Try again."
-              >
-                Copy page
-              </Button>
-              <span role="status" className="visually-hidden" />
-            </>
+            <Button
+              hierarchy="tertiary"
+              iconStart={
+                <>
+                  <ContentCopyIcon />
+                  <CheckIcon />
+                </>
+              }
+              title="Copy this page as Markdown"
+              className="docs-copy-page"
+              data-elanor="copy-page"
+              data-copy-state="idle"
+              data-docs-copy-page={markdown}
+              data-docs-copied-label="Page copied as Markdown."
+              data-docs-error-label="Could not copy the page. Try again."
+            >
+              Copy page
+            </Button>
           ) : null}
         </div>
       ) : null}

@@ -60,7 +60,7 @@ for (const name of ['elanor-icons-react', 'elanor-icons-boiled-react']) {
 const behaviors = await build({
   stdin: {
     contents: `export {
-      enhance, createCopyButton, createLinkedHeading, createCollapsible,
+      announce, enhance, createCopyButton, createLinkedHeading, createCollapsible,
       createScrollArea, createPopover, createModal, createSideNavigation,
       createTableOfContents, createTableOfContentsMenu, createSearchDialog,
       createTopNavigationMenu,
@@ -85,6 +85,29 @@ for (const output of Object.values(behaviors.metafile.outputs)) {
     }
   }
 }
+
+const announcer = await build({
+  stdin: {
+    contents: `export {announce} from '@earendil-works/elanor-react';`,
+    resolveDir: process.cwd(),
+  },
+  bundle: true,
+  write: false,
+  format: 'esm',
+  platform: 'browser',
+  minify: true,
+  metafile: true,
+});
+const announcerInputs = Object.values(announcer.metafile.outputs).flatMap(({inputs}) =>
+  Object.entries(inputs)
+    .filter(([path, {bytesInOutput}]) => bytesInOutput > 0 && path !== '<stdin>')
+    .map(([path]) => path),
+);
+assert.deepEqual(
+  announcerInputs.map((path) => path.replace(/^.*\/elanor-react\/dist\//, '')),
+  ['announce/announce.js'],
+  'announce must bundle alone',
+);
 
 console.log(
   'Packed consumer passed: types, React-free behaviors, production JS/CSS/fonts, and both icon variants.',

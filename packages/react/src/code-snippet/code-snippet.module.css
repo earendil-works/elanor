@@ -45,10 +45,11 @@
     }
   }
 
-  /* With a mouse, actions show on hover, on keyboard focus, and while a copy button reports a copy;
-     touch screens always show them. */
+  /* With a mouse, actions show on hover, on keyboard focus, and while a copy button reports a copy
+     or a failure; touch screens always show them. */
   @media (hover: hover) {
-    .root:not(:hover, :focus-within) .actions:not(:has([data-copy-state='copied'])) {
+    .root:not(:hover, :focus-within)
+      .actions:not(:has([data-copy-state]:not([data-copy-state='idle']))) {
       opacity: var(--semantic-number-opacity-hidden);
     }
   }

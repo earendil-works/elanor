@@ -11,7 +11,7 @@ import {
 import {Fragment, type ReactElement, type ReactNode} from 'react';
 
 import type {FontFamily, FontsPage} from '../lib/fonts.ts';
-import {CopyStatus, StaticCopyButton} from './static-copy-button.tsx';
+import {StaticCopyButton} from './static-copy-button.tsx';
 
 import styles from './fonts-overview.module.css';
 
@@ -160,7 +160,6 @@ export function FontsOverview({page, usageLines}: FontsOverviewProps): React.JSX
         >
           <HighlightedCode lines={usageLines} />
         </CodeSnippet>
-        <CopyStatus />
         <Text>
           Lefos: import <InlineCode>departure-mono.css</InlineCode> instead of{' '}
           <InlineCode>commit-mono.css</InlineCode>.

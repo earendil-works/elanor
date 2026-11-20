@@ -1,9 +1,9 @@
 // Copies a docs page's Markdown: the "Copy page" button names it in `data-docs-copy-page`. The
 // clipboard gets a `ClipboardItem` holding the fetch's promise, which Safari accepts after the
 // click. Like Elanor's copy button, the button's `data-copy-state` becomes `copied` (back to `idle`
-// after `semantic.duration.confirmation`) or `error`, and the status element after it announces
-// `data-docs-copied-label` or `data-docs-error-label`.
-import type {Behavior} from '@earendil-works/elanor-react';
+// after `semantic.duration.confirmation`) or `error`, and it announces `data-docs-copied-label` or
+// `data-docs-error-label`.
+import {announce, type Behavior} from '@earendil-works/elanor-react';
 
 async function fetchMarkdown(url: string): Promise<Blob> {
   const response = await fetch(url);
@@ -12,8 +12,6 @@ async function fetchMarkdown(url: string): Promise<Blob> {
 }
 
 export function createCopyPage(button: HTMLElement): Behavior {
-  const status =
-    button.nextElementSibling?.getAttribute('role') === 'status' ? button.nextElementSibling : null;
   let resetTimer: ReturnType<typeof setTimeout> | undefined;
 
   function setState(state: 'idle' | 'copied' | 'error'): void {
@@ -25,7 +23,7 @@ export function createCopyPage(button: HTMLElement): Behavior {
         : state === 'error'
           ? button.dataset.docsErrorLabel
           : '';
-    if (status) status.textContent = label ?? '';
+    if (label) announce(label, button);
     if (state === 'copied') {
       // Minified CSS may write the token in seconds.
       const token = getComputedStyle(button).getPropertyValue('--semantic-duration-confirmation');
