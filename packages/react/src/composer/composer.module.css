@@ -1,0 +1,285 @@
+/* stylelint-disable design-tokens/no-non-token-custom-properties -- The field's geometry, derived
+   once from tokens and shared by the panel's alignment, the field, its buttons and the footer. */
+@layer elanor.components {
+  /*
+   * `--composer-border` is the field's thin border and `--composer-radius` its corners', a message
+   * bubble's. `--composer-padding` is the field's padding, where its buttons sit; with the border,
+   * a fixed size. `--composer-button-padding` is the padding around the icon of an IconButton with
+   * `density="default"`. `--composer-indent` indents the text to the icons' drawing, a quarter of
+   * an icon inside its box, so text and icons share an edge to the eye.
+   */
+  .panel,
+  .field {
+    --composer-border: var(--semantic-dimension-border-width-small);
+    --composer-radius: var(--semantic-dimension-radius-large);
+    --composer-padding: calc(
+      var(--semantic-dimension-space-padding-small) - var(--composer-border)
+    );
+    --composer-button-padding: var(--semantic-dimension-space-control-padding-block-small);
+    --composer-indent: calc(
+      var(--composer-button-padding) + 0.25 * var(--semantic-dimension-size-icon)
+    );
+  }
+
+  /* On touch screens the buttons' fills are a step larger, and the text's indent follows. */
+  @media (pointer: coarse) {
+    .panel,
+    .field {
+      --composer-button-padding: calc(
+        (var(--semantic-dimension-size-medium) - var(--semantic-dimension-size-icon)) / 2
+      );
+    }
+  }
+
+  .panel {
+    display: flex;
+    flex-direction: column;
+    gap: calc(
+      var(--semantic-dimension-space-gap-small) + var(--semantic-dimension-space-gap-x-small)
+    );
+    min-inline-size: 0;
+    /* The footer follows the composer's width, not the window's. */
+    container-type: inline-size;
+  }
+
+  .panel[data-align='text'] {
+    margin-inline: calc(
+      -1 * (var(--composer-padding) + var(--composer-border) + var(--composer-indent))
+    );
+  }
+
+  /* A held finger is a press, not a selection of the buttons' and figures' words with the
+     system's menu; the text keeps its caret, selection and paste. */
+  @media (pointer: coarse) {
+    .panel {
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .panel :where(textarea, input, [contenteditable]:not([contenteditable='false'])) {
+      -webkit-touch-callout: default;
+      -webkit-user-select: text;
+      user-select: text;
+    }
+  }
+
+  /* An empty container takes no room, so it adds no gap. */
+  .header:empty,
+  .controls:empty,
+  .controlGroup:empty,
+  .footer:empty,
+  .status:empty {
+    display: none;
+  }
+
+  .header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-gap-small);
+    min-inline-size: 0;
+  }
+
+  /*
+   * No focus ring: the caret shows the focus. The border is one shade off the fill in every state
+   * and scheme; the border colours are made for the canvas.
+   */
+  .field {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-control-gap-small);
+    min-inline-size: 0;
+    padding: var(--composer-padding);
+    border: var(--composer-border) solid var(--semantic-color-background-fill-secondary-hover);
+    border-radius: var(--composer-radius);
+    background: var(--semantic-color-background-fill-secondary);
+    color: var(--semantic-color-text-primary);
+    transition:
+      border-color var(--semantic-transition-feedback),
+      background-color var(--semantic-transition-feedback);
+  }
+
+  /* Hovered, in use and pressed look the same, so the field doesn't change under a resting
+     pointer, and answers a finger before the tap has focused the text. */
+  @media (hover: hover) {
+    .field:hover:not([data-disabled]) {
+      border-color: var(--semantic-color-background-fill-secondary-active);
+      background: var(--semantic-color-background-fill-secondary-hover);
+    }
+  }
+
+  .field:is(:focus-within, :active, [data-pressed]):not([data-disabled]) {
+    border-color: var(--semantic-color-background-fill-secondary-active);
+    background: var(--semantic-color-background-fill-secondary-hover);
+  }
+
+  .field[data-disabled] {
+    cursor: not-allowed;
+    opacity: var(--semantic-number-opacity-disabled);
+  }
+
+  /* A radius inside another is the outer one less the space between them, so the curves of a
+     corner button and of the field's corner run alongside each other. A negative result is
+     clamped to none. */
+  .field [data-icon-button][data-density='default']::before {
+    border-radius: calc(var(--composer-radius) - var(--composer-border) - var(--composer-padding));
+  }
+
+  /*
+   * Touch targets are larger than the fills. Laid out as their fills, the buttons stand as close
+   * to the text as with a mouse, and their targets hang over the field's padding and their
+   * neighbours. Above, the overhang stays within the gap and the text's block padding, clear of
+   * its last line. Where two overlap, the later button takes the press.
+   */
+  @media (pointer: coarse) {
+    .field [data-icon-button][data-density='default'] {
+      margin: calc(
+        (var(--semantic-dimension-size-medium) - var(--semantic-dimension-size-x-large)) / 2
+      );
+    }
+  }
+
+  .controls,
+  .controlGroup {
+    display: flex;
+    align-items: center;
+    gap: var(--semantic-dimension-space-control-gap-small);
+    min-inline-size: 0;
+  }
+
+  /* As wide as their content, also controls that fill their container elsewhere. Without
+     specificity, so a child's own flex rules win. */
+  :where(.controls > *, .controlGroup > *, .footer > *) {
+    flex: 0 1 content;
+  }
+
+  /* By what it holds, not where it stands, so other controls can come and go around it. */
+  .controls
+    > :is(
+      [data-composer-submit],
+      [data-composer-stop],
+      :has([data-composer-submit], [data-composer-stop])
+    ) {
+    margin-inline-start: auto;
+  }
+
+  /*
+   * Secondary to the field: Elanor's controls take their text from the primary UI style, so here
+   * that style is the secondary one. The row hangs out by a small control's padding, so its first
+   * control's text stands a hair inside the frame, clear of the rounded corners.
+   */
+  .footer {
+    --semantic-typography-ui-primary: var(--semantic-typography-ui-secondary);
+
+    display: flex;
+    flex-wrap: wrap;
+    /* Controls and figures differ in size; their texts share a line. */
+    align-items: baseline;
+    gap: var(--semantic-dimension-space-control-gap-medium)
+      var(--semantic-dimension-space-gap-small);
+    min-inline-size: 0;
+    margin-inline: calc(
+      var(--semantic-dimension-space-padding-xx-small) -
+        var(--semantic-dimension-space-control-padding-inline-small)
+    );
+    font: var(--semantic-typography-ui-secondary);
+  }
+
+  .panel[data-align='text'] .footer {
+    margin-inline: 0;
+    padding-inline: calc(
+      var(--composer-padding) + var(--composer-border) + var(--composer-indent) -
+        var(--semantic-dimension-space-control-padding-inline-small)
+    );
+  }
+
+  /*
+   * Quiet figures that hold still as their numbers change, also a meter's value, which takes its
+   * text from the primary UI style. They have no control's padding, so they end a small control's
+   * padding before the row does, where the field's text ends.
+   */
+  .status {
+    --semantic-typography-ui-primary: var(--semantic-typography-ui-tertiary);
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: var(--semantic-dimension-space-gap-x-small) var(--semantic-dimension-space-gap-medium);
+    min-inline-size: 0;
+    margin-inline: auto var(--semantic-dimension-space-control-padding-inline-small);
+    color: var(--semantic-color-text-secondary);
+    font: var(--semantic-typography-ui-tertiary);
+    font-variant-numeric: tabular-nums;
+  }
+
+  /* The row lines up texts: a meter's value sits on their baseline, its track centred on the line. */
+  .status [role='meter'] {
+    display: inline-flex;
+    align-items: baseline;
+    gap: var(--semantic-dimension-space-control-gap-large);
+  }
+
+  .status [data-meter-track] {
+    flex: none;
+    align-self: center;
+    inline-size: var(--semantic-dimension-size-x-large);
+    block-size: var(--semantic-dimension-size-xxx-small);
+  }
+
+  /* Neutral like the figures beside it; a warning or negative meter keeps its colour. */
+  .status [role='meter'][data-semantic='neutral'] [data-meter-indicator] {
+    background: var(--semantic-color-background-fill-primary-neutral);
+  }
+
+  /* A figure may be a tooltip's trigger, reached with the keyboard. */
+  .statusItem:focus-visible,
+  .status [role='meter']:focus-visible {
+    border-radius: var(--semantic-dimension-radius-small);
+    outline: var(--semantic-dimension-border-width-focus-ring) solid
+      var(--semantic-color-focus-ring);
+    outline-offset: var(--semantic-dimension-border-width-medium);
+  }
+
+  /*
+   * In a narrow composer the footer stays on one line, its children closer together. The figures
+   * can't be read when cut, so they keep their room with smaller gaps and a shorter track; the
+   * other children shrink. Text children are cut with an ellipsis; without specificity, so
+   * controls keep their own overflow.
+   */
+  @container (inline-size <= 34rem) {
+    .footer {
+      flex-wrap: nowrap;
+      column-gap: var(--semantic-dimension-space-control-gap-small);
+    }
+
+    :where(.footer > *) {
+      min-inline-size: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .status {
+      flex: none;
+      overflow: visible;
+      gap: var(--semantic-dimension-space-gap-small);
+    }
+
+    .status [data-meter-track] {
+      inline-size: var(--semantic-dimension-size-medium);
+    }
+  }
+
+  @media (forced-colors: active) {
+    .field {
+      border-color: ButtonBorder;
+    }
+
+    /* As specific as the neutral rule above, so every meter here keeps Meter's system colour. */
+    .status [role='meter'][data-semantic] [data-meter-indicator] {
+      background: Highlight;
+    }
+  }
+}
+/* stylelint-enable design-tokens/no-non-token-custom-properties */
