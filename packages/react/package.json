@@ -15,7 +15,8 @@
   "type": "module",
   "files": [
     "dist",
-    "README.md"
+    "README.md",
+    "THIRD-PARTY-NOTICES"
   ],
   "browserslist": [
     "Chrome >= 111",
@@ -65,8 +66,8 @@
     "@earendil-works/elanor-icons-react": "workspace:*"
   },
   "peerDependencies": {
-    "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
   },
   "devDependencies": {
     "@earendil-works/design-tokens": "workspace:*",
