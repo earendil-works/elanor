@@ -22,7 +22,7 @@ export const packages = [
     'packages/stylelint-plugin-design-tokens',
     ['LICENSE'],
   ],
-  ['@earendil-works/elanor-react', 'packages/react', ['LICENSE']],
+  ['@earendil-works/elanor-react', 'packages/react', ['LICENSE', 'THIRD-PARTY-NOTICES']],
 ];
 
 // Keep in sync with Elanor's entry in earendil-works/pkg (src/config.ts).

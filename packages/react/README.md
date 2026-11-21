@@ -8,7 +8,7 @@ React components built with Base UI and CSS Modules.
 npm install @earendil-works/elanor-react @earendil-works/elanor-fonts @earendil-works/design-tokens react react-dom
 ```
 
-Requires React 19. Styles are precompiled; consumers do not need CSS Modules support.
+Requires React 19.2 or later. Styles are precompiled; consumers do not need CSS Modules support.
 
 ## Usage
 

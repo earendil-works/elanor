@@ -16,7 +16,20 @@
   ],
   "rules": {
     "eslint/no-debugger": "error",
-    "import/no-self-import": "error"
+    "import/no-self-import": "error",
+    // Only packages/react/src/utils/base-ui-internals.ts may import them; that package's config
+    // exempts it.
+    "eslint/no-restricted-imports": [
+      "error",
+      {
+        "patterns": [
+          {
+            "regex": "^@base-ui/react/internals/",
+            "message": "Import Base UI internals only through src/utils/base-ui-internals.ts, where each is documented."
+          }
+        ]
+      }
+    ]
   },
   "overrides": [
     {
