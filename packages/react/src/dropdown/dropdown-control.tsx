@@ -15,6 +15,7 @@ import {
   type RefObject,
 } from 'react';
 
+import {createChangeEventDetails} from '../utils/change-event-details.ts';
 import {classes, mergeClassName} from '../utils/class-names.ts';
 import {DisabledContext} from '../utils/disabled-context.ts';
 
@@ -99,7 +100,11 @@ export function useClearableValue<
   }
 
   function clearNow(event: MouseEvent<HTMLElement>) {
-    const details = createClearPressDetails(event.nativeEvent, event.currentTarget);
+    const details: DropdownClearPressDetails = createChangeEventDetails(
+      'clear-press',
+      event.nativeEvent,
+      event.currentTarget,
+    );
     changeValue(clearValue, details);
     if (!details.isCanceled) triggerRef.current?.focus();
   }
@@ -137,33 +142,6 @@ function isSameSelection<Item>(
 
 function isList<Item>(selection: Selection<Item>): selection is readonly Item[] {
   return Array.isArray(selection);
-}
-
-/**
- * Base UI's own factory is on an internal subpath, outside semver. This builds the same object
- * against the public type, so a shape change fails to type-check instead of breaking at runtime.
- */
-function createClearPressDetails(event: globalThis.MouseEvent, trigger: Element) {
-  let canceled = false;
-  let propagationAllowed = false;
-  const details: DropdownClearPressDetails = {
-    reason: 'clear-press',
-    event,
-    trigger,
-    cancel() {
-      canceled = true;
-    },
-    allowPropagation() {
-      propagationAllowed = true;
-    },
-    get isCanceled() {
-      return canceled;
-    },
-    get isPropagationAllowed() {
-      return propagationAllowed;
-    },
-  };
-  return details;
 }
 
 export interface DropdownControlProps extends HTMLAttributes<HTMLDivElement> {

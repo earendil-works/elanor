@@ -4,6 +4,8 @@
 
 For Base UI changes, consult [the documentation index](https://base-ui.com/llms.txt) and the relevant linked pages. Prefer those contracts over assumptions; check compatibility with the pinned `@base-ui/react` version in `package.json`.
 
+- Import Base UI's undocumented internals (`@base-ui/react/internals/*`) only through `src/utils/base-ui-internals.ts`, and add each one there with what it's for and what fails if it changes. Re-check that file on every Base UI upgrade.
+
 ## Structure
 
 - Give each independent component its own kebab-case directory: `heading/heading.tsx`, `text/text.tsx`.
