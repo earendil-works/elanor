@@ -8,7 +8,7 @@ export type IconButtonDensity = 'compact' | 'default';
 export type IconButtonHierarchy = 'tertiary' | 'primary' | 'secondary';
 
 export interface IconButtonProps extends BaseButton.Props {
-  /** `compact`, the default, fits the fill to the icon; `default` adds Button's control padding. */
+  /** `compact`, the default, fits the fill to the icon; `default` is the medium size, as tall as a default Button. */
   readonly density?: IconButtonDensity;
   /** Visual emphasis. Use one `primary` button per view. */
   readonly hierarchy?: IconButtonHierarchy;
