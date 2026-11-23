@@ -148,13 +148,13 @@
     overflow: hidden;
     border: 0;
     border-radius: var(--semantic-dimension-radius-small);
-    /* stylelint-disable design-tokens/token-property-compatibility -- This inset outline is the panel's canvas stroke, not a focus ring. */
+    /* stylelint-disable design-tokens/token-property-compatibility -- This inset outline is the panel's surface stroke, not a focus ring. */
     outline: var(--semantic-dimension-border-width-default) solid
-      var(--semantic-color-background-canvas);
+      var(--semantic-color-background-surface);
     /* stylelint-enable design-tokens/token-property-compatibility */
     outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
     box-shadow: var(--semantic-shadow-popup);
-    background: var(--semantic-color-background-canvas);
+    background: var(--semantic-color-background-surface);
     color: var(--semantic-color-text-primary);
     font: var(--semantic-typography-ui-primary);
   }
@@ -255,11 +255,11 @@
   }
 
   .item[data-highlighted] {
-    background: var(--semantic-color-background-fill-ghost-neutral-hover);
+    background: var(--semantic-color-background-fill-secondary-hover);
   }
 
   .item[data-selected] {
-    background: var(--semantic-color-background-fill-ghost-neutral-active);
+    background: var(--semantic-color-background-fill-secondary-active);
   }
 
   .item[data-disabled] {
