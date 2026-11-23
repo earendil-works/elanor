@@ -21,7 +21,7 @@
     border: var(--semantic-dimension-border-width-default) solid
       var(--semantic-color-border-secondary);
     border-radius: var(--semantic-dimension-radius-small);
-    background: var(--semantic-color-background-canvas);
+    background: var(--semantic-color-background-surface);
     color: var(--semantic-color-text-primary);
     font: var(--semantic-typography-ui-secondary);
   }
