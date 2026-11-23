@@ -6,7 +6,7 @@ Import the component stylesheet, font faces and one brand stylesheet once at the
 
 ```ts
 import '@earendil-works/elanor-fonts/mallos-serif.css';
-import '@earendil-works/elanor-fonts/commit-mono.css';
+import '@earendil-works/elanor-fonts/mallos-mono.css';
 import '@earendil-works/design-tokens/radius.css';
 import '@earendil-works/elanor-react/elanor.min.css';
 ```

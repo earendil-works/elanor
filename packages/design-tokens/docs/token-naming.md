@@ -69,10 +69,10 @@ The first category selects the type vocabulary:
 | Layer       | First category | Allowed types                                                    |
 | ----------- | -------------- | ---------------------------------------------------------------- |
 | `primitive` | `dimension`    | `borderWidth`, `breakpoint`, `fontSize`, `letterSpacing`         |
-| `primitive` | `number`       | `fontScale`, `layer`, `lineHeight`, `opacity`, `scale`           |
+| `primitive` | `number`       | `layer`, `lineHeight`, `opacity`, `scale`                        |
 | `semantic`  | `color`        | `background`, `border`, `focusRing`, `icon`, `text`              |
 | `semantic`  | `dimension`    | `borderWidth`, `breakpoint`, `radius`, `size`, `space`, `travel` |
-| `semantic`  | `number`       | `opacity`, `layer`, `scale`, `fontScale`                         |
+| `semantic`  | `number`       | `opacity`, `layer`, `scale`                                      |
 | `semantic`  | `fontFamily`   | `prose`, `ui`, `code`                                            |
 | `semantic`  | `fontWeight`   | `emphasis`, `ui`                                                 |
 | `semantic`  | `typography`   | `code`, `heading`, `primary`, `prose`, `secondary`, `ui`         |
@@ -253,10 +253,6 @@ For contextual alpha, keep the primitive opaque. Compose the semantic color usin
 ### Duration and transform scale
 
 `primitive.duration.<step>` is its value in milliseconds (`150` is `150ms`, `0` is instant). `primitive.number.scale.<step>` maps like opacity, with `1000` as an element's own size (`980` is `0.98`). See the [formulas](token-generation.md#duration-scale).
-
-### Font scale
-
-`primitive.number.fontScale.<step>` is a font size factor relative to the surrounding text, with `10000` as the same size (`9375` is `0.9375`). Its finer base than `scale` names sixteenths exactly. Add only steps required by semantic tokens.
 
 ### Font weight scale
 
