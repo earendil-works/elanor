@@ -11,7 +11,7 @@
   }
 
   .panel:not([hidden]) {
-    /* stylelint-disable design-tokens/token-property-compatibility -- Structural inset: half the 16px lane plus half the 2px rule, then the 16px gap. */
+    /* stylelint-disable design-tokens/token-property-compatibility -- Structural inset: half the 16px column plus half the 2px rule, then the 16px gap. */
     padding-inline-start: calc(
       (var(--semantic-dimension-size-x-small) + var(--semantic-dimension-border-width-default)) /
         2 + var(--semantic-dimension-space-gap-medium)
