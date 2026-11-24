@@ -12,6 +12,10 @@ export const GET: APIRoute = async () => {
 
 > Earendil's design system: tokens for ${(await tokenBrands()).join(', ')}, React components, icons, and logos.
 
+- Don't assume APIs from other libraries; check each component's API section.
+- Import from \`@earendil-works/elanor-react\`.
+- Don't invent components, parts or props.
+
 All endpoints serve static files. Start with an index, then fetch individual resources; bulk dumps are not available.
 
 ## Design tokens

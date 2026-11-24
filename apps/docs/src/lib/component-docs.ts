@@ -29,7 +29,6 @@ export function componentMarkdown(entry: Entry): string {
   const body = entry.body ?? '';
   const mdxPath = resolve(process.cwd(), entry.filePath ?? '');
   assertDemoSyntax(body, entry.id);
-  componentDescription(entry);
 
   const prose = body.replace(fence, '');
   const stray = /^(?:import |export |<(?!Demo )[A-Za-z])/m.exec(prose);
@@ -51,7 +50,22 @@ export function componentMarkdown(entry: Entry): string {
     )
     .replace(/\]\(\/components\/([\w-]+)\/(#[\w-]+)?\)/g, '](/components/$1.md$2)');
 
-  return `${markdown.trimEnd()}\n${apiMarkdown(entry)}`;
+  const page = `${markdown.trimEnd()}\n${apiMarkdown(entry)}`;
+  assertWording(entry.id, componentDescription(entry), page);
+  return page;
+}
+
+const standIn = /\b(?:the application|the caller|consumers)\b/i;
+const curlyQuote = /[“”‘’]/;
+
+/** Throws on wording agents misread: stand-ins for the reader, curly quotes, a long first paragraph. */
+function assertWording(id: string, description: string, page: string): void {
+  const sentences = description.replace(/`[^`]*`/g, '').match(/[.!?](?=\s|$)/g)?.length ?? 0;
+  if (sentences > 2) throw new Error(`${id}: keep the first paragraph to two sentences.`);
+  const word = standIn.exec(page)?.[0];
+  if (word) throw new Error(`${id}: address the reader as "you", not "${word}".`);
+  const quote = curlyQuote.exec(page)?.[0];
+  if (quote) throw new Error(`${id}: use straight quotes, not ${quote}.`);
 }
 
 function apiMarkdown(entry: Entry): string {
