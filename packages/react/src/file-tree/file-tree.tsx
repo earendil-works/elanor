@@ -326,7 +326,7 @@ export function FileTreeRoot<Node extends FileTreeNode>({
             isFolder={row.isFolder}
             expanded={row.expanded}
             current={row.node.id === currentId}
-            // SAFETY: every row's node comes from `items`, so it is a `Node`.
+            // SAFETY: assumes nested nodes are Nodes too, as `indexNodes` and `flattenVisible` do.
             renderItem={renderItem as (state: FileTreeItemState) => ReactNode}
           />
         ))}

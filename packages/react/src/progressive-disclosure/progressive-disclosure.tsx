@@ -40,10 +40,9 @@ function PanelElement({
   render: ProgressiveDisclosurePanelProps['render'];
   state: BaseCollapsible.Panel.State;
 }) {
-  const style = elementProps.style as React.CSSProperties & {
-    '--collapsible-panel-height'?: string;
-  };
-  const height = style['--collapsible-panel-height'];
+  const style: (React.CSSProperties & {'--collapsible-panel-height'?: string}) | undefined =
+    elementProps.style;
+  const height = style?.['--collapsible-panel-height'];
 
   return useRender({
     render: typeof render === 'function' ? (props) => render(props, state) : render,

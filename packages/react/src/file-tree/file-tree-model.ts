@@ -31,7 +31,7 @@ export function indexNodes<Node extends FileTreeNode>(
     for (const node of nodes) {
       index.set(node.id, {node, parentId, level});
       if (node.children) {
-        // SAFETY: a tree of `Node`s nests `Node`s; `FileTreeNode` has no type parameter to say so.
+        // SAFETY: assumes a Node's children are Nodes; FileTreeNode types them as plain FileTreeNodes.
         visit(node.children as ReadonlyArray<Node>, node.id, level + 1);
       }
     }
@@ -60,7 +60,7 @@ export function flattenVisible<Node extends FileTreeNode>(
         expanded: isExpanded,
       });
       if (isExpanded) {
-        // SAFETY: as in `indexNodes`, a `Node`'s children are `Node`s.
+        // SAFETY: assumes a Node's children are Nodes, as in `indexNodes`.
         visit(node.children as ReadonlyArray<Node>, level + 1);
       }
     }
