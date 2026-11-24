@@ -35,16 +35,6 @@
     transition: opacity var(--semantic-transition-fade);
   }
 
-  /* Touch screens get a 48px icon button, which takes the 24px button's space, so the icon stays
-     where it is with a fine pointer. */
-  @media (pointer: coarse) {
-    .actions > * {
-      margin: calc(
-        (var(--semantic-dimension-size-small) - var(--semantic-dimension-size-x-large)) / 2
-      );
-    }
-  }
-
   /* With a mouse, actions show on hover, on keyboard focus, and while a copy button reports a copy
      or a failure; touch screens always show them. */
   @media (hover: hover) {

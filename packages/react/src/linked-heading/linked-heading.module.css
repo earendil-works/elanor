@@ -14,16 +14,6 @@
     transition: opacity var(--semantic-transition-fade);
   }
 
-  /* Touch screens get a 48px button; it overlaps the heading, so the icon keeps its gap. */
-  @media (pointer: coarse) {
-    .button {
-      margin-inline-start: calc(
-        var(--semantic-dimension-space-gap-small) -
-          (var(--semantic-dimension-size-x-large) - var(--semantic-dimension-size-icon)) / 2
-      );
-    }
-  }
-
   /* The button shows on hover, on keyboard focus, after a tap or click on the heading (which
      takes focus), and while it reports a copy or a failure, on every device. Hidden, it ignores the
      pointer, so a tap at the end of the heading reaches the heading. */

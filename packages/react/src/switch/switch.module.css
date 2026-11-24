@@ -66,13 +66,6 @@
     );
   }
 
-  @media (pointer: coarse) {
-    .root {
-      inline-size: var(--semantic-dimension-size-x-large);
-      block-size: var(--semantic-dimension-size-x-large);
-    }
-  }
-
   @media (forced-colors: active) {
     .root::before {
       outline: var(--semantic-dimension-border-width-small) solid ButtonText;

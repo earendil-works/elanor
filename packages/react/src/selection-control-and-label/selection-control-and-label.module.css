@@ -30,14 +30,4 @@
     cursor: not-allowed;
     opacity: var(--semantic-number-opacity-disabled);
   }
-
-  @media (pointer: coarse) {
-    .root {
-      min-block-size: var(--semantic-dimension-size-x-large);
-    }
-
-    .content {
-      margin-block: calc((var(--semantic-dimension-size-x-large) - 1lh) / 2);
-    }
-  }
 }
