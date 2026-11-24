@@ -85,7 +85,9 @@ Behaviors make components work on static pages: rendered on the server, without 
 - Use semantic tokens and preserve focus, disabled, invalid, and forced-colors states.
 - Keep every CSS Module self-contained: no `composes` or imports of other stylesheets. Share semantic tokens, not other components' private CSS classes.
 - Wrap all rules of a component stylesheet in `@layer elanor.components { … }` (Prose uses `elanor.prose`), so an app's unlayered CSS always overrides Elanor. Example stylesheets stand for app code and stay unlayered.
-- Size controls that contain text by their block padding and line height, without a fixed or minimum block size, so they grow with larger type and stay aligned with buttons. Fixed block sizes are only for icon-only parts such as icon buttons and checkbox boxes, and touch sizes under `@media (pointer: coarse)`.
+- Size controls that contain text by their block padding and line height, without a fixed or minimum block size, so they grow with larger type and stay aligned with buttons.
+- Give fixed sizes only to icon-only parts, such as icon buttons and checkbox boxes.
+- Keep every control's mouse size on touch screens. Only menu items, table of contents links and file tree rows get a minimum height of `semantic.dimension.size.medium` under `@media (pointer: coarse)`.
 - Prefer logical properties and flexible layouts. Handle narrow containers, RTL, and long content without hiding meaningful content.
 - Keep selectors scoped; avoid global overrides and specificity escalation.
 - For motion, use `semantic.transition` tokens: `movement.*` for anything that moves, scales, rotates, or resizes, `fade` for opacity, and `feedback` for color changes. Movement becomes instant when a person prefers reduced motion, so add no reduced-motion queries. List transitioned properties explicitly - no `transition: all`.

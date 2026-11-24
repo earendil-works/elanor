@@ -31,13 +31,6 @@
     content: '';
   }
 
-  @media (pointer: coarse) {
-    .radio {
-      inline-size: var(--semantic-dimension-size-x-large);
-      block-size: var(--semantic-dimension-size-x-large);
-    }
-  }
-
   @media (hover: hover) {
     .radio:hover:not([data-disabled])::before {
       background: var(--semantic-color-background-radio-hover);

@@ -51,23 +51,6 @@
     block-size: auto;
   }
 
-  @media (pointer: coarse) {
-    .root {
-      inline-size: var(--semantic-dimension-size-x-large);
-      block-size: var(--semantic-dimension-size-x-large);
-    }
-
-    .root[data-density='default'] {
-      inline-size: var(--semantic-dimension-size-x-large);
-      block-size: var(--semantic-dimension-size-x-large);
-    }
-
-    .root[data-density='default']::before {
-      inline-size: var(--semantic-dimension-size-medium);
-      block-size: var(--semantic-dimension-size-medium);
-    }
-  }
-
   @media (hover: hover) {
     .root[data-hierarchy='tertiary']:hover:not([data-disabled])::before {
       background: var(--semantic-color-background-fill-ghost-neutral-hover);

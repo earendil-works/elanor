@@ -32,7 +32,7 @@
     cursor: pointer;
   }
 
-  /* The pseudo-element keeps the default touch target, as in compact Buttons. */
+  /* The pseudo-element keeps the default target height, as in compact Buttons. */
   .trigger[data-density='compact'] {
     position: relative;
     overflow: visible;
@@ -44,18 +44,6 @@
     inset-block: calc(-1 * var(--semantic-dimension-space-control-padding-block-small));
     inset-inline: 0;
     content: '';
-  }
-
-  /* On touch screens, the target reaches half the medium gap above and below, so rows a medium
-     gap apart don't overlap. */
-  @media (pointer: coarse) {
-    .trigger[data-density='compact']::after {
-      inset-block: calc(
-        -1 *
-          (var(--semantic-dimension-space-gap-medium) / 2 +
-            var(--semantic-dimension-border-width-default))
-      );
-    }
   }
 
   .trigger[data-density='compact'] .icon {

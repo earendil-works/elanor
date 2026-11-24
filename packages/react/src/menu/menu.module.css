@@ -111,7 +111,7 @@
     white-space: nowrap;
   }
 
-  /* On touch screens, items are full touch targets and labels use the primary UI size, as
+  /* On touch screens, items get a minimum height and labels use the primary UI size, as
      Dropdown's options do. */
   @media (pointer: coarse) {
     .popup {
@@ -119,7 +119,7 @@
     }
 
     .item {
-      min-block-size: var(--semantic-dimension-size-x-large);
+      min-block-size: var(--semantic-dimension-size-medium);
     }
   }
 

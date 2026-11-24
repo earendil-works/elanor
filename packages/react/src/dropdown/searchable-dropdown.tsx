@@ -79,7 +79,7 @@ export type SearchableDropdownClearProps = DropdownClearProps;
 export type SearchableDropdownValueCountProps = DropdownValueCountProps;
 export type SearchableDropdownStatusProps = BaseCombobox.Status.Props;
 export interface SearchableDropdownTriggerProps extends BaseCombobox.Trigger.Props {
-  /** `compact` removes block padding but keeps the touch target height. */
+  /** `compact` removes block padding but keeps the default target height. */
   readonly density?: DropdownTriggerDensity;
 }
 export type SearchableDropdownIconProps = BaseCombobox.Icon.Props;

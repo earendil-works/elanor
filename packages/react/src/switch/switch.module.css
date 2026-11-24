@@ -19,7 +19,7 @@
   .root::before {
     position: absolute;
     z-index: var(--semantic-number-layer-background);
-    inset-inline-start: calc((100% - var(--semantic-dimension-size-medium)) / 2);
+    inset-inline-start: 0;
     inline-size: var(--semantic-dimension-size-medium);
     block-size: var(--semantic-dimension-size-x-small);
     border-radius: inherit;
@@ -44,10 +44,7 @@
 
   .thumb {
     position: absolute;
-    inset-inline-start: calc(
-      (100% - var(--semantic-dimension-size-medium)) / 2 +
-        var(--semantic-dimension-space-padding-xx-small)
-    );
+    inset-inline-start: var(--semantic-dimension-space-padding-xx-small);
     inline-size: calc(
       var(--semantic-dimension-size-x-small) - 2 * var(--semantic-dimension-space-padding-xx-small)
     );
@@ -60,17 +57,9 @@
 
   .root[data-checked] .thumb {
     inset-inline-start: calc(
-      (100% - var(--semantic-dimension-size-medium)) / 2 +
-        var(--semantic-dimension-space-padding-xx-small) + var(--semantic-dimension-size-medium) -
+      var(--semantic-dimension-space-padding-xx-small) + var(--semantic-dimension-size-medium) -
         var(--semantic-dimension-size-x-small)
     );
-  }
-
-  @media (pointer: coarse) {
-    .root {
-      inline-size: var(--semantic-dimension-size-x-large);
-      block-size: var(--semantic-dimension-size-x-large);
-    }
   }
 
   @media (forced-colors: active) {

@@ -18,7 +18,7 @@ export interface SearchProps extends Omit<BaseInput.Props, 'type'> {
   readonly endAdornment?: ReactNode;
   /** Class name for the outer wrapper; `className` styles the input. */
   readonly rootClassName?: string;
-  /** `compact` removes block padding but keeps the touch target height. */
+  /** `compact` removes block padding but keeps the default target height. */
   readonly density?: SearchDensity;
 }
 

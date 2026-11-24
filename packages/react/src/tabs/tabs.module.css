@@ -59,13 +59,6 @@
     pointer-events: none;
   }
 
-  @media (pointer: coarse) {
-    .tab {
-      min-inline-size: var(--semantic-dimension-size-x-large);
-      min-block-size: var(--semantic-dimension-size-x-large);
-    }
-  }
-
   @media (forced-colors: active) {
     .indicator,
     .tab:hover:not([data-disabled], [data-active])::after {

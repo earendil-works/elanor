@@ -138,15 +138,6 @@
     box-shadow: none;
   }
 
-  /* A 48px hit area on coarse pointers; the chip and the fill keep their size. */
-  @media (pointer: coarse) {
-    .root > .remove::after {
-      position: absolute;
-      inset: calc(50% - var(--semantic-dimension-size-x-large) / 2);
-      content: '';
-    }
-  }
-
   /* Forced colours drop shadows: an outline draws the edge without changing the size. */
   @media (forced-colors: active) {
     .root {

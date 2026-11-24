@@ -206,7 +206,7 @@ function TrackedFilters({filtersSlot, children}: TrackedFiltersProps) {
 
 export interface SearchAndFilterBarFiltersTriggerProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   readonly ref?: Ref<HTMLButtonElement> | undefined;
-  /** `compact` makes the button as tall as compact controls, but keeps the touch target height. */
+  /** `compact` makes the button as tall as compact controls, but keeps the default target height. */
   readonly density?: ButtonDensity;
 }
 
