@@ -70,10 +70,12 @@ Structural backgrounds are neutral Graphite in both themes:
 
 Primary and ghost fills each have default, neutral, information, negative, and positive variants; default and information intentionally use the same Cerulian Blue steps. Every variant uses these steps of its family:
 
-| Fill    | Light rest / hover / active | Dark rest / hover / active  |
-| ------- | --------------------------- | --------------------------- |
-| Primary | `600` / `640` / `680`       | `400` / `360` / `320`       |
-| Ghost   | transparent / `40` / `80`   | transparent / `860` / `820` |
+| Fill    | Light rest / hover / active | Dark rest / hover / active |
+| ------- | --------------------------- | -------------------------- |
+| Primary | `600` / `640` / `680`       | `400` / `360` / `320`      |
+| Ghost   | transparent / 8% / 14%      | transparent / 8% / 14%     |
+
+Ghost hover and active are translucent layers over whatever is behind them, so they show the same step on the canvas, a surface or a fill: the neutral ones black (light) or white (dark), the others their family's `600` (light) or `400` (dark), at `primitive.number.opacity.80` and `.140`.
 
 Consumers use [semantic fill roles](token-naming.md#color-fill-roles), not family names.
 
