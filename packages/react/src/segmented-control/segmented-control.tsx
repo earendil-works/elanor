@@ -13,7 +13,7 @@ export type SegmentedControlRootProps<Value extends string = string> =
     readonly orientation?: 'horizontal';
     /** One item is pressed at a time. */
     readonly multiple?: false;
-    /** `compact` removes the items' block padding but keeps their touch target height. */
+    /** `compact` removes the items' block padding but keeps their default target height. */
     readonly density?: SegmentedControlDensity;
   };
 export type SegmentedControlState = BaseToggleGroup.State;

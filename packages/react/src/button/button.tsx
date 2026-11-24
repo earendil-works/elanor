@@ -17,7 +17,7 @@ export interface ButtonProps extends BaseButton.Props {
   readonly hierarchy?: ButtonHierarchy;
   /** `negative` for destructive actions, `positive` for confirming ones. */
   readonly semantic?: ButtonSemantic;
-  /** `compact` removes block padding but keeps the touch target height. */
+  /** `compact` removes block padding but keeps the default target height. */
   readonly density?: ButtonDensity;
   /** Decorative icon before the label. */
   readonly iconStart?: ReactNode;

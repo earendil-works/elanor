@@ -75,7 +75,7 @@ export interface DropdownPrefixProps extends Omit<
 export type DropdownTriggerDensity = 'compact' | 'default';
 
 export interface DropdownTriggerProps extends BaseSelect.Trigger.Props {
-  /** `compact` removes block padding but keeps the touch target height. */
+  /** `compact` removes block padding but keeps the default target height. */
   readonly density?: DropdownTriggerDensity;
 }
 export type DropdownIconProps = BaseSelect.Icon.Props;

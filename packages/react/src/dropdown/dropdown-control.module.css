@@ -85,33 +85,12 @@
     content: '';
   }
 
-  /* Next to a compact trigger, the same overlay keeps the default touch target height. */
+  /* Next to a compact trigger, the same overlay keeps the default target height. */
   .control:has(> [data-density='compact']) > .clear::after {
     position: absolute;
     inset-block: calc(-1 * var(--semantic-dimension-space-control-padding-block-small));
     inset-inline: 0;
     content: '';
-  }
-
-  /* On touch screens, as on compact triggers, for Clear and a default trigger beside it. */
-  @media (pointer: coarse) {
-    .control > :not(.clear) {
-      position: relative;
-      overflow: visible;
-    }
-
-    .control > :not(.clear)::after,
-    .clear::after,
-    .control:has(> [data-density='compact']) > .clear::after {
-      position: absolute;
-      inset-block: calc(
-        -1 *
-          (var(--semantic-dimension-space-gap-medium) / 2 +
-            var(--semantic-dimension-border-width-default))
-      );
-      inset-inline: 0;
-      content: '';
-    }
   }
 
   .clear:where(:hover:not(:disabled, [data-disabled])) {
