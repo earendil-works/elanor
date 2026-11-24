@@ -27,7 +27,6 @@ const groups = [
   },
 ];
 
-// Demo only: link to real URLs instead of `#`.
 /** Sidebar regions shared by the demos. `collapsed` comes from Sidebar.Root. */
 export function WorkspaceSidebar({collapsed}: {readonly collapsed: boolean}) {
   const [current, setCurrent] = useState('Home');

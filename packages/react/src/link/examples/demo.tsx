@@ -1,6 +1,5 @@
 import {Link, Text} from '@earendil-works/elanor-react';
 
-// Demo only: link to real URLs instead of `#`.
 export default function LinkDemo() {
   return (
     <Text>

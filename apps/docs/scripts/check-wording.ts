@@ -8,22 +8,22 @@ import {descriptionProblem, wordingProblems} from '../src/lib/docs-wording.ts';
 const root = join(import.meta.dirname, '../../..');
 const react = join(root, 'packages/react');
 
+// `composer/` is left out until another change fixes its wording.
+const skipped = /\.test\.|\/composer\//;
+
 function files(directory: string): string[] {
-  return (
-    readdirSync(directory, {recursive: true, encoding: 'utf8'})
-      .map((path) => join(directory, path))
-      // `composer/` is left out until another change fixes its wording.
-      .filter((path) => /\.(?:mdx?|tsx?|css)$/.test(path) && !/\.test\.|\/composer\//.test(path))
-  );
+  return readdirSync(directory, {recursive: true, encoding: 'utf8'})
+    .map((path) => join(directory, path))
+    .filter((path) => /\.(?:mdx?|tsx?|css)$/.test(path) && !skipped.test(path));
 }
 
-// Only the matching comments, at their original offsets, so the reported lines match.
+// Blanks all but the matching comments, keeping offsets so reported lines stay right.
 const keep = (code: string, comment: RegExp) =>
   code.replace(new RegExp(`${comment.source}|[^\\n]`, 'g'), (match) =>
     match.length > 1 ? match : ' ',
   );
 const jsdoc = /\/\*\*[\s\S]*?\*\//;
-// In examples, comments: demo data may say anything.
+// In examples, only comments count: demo data may say anything.
 const comments = /\/\*[\s\S]*?\*\/|\/\/[^\n]*/;
 
 const problems: string[] = [];

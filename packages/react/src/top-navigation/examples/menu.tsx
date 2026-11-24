@@ -7,10 +7,8 @@ const start = ['Introduction', 'Installation'];
 const guides = ['Deploying a project', 'Rollbacks'];
 const reference = ['Command-line tool', 'Configuration file'];
 
-// Demo only: link to real URLs instead of `#`.
 export default function TopNavigationMenuDemo() {
-  // Demo only: the menu opens inside this frame, not over the docs page. In your code, leave out
-  // `container`.
+  // Demo only: keeps the menu inside this frame; in your code, leave out `container`.
   const frameRef = useRef<HTMLDivElement>(null);
   return (
     <div ref={frameRef} className={styles.frame}>

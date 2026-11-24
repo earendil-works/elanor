@@ -28,23 +28,23 @@ app.all('*', async (c) => {
     const response = await c.env.ASSETS.fetch(c.req.raw);
     return c.req.path.endsWith('.md') ? markdownResponse(response, c.req.path) : response;
   }
-  // A page with a Markdown version serves it to clients that prefer Markdown over HTML.
   const accept = c.req.header('Accept') ?? '';
   const wantsMarkdown = quality(accept, 'text/markdown') > quality(accept, 'text/html');
   const asset = await c.env.ASSETS.fetch(
     wantsMarkdown ? new Request(new URL(markdown, c.req.url), c.req.raw) : c.req.raw,
   );
+  // Copied: the binding's response headers are immutable.
   const response = wantsMarkdown
     ? markdownResponse(asset, c.req.path)
     : new Response(asset.body, asset);
+  // The same URL serves HTML or Markdown, depending on `Accept`.
   response.headers.append('Vary', 'Accept');
   return response;
 });
 
 /** The Markdown version of a page's path, such as `/components/button.md` for `/components/button/`. */
 function markdownPath(path: string): string | undefined {
-  if (path === '/') return '/llms.txt';
-  if (/^\/brand\/?$/.test(path)) return '/brand/llms.txt';
+  if (path === '/' || /^\/brand\/?$/.test(path)) return llmsTxt(path);
   const page = /^\/(components\/[\w-]+|application-setup)\/?$/.exec(path)?.[1];
   return page ? `/${page}.md` : undefined;
 }
@@ -60,12 +60,16 @@ function quality(accept: string, type: string): number {
   return 0;
 }
 
+/** The `llms.txt` that describes a path: the brand section's, or the site's. */
+function llmsTxt(path: string): string {
+  return /^\/brand(?:\/|$)/.test(path) ? '/brand/llms.txt' : '/llms.txt';
+}
+
 function markdownResponse(asset: Response, path: string): Response {
   const response = new Response(asset.body, asset);
   if (!asset.ok) return response;
-  const index = path.startsWith('/brand') ? '/brand/llms.txt' : '/llms.txt';
   response.headers.set('Content-Type', 'text/markdown; charset=utf-8');
-  response.headers.set('Link', `<${index}>; rel="describedby"`);
+  response.headers.set('Link', `<${llmsTxt(path)}>; rel="describedby"`);
   return response;
 }
 

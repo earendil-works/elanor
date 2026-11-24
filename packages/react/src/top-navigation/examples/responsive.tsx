@@ -64,15 +64,13 @@ function Resources({onNavigate}: {readonly onNavigate?: () => void}) {
   );
 }
 
-// Demo only: link to real URLs instead of `#`.
 export default function TopNavigationResponsive() {
   const [active, setActive] = useState('Overview');
   const [collapsed, setCollapsed] = useState(false);
   const actionsRef = useRef<DrawerRootActions>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const contentRef = useRef<HTMLElement>(null);
-  // Demo only: the drawer opens inside this frame, not over the docs page. In your code, leave
-  // out Portal's `container`.
+  // Demo only: keeps the drawer inside this frame; in your code, leave out Portal's `container`.
   const frameRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

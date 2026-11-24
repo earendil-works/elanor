@@ -21,12 +21,7 @@ export type ScrollAreaContentProps = BaseScrollArea.Content.Props;
 export type ScrollAreaScrollbarVisibility = 'always' | 'scrolling';
 
 export interface ScrollAreaScrollbarProps extends BaseScrollArea.Scrollbar.Props {
-  /**
-   * `always` shows the scrollbar whenever content overflows. `scrolling`, for a large area that is
-   * read more than scrolled such as a conversation, shows it only while a person scrolls (wheel,
-   * touch, scroll keys) or points at it, then fades it out. Scrolling from code, typing in a field
-   * and resizes don't show it. Forced colors always show it. React parts only.
-   */
+  /** `always` while content overflows; `scrolling` only while a person scrolls or points at it. */
   readonly visibility?: ScrollAreaScrollbarVisibility;
 }
 export type ScrollAreaThumbProps = BaseScrollArea.Thumb.Props;

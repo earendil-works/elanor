@@ -1,6 +1,5 @@
 import {Card, Heading, Text} from '@earendil-works/elanor-react';
 
-// Demo only: link to real URLs instead of `#`.
 export default function CardLink() {
   return (
     <Card render={<a href="#" />}>

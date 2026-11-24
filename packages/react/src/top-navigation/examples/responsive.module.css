@@ -1,6 +1,5 @@
 .frame {
-  /* Demo only: fixed-position drawer parts are placed and clipped within the frame; leave out
-     `contain` in your code. */
+  /* Demo only: places and clips the fixed drawer parts within the frame; leave it out in your code. */
   contain: layout paint;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
@@ -32,7 +31,7 @@
   padding: var(--semantic-dimension-space-padding-x-large);
 }
 
-/* Cover the viewport, above the header. */
+/* The portal renders inside the frame, so it needs a layer above the header. */
 .overlay {
   position: fixed;
   inset: 0;

@@ -11,7 +11,6 @@ const services = [
   {name: 'Worker', deployments: [{region: 'eu-central-1', status: 'Healthy'}]},
 ];
 
-// Demo only: link to real URLs instead of `#`.
 export default function TableSpanningRows() {
   return (
     <Table.Container>

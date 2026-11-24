@@ -73,11 +73,22 @@ The provider controls keyboard and positioning behavior; DOM direction controls 
 
 ## Server components
 
-Elanor does not declare client boundaries. With React Server Components, import interactive components from your own `'use client'` module.
+Elanor declares no client boundaries. With React Server Components, import interactive components from your own `'use client'` module.
 
 ## Static pages
 
-A static page is rendered on the server and runs no React in the browser. These components work there, each with a behavior and most with static parts, such as `Modal.StaticRoot`: [Collapsible](/components/collapsible/), [Copy button](/components/copy-button/), [Linked heading](/components/linked-heading/), [Modal](/components/modal/), [Popover](/components/popover/), [Scroll area](/components/scroll-area/), [Search dialog](/components/search-dialog/), [Side navigation](/components/side-navigation/), [Table of contents](/components/table-of-contents/), and [Top navigation](/components/top-navigation/)'s menu. Each one's "Static pages" section lists its parts and behaviors.
+A static page is rendered on the server and runs no React in the browser. These components work there, each with a behavior and most with static parts, such as `Modal.StaticRoot`. Each one's "Static pages" section lists its parts and behaviors.
+
+- [Collapsible](/components/collapsible/)
+- [Copy button](/components/copy-button/)
+- [Linked heading](/components/linked-heading/)
+- [Modal](/components/modal/)
+- [Popover](/components/popover/)
+- [Scroll area](/components/scroll-area/)
+- [Search dialog](/components/search-dialog/)
+- [Side navigation](/components/side-navigation/)
+- [Table of contents](/components/table-of-contents/)
+- [Top navigation](/components/top-navigation/)'s menu
 
 Render the static parts, or the component where it has none, on the server. Once the page has loaded, bind the behaviors with `enhance`. Its keys are the names the markup carries in `data-elanor`, such as `modal` or `copy-button`:
 

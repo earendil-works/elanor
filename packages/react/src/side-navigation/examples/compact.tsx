@@ -1,7 +1,6 @@
 import {FolderOpenIcon, GroupIcon, SettingsIcon} from '@earendil-works/elanor-icons-react';
 import {SideNavigation} from '@earendil-works/elanor-react';
 
-// Demo only: link to real URLs instead of `#`.
 export default function SideNavigationCompact() {
   return (
     <SideNavigation.Root aria-label="Workspace" variant="compact">
