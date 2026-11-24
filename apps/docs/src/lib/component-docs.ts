@@ -5,6 +5,7 @@ import type {CollectionEntry} from 'astro:content';
 import {orderedApi, partSummary} from './component-api.ts';
 import {componentName} from './component-name.ts';
 import {assertDemoSyntax, demoBlock, demoFiles} from './demo-blocks.ts';
+import {firstParagraph} from './docs-wording.ts';
 
 /*
  * Component pages as Markdown for agents: the same text as the HTML page, with each
@@ -17,12 +18,11 @@ const fence = /^```[\s\S]*?^```$/gm;
 
 /** The first paragraph after the H1, as plain text. */
 export function componentDescription(entry: Entry): string {
-  const body = entry.body ?? '';
-  const paragraph = /^# .+\n\n([\s\S]+?)(?:\n\n|$)/m.exec(body)?.[1];
-  if (!paragraph || paragraph.startsWith('<')) {
+  const paragraph = firstParagraph(entry.body ?? '');
+  if (!paragraph) {
     throw new Error(`${entry.id}: start the page with an H1 and a one-paragraph description.`);
   }
-  return paragraph.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/\s+/g, ' ');
+  return paragraph;
 }
 
 /** Points the docs' HTML links at their Markdown versions. */
@@ -58,22 +58,7 @@ export function componentMarkdown(entry: Entry): string {
       .join('\n\n'),
   );
 
-  const page = `${preamble}\n\n${markdownLinks(markdown).trimEnd()}\n${apiMarkdown(entry)}`;
-  assertWording(entry.id, componentDescription(entry), page);
-  return page;
-}
-
-const standIn = /\b(?:the application|the caller|consumers)\b/i;
-const curlyQuote = /[“”‘’]/;
-
-/** Throws on wording agents misread: stand-ins for the reader, curly quotes, a long first paragraph. */
-function assertWording(id: string, description: string, page: string): void {
-  const sentences = description.replace(/`[^`]*`/g, '').match(/[.!?](?=\s|$)/g)?.length ?? 0;
-  if (sentences > 2) throw new Error(`${id}: keep the first paragraph to two sentences.`);
-  const word = standIn.exec(page)?.[0];
-  if (word) throw new Error(`${id}: address the reader as "you", not "${word}".`);
-  const quote = curlyQuote.exec(page)?.[0];
-  if (quote) throw new Error(`${id}: use straight quotes, not ${quote}.`);
+  return `${preamble}\n\n${markdownLinks(markdown).trimEnd()}\n${apiMarkdown(entry)}`;
 }
 
 function apiMarkdown(entry: Entry): string {

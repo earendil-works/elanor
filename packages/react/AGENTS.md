@@ -19,7 +19,7 @@ For Base UI changes, consult [the documentation index](https://base-ui.com/llms.
 Each component directory has a `<component>.mdx` page and an `examples/` directory. The docs site renders the page at `/components/<component>/` and as Markdown for agents at `/components/<component>.md`.
 
 - Start with front matter that sets `category`, one of the categories in `apps/docs/src/lib/component-categories.ts`. The docs group the sidebar and the components overview by it.
-- Then an H1 (the directory name in sentence case) and one or two sentences that stand alone: what it is, when to use it, and the alternative ("For X, use Y.").
+- Then an H1 (the directory name in sentence case) and a first paragraph that stands alone: what it is, when to use it, and the alternative ("For X, use Y.").
 - Then a hero demo (`examples/demo.tsx`), `## Usage` with the import and a minimal snippet or anatomy, and one `##` section per variant or state. Add notes only where needed.
 - Don't write an API section. It's generated from the props types; document props with JSDoc on Elanor's declarations, and parts with JSDoc on the component.
 - Write live previews as `<Demo example="./examples/<name>.tsx" />` on one line. MDX contains no other JSX or imports; use code fences for code that can't render on a page.
@@ -30,18 +30,18 @@ Each component directory has a `<component>.mdx` page and an `examples/` directo
 
 Agents read each page as `/components/<id>.md`; its first paragraph is the `llms.txt` line. These rules cover MDX and JSDoc.
 
-- Address the developer as "you", in imperatives. Say "your code", "your router", "your state"; never "the application", "the caller", "the owner" or "consumers".
+- Address the developer as "you", in imperatives. Say "your code", "your router", "your state".
 - When a component leaves a job to you, say so: "X doesn't do Y; do Y with Z."
 - When a prop common elsewhere doesn't exist (`loading`, `asChild`), say so and show the Elanor way, because agents assume other libraries' APIs.
 - State requirements the types don't enforce, such as an accessible name, where they come up.
 - Use one term per concept, matching the part and prop names.
 - End users are "people" or "a person".
 - "The page" is the browser document.
-- Use straight quotes.
 - "App" names only the kind of product, API values and titles: "app UI", `variant="app"`, "your app's entry module". Not your code: write "filter the data yourself", not "the app filters the data".
 - Write `examples/` files that run as-is: complete, with realistic data and no `...`.
 - Start demo-only comments with `Demo only:` and say what to do instead.
 - Name headings after the variant, state or task (`## Disabled`), not a claim.
+- `pnpm check` runs `apps/docs/scripts/check-wording.ts`: no stand-ins for the developer, no curly quotes, and first paragraphs of at most two sentences and 35 words.
 - Before finishing, run `pnpm dev` and read `/components/<id>.md` and its line in `/llms.txt` on their own.
 
 ## Imports and exports
