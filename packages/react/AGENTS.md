@@ -26,6 +26,21 @@ Each component directory has a `<component>.mdx` page and an `examples/` directo
 - Each example file default-exports one component and imports from `@earendil-works/elanor-react`, like application code. Show one concept per demo. Local imports, such as a CSS Module, appear in the demo's code panel.
 - Demo links use `href="#"`. Headings inside demos use `level={2}` in the hero and `level={3}` under a `##` section.
 
+## Writing docs
+
+Agents read each page as `/components/<id>.md`; its first paragraph is the `llms.txt` line. These rules cover MDX and JSDoc.
+
+- Open with one or two sentences: what it is, when to use it, and the alternative ("For X, use Y."). It must stand alone.
+- Address the developer as "you", in imperatives. Say "your code", "your router", "your state"; never "the application", "the caller", "the owner" or "consumers".
+- When a component leaves a job to you, say so: "X doesn't do Y; do Y with Z."
+- When a prop common elsewhere doesn't exist (`loading`, `asChild`), say so and show the Elanor way, because agents assume other libraries' APIs.
+- State requirements the types don't enforce, such as an accessible name, where they come up.
+- Use one term per concept, matching the part and prop names. End users are "people"; "the page" is the browser document; "app" names only the kind of product, API values and titles. Use straight quotes.
+- Write examples that run as-is: complete files, realistic data, no `...`.
+- Start demo-only comments with `Demo only:` and say what to do instead.
+- Name headings after the variant, state or task (`## Disabled`), not a claim.
+- Before finishing, read the page's `.md` and its `llms.txt` line on their own.
+
 ## Imports and exports
 
 - Within a component, import implementation files directly, never its own barrel. Across components, use their local entry point when present, otherwise a direct file. Never import the package-wide entry point from library implementations. Examples and documentation are exempt.
@@ -70,7 +85,7 @@ Behaviors make components work on pages rendered on the server without React in 
 - Size controls that contain text by their block padding and line height, without a fixed or minimum block size, so they grow with larger type and stay aligned with buttons. Fixed block sizes are only for icon-only parts such as icon buttons and checkbox boxes, and touch sizes under `@media (pointer: coarse)`.
 - Prefer logical properties and flexible layouts. Handle narrow containers, RTL, and long content without hiding meaningful content.
 - Keep selectors scoped; avoid global overrides and specificity escalation.
-- For motion, use `semantic.transition` tokens: `movement.*` for anything that moves, scales, rotates, or resizes, `fade` for opacity, and `feedback` for color changes. Movement becomes instant when the reader prefers reduced motion, so add no reduced-motion queries. List transitioned properties explicitly - no `transition: all`.
+- For motion, use `semantic.transition` tokens: `movement.*` for anything that moves, scales, rotates, or resizes, `fade` for opacity, and `feedback` for color changes. Movement becomes instant when a person prefers reduced motion, so add no reduced-motion queries. List transitioned properties explicitly - no `transition: all`.
 - Use the design-token plugin's strict configuration for the target brand. `stylelint.config.mjs` defines allowed Base UI runtime variables.
 
 ## Validation
