@@ -1,5 +1,6 @@
 .application {
-  /* Demo only: fixed-position drawer parts are placed and clipped within the frame. */
+  /* Demo only: fixed-position drawer parts are placed and clipped within the frame; leave out
+     `contain` in your code. */
   contain: layout paint;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);

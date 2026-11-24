@@ -1,6 +1,6 @@
 import {NavigationMenu, Stack} from '@earendil-works/elanor-react';
 
-// Demo only; in your code, the links point to real URLs.
+// Demo only: link to real URLs instead of `#`.
 export default function NavigationMenuSubmenu() {
   return (
     <NavigationMenu.Root aria-label="Main">

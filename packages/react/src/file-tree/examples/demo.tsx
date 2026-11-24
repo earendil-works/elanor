@@ -32,7 +32,7 @@ export default function FileTreeDemo() {
   const [current, setCurrent] = useState('src/index.html');
   const renderItem = useCallback(({node, isFolder}: FileTreeItemState) => {
     const select = (event: MouseEvent) => {
-      // Demo only; in your code, link to the file's real URL instead of setting state.
+      // Demo only: link to the file's real URL instead of setting state.
       event.preventDefault();
       setCurrent(node.id);
     };

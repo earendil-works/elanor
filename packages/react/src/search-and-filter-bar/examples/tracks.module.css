@@ -1,4 +1,5 @@
-/* Demo only: bar widths, scrolled sideways where the page is narrower. */
+/* Demo only: bar widths, scrolled sideways where the page is narrower; let the bar fill its
+   container in your code. */
 /* stylelint-disable design-tokens/no-hardcoded-token-values -- Demo frame sizes. */
 .desktop {
   inline-size: 77.5rem;

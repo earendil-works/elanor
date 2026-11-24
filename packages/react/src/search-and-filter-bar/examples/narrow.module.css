@@ -1,4 +1,5 @@
-/* Demo only: a phone-sized column, so the bar switches to its narrow layout on any screen. */
+/* Demo only: a phone-sized column, so the bar switches to its narrow layout on any screen; leave it out
+   in your code. */
 .frame {
   /* stylelint-disable-next-line design-tokens/no-hardcoded-token-values -- Demo frame size. */
   max-inline-size: 22rem;

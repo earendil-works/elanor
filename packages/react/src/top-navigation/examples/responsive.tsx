@@ -37,7 +37,7 @@ function Destinations({
               active={active === page}
               compactContent={page.slice(0, 2)}
               onClick={(event) => {
-                // Demo only; in your code, render your router's links here.
+                // Demo only: render your router's links here instead.
                 event.preventDefault();
                 onSelect(page);
               }}
@@ -64,7 +64,7 @@ function Resources({onNavigate}: {readonly onNavigate?: () => void}) {
   );
 }
 
-// Demo only; in your code, the links point to real URLs.
+// Demo only: link to real URLs instead of `#`.
 export default function TopNavigationResponsive() {
   const [active, setActive] = useState('Overview');
   const [collapsed, setCollapsed] = useState(false);

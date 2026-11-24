@@ -7,7 +7,7 @@ const start = ['Introduction', 'Installation'];
 const guides = ['Deploying a project', 'Rollbacks'];
 const reference = ['Command-line tool', 'Configuration file'];
 
-// Demo only; in your code, the links point to real URLs.
+// Demo only: link to real URLs instead of `#`.
 export default function TopNavigationMenuDemo() {
   // Demo only: the menu opens inside this frame, not over the docs page. In your code, leave out
   // `container`.

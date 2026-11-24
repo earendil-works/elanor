@@ -3,7 +3,7 @@ import {Link, TopNavigation} from '@earendil-works/elanor-react';
 
 import styles from './top-navigation.module.css';
 
-// Demo only; in your code, the links point to real URLs.
+// Demo only: link to real URLs instead of `#`.
 export default function TopNavigationDemo() {
   return (
     <TopNavigation.Root>
