@@ -33,10 +33,7 @@ export interface PopoverStaticRootProps {
   readonly children?: ReactNode;
 }
 
-/**
- * A popover for pages without React in the browser; `createPopover` makes it work. Renders no
- * element.
- */
+/** A popover for static pages; `createPopover` makes it work. Renders no element. */
 export function PopoverStaticRoot({id, children}: PopoverStaticRootProps) {
   const generatedId = useId();
   const base = id ?? generatedId;
@@ -72,7 +69,7 @@ export function PopoverStaticTrigger({ref, ...props}: PopoverStaticTriggerProps)
 }
 
 export interface PopoverStaticPositionerProps extends HTMLAttributes<HTMLDivElement> {
-  /** The page's own behaviors for this element, attached after the component's. */
+  /** More `enhance` names for this element, space-separated; they run after the component's own. */
   readonly 'data-elanor'?: string;
   readonly ref?: Ref<HTMLDivElement> | undefined;
   readonly side?: BasePopover.Positioner.Props['side'];

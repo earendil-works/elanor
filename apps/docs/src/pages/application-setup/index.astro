@@ -1,0 +1,19 @@
+---
+import {render} from 'astro:content';
+import DocsArticle from '../../components/docs-article.astro';
+import {OmittedTitle, docsMarkdownComponents} from '../../components/docs-markdown.tsx';
+import DocsLayout from '../../layouts/docs-layout.astro';
+import {applicationSetup} from '../../lib/application-setup.ts';
+
+const {Content, headings} = await render(await applicationSetup());
+const markdown = '/application-setup.md';
+const toc = headings
+  .filter((heading) => heading.depth === 2 || heading.depth === 3)
+  .map((heading) => ({depth: heading.depth, id: heading.slug, title: heading.text}));
+---
+
+<DocsLayout title="Application setup" current="/application-setup/" markdown={markdown}>
+  <DocsArticle title="Application setup" markdown={markdown} toc={toc}>
+    <Content components={{...docsMarkdownComponents, h1: OmittedTitle}} />
+  </DocsArticle>
+</DocsLayout>

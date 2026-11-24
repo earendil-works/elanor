@@ -21,12 +21,7 @@ export type ScrollAreaContentProps = BaseScrollArea.Content.Props;
 export type ScrollAreaScrollbarVisibility = 'always' | 'scrolling';
 
 export interface ScrollAreaScrollbarProps extends BaseScrollArea.Scrollbar.Props {
-  /**
-   * `always` shows the scrollbar whenever content overflows. `scrolling`, for a large area that is
-   * read more than scrolled such as a conversation, shows it only while the reader scrolls (wheel,
-   * touch, scroll keys) or points at it, then fades it out. Scrolling from code, typing in a field
-   * and resizes don't show it. Forced colors always show it. React parts only.
-   */
+  /** `always` while content overflows; `scrolling` only while a person scrolls or points at it. */
   readonly visibility?: ScrollAreaScrollbarVisibility;
 }
 export type ScrollAreaThumbProps = BaseScrollArea.Thumb.Props;
@@ -83,14 +78,14 @@ export function ScrollAreaContent({ref, className, ...props}: ScrollAreaContentP
 
 /** Base UI's `data-scrolling` timeout. */
 const HIDE_AFTER = 500;
-/** The browser may animate a wheel or key scroll: scrolls this soon after (ms) are the reader's. */
+/** The browser may animate a wheel or key scroll: scrolls this soon after (ms) are a person's. */
 const WHEEL_INTENT = 250;
 const KEY_INTENT = 500;
 /** Momentum after a finger lifts (ms). A fixed deadline, so scrolls from code can't extend it. */
 const MOMENTUM = 1500;
 const SCROLL_KEYS = /^(?:Arrow(?:Up|Down|Left|Right)|Page(?:Up|Down)|Home|End| )$/;
 
-/** Typing scrolls a field to its caret; that isn't the reader scrolling. */
+/** Typing scrolls a field to its caret; that isn't a person scrolling. */
 function isEditable(target: EventTarget | null): boolean {
   return (
     target instanceof HTMLElement &&
@@ -156,7 +151,7 @@ function watchReaderScrolling(
   };
 }
 
-/** Renders `data-visibility`, and `data-reader-scrolling` while the reader scrolls. */
+/** Renders `data-visibility`, and `data-reader-scrolling` while a person scrolls. */
 export function ScrollAreaScrollbar({
   ref,
   visibility = 'always',

@@ -8,6 +8,7 @@ const guides = ['Deploying a project', 'Rollbacks'];
 const reference = ['Command-line tool', 'Configuration file'];
 
 export default function TopNavigationMenuDemo() {
+  // Demo only: keeps the menu inside this frame; in your code, leave out `container`.
   const frameRef = useRef<HTMLDivElement>(null);
   return (
     <div ref={frameRef} className={styles.frame}>

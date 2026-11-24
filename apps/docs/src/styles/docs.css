@@ -320,7 +320,7 @@
       overscroll-behavior: contain;
     }
 
-    /* Like Elanor's Sidebar, the scrollbar shows only while the reader scrolls or drags it. */
+    /* Like Elanor's Sidebar, the scrollbar shows only while a person scrolls or drags it. */
     @media (forced-colors: none) {
       .docs-navigation-scrollbar:not([data-scrolling], :active) {
         opacity: var(--semantic-number-opacity-hidden);

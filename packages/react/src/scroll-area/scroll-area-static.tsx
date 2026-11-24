@@ -10,11 +10,11 @@ export interface ScrollAreaStaticPartProps extends HTMLAttributes<HTMLDivElement
 }
 
 export interface ScrollAreaStaticRootProps extends ScrollAreaStaticPartProps {
-  /** The page's own behaviors for this element, attached after the component's. */
+  /** More `enhance` names for this element, space-separated; they run after the component's own. */
   readonly 'data-elanor'?: string;
 }
 
-/** A scroll area for pages without React in the browser; `createScrollArea` makes it work. */
+/** A scroll area for static pages; `createScrollArea` makes it work. */
 export function ScrollAreaStaticRoot({
   'data-elanor': pageBehaviors,
   ref,

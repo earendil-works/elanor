@@ -37,7 +37,7 @@ export function indexNodes<Node extends FileTreeNode>(
   return index;
 }
 
-/** The rows a user can see, in order: closed folders hide their descendants. */
+/** The rows a person can see, in order: closed folders hide their descendants. */
 export function flattenVisible<Node extends FileTreeNode>(
   items: ReadonlyArray<Node>,
   expanded: ReadonlySet<string>,

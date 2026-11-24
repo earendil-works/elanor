@@ -15,14 +15,14 @@ interface HeadingBaseProps extends HTMLAttributes<HTMLHeadingElement> {
 }
 
 interface AppHeadingProps extends HeadingBaseProps {
-  /** Heading style: `app` for interfaces, `marketing` for promotional pages. */
+  /** Heading style: `app` for app UI, `marketing` for promotional pages. */
   readonly variant?: 'app';
   /** Visual size, from `1` (largest) to `6`, one per `semantic.typography.heading.app` style. */
   readonly size?: HeadingSize;
 }
 
 interface MarketingHeadingProps extends HeadingBaseProps {
-  /** Heading style: `app` for interfaces, `marketing` for promotional pages. */
+  /** Heading style: `app` for app UI, `marketing` for promotional pages. */
   readonly variant: 'marketing';
   /**
    * Visual size, from `1` (largest) to `6`, one per `semantic.typography.heading.marketing` style,

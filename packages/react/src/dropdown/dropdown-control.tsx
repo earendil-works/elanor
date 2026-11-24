@@ -166,15 +166,15 @@ export function DropdownControl({ref, className, ...props}: DropdownControlProps
 export interface DropdownValueCountProps extends Omit<HTMLAttributes<HTMLSpanElement>, 'children'> {
   readonly ref?: Ref<HTMLSpanElement> | undefined;
   /**
-   * How many values to count, shown as “+2”. Nothing renders below 1.
+   * How many values to count, shown as "+2". Nothing renders below 1.
    * @default the selected values after the first
    */
   readonly count?: number | undefined;
-  /** What screen readers read instead of “+2”, such as “and 2 more”. */
+  /** What screen readers read instead of "+2", such as "and 2 more". */
   readonly label?: ((count: number) => string) | undefined;
 }
 
-/** A muted count of the selected values after the first, such as “+2”. */
+/** A muted count of the selected values after the first, such as "+2". */
 export function DropdownValueCount({
   ref,
   count: countProp,
@@ -197,7 +197,7 @@ export function DropdownValueCount({
 }
 
 export interface DropdownClearProps extends Omit<BaseButton.Props, 'aria-label'> {
-  /** Names the button, such as “Clear Status filter”. */
+  /** Names the button, such as "Clear Status filter". */
   readonly 'aria-label': string;
 }
 

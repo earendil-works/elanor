@@ -31,7 +31,7 @@ Root renders a `nav`. `active` marks the current page with `aria-current="page"`
 
 `Collapsible` holds a section that opens and closes, with a `CollapsibleTrigger` as its title and a `CollapsiblePanel` holding a `List` of links. It is built on Base UI's [Collapsible](https://base-ui.com/react/components/collapsible), like [Progressive disclosure](/components/progressive-disclosure/). Pass `defaultOpen` to the section that contains the current page, or control it with `open` and `onOpenChange`; its title is marked like the current page. Nested links indent their text by `semantic.dimension.space.padding.xLarge`.
 
-The panel grows and shrinks to its measured height with `semantic.transition.movement.disclosure`, the same in every browser, and changes instantly when the reader prefers reduced motion. Closed panels stay in the document (`keepMounted`), so their links are part of the page's HTML.
+The panel grows and shrinks to its measured height with `semantic.transition.movement.disclosure`, the same in every browser, and changes instantly when a person prefers reduced motion. Closed panels stay in the document (`keepMounted`), so their links are part of the page's HTML.
 
 <Demo example="./examples/sections.tsx" />
 
@@ -51,9 +51,9 @@ Links with plain text are named from their text; give links with rich content an
 
 Compact navigation is one link wide: `semantic.dimension.size.medium` (32px). Switching `variant` keeps the same links, so focus and tab order are preserved. [Sidebar](/components/sidebar/) switches it when the sidebar collapses.
 
-## Static rendering
+## Static pages
 
-On pages rendered on the server without React in the browser, use the static root and sections; lists, items, and links stay the same. Bind the behaviors right after the navigation's markup, so restored sections and the scroll position are in place before the first paint:
+On [static pages](/application-setup/#static-pages), use the static root and sections; lists, items, and links stay the same. Bind the behaviors right after the navigation's markup, so restored sections and the scroll position are in place before the first paint:
 
 ```tsx
 <SideNavigation.StaticRoot aria-label="Documentation" persist="docs">

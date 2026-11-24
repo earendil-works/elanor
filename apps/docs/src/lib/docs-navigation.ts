@@ -66,9 +66,14 @@ export async function docsNavigation(current: string): Promise<DocsSiteSection[]
       id: 'components',
       label: 'Components',
       href: '/components/',
-      paths: ['/components/'],
+      paths: ['/components/', '/application-setup/'],
       groups: [
-        {links: [link('/components/', 'Overview')]},
+        {
+          links: [
+            link('/components/', 'Overview'),
+            link('/application-setup/', 'Application setup'),
+          ],
+        },
         ...(await componentGroups()).map((group) => ({
           label: group.label,
           links: group.entries.map((entry) =>

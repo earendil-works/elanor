@@ -33,7 +33,7 @@ export interface ModalStaticRootProps {
   readonly children?: ReactNode;
 }
 
-/** A modal for pages without React in the browser; `createModal` makes it work. Renders no element. */
+/** A modal for static pages; `createModal` makes it work. Renders no element. */
 export function ModalStaticRoot({id, children}: ModalStaticRootProps) {
   const generatedId = useId();
   const base = id ?? generatedId;
@@ -69,7 +69,7 @@ export function ModalStaticTrigger({ref, ...props}: ModalStaticTriggerProps) {
 }
 
 export interface ModalStaticPopupProps extends DialogHTMLAttributes<HTMLDialogElement> {
-  /** The page's own behaviors for this element, attached after the component's. */
+  /** More `enhance` names for this element, space-separated; they run after the component's own. */
   readonly 'data-elanor'?: string;
   readonly ref?: Ref<HTMLDialogElement> | undefined;
 }

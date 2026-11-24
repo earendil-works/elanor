@@ -37,7 +37,7 @@ function Destinations({
               active={active === page}
               compactContent={page.slice(0, 2)}
               onClick={(event) => {
-                // This demo selects local content; real applications supply their router links.
+                // Demo only: render your router's links here instead.
                 event.preventDefault();
                 onSelect(page);
               }}
@@ -70,8 +70,8 @@ export default function TopNavigationResponsive() {
   const actionsRef = useRef<DrawerRootActions>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const contentRef = useRef<HTMLElement>(null);
-  // Only for this demo: the drawer opens inside the application frame, not over the docs page.
-  const applicationRef = useRef<HTMLDivElement>(null);
+  // Demo only: keeps the drawer inside this frame; in your code, leave out Portal's `container`.
+  const frameRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // CSS owns presentation. Only release the modal when its trigger becomes unavailable.
@@ -90,9 +90,9 @@ export default function TopNavigationResponsive() {
   return (
     <Drawer.Root actionsRef={actionsRef} swipeDirection="left">
       <Layout.Root
-        ref={applicationRef}
+        ref={frameRef}
         render={<section aria-label="Acme workspace" />}
-        className={styles.application}
+        className={styles.frame}
       >
         <Layout.Header render={<TopNavigation.Root />} className={styles.header}>
           <TopNavigation.Identity>
@@ -130,7 +130,7 @@ export default function TopNavigationResponsive() {
           </Layout.Main>
         </Layout.Body>
       </Layout.Root>
-      <Drawer.Portal container={applicationRef} className={styles.overlay}>
+      <Drawer.Portal container={frameRef} className={styles.overlay}>
         <Drawer.Backdrop />
         <Drawer.Viewport>
           <Drawer.Popup

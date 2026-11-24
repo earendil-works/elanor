@@ -2,7 +2,6 @@ import elanorTheme from '@earendil-works/elanor-code-themes/shiki';
 import type {CodeHighlighter} from '@earendil-works/elanor-react';
 import type {HighlighterCore, LanguageInput} from 'shiki/core';
 
-// The languages the app highlights, each loaded when it first appears.
 const languages = new Map<string, LanguageInput>([
   ['tsx', () => import('shiki/langs/tsx.mjs')],
   ['css', () => import('shiki/langs/css.mjs')],

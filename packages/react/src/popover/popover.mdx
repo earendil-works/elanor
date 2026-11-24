@@ -4,7 +4,7 @@ category: overlays
 
 # Popover
 
-A small panel anchored to its trigger, for extra information or a few controls. The page stays usable while it's open. For a task that needs full attention, use [Modal](/components/modal/).
+A small panel anchored to its trigger, for extra information or a few controls; the page stays usable while it's open. For a task that needs full attention, use [Modal](/components/modal/).
 
 <Demo example="./examples/demo.tsx" />
 
@@ -29,9 +29,9 @@ import {Popover} from '@earendil-works/elanor-react';
 
 The trigger opens the popover on click. Escape, clicking outside, or `Popover.Close` closes it and returns focus to the trigger.
 
-## Static rendering
+## Static pages
 
-On pages rendered on the server without React in the browser, use the static parts, and bind their behavior once the page has loaded:
+On [static pages](/application-setup/#static-pages), use the static parts, and bind their behavior once the page has loaded:
 
 ```tsx
 <Popover.StaticRoot>

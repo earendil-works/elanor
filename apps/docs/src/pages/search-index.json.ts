@@ -3,6 +3,7 @@ import {getCollection} from 'astro:content';
 import Slugger from 'github-slugger';
 import MiniSearch from 'minisearch';
 
+import {applicationSetup} from '../lib/application-setup.ts';
 import {orderedApi} from '../lib/component-api.ts';
 import {componentCategoryLabels} from '../lib/component-categories.ts';
 import {componentDescription} from '../lib/component-docs.ts';
@@ -155,6 +156,12 @@ export const GET: APIRoute = async () => {
       'Components',
       'Components',
       'React components from @earendil-works/elanor-react, built on Base UI and styled with the design tokens.',
+    ),
+    pageRecord(
+      '/application-setup/',
+      'Application setup',
+      'Components',
+      plainText((await applicationSetup()).body?.replace(/^# .*$/m, '') ?? ''),
     ),
     ...(await componentRecords()),
   ];

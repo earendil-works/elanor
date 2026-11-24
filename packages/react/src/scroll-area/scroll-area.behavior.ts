@@ -40,7 +40,7 @@ export function createScrollArea(root: HTMLElement): Behavior {
   const {viewport, axes, corner} = partsOf(root);
   let scrollingTimer: ReturnType<typeof setTimeout> | undefined;
   let scrollEndTimer: ReturnType<typeof setTimeout> | undefined;
-  // Only the reader's scrolling shows `data-scrolling`, not scrolls the page makes itself.
+  // Only a person's scrolling shows `data-scrolling`, not scrolls the page makes itself.
   let readerScrolling = false;
   let drag: {axis: Axis; pointer: number; scroll: number} | null = null;
 
@@ -181,7 +181,7 @@ export function createScrollArea(root: HTMLElement): Behavior {
 
   function onPointerMove(event: PointerEvent): void {
     if (!drag) return;
-    // A drag that pauses past the scroll-end delay is still the reader's.
+    // A drag that pauses past the scroll-end delay is still a person's.
     readerScrolling = true;
     const pointer = vertical(drag.axis) ? event.clientY : event.clientX;
     scrollTo(drag.axis, drag.scroll + (pointer - drag.pointer) * scrollPerPixel(drag.axis));

@@ -13,4 +13,9 @@ const components = defineCollection({
   schema: z.object({category: z.enum(componentCategories)}),
 });
 
-export const collections = {components};
+// Guides for the whole package, such as the application setup.
+const guides = defineCollection({
+  loader: glob({pattern: '*.mdx', base: '../../packages/react/docs'}),
+});
+
+export const collections = {components, guides};

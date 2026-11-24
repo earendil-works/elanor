@@ -8,7 +8,7 @@ React components built with Base UI and CSS Modules.
 npm install @earendil-works/elanor-react @earendil-works/elanor-fonts @earendil-works/design-tokens react react-dom
 ```
 
-Requires React 19.2 or later. Styles are precompiled; consumers do not need CSS Modules support.
+Requires React 19.2 or later. Styles are precompiled; your bundler doesn't need CSS Modules support.
 
 ## Usage
 
@@ -25,4 +25,4 @@ import {Button} from '@earendil-works/elanor-react';
 ```
 
 - [Components and examples](https://github.com/earendil-works/elanor/tree/main/packages/react/src)
-- [Application setup](https://github.com/earendil-works/elanor/blob/main/packages/react/docs/application-setup.md)
+- [Application setup](https://elanor.earendil.com/application-setup.md)

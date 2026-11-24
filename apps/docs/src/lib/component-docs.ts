@@ -5,6 +5,7 @@ import type {CollectionEntry} from 'astro:content';
 import {orderedApi, partSummary} from './component-api.ts';
 import {componentName} from './component-name.ts';
 import {assertDemoSyntax, demoBlock, demoFiles} from './demo-blocks.ts';
+import {firstParagraph} from './docs-wording.ts';
 
 /*
  * Component pages as Markdown for agents: the same text as the HTML page, with each
@@ -17,19 +18,27 @@ const fence = /^```[\s\S]*?^```$/gm;
 
 /** The first paragraph after the H1, as plain text. */
 export function componentDescription(entry: Entry): string {
-  const body = entry.body ?? '';
-  const paragraph = /^# .+\n\n([\s\S]+?)(?:\n\n|$)/m.exec(body)?.[1];
-  if (!paragraph || paragraph.startsWith('<')) {
+  const paragraph = firstParagraph(entry.body ?? '');
+  if (!paragraph) {
     throw new Error(`${entry.id}: start the page with an H1 and a one-paragraph description.`);
   }
-  return paragraph.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/\s+/g, ' ');
+  return paragraph;
 }
+
+/** Points the docs' HTML links at their Markdown versions. */
+export function markdownLinks(markdown: string): string {
+  return markdown
+    .replace(/\]\(\/components\/([\w-]+)\/(#[\w-]+)?\)/g, '](/components/$1.md$2)')
+    .replace(/\]\(\/application-setup\/(#[\w-]+)?\)/g, '](/application-setup.md$1)');
+}
+
+const preamble =
+  '> From `@earendil-works/elanor-react`. Set up first: [Application setup](/application-setup.md). Index and rules: [llms.txt](/llms.txt).';
 
 export function componentMarkdown(entry: Entry): string {
   const body = entry.body ?? '';
   const mdxPath = resolve(process.cwd(), entry.filePath ?? '');
   assertDemoSyntax(body, entry.id);
-  componentDescription(entry);
 
   const prose = body.replace(fence, '');
   const stray = /^(?:import |export |<(?!Demo )[A-Za-z])/m.exec(prose);
@@ -39,19 +48,17 @@ export function componentMarkdown(entry: Entry): string {
     );
   }
 
-  const markdown = body
-    .replace(demoBlock, (_, example: string) =>
-      demoFiles(mdxPath, example)
-        .map((file) => {
-          const language = file.name.endsWith('.css') ? 'css' : 'tsx';
-          const comment = language === 'css' ? `/* ${file.name} */` : `// ${file.name}`;
-          return `\`\`\`${language}\n${comment}\n${file.code.trimEnd()}\n\`\`\``;
-        })
-        .join('\n\n'),
-    )
-    .replace(/\]\(\/components\/([\w-]+)\/(#[\w-]+)?\)/g, '](/components/$1.md$2)');
+  const markdown = body.replace(demoBlock, (_, example: string) =>
+    demoFiles(mdxPath, example)
+      .map((file) => {
+        const language = file.name.endsWith('.css') ? 'css' : 'tsx';
+        const comment = language === 'css' ? `/* ${file.name} */` : `// ${file.name}`;
+        return `\`\`\`${language}\n${comment}\n${file.code.trimEnd()}\n\`\`\``;
+      })
+      .join('\n\n'),
+  );
 
-  return `${markdown.trimEnd()}\n${apiMarkdown(entry)}`;
+  return `${preamble}\n\n${markdownLinks(markdown).trimEnd()}\n${apiMarkdown(entry)}`;
 }
 
 function apiMarkdown(entry: Entry): string {

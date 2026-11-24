@@ -11,7 +11,7 @@ Icons are 20px, Material's own size, including its margin around the glyph.
 
 ## Plain or boiled
 
-[`@earendil-works/elanor-icons-boiled`](../boiled/README.md) has the same icons with a hand-drawn “boil”, and [`@earendil-works/elanor-icons-boiled-react`](../boiled/react/README.md) their React components. The packages have the same exports, so switching is a matter of the package name. To switch the icons inside `@earendil-works/elanor-react` too, redirect the dependency in your application, for example with pnpm:
+[`@earendil-works/elanor-icons-boiled`](../boiled/README.md) has the same icons with a hand-drawn "boil", and [`@earendil-works/elanor-icons-boiled-react`](../boiled/react/README.md) their React components. The packages have the same exports, so switching is a matter of the package name. To switch the icons inside `@earendil-works/elanor-react` too, redirect the dependency in your application, for example with pnpm:
 
 ```json
 {

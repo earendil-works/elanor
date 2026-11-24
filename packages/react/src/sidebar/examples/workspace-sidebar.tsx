@@ -39,6 +39,7 @@ export function WorkspaceSidebar({collapsed}: {readonly collapsed: boolean}) {
         iconStart={icon}
         active={label === current}
         onClick={(event) => {
+          // Demo only: render your router's links here instead.
           event.preventDefault();
           setCurrent(label);
         }}

@@ -33,15 +33,14 @@ const CloseContext = /* @__PURE__ */ createContext<() => void>(() => {});
 export type SearchDialogRootProps<Payload = unknown> = BaseDialog.Root.Props<Payload>;
 
 /**
- * A search that opens in a modal dialog. Put a `Trigger` and a `Popup` inside. To open it with a
- * keyboard shortcut, pass a `handle` from `createHandle()` and call `open()` from the application.
+ * A search that opens in a modal dialog. Put a `Trigger` and a `Popup` inside. For a keyboard
+ * shortcut, pass a `handle` from `createHandle()` and call `open(null)` from your key listener.
  */
 export function SearchDialogRoot<Payload = unknown>({
   actionsRef: actionsRefProp,
   ...props
 }: SearchDialogRootProps<Payload>) {
-  // Choosing a result closes the dialog through Base UI's actions, in the application's ref when
-  // it passes one.
+  // Choosing a result closes the dialog through Base UI's actions.
   const ownActionsRef = useRef<BaseDialog.Root.Actions>(null);
   const actionsRef = actionsRefProp ?? ownActionsRef;
   const close = () => actionsRef.current?.close();
@@ -56,10 +55,7 @@ export function SearchDialogRoot<Payload = unknown>({
 export interface SearchDialogTriggerProps extends Omit<BaseDialog.Trigger.Props, 'children'> {
   /** The trigger's text, such as "Search documentation". */
   readonly children?: ReactNode;
-  /**
-   * A keyboard shortcut shown at the end on devices that hover, such as a `KeyboardShortcut`. It
-   * only shows the keys: the application listens for them, and names them in `aria-keyshortcuts`.
-   */
+  /** Keys shown at the end on devices that hover, such as a `KeyboardShortcut`; it binds none. */
   readonly shortcut?: ReactNode;
 }
 

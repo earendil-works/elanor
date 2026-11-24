@@ -35,9 +35,9 @@ The modal moves focus inside, keeps it there, and returns it to the trigger on c
 
 `Modal.Close` closes the modal; render it as a [Button](/components/button/) or an [Icon button](/components/icon-button/). Title and Description name and describe the dialog for screen readers.
 
-## Static rendering
+## Static pages
 
-On pages rendered on the server without React in the browser, use the static parts. `Body` and `Actions` stay the same. Bind the behavior once the page has loaded:
+On [static pages](/application-setup/#static-pages), use the static parts. `Body` and `Actions` stay the same. Bind the behavior once the page has loaded:
 
 ```tsx
 <Modal.StaticRoot>

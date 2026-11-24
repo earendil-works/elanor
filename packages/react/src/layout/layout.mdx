@@ -4,7 +4,7 @@ category: layout
 
 # Layout
 
-Arranges a page into header, side regions, main content, and footer, with the document as the scroll container. Routing and navigation state stay in the application.
+Arranges a page into header, side regions, main content, and footer, with the document as the scroll container. For layout inside a region, use [Stack](/components/stack/) or [Grid](/components/grid/).
 
 <Demo example="./examples/demo.tsx" />
 
@@ -28,7 +28,7 @@ Use one `Main` per document. Inside an existing main landmark, use `<Layout.Main
 
 In the demo, the outer Container centers Body and the inner one caps the reading width at `semantic.dimension.size.maxWidth.content.small`. Asides are `semantic.dimension.size.sidebar` wide by default.
 
-## Application layout
+## With sidebars
 
 Put sidebars outside the content Grid. [Container](/components/container/) then centers content in the remaining space, capped at `semantic.dimension.size.maxWidth.content.large` (1216px).
 

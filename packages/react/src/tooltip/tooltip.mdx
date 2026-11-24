@@ -4,7 +4,7 @@ category: overlays
 
 # Tooltip
 
-A short label that appears next to an element while the pointer rests on it or it has keyboard focus, such as the name of an icon button. Touch screens don't show tooltips, so they must not hold anything people need: for content to read or act on, use [Popover](/components/popover/); for a label that should always show, use a [Button](/components/button/) with visible text.
+A short label shown while an element is hovered or focused, such as an icon button's name. Touch screens don't show tooltips, so for anything people need, use [Popover](/components/popover/) or a [Button](/components/button/) with text.
 
 <Demo example="./examples/demo.tsx" />
 
@@ -35,7 +35,7 @@ Wrap neighboring tooltips, such as a toolbar's, in `Tooltip.Provider`. Once one 
 
 ## Keyboard shortcuts
 
-Show an action's shortcut after its name with [Keyboard shortcut](/components/keyboard-shortcut/), and name the keys on the trigger in `aria-keyshortcuts`, so screen readers announce them too. The application listens for the keys; `aria-keyshortcuts` only declares them.
+Show an action's shortcut after its name with [Keyboard shortcut](/components/keyboard-shortcut/), and name the keys on the trigger in `aria-keyshortcuts`, so screen readers announce them too. Neither binds the keys; add the key listener yourself.
 
 <Demo example="./examples/keyboard-shortcuts.tsx" />
 

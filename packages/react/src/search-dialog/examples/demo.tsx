@@ -49,7 +49,7 @@ export default function SearchDialogDemo() {
           </SearchDialog.Status>
           {terms && results.length === 0 ? (
             <SearchDialog.Message>
-              <Text>No results for “{query.trim()}”.</Text>
+              <Text>No results for "{query.trim()}".</Text>
             </SearchDialog.Message>
           ) : null}
           {terms ? null : (

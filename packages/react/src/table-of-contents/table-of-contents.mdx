@@ -25,11 +25,11 @@ import {TableOfContents} from '@earendil-works/elanor-react';
 </TableOfContents.Root>;
 ```
 
-The demo links point to sections of this page. Root renders a `nav` named "Table of contents". `List` renders an ordered list, at the top and for nested entries.
+Root renders a `nav` named "Table of contents". `List` renders an ordered list, at the top and for nested entries.
 
 ## Current section
 
-`active` marks the section in view with `aria-current="location"`: its text turns `semantic.color.text.primary`, and the `Indicator`, a bar on the list's start edge, marks it. When `active` moves to another entry, the indicator slides there and resizes with `semantic.transition.movement.tableOfContents.indicator`, overshooting slightly; instantly when the reader prefers reduced motion. The application decides which section is current, for example with an `IntersectionObserver`. In the demo, choosing an entry makes it current.
+`active` marks the section in view with `aria-current="location"`: its text turns `semantic.color.text.primary`, and the `Indicator`, a bar on the list's start edge, marks it. When `active` moves to another entry, the indicator slides there and resizes with `semantic.transition.movement.tableOfContents.indicator`, overshooting slightly; instantly when a person prefers reduced motion. Set `active` yourself, for example from an `IntersectionObserver`; the React component doesn't track scrolling.
 
 <Demo example="./examples/active.tsx" />
 
@@ -58,9 +58,9 @@ Keep the trigger's text in sync with the `active` link. Assistive technology hea
 
 The menu is a bar with separators above and below that sticks to the top of its scroll container, the document or a scrolling ancestor such as a drawer, on `semantic.number.layer.floating`, with a shadow that fades in as content scrolls beneath it. To stick below a header, set `inset-block-start` in your CSS, such as `calc(var(--semantic-dimension-size-top-navigation) - var(--semantic-dimension-border-width-small))` below a top navigation: the bar sticks one border width higher, so the header's border covers its top separator.
 
-## Static rendering
+## Static pages
 
-On pages rendered on the server without React in the browser, the behaviors follow the page instead of the application: the static root marks the section in view and moves the `Indicator`, and the static menu shows it in its trigger. Lists, items, links, and the indicator stay the same.
+On [static pages](/application-setup/#static-pages), don't set `active`; the static root marks the section in view and moves the `Indicator`, and the static menu shows it in its trigger. Lists, items, links, and the indicator stay the same.
 
 ```tsx
 <TableOfContents.StaticRoot>

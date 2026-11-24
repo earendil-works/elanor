@@ -6,7 +6,7 @@ Self-hosted Mallos Serif, Commit Mono, and DepartureMono fonts with `@font-face`
 npm install @earendil-works/elanor-fonts
 ```
 
-Import once at the application entry:
+Import once, in your app's entry module:
 
 ```ts
 import '@earendil-works/elanor-fonts/mallos-serif.css';

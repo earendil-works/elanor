@@ -1,5 +1,5 @@
-.application {
-  /* Demo only: fixed-position drawer parts are placed and clipped within the frame. */
+.frame {
+  /* Demo only: places and clips the fixed drawer parts within the frame; leave it out in your code. */
   contain: layout paint;
   display: grid;
   grid-template-rows: auto minmax(0, 1fr);
@@ -31,7 +31,7 @@
   padding: var(--semantic-dimension-space-padding-x-large);
 }
 
-/* Anchor the Drawer to the viewport above the application. */
+/* The portal renders inside the frame, so it needs a layer above the header. */
 .overlay {
   position: fixed;
   inset: 0;

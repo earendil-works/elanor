@@ -1,6 +1,6 @@
 .frame {
-  /* Demo only: the fixed menu is placed within the frame. Layout containment only: with paint
-     containment, WebKit misses clicks on the menu's panels. */
+  /* Demo only: places the fixed menu within the frame; leave it out in your code. Not `paint`:
+     with paint containment, WebKit misses clicks on the menu's panels. */
   contain: layout;
   /* stylelint-disable-next-line design-tokens/no-hardcoded-token-values -- Demo frame size. */
   block-size: 28rem;

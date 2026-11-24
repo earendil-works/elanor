@@ -12,6 +12,11 @@ export const GET: APIRoute = async () => {
 
 > Earendil's design system: tokens for ${(await tokenBrands()).join(', ')}, React components, icons, and logos.
 
+- Import components and behaviors from \`@earendil-works/elanor-react\`, icons from \`@earendil-works/elanor-icons-react\`, and the stylesheets as in [Application setup](/application-setup.md).
+- Use only the components, parts, and props in each page's API section; the props differ from other libraries.
+- To change a part's element, pass \`render\` where its API lists it, as in Base UI; there's no \`asChild\`.
+- Button has \`hierarchy\`, \`semantic\`, and \`pending\`, not \`variant\`, \`color\`, or \`loading\`. A select is [Dropdown](/components/dropdown.md); a dialog is [Modal](/components/modal.md).
+
 All endpoints serve static files. Start with an index, then fetch individual resources; bulk dumps are not available.
 
 ## Design tokens
@@ -25,7 +30,7 @@ Tokens include light/dark CSS and DTCG values, CSS variables, descriptions, and 
 
 ## Components
 
-React components from \`@earendil-works/elanor-react\`. Each page has usage, example source, and props. Set up the app first with [application setup](https://github.com/earendil-works/elanor/blob/main/packages/react/docs/application-setup.md).
+React components from \`@earendil-works/elanor-react\`. Each page has usage, example source, and props. Before using components, follow [Application setup](/application-setup.md): stylesheets, fonts, portals, RTL, and static pages.
 
 Full Base UI index: [base-ui.com/llms.txt](https://base-ui.com/llms.txt).
 

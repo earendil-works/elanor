@@ -13,7 +13,7 @@ const asidePadding = {padding: 'var(--semantic-dimension-space-padding-medium)'}
 
 export default function LayoutDemo() {
   return (
-    // minBlockSize: 0 fits the layout into this demo; omit it on a page.
+    // Demo only: minBlockSize: 0 fits the layout into the preview; leave it out in your code.
     <Layout.Root style={{minBlockSize: 0}}>
       <Layout.Header>
         <Container>
@@ -53,12 +53,14 @@ export default function LayoutDemo() {
         </Layout.Main>
         <Layout.Aside aria-label="On this page" style={asidePadding}>
           <TableOfContents.Root>
-            <TableOfContents.Item>
-              <TableOfContents.Link href="#first-week">Your first week</TableOfContents.Link>
-            </TableOfContents.Item>
-            <TableOfContents.Item>
-              <TableOfContents.Link href="#accounts">Accounts</TableOfContents.Link>
-            </TableOfContents.Item>
+            <TableOfContents.List>
+              <TableOfContents.Item>
+                <TableOfContents.Link href="#first-week">Your first week</TableOfContents.Link>
+              </TableOfContents.Item>
+              <TableOfContents.Item>
+                <TableOfContents.Link href="#accounts">Accounts</TableOfContents.Link>
+              </TableOfContents.Item>
+            </TableOfContents.List>
           </TableOfContents.Root>
         </Layout.Aside>
       </Container>

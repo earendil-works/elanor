@@ -4,7 +4,7 @@ category: overlays
 
 # Collapsible
 
-A trigger that shows and hides a panel. Unstyled, so components and applications bring their own look; for a styled one, use [Progressive disclosure](/components/progressive-disclosure/).
+A trigger that shows and hides a panel, unstyled, so you style both yourself. For a styled one, use [Progressive disclosure](/components/progressive-disclosure/).
 
 <Demo example="./examples/demo.tsx" />
 
@@ -23,13 +23,13 @@ import {Collapsible} from '@earendil-works/elanor-react';
 
 ## Find in page
 
-With `hiddenUntilFound`, the browser's find in page searches a closed panel and opens it on a match. Leave the panel closed and search this page for a word in it.
+With `hiddenUntilFound`, the browser's find in page searches a closed panel and opens it on a match.
 
 <Demo example="./examples/hidden-until-found.tsx" />
 
-## Static rendering
+## Static pages
 
-On pages rendered on the server without React in the browser, use the static parts. They render the same markup, and the behavior opens and closes the panel with the same states, so the same stylesheet animates it:
+On [static pages](/application-setup/#static-pages), use the static parts. They render the same markup, and the behavior opens and closes the panel with the same states, so the same stylesheet animates it:
 
 ```tsx
 <Collapsible.StaticRoot defaultOpen>

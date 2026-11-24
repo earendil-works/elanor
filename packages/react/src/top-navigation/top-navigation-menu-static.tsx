@@ -49,8 +49,8 @@ export interface TopNavigationStaticMenuProps {
 }
 
 /**
- * The top navigation's menu for pages without React in the browser;
- * `createTopNavigationMenu` makes it work. Renders no element.
+ * The top navigation's menu for static pages; `createTopNavigationMenu` makes it work. Renders no
+ * element.
  */
 export function TopNavigationStaticMenu({
   defaultPanel,
@@ -97,7 +97,7 @@ export function TopNavigationStaticMenuTrigger({
 }
 
 export interface TopNavigationStaticMenuPopupProps extends HTMLAttributes<HTMLDivElement> {
-  /** The page's own behaviors for this element, attached after the component's. */
+  /** More `enhance` names for this element, space-separated; they run after the component's own. */
   readonly 'data-elanor'?: string;
   readonly ref?: Ref<HTMLDivElement> | undefined;
   /** The accessible name, such as "Navigation menu". */

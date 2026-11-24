@@ -17,13 +17,13 @@ export interface SideNavigationStaticRootProps extends SideNavigationRootProps {
    * session storage under this key.
    */
   readonly persist?: string;
-  /** The page's own behaviors for this element, attached after the component's. */
+  /** More `enhance` names for this element, space-separated; they run after the component's own. */
   readonly 'data-elanor'?: string;
 }
 
 /**
- * A side navigation for pages without React in the browser; `createSideNavigation` restores it
- * and scrolls the current page into view.
+ * A side navigation for static pages; `createSideNavigation` restores it and scrolls the current
+ * page into view.
  */
 export function SideNavigationStaticRoot({
   persist,

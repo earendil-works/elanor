@@ -53,6 +53,7 @@ export default function FileTreeControlled() {
           Collapse all
         </Button>
       </Stack>
+      {/* Demo only: a sidebar-wide column; in your code, the tree fills its region. */}
       <div style={{inlineSize: 260}}>
         <FileTree.Root
           aria-label="Files"
