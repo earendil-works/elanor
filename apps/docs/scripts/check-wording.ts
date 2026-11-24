@@ -9,7 +9,7 @@ const root = join(import.meta.dirname, '../../..');
 const react = join(root, 'packages/react');
 
 // `composer/` is left out until another change fixes its wording.
-const skipped = /\.test\.|\/composer\//;
+const skipped = /\.test\.|[\\/]composer[\\/]/;
 
 function files(directory: string): string[] {
   return readdirSync(directory, {recursive: true, encoding: 'utf8'})
@@ -36,7 +36,7 @@ for (const path of files(join(react, 'src'))) {
     check(path, text);
     const problem = descriptionProblem(relative(root, path), text);
     if (problem) problems.push(problem);
-  } else if (path.includes('/examples/')) check(path, text, keep(text, comments));
+  } else if (/[\\/]examples[\\/]/.test(path)) check(path, text, keep(text, comments));
   else if (/\.tsx?$/.test(path)) check(path, keep(text, jsdoc));
 }
 for (const path of [
