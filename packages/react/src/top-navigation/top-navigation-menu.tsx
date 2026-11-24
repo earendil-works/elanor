@@ -83,7 +83,7 @@ export function TopNavigationMenu({
   const openerRef = useRef<HTMLElement>(null);
   const backButtonRef = useRef<HTMLButtonElement>(null);
   const panelTriggersRef = useRef(new Map<string, HTMLElement>());
-  // `null` until the reader slides, so each opening shows the current `defaultPanel`.
+  // `null` until a person slides, so each opening shows the current `defaultPanel`.
   const [panel, setPanel] = useState<string | null>(null);
 
   // Slides render synchronously, so the panel shown next is no longer inert when focus moves.

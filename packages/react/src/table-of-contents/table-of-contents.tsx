@@ -184,7 +184,7 @@ export function TableOfContentsMenu({ref, render, children, ...props}: TableOfCo
 
   const close = useCallback(() => actionsRef.current?.close(), []);
 
-  // Close the list when the bar's scroll container scrolls, so it never covers what the reader
+  // Close the list when the bar's scroll container scrolls, so it never covers what a person
   // scrolls to. The list's own scrolling doesn't count.
   useEffect(() => {
     const bar = barRef.current;

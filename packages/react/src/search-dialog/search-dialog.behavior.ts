@@ -45,7 +45,7 @@ function partsOf(element: HTMLElement): {
 
 /**
  * Searches in a server-rendered `SearchDialog.StaticPopup` without React: each opening starts with
- * an empty query; results come from `source` as the reader types, the first one selected; the
+ * an empty query; results come from `source` as a person types, the first one selected; the
  * arrow keys move the selection, Enter follows it, and ⌘, Ctrl, or Alt with Enter opens it in a
  * new tab. Opening and closing come from `createModal`.
  */

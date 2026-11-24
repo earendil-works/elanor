@@ -44,7 +44,7 @@ Call scroll methods on the Viewport.
 
 ## Visibility
 
-By default the scrollbar shows whenever content overflows. With `visibility="scrolling"` on `ScrollArea.Scrollbar`, it shows only while the reader scrolls the area or points at the scrollbar, then fades out. Use it for a large area that is read more than scrolled, such as a conversation. Scrolling from code, new content and resizes don't show it. In forced colors it always shows. Only the React parts have `visibility`; `StaticScrollbar` always shows.
+By default the scrollbar shows whenever content overflows. With `visibility="scrolling"` on `ScrollArea.Scrollbar`, it shows only while a person scrolls the area or points at the scrollbar, then fades out. Use it for a large area that is read more than scrolled, such as a conversation. Scrolling from code, new content and resizes don't show it. In forced colors it always shows. Only the React parts have `visibility`; `StaticScrollbar` always shows.
 
 <Demo example="./examples/visibility.tsx" />
 
@@ -52,18 +52,18 @@ By default the scrollbar shows whenever content overflows. With `visibility="scr
 
 The thumb is `semantic.color.background.fill.primary.neutral` in every state, including while hovered and scrolling. Style the parts with these state attributes:
 
-| Attribute                                      | Meaning                                                                       |
-| ---------------------------------------------- | ----------------------------------------------------------------------------- |
-| `data-has-overflow-x`, `data-has-overflow-y`   | Content is larger than the viewport                                           |
-| `data-overflow-y-start`, `data-overflow-y-end` | More content above or below                                                   |
-| `data-overflow-x-start`, `data-overflow-x-end` | More content at an inline edge                                                |
-| `data-scrolling`                               | Scrolling is in progress                                                      |
-| `data-hovering`                                | The pointer is over the area (Scrollbar)                                      |
-| `data-visibility`                              | `always` or `scrolling` (Scrollbar, React only)                               |
-| `data-reader-scrolling`                        | The reader is scrolling (Scrollbar with `visibility="scrolling"`, React only) |
-| `data-orientation`                             | Scrollbar and Thumb axis                                                      |
+| Attribute                                      | Meaning                                                                     |
+| ---------------------------------------------- | --------------------------------------------------------------------------- |
+| `data-has-overflow-x`, `data-has-overflow-y`   | Content is larger than the viewport                                         |
+| `data-overflow-y-start`, `data-overflow-y-end` | More content above or below                                                 |
+| `data-overflow-x-start`, `data-overflow-x-end` | More content at an inline edge                                              |
+| `data-scrolling`                               | Scrolling is in progress                                                    |
+| `data-hovering`                                | The pointer is over the area (Scrollbar)                                    |
+| `data-visibility`                              | `always` or `scrolling` (Scrollbar, React only)                             |
+| `data-reader-scrolling`                        | A person is scrolling (Scrollbar with `visibility="scrolling"`, React only) |
+| `data-orientation`                             | Scrollbar and Thumb axis                                                    |
 
-`data-scrolling` is Base UI's guess at the reader scrolling and also marks some scrolls from code; `data-reader-scrolling` marks only the reader's own scrolling.
+`data-scrolling` is Base UI's guess at a person scrolling and also marks some scrolls from code; `data-reader-scrolling` marks only a person's own scrolling.
 
 Don't wrap an element that already has `overflow: auto`. [Sidebar](/components/sidebar/) uses its own scrollbar visibility and overflow cues.
 
