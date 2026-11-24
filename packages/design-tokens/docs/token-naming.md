@@ -189,10 +189,14 @@ semantic.transition.stale
 semantic.transition.movement.popup
 semantic.transition.movement.disclosure
 semantic.transition.movement.indicator
+semantic.transition.movement.press
+semantic.transition.movement.release
 semantic.transition.movement.drawer
 ```
 
 Items under `movement` name a purpose (`popup`, `disclosure`, `indicator`) or, as component tokens, a component (`drawer`, `navigationMenu`, `tableOfContents.indicator`). Add a component item only when no shared purpose fits. How far something moves uses the same item names in its own category: `semantic.number.scale.popup` and `semantic.dimension.travel.popup`, with `rest` for the value when nothing moves. Direction is a sign in the component, and rotation stays structural (DTCG has no angle type).
+
+A pressed control grows by a distance, not a factor: `semantic.dimension.travel.press` at each side, the same for a small button and a wide field, so the eye reads the same answer to a finger. Its scale is worked out from the control's size (`1 + 2 × travel ÷ size`), in script where the size is not known in CSS. It grows over `movement.press` and settles back over the slower `movement.release`, both easing out and neither overshooting: a control that shrinks below its size before it settles reads as jumping between sizes.
 
 Durations of states rather than motion are `semantic.duration` tokens, not transitions: `semantic.duration.confirmation` is how long a confirmation, such as a copy button's check, stays before the control returns to rest. Nothing animates over it, so it stays the same when the reader prefers reduced motion. Components that time a state in JavaScript read it from the element's computed style.
 
