@@ -136,6 +136,12 @@ function pageRecord(
 
 export const GET: APIRoute = async () => {
   const setupBody = (await applicationSetup()).body ?? '';
+  const setupIntro = firstParagraph(setupBody);
+  if (!setupIntro) {
+    throw new Error(
+      'packages/react/docs/application-setup.mdx: start the page with an H1 and a one-paragraph introduction.',
+    );
+  }
   const records = [
     pageRecord(
       '/brand/',
@@ -175,7 +181,7 @@ export const GET: APIRoute = async () => {
       '/application-setup/',
       'Application setup',
       'Components',
-      firstParagraph(setupBody) ?? '',
+      setupIntro,
     ),
     ...(await componentRecords()),
   ];
