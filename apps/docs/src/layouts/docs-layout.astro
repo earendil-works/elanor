@@ -41,7 +41,7 @@ const ContentTag = current === '/components/layout/' ? 'div' : 'main';
     <SiteHead title={title} />
     <ColorSchemeScript />
     {markdown && <link rel="alternate" type="text/markdown" href={markdown} />}
-    <link rel="describedby" href="/llms.txt" />
+    <link rel="describedby" href={current.startsWith('/brand/') ? '/brand/llms.txt' : '/llms.txt'} />
     <slot name="head" />
     <ClientRouter />
   </head>

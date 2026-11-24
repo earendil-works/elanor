@@ -12,9 +12,10 @@ export const GET: APIRoute = async () => {
 
 > Earendil's design system: tokens for ${(await tokenBrands()).join(', ')}, React components, icons, and logos.
 
-- Don't assume APIs from other libraries; check each component's API section.
-- Import from \`@earendil-works/elanor-react\`.
-- Don't invent components, parts or props.
+- Import components and behaviors from \`@earendil-works/elanor-react\`, icons from \`@earendil-works/elanor-icons-react\`, and the stylesheets as in [Application setup](/application-setup.md).
+- Use only the components, parts, and props in each page's API section; the props differ from other libraries.
+- To change a part's element, pass \`render\` where its API lists it, as in Base UI; there's no \`asChild\`.
+- Button has \`hierarchy\`, \`semantic\`, and \`pending\`, not \`variant\`, \`color\`, or \`loading\`. A select is [Dropdown](/components/dropdown.md); a dialog is [Modal](/components/modal.md).
 
 All endpoints serve static files. Start with an index, then fetch individual resources; bulk dumps are not available.
 

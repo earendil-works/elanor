@@ -25,6 +25,16 @@ export function componentDescription(entry: Entry): string {
   return paragraph.replace(/\[([^\]]+)\]\([^)]+\)/g, '$1').replace(/\s+/g, ' ');
 }
 
+/** Points the docs' HTML links at their Markdown versions. */
+export function markdownLinks(markdown: string): string {
+  return markdown
+    .replace(/\]\(\/components\/([\w-]+)\/(#[\w-]+)?\)/g, '](/components/$1.md$2)')
+    .replace(/\]\(\/application-setup\/(#[\w-]+)?\)/g, '](/application-setup.md$1)');
+}
+
+const preamble =
+  '> From `@earendil-works/elanor-react`. Set up first: [Application setup](/application-setup.md). Index and rules: [llms.txt](/llms.txt).';
+
 export function componentMarkdown(entry: Entry): string {
   const body = entry.body ?? '';
   const mdxPath = resolve(process.cwd(), entry.filePath ?? '');
@@ -38,19 +48,17 @@ export function componentMarkdown(entry: Entry): string {
     );
   }
 
-  const markdown = body
-    .replace(demoBlock, (_, example: string) =>
-      demoFiles(mdxPath, example)
-        .map((file) => {
-          const language = file.name.endsWith('.css') ? 'css' : 'tsx';
-          const comment = language === 'css' ? `/* ${file.name} */` : `// ${file.name}`;
-          return `\`\`\`${language}\n${comment}\n${file.code.trimEnd()}\n\`\`\``;
-        })
-        .join('\n\n'),
-    )
-    .replace(/\]\(\/components\/([\w-]+)\/(#[\w-]+)?\)/g, '](/components/$1.md$2)');
+  const markdown = body.replace(demoBlock, (_, example: string) =>
+    demoFiles(mdxPath, example)
+      .map((file) => {
+        const language = file.name.endsWith('.css') ? 'css' : 'tsx';
+        const comment = language === 'css' ? `/* ${file.name} */` : `// ${file.name}`;
+        return `\`\`\`${language}\n${comment}\n${file.code.trimEnd()}\n\`\`\``;
+      })
+      .join('\n\n'),
+  );
 
-  const page = `${markdown.trimEnd()}\n${apiMarkdown(entry)}`;
+  const page = `${preamble}\n\n${markdownLinks(markdown).trimEnd()}\n${apiMarkdown(entry)}`;
   assertWording(entry.id, componentDescription(entry), page);
   return page;
 }

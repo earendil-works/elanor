@@ -1,5 +1,7 @@
 # Application setup
 
+Do this once per app, before using any component.
+
 ## Styles, fonts and tokens
 
 Import the component stylesheet, font faces and one brand stylesheet once, in your app's entry module, such as `main.tsx` or the root layout:
@@ -27,7 +29,7 @@ A broad unlayered rule such as `* { margin: 0 }` or `p { margin-block: 1em }` al
 
 ## Portals
 
-Popups render in a portal at the end of `body`. Follow [Base UI's portal setup](https://base-ui.com/react/overview/quick-start): give `body` `position: relative`, so backdrops cover the whole viewport in iOS Safari, and isolate the element that wraps your app, so popups stack above everything in it:
+Popups render in a portal at the end of `body`. Follow [Base UI's portal setup](https://base-ui.com/react/overview/quick-start): give `body` `position: relative`, so backdrops cover the whole viewport in Safari on iOS 26 and later, and isolate the element that wraps your app, so popups stack above everything in it:
 
 ```tsx
 <body>
@@ -45,7 +47,7 @@ body {
 }
 ```
 
-When `Layout.Root` is the element that wraps your app, leave out `.appRoot`: Layout.Root is already isolated, without clipping. Keep `body { position: relative }` either way. Elanor doesn't set up custom portal containers or stacking order; if you pass a `container` to a Portal, keep it outside the isolated element. Scoped themes must also cover the portal container.
+When `Layout.Root` is the element that wraps your app, leave out `.appRoot`: Layout.Root is already isolated, without clipping. Keep `body { position: relative }` either way. Elanor creates no portal container; if you pass a `container` to a Portal, keep it outside the isolated element. Brand tokens and `data-color-scheme` apply on `:root`, so portaled popups get them too.
 
 ## Page composition
 
@@ -53,7 +55,7 @@ Use `Layout.Root` with optional `Header`, `Body`, `Aside`, `Main`, and `Footer`.
 
 Place `Container` inside Main and content Grid inside Container, separate from sidebars. Container caps content at `semantic.dimension.size.maxWidth.content.large` (1216px) with 16px inline gutters; `width="full"` removes the cap, not the gutters.
 
-Layout uses document scrolling. From `semantic.dimension.breakpoint.medium` (64rem), asides are sticky; below it, regions stack in source order. On small screens, keep navigation visible or offer it in a Drawer ([responsive navigation](/components/top-navigation.md#responsive-navigation)). For composition and sticky-header offsets, see [Layout](/components/layout.md).
+Layout uses document scrolling. From `semantic.dimension.breakpoint.medium` (64rem), asides are sticky; below it, regions stack in source order. On small screens, keep navigation visible or offer it in a Drawer ([responsive navigation](/components/top-navigation/#responsive-navigation)). For composition and sticky-header offsets, see [Layout](/components/layout/).
 
 ## RTL
 
@@ -75,7 +77,9 @@ Elanor does not declare client boundaries. With React Server Components, import 
 
 ## Static pages
 
-A static page is rendered on the server and runs no React in the browser. Components that work there have a behavior, such as `createModal`, and many have static parts, such as `Modal.StaticRoot`. Render the static parts, or the component where it has none, on the server; then bind the behaviors with `enhance` once the page has loaded. Each component's "Static pages" section lists its parts and behaviors:
+A static page is rendered on the server and runs no React in the browser. These components work there, each with a behavior and most with static parts, such as `Modal.StaticRoot`: [Collapsible](/components/collapsible/), [Copy button](/components/copy-button/), [Linked heading](/components/linked-heading/), [Modal](/components/modal/), [Popover](/components/popover/), [Scroll area](/components/scroll-area/), [Search dialog](/components/search-dialog/), [Side navigation](/components/side-navigation/), [Table of contents](/components/table-of-contents/), and [Top navigation](/components/top-navigation/)'s menu. Each one's "Static pages" section lists its parts and behaviors.
+
+Render the static parts, or the component where it has none, on the server. Once the page has loaded, bind the behaviors with `enhance`. Its keys are the names the markup carries in `data-elanor`, such as `modal` or `copy-button`:
 
 ```ts
 import {createModal, enhance} from '@earendil-works/elanor-react';
