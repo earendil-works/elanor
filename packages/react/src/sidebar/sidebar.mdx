@@ -41,7 +41,7 @@ Collapsed links show their label in a [tooltip](/components/tooltip/) on hover a
 
 ## Controlled
 
-Pass `collapsed` and `onCollapsedChange` to control the state, for example to persist it. `details.cancel()` in `onCollapsedChange` keeps the current state; a controlled owner that cancels must not update its own state either. Don't switch between controlled and uncontrolled.
+Pass `collapsed` and `onCollapsedChange` to control the state, for example to persist it. `details.cancel()` in `onCollapsedChange` keeps the current state; if you cancel, don't update your `collapsed` state either. Don't switch between controlled and uncontrolled.
 
 <Demo example="./examples/controlled.tsx" />
 

@@ -9,14 +9,11 @@ import {TableOfContents, type TableOfContentsRootProps} from './table-of-content
 import styles from './table-of-contents.module.css';
 
 export interface TableOfContentsStaticRootProps extends TableOfContentsRootProps {
-  /** The page's own behaviors for this element, attached after the component's. */
+  /** Your own behavior names for this element, for `enhance`, attached after the component's. */
   readonly 'data-elanor'?: string;
 }
 
-/**
- * A table of contents for pages without React in the browser; `createTableOfContents` marks the
- * section in view.
- */
+/** A table of contents for static pages; `createTableOfContents` marks the section in view. */
 export function TableOfContentsStaticRoot({
   'data-elanor': pageBehaviors,
   ...props
@@ -30,13 +27,13 @@ export function TableOfContentsStaticRoot({
 }
 
 export interface TableOfContentsStaticMenuProps extends HTMLAttributes<HTMLDivElement> {
-  /** The page's own behaviors for this element, attached after the component's. */
+  /** Your own behavior names for this element, for `enhance`, attached after the component's. */
   readonly 'data-elanor'?: string;
   readonly ref?: Ref<HTMLDivElement> | undefined;
 }
 
 /**
- * The table of contents as a menu in a sticky bar, for pages without React in the browser;
+ * The table of contents as a menu in a sticky bar, for static pages;
  * `createTableOfContentsMenu`, `createPopover`, and `createTableOfContents` make it work.
  */
 export function TableOfContentsStaticMenu({
@@ -93,7 +90,7 @@ export interface TableOfContentsStaticMenuPopupProps extends HTMLAttributes<HTML
   readonly ref?: Ref<HTMLElement> | undefined;
   /** Accessible name of the popup and the list's `nav`. */
   readonly label?: string;
-  /** The page's own behaviors for the list's `nav`, attached after the component's. */
+  /** Your own behavior names for the list's `nav`, for `enhance`, attached after the component's. */
   readonly 'data-elanor'?: string;
 }
 

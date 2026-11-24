@@ -39,8 +39,8 @@ export interface SearchDialogStaticRootProps {
 }
 
 /**
- * A search dialog for pages without React in the browser; `createModal`, `createScrollArea`, and
- * `createSearchDialog` make it work. Renders no element.
+ * A search dialog for static pages; `createModal`, `createScrollArea`, and `createSearchDialog`
+ * make it work. Renders no element.
  */
 export function SearchDialogStaticRoot({id, children}: SearchDialogStaticRootProps) {
   const generatedId = useId();
@@ -95,7 +95,7 @@ export function SearchDialogStaticTrigger({
 }
 
 export interface SearchDialogStaticPopupProps extends DialogHTMLAttributes<HTMLDialogElement> {
-  /** The page's own behaviors for this element, attached after the component's. */
+  /** Your own behavior names for this element, for `enhance`, attached after the component's. */
   readonly 'data-elanor'?: string;
   readonly ref?: Ref<HTMLDialogElement> | undefined;
   /** The accessible name, such as "Search documentation". */
@@ -245,7 +245,7 @@ export interface SearchDialogStaticQueryProps extends HTMLAttributes<HTMLSpanEle
   readonly ref?: Ref<HTMLSpanElement> | undefined;
 }
 
-/** The query, inside a `StaticMessage`, such as “No results for …”. */
+/** The query, inside a `StaticMessage`, such as "No results for …". */
 export function SearchDialogStaticQuery({ref, ...props}: SearchDialogStaticQueryProps) {
   return <span {...props} ref={ref} data-elanor-search-query="" />;
 }

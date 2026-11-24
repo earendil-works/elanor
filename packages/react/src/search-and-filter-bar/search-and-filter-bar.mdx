@@ -23,7 +23,7 @@ import {Search, SearchAndFilterBar} from '@earendil-works/elanor-react';
 </SearchAndFilterBar.Root>;
 ```
 
-The bar only arranges its contents; the application filters the data. Give Root `role="search"` and an `aria-label`, and announce the number of results in a status region.
+The bar only arranges its contents; filter the data yourself. Give Root `role="search"` and an `aria-label`, and announce the number of results in a status region.
 
 Set `density="compact"` on Search, Dropdown triggers, SegmentedControl, and FiltersTrigger, so everything in the bar is 24px high. Touch targets keep the default height.
 
@@ -35,7 +35,7 @@ Put controls directly in Filters. A wrapper element counts as one filter.
 
 <Demo example="./examples/content-width.tsx" />
 
-For filters of one width on the page grid, set `layout="tracks"` on Filters. The search starts the bar and the filters end it. From 75.5rem the bar follows a twelve-track grid: the search spans four tracks and each filter two. Narrower bars keep each filter at its 11.75rem minimum, which fits values such as “Status: Pending” or “Role: Member +1”. A filter's width doesn't depend on its value, so the row doesn't move when a value or Clear appears; long values truncate.
+For filters of one width on the page grid, set `layout="tracks"` on Filters. The search starts the bar and the filters end it. From 75.5rem the bar follows a twelve-track grid: the search spans four tracks and each filter two. Narrower bars keep each filter at its 11.75rem minimum, which fits values such as "Status: Pending" or "Role: Member +1". A filter's width doesn't depend on its value, so the row doesn't move when a value or Clear appears; long values truncate.
 
 <Demo example="./examples/tracks.tsx" />
 
@@ -66,7 +66,7 @@ Add a FiltersTrigger and a FiltersDrawer, and bars narrower than 24rem keep the 
 </SearchAndFilterBar.FiltersDrawer>
 ```
 
-While the drawer is open, the controls in Filters render in its FiltersSlot instead, so they mount again each time; control their values from the application. The page behind the drawer is inert, so FiltersStatus announces the results instead of the page's status region.
+While the drawer is open, the controls in Filters render in its FiltersSlot instead, so they mount again each time; keep their values in your state, with `value` and `onValueChange`. The page behind the drawer is inert, so FiltersStatus announces the results instead of the page's status region.
 
 FiltersTrigger also works without a bar, inside any Drawer.Root. With `density="compact"` it's 24px high, where a compact Button is 20px.
 

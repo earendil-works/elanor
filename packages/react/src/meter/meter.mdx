@@ -26,7 +26,7 @@ Meter adds no layout; arrange its parts with [Stack](/components/stack/). Withou
 
 ## Semantic
 
-`warning` and `negative` flag a value near or past a limit. Choose the thresholds in your application. For another color, give `Meter.Indicator` a class; it overrides `semantic`.
+`warning` and `negative` flag a value near or past a limit. Meter doesn't derive `semantic` from the value; set it from your own thresholds. For another color, give `Meter.Indicator` a class; it overrides `semantic`.
 
 <Demo example="./examples/semantic.tsx" />
 

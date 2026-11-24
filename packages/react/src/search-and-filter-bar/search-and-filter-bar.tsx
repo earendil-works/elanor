@@ -135,7 +135,7 @@ export interface SearchAndFilterBarFiltersProps extends HTMLAttributes<HTMLDivEl
 
 /**
  * Holds the filter controls, such as Dropdowns. While the filters drawer is open, they render in
- * its FiltersSlot instead, so control their values from the application.
+ * its FiltersSlot instead, so keep their values in your state, with `value` and `onValueChange`.
  */
 export function SearchAndFilterBarFilters({
   ref,
@@ -304,7 +304,7 @@ export interface SearchAndFilterBarFiltersStatusProps extends HTMLAttributes<HTM
 }
 
 /**
- * Announces the results while the filters drawer is open, such as “12 members”. The page behind
+ * Announces the results while the filters drawer is open, such as "12 members". The page behind
  * the drawer is inert, so its own status region is not announced.
  */
 export function SearchAndFilterBarFiltersStatus({

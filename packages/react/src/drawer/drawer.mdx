@@ -38,7 +38,7 @@ When a bottom sheet contains form fields, wrap its Portal in `VirtualKeyboardPro
 
 `swipeDirection="left"` or `"right"` turns the drawer into a side panel; the default, `"down"`, is a bottom sheet. Directions are physical, so they don't flip in right-to-left layouts.
 
-Close the drawer when the user navigates, with `actionsRef.current.close()` or controlled `open`. Don't hide an open drawer with CSS at a breakpoint; close it instead. Keep its `open` state separate from [Sidebar](/components/sidebar/)'s `collapsed`.
+Close the drawer when the route changes, with `actionsRef.current.close()` or controlled `open`. Don't hide an open drawer with CSS at a breakpoint; close it instead. Keep its `open` state separate from [Sidebar](/components/sidebar/)'s `collapsed`.
 
 <Demo example="./examples/side-panel.tsx" />
 
@@ -50,4 +50,4 @@ Nest a Drawer inside a Popup to stack bottom sheets. With `data-stacked` on each
 
 ## Overlay placement
 
-The application decides how overlays stack. With an elevated header, give `Drawer.Portal` `position: fixed`, `inset: 0`, and `z-index: var(--semantic-number-layer-overlay)`. Leave the backdrop, viewport, and nested popups on their default layers.
+Drawer doesn't stack itself above your header. With an elevated header, give `Drawer.Portal` `position: fixed`, `inset: 0`, and `z-index: var(--semantic-number-layer-overlay)`. Leave the backdrop, viewport, and nested popups on their default layers.

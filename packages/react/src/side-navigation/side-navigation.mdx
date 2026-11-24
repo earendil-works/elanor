@@ -51,9 +51,9 @@ Links with plain text are named from their text; give links with rich content an
 
 Compact navigation is one link wide: `semantic.dimension.size.medium` (32px). Switching `variant` keeps the same links, so focus and tab order are preserved. [Sidebar](/components/sidebar/) switches it when the sidebar collapses.
 
-## Static rendering
+## Static pages
 
-On pages rendered on the server without React in the browser, use the static root and sections; lists, items, and links stay the same. Bind the behaviors right after the navigation's markup, so restored sections and the scroll position are in place before the first paint:
+On [static pages](/application-setup.md#static-pages), use the static root and sections; lists, items, and links stay the same. Bind the behaviors right after the navigation's markup, so restored sections and the scroll position are in place before the first paint:
 
 ```tsx
 <SideNavigation.StaticRoot aria-label="Documentation" persist="docs">

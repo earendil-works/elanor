@@ -26,12 +26,12 @@ function useStaticCollapsible(part: string): StaticCollapsibleContextValue {
 
 export interface CollapsibleStaticRootProps
   extends HTMLAttributes<HTMLDivElement>, Pick<BaseCollapsible.Root.Props, 'defaultOpen'> {
-  /** The page's own behaviors for this element, attached after the component's. */
+  /** Your own behavior names for this element, for `enhance`, attached after the component's. */
   readonly 'data-elanor'?: string;
   readonly ref?: Ref<HTMLDivElement> | undefined;
 }
 
-/** A collapsible for pages without React in the browser; `createCollapsible` makes it work. */
+/** A collapsible for static pages; `createCollapsible` makes it work. */
 export function CollapsibleStaticRoot({
   'data-elanor': pageBehaviors,
   ref,

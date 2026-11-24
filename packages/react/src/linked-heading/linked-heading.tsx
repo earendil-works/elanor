@@ -14,7 +14,7 @@ export type LinkedHeadingProps = HeadingProps & {
   readonly linkLabel: string;
   /** Announced after the link is copied. */
   readonly copiedLabel?: string;
-  /** The page's own behaviors for the wrapper, attached after the linked heading's. */
+  /** Your own behavior names for the wrapper, for `enhance`, attached after the linked heading's. */
   readonly 'data-elanor'?: string;
 };
 

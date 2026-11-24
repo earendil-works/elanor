@@ -38,7 +38,7 @@ import {SearchDialog} from '@earendil-works/elanor-react';
 </SearchDialog.Root>;
 ```
 
-The application finds the results; the dialog shows them. Control the query with `value` and `onValueChange` on the Popup, render a `Result` per match, and show a `Message`, such as an [Empty state](/components/empty-state/), when there are none. `Status` announces the count to assistive technology. Clear the query when the dialog opens, in Root's `onOpenChange`, so each search starts empty.
+The dialog doesn't search; find the results yourself and render them. Control the query with `value` and `onValueChange` on the Popup, render a `Result` per match, and show a `Message`, such as an [Empty state](/components/empty-state/), when there are none. `Status` announces the count to assistive technology. Clear the query when the dialog opens, in Root's `onOpenChange`, so each search starts empty.
 
 The field is a combobox that controls the list. The first result is selected as results arrive; the arrow keys move the selection, and Enter or a click follows the selected result's link and closes the dialog. A click with a modifier key, such as opening the link in a new tab, leaves it open, and so does ⌘, Ctrl, or Alt with Enter, which opens the selected result in a new tab. Without results, Enter submits the form, so set `action` and the field's `name` for a search page.
 
@@ -48,13 +48,13 @@ The dialog sits `semantic.dimension.space.padding.xxxxLarge` from the top, so re
 
 ## Keyboard shortcut
 
-The Trigger looks like a search field. The application chooses the keyboard shortcut that opens the dialog: create a handle with `SearchDialog.createHandle()`, pass it to Root, and call `open(null)` from a key listener. Show the keys in the Trigger with `shortcut`, such as a [Keyboard shortcut](/components/keyboard-shortcut/), and name them in `aria-keyshortcuts`. The shortcut and the Footer's hints show only on devices that hover, which usually have a keyboard.
+The Trigger looks like a search field. The dialog binds no shortcut. To add one, create a handle with `SearchDialog.createHandle()`, pass it to Root, and call `open(null)` from a key listener. Show the keys in the Trigger with `shortcut`, such as a [Keyboard shortcut](/components/keyboard-shortcut/), and name them in `aria-keyshortcuts`. The shortcut and the Footer's hints show only on devices that hover, which usually have a keyboard.
 
 <Demo example="./examples/keyboard-shortcut.tsx" />
 
-## Static rendering
+## Static pages
 
-On pages rendered on the server without React in the browser, use the static parts. `Form`, `Footer`, and `Hint` stay the same. The results come from a source in the page's script instead of React:
+On [static pages](/application-setup.md#static-pages), use the static parts. `Form`, `Footer`, and `Hint` stay the same. The results come from a source you pass in your script instead of React:
 
 ```tsx
 <SearchDialog.StaticRoot>
@@ -70,8 +70,8 @@ On pages rendered on the server without React in the browser, use the static par
         Search guides and reference pages.
       </SearchDialog.StaticMessage>
       <SearchDialog.StaticMessage state="empty">
-        No results for “<SearchDialog.StaticQuery />
-        ”.
+        No results for "<SearchDialog.StaticQuery />
+        ".
       </SearchDialog.StaticMessage>
       <SearchDialog.StaticList aria-label="Results" />
     </SearchDialog.StaticResults>
@@ -99,4 +99,4 @@ enhance({
 });
 ```
 
-The popup is a native modal dialog, opened and closed like [Modal](/components/modal/)'s static parts. Each opening starts with an empty query; the source loads when the dialog first opens, and up to ten results show once the query has two characters, the first selected. `StaticMessage`s show per state: `idle`, `short`, `loading`, `empty`, and `error`. Keyboard shortcuts are the page's: open the dialog by clicking its trigger, such as with `trigger.click()`, so it animates like any other opening. Give `StaticRoot` an `id` to open the dialog from other buttons too, with `commandfor` and `command="show-modal"`, and pass the page's own behaviors to `StaticPopup` in `data-elanor`.
+The popup is a native modal dialog, opened and closed like [Modal](/components/modal/)'s static parts. Each opening starts with an empty query; the source loads when the dialog first opens, and up to ten results show once the query has two characters, the first selected. `StaticMessage`s show per state: `idle`, `short`, `loading`, `empty`, and `error`. The static dialog binds no shortcut either: from your key listener, open it by clicking its trigger, such as with `trigger.click()`, so it animates like any other opening. Give `StaticRoot` an `id` to open the dialog from other buttons too, with `commandfor` and `command="show-modal"`, and pass your own behavior names to `StaticPopup` in `data-elanor`.

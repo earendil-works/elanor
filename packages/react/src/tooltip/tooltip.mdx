@@ -35,7 +35,7 @@ Wrap neighboring tooltips, such as a toolbar's, in `Tooltip.Provider`. Once one 
 
 ## Keyboard shortcuts
 
-Show an action's shortcut after its name with [Keyboard shortcut](/components/keyboard-shortcut/), and name the keys on the trigger in `aria-keyshortcuts`, so screen readers announce them too. The application listens for the keys; `aria-keyshortcuts` only declares them.
+Show an action's shortcut after its name with [Keyboard shortcut](/components/keyboard-shortcut/), and name the keys on the trigger in `aria-keyshortcuts`, so screen readers announce them too. Neither binds the keys: add the listener yourself; `aria-keyshortcuts` only declares them.
 
 <Demo example="./examples/keyboard-shortcuts.tsx" />
 
