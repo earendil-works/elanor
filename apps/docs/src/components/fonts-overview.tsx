@@ -147,7 +147,7 @@ export function FontsOverview({page, usageLines}: FontsOverviewProps): React.JSX
         <Heading level={2} size={4} id="use">
           Use
         </Heading>
-        <Text>Import the fonts your brand uses, once, at the app’s entry.</Text>
+        <Text>Import the fonts your brand uses, once, in your app's entry module.</Text>
         <CodeSnippet
           id="font-usage"
           actions={

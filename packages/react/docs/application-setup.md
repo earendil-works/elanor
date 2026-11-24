@@ -2,7 +2,7 @@
 
 ## Styles, fonts and tokens
 
-Import the component stylesheet, font faces and one brand stylesheet once at the application entry:
+Import the component stylesheet, font faces and one brand stylesheet once, in your app's entry module, such as `main.tsx` or the root layout:
 
 ```ts
 import '@earendil-works/elanor-fonts/mallos-serif.css';
@@ -15,9 +15,9 @@ import '@earendil-works/elanor-react/elanor.min.css';
 
 ### Cascade layers
 
-Component styles live in the `elanor` cascade layer: `elanor.components`, then `elanor.prose`, so long-form spacing wins over the components' own resets. Unlayered CSS always wins over layered CSS, so your application's styles override Elanor's regardless of selector specificity or load order, and a `className` on a component needs no extra specificity.
+Component styles live in the `elanor` cascade layer: `elanor.components`, then `elanor.prose`, so long-form spacing wins over the components' own resets. Unlayered CSS always wins over layered CSS, so your unlayered styles override Elanor's regardless of selector specificity or load order, and a `className` on a component needs no extra specificity.
 
-If your application uses layers too, name Elanor's layer in your order statement before your own, for example:
+If you use cascade layers too, name Elanor's layer in your order statement before your own, for example:
 
 ```css
 @layer reset, elanor, app;
@@ -27,7 +27,13 @@ A broad unlayered rule such as `* { margin: 0 }` or `p { margin-block: 1em }` al
 
 ## Portals
 
-Follow [Base UI's portal setup](https://base-ui.com/react/overview/quick-start):
+Popups render in a portal at the end of `body`. Follow [Base UI's portal setup](https://base-ui.com/react/overview/quick-start): give `body` `position: relative`, so backdrops cover the whole viewport in iOS Safari, and isolate the element that wraps your app, so popups stack above everything in it:
+
+```tsx
+<body>
+  <div className="appRoot">{children}</div>
+</body>
+```
 
 ```css
 body {
@@ -39,28 +45,19 @@ body {
 }
 ```
 
-`Layout.Root` already provides isolation without clipping. Keep portals outside the isolated root;
-custom containers and stacking order are application-owned. Scoped themes must
-also cover the portal container.
+When `Layout.Root` is the element that wraps your app, leave out `.appRoot`: Layout.Root is already isolated, without clipping. Keep `body { position: relative }` either way. Elanor doesn't set up custom portal containers or stacking order; if you pass a `container` to a Portal, keep it outside the isolated element. Scoped themes must also cover the portal container.
 
 ## Page composition
 
-Use `Layout.Root` with optional `Header`, `Body`, `Aside`, `Main`, and `Footer`.
-Supply one main landmark per document; use `Layout.Main render={<div />}` inside
-an existing main. `Page` is a non-landmark content group.
+Use `Layout.Root` with optional `Header`, `Body`, `Aside`, `Main`, and `Footer`. Supply one main landmark per document; use `Layout.Main render={<div />}` inside an existing main. `Page` is a non-landmark content group.
 
-Place `Container` inside Main and content Grid inside Container, separate from
-sidebars. Container caps content at `semantic.dimension.size.maxWidth.content.large`
-(1216px) with 16px inline gutters; `width="full"` removes the cap, not the gutters.
+Place `Container` inside Main and content Grid inside Container, separate from sidebars. Container caps content at `semantic.dimension.size.maxWidth.content.large` (1216px) with 16px inline gutters; `width="full"` removes the cap, not the gutters.
 
-Layout uses document scrolling. From `semantic.dimension.breakpoint.medium` (64rem),
-asides are sticky; below it, regions stack in source order. Keep navigation visible unless the application
-provides a mobile alternative. For composition and sticky-header offsets, see
-the [Layout recipes](../src/layout/layout.mdx).
+Layout uses document scrolling. From `semantic.dimension.breakpoint.medium` (64rem), asides are sticky; below it, regions stack in source order. On small screens, keep navigation visible or offer it in a Drawer ([responsive navigation](/components/top-navigation.md#responsive-navigation)). For composition and sticky-header offsets, see [Layout](/components/layout.md).
 
 ## RTL
 
-Set `<html dir="rtl">` and wrap the application:
+Set `<html dir="rtl">` and wrap your root component:
 
 ```tsx
 import {DirectionProvider} from '@earendil-works/elanor-react';
@@ -70,10 +67,18 @@ import {DirectionProvider} from '@earendil-works/elanor-react';
 </DirectionProvider>;
 ```
 
-The provider controls keyboard and positioning behavior; DOM direction controls
-CSS layout. For mixed-direction regions, set `dir` on portaled popups too.
+The provider controls keyboard and positioning behavior; DOM direction controls CSS layout. For mixed-direction regions, set `dir` on portaled popups too.
 
 ## Server components
 
-Elanor does not declare client boundaries. In React Server Components apps,
-import interactive components from an application-owned client component.
+Elanor does not declare client boundaries. With React Server Components, import interactive components from your own `'use client'` module.
+
+## Static pages
+
+A static page is rendered on the server and runs no React in the browser. Components that work there have a behavior, such as `createModal`, and many have static parts, such as `Modal.StaticRoot`. Render the static parts, or the component where it has none, on the server; then bind the behaviors with `enhance` once the page has loaded. Each component's "Static pages" section lists its parts and behaviors:
+
+```ts
+import {createModal, enhance} from '@earendil-works/elanor-react';
+
+enhance({modal: createModal});
+```
