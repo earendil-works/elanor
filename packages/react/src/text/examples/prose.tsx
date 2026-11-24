@@ -1,5 +1,6 @@
 import {Link, Text} from '@earendil-works/elanor-react';
 
+// Demo only; in your code, the links point to real URLs.
 export default function TextProse() {
   return (
     <div data-text-context="prose">

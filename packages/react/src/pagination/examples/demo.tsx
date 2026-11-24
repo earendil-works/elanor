@@ -31,6 +31,7 @@ export default function PaginationDemo() {
           href="#"
           disabled={page === 1}
           onClick={(event) => {
+            // Demo only; in your code, link to real `?page=` URLs instead of setting state.
             event.preventDefault();
             setPage((current) => current - 1);
           }}
@@ -42,6 +43,7 @@ export default function PaginationDemo() {
           href="#"
           disabled={page === pageCount}
           onClick={(event) => {
+            // Demo only; in your code, link to real `?page=` URLs instead of setting state.
             event.preventDefault();
             setPage((current) => current + 1);
           }}

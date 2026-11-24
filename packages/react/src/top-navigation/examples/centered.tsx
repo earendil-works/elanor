@@ -2,6 +2,7 @@ import {Link, TopNavigation} from '@earendil-works/elanor-react';
 
 import styles from './centered.module.css';
 
+// Demo only; in your code, the links point to real URLs.
 export default function TopNavigationCentered() {
   return (
     <div className={styles.frame}>

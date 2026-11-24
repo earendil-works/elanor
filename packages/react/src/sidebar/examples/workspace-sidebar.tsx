@@ -27,6 +27,7 @@ const groups = [
   },
 ];
 
+// Demo only; in your code, the links point to real URLs.
 /** Sidebar regions shared by the demos. `collapsed` comes from Sidebar.Root. */
 export function WorkspaceSidebar({collapsed}: {readonly collapsed: boolean}) {
   const [current, setCurrent] = useState('Home');
@@ -39,6 +40,7 @@ export function WorkspaceSidebar({collapsed}: {readonly collapsed: boolean}) {
         iconStart={icon}
         active={label === current}
         onClick={(event) => {
+          // Demo only; in your code, render your router's links here.
           event.preventDefault();
           setCurrent(label);
         }}

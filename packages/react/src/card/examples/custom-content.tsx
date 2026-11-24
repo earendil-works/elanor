@@ -1,5 +1,6 @@
 import {Card, Heading, Link, Stack, Text} from '@earendil-works/elanor-react';
 
+// Demo only; in your code, the links point to real URLs.
 export default function CardCustomContent() {
   return (
     <Card>

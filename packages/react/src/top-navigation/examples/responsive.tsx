@@ -37,7 +37,7 @@ function Destinations({
               active={active === page}
               compactContent={page.slice(0, 2)}
               onClick={(event) => {
-                // This demo selects local content; real applications supply their router links.
+                // Demo only; in your code, render your router's links here.
                 event.preventDefault();
                 onSelect(page);
               }}
@@ -64,13 +64,15 @@ function Resources({onNavigate}: {readonly onNavigate?: () => void}) {
   );
 }
 
+// Demo only; in your code, the links point to real URLs.
 export default function TopNavigationResponsive() {
   const [active, setActive] = useState('Overview');
   const [collapsed, setCollapsed] = useState(false);
   const actionsRef = useRef<DrawerRootActions>(null);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const contentRef = useRef<HTMLElement>(null);
-  // Only for this demo: the drawer opens inside the application frame, not over the docs page.
+  // Demo only: the drawer opens inside this frame, not over the docs page. In your code, leave
+  // out Portal's `container`.
   const applicationRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {

@@ -11,9 +11,10 @@ import {
 
 const asidePadding = {padding: 'var(--semantic-dimension-space-padding-medium)'};
 
+// Demo only; in your code, the links point to real URLs.
 export default function LayoutDemo() {
   return (
-    // minBlockSize: 0 fits the layout into this demo; omit it on a page.
+    // Demo only: minBlockSize: 0 fits the layout into the preview; leave it out in your code.
     <Layout.Root style={{minBlockSize: 0}}>
       <Layout.Header>
         <Container>

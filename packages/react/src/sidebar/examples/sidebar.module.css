@@ -1,5 +1,5 @@
-/* A row at every width, so the demo shows the sidebar even on small screens.
-   In an application, render Sidebar.Root as Layout.Aside instead. */
+/* Demo only: a row at every width, so the sidebar shows even on small screens.
+   In your code, render Sidebar.Root as Layout.Aside instead. */
 .frame {
   display: flex;
   border: var(--semantic-dimension-border-width-default) solid

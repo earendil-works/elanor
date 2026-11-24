@@ -2,6 +2,7 @@ import {Link, TopNavigation} from '@earendil-works/elanor-react';
 
 import styles from './stacked.module.css';
 
+// Demo only; in your code, the links point to real URLs.
 export default function TopNavigationStacked() {
   return (
     <TopNavigation.Root className={styles.header}>

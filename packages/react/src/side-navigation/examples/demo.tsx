@@ -1,5 +1,6 @@
 import {SideNavigation} from '@earendil-works/elanor-react';
 
+// Demo only; in your code, the links point to real URLs.
 export default function SideNavigationDemo() {
   return (
     <SideNavigation.Root aria-label="Workspace">

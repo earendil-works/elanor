@@ -39,6 +39,7 @@ export default function DrawerSidePanel() {
                           href="#"
                           active={destination === current}
                           onClick={(event) => {
+                            // Demo only; in your code, render your router's links here.
                             event.preventDefault();
                             setCurrent(destination);
                             actionsRef.current?.close();

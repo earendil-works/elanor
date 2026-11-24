@@ -11,6 +11,7 @@ const services = [
   {name: 'Worker', deployments: [{region: 'eu-central-1', status: 'Healthy'}]},
 ];
 
+// Demo only; in your code, the links point to real URLs.
 export default function TableSpanningRows() {
   return (
     <Table.Container>

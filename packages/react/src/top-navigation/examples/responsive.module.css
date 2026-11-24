@@ -31,7 +31,7 @@
   padding: var(--semantic-dimension-space-padding-x-large);
 }
 
-/* Anchor the Drawer to the viewport above the application. */
+/* Cover the viewport, above the header. */
 .overlay {
   position: fixed;
   inset: 0;

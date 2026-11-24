@@ -1,6 +1,7 @@
 import {ContentCopyIcon, EditIcon, OpenInNewIcon} from '@earendil-works/elanor-icons-react';
 import {Button, Menu} from '@earendil-works/elanor-react';
 
+// Demo only; in your code, the links point to real URLs.
 export default function MenuIcons() {
   return (
     <Menu.Root>

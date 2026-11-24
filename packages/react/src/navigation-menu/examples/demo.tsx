@@ -1,5 +1,6 @@
 import {NavigationMenu} from '@earendil-works/elanor-react';
 
+// Demo only; in your code, the links point to real URLs.
 export default function NavigationMenuDemo() {
   return (
     <NavigationMenu.Root aria-label="Main">

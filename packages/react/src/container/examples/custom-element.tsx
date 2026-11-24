@@ -1,6 +1,6 @@
 import {Container, Heading, Text} from '@earendil-works/elanor-react';
 
-// The outline only marks the content box for this demo.
+// Demo only: the outline marks the content box; leave it out in your code.
 const outline = {
   outline:
     'var(--semantic-dimension-border-width-default) dashed var(--semantic-color-border-primary)',

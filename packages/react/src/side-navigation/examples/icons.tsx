@@ -1,6 +1,7 @@
 import {FolderOpenIcon, GroupIcon, SettingsIcon} from '@earendil-works/elanor-icons-react';
 import {SideNavigation} from '@earendil-works/elanor-react';
 
+// Demo only; in your code, the links point to real URLs.
 export default function SideNavigationIcons() {
   return (
     <SideNavigation.Root aria-label="Workspace">

@@ -6,7 +6,7 @@ const searchDialog = SearchDialog.createHandle();
 export default function SearchDialogKeyboardShortcutDemo() {
   const [query, setQuery] = useState('');
 
-  // The application owns the shortcut: here, Ctrl+K or ⌘K opens the search.
+  // SearchDialog binds no shortcut; this listener opens it with Ctrl+K or ⌘K.
   useEffect(() => {
     function onKeyDown(event: KeyboardEvent) {
       if (event.defaultPrevented || event.isComposing) return;
@@ -41,7 +41,7 @@ export default function SearchDialogKeyboardShortcutDemo() {
           <SearchDialog.Message>
             <Text>
               {query.trim()
-                ? `No results for “${query.trim()}”.`
+                ? `No results for "${query.trim()}".`
                 : 'Search guides and reference pages.'}
             </Text>
           </SearchDialog.Message>
