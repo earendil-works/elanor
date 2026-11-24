@@ -19,27 +19,30 @@ For Base UI changes, consult [the documentation index](https://base-ui.com/llms.
 Each component directory has a `<component>.mdx` page and an `examples/` directory. The docs site renders the page at `/components/<component>/` and as Markdown for agents at `/components/<component>.md`.
 
 - Start with front matter that sets `category`, one of the categories in `apps/docs/src/lib/component-categories.ts`. The docs group the sidebar and the components overview by it.
-- Then an H1 (the directory name in sentence case) and a one-paragraph description: what it is and when to use it, with alternatives.
+- Then an H1 (the directory name in sentence case) and one or two sentences that stand alone: what it is, when to use it, and the alternative ("For X, use Y.").
 - Then a hero demo (`examples/demo.tsx`), `## Usage` with the import and a minimal snippet or anatomy, and one `##` section per variant or state. Add notes only where needed.
 - Don't write an API section. It's generated from the props types; document props with JSDoc on Elanor's declarations, and parts with JSDoc on the component.
 - Write live previews as `<Demo example="./examples/<name>.tsx" />` on one line. MDX contains no other JSX or imports; use code fences for code that can't render on a page.
-- Each example file default-exports one component and imports from `@earendil-works/elanor-react`, like application code. Show one concept per demo. Local imports, such as a CSS Module, appear in the demo's code panel.
+- Each example file default-exports one component and imports from `@earendil-works/elanor-react`, as code using the package does. Show one concept per demo. Local imports, such as a CSS Module, appear in the demo's code panel.
 - Demo links use `href="#"`. Headings inside demos use `level={2}` in the hero and `level={3}` under a `##` section.
 
 ## Writing docs
 
 Agents read each page as `/components/<id>.md`; its first paragraph is the `llms.txt` line. These rules cover MDX and JSDoc.
 
-- Open with one or two sentences: what it is, when to use it, and the alternative ("For X, use Y."). It must stand alone.
 - Address the developer as "you", in imperatives. Say "your code", "your router", "your state"; never "the application", "the caller", "the owner" or "consumers".
 - When a component leaves a job to you, say so: "X doesn't do Y; do Y with Z."
 - When a prop common elsewhere doesn't exist (`loading`, `asChild`), say so and show the Elanor way, because agents assume other libraries' APIs.
 - State requirements the types don't enforce, such as an accessible name, where they come up.
-- Use one term per concept, matching the part and prop names. End users are "people"; "the page" is the browser document; "app" names only the kind of product, API values and titles. Use straight quotes.
-- Write examples that run as-is: complete files, realistic data, no `...`.
+- Use one term per concept, matching the part and prop names.
+- End users are "people" or "a person".
+- "The page" is the browser document.
+- Use straight quotes.
+- "App" names only the kind of product, API values and titles: "app UI", `variant="app"`, "your app's entry module". Not your code: write "filter the data yourself", not "the app filters the data".
+- Write `examples/` files that run as-is: complete, with realistic data and no `...`.
 - Start demo-only comments with `Demo only:` and say what to do instead.
 - Name headings after the variant, state or task (`## Disabled`), not a claim.
-- Before finishing, read the page's `.md` and its `llms.txt` line on their own.
+- Before finishing, run `pnpm dev` and read `/components/<id>.md` and its line in `/llms.txt` on their own.
 
 ## Imports and exports
 
@@ -48,7 +51,7 @@ Agents read each page as `/components/<id>.md`; its first paragraph is the `llms
 - Expose JavaScript and types through the package root (`src/index.ts`); keep component subpaths private.
 - Use explicit value and type exports. For compounds, export named parts from a local `index.ts` barrel and re-export it with `export * as Name` from the package root. Do not use wildcard re-exports (`export * from`) or assemble runtime compound objects.
 - Expose compound parts only through their namespace, not prefixed component aliases at the package root. Keep public prop and event types as named type exports.
-- Preserve native ESM namespaces in build output. Member-level tree-shaking depends on the consumer's bundler.
+- Preserve native ESM namespaces in build output. Member-level tree-shaking depends on the bundler of the code that imports the package.
 - Mark side-effect-free module-level context creation calls with `/* @__PURE__ */` and preserve these annotations in build output.
 - Give implemented public components and parts named props types and use those types in their declarations. Derive Base UI-backed types rather than copying contracts.
 - Export supporting types for retained public APIs; don't mirror upstream internals or export empty state aliases.
@@ -67,11 +70,11 @@ Agents read each page as `/components/<id>.md`; its first paragraph is the `llms
 
 ## Behaviors
 
-Behaviors make components work on pages rendered on the server without React in the browser.
+Behaviors make components work on static pages: rendered on the server, without React in the browser.
 
 - Put a component's behavior next to it as `<component>.behavior.ts`, a factory `create<Component>(element)` that returns `{destroy()}`, and export it from `src/index.ts`. `utils/enhance.ts` binds behaviors to elements by `data-elanor`.
 - Behaviors import no React, Base UI, icons, or `.tsx` files (lint enforces it), so a page's bundler leaves React out when it imports only behaviors from the package root.
-- Components and static parts take a `data-elanor` prop and add the page's behavior names after their own, so pages can attach behaviors of their own to the same element.
+- Components and static parts take a `data-elanor` prop and add the `data-elanor` names they're given after their own, so other behaviors can attach to the same element.
 - The behavior gets everything from the markup, and the component does not import its behavior. Labels and options travel as attributes; timing comes from tokens, read from the element's computed style.
 - The component renders the behavior's markup contract: `data-elanor="<behavior>"`, options as `data-elanor-*` attributes, and states in the attributes the component already renders, such as `data-copy-state`. Document the contract in the factory's JSDoc. Class names are hashed, so behaviors never select by class.
 - Render the behavior's name and options only on the server (`useSyncExternalStore` with a server snapshot of `true`), so hydrated and client-rendered components drop them and their behavior stands down instead of handling events React already handles.
@@ -81,7 +84,7 @@ Behaviors make components work on pages rendered on the server without React in 
 
 - Use semantic tokens and preserve focus, disabled, invalid, and forced-colors states.
 - Keep every CSS Module self-contained: no `composes` or imports of other stylesheets. Share semantic tokens, not other components' private CSS classes.
-- Wrap all rules of a component stylesheet in `@layer elanor.components { … }` (Prose uses `elanor.prose`), so unlayered application CSS always overrides Elanor. Example stylesheets are application code and stay unlayered.
+- Wrap all rules of a component stylesheet in `@layer elanor.components { … }` (Prose uses `elanor.prose`), so an app's unlayered CSS always overrides Elanor. Example stylesheets stand for app code and stay unlayered.
 - Size controls that contain text by their block padding and line height, without a fixed or minimum block size, so they grow with larger type and stay aligned with buttons. Fixed block sizes are only for icon-only parts such as icon buttons and checkbox boxes, and touch sizes under `@media (pointer: coarse)`.
 - Prefer logical properties and flexible layouts. Handle narrow containers, RTL, and long content without hiding meaningful content.
 - Keep selectors scoped; avoid global overrides and specificity escalation.

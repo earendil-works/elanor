@@ -73,7 +73,7 @@ export default function TopNavigationResponsive() {
   const contentRef = useRef<HTMLElement>(null);
   // Demo only: the drawer opens inside this frame, not over the docs page. In your code, leave
   // out Portal's `container`.
-  const applicationRef = useRef<HTMLDivElement>(null);
+  const frameRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     // CSS owns presentation. Only release the modal when its trigger becomes unavailable.
@@ -92,9 +92,9 @@ export default function TopNavigationResponsive() {
   return (
     <Drawer.Root actionsRef={actionsRef} swipeDirection="left">
       <Layout.Root
-        ref={applicationRef}
+        ref={frameRef}
         render={<section aria-label="Acme workspace" />}
-        className={styles.application}
+        className={styles.frame}
       >
         <Layout.Header render={<TopNavigation.Root />} className={styles.header}>
           <TopNavigation.Identity>
@@ -132,7 +132,7 @@ export default function TopNavigationResponsive() {
           </Layout.Main>
         </Layout.Body>
       </Layout.Root>
-      <Drawer.Portal container={applicationRef} className={styles.overlay}>
+      <Drawer.Portal container={frameRef} className={styles.overlay}>
         <Drawer.Backdrop />
         <Drawer.Viewport>
           <Drawer.Popup

@@ -1,4 +1,4 @@
-.application {
+.frame {
   /* Demo only: fixed-position drawer parts are placed and clipped within the frame; leave out
      `contain` in your code. */
   contain: layout paint;

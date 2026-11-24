@@ -1,6 +1,6 @@
 # Elanor
 
-Earendil's design system. It provides UI building blocks; applications supply routing, state, and their brand stylesheet.
+Earendil's design system. It provides UI building blocks; your app supplies routing, state, and its brand stylesheet.
 
 | Package                                                                 | npm name                                                                                                                                                 | Contents                                                         |
 | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
@@ -21,7 +21,7 @@ Successful main builds are published to [pkg.earendil.com](https://pkg.earendil.
 
 Elanor dependencies use builds from the same commit. In lockfiles, pin a full SHA for short-term use, or a `main-…` or `vX.Y.Z` label for longer. Avoid `@main`: its contents change.
 
-To add a package, update `scripts/release/packages.mjs` and Elanor’s entry in `earendil-works/pkg/src/config.ts`.
+To add a package, update `scripts/release/packages.mjs` and Elanor's entry in `earendil-works/pkg/src/config.ts`.
 
 ## Development
 

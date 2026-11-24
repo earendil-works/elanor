@@ -33,7 +33,7 @@ export interface CopyButtonProps extends Omit<IconButtonProps, 'value'> {
   readonly errorLabel?: string;
   readonly onCopySuccess?: () => void;
   readonly onCopyError?: (error: Error) => void;
-  /** Your own behavior names for the button, for `enhance`, attached after the copy button's. */
+  /** More `enhance` names for the button, space-separated; they run after the copy button's own. */
   readonly 'data-elanor'?: string;
   /**
    * A link the behavior copies as an absolute URL on static pages, for a `value` that is a function.

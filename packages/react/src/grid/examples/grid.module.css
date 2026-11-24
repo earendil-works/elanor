@@ -1,10 +1,10 @@
-/* Shows the cell boundaries in these demos. */
+/* Demo only: shows the cell boundaries; leave it out in your code. */
 .cell {
   border-radius: var(--semantic-dimension-radius-small);
   background: var(--semantic-color-background-fill-secondary);
 }
 
-/* Marks each subgrid row as one element in this demo. */
+/* Demo only: marks each subgrid row; leave it out in your code. */
 .row {
   padding-block: var(--semantic-dimension-space-padding-small);
   border-radius: var(--semantic-dimension-radius-small);

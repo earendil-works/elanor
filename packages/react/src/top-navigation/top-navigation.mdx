@@ -4,7 +4,7 @@ category: navigation
 
 # Top navigation
 
-The header bar of a site or app, with regions for identity, navigation, and actions. Arrange the regions with your own CSS; this page has recipes to start from.
+The header bar of a site or app, with regions for identity, navigation, and actions. Arrange the regions with your own CSS; the sections below are layouts to start from.
 
 <Demo example="./examples/demo.tsx" />
 
@@ -34,7 +34,7 @@ By default, the regions share one row, with free space between them, and wrap wh
 
 ## Height
 
-Root is `semantic.dimension.size.topNavigation` (64px) tall and centers its content, so the bar needs no block padding. With `box-sizing: border-box`, a bottom border you add counts toward the 64px. The height is fixed so that offsets below the bar can come from the same token: a sticky header and the page's scroll padding, so anchor jumps and focused elements stay clear of it. The token is in rem, so the bar grows with the user's font size.
+Root is `semantic.dimension.size.topNavigation` (64px) tall and centers its content, so the bar needs no block padding. With `box-sizing: border-box`, a bottom border you add counts toward the 64px. The height is fixed so that offsets below the bar can come from the same token: a sticky header and the page's scroll padding, so anchor jumps and focused elements stay clear of it. The token is in rem, so the bar grows with a person's font size.
 
 Keep the bar to one row: on narrow screens, move links into a [Drawer](/components/drawer/) or a menu, as in [Responsive navigation](#responsive-navigation). Layouts that need more rows, like the stacked and centered recipes below, set `block-size: auto`; derive offsets for such headers from their measured height instead of the token.
 
@@ -55,7 +55,7 @@ html {
 
 ## Centered
 
-Equal side columns keep the navigation centered, whatever the widths of identity and actions. Compare it with the demo at the top of the page. In narrow containers, the links move to their own row.
+Equal side columns keep the navigation centered, whatever the widths of identity and actions. In narrow containers, the links move to their own row.
 
 <Demo example="./examples/centered.tsx" />
 
@@ -117,7 +117,7 @@ const MenuLink = createLink(TopNavigation.MenuLink);
 
 ### Static pages
 
-On [static pages](/application-setup.md#static-pages), use the static menu parts; `MenuList` and `MenuItem` stay the same:
+On [static pages](/application-setup/#static-pages), use the static menu parts; `MenuList` and `MenuItem` stay the same:
 
 ```tsx
 <TopNavigation.StaticMenu defaultPanel="main">
@@ -158,6 +158,6 @@ The popup is a native popover. The behavior opens and closes it like the React m
 
 On desktop, destinations are in a [Sidebar](/components/sidebar/) and resources in the header. Below `semantic.dimension.breakpoint.medium`, both move into a [Drawer](/components/drawer/). They share the current selection; the sidebar's collapsed state stays separate from the drawer's open state.
 
-The drawer closes when the window grows past the breakpoint, rather than being hidden by CSS. Try it: open the drawer on a narrow window, then widen it. The demo keeps selection in local state and opens the drawer inside its frame with Portal's `container`. In your code, render your router's links and leave out `container`, so the drawer covers the viewport.
+The drawer closes when the window grows past the breakpoint, rather than being hidden by CSS. The example keeps selection in local state and opens the drawer inside its frame with Portal's `container`. In your code, render your router's links and leave out `container`, so the drawer covers the viewport.
 
 <Demo example="./examples/responsive.tsx" />

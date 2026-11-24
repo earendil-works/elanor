@@ -161,7 +161,7 @@ export function FileTreeRoot<Node extends FileTreeNode>({
   );
   const rootContext = useMemo(() => ({store, register}), [store, register]);
 
-  // Reveal the current file: open its folders, keep what the user opened, then scroll to it.
+  // Reveal the current file: open its folders, keep what a person opened, then scroll to it.
   const pendingReveal = useRef(currentId);
   useEffect(() => {
     if (currentId === null) return;

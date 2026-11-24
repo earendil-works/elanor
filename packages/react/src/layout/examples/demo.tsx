@@ -54,12 +54,14 @@ export default function LayoutDemo() {
         </Layout.Main>
         <Layout.Aside aria-label="On this page" style={asidePadding}>
           <TableOfContents.Root>
-            <TableOfContents.Item>
-              <TableOfContents.Link href="#first-week">Your first week</TableOfContents.Link>
-            </TableOfContents.Item>
-            <TableOfContents.Item>
-              <TableOfContents.Link href="#accounts">Accounts</TableOfContents.Link>
-            </TableOfContents.Item>
+            <TableOfContents.List>
+              <TableOfContents.Item>
+                <TableOfContents.Link href="#first-week">Your first week</TableOfContents.Link>
+              </TableOfContents.Item>
+              <TableOfContents.Item>
+                <TableOfContents.Link href="#accounts">Accounts</TableOfContents.Link>
+              </TableOfContents.Item>
+            </TableOfContents.List>
           </TableOfContents.Root>
         </Layout.Aside>
       </Container>

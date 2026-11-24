@@ -25,7 +25,7 @@ import {TableOfContents} from '@earendil-works/elanor-react';
 </TableOfContents.Root>;
 ```
 
-The demo links point to sections of this page. Root renders a `nav` named "Table of contents". `List` renders an ordered list, at the top and for nested entries.
+Root renders a `nav` named "Table of contents". `List` renders an ordered list, at the top and for nested entries.
 
 ## Current section
 
@@ -60,7 +60,7 @@ The menu is a bar with separators above and below that sticks to the top of its 
 
 ## Static pages
 
-On [static pages](/application-setup.md#static-pages), the behaviors track the section in view themselves, instead of reading `active` from your code: the static root marks the section in view and moves the `Indicator`, and the static menu shows it in its trigger. Lists, items, links, and the indicator stay the same.
+On [static pages](/application-setup/#static-pages), don't set `active`; the static root marks the section in view and moves the `Indicator`, and the static menu shows it in its trigger. Lists, items, links, and the indicator stay the same.
 
 ```tsx
 <TableOfContents.StaticRoot>

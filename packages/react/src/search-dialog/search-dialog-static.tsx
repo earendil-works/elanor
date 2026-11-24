@@ -95,7 +95,7 @@ export function SearchDialogStaticTrigger({
 }
 
 export interface SearchDialogStaticPopupProps extends DialogHTMLAttributes<HTMLDialogElement> {
-  /** Your own behavior names for this element, for `enhance`, attached after the component's. */
+  /** More `enhance` names for this element, space-separated; they run after the component's own. */
   readonly 'data-elanor'?: string;
   readonly ref?: Ref<HTMLDialogElement> | undefined;
   /** The accessible name, such as "Search documentation". */

@@ -34,7 +34,7 @@ export type SearchDialogRootProps<Payload = unknown> = BaseDialog.Root.Props<Pay
 
 /**
  * A search that opens in a modal dialog. Put a `Trigger` and a `Popup` inside. To open it with a
- * keyboard shortcut, pass a `handle` from `createHandle()` and call `open()` from your key listener.
+ * keyboard shortcut, pass a `handle` from `createHandle()` and call `open(null)` from your key listener.
  */
 export function SearchDialogRoot<Payload = unknown>({
   actionsRef: actionsRefProp,

@@ -9,7 +9,7 @@ import {TableOfContents, type TableOfContentsRootProps} from './table-of-content
 import styles from './table-of-contents.module.css';
 
 export interface TableOfContentsStaticRootProps extends TableOfContentsRootProps {
-  /** Your own behavior names for this element, for `enhance`, attached after the component's. */
+  /** More `enhance` names for this element, space-separated; they run after the component's own. */
   readonly 'data-elanor'?: string;
 }
 
@@ -27,7 +27,7 @@ export function TableOfContentsStaticRoot({
 }
 
 export interface TableOfContentsStaticMenuProps extends HTMLAttributes<HTMLDivElement> {
-  /** Your own behavior names for this element, for `enhance`, attached after the component's. */
+  /** More `enhance` names for this element, space-separated; they run after the component's own. */
   readonly 'data-elanor'?: string;
   readonly ref?: Ref<HTMLDivElement> | undefined;
 }
@@ -90,7 +90,7 @@ export interface TableOfContentsStaticMenuPopupProps extends HTMLAttributes<HTML
   readonly ref?: Ref<HTMLElement> | undefined;
   /** Accessible name of the popup and the list's `nav`. */
   readonly label?: string;
-  /** Your own behavior names for the list's `nav`, for `enhance`, attached after the component's. */
+  /** More `enhance` names for the list's `nav`, space-separated; they run after the component's own. */
   readonly 'data-elanor'?: string;
 }
 

@@ -4,7 +4,7 @@ category: search
 
 # Search dialog
 
-A search that opens in a modal dialog, with the field at the top, results as you type, and key hints at the bottom, for site or documentation search. For filtering a list on the page, use [Search](/components/search/).
+A modal search for a site or its docs: the field at the top, results as you type, key hints at the bottom. For filtering a list on the page, use [Search](/components/search/).
 
 <Demo example="./examples/demo.tsx" />
 
@@ -54,7 +54,7 @@ The Trigger looks like a search field. The dialog binds no shortcut. To add one,
 
 ## Static pages
 
-On [static pages](/application-setup.md#static-pages), use the static parts. `Form`, `Footer`, and `Hint` stay the same. The results come from a source you pass in your script instead of React:
+On [static pages](/application-setup/#static-pages), use the static parts. `Form`, `Footer`, and `Hint` stay the same. The results come from a source you pass in your script instead of React, here a JSON list of `{url, context, title, excerpt}` objects at `/search-index.json`:
 
 ```tsx
 <SearchDialog.StaticRoot>
@@ -85,11 +85,22 @@ import {
   createScrollArea,
   createSearchDialog,
   enhance,
+  type SearchDialogStaticResult,
+  type SearchDialogStaticSource,
 } from '@earendil-works/elanor-react';
 
-const source = {
-  load: () => loadIndex(),
-  search: (query) => index.search(query), // [{url, context, title, excerpt}, …]
+let pages: SearchDialogStaticResult[] = [];
+
+const source: SearchDialogStaticSource = {
+  async load() {
+    const response = await fetch('/search-index.json');
+    if (!response.ok) throw new Error(`The search index failed to load: ${response.status}`);
+    pages = await response.json();
+  },
+  search(query) {
+    const terms = query.toLowerCase();
+    return pages.filter((page) => `${page.title} ${page.excerpt}`.toLowerCase().includes(terms));
+  },
 };
 
 enhance({

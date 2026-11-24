@@ -97,7 +97,7 @@ export function TopNavigationStaticMenuTrigger({
 }
 
 export interface TopNavigationStaticMenuPopupProps extends HTMLAttributes<HTMLDivElement> {
-  /** Your own behavior names for this element, for `enhance`, attached after the component's. */
+  /** More `enhance` names for this element, space-separated; they run after the component's own. */
   readonly 'data-elanor'?: string;
   readonly ref?: Ref<HTMLDivElement> | undefined;
   /** The accessible name, such as "Navigation menu". */

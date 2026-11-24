@@ -18,6 +18,7 @@ export default function TableOfContentsActive() {
             <TableOfContents.Link
               href={`#${section.id}`}
               active={section.id === active}
+              // Demo only: set `active` from the section in view, such as with an IntersectionObserver.
               onClick={() => setActive(section.id)}
             >
               {section.title}

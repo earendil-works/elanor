@@ -69,7 +69,7 @@ export function PopoverStaticTrigger({ref, ...props}: PopoverStaticTriggerProps)
 }
 
 export interface PopoverStaticPositionerProps extends HTMLAttributes<HTMLDivElement> {
-  /** Your own behavior names for this element, for `enhance`, attached after the component's. */
+  /** More `enhance` names for this element, space-separated; they run after the component's own. */
   readonly 'data-elanor'?: string;
   readonly ref?: Ref<HTMLDivElement> | undefined;
   readonly side?: BasePopover.Positioner.Props['side'];

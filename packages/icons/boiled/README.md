@@ -1,6 +1,6 @@
 # `@earendil-works/elanor-icons-boiled`
 
-Material Symbols Outlined (20px, weight 400) with a hand-drawn “boil”, as SVG files. React components are published separately as [`@earendil-works/elanor-icons-boiled-react`](./react/README.md).
+Material Symbols Outlined (20px, weight 400) with a hand-drawn "boil", as SVG files. React components are published separately as [`@earendil-works/elanor-icons-boiled-react`](./react/README.md).
 
 ```ts
 import searchUrl from '@earendil-works/elanor-icons-boiled/svg/search.svg';

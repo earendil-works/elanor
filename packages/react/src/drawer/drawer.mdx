@@ -50,4 +50,4 @@ Nest a Drawer inside a Popup to stack bottom sheets. With `data-stacked` on each
 
 ## Overlay placement
 
-Drawer doesn't stack itself above your header. With an elevated header, give `Drawer.Portal` `position: fixed`, `inset: 0`, and `z-index: var(--semantic-number-layer-overlay)`. Leave the backdrop, viewport, and nested popups on their default layers.
+With the isolated wrapper from [Application setup](/application-setup/#portals), a drawer portaled to `body` paints above your header. Only a drawer rendered into a `container` inside your app needs `position: fixed`, `inset: 0`, and `z-index: var(--semantic-number-layer-overlay)` on `Drawer.Portal`. Leave the backdrop, viewport, and nested popups on their default layers.

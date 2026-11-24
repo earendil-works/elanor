@@ -4,7 +4,7 @@ category: layout
 
 # Layout
 
-Arranges a page into header, side regions, main content, and footer, with the document as the scroll container. Layout doesn't route or track navigation state; keep that in your router.
+Arranges a page into header, side regions, main content, and footer, with the document as the scroll container. For layout inside a region, use [Stack](/components/stack/) or [Grid](/components/grid/).
 
 <Demo example="./examples/demo.tsx" />
 
@@ -26,7 +26,7 @@ import {Layout} from '@earendil-works/elanor-react';
 
 Use one `Main` per document. Inside an existing main landmark, use `<Layout.Main render={<div />}>`. A page without asides doesn't need `Body`.
 
-In the demo, the outer Container centers Body and the inner one caps the reading width at `semantic.dimension.size.maxWidth.content.small`. Asides are `semantic.dimension.size.sidebar` wide by default.
+In the example, the outer Container centers Body and the inner one caps the reading width at `semantic.dimension.size.maxWidth.content.small`. Asides are `semantic.dimension.size.sidebar` wide by default.
 
 ## With sidebars
 
