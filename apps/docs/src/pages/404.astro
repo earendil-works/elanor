@@ -1,0 +1,15 @@
+---
+import {Heading, Link, Text} from '@earendil-works/elanor-react';
+import DocsLayout from '../layouts/docs-layout.astro';
+---
+
+<DocsLayout title="Page not found" current="/404/">
+  <div class="page grid-page">
+    <Heading level={1} size={1}>Page not found</Heading>
+    <Text>
+      There is no page at this address. Go to the <Link href="/">home page</Link> or the <Link
+        href="/components/">components</Link
+      >, or search the docs.
+    </Text>
+  </div>
+</DocsLayout>
