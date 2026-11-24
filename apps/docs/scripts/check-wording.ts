@@ -1,4 +1,5 @@
 // Checks the docs' sources for wording agents misread (see `src/lib/docs-wording.ts`).
+import {execFileSync} from 'node:child_process';
 import {readdirSync, readFileSync} from 'node:fs';
 import {join, relative} from 'node:path';
 
@@ -8,9 +9,12 @@ const root = join(import.meta.dirname, '../../..');
 const react = join(root, 'packages/react');
 
 function files(directory: string): string[] {
-  return readdirSync(directory, {recursive: true, encoding: 'utf8'})
-    .map((path) => join(directory, path))
-    .filter((path) => /\.(?:mdx?|tsx?|css)$/.test(path) && !/\.test\.|\/composer\//.test(path));
+  return (
+    readdirSync(directory, {recursive: true, encoding: 'utf8'})
+      .map((path) => join(directory, path))
+      // `composer/` is left out until another change fixes its wording.
+      .filter((path) => /\.(?:mdx?|tsx?|css)$/.test(path) && !/\.test\.|\/composer\//.test(path))
+  );
 }
 
 // Only the matching comments, at their original offsets, so the reported lines match.
@@ -37,10 +41,10 @@ for (const path of files(join(react, 'src'))) {
 }
 for (const path of [
   ...files(join(react, 'docs')),
-  join(root, 'README.md'),
-  ...readdirSync(join(root, 'packages'), {recursive: true, encoding: 'utf8'})
-    .filter((path) => path.endsWith('README.md') && !path.includes('node_modules'))
-    .map((path) => join(root, 'packages', path)),
+  ...execFileSync('git', ['ls-files', '*README.md'], {cwd: root, encoding: 'utf8'})
+    .split('\n')
+    .filter(Boolean)
+    .map((path) => join(root, path)),
 ]) {
   check(path, readFileSync(path, 'utf8'));
 }

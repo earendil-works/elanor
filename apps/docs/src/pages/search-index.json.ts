@@ -1,5 +1,5 @@
 import type {APIRoute} from 'astro';
-import {getCollection} from 'astro:content';
+import {getCollection, getEntry} from 'astro:content';
 import Slugger from 'github-slugger';
 import MiniSearch from 'minisearch';
 
@@ -155,6 +155,14 @@ export const GET: APIRoute = async () => {
       'Components',
       'Components',
       'React components from @earendil-works/elanor-react, built on Base UI and styled with the design tokens.',
+    ),
+    pageRecord(
+      '/application-setup/',
+      'Application setup',
+      'Components',
+      plainText(
+        (await getEntry('guides', 'application-setup'))?.body?.replace(/^# .*$/m, '') ?? '',
+      ),
     ),
     ...(await componentRecords()),
   ];

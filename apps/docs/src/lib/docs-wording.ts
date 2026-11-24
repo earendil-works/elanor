@@ -5,7 +5,7 @@
  */
 
 const standIn =
-  /\b(?:the (?:application|caller|owner|user)|an application|applications|consumers?)\b(?! setup)/gi;
+  /\b(?:the (?:application|caller|owner|user)|an application|applications|consumers?)\b(?! setup|\/)/gi;
 const curlyQuote = /[“”‘’]/g;
 const maxDescriptionWords = 35;
 const maxDescriptionSentences = 2;

@@ -26,7 +26,7 @@ app.all('*', async (c) => {
   if (!markdown) {
     // Let Cloudflare serve and canonicalize the public assets with its cache headers.
     const response = await c.env.ASSETS.fetch(c.req.raw);
-    return c.req.path.endsWith('.md') ? markdownResponse(response) : response;
+    return c.req.path.endsWith('.md') ? markdownResponse(response, c.req.path) : response;
   }
   // A page with a Markdown version serves it to clients that prefer Markdown over HTML.
   const accept = c.req.header('Accept') ?? '';
@@ -34,7 +34,9 @@ app.all('*', async (c) => {
   const asset = await c.env.ASSETS.fetch(
     wantsMarkdown ? new Request(new URL(markdown, c.req.url), c.req.raw) : c.req.raw,
   );
-  const response = wantsMarkdown ? markdownResponse(asset) : new Response(asset.body, asset);
+  const response = wantsMarkdown
+    ? markdownResponse(asset, c.req.path)
+    : new Response(asset.body, asset);
   response.headers.append('Vary', 'Accept');
   return response;
 });
@@ -49,7 +51,7 @@ function markdownPath(path: string): string | undefined {
 
 /** The `q` value an `Accept` header gives a media type, 0 when it doesn't list it. */
 function quality(accept: string, type: string): number {
-  for (const range of accept.split(',')) {
+  for (const range of accept.toLowerCase().split(',')) {
     const [name, ...parameters] = range.split(';').map((part) => part.trim());
     if (name !== type) continue;
     const q = parameters.find((parameter) => parameter.startsWith('q='));
@@ -58,11 +60,12 @@ function quality(accept: string, type: string): number {
   return 0;
 }
 
-function markdownResponse(asset: Response): Response {
+function markdownResponse(asset: Response, path: string): Response {
   const response = new Response(asset.body, asset);
   if (!asset.ok) return response;
+  const index = path.startsWith('/brand') ? '/brand/llms.txt' : '/llms.txt';
   response.headers.set('Content-Type', 'text/markdown; charset=utf-8');
-  response.headers.set('Link', '</llms.txt>; rel="describedby"');
+  response.headers.set('Link', `<${index}>; rel="describedby"`);
   return response;
 }
 

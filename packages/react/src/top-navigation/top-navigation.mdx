@@ -4,7 +4,7 @@ category: navigation
 
 # Top navigation
 
-The header bar of a site or app, with regions for identity, navigation, and actions. Arrange the regions with your own CSS; the sections below are layouts to start from.
+The header bar of a site or app, with regions for identity, navigation, and actions. Arrange the regions with your own CSS, starting from the layouts on its page.
 
 <Demo example="./examples/demo.tsx" />
 
@@ -158,6 +158,6 @@ The popup is a native popover. The behavior opens and closes it like the React m
 
 On desktop, destinations are in a [Sidebar](/components/sidebar/) and resources in the header. Below `semantic.dimension.breakpoint.medium`, both move into a [Drawer](/components/drawer/). They share the current selection; the sidebar's collapsed state stays separate from the drawer's open state.
 
-The drawer closes when the window grows past the breakpoint, rather than being hidden by CSS. The example keeps selection in local state and opens the drawer inside its frame with Portal's `container`. In your code, render your router's links and leave out `container`, so the drawer covers the viewport.
+The drawer closes when the window grows past the breakpoint, rather than being hidden by CSS. The demo keeps selection in local state and opens the drawer inside its frame with Portal's `container`. In your code, render your router's links and leave out `container`, so the drawer covers the viewport.
 
 <Demo example="./examples/responsive.tsx" />

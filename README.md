@@ -1,6 +1,6 @@
 # Elanor
 
-Earendil's design system. It provides UI building blocks; your app supplies routing, state, and its brand stylesheet.
+Earendil's design system. It provides UI building blocks; you supply routing, state, and a brand stylesheet.
 
 | Package                                                                 | npm name                                                                                                                                                 | Contents                                                         |
 | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
