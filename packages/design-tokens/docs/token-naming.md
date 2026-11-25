@@ -91,8 +91,6 @@ Omitted primitive categories have no `type`; continue with the next applicable p
 
 `semantic.color.border.primary` provides clear boundaries and dividers. `border.secondary` is decorative: never use it as the only cue identifying a control. Status variants `information`, `warning`, `negative`, and `positive` describe meaning, not emphasis.
 
-`border.edge` is the edge of an element that stands on its own, such as a filled control, a field, or a popup: black at 10% in the light scheme and white at 10% in the dark one, drawn inside the element. Being translucent, it is a step off whatever it is drawn on, whatever that is, so one token outlines fills, fields, and popups alike. Like `border.secondary` it is not contrast-checked on its own; where it is the only cue for a control's shape, check it composed over the element.
-
 ## Focus ring color roles
 
 `semantic.color.focusRing` is the keyboard-focus indicator, distinct from normal borders regardless of implementation (outline, shadow, or stroke). Variants include `warning`, `negative`, and `positive`.
