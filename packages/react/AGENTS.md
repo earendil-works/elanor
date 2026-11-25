@@ -54,7 +54,7 @@ Agents read each page as `/components/<id>.md`; its first paragraph is the `llms
 - Preserve native ESM namespaces in build output. Member-level tree-shaking depends on the bundler of the code that imports the package.
 - Mark side-effect-free module-level context creation calls with `/* @__PURE__ */` and preserve these annotations in build output.
 - Give implemented public components and parts named props types and use those types in their declarations. Derive Base UI-backed types rather than copying contracts.
-- Declare each component's own literal prop types; sibling components of one family (in one directory, such as Dropdown and SearchableDropdown) share them with `import type`.
+- Give each component its own literal prop types (`ButtonDensity`, `ChipDensity`) rather than reusing another component's; parts of one family in one directory, such as Dropdown and SearchableDropdown, share them with `import type`.
 - Export supporting types for retained public APIs; don't mirror upstream internals or export empty state aliases.
 
 ## Composition
