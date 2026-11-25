@@ -417,6 +417,28 @@
           "$value": "{primitive.color.graphite.700}",
           "$description": "Use for subtle decorative boundaries and dividers. Do not use when the boundary is the only visual cue identifying a control."
         },
+        "edge": {
+          "$value": {
+            "colorSpace": {
+              "$ref": "#/primitive/color/white/$value/colorSpace"
+            },
+            "components": [
+              {
+                "$ref": "#/primitive/color/white/$value/components/0"
+              },
+              {
+                "$ref": "#/primitive/color/white/$value/components/1"
+              },
+              {
+                "$ref": "#/primitive/color/white/$value/components/2"
+              }
+            ],
+            "alpha": {
+              "$ref": "#/primitive/number/opacity/100/$value"
+            }
+          },
+          "$description": "Use for the edge of an element that stands on its own, such as a filled control, a field or a popup: translucent, so it is a step off whatever it is drawn on, in either direction. Draw it inside the element. Do not use for dividers, or as the only cue identifying a control where its contrast is not checked."
+        },
         "information": {
           "$value": "{primitive.color.cerulianBlue.400}",
           "$description": "Use for boundaries around elements that communicate neutral information or guidance."
