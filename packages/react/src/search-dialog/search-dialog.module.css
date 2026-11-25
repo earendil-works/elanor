@@ -73,7 +73,14 @@
     inset: 0;
     z-index: var(--semantic-number-layer-overlay);
     background: var(--semantic-color-background-backdrop);
+    backdrop-filter: blur(var(--semantic-dimension-blur-backdrop));
     transition: opacity var(--semantic-transition-fade);
+  }
+
+  @media (prefers-reduced-transparency: reduce) {
+    .backdrop {
+      backdrop-filter: none;
+    }
   }
 
   /* The dialog sits near the top of the window, so results grow downward without moving the
@@ -97,8 +104,7 @@
     );
     margin-inline: auto;
     overflow: hidden;
-    border: var(--semantic-dimension-border-width-default) solid
-      var(--semantic-color-border-secondary);
+    border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-edge);
     border-radius: var(--semantic-dimension-radius-medium);
     outline: 0;
     box-shadow: var(--semantic-shadow-popup);
@@ -138,7 +144,14 @@
 
   dialog.popup::backdrop {
     background: var(--semantic-color-background-backdrop);
+    backdrop-filter: blur(var(--semantic-dimension-blur-backdrop));
     transition: opacity var(--semantic-transition-fade);
+  }
+
+  @media (prefers-reduced-transparency: reduce) {
+    dialog.popup::backdrop {
+      backdrop-filter: none;
+    }
   }
 
   dialog.popup[data-starting-style]::backdrop,

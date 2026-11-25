@@ -66,18 +66,18 @@ strokeStyle, border, transition, shadow, gradient, typography
 
 The first category selects the type vocabulary:
 
-| Layer       | First category | Allowed types                                                    |
-| ----------- | -------------- | ---------------------------------------------------------------- |
-| `primitive` | `dimension`    | `borderWidth`, `breakpoint`, `fontSize`, `letterSpacing`         |
-| `primitive` | `number`       | `fontScale`, `layer`, `lineHeight`, `opacity`, `scale`           |
-| `semantic`  | `color`        | `background`, `border`, `focusRing`, `icon`, `text`              |
-| `semantic`  | `dimension`    | `borderWidth`, `breakpoint`, `radius`, `size`, `space`, `travel` |
-| `semantic`  | `number`       | `opacity`, `layer`, `scale`, `fontScale`                         |
-| `semantic`  | `fontFamily`   | `prose`, `ui`, `code`                                            |
-| `semantic`  | `fontWeight`   | `emphasis`, `ui`                                                 |
-| `semantic`  | `typography`   | `code`, `heading`, `primary`, `prose`, `secondary`, `ui`         |
-| `semantic`  | `transition`   | `feedback`, `fade`, `movement`, `pulse`, `stale`                 |
-| `semantic`  | `duration`     | `confirmation`                                                   |
+| Layer       | First category | Allowed types                                                            |
+| ----------- | -------------- | ------------------------------------------------------------------------ |
+| `primitive` | `dimension`    | `borderWidth`, `breakpoint`, `fontSize`, `letterSpacing`                 |
+| `primitive` | `number`       | `fontScale`, `layer`, `lineHeight`, `opacity`, `scale`                   |
+| `semantic`  | `color`        | `background`, `border`, `focusRing`, `icon`, `text`                      |
+| `semantic`  | `dimension`    | `blur`, `borderWidth`, `breakpoint`, `radius`, `size`, `space`, `travel` |
+| `semantic`  | `number`       | `opacity`, `layer`, `scale`, `fontScale`                                 |
+| `semantic`  | `fontFamily`   | `prose`, `ui`, `code`                                                    |
+| `semantic`  | `fontWeight`   | `emphasis`, `ui`                                                         |
+| `semantic`  | `typography`   | `code`, `heading`, `primary`, `prose`, `secondary`, `ui`                 |
+| `semantic`  | `transition`   | `feedback`, `fade`, `movement`, `pulse`, `stale`                         |
+| `semantic`  | `duration`     | `confirmation`                                                           |
 
 Context-neutral tokens stand directly under their category because they apply in any text context: `semantic.fontWeight.emphasis`, and `semantic.typography.primary` and `.secondary`, which the `textContext` modifier resolves to the UI styles in interfaces and the prose styles in long-form content. `fontWeight.ui.*` and `typography.ui.*` are for interface text only.
 
@@ -89,7 +89,7 @@ Omitted primitive categories have no `type`; continue with the next applicable p
 
 ## Border color roles
 
-`semantic.color.border.primary` provides clear boundaries and dividers. `border.secondary` is decorative: never use it as the only cue identifying a control. `border.popup` is the edge of a popup on the canvas color, such as a modal: the canvas color where dimming the page behind sets the popup apart, a visible line where it does not. Status variants `information`, `warning`, `negative`, and `positive` describe meaning, not emphasis.
+`semantic.color.border.primary` provides clear boundaries and dividers. `border.secondary` is decorative: never use it as the only cue identifying a control. Status variants `information`, `warning`, `negative`, and `positive` describe meaning, not emphasis.
 
 ## Focus ring color roles
 

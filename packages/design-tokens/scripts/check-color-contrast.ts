@@ -309,8 +309,7 @@ function createRules(paths: readonly string[]): ContrastRule[] {
   const statusBorders = under(
     paths,
     'semantic.color.border',
-    (relative) =>
-      relative !== 'primary' && relative !== 'secondary' && relative !== 'popup' && relative !== 'edge',
+    (relative) => relative !== 'primary' && relative !== 'secondary' && relative !== 'edge',
   );
 
   return [

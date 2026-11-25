@@ -18,9 +18,9 @@
       var(--semantic-dimension-space-control-padding-inline-small) -
         var(--semantic-dimension-border-width-default)
     );
-    border: var(--semantic-dimension-border-width-default) solid
-      var(--semantic-color-border-secondary);
+    border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-edge);
     border-radius: var(--semantic-dimension-radius-small);
+    box-shadow: var(--semantic-shadow-popup);
     background: var(--semantic-color-background-surface);
     color: var(--semantic-color-text-primary);
     font: var(--semantic-typography-ui-secondary);

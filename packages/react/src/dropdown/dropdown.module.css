@@ -134,9 +134,8 @@
     overflow: hidden;
     border: 0;
     border-radius: var(--semantic-dimension-radius-small);
-    /* stylelint-disable design-tokens/token-property-compatibility -- This inset outline is the panel's surface stroke, not a focus ring. */
-    outline: var(--semantic-dimension-border-width-default) solid
-      var(--semantic-color-background-surface);
+    /* stylelint-disable design-tokens/token-property-compatibility -- This inset outline is the panel's edge, not a focus ring. */
+    outline: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-edge);
     /* stylelint-enable design-tokens/token-property-compatibility */
     outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
     box-shadow: var(--semantic-shadow-popup);

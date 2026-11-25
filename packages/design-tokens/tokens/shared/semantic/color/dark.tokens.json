@@ -417,10 +417,6 @@
           "$value": "{primitive.color.graphite.700}",
           "$description": "Use for subtle decorative boundaries and dividers. Do not use when the boundary is the only visual cue identifying a control."
         },
-        "popup": {
-          "$value": "{semantic.color.border.secondary}",
-          "$description": "Use for the edge of a popup on the canvas color, such as a modal, over the page; it shows only where the popup would otherwise blend into the page behind it. Do not use as the only cue identifying a control."
-        },
         "edge": {
           "$value": {
             "colorSpace": {

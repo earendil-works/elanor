@@ -1,6 +1,7 @@
 import type {Permutation} from '@terrazzo/plugin-css';
 
 const SEMANTIC_COLOR_TOKEN_PATTERN = 'semantic.color.**';
+const SEMANTIC_SHADOW_TOKEN_PATTERN = 'semantic.shadow.**';
 const MOVEMENT_TRANSITION_TOKEN_PATTERN = 'semantic.transition.movement.**';
 const CONTEXTUAL_TYPOGRAPHY_TOKEN_PATTERNS = [
   'semantic.typography.primary',
@@ -136,8 +137,8 @@ export const contextActivation: Record<string, Record<string, string>> = {
  * Shared resolver permutations for every brand CSS build.
  *
  * Foundations, mode-independent semantic tokens, and the default light
- * semantic colors are emitted at the root. Dark semantic colors are emitted
- * for both the system preference and an explicit `data-color-scheme` override.
+ * semantic colors are emitted at the root. Dark semantic colors and shadows are
+ * emitted for both the system preference and an explicit `data-color-scheme` override.
  * Context-dependent typography defaults to the UI context at the root and is
  * redefined under `data-text-context="prose"`, and again under
  * `data-text-context="ui"` for UI inside prose. Transitions that move content
@@ -152,7 +153,7 @@ export const cssPermutations: Permutation[] = [
   },
   {
     input: {colorScheme: 'dark'},
-    include: [SEMANTIC_COLOR_TOKEN_PATTERN],
+    include: [SEMANTIC_COLOR_TOKEN_PATTERN, SEMANTIC_SHADOW_TOKEN_PATTERN],
     prepare: prepareDarkColorSchemeCss,
     transform: transformTransitionParts,
   },
