@@ -71,9 +71,14 @@ export function ComposerHeader({ref, render, ...props}: ComposerHeaderProps) {
   });
 }
 
-// A read-only prompt isn't editable but is still text to select and focus.
-const TEXT_ENTRY =
-  'textarea, input, select, [contenteditable]:not([contenteditable="false"]), [role="textbox"]';
+// A read-only prompt isn't editable but is still text to select and focus; a disabled one isn't.
+const TEXT_ENTRY = [
+  'textarea',
+  'input',
+  'select',
+  '[contenteditable]:not([contenteditable="false"])',
+  '[role="textbox"][aria-readonly="true"]',
+].join(', ');
 
 /**
  * Keeps the focus where it is for a press on anything in the field but its text. On a phone the

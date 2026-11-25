@@ -178,6 +178,24 @@
    * ring of its own: the field's frame is the field.
    */
   .prompt {
+    /* The field's padding plus the text's indent, with the same values outside a field. */
+    --composer-prompt-inline: calc(
+      var(
+          --composer-padding,
+          calc(
+            var(--semantic-dimension-space-padding-small) -
+              var(--semantic-dimension-border-width-small)
+          )
+        ) +
+        var(
+          --composer-indent,
+          calc(
+            var(--semantic-dimension-space-control-padding-block-small) + 0.25 *
+              var(--semantic-dimension-size-icon)
+          )
+        )
+    );
+
     position: relative;
     box-sizing: border-box;
     display: block;
@@ -192,7 +210,7 @@
       --composer-prompt-padding,
       var(--semantic-dimension-space-control-padding-block-small)
     );
-    padding-inline: calc(var(--composer-padding) + var(--composer-indent));
+    padding-inline: var(--composer-prompt-inline);
     outline: 0;
     color: var(--semantic-color-text-primary);
     font: var(--semantic-typography-ui-primary);
@@ -205,7 +223,7 @@
      line, cut with an ellipsis: the prompt is one line tall while empty. */
   .prompt[data-empty]::before {
     position: absolute;
-    inset-inline: calc(var(--composer-padding) + var(--composer-indent));
+    inset-inline: var(--composer-prompt-inline);
     overflow: hidden;
     color: var(--semantic-color-text-secondary);
     text-overflow: ellipsis;
