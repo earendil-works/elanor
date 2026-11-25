@@ -19,12 +19,7 @@ const maximumResults = 10;
 const minimumQueryLength = 2;
 const searchDelay = 150;
 
-function partsOf(element: HTMLElement): {
-  dialog: HTMLDialogElement;
-  input: HTMLInputElement;
-  list: HTMLElement;
-  optionTemplate: HTMLElement;
-} {
+function partsOf(element: HTMLElement) {
   const input = element.querySelector('input[role="combobox"]');
   const list = element.querySelector('[role="listbox"]');
   const template = element.querySelector('template[data-elanor-search-template]');

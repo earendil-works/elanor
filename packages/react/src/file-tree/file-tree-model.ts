@@ -30,7 +30,10 @@ export function indexNodes<Node extends FileTreeNode>(
   const visit = (nodes: ReadonlyArray<Node>, parentId: string | null, level: number) => {
     for (const node of nodes) {
       index.set(node.id, {node, parentId, level});
-      if (node.children) visit(node.children as ReadonlyArray<Node>, node.id, level + 1);
+      if (node.children) {
+        // SAFETY: assumes a Node's children are Nodes; FileTreeNode types them as plain FileTreeNodes.
+        visit(node.children as ReadonlyArray<Node>, node.id, level + 1);
+      }
     }
   };
   visit(items, null, 1);
@@ -56,7 +59,10 @@ export function flattenVisible<Node extends FileTreeNode>(
         isFolder,
         expanded: isExpanded,
       });
-      if (isExpanded) visit(node.children as ReadonlyArray<Node>, level + 1);
+      if (isExpanded) {
+        // SAFETY: assumes a Node's children are Nodes, as in `indexNodes`.
+        visit(node.children as ReadonlyArray<Node>, level + 1);
+      }
     }
   };
   visit(items, 1);

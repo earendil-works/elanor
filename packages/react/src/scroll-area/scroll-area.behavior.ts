@@ -16,11 +16,7 @@ interface Axis {
   trackSize: number;
 }
 
-function partsOf(root: HTMLElement): {
-  viewport: HTMLElement;
-  axes: Axis[];
-  corner: HTMLElement | null;
-} {
+function partsOf(root: HTMLElement) {
   const viewport = root.firstElementChild;
   if (!(viewport instanceof HTMLElement)) {
     throw new Error('ScrollArea.StaticRoot needs a StaticViewport.');

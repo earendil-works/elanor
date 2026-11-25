@@ -19,6 +19,7 @@ import {
   useState,
   useSyncExternalStore,
   type ComponentPropsWithRef,
+  type CSSProperties,
   type KeyboardEvent,
   type FocusEvent,
   type MouseEvent,
@@ -27,6 +28,7 @@ import {
 } from 'react';
 
 import {classes} from '../utils/class-names.ts';
+import {useMergedRef} from '../utils/refs.ts';
 import {
   ancestorIds,
   createTabStopStore,
@@ -128,6 +130,7 @@ export function FileTreeRoot<Node extends FileTreeNode>({
   const [tooltip] = useState(createOverflowTooltipStore);
   useEffect(() => tooltip.dispose, [tooltip]);
   const treeRef = useRef<HTMLDivElement | null>(null);
+  const rootRef = useMergedRef(treeRef, ref);
   const typeahead = useRef({query: '', timeout: 0});
 
   const latest = useRef({rows, rowIndex, index, expanded, expandedIds, onExpandedChange});
@@ -208,13 +211,16 @@ export function FileTreeRoot<Node extends FileTreeNode>({
     return undefined;
   };
 
+  const rowOf = (target: EventTarget | null) =>
+    target instanceof Element ? target.closest<HTMLElement>('[role="treeitem"]') : null;
+
   const handleKeyDown = (event: KeyboardEvent<HTMLDivElement>) => {
     if (event.key === 'Escape' && tooltip.hide('all')) {
       event.preventDefault();
       return;
     }
     if (event.altKey || event.ctrlKey || event.metaKey) return;
-    const id = (event.target as HTMLElement).closest<HTMLElement>('[role="treeitem"]')?.dataset.id;
+    const id = rowOf(event.target)?.dataset.id;
     if (id === undefined) return;
     const {rows: visible, rowIndex: positions, index: nodes} = latest.current;
     const position = positions.get(id);
@@ -266,16 +272,13 @@ export function FileTreeRoot<Node extends FileTreeNode>({
   const handleClick = (event: MouseEvent<HTMLDivElement>) => {
     props.onClick?.(event);
     if (event.defaultPrevented) return;
-    const id = (event.target as HTMLElement).closest<HTMLElement>('[role="treeitem"]')?.dataset.id;
+    const id = rowOf(event.target)?.dataset.id;
     if (id === undefined) return;
     store.set(id);
     const {rows: visible, rowIndex: positions} = latest.current;
     const row = visible[positions.get(id) ?? -1];
     if (row?.isFolder) setFolderOpen(id, !row.expanded);
   };
-
-  const rowOf = (target: EventTarget | null) =>
-    target instanceof Element ? target.closest<HTMLElement>('[role="treeitem"]') : null;
 
   const handlePointerOver = (event: PointerEvent<HTMLDivElement>) => {
     props.onPointerOver?.(event);
@@ -302,11 +305,7 @@ export function FileTreeRoot<Node extends FileTreeNode>({
     // oxlint-disable-next-line jsx-a11y/interactive-supports-focus -- Roving focus: the treeitems are the focus targets (WAI-ARIA tree pattern).
     <div
       {...props}
-      ref={(element) => {
-        treeRef.current = element;
-        if (typeof ref === 'function') return ref(element);
-        if (ref) ref.current = element;
-      }}
+      ref={rootRef}
       role="tree"
       className={classes(styles.root, className)}
       onKeyDown={handleKeyDown}
@@ -327,6 +326,7 @@ export function FileTreeRoot<Node extends FileTreeNode>({
             isFolder={row.isFolder}
             expanded={row.expanded}
             current={row.node.id === currentId}
+            // SAFETY: assumes nested nodes are Nodes too, as `indexNodes` and `flattenVisible` do.
             renderItem={renderItem as (state: FileTreeItemState) => ReactNode}
           />
         ))}
@@ -362,24 +362,19 @@ export function FileTreeItem({render, className, style, ref, ...props}: FileTree
     () => root.store.get() === id,
     () => root.store.get() === id,
   );
-  const register = useCallback(
-    (element: HTMLDivElement | null) => {
-      root.register(id, element);
-      if (typeof ref === 'function') return ref(element);
-      if (ref) ref.current = element;
-    },
-    [root, id, ref],
+  const registerRow = useCallback(
+    (element: HTMLDivElement | null) => root.register(id, element),
+    [root, id],
   );
+  const register = useMergedRef(registerRow, ref);
 
   const {node, level, isFolder, expanded, current} = item;
   const state: FileTreeItemState = {node, level, isFolder, expanded, current};
 
-  const resolvedClassName = classes(
-    styles.item,
-    typeof className === 'function'
-      ? (className as (state: FileTreeItemState) => string)(state)
-      : className,
-  );
+  const rowStyle: CSSProperties & Record<'--file-tree-level', number> = {
+    '--file-tree-level': item.level,
+    ...style,
+  };
   const itemProps: Record<string, unknown> & ComponentPropsWithRef<'div'> = {
     ...props,
     role: 'treeitem',
@@ -393,8 +388,8 @@ export function FileTreeItem({render, className, style, ref, ...props}: FileTree
     'data-folder': item.isFolder ? '' : undefined,
     'data-expanded': item.expanded ? '' : undefined,
     'data-current': item.current ? '' : undefined,
-    className: resolvedClassName,
-    style: {'--file-tree-level': item.level, ...style} as React.CSSProperties,
+    className: classes(styles.item, className),
+    style: rowStyle,
   };
   const element = useRender({
     defaultTagName: 'div',

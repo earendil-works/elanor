@@ -80,11 +80,10 @@ export function TableOfContentsIndicator({ref, render, ...props}: TableOfContent
     return () => observer.disconnect();
   });
 
-  const variables = entry
-    ? ({
-        '--active-entry-top': `${entry.top}px`,
-        '--active-entry-height': `${entry.height}px`,
-      } as CSSProperties)
+  const variables:
+    | (CSSProperties & Record<'--active-entry-top' | '--active-entry-height', string>)
+    | undefined = entry
+    ? {'--active-entry-top': `${entry.top}px`, '--active-entry-height': `${entry.height}px`}
     : undefined;
 
   return useRender({

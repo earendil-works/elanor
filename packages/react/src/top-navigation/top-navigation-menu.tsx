@@ -9,6 +9,7 @@ import {
 } from '@earendil-works/elanor-icons-react';
 import {
   createContext,
+  useCallback,
   useContext,
   useId,
   useMemo,
@@ -24,6 +25,7 @@ import {
 import {flushSync} from 'react-dom';
 
 import {classes, mergeClassName} from '../utils/class-names.ts';
+import {useMergedRef} from '../utils/refs.ts';
 
 import styles from './top-navigation-menu.module.css';
 
@@ -366,16 +368,16 @@ export function TopNavigationMenuPanelTrigger({
   ...props
 }: TopNavigationMenuPanelTriggerProps) {
   const {showPanel, registerPanelTrigger} = useMenuActions('MenuPanelTrigger');
+  const register = useCallback(
+    (element: HTMLButtonElement | null) => registerPanelTrigger(panel, element),
+    [registerPanelTrigger, panel],
+  );
+  const mergedRef = useMergedRef(register, ref);
   return (
     <button
       type="button"
       {...props}
-      ref={(element) => {
-        registerPanelTrigger(panel, element);
-        if (typeof ref === 'function') return ref(element);
-        if (ref) ref.current = element;
-        return undefined;
-      }}
+      ref={mergedRef}
       aria-current={active ? 'true' : props['aria-current']}
       className={classes(styles.link, className)}
       onClick={(event) => {
