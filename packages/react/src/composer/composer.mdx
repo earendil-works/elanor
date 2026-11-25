@@ -1,0 +1,101 @@
+---
+category: forms
+---
+
+# Composer
+
+The field where a person writes a chat message, with its buttons inside the frame and rows above and below for notices and settings. For a plain multi-line field, use [Text area](/components/text-area/).
+
+<Demo example="./examples/demo.tsx" />
+
+## Usage
+
+```tsx
+import {Composer} from '@earendil-works/elanor-react';
+
+<Composer.Panel>
+  <Composer.Header />
+  <Composer.Field>
+    <Composer.Controls />
+  </Composer.Field>
+  <Composer.Footer />
+</Composer.Panel>;
+```
+
+- **Panel** renders a `div` around the rows and fills its container's width. Pass `render={<form />}` for a form.
+- **Header** is the row above the field, for notices, errors, and the message being replied to.
+- **Field** is the frame, which looks like one text field holding the text and the buttons. It has no focus ring; the caret shows the focus, and the field keeps its fill while a person writes, darkening only under the pointer or a press. Pressing anything in it other than the text keeps the focus where it is, so a phone's keyboard stays up. Field also works without a Panel.
+- **Controls** is the row of buttons inside the field, in DOM order; place them as you like. Use [Icon buttons](/components/icon-button/) with `density="default"`.
+- **Footer** is the row below the field, for your own controls and figures, such as a model picker and the context used. It's layout only: it sets no text style, so the size of its text is yours to choose.
+
+The containers take any number of children, and an empty one takes no room. Panel is a size container named `composer`, so your own styles can follow the composer's width with `@container composer (…)`. Its public custom properties are `--composer-hang` and `--composer-footer-inset`, which you set, and `--composer-text-inset`, which you read; see [Footer](#footer) and [Alignment](#alignment).
+
+## Controls
+
+```tsx
+<Composer.Controls render={<Stack direction="row" gap="auto" align="center" />}>
+  <IconButton density="default" aria-label="Attach files">
+    <AddIcon />
+  </IconButton>
+  <Stack direction="row" gap="xSmall" align="center">
+    <IconButton density="default" aria-label="Dictate">
+      <MicIcon />
+    </IconButton>
+    <IconButton density="default" hierarchy="primary" aria-label="Send">
+      <ArrowUpwardIcon />
+    </IconButton>
+  </Stack>
+</Composer.Controls>
+```
+
+`Controls` lays out its children in a row, in DOM order, so the order on screen is the order of focus; it places nothing. Put spacing and placement on a wrapper, such as a [Stack](/components/stack/) with `gap="auto"` or `justify-content`.
+
+<Demo example="./examples/controls.tsx" />
+
+## Header
+
+Put notices, errors about the last message, and the message being replied to in `Header`. It stacks its children with a gap. Header is as wide as the frame and moves with the frame when Panel is hung; its content isn't aligned to the text inset.
+
+<Demo example="./examples/header.tsx" />
+
+## Footer
+
+Put your own controls and figures in `Footer`, such as a ghost [Dropdown](/components/dropdown/) trigger for the model and, at the end, a row of figures: a [Meter](/components/meter/) laid out inline for the context used, and `span`s for the rest. The row sets `margin-inline-start: auto` to sit at the end, and tertiary text on its own class, which the meter's value inherits; the controls keep their default size. Footer sets no text style, so these choices are yours.
+
+Without a hang, the footer's controls put their text 2px inside the frame, which suits ghost controls: their hover fill reaches past it. For filled controls, such as a default Dropdown trigger, set `--composer-footer-inset` in a class on `Composer.Panel` or `Composer.Footer`, so their fill sits flush with the frame:
+
+```css
+.filledControls {
+  --composer-footer-inset: var(--semantic-dimension-space-control-padding-inline-small);
+}
+```
+
+<Demo example="./examples/footer.tsx" />
+
+### Narrow
+
+In a composer 40rem wide or narrower, the footer stays on one line: its children shrink and cut their text with an ellipsis. Give a child that must stay whole, such as the figures, `flex: none`. The footer then sets no gap of its own: controls are spaced by their padding. Children without padding of their own, such as plain text, need a gap you set; override the footer's with a class. It follows the composer's width, not the window's. A hung composer's container includes the hang, so it reaches 40rem about 2 × `--composer-text-inset` later.
+
+<Demo example="./examples/narrow.tsx" />
+
+### Your own breakpoints
+
+Use the `composer` container to change the footer at widths of your own, such as hiding the cache figure in a narrow composer. You could also let the footer wrap instead, with `flex-wrap: wrap`.
+
+<Demo example="./examples/narrow-policy.tsx" />
+
+## Alignment
+
+```css
+@media (min-width: 48rem) {
+  .textAligned {
+    --composer-hang: var(--composer-text-inset);
+  }
+}
+```
+
+Set it on `Composer.Panel` itself (via `className`): the inset is set on Panel, so a wrapper can't read it. Hang the frame only where there's room, `--composer-text-inset` at each side, such as inside `@media (min-width: …)` or a parent's container query; Panel is the `composer` container itself, so `@container composer` can't style it.
+
+By default the frame lines up with the content around it. `--composer-hang` hangs the Panel out of its container by that much; set to `--composer-text-inset`, the distance from the frame's edge to the text, it lines up the prompt's text and the footer's with the content around it. A composer rendered by code you don't control can only be hung if that code passes your `className` through.
+
+<Demo example="./examples/align.tsx" />

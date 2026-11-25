@@ -1,0 +1,67 @@
+.narrow {
+  max-inline-size: var(--semantic-dimension-size-max-width-content-small);
+}
+
+/* A lone Send at the row's end. */
+.end {
+  justify-content: flex-end;
+}
+
+/*
+ * The frame hangs out, so the prompt's text lines up with the content around it. Only where
+ * there's room at the sides: Panel is the `composer` container itself, so a media query (or a
+ * parent's container query) decides.
+ */
+@media (min-width: 48rem) {
+  .textAligned {
+    --composer-hang: var(--composer-text-inset);
+  }
+}
+
+/*
+ * The figures at the footer's end, kept whole: tertiary text, and tabular figures that hold still
+ * as they change. They end where the footer's controls end their text, a small control's padding
+ * inside the row.
+ */
+.figures {
+  flex: none;
+  align-items: baseline;
+  margin-inline: auto var(--semantic-dimension-space-control-padding-inline-small);
+  overflow: visible;
+  color: var(--semantic-color-text-secondary);
+  font: var(--semantic-typography-ui-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* A meter's value takes the figures' text instead of its own. */
+.meterValue {
+  font: inherit;
+}
+
+/* A meter in the line: its value on the figures' baseline, its track centred on the line. */
+.meter {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--semantic-dimension-space-control-gap-large);
+}
+
+.track {
+  flex: none;
+  align-self: center;
+  inline-size: var(--semantic-dimension-size-x-large);
+  block-size: var(--semantic-dimension-size-xxx-small);
+}
+
+/* Grey like the figures beside it, for a neutral meter. Forced colours keep the system colour. */
+@media not (forced-colors: active) {
+  .indicator {
+    background: var(--semantic-color-background-fill-primary-neutral);
+  }
+}
+
+/* Your own policy: in a narrow composer, the cache figure gives its room to the rest. */
+@container composer (inline-size <= 30rem) {
+  .cache {
+    display: none;
+  }
+}
