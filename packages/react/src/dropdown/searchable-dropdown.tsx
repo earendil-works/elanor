@@ -180,6 +180,7 @@ export function SearchableDropdownPrefix({
   );
 }
 
+/** Renders `data-density` and `data-variant`. */
 export function SearchableDropdownTrigger({
   ref,
   density = 'default',

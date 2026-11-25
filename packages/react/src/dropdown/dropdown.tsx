@@ -151,6 +151,7 @@ export function DropdownPrefix({ref, className, onPointerDown, ...props}: Dropdo
   );
 }
 
+/** Renders `data-density` and `data-variant`. */
 export function DropdownTrigger({
   ref,
   density = 'default',
