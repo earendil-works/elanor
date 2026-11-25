@@ -73,10 +73,13 @@ export interface DropdownPrefixProps extends Omit<
   readonly onPointerDown?: PointerEventHandler<HTMLSpanElement> | undefined;
 }
 export type DropdownTriggerDensity = 'compact' | 'default';
+export type DropdownTriggerVariant = 'field' | 'ghost';
 
 export interface DropdownTriggerProps extends BaseSelect.Trigger.Props {
   /** `compact` removes block padding but keeps the default target height. */
   readonly density?: DropdownTriggerDensity;
+  /** `ghost` has no fill or border until hovered or open, and fits its content. */
+  readonly variant?: DropdownTriggerVariant;
 }
 export type DropdownIconProps = BaseSelect.Icon.Props;
 export type DropdownPositionerProps = BaseSelect.Positioner.Props;
@@ -151,6 +154,7 @@ export function DropdownPrefix({ref, className, onPointerDown, ...props}: Dropdo
 export function DropdownTrigger({
   ref,
   density = 'default',
+  variant = 'field',
   className,
   ...props
 }: DropdownTriggerProps) {
@@ -161,6 +165,7 @@ export function DropdownTrigger({
       {...props}
       ref={mergedRef}
       data-density={density}
+      data-variant={variant}
       className={mergeClassName<BaseSelect.Trigger.State>(styles.trigger, className)}
     />
   );

@@ -92,6 +92,36 @@
     border-color: var(--semantic-color-focus-ring);
   }
 
+  /* After the field's states, so a ghost trigger replaces them, and before invalid, which it
+     keeps. `fit-content`, not `auto`, so a column flex parent such as Field doesn't stretch it. */
+  .trigger:where([data-variant='ghost']) {
+    gap: var(--semantic-dimension-space-control-gap-small);
+    inline-size: fit-content;
+    max-inline-size: 100%;
+    border-color: var(--semantic-color-background-fill-ghost-neutral);
+    background: var(--semantic-color-background-fill-ghost-neutral);
+  }
+
+  @media (hover: hover) {
+    .trigger:where([data-variant='ghost']:hover:not(:disabled, [data-disabled])) {
+      border-color: var(--semantic-color-background-fill-ghost-neutral-hover);
+      background: var(--semantic-color-background-fill-ghost-neutral-hover);
+    }
+  }
+
+  .trigger:where(
+    [data-variant='ghost']:active:not(:disabled, [data-disabled]),
+    [data-variant='ghost'][data-popup-open]
+  ) {
+    border-color: var(--semantic-color-background-fill-ghost-neutral-active);
+    background: var(--semantic-color-background-fill-ghost-neutral-active);
+  }
+
+  /* The ghost trigger's gap is already a word space. */
+  .trigger[data-variant='ghost'] > .prefix {
+    margin-inline-end: 0;
+  }
+
   .trigger:focus-visible {
     outline: var(--semantic-dimension-border-width-focus-ring) solid
       var(--semantic-color-focus-ring);
