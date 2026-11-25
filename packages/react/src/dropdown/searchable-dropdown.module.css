@@ -101,6 +101,9 @@
     max-inline-size: 100%;
     border-color: var(--semantic-color-background-fill-ghost-neutral);
     background: var(--semantic-color-background-fill-ghost-neutral);
+    transition:
+      background-color var(--semantic-transition-feedback),
+      border-color var(--semantic-transition-feedback);
   }
 
   @media (hover: hover) {
