@@ -13,7 +13,7 @@ import {
   type DropdownControlProps,
   type DropdownValueCountProps,
 } from './dropdown-control.tsx';
-import type {DropdownTriggerDensity} from './dropdown.tsx';
+import type {DropdownTriggerDensity, DropdownTriggerVariant} from './dropdown.tsx';
 
 import styles from './searchable-dropdown.module.css';
 
@@ -81,6 +81,8 @@ export type SearchableDropdownStatusProps = BaseCombobox.Status.Props;
 export interface SearchableDropdownTriggerProps extends BaseCombobox.Trigger.Props {
   /** `compact` removes block padding but keeps the default target height. */
   readonly density?: DropdownTriggerDensity;
+  /** `ghost` has no fill or border until hovered or open, and fits its content. */
+  readonly variant?: DropdownTriggerVariant;
 }
 export type SearchableDropdownIconProps = BaseCombobox.Icon.Props;
 export type SearchableDropdownPositionerProps = BaseCombobox.Positioner.Props;
@@ -176,9 +178,11 @@ export function SearchableDropdownPrefix({
   );
 }
 
+/** The button that opens the list. Renders `data-density` and `data-variant`. */
 export function SearchableDropdownTrigger({
   ref,
   density = 'default',
+  variant = 'default',
   className,
   ...props
 }: SearchableDropdownTriggerProps) {
@@ -189,6 +193,7 @@ export function SearchableDropdownTrigger({
       {...props}
       ref={mergedRef}
       data-density={density}
+      data-variant={variant}
       className={mergeClassName<BaseCombobox.Trigger.State>(styles.trigger, className)}
     />
   );

@@ -53,6 +53,14 @@ Use Prefix instead of `Label`, or instead of `Field.Label` inside a `Field`. It 
 
 <Demo example="./examples/prefix.tsx" />
 
+## Ghost
+
+Use `variant="ghost"` on the trigger in toolbars and rows where a field for every choice is too heavy, such as a sort order beside icon buttons. The trigger has no fill or border until it's hovered or open, and is as wide as its content, with the icon next to the value. Keep the default variant in forms.
+
+A ghost trigger usually has no `Label`; name it with `Prefix`, or with an `aria-label` that includes the value. `Control` and `Clear` don't support `ghost` yet: Control stretches the trigger to its width and Clear keeps the default fill. Use them with the default variant. `SearchableDropdown.Trigger` takes the same `variant`.
+
+<Demo example="./examples/ghost.tsx" />
+
 ## Clear
 
 `Clear` is a button after the trigger that clears the value and moves focus back to the trigger. It renders only while there's something to clear. Put the trigger and Clear in `Control`, which joins them in one fill; Clear is the next tab stop after the trigger.
