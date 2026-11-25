@@ -42,6 +42,13 @@
     background: var(--semantic-color-background-fill-secondary);
   }
 
+  /* Selected as a whole, a key then acts on all of it: the focus ring's outline shows it. */
+  .root[data-selected] {
+    outline: var(--semantic-dimension-border-width-focus-ring) solid
+      var(--semantic-color-focus-ring);
+    outline-offset: var(--semantic-dimension-border-width-default);
+  }
+
   /* An icon's glyph sits inside its box, so a leading icon needs less padding than text. */
   .root:has(> .icon:first-child) {
     padding-inline-start: var(--semantic-dimension-space-control-padding-inline-x-small);
@@ -127,15 +134,48 @@
 
   /* IconButton's ghost fills don't show on the pill; use its own fill steps. */
   @media (hover: hover) {
-    .root[data-variant='soft'] > .remove:hover:not([data-disabled])::before {
+    .root[data-variant='soft']:not([data-hosted]) > .remove:hover:not([data-disabled])::before {
       background: var(--semantic-color-background-fill-secondary-hover);
       box-shadow: none;
     }
   }
 
-  .root[data-variant='soft'] > .remove:active:not([data-disabled])::before {
+  .root[data-variant='soft']:not([data-hosted]) > .remove:active:not([data-disabled])::before {
     background: var(--semantic-color-background-fill-secondary-active);
     box-shadow: none;
+  }
+
+  /*
+   * Tied to the composer's surface, the only host: its field is the secondary fill or its hover
+   * step, so the soft chip sits one step off it, and with no step above that, Remove answers the
+   * pointer with its icon's colour instead of a fill. A selected chip's ring sits on its edge,
+   * clear of the letters beside it with any font.
+   */
+  .root[data-hosted][data-selected] {
+    outline-offset: 0;
+  }
+
+  .root[data-hosted][data-variant='soft'] {
+    background: var(--semantic-color-background-fill-secondary-active);
+  }
+
+  .root[data-hosted] > .remove {
+    color: var(--semantic-color-icon-secondary);
+    transition: color var(--semantic-transition-feedback);
+  }
+
+  .root[data-hosted] > .remove:not([data-disabled])::before {
+    background: none;
+  }
+
+  .root[data-hosted] > .remove:active:not([data-disabled]) {
+    color: var(--semantic-color-icon-primary);
+  }
+
+  @media (hover: hover) {
+    .root[data-hosted] > .remove:hover:not([data-disabled]) {
+      color: var(--semantic-color-icon-primary);
+    }
   }
 
   /* Forced colours drop shadows: an outline draws the edge without changing the size. */
@@ -143,6 +183,11 @@
     .root {
       outline: var(--chip-edge) solid CanvasText;
       outline-offset: calc(-1 * var(--chip-edge));
+    }
+
+    .root[data-selected] {
+      outline: var(--semantic-dimension-border-width-focus-ring) solid Highlight;
+      outline-offset: var(--semantic-dimension-border-width-default);
     }
   }
 
