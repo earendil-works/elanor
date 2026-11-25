@@ -2,10 +2,11 @@ import type {ButtonState} from '@base-ui/react/button';
 import {mergeProps} from '@base-ui/react/merge-props';
 import {useRender} from '@base-ui/react/use-render';
 import {CloseSmallIcon} from '@earendil-works/elanor-icons-react';
-import type {ReactNode} from 'react';
+import {use, type ReactNode} from 'react';
 
 import {IconButton, type IconButtonProps} from '../icon-button/icon-button.tsx';
 import {mergeClassName} from '../utils/class-names.ts';
+import {ChipHostContext} from './chip-host-context.ts';
 
 import styles from './chip.module.css';
 
@@ -28,7 +29,8 @@ export interface ChipRootProps extends useRender.ComponentProps<'span'> {
 /**
  * A small box or pill for one item, such as a file, a quotation or a filter. Renders a `span`; use
  * `render` for an `li`. Stays on one line, at most as wide as its container. Renders
- * `data-variant` and `data-density`.
+ * `data-variant` and `data-density`; in a composer's prompt also `data-hosted`, and
+ * `data-selected`, outlined, while it is selected there.
  */
 export function ChipRoot({
   ref,
@@ -37,6 +39,7 @@ export function ChipRoot({
   density = 'default',
   ...props
 }: ChipRootProps) {
+  const host = use(ChipHostContext);
   return useRender({
     defaultTagName: 'span',
     render,
@@ -45,6 +48,8 @@ export function ChipRoot({
       ...mergeProps<'span'>({className: styles.root}, props),
       'data-variant': variant,
       'data-density': density,
+      'data-hosted': host ? '' : undefined,
+      'data-selected': host?.selected ? '' : undefined,
     },
   });
 }
@@ -86,7 +91,10 @@ export interface ChipRemoveProps extends Omit<IconButtonProps, 'density' | 'hier
 
 /**
  * An [Icon button](/components/icon-button/) that removes the chip. Give it an `aria-label` naming
- * the item, such as "Remove design.pdf", and remove the item in `onClick`.
+ * the item, such as "Remove design.pdf", and remove the item in `onClick`. In a composer's prompt
+ * it removes the chip from the text itself, and is for pointers only: hidden from assistive
+ * technology and out of the Tab order, since Backspace and Delete remove a chip there. Renders
+ * `data-chip-remove`.
  */
 export function ChipRemove({
   ref,
@@ -94,10 +102,27 @@ export function ChipRemove({
   children = <CloseSmallIcon />,
   ...props
 }: ChipRemoveProps) {
+  const host = use(ChipHostContext);
+  const {onPointerDown, onClick} = props;
+  const hosted: Partial<IconButtonProps> | null = host && {
+    'aria-hidden': true,
+    tabIndex: -1,
+    onPointerDown: (event) => {
+      onPointerDown?.(event);
+      // Keeps the focus and the caret in the text.
+      event.preventDefault();
+    },
+    onClick: (event) => {
+      onClick?.(event);
+      if (!event.defaultPrevented) host.remove(event.nativeEvent);
+    },
+  };
   return (
     <IconButton
       {...props}
+      {...hosted}
       ref={ref}
+      data-chip-remove=""
       className={mergeClassName<ButtonState>(styles.remove, className)}
     >
       {children}

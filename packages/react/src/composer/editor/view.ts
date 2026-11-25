@@ -3,7 +3,7 @@
 // THIRD-PARTY-NOTICES in this package.
 //
 // Renders a value into a contenteditable element and turns what the browser does back into the
-// value. The engine owns this DOM; the app renders only inside chip hosts, which keep their
+// value. The engine owns this DOM; `renderChip` renders only inside chip hosts, which keep their
 // identity.
 //
 // The shape follows what the three browser engines need: text nodes; a host per chip,
@@ -19,7 +19,7 @@ import {
   type ComposerTextRange,
 } from './model.ts';
 
-const ANCHOR = '\u200b';
+const ZERO_WIDTH_SPACE = '\u200b';
 const HOST = 'data-chip-id';
 const SENTINEL = 'data-sentinel';
 
@@ -42,8 +42,8 @@ function layout<T extends ComposerChip>(value: ComposerValue<T>): Layout<T> {
   };
   for (const segment of value) {
     if (isChip(segment)) {
-      appendText(ANCHOR);
-      nodes.push(segment, ANCHOR);
+      appendText(ZERO_WIDTH_SPACE);
+      nodes.push(segment, ZERO_WIDTH_SPACE);
     } else appendText(segment);
   }
   const last = value.at(-1);
@@ -51,9 +51,12 @@ function layout<T extends ComposerChip>(value: ComposerValue<T>): Layout<T> {
   return nodes;
 }
 
-const realLength = (text: string): number => text.replaceAll(ANCHOR, '').length;
+const realLength = (text: string): number => text.replaceAll(ZERO_WIDTH_SPACE, '').length;
 
-/** The app renders the chip into `content`; a sibling span holds its screen reader description. */
+/**
+ * The app renders the chip into `content` (`data-chip-content`); a sibling span holds its screen
+ * reader description (`data-description`).
+ */
 type Host<T extends ComposerChip> = {
   readonly host: HTMLElement;
   readonly content: HTMLElement;
@@ -87,6 +90,7 @@ export class EditorView<T extends ComposerChip> {
       host.contentEditable = 'false';
       host.spellcheck = false;
       const content = document.createElement('span');
+      content.dataset.chipContent = '';
       const description = document.createElement('span');
       description.dataset.description = '';
       host.append(content, description);
@@ -101,7 +105,7 @@ export class EditorView<T extends ComposerChip> {
 
   /**
    * Patches the children to match the value, reusing text nodes and hosts, so the caret, spelling
-   * marks and the app's chip content survive.
+   * marks and what `renderChip` drew survive.
    */
   render(value: ComposerValue<T>): void {
     const element = this.#element;
@@ -150,14 +154,15 @@ export class EditorView<T extends ComposerChip> {
   }
 
   /**
-   * The value the DOM holds now: text without anchors, and a chip per known host. Anything else,
-   * like a `<div>` an engine wrapped a line in, becomes its text, after a line break.
+   * The value the DOM holds now: text without zero-width spaces, and a chip per known host.
+   * Anything else, like a `<div>` a browser wrapped a line in, becomes its text, after a line
+   * break.
    */
   read(): ComposerSegment<T>[] {
     const value: ComposerSegment<T>[] = [];
     const walk = (parent: Node, nested: boolean) => {
       parent.childNodes.forEach((node, index) => {
-        if (node instanceof Text) value.push(node.data.replaceAll(ANCHOR, ''));
+        if (node instanceof Text) value.push(node.data.replaceAll(ZERO_WIDTH_SPACE, ''));
         else if (node instanceof HTMLElement) {
           const id = node.getAttribute(HOST);
           if (id !== null) {
@@ -235,8 +240,8 @@ export class EditorView<T extends ComposerChip> {
   }
 
   /**
-   * An offset as a DOM point: inside a text node, after the anchor that follows a host and before
-   * the one that precedes the next.
+   * An offset as a DOM point: inside a text node, after the zero-width space that follows a host
+   * and before the one that precedes the next.
    */
   #pointAt(offset: number): [Node, number] {
     let remaining = offset;
@@ -244,9 +249,9 @@ export class EditorView<T extends ComposerChip> {
       if (child instanceof Text) {
         const length = realLength(child.data);
         if (remaining <= length) {
-          let index = child.data.startsWith(ANCHOR) && child.data.length > 1 ? 1 : 0;
+          let index = child.data.startsWith(ZERO_WIDTH_SPACE) && child.data.length > 1 ? 1 : 0;
           for (let counted = 0; counted < remaining; index += 1)
-            if (child.data[index] !== ANCHOR) counted += 1;
+            if (child.data[index] !== ZERO_WIDTH_SPACE) counted += 1;
           return [child, index];
         }
         remaining -= length;

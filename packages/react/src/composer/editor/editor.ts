@@ -53,7 +53,7 @@ export type ComposerChangeReason =
   | 'form-reset';
 
 /** `cancel()` keeps the previous value. */
-export type ComposerChangeDetails<T extends ComposerChip> = BaseUIChangeEventDetails<
+export type ComposerChangeDetails<T extends ComposerChip = ComposerChip> = BaseUIChangeEventDetails<
   ComposerChangeReason,
   {
     readonly removedChips: readonly T[];
@@ -61,8 +61,9 @@ export type ComposerChangeDetails<T extends ComposerChip> = BaseUIChangeEventDet
 >;
 
 /**
- * `enter`: Enter and Alt+Enter submit, Shift+Enter adds a line. `mod-enter`: Cmd/Ctrl+Enter and
- * Cmd/Ctrl+Alt+Enter submit, Enter adds a line.
+ * `enter`: Enter or Alt+Enter without Shift, Ctrl or Meta submits, and Shift+Enter adds a line.
+ * `mod-enter`: Cmd/Ctrl+Enter or Cmd/Ctrl+Alt+Enter without Shift submits, and Enter adds a line.
+ * Any other Enter is left to the browser.
  */
 export type ComposerSubmitShortcut = 'enter' | 'mod-enter';
 
@@ -80,8 +81,23 @@ export type ComposerAttachDetails =
   | {readonly reason: 'drop'; readonly event: DragEvent}
   | {readonly reason: 'api'; readonly event?: undefined};
 
+/**
+ * Where `insert` puts its content, and why: the change details carry `reason` and `event`. A picked
+ * suggestion (`item-press`) always has the press behind it.
+ */
+export type ComposerInsertOptions = {
+  readonly at?: 'caret' | 'end' | ComposerTextRange;
+  readonly startLine?: boolean;
+} & (
+  | {readonly reason?: 'imperative-action'; readonly event?: Event}
+  | {
+      readonly reason: 'item-press';
+      readonly event: BaseUIChangeEventDetails<'item-press'>['event'];
+    }
+);
+
 /** One object for the editor's lifetime. It reads the latest options when called. */
-export interface ComposerActions<T extends ComposerChip> {
+export interface ComposerActions<T extends ComposerChip = ComposerChip> {
   /** `at` defaults to `end`; `caret` restores the last caret. */
   focus(options?: {readonly at?: 'start' | 'end' | 'caret'}): void;
   blur(): void;
@@ -90,16 +106,7 @@ export interface ComposerActions<T extends ComposerChip> {
    * is blurred. `startLine` prepends a line break unless the insert point starts a line. Commits
    * pending IME text first. Returns `false` when nothing changed.
    */
-  insert(
-    content: string | T | ComposerValue<T>,
-    options?: {
-      readonly at?: 'caret' | 'end' | ComposerTextRange;
-      readonly startLine?: boolean;
-      readonly reason?: 'imperative-action' | 'item-press';
-      /** The click or key press behind the insert, passed on in the change details. */
-      readonly event?: Event;
-    },
-  ): boolean;
+  insert(content: string | T | ComposerValue<T>, options?: ComposerInsertOptions): boolean;
   undo(): void;
   redo(): void;
   /**
@@ -122,11 +129,14 @@ export interface EditorBinding {
    */
   bind(element: HTMLElement | null): (() => void) | undefined;
   /**
-   * Call from the element's React `onKeyDown`, after the app's handler, with the native event.
-   * Skips keys the app called `preventDefault()` on and keys during IME composition.
+   * Call from the element's React `onKeyDown`, after the `onKeyDown` prop's handler, with the
+   * native event. Skips keys that handler called `preventDefault()` on and keys during IME
+   * composition.
    */
   handleKeyDown(event: KeyboardEvent): void;
   removeChip(id: string, event: MouseEvent): void;
+  /** Whether the chip is in the selection or armed for removal. Changes fire `subscribe`. */
+  isChipSelected(id: string): boolean;
   /**
    * `null` unless focused with a collapsed selection. Chips appear as `CHIP_CHARACTER`. While an
    * input method composes, it reads the DOM, since the value gets the text only at
@@ -157,9 +167,9 @@ export interface EditorOptions<T extends ComposerChip> {
   readonly getChipDescription: (chip: T) => string;
   /**
    * Called for the submit shortcut, except while an input method composes (including Safari's key
-   * 229 after it) or the key handler takes Enter, such as open suggestions; and for `submit()`,
-   * which skips those checks: a programmatic submit is the caller's call. An empty value is
-   * submitted too; the app decides. Without it, the submit shortcut adds a line.
+   * 229 after it) or the key handler takes Enter, such as open suggestions; and for `submit()`.
+   * `submit()` skips those checks and submits empty values too; check the value in `onSubmit`.
+   * Without it, the submit shortcut adds a line.
    */
   readonly onSubmit:
     | ((value: ComposerValue<T>, details: ComposerSubmitDetails) => void)
@@ -209,17 +219,13 @@ const granularity = (type: string): 'word' | 'lineboundary' | 'character' =>
 
 /** Create one per `Composer.Root`. */
 export class Editor<T extends ComposerChip> implements EditorBinding {
-  /**
-   * Root assigns it in a layout effect, not during render, then calls `show`. Events read the
-   * latest.
-   */
-  options: EditorOptions<T>;
+  #options: EditorOptions<T>;
   /**
    * The value committed or shown last. Edits build on it, since a controlled value comes back only
-   * once the owner renders.
+   * once the controlling component renders.
    */
   #latest: ComposerValue<T>;
-  /** Owner values by identity, normalized, so a value passed back keeps its normalized form. */
+  /** Values given to `show` by identity, normalized, so a value passed back keeps its form. */
   readonly #normalized = new WeakMap<ComposerValue<T>, ComposerValue<T>>();
   readonly #histories = new Map<string, History<Step<T>>>();
   #historyKey: string;
@@ -259,16 +265,28 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
   readonly #valueListeners = new Set<() => void>();
   readonly #hostListeners = new Set<() => void>();
   #hosts: readonly ChipHost<T>[] = [];
+  /** The chips in the selection and the armed one, as `data-selected` shows them. */
+  #selected: ReadonlySet<string> = new Set();
   /** Renamed copies by source chip and id, so a value with duplicates normalizes to equal chips. */
   readonly #renamed = new WeakMap<T, Map<string, T>>();
 
-  constructor(options: EditorOptions<T>, owned: ComposerValue<T>, historyKey: string) {
-    this.options = options;
-    const value = this.#fromOwner(owned);
+  constructor(options: EditorOptions<T>, given: ComposerValue<T>, historyKey: string) {
+    this.#options = options;
+    const value = this.#normalizeGiven(given);
     this.#latest = value;
     this.#historyKey = historyKey;
     this.#history = new History<Step<T>>({value, selection: null});
     this.#histories.set(historyKey, this.#history);
+  }
+
+  /** The latest, which events read. */
+  get options(): EditorOptions<T> {
+    return this.#options;
+  }
+
+  /** Root calls it in a layout effect, not during render, then calls `show`. */
+  setOptions(options: EditorOptions<T>): void {
+    this.#options = options;
   }
 
   bind = (element: HTMLElement | null): (() => void) | undefined => {
@@ -295,7 +313,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
   };
 
   /**
-   * The owner portals `renderChip(chip)` into each `content`. The same array until hosts come or
+   * Root portals `renderChip(chip)` into each `content`. The same array until hosts come or
    * go.
    */
   hosts = (): readonly ChipHost<T>[] => this.#hosts;
@@ -320,29 +338,30 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     return renamed;
   };
 
-  #fromOwner(owned: ComposerValue<T>): ComposerValue<T> {
-    let value = this.#normalized.get(owned);
+  #normalizeGiven(given: ComposerValue<T>): ComposerValue<T> {
+    let value = this.#normalized.get(given);
     if (!value) {
-      const normalized = normalize(owned, this.#rename);
-      value = sameValue(normalized, owned) ? owned : normalized;
-      this.#normalized.set(owned, value);
+      const normalized = normalize(given, this.#rename);
+      value = sameValue(normalized, given) ? given : normalized;
+      this.#normalized.set(given, value);
     }
     return value;
   }
 
   /**
-   * Root calls it after every render, and must re-render on every commit, even when a controlled
-   * owner ignores the change (with a state tick in `onChange`, say): only then is an edit the owner
-   * didn't take replaced by the owner's value. Another `historyKey` switches to that key's history.
+   * Root calls it after every render, and must re-render on every commit, even when the
+   * controlling component ignores the change (with a state tick in `onChange`, say): only then is
+   * an edit it didn't take replaced by its value. Another `historyKey` switches to that key's
+   * history.
    * A value from outside, like a controlled reset after sending, is its own undo step; the value
    * this editor sent, passed back, isn't.
    */
-  show(owned: ComposerValue<T>, historyKey: string): void {
-    const value = this.#fromOwner(owned);
+  show(given: ComposerValue<T>, historyKey: string): void {
+    const value = this.#normalizeGiven(given);
     if (historyKey !== this.#historyKey) this.#switchHistory(historyKey, value);
     const edit = this.#edit;
     this.#edit = undefined;
-    // The owner took the pending edit: it enters the history now.
+    // The controlling component took the pending edit: it enters the history now.
     if (edit && value === edit.value && !this.#cleared) {
       this.#history.record({value, selection: edit.selection}, edit.group);
       return;
@@ -355,8 +374,8 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       this.#history = new History<Step<T>>({value, selection: null});
       this.#histories.set(historyKey, this.#history);
     } else if (!sameValue(value, this.#history.current().value)) {
-      // A value from outside: a reset, a draft, or the owner's value in place of an edit it didn't
-      // take. It's an undo step of its own.
+      // A value from outside: a reset, a draft, or the controlling component's value in place of
+      // an edit it didn't take. It's an undo step of its own.
       this.#history.record({value, selection: null});
     }
     this.#armed = undefined;
@@ -392,9 +411,9 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
   }
 
   /**
-   * The owner may cancel.
+   * `onChange` may cancel.
    *
-   * Undo steps: an edit enters the history only once the owner shows it back (`show`). Typing and
+   * Undo steps: an edit enters the history only once Root shows it back (`show`). Typing and
    * deleting (`group` `insert` and `delete`) join the open step of their group while each edit
    * starts where the last one ended (`at` and `#lastEnd`) within `GROUP_PAUSE`. Typing joins one
    * step until a new word starts after a space (`#afterSpace`). `seal()` closes the open step.
@@ -686,8 +705,18 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       chipsOf(sliceValue(this.#latest, range.start, range.end)).map((chip) => chip.id),
     );
     if (this.#armed) ids.add(this.#armed.id);
-    this.#view?.markSelected(ids);
+    this.#setSelected(ids);
   }
+
+  #setSelected(ids: ReadonlySet<string>): void {
+    this.#view?.markSelected(ids);
+    const changed =
+      ids.size !== this.#selected.size || [...ids].some((id) => !this.#selected.has(id));
+    this.#selected = ids;
+    if (changed) this.#emit();
+  }
+
+  isChipSelected = (id: string): boolean => this.#selected.has(id);
 
   textBeforeCaret(): string | null {
     const view = this.#focused ? this.#view : undefined;
@@ -756,8 +785,9 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     }
     if (event.key === 'Enter') {
       const {onSubmit, submitShortcut} = this.options;
-      // Alt is allowed with either shortcut; the app reads `event.altKey`.
-      const submits = !event.shiftKey && (submitShortcut === 'enter' ? !mod : mod);
+      // Alt is allowed with either shortcut; `onSubmit` reads `event.altKey`.
+      const submits =
+        !event.shiftKey && (submitShortcut === 'enter' ? !event.ctrlKey && !event.metaKey : mod);
       if (!submits || !onSubmit) return;
       event.preventDefault();
       onSubmit(this.#latest, {event});
@@ -765,17 +795,21 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
   };
 
   /**
-   * An arrow next to a chip moves past it in one press. The anchors around a host are caret stops
-   * of their own to the browser, which would cost one more.
+   * An arrow next to a chip moves past it in one press. The zero-width spaces around a host are
+   * caret stops of their own to the browser, which would cost one more.
    */
   #crossChip(event: KeyboardEvent): void {
     const view = this.#view;
     const range = view?.selection();
     if (!view || !this.#element || !range || range.start !== range.end) return;
+    const before = chipAt(this.#latest, range.start - 1);
+    const after = chipAt(this.#latest, range.end);
+    // Reading the direction recalculates styles, so only with a chip beside the caret.
+    if (!before && !after) return;
     const forward =
       (event.key === 'ArrowRight') !== (getComputedStyle(this.#element).direction === 'rtl');
+    if (!(forward ? after : before)) return;
     const target = forward ? range.end : range.start - 1;
-    if (!chipAt(this.#latest, target)) return;
     event.preventDefault();
     view.select(caretAt(forward ? target + 1 : target));
   }
@@ -821,7 +855,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
         this.#histories.delete(historyKey);
         return;
       }
-      // The owner may clear the history before showing the value it starts from, such as when
+      // You may clear the history before Root shows the value it starts from, such as when
       // sending, so the next value shown starts it.
       this.#history = new History<Step<T>>({value: this.#latest, selection: null});
       this.#histories.set(historyKey, this.#history);
@@ -1042,7 +1076,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       this.#pressing = false;
       this.#composing = false;
       this.#armed = undefined;
-      this.#view?.markSelected(new Set());
+      this.#setSelected(new Set());
       this.#emit();
     };
 

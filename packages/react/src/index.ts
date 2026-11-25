@@ -141,12 +141,37 @@ export type {
 } from './code-snippet/highlighted-code.tsx';
 
 export type {
+  ComposerAttachmentsProps,
+  ComposerAttachProps,
   ComposerControlsProps,
   ComposerFieldProps,
+  ComposerFieldState,
   ComposerFooterProps,
   ComposerHeaderProps,
   ComposerPanelProps,
+  ComposerPanelState,
+  ComposerStopProps,
+  ComposerSubmitProps,
 } from './composer/composer.tsx';
+export type {ComposerStatus} from './composer/context.ts';
+export type {
+  ComposerActions,
+  ComposerAttachDetails,
+  ComposerChangeDetails,
+  ComposerChangeReason,
+  ComposerChipDeletion,
+  ComposerInsertOptions,
+  ComposerSubmitDetails,
+  ComposerSubmitShortcut,
+} from './composer/editor/editor.ts';
+export type {
+  ComposerChip,
+  ComposerSegment,
+  ComposerTextRange,
+  ComposerValue,
+} from './composer/editor/model.ts';
+export type {ComposerPromptProps, ComposerPromptState} from './composer/prompt.tsx';
+export type {ComposerRootProps} from './composer/root.tsx';
 
 export {CopyButton} from './copy-button/copy-button.tsx';
 export type {CopyButtonProps} from './copy-button/copy-button.tsx';

@@ -8,8 +8,7 @@ import {descriptionProblem, wordingProblems} from '../src/lib/docs-wording.ts';
 const root = join(import.meta.dirname, '../../..');
 const react = join(root, 'packages/react');
 
-// `composer/` is left out until another change fixes its wording.
-const skipped = /\.test\.|[\\/]composer[\\/]/;
+const skipped = /\.test\./;
 
 function files(directory: string): string[] {
   return readdirSync(directory, {recursive: true, encoding: 'utf8'})
