@@ -6,17 +6,17 @@
 // edits by range.
 
 /**
- * Apps extend the type with their own fields. `id` is unique within a value: a chip repeating an
+ * Extend the type with your own fields. `id` is unique within a value: a chip repeating an
  * earlier chip's id gets a new one (`${id}-2`, `-3`, …), and so does a pasted or dropped copy of a
  * chip that's still in the text, so the original keeps its id. To reference the same file twice,
  * give each chip its own id; two chips can carry the same path.
  */
 export type ComposerChip = {readonly id: string; readonly label: string};
 
-export type ComposerSegment<T extends ComposerChip> = string | T;
+export type ComposerSegment<T extends ComposerChip = ComposerChip> = string | T;
 
 /** Normalized: no adjacent or empty strings. */
-export type ComposerValue<T extends ComposerChip> = readonly ComposerSegment<T>[];
+export type ComposerValue<T extends ComposerChip = ComposerChip> = readonly ComposerSegment<T>[];
 
 export type ComposerTextRange = {readonly start: number; readonly end: number};
 
