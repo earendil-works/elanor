@@ -43,5 +43,7 @@ export default createStrictConfig({
     '--composer-hang',
     // Set by you on Composer.Panel or Footer: where the footer's control text sits in the frame.
     '--composer-footer-inset',
+    // Internal: Composer.Prompt's `maxRows` prop sets it on the prompt's scroll area.
+    '--composer-prompt-max-rows',
   ],
 });

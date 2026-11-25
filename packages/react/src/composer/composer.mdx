@@ -4,7 +4,7 @@ category: forms
 
 # Composer
 
-The field where a person writes a chat message, with its buttons inside the frame and rows above and below for notices and settings. For a plain multi-line field, use [Text area](/components/text-area/).
+The field where a person writes a chat message: the prompt with chips, buttons inside the frame, and rows above and below for notices and settings. For a plain multi-line field, use [Text area](/components/text-area/).
 
 <Demo example="./examples/demo.tsx" />
 
@@ -13,37 +13,92 @@ The field where a person writes a chat message, with its buttons inside the fram
 ```tsx
 import {Composer} from '@earendil-works/elanor-react';
 
-<Composer.Panel>
-  <Composer.Header />
-  <Composer.Field>
-    <Composer.Controls />
-  </Composer.Field>
-  <Composer.Footer />
-</Composer.Panel>;
+<Composer.Root>
+  <Composer.Panel>
+    <Composer.Header />
+    <Composer.Field>
+      <Composer.Attachments />
+      <Composer.Prompt />
+      <Composer.Controls>
+        <Composer.Attach />
+        <Composer.Submit />
+        <Composer.Stop />
+      </Composer.Controls>
+    </Composer.Field>
+    <Composer.Footer />
+  </Composer.Panel>
+</Composer.Root>;
 ```
 
-- **Panel** renders a `div` around the rows and fills its container's width. Pass `render={<form />}` for a form.
+- **Root** holds the prompt's value, its undo history and its settings. It renders no element: the other parts and the hooks work anywhere inside it, also outside Panel and in portals, and the parts and the hooks throw outside it. `toText` is required: it gives the text that is copied, submitted with a form, and sent.
+- **Panel** renders a `div` around the rows and fills its container's width. For a form, see [In a form](#in-a-form).
 - **Header** is the row above the field, for notices, errors, and the message being replied to.
-- **Field** is the frame, which looks like one text field holding the text and the buttons. It has no focus ring; the caret shows the focus, and the field keeps its fill while a person writes, darkening only under the pointer or a press. Pressing anything in it other than the text keeps the focus where it is, so a phone's keyboard stays up. Field also works without a Panel.
-- **Controls** is the row of buttons inside the field, in DOM order; place them as you like. Use [Icon buttons](/components/icon-button/) with `density="default"`.
+- **Field** is the frame, which looks like one text field holding the attachments, the prompt and the buttons. It has no focus ring; the caret shows the focus, and the field keeps its fill while a person writes, darkening only under the pointer or a press. Pressing anything in it other than the text keeps the focus where it is, so a phone's keyboard stays up. Field also works without a Panel.
+- **Attachments** lists the attached files above the prompt.
+- **Prompt** is the text. `maxRows` sets how many lines of text the prompt grows to before it scrolls (10 by default; at most 40% of the viewport, so it stays above a phone's keyboard). Name it with `aria-label` or a `Field.Label`.
+- **Controls** is the row of buttons inside the field, in DOM order; place them as you like. Use [Icon buttons](/components/icon-button/) with `density="default"`. **Attach**, **Submit** and **Stop** are icon buttons for attaching files, sending and stopping a reply.
 - **Footer** is the row below the field, for your own controls and figures, such as a model picker and the context used. It's layout only: it sets no text style, so the size of its text is yours to choose.
 
-The containers take any number of children, and an empty one takes no room. Panel is a size container named `composer`, so your own styles can follow the composer's width with `@container composer (…)`. Its public custom properties are `--composer-hang` and `--composer-footer-inset`, which you set, and `--composer-text-inset`, which you read; see [Footer](#footer) and [Alignment](#alignment).
+The containers take any number of children, and an empty one takes no room. Panel is a size container named `composer`, so your own styles can follow the composer's width with `@container composer (…)`. Its public custom properties are `--composer-hang` and `--composer-footer-inset`, which you set, and `--composer-text-inset`, which you read; see [Footer](#footer) and [Alignment](#alignment). If you load code separately, such as plugins, share one copy of this package with it: the hooks find Root through React context.
+
+## Sending
+
+Enter and Alt+Enter call Root's `onSubmit`, and so does Submit. The details carry the event, so Alt+Enter can do something else, such as queue a follow-up. Shift+Enter adds a line. Set `submitShortcut="mod-enter"` to send with Cmd+Enter or Ctrl+Enter instead; then Enter adds a line. Nothing is sent while an input method is composing, and the composer doesn't check whether the prompt is empty: Submit stays enabled, and you decide, for example with `empty` from `Composer.useStatus()`. Some Android keyboards don't report which key was pressed, so there Enter adds a line and Submit sends.
+
+Prompt's `onKeyDown` runs before the composer handles a key; call `preventDefault()` to handle it yourself.
+
+<Demo example="./examples/send.tsx" />
+
+## Stop
+
+`Stop` is a button for stopping a reply: stop it in `onClick`. The composer doesn't know whether a reply is running, so render `Submit` or `Stop` yourself. `Composer.useStatus()` gives `empty`, `disabled` and `readOnly`, so you can offer Stop only while nothing new is written. Give each its own `key`: a press meant for Stop then never sends. When the one with the keyboard focus goes, the other takes it.
+
+<Demo example="./examples/stop.tsx" />
+
+## Attachments
+
+`Attach` opens the file picker; set `accept` and `multiple` on it. Root's `onAttach` receives the picked files, and files pasted or dropped on the prompt, with a `reason` of `picker`, `paste` or `drop`. The attachments are yours: render each in `Attachments` as a [Chip](/components/chip/) with `render={<li />}`. When a chip's remove button is used with the keyboard, the focus returns to the prompt where the caret was.
+
+<Demo example="./examples/attachments.tsx" />
+
+## Chips
+
+The value is a list of text and chips, each chip at least `{id, label}`. Draw a chip's content with [Chip](/components/chip/), `variant="soft"` and `density="compact"`, in Root's `renderChip`. In the prompt a chip is one character: the caret can't enter it, and an arrow key moves past it. Backspace removes a chip whole; set `chipDeletion` to `select` to select it first, or to `revert` to turn it back into its text. `Chip.Remove` there is for pointers; the keyboard uses Backspace. `getChipDescription` tells screen readers what a chip is. `renderChip`, `chipDeletion` and `getChipDescription` take the chip, so each chip can differ.
+
+<Demo example="./examples/chips.tsx" />
+
+## Actions
+
+`Composer.useActions()` gives the composer's actions to any part inside Root, such as a dictation button that inserts its text: `insert`, `focus`, `blur`, `submit`, `attach`, `undo`, `redo`, `clearHistory` and `getValue`. `insert` goes where the caret was, also while the prompt isn't focused. The object never changes, so reading it doesn't render your part again. Root's `actionsRef` gets the same object, for code outside Root.
+
+<Demo example="./examples/actions.tsx" />
+
+## Reading the value
+
+`Composer.useValue(selector)` renders your part again only when what the selector returns changes. The selector runs on every edit: keep it cheap, and return a primitive or a stable reference, or pass `isEqual` as the second argument. To read the value once, in a handler, use `getValue()` from `useActions()`.
+
+### Token count
+
+<Demo example="./examples/token-count.tsx" />
+
+### Secret notice
+
+<Demo example="./examples/secret-notice.tsx" />
+
+### Command hint
+
+<Demo example="./examples/command-hint.tsx" />
 
 ## Controls
 
 ```tsx
 <Composer.Controls render={<Stack direction="row" gap="auto" align="center" />}>
-  <IconButton density="default" aria-label="Attach files">
-    <AddIcon />
-  </IconButton>
+  <Composer.Attach aria-label="Attach files" />
   <Stack direction="row" gap="xSmall" align="center">
     <IconButton density="default" aria-label="Dictate">
       <MicIcon />
     </IconButton>
-    <IconButton density="default" hierarchy="primary" aria-label="Send">
-      <ArrowUpwardIcon />
-    </IconButton>
+    <Composer.Submit />
   </Stack>
 </Composer.Controls>
 ```
@@ -99,3 +154,29 @@ Set it on `Composer.Panel` itself (via `className`): the inset is set on Panel, 
 By default the frame lines up with the content around it. `--composer-hang` hangs the Panel out of its container by that much; set to `--composer-text-inset`, the distance from the frame's edge to the text, it lines up the prompt's text and the footer's with the content around it. A composer rendered by code you don't control can only be hung if that code passes your `className` through.
 
 <Demo example="./examples/align.tsx" />
+
+## In a field
+
+Inside a [Field](/components/field/), the prompt is the field's control: `Field.Label` names it, and the field's states and errors apply to it. Show an error with `Field.Error`: the composer doesn't mark validity on its own, but Field and Prompt render the field's `data-valid` or `data-invalid` for your own styles. A native label can't focus the prompt, so render the label as `Field.Label nativeLabel={false} render={<span />}`; a click on it then focuses the prompt. Set `required` on Root, and `name` on Root or `Field.Root`: a form submits the `toText` text, and a form reset returns to `defaultValue`. Without `onSubmit`, Enter and Submit submit the form, which validates first.
+
+<Demo example="./examples/in-field.tsx" />
+
+## In a form
+
+Pass `render={<form />}` to Panel to make it a form. Submit then submits it, and its submit event calls Root's `onSubmit` with the event in the details; Enter calls it with the key event.
+
+<Demo example="./examples/in-form.tsx" />
+
+## Your own state
+
+Pass `value` and `onValueChange` to Root to keep the prompt elsewhere, such as one draft per conversation. `onValueChange` receives Base UI's change details, with the chips the change removed; `details.cancel()` refuses the change. Set `historyKey` to the draft's key, so each draft keeps its own undo. After sending, call `clearHistory()`, so undo can't bring the sent message back.
+
+When the value comes from a store, subscribe in a small component that renders Root and takes the rest of the composer as `children`. Typing then renders only that component and the prompt, not the buttons or the footer. Define `renderChip` outside that component, or memoize it: a new function on every render draws every chip again.
+
+<Demo example="./examples/controlled.tsx" />
+
+## Disabled and read-only
+
+`disabled` on Root disables the prompt, Attach and Submit. `readOnly` keeps the text focusable and copyable but not editable, and doesn't raise a phone's keyboard. Panel, Field and Prompt render `data-disabled`, `data-readonly` and `data-empty`, for your own styles.
+
+<Demo example="./examples/disabled.tsx" />

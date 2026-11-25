@@ -1,28 +1,57 @@
 import {mergeProps} from '@base-ui/react/merge-props';
 import {useRender} from '@base-ui/react/use-render';
-import type {MouseEvent, PointerEvent} from 'react';
+import {AddIcon, ArrowUpwardIcon, StopIcon} from '@earendil-works/elanor-icons-react';
+import {useRef, type ChangeEvent, type MouseEvent, type PointerEvent, type ReactNode} from 'react';
+
+import {IconButton, type IconButtonProps} from '../icon-button/icon-button.tsx';
+import {useFieldRootContext} from '../utils/base-ui-internals.ts';
+import {fieldValidityMapping} from '../utils/field-validity.ts';
+import {useMergedRef} from '../utils/refs.ts';
+import {useComposerMeta, useComposerSettings, useComposerStatus} from './context.ts';
 
 import styles from './composer.module.css';
 
-export interface ComposerPanelProps extends useRender.ComponentProps<'div'> {}
+export interface ComposerPanelState {
+  /** Nothing is written in the prompt. */
+  readonly empty: boolean;
+  readonly disabled: boolean;
+  readonly readOnly: boolean;
+}
+
+export interface ComposerPanelProps extends useRender.ComponentProps<'div', ComposerPanelState> {}
 
 /**
  * The composer's visible wrapper: `Composer.Header`, `Composer.Field` and `Composer.Footer` in a
- * column. Renders a `div`; pass `render={<form />}` for a form. It fills its container's width,
- * also in a flex or grid container that would size it to its content. A size container named
- * `composer`, for `@container composer (…)` rules of your own. Hangs out of its container by
- * `--composer-hang`, none by default. Exposes `--composer-text-inset`, the distance from the
- * frame's edge to the text: `--composer-hang: var(--composer-text-inset)` lines the text up with
- * content around it. Set that on `Composer.Panel` itself (via `className`); a wrapper can't read
- * the inset. `--composer-footer-inset` sets how far the footer's control text sits inside the
- * frame without a hang.
+ * column. Renders a `div`; pass `render={<form />}` for a form, whose submit event calls Root's
+ * `onSubmit`. It fills its container's width, also in a flex or grid container that would size it
+ * to its content. A size container named `composer`, for `@container composer (…)` rules of your
+ * own. Hangs out of its container by `--composer-hang`, none by default. Exposes
+ * `--composer-text-inset`, the distance from the frame's edge to the text:
+ * `--composer-hang: var(--composer-text-inset)` lines the text up with content around it. Set that
+ * on `Composer.Panel` itself (via `className`); a wrapper can't read the inset.
+ * `--composer-footer-inset` sets how far the footer's control text sits inside the frame without a
+ * hang. Renders `data-empty`, `data-disabled` and `data-readonly`.
  */
 export function ComposerPanel({ref, render, ...props}: ComposerPanelProps) {
+  const meta = useComposerMeta('Composer.Panel');
+  const status = useComposerStatus('Composer.Panel');
   return useRender({
     defaultTagName: 'div',
     render,
     ref,
-    props: mergeProps<'div'>({className: styles.panel}, props),
+    state: {...status},
+    props: mergeProps<'div'>(
+      {
+        className: styles.panel,
+        // Without `onSubmit`, the form submits as forms do.
+        onSubmit: (event) => {
+          if (!meta.takesSubmit()) return;
+          event.preventDefault();
+          meta.actions.submit(event.nativeEvent);
+        },
+      },
+      props,
+    ),
   });
 }
 
@@ -42,7 +71,9 @@ export function ComposerHeader({ref, render, ...props}: ComposerHeaderProps) {
   });
 }
 
-const TEXT_ENTRY = 'textarea, input, select, [contenteditable]:not([contenteditable="false"])';
+// A read-only prompt isn't editable but is still text to select and focus.
+const TEXT_ENTRY =
+  'textarea, input, select, [contenteditable]:not([contenteditable="false"]), [role="textbox"]';
 
 /**
  * Keeps the focus where it is for a press on anything in the field but its text. On a phone the
@@ -114,19 +145,34 @@ function showPress(event: PointerEvent<HTMLDivElement>): void {
   window.addEventListener('pointercancel', release);
 }
 
-export interface ComposerFieldProps extends useRender.ComponentProps<'div'> {}
+export interface ComposerFieldState {
+  /** Nothing is written in the prompt. */
+  readonly empty: boolean;
+  readonly disabled: boolean;
+  readonly readOnly: boolean;
+  /** The validity of the `Field.Root` around the composer, `null` before it is validated. */
+  readonly valid: boolean | null;
+}
+
+export interface ComposerFieldProps extends useRender.ComponentProps<'div', ComposerFieldState> {}
 
 /**
- * The frame that looks like one text field: the attachments, the prompt and `Composer.Controls`. A
- * press on anything in it but the text keeps the focus where it is, so a phone's keyboard stays
- * up; presses in popups opened from it are left alone. Renders `data-pressed` while a finger is on
- * it, not on one of its buttons.
+ * The frame that looks like one text field: `Composer.Attachments`, `Composer.Prompt` and
+ * `Composer.Controls`. A press on anything in it but the text keeps the focus where it is, so a
+ * phone's keyboard stays up; presses in popups opened from it are left alone. Renders
+ * `data-empty`, `data-disabled`, `data-readonly`, and `data-pressed` while a finger is on it, not
+ * on one of its buttons. Inside a `Field.Root` it also
+ * renders the field's `data-valid` or `data-invalid`, unstyled, for your own styles.
  */
 export function ComposerField({ref, render, ...props}: ComposerFieldProps) {
+  const status = useComposerStatus('Composer.Field');
+  const {valid} = useFieldRootContext().state;
   return useRender({
     defaultTagName: 'div',
     render,
     ref,
+    state: {...status, valid},
+    stateAttributesMapping: fieldValidityMapping,
     props: mergeProps<'div'>(
       {
         className: styles.field,
@@ -166,4 +212,150 @@ export function ComposerFooter({ref, render, ...props}: ComposerFooterProps) {
     ref,
     props: mergeProps<'div'>({className: styles.footer}, props),
   });
+}
+
+export interface ComposerAttachProps extends Omit<IconButtonProps, 'density'> {
+  /** The file types offered, as a file input's `accept`. */
+  readonly accept?: string | undefined;
+  /** Whether several files can be picked at once. */
+  readonly multiple?: boolean | undefined;
+  /** The icon. Defaults to a plus. */
+  readonly children?: ReactNode;
+}
+
+/**
+ * An `IconButton` with `density="default"` that opens the browser's file picker and passes the
+ * picked files to Root's `onAttach`, with reason `picker`. Needs an `aria-label`. Disabled while
+ * the composer is disabled or read-only.
+ */
+export function ComposerAttach({
+  accept,
+  multiple = true,
+  disabled = false,
+  onClick,
+  children = <AddIcon />,
+  ...props
+}: ComposerAttachProps) {
+  const meta = useComposerMeta('Composer.Attach');
+  const status = useComposerSettings('Composer.Attach');
+  const input = useRef<HTMLInputElement>(null);
+  return (
+    <>
+      <input
+        ref={input}
+        type="file"
+        hidden
+        accept={accept}
+        multiple={multiple}
+        onChange={(event: ChangeEvent<HTMLInputElement>) => {
+          const files = [...(event.currentTarget.files ?? [])];
+          // Picking the same file again is a change again.
+          event.currentTarget.value = '';
+          if (files.length) meta.pick(files, event.nativeEvent);
+        }}
+      />
+      <IconButton
+        {...props}
+        density="default"
+        disabled={disabled || status.disabled || status.readOnly}
+        onClick={(event) => {
+          onClick?.(event);
+          if (!event.defaultPrevented) input.current?.click();
+        }}
+      >
+        {children}
+      </IconButton>
+    </>
+  );
+}
+
+export interface ComposerAttachmentsProps extends useRender.ComponentProps<'ul'> {}
+
+/**
+ * The attached files, above the prompt: a list of `Chip.Root render={<li />}`, which are
+ * yours. Needs an `aria-label`. When a `Chip.Remove` reached with the keyboard removes one,
+ * the focus returns to the prompt where the caret was. Takes no room while empty.
+ */
+export function ComposerAttachments({ref, render, ...props}: ComposerAttachmentsProps) {
+  const meta = useComposerMeta('Composer.Attachments');
+  return useRender({
+    defaultTagName: 'ul',
+    render,
+    ref,
+    props: mergeProps<'ul'>(
+      {
+        className: styles.attachments,
+        // After the button's own click, while it still has the focus and before it unmounts.
+        onClick: (event) => {
+          // SAFETY: click events target elements, never text nodes.
+          const remove = (event.target as Element).closest('[data-chip-remove]');
+          if (remove && remove === remove.ownerDocument.activeElement) {
+            meta.actions.focus({at: 'caret'});
+          }
+        },
+      },
+      props,
+    ),
+  });
+}
+
+export interface ComposerSubmitProps extends Omit<IconButtonProps, 'density' | 'hierarchy'> {
+  /** The icon. Defaults to an upward arrow. */
+  readonly children?: ReactNode;
+}
+
+/**
+ * The send button: a primary `IconButton` with `density="default"`, labelled "Send". In a form it
+ * submits the form; otherwise it calls Root's `onSubmit` with the click. Disabled while the
+ * composer is disabled or read-only.
+ */
+export function ComposerSubmit({
+  ref,
+  disabled = false,
+  onClick,
+  children = <ArrowUpwardIcon />,
+  ...props
+}: ComposerSubmitProps) {
+  const meta = useComposerMeta('Composer.Submit');
+  const status = useComposerSettings('Composer.Submit');
+  const handOff = useMergedRef(ref, meta.handOff);
+  return (
+    <IconButton
+      aria-label="Send"
+      {...props}
+      ref={handOff}
+      type="submit"
+      density="default"
+      hierarchy="primary"
+      disabled={disabled || status.disabled || status.readOnly}
+      onClick={(event) => {
+        onClick?.(event);
+        if (event.defaultPrevented || event.currentTarget.form) return;
+        meta.actions.submit(event.nativeEvent);
+      }}
+    >
+      {children}
+    </IconButton>
+  );
+}
+
+export interface ComposerStopProps extends Omit<IconButtonProps, 'density' | 'hierarchy'> {
+  /** The icon. Defaults to a square. */
+  readonly children?: ReactNode;
+}
+
+/**
+ * The button that stops a reply: a primary `IconButton` with `density="default"`, labelled "Stop".
+ * Must be inside `Composer.Root`. Stop the reply in `onClick`; the composer doesn't know whether
+ * one is running. Give it and `Composer.Submit` their own `key`s when one replaces the other; the
+ * one that comes takes up the focus the other had.
+ */
+export function ComposerStop({ref, children = <StopIcon />, ...props}: ComposerStopProps) {
+  const meta = useComposerMeta('Composer.Stop');
+  const handOff = useMergedRef(ref, meta.handOff);
+  return (
+    <IconButton aria-label="Stop" {...props} ref={handOff} density="default" hierarchy="primary">
+      {children}
+    </IconButton>
+  );
 }
