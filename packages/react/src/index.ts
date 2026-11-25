@@ -614,10 +614,8 @@ export type {
   SearchableDropdownSeparatorProps,
   SearchableDropdownSeparatorState,
   SearchableDropdownStatusProps,
-  SearchableDropdownTriggerDensity,
   SearchableDropdownTriggerProps,
   SearchableDropdownTriggerState,
-  SearchableDropdownTriggerVariant,
   SearchableDropdownValueCountProps,
   SearchableDropdownValueProps,
 } from './dropdown/searchable-dropdown.tsx';

@@ -92,8 +92,8 @@
     border-color: var(--semantic-color-focus-ring);
   }
 
-  /* After the field's states, so a ghost trigger replaces them, and before invalid, which it
-     keeps. */
+  /* After the default variant's states, so a ghost trigger replaces them, and before invalid,
+     which it keeps. */
   .trigger:where([data-variant='ghost']) {
     gap: var(--semantic-dimension-space-control-gap-small);
     /* `fit-content`, not `auto`, so a column flex parent such as Field doesn't stretch it. */

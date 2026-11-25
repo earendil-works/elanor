@@ -73,7 +73,7 @@ export interface DropdownPrefixProps extends Omit<
   readonly onPointerDown?: PointerEventHandler<HTMLSpanElement> | undefined;
 }
 export type DropdownTriggerDensity = 'compact' | 'default';
-export type DropdownTriggerVariant = 'field' | 'ghost';
+export type DropdownTriggerVariant = 'default' | 'ghost';
 
 export interface DropdownTriggerProps extends BaseSelect.Trigger.Props {
   /** `compact` removes block padding but keeps the default target height. */
@@ -155,7 +155,7 @@ export function DropdownPrefix({ref, className, onPointerDown, ...props}: Dropdo
 export function DropdownTrigger({
   ref,
   density = 'default',
-  variant = 'field',
+  variant = 'default',
   className,
   ...props
 }: DropdownTriggerProps) {
