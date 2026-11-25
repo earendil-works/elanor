@@ -28,6 +28,22 @@
           },
           "$description": "Instant when the reader prefers reduced motion. Use when a selection indicator answering a click moves to a new position or size, such as a tab indicator or a switch thumb."
         },
+        "press": {
+          "$value": {
+            "duration": "{primitive.duration.0}",
+            "delay": "{primitive.duration.0}",
+            "timingFunction": "{primitive.cubicBezier.easeOut.cubic}"
+          },
+          "$description": "Instant when the reader prefers reduced motion. Use for a control growing as it is pressed (`dimension.travel.press`), such as a button or a field under a finger. Settle it back with `movement.release`."
+        },
+        "release": {
+          "$value": {
+            "duration": "{primitive.duration.0}",
+            "delay": "{primitive.duration.0}",
+            "timingFunction": "{primitive.cubicBezier.easeOut.cubic}"
+          },
+          "$description": "Instant when the reader prefers reduced motion. Use for a pressed control settling back to its size when it is let go, without overshooting. Grow it with `movement.press`."
+        },
         "tableOfContents": {
           "indicator": {
             "$value": {

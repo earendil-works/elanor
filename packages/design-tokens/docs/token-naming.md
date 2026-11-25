@@ -189,6 +189,8 @@ semantic.transition.stale
 semantic.transition.movement.popup
 semantic.transition.movement.disclosure
 semantic.transition.movement.indicator
+semantic.transition.movement.press
+semantic.transition.movement.release
 semantic.transition.movement.drawer
 ```
 

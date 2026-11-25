@@ -476,6 +476,8 @@ function Group({
   readonly level: 2 | 3;
 }): React.JSX.Element {
   const id = `${section}-${group.id}`;
+  const rowsStyle: (React.CSSProperties & Record<'--preview-size', string>) | undefined =
+    group.previewSize ? {'--preview-size': group.previewSize} : undefined;
   return (
     <details className={styles.group} id={id} data-filter-group>
       <summary className={styles.summary}>
@@ -496,14 +498,7 @@ function Group({
           ))}
         </ul>
       ) : (
-        <ul
-          className={styles.rows}
-          style={
-            group.previewSize
-              ? ({'--preview-size': group.previewSize} as React.CSSProperties)
-              : undefined
-          }
-        >
+        <ul className={styles.rows} style={rowsStyle}>
           {group.entries.map((entry) => (
             <EntryRow key={entry.id} entry={entry} />
           ))}

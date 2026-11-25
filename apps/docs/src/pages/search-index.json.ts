@@ -9,13 +9,14 @@ import {componentCategoryLabels} from '../lib/component-categories.ts';
 import {componentDescription} from '../lib/component-docs.ts';
 import {componentName} from '../lib/component-name.ts';
 import {demoBlock} from '../lib/demo-blocks.ts';
+import {firstParagraph} from '../lib/docs-wording.ts';
 import {docsSearchOptions, type DocsSearchRecord} from '../lib/search-options.ts';
 import {defaultTokenBrand, tokenAreaHref, tokenAreas} from '../lib/token-pages.ts';
 
 /*
  * The docs search index, loaded by the search dialog (`scripts/docs-search-source.ts`): each
- * component page and its sections, the API's parts and props, and the other pages by their
- * introductions.
+ * component page and the application setup with their sections, the API's parts and props, and
+ * the other pages by their introductions.
  */
 
 /** Markdown as plain text: no code blocks, demos, or markup. */
@@ -54,32 +55,32 @@ function sectionAnchors(body: string): string[] {
   return anchors;
 }
 
-async function componentRecords(): Promise<DocsSearchRecord[]> {
-  const records: DocsSearchRecord[] = [];
-  for (const entry of await getCollection('components')) {
-    const body = entry.body ?? '';
-    const pageTitle = componentName(entry.id);
-    const groupTitle = componentCategoryLabels[entry.data.category];
-    const url = `/components/${entry.id}/`;
-    const anchors = sectionAnchors(body);
-    const [intro = '', ...sections] = body.replace(/^---[\s\S]*?^---$/m, '').split(/^## /m);
-
-    const introText = plainText(intro.replace(/^# .*$/m, ''));
-    records.push({
+/** Records for a Markdown page: the page by its introduction, and each `##` section. */
+function markdownRecords(
+  body: string,
+  url: string,
+  pageTitle: string,
+  groupTitle: string,
+  introExcerpt: string,
+): DocsSearchRecord[] {
+  const anchors = sectionAnchors(body);
+  const [intro = '', ...sections] = body.replace(/^---[\s\S]*?^---$/m, '').split(/^## /m);
+  return [
+    {
       id: url,
       url,
       title: pageTitle,
       pageTitle,
       groupTitle,
-      text: introText,
-      excerpt: componentDescription(entry),
-    });
-    sections.forEach((section, index) => {
+      text: plainText(intro.replace(/^# .*$/m, '')),
+      excerpt: introExcerpt,
+    },
+    ...sections.map((section, index) => {
       const [heading = '', ...lines] = section.split('\n');
       const title = plainText(heading);
       const text = plainText(lines.join('\n'));
       const anchor = anchors[index];
-      records.push({
+      return {
         id: `${url}#${anchor ?? index}`,
         url: anchor ? `${url}#${anchor}` : url,
         title,
@@ -87,8 +88,19 @@ async function componentRecords(): Promise<DocsSearchRecord[]> {
         groupTitle,
         text: `${title} ${text}`,
         excerpt: excerpt(text),
-      });
-    });
+      };
+    }),
+  ];
+}
+
+async function componentRecords(): Promise<DocsSearchRecord[]> {
+  const records: DocsSearchRecord[] = [];
+  for (const entry of await getCollection('components')) {
+    const body = entry.body ?? '';
+    const pageTitle = componentName(entry.id);
+    const groupTitle = componentCategoryLabels[entry.data.category];
+    const url = `/components/${entry.id}/`;
+    records.push(...markdownRecords(body, url, pageTitle, groupTitle, componentDescription(entry)));
 
     const parts = orderedApi(entry.id, body);
     if (parts.length > 0) {
@@ -123,6 +135,13 @@ function pageRecord(
 }
 
 export const GET: APIRoute = async () => {
+  const setupBody = (await applicationSetup()).body ?? '';
+  const setupIntro = firstParagraph(setupBody);
+  if (!setupIntro) {
+    throw new Error(
+      'packages/react/docs/application-setup.mdx: start the page with an H1 and a one-paragraph introduction.',
+    );
+  }
   const records = [
     pageRecord(
       '/brand/',
@@ -157,11 +176,12 @@ export const GET: APIRoute = async () => {
       'Components',
       'React components from @earendil-works/elanor-react, built on Base UI and styled with the design tokens.',
     ),
-    pageRecord(
+    ...markdownRecords(
+      setupBody,
       '/application-setup/',
       'Application setup',
       'Components',
-      plainText((await applicationSetup()).body?.replace(/^# .*$/m, '') ?? ''),
+      setupIntro,
     ),
     ...(await componentRecords()),
   ];

@@ -330,6 +330,10 @@
         "keyboardKey": {
           "$value": "{primitive.dimension.25}",
           "$description": "Use for the distance a keyboard key moves down while pressed, as deep as its bottom edge is thicker than its other borders."
+        },
+        "press": {
+          "$value": "{primitive.dimension.50}",
+          "$description": "Use for how far a control's edges move out while it is pressed: it grows by this much at each side, whatever its size, so a small button and a wide field answer a finger alike. Work its scale out from the control's size (1 + 2 × travel ÷ size); do not use a fixed scale factor."
         }
       }
     }

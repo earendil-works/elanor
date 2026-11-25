@@ -22,20 +22,20 @@ export function ScrollAreaStaticRoot({
   style,
   ...props
 }: ScrollAreaStaticRootProps) {
+  const rootStyle: CSSProperties &
+    Record<'--scroll-area-corner-height' | '--scroll-area-corner-width', string> = {
+    position: 'relative',
+    '--scroll-area-corner-height': '0px',
+    '--scroll-area-corner-width': '0px',
+    ...style,
+  };
   return (
     <div
       role="presentation"
       {...props}
       ref={ref}
       className={classes(styles.root, className)}
-      style={
-        {
-          position: 'relative',
-          '--scroll-area-corner-height': '0px',
-          '--scroll-area-corner-width': '0px',
-          ...style,
-        } as CSSProperties
-      }
+      style={rootStyle}
       data-elanor={pageBehaviors ? `scroll-area ${pageBehaviors}` : 'scroll-area'}
     />
   );

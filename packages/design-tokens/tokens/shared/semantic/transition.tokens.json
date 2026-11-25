@@ -8,7 +8,9 @@
         "$value": {
           "duration": "{primitive.duration.150}",
           "delay": "{primitive.duration.0}",
-          "timingFunction": {"$ref": "#/primitive/cubicBezier/easeOut/$root/$value"}
+          "timingFunction": {
+            "$ref": "#/primitive/cubicBezier/easeOut/$root/$value"
+          }
         },
         "$description": "Use for color, background, border, and shadow changes, such as hover, press, and the switch track."
       },
@@ -16,7 +18,9 @@
         "$value": {
           "duration": "{primitive.duration.150}",
           "delay": "{primitive.duration.0}",
-          "timingFunction": {"$ref": "#/primitive/cubicBezier/easeOut/$root/$value"}
+          "timingFunction": {
+            "$ref": "#/primitive/cubicBezier/easeOut/$root/$value"
+          }
         },
         "$description": "Use for opacity when something appears or disappears, such as popups, scrollbars, backdrops, and page crossfades."
       },
@@ -32,7 +36,9 @@
         "$value": {
           "duration": "{primitive.duration.200}",
           "delay": "{primitive.duration.200}",
-          "timingFunction": {"$ref": "#/primitive/cubicBezier/easeOut/$root/$value"}
+          "timingFunction": {
+            "$ref": "#/primitive/cubicBezier/easeOut/$root/$value"
+          }
         },
         "$description": "Use to dim content to `opacity.stale`; the delay keeps fast updates from flickering. Apply it only in the stale state, so content restores instantly."
       },
@@ -61,6 +67,22 @@
             "timingFunction": "{primitive.cubicBezier.easeOut.cubic}"
           },
           "$description": "Use when a selection indicator answering a click moves to a new position or size, such as a tab indicator or a switch thumb."
+        },
+        "press": {
+          "$value": {
+            "duration": "{primitive.duration.150}",
+            "delay": "{primitive.duration.0}",
+            "timingFunction": "{primitive.cubicBezier.easeOut.cubic}"
+          },
+          "$description": "Use for a control growing as it is pressed (`dimension.travel.press`), such as a button or a field under a finger. Settle it back with `movement.release`."
+        },
+        "release": {
+          "$value": {
+            "duration": "{primitive.duration.300}",
+            "delay": "{primitive.duration.0}",
+            "timingFunction": "{primitive.cubicBezier.easeOut.cubic}"
+          },
+          "$description": "Use for a pressed control settling back to its size when it is let go, without overshooting. Grow it with `movement.press`."
         },
         "tableOfContents": {
           "indicator": {
