@@ -29,8 +29,9 @@ export function createStore<State>(
 }
 
 /**
- * What `selector` picks from the store's state. Return a primitive or a stored reference: a new
- * object on every call would render again on every change of the store.
+ * What `selector` picks from the store's state. It must return a primitive or a cached value: a
+ * new object per call makes `useSyncExternalStore` warn that `getSnapshot` should be cached, and
+ * can loop.
  */
 export function useStoreSelector<State, Selected>(
   store: Store<State>,
