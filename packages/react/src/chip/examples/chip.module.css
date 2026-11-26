@@ -6,3 +6,7 @@
   padding: 0;
   list-style: none;
 }
+
+.narrow {
+  max-inline-size: var(--semantic-dimension-size-max-width-content-small);
+}
