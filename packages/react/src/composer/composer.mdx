@@ -75,7 +75,15 @@ Prompt's `onKeyDown` runs before the composer handles a key; call `preventDefaul
 - They are one undo step, with the paste's or drop's reason and event in `onValueChange`'s details.
 - Call it in `onAttach` or before the person edits again, such as once you've read a file. Once the text has changed it inserts nothing and returns `false`; then insert with `actions.insert` at the caret, or drop the files.
 - Text that comes with pasted or dropped files, usually their names, isn't inserted. A chip dragged within the prompt moves to where it is dropped, and never reaches `onAttach`.
-- While files are dragged over it, Field renders `data-drag-over`: style a file drag over the field, or know a drop would land. A drop zone outside the composer, such as the whole conversation view, is yours: cancel `dragover` and `drop` there, and pass the files to `actions.attach()`.
+- While files are dragged over it, Field renders `data-drag-over`: style a file drag over the field, or know a drop would land. A drop zone outside the composer, such as the whole conversation view, is yours: cancel `dragover` and `drop` there, and pass the files to `actions.attach()`. A drop on the field bubbles to it too, so skip a `drop` whose `defaultPrevented` is set: the composer took it.
+
+```tsx
+onDrop={(event) => {
+  if (event.defaultPrevented) return; // The composer took it.
+  event.preventDefault();
+  actions.attach([...event.dataTransfer.files]);
+}}
+```
 
 <Demo example="./examples/files.tsx" />
 

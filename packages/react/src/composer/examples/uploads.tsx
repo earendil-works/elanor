@@ -94,7 +94,7 @@ function SendButton() {
 
 export default function ComposerUploads() {
   const [value, setValue] = useState<ComposerValue<FileChip>>([]);
-  const [sent, setSent] = useState('');
+  const [status, setStatus] = useState('');
   const actions = useRef<ComposerActions<FileChip>>(null);
 
   return (
@@ -107,7 +107,12 @@ export default function ComposerUploads() {
         renderChip={renderChip}
         getChipDescription={() => 'file'}
         onAttach={(files, details) => {
-          const added = files.map((file) => {
+          // `accept` limits only the picker: dropped and pasted files come whatever their type.
+          const accepted = files.filter(
+            (file) => file.type.startsWith('image/') || file.type === 'application/pdf',
+          );
+          setStatus(accepted.length < files.length ? 'Only images and PDFs can be attached.' : '');
+          const added = accepted.map((file) => {
             uploadCount += 1;
             const chip = {
               id: `file-${uploadCount}`,
@@ -123,7 +128,7 @@ export default function ComposerUploads() {
         // Enter sends without Submit, so check here too.
         onSubmit={(message) => {
           if (pending(uploadIdsOf(message)) || !toText(message).trim()) return;
-          setSent(`Sent: ${messageOf(message)}`);
+          setStatus(`Sent: ${messageOf(message)}`);
           actions.current?.clearHistory();
           setValue([]);
         }}
@@ -138,7 +143,7 @@ export default function ComposerUploads() {
           </Composer.Field>
         </Composer.Panel>
       </Composer.Root>
-      <Text role="status">{sent}</Text>
+      <Text role="status">{status}</Text>
     </Stack>
   );
 }
