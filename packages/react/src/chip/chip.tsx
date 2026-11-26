@@ -158,10 +158,7 @@ export interface ChipRemoveProps extends Omit<IconButtonProps, 'density' | 'hier
 
 /**
  * An [Icon button](/components/icon-button/) that removes the chip. Give it an `aria-label` naming
- * the item, such as "Remove design.pdf", and remove the item in `onClick`. In a composer's prompt
- * it removes the chip from the text itself, and is for pointers only: hidden from assistive
- * technology and out of the Tab order, since Backspace and Delete remove a chip there. Renders
- * `data-chip-remove`.
+ * the item, such as "Remove design.pdf", and remove the item in `onClick`.
  */
 export function ChipRemove({
   ref,
@@ -169,27 +166,10 @@ export function ChipRemove({
   children = <CloseSmallIcon />,
   ...props
 }: ChipRemoveProps) {
-  const host = use(ChipHostContext);
-  const {onPointerDown, onClick} = props;
-  const hosted: Partial<IconButtonProps> | null = host && {
-    'aria-hidden': true,
-    tabIndex: -1,
-    onPointerDown: (event) => {
-      onPointerDown?.(event);
-      // Keeps the focus and the caret in the text.
-      event.preventDefault();
-    },
-    onClick: (event) => {
-      onClick?.(event);
-      if (!event.defaultPrevented) host.remove(event.nativeEvent);
-    },
-  };
   return (
     <IconButton
       {...props}
-      {...hosted}
       ref={ref}
-      data-chip-remove=""
       className={mergeClassName<ButtonState>(styles.remove, className)}
     >
       {children}

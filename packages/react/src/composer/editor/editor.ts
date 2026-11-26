@@ -49,7 +49,6 @@ export type ComposerChangeReason =
   | 'input-drop'
   | 'history-undo'
   | 'history-redo'
-  | 'chip-remove-press'
   | 'item-press'
   | 'imperative-action'
   | 'form-reset';
@@ -141,7 +140,6 @@ export interface EditorBinding {
    * composition.
    */
   handleKeyDown(event: KeyboardEvent): void;
-  removeChip(id: string, event: MouseEvent): void;
   /** Whether the chip is in the selection or armed for removal. Changes fire `subscribe`. */
   isChipSelected(id: string): boolean;
   /**
@@ -711,18 +709,6 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     );
   }
 
-  removeChip(id: string, event: MouseEvent): void {
-    if (!this.options.editable) return;
-    const offset = offsetOfChip(this.#latest, id);
-    if (offset === undefined) return;
-    this.#commit(
-      replaceRange(this.#latest, {start: offset, end: offset + 1}, []),
-      caretAt(offset),
-      'chip-remove-press',
-      event,
-    );
-  }
-
   /** Shows an undo or redo step without recording it. */
   #applyStep(
     event: Event | undefined,
@@ -1187,19 +1173,14 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     // A press on a chip of the focused editor selects it, with the caret collapsed after it: a
     // native range would make iOS draw a highlight with handles across the line. A finger's
     // selects it at once, and the keyboard stays up. Another pointer's may start a drag, so the
-    // chip is selected at the click. The remove button handles its own press.
+    // chip is selected at the click.
     const onPointerDown = (event: PointerEvent) => {
       this.#pressing = true;
       held = true;
       holdHost(event);
       this.#pressedBy = event.pointerType;
       this.#pressedChip = undefined;
-      if (
-        !this.#focused ||
-        !this.options.editable ||
-        (event.target instanceof Element && event.target.closest('[data-chip-remove]'))
-      )
-        return;
+      if (!this.#focused || !this.options.editable) return;
       const pressed = this.#chipOf(event.target);
       if (!pressed) return;
       if (event.pointerType !== 'touch') {

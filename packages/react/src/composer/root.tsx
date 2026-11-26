@@ -250,10 +250,7 @@ function ChipHostView<T extends ComposerChip>({chip, renderChip, editor}: ChipHo
     () => editor.isChipSelected(chip.id),
     () => false,
   );
-  const host = useMemo<ChipHostContextValue>(
-    () => ({selected, remove: (event) => editor.removeChip(chip.id, event)}),
-    [selected, editor, chip.id],
-  );
+  const host = useMemo<ChipHostContextValue>(() => ({selected}), [selected]);
   return (
     <ChipHostContext value={host}>
       {renderChip ? (
