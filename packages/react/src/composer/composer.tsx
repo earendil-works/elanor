@@ -298,6 +298,8 @@ export interface ComposerAttachProps extends Omit<IconButtonProps, 'density'> {
   readonly accept?: string | undefined;
   /** Whether several files can be picked at once. */
   readonly multiple?: boolean | undefined;
+  /** The camera to take a photo or video with on phones, as a file input's `capture`. */
+  readonly capture?: boolean | 'user' | 'environment' | undefined;
   /** The icon. Defaults to a plus. */
   readonly children?: ReactNode;
 }
@@ -310,6 +312,7 @@ export interface ComposerAttachProps extends Omit<IconButtonProps, 'density'> {
 export function ComposerAttach({
   accept,
   multiple = true,
+  capture,
   disabled = false,
   onClick,
   children = <AddIcon />,
@@ -326,6 +329,7 @@ export function ComposerAttach({
         hidden
         accept={accept}
         multiple={multiple}
+        capture={capture}
         onChange={(event: ChangeEvent<HTMLInputElement>) => {
           const files = [...(event.currentTarget.files ?? [])];
           // Picking the same file again is a change again.
