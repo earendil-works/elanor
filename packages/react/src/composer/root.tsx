@@ -73,7 +73,7 @@ export interface ComposerRootProps<T extends ComposerChip = ComposerChip> {
     | undefined;
   /** The keys that submit: `enter` or `mod-enter`. */
   readonly submitShortcut?: ComposerSubmitShortcut | undefined;
-  /** Files picked, pasted, dropped on the field or passed to `attach()`; `details.insert` puts them at `details.at`. */
+  /** Files picked, pasted, dropped on the field or passed to `attach()`, for `details.insert`. */
   readonly onAttach?: ((files: File[], details: ComposerAttachDetails<T>) => void) | undefined;
   /** The value pasted text goes in as, such as a chip for a long text. */
   readonly getPastedValue?:

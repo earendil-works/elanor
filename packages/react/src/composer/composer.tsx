@@ -2,11 +2,11 @@ import {mergeProps} from '@base-ui/react/merge-props';
 import {useRender} from '@base-ui/react/use-render';
 import {AddIcon, ArrowUpwardIcon, StopIcon} from '@earendil-works/elanor-icons-react';
 import {
+  useCallback,
   useEffect,
   useRef,
   useState,
   type ChangeEvent,
-  type DragEvent,
   type MouseEvent,
   type PointerEvent,
   type ReactNode,
@@ -181,47 +181,54 @@ const DRAG_OVER_TIMEOUT_MS = 1000;
 function useFileDrag(editor: EditorBinding) {
   const [dragOver, setDragOver] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
-  const stop = () => {
-    clearTimeout(timer.current);
-    setDragOver(false);
-  };
   useEffect(() => {
     if (!dragOver) return undefined;
     // A drag from the page that is cancelled over the field ends here.
-    const end = () => {
-      clearTimeout(timer.current);
-      setDragOver(false);
-    };
+    const end = () => setDragOver(false);
     window.addEventListener('dragend', end, true);
     return () => {
       clearTimeout(timer.current);
       window.removeEventListener('dragend', end, true);
     };
   }, [dragOver]);
-  return {
-    dragOver,
-    props: {
-      onDragOver: (event: DragEvent<HTMLDivElement>) => {
-        if (!editor.takesFiles(event.nativeEvent)) return;
+  const ref = useCallback(
+    (field: HTMLElement | null) => {
+      if (!field) return undefined;
+      // Taking the drag over keeps the browser from drawing a drop caret under the pointer, at the
+      // wrong place: files go in at the caret. They're copied in, and the cursor says so.
+      const onDragOver = (event: DragEvent) => {
+        if (!editor.takesFiles(event)) return;
         event.preventDefault();
-        event.dataTransfer.dropEffect = 'copy';
+        if (event.dataTransfer) event.dataTransfer.dropEffect = 'copy';
         setDragOver(true);
         clearTimeout(timer.current);
-        timer.current = setTimeout(stop, DRAG_OVER_TIMEOUT_MS);
-      },
+        timer.current = setTimeout(() => setDragOver(false), DRAG_OVER_TIMEOUT_MS);
+      };
       // Moving onto a child leaves its parent too; only a point off the field leaves it.
-      onDragLeave: (event: DragEvent<HTMLDivElement>) => {
-        const box = event.currentTarget.getBoundingClientRect();
+      const onDragLeave = (event: DragEvent) => {
+        const box = field.getBoundingClientRect();
         const {clientX: x, clientY: y} = event;
-        if (x <= box.left || x >= box.right || y <= box.top || y >= box.bottom) stop();
-      },
-      // The prompt takes its own drops first.
-      onDrop: (event: DragEvent<HTMLDivElement>) => {
-        stop();
-        if (!event.defaultPrevented && editor.dropFiles(event.nativeEvent)) event.preventDefault();
-      },
+        if (x <= box.left || x >= box.right || y <= box.top || y >= box.bottom) setDragOver(false);
+      };
+      // `preventDefault` marks the drop as taken, for the page's own drop zones. Captured: a chip
+      // renders through a portal from Root, so React hands a drop on it to the page's handlers
+      // before it bubbles to the field.
+      const onDrop = (event: DragEvent) => {
+        setDragOver(false);
+        if (!event.defaultPrevented && editor.dropFiles(event)) event.preventDefault();
+      };
+      field.addEventListener('dragover', onDragOver);
+      field.addEventListener('dragleave', onDragLeave);
+      field.addEventListener('drop', onDrop, true);
+      return () => {
+        field.removeEventListener('dragover', onDragOver);
+        field.removeEventListener('dragleave', onDragLeave);
+        field.removeEventListener('drop', onDrop, true);
+      };
     },
-  };
+    [editor],
+  );
+  return {dragOver, ref};
 }
 
 const fieldStateMapping = {
@@ -248,7 +255,7 @@ export function ComposerField({ref, render, ...props}: ComposerFieldProps) {
   return useRender({
     defaultTagName: 'div',
     render,
-    ref,
+    ref: ref ? [ref, fileDrag.ref] : fileDrag.ref,
     state: {...status, valid, dragOver: fileDrag.dragOver},
     stateAttributesMapping: fieldStateMapping,
     props: mergeProps<'div'>(
@@ -256,7 +263,6 @@ export function ComposerField({ref, render, ...props}: ComposerFieldProps) {
         className: styles.field,
         onPointerDown: showPress,
         onMouseDown: keepFocus,
-        ...fileDrag.props,
       },
       props,
     ),

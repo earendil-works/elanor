@@ -87,9 +87,9 @@ type AttachSource =
   | {readonly reason: 'api'; readonly event?: undefined};
 
 export type ComposerAttachDetails<T extends ComposerChip = ComposerChip> = AttachSource & {
-  /** Where the files go: the selection a paste replaces, else the caret after any selected text, or the end. */
+  /** Where the files go: the selection a paste replaces, else the caret after any selected text. */
   readonly at: ComposerTextRange;
-  /** One undo step at `at`: `input-drop`, `input-paste`, or `imperative-action` with the picker's event; `false` if canceled or stale. */
+  /** One step at `at`: `input-drop`, `input-paste`, else `imperative-action`; `false` if stale. */
   readonly insert: (content: string | T | ComposerValue<T>) => boolean;
 };
 
@@ -169,7 +169,7 @@ export interface EditorBinding {
   setKeyHandler(handler: ((event: KeyboardEvent) => boolean) | undefined): void;
   /** Whether a drag carries files `onAttach` takes; a drag from this editor never does. */
   takesFiles(event: DragEvent): boolean;
-  /** Gives dropped files to `onAttach`, at the last caret; `true` when it took them. */
+  /** Gives dropped files to `onAttach`, at the caret after any selected text; `true` if taken. */
   dropFiles(event: DragEvent): boolean;
   /**
    * For `useSuggestionMatch`: fires on value, caret and focus changes, and during IME
@@ -517,7 +517,6 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
   /** For a form's reset event. */
   reset(value: ComposerValue<T>, event: Event): void {
     this.#armed = undefined;
-    this.#revision += 1;
     this.#commit(value, caretAt(valueLength(value)), 'form-reset', event);
   }
 
@@ -814,8 +813,8 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     (event.dataTransfer?.types.includes('Files') ?? false);
 
   /**
-   * Wherever they are dropped, files go in at the caret the person placed, not under the pointer:
-   * a drop lands on the prompt, the field or a drop zone of the app's alike.
+   * Wherever they are dropped on the field, files go in at the caret the person placed, after any
+   * selected text, not under the pointer.
    */
   dropFiles = (event: DragEvent): boolean => {
     const files = [...(event.dataTransfer?.files ?? [])];
@@ -980,9 +979,12 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     this.#attach(files, this.#fileCaret(), {reason: 'picker', event});
   }
 
-  /** The last caret, also while the editor is blurred; the end before there was one. */
+  /**
+   * The last caret, also while the editor is blurred, within the text: a value shown since may be
+   * shorter. The end before there was one.
+   */
   #caret(): ComposerTextRange {
-    return this.#selection ?? caretAt(valueLength(this.#latest));
+    return this.#clamp(this.#selection ?? caretAt(valueLength(this.#latest)));
   }
 
   /** Files never replace selected text: they go after it, at its end in the text's order. */
@@ -997,7 +999,10 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     this.#readBack(undefined);
   }
 
-  /** `details.insert` refuses once the text has changed: `at` is an offset into what `onAttach` saw. */
+  /**
+   * `details.insert` refuses once the text has changed: `at` is an offset into what `onAttach`
+   * saw.
+   */
   #attach(files: File[], at: ComposerTextRange, source: AttachSource): void {
     const {onAttach} = this.options;
     if (!onAttach) return;
@@ -1200,24 +1205,16 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       releaseHost();
     };
 
-    // Taking the drag over also keeps the browser from drawing a drop caret under the pointer, which
-    // would show the wrong place: files go in at the caret.
-    const onDragOver = (event: DragEvent) => {
-      if (!this.takesFiles(event)) return;
-      event.preventDefault();
-      // Files are copied in, not moved: the cursor says so in every browser.
-      if (event.dataTransfer) event.dataTransfer.dropEffect = 'copy';
-    };
-
-    // Text, and a drag from this editor, go in at the drop point.
+    // Text, and a drag from this editor, go in at the drop point. Files are `Composer.Field`'s,
+    // which takes them anywhere on it, the prompt included.
     const onDrop = (event: DragEvent) => {
+      if (this.takesFiles(event)) return;
       event.preventDefault();
-      const tookFiles = this.dropFiles(event);
       const source = this.#dragged;
       // Also here: `dragend` doesn't reach the editor when the drop removed the node it started on.
       endDrag();
       const current = view();
-      if (tookFiles || !this.options.editable || !current) return;
+      if (!this.options.editable || !current) return;
       this.#endComposition();
       let at = current.offsetAtPoint(event.clientX, event.clientY) ?? valueLength(this.#latest);
       let value = this.#latest;
@@ -1327,7 +1324,6 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     on('paste', onPaste);
     on('dragstart', onDragStart);
     on('dragend', endDrag);
-    on('dragover', onDragOver);
     on('drop', onDrop);
     on('keyup', () => {
       this.#plainPaste = false;
