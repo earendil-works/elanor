@@ -122,7 +122,7 @@ export default function ComposerUploads() {
             return {file, chip};
           });
           // Only files that went into the text start uploading.
-          if (!details.insert(added.flatMap(({chip}) => [chip, ' ']))) return;
+          if (!details.insert(added.map(({chip}) => chip))) return;
           for (const {file, chip} of added) startUpload(chip.uploadId, file);
         }}
         // Enter sends without Submit, so check here too.

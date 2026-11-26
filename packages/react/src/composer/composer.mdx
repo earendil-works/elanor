@@ -69,7 +69,7 @@ Prompt's `onKeyDown` runs before the composer handles a key; call `preventDefaul
 
 ## Files
 
-`Attach` opens the file picker; set `accept` and `multiple` on it, and `capture` to offer the camera on phones. Root's `onAttach` receives the picked files, and files pasted on the prompt or dropped on the field, with a `reason` of `picker`, `paste` or `drop`. Files are chips in the text, where they are mentioned: in `onAttach`, pass one chip per file, a space between them, drawn as `Upload › name`, to `details.insert`.
+`Attach` opens the file picker; set `accept` and `multiple` on it, and `capture` to offer the camera on phones. Root's `onAttach` receives the picked files, and files pasted on the prompt or dropped on the field, with a `reason` of `picker`, `paste` or `drop`. Files are chips in the text, where they are mentioned: in `onAttach`, pass one chip per file, drawn as `Upload › name`, to `details.insert`. Chips a person adds get a space around them where the text needs one; `actions.insert` inserts exactly what you pass.
 
 - `details.insert` puts them at `details.at`. Files go in at the caret, after any selected text, or at the end if the prompt was never focused; dropped files go there wherever on the field they are dropped. A paste replaces the selection. After `details.insert`, the caret collapses after the chips.
 - They are one undo step, with the paste's or drop's reason and event in `onValueChange`'s details.

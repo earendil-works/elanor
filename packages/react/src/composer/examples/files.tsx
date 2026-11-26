@@ -41,7 +41,7 @@ export default function ComposerFiles() {
           place: 'Upload',
           path: file.name,
         }));
-        details.insert(chips.flatMap((chip) => [chip, ' ']));
+        details.insert(chips);
       }}
       getChipDescription={() => 'file'}
       renderChip={renderChip}
