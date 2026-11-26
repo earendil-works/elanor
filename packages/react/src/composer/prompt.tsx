@@ -65,8 +65,9 @@ const scrollStyle = (maxRows: number): CSSProperties & {'--composer-prompt-max-r
  * the composer's keys; call `preventDefault()` to handle a key yourself. Inside a `Field.Root` it
  * is the field's control, through a hidden form value that a form submits and validates. `render`,
  * `className` and `ref` go to the editable element, which renders `data-empty`, `data-disabled`,
- * `data-readonly` and the field's states. While `Composer.Suggestions` is mounted it has
- * `aria-haspopup="listbox"`, and while the list shows, `aria-controls` and `data-popup-open`.
+ * `data-readonly` and the field's states. While `Composer.Suggestions` is mounted and the prompt
+ * is editable, it has `aria-haspopup="listbox"`, and while the popup shows, `aria-controls` and
+ * `data-popup-open`.
  */
 export function ComposerPrompt({
   ref,
@@ -85,15 +86,16 @@ export function ComposerPrompt({
   const control = useRef<HTMLDivElement>(null);
   const popup = useSyncExternalStore(meta.popup.subscribe, meta.popup.get, meta.popup.get);
 
-  const popupProps = {
-    'aria-haspopup': popup ? 'listbox' : undefined,
-    'aria-autocomplete': popup ? 'list' : undefined,
-    'aria-controls': popup?.list,
-    'aria-activedescendant': popup?.active,
-    'data-popup-open': popup?.list === undefined ? undefined : '',
-  } as const;
-
   const editable = !disabled && !readOnly;
+  // Suggestions don't open in a prompt that isn't editable.
+  const suggests = editable && popup !== null;
+  const popupProps = {
+    'aria-haspopup': suggests ? 'listbox' : undefined,
+    'aria-autocomplete': suggests ? 'list' : undefined,
+    'aria-controls': popup?.controls,
+    'aria-activedescendant': popup?.active,
+    'data-popup-open': popup?.controls === undefined ? undefined : '',
+  } as const;
   const {valid, touched, dirty, filled, focused} = field.state;
   const element = useRender({
     defaultTagName: 'div',

@@ -24,8 +24,8 @@ export interface ComposerSettings {
 
 /** What the prompt says about `Composer.Suggestions` while it is mounted. */
 export interface PromptPopup {
-  /** The list's id while the list shows. */
-  readonly list: string | undefined;
+  /** While the popup shows: the list's id, or the popup's while it shows only its empty state. */
+  readonly controls: string | undefined;
   /** The highlighted option's id, once a person moved through the list with the arrow keys. */
   readonly active: string | undefined;
 }
@@ -38,7 +38,7 @@ export interface PromptPopupStore {
 }
 
 const samePopup = (a: PromptPopup | null, b: PromptPopup | null): boolean =>
-  a === b || (a !== null && b !== null && a.list === b.list && a.active === b.active);
+  a === b || (a !== null && b !== null && a.controls === b.controls && a.active === b.active);
 
 export function createPromptPopupStore(): PromptPopupStore {
   let current: PromptPopup | null = null;
