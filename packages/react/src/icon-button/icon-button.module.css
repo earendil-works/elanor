@@ -61,6 +61,8 @@
   }
 
   .root[data-hierarchy='primary']::before {
+    box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
+      var(--semantic-color-border-edge);
     background: var(--semantic-color-background-fill-primary);
     transition: background-color var(--semantic-transition-feedback);
   }

@@ -9,7 +9,7 @@
           "$description": "Use as the foundational background of a page or application."
         },
         "surface": {
-          "$value": "{primitive.color.graphite.800}",
+          "$value": "{primitive.color.black}",
           "$description": "Use for standard structural containers such as cards, panels, and content sections."
         },
         "backdrop": {
@@ -38,70 +38,70 @@
           "$description": "Use these colors for bounded filled elements according to their prominence and meaning.",
           "primary": {
             "$root": {
-              "$value": "{primitive.color.cerulianBlue.400}",
+              "$value": "{primitive.color.cerulianBlue.600}",
               "$description": "Use for default high-prominence filled elements such as primary buttons, strong badges, or prominent actions."
             },
             "hover": {
-              "$value": "{primitive.color.cerulianBlue.360}",
+              "$value": "{primitive.color.cerulianBlue.560}",
               "$description": "Use when a default high-prominence filled interactive element is hovered."
             },
             "active": {
-              "$value": "{primitive.color.cerulianBlue.320}",
+              "$value": "{primitive.color.cerulianBlue.520}",
               "$description": "Use while a default high-prominence filled interactive element is actively pressed."
             },
             "neutral": {
               "$root": {
-                "$value": "{primitive.color.graphite.400}",
+                "$value": "{primitive.color.graphite.600}",
                 "$description": "Use for high-prominence filled elements that require a neutral treatment."
               },
               "hover": {
-                "$value": "{primitive.color.graphite.360}",
+                "$value": "{primitive.color.graphite.560}",
                 "$description": "Use when a neutral high-prominence filled interactive element is hovered."
               },
               "active": {
-                "$value": "{primitive.color.graphite.320}",
+                "$value": "{primitive.color.graphite.520}",
                 "$description": "Use while a neutral high-prominence filled interactive element is actively pressed."
               }
             },
             "information": {
               "$root": {
-                "$value": "{primitive.color.cerulianBlue.400}",
+                "$value": "{primitive.color.cerulianBlue.600}",
                 "$description": "Use for high-prominence filled elements that communicate neutral information or guidance."
               },
               "hover": {
-                "$value": "{primitive.color.cerulianBlue.360}",
+                "$value": "{primitive.color.cerulianBlue.560}",
                 "$description": "Use when an informational high-prominence filled interactive element is hovered."
               },
               "active": {
-                "$value": "{primitive.color.cerulianBlue.320}",
+                "$value": "{primitive.color.cerulianBlue.520}",
                 "$description": "Use while an informational high-prominence filled interactive element is actively pressed."
               }
             },
             "negative": {
               "$root": {
-                "$value": "{primitive.color.coralRed.400}",
+                "$value": "{primitive.color.coralRed.600}",
                 "$description": "Use for high-prominence filled elements that trigger or communicate a negative action or outcome."
               },
               "hover": {
-                "$value": "{primitive.color.coralRed.360}",
+                "$value": "{primitive.color.coralRed.560}",
                 "$description": "Use when a negative high-prominence filled interactive element is hovered."
               },
               "active": {
-                "$value": "{primitive.color.coralRed.320}",
+                "$value": "{primitive.color.coralRed.520}",
                 "$description": "Use while a negative high-prominence filled interactive element is actively pressed."
               }
             },
             "positive": {
               "$root": {
-                "$value": "{primitive.color.turquoiseGreen.400}",
+                "$value": "{primitive.color.turquoiseGreen.600}",
                 "$description": "Use for high-prominence filled elements that trigger or communicate a positive action or outcome."
               },
               "hover": {
-                "$value": "{primitive.color.turquoiseGreen.360}",
+                "$value": "{primitive.color.turquoiseGreen.560}",
                 "$description": "Use when a positive high-prominence filled interactive element is hovered."
               },
               "active": {
-                "$value": "{primitive.color.turquoiseGreen.320}",
+                "$value": "{primitive.color.turquoiseGreen.520}",
                 "$description": "Use while a positive high-prominence filled interactive element is actively pressed."
               }
             }
@@ -733,7 +733,7 @@
           "$description": "Use for interactive text links."
         },
         "onPrimaryFill": {
-          "$value": "{primitive.color.black}",
+          "$value": "{primitive.color.white}",
           "$description": "Use for text placed on primary fills such as prominent filled buttons, chips, or badges."
         },
         "onSecondaryFill": {
