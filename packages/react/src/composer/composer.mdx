@@ -17,7 +17,6 @@ import {Composer} from '@earendil-works/elanor-react';
   <Composer.Panel>
     <Composer.Header />
     <Composer.Field>
-      <Composer.Attachments />
       <Composer.Prompt />
       <Composer.Controls>
         <Composer.Attach />
@@ -46,8 +45,7 @@ import {Composer} from '@earendil-works/elanor-react';
 - **Root** holds the prompt's value, its undo history and its settings. It renders no element: the other parts and the hooks work anywhere inside it, also outside Panel and in portals, and the parts and the hooks throw outside it. `toText` is required: it gives the text that is copied, submitted with a form, and sent.
 - **Panel** renders a `div` around the rows and fills its container's width. For a form, see [In a form](#in-a-form).
 - **Header** is the row above the field, for notices, errors, and the message being replied to.
-- **Field** is the frame, which looks like one text field holding the attachments, the prompt and the buttons. It has no focus ring; the caret shows the focus, and the field keeps its fill while a person writes, darkening only under the pointer or a press. Pressing anything in it other than the text keeps the focus where it is, so a phone's keyboard stays up. Field also works without a Panel.
-- **Attachments** lists the attached files above the prompt.
+- **Field** is the frame, which looks like one text field holding the prompt, with its chips, and the buttons. It has no focus ring; the caret shows the focus, and the field keeps its fill while a person writes, darkening only under the pointer or a press. Pressing anything in it other than the text keeps the focus where it is, so a phone's keyboard stays up. Field also works without a Panel.
 - **Prompt** is the text. `maxRows` sets how many lines of text the prompt grows to before it scrolls (10 by default; at most 40% of the viewport, so it stays above a phone's keyboard). Name it with `aria-label` or a `Field.Label`.
 - **Controls** is the row of buttons inside the field, in DOM order; place them as you like. Use [Icon buttons](/components/icon-button/) with `density="default"`. **Attach**, **Submit** and **Stop** are icon buttons for attaching files, sending and stopping a reply.
 - **Footer** is the row below the field, for your own controls and figures, such as a model picker and the context used. It's layout only: it sets no text style, so the size of its text is yours to choose.
@@ -69,17 +67,40 @@ Prompt's `onKeyDown` runs before the composer handles a key; call `preventDefaul
 
 <Demo example="./examples/stop.tsx" />
 
-## Attachments
+## Files
 
-`Attach` opens the file picker; set `accept` and `multiple` on it. Root's `onAttach` receives the picked files, and files pasted or dropped on the prompt, with a `reason` of `picker`, `paste` or `drop`. The attachments are yours: render each in `Attachments` as a [Chip](/components/chip/) with `render={<li />}`. When a chip's remove button is used with the keyboard, the focus returns to the prompt where the caret was.
+`Attach` opens the file picker; set `accept` and `multiple` on it. Root's `onAttach` receives the picked files, and files pasted or dropped on the prompt, with a `reason` of `picker`, `paste` or `drop`. Files are chips in the text, where they are mentioned: in `onAttach`, `insert` one chip per file, a space between them, drawn as `Upload › name`, with the actions from Root's `actionsRef`. `insert` puts them at the caret, also after the prompt lost the focus, and at the end when there is no caret yet. The upload is yours: keep its state by an id of yours on the chip, as [Chips](#chips) says.
 
-<Demo example="./examples/attachments.tsx" />
+<Demo example="./examples/files.tsx" />
 
 ## Chips
 
-The value is a list of text and chips, each chip at least `{id, label}`. Draw a chip's content with [Chip](/components/chip/), `variant="soft"` and `density="compact"`, in Root's `renderChip`. In the prompt a chip is one character: the caret can't enter it, and an arrow key moves past it. Backspace removes a chip whole; set `chipDeletion` to `select` to select it first, or to `revert` to turn it back into its text. `Chip.Remove` there is for pointers; the keyboard uses Backspace. `getChipDescription` tells screen readers what a chip is. `renderChip`, `chipDeletion` and `getChipDescription` take the chip, so each chip can differ.
+The value is a list of text and chips, each chip at least `{id, label}`. Draw a chip's content with [Chip](/components/chip/), `variant="soft"` and `density="compact"`, in Root's `renderChip`: a `Chip.Icon` and a `Chip.Label` for its place, `Chip.Separator`, and a `Chip.Label` for its name. It is 20px tall in the prompt's 24px line and at most three quarters of the text's width; the name takes the ellipsis. `getChipDescription` tells screen readers what a chip is. `renderChip`, `chipDeletion` and `getChipDescription` take the chip, so each chip can differ.
+
+Keep `renderChip` stable, at module scope or with `useCallback`: the chips draw again when it changes. The undo history keeps the chips as they were, so keep state that changes, such as an upload's progress or its failure, out of the chip. Give the chip an id of yours, such as `uploadId`, not its `id`: a copy gets a new `id`. Read the live state by it in `renderChip`, from a component that subscribes to it. To cancel an upload or start it again, compare the chips in `onValueChange`'s value with your uploads: Undo brings a removed chip back.
+
+In the prompt a chip is one character, and it goes as text does:
+
+- Left or Right beside a chip selects it, and a second press moves the caret past it. Shift and an arrow extend the selection over it. A press or a tap on a chip in the focused prompt selects it; a tap beside it places the caret.
+- Backspace and Delete remove a selected chip. Beside the caret, Backspace removes a chip whole by default; set `chipDeletion` to `select` to select it first, or to `revert` to turn it back into its `toText` text: Backspace beside `devbox › build.mjs` gives `@devbox:scripts/build.mjs`, with the caret at its end, where [suggestions](#suggestions) open on it.
+- A mouse or a pen drags a chip to another place in the text; it stays faint where it was until it is dropped. A finger doesn't drag: cut and paste move a chip there.
+- Copied text is the `toText` text. Pasted back into the same prompt, its chips come back; after a cut, as the same chips.
+
+Don't render `Chip.Remove` in `renderChip`: a person removes a chip with Backspace or Delete.
 
 <Demo example="./examples/chips.tsx" />
+
+### Chip tooltips
+
+The prompt doesn't show a chip's text on hover; wrap the chip in a [Tooltip](/components/tooltip/) in `renderChip`, with `Tooltip.Trigger render={<Chip.Root />}`, to say where it is or why its upload failed. Tooltips open for a pointer only, so on a touch screen say why an upload failed in a notice too.
+
+<Demo example="./examples/chip-tooltip.tsx" />
+
+## Long pastes
+
+Root's `getPastedValue` receives pasted text and returns the value it goes in as, such as a chip for a long text that would fill the prompt; return `[text]` to keep it as text. The threshold is yours: this example makes a chip of more than ten lines, and its `toText` sends the text in its place. Undo right after such a paste gives the text as text, and a second Undo removes the paste. Cmd+Shift+V or Ctrl+Shift+V always pastes text as text. `getPastedValue` isn't called for files, which go to `onAttach`, for a copy from the same prompt, whose chips come back, or for text dropped on the prompt. Returning `[]` drops the paste.
+
+<Demo example="./examples/long-paste.tsx" />
 
 ## Actions
 

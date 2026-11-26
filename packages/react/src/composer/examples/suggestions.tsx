@@ -136,23 +136,16 @@ function FileAndCommandSuggestions() {
   );
 }
 
+const renderChip = (chip: Suggestion) => (
+  <Chip.Root variant="soft" density="compact">
+    <Chip.Icon>{chip.kind === 'file' ? <DescriptionIcon /> : <TerminalIcon />}</Chip.Icon>
+    <Chip.Label>{chip.kind === 'file' ? chip.label : `/${chip.label}`}</Chip.Label>
+  </Chip.Root>
+);
+
 export default function ComposerSuggestions() {
   return (
-    <Composer.Root
-      toText={toText}
-      getChipDescription={(chip) => chip.kind}
-      renderChip={(chip) => (
-        <Chip.Root
-          variant="soft"
-          density="compact"
-          title={chip.kind === 'file' ? chip.path : undefined}
-        >
-          <Chip.Icon>{chip.kind === 'file' ? <DescriptionIcon /> : <TerminalIcon />}</Chip.Icon>
-          <Chip.Label>{chip.kind === 'file' ? chip.label : `/${chip.label}`}</Chip.Label>
-          <Chip.Remove />
-        </Chip.Root>
-      )}
-    >
+    <Composer.Root toText={toText} getChipDescription={(chip) => chip.kind} renderChip={renderChip}>
       <Composer.Panel>
         <Composer.Field>
           <Composer.Prompt

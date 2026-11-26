@@ -21,17 +21,9 @@ export interface ChipRootProps extends useRender.ComponentProps<'span'> {
    * `soft`: a filled pill with a faint edge.
    */
   readonly variant?: ChipVariant | undefined;
-  /**
-   * `default`: 24px tall, for lists, such as a form's files or a set of filters.
-   * `compact`: as tall as its text (20px) and centred in the line of the text around it, such
-   * as 2px above and below in a 24px line, so it sits in a sentence.
-   */
+  /** `default`: 24px tall, for lists. `compact`: as tall as its text, centred in its line. */
   readonly density?: ChipDensity | undefined;
-  /**
-   * The item's state: `negative` for one that failed, such as an upload, `warning` and
-   * `positive` for others. Tints the fill of `soft` and the edge of `outline`; say the state in
-   * words too, such as in a tooltip or a notice.
-   */
+  /** Tints the fill of `soft` or the edge of `outline`; say the state in words too. */
   readonly semantic?: ChipSemantic | undefined;
 }
 
@@ -158,10 +150,7 @@ export interface ChipRemoveProps extends Omit<IconButtonProps, 'density' | 'hier
 
 /**
  * An [Icon button](/components/icon-button/) that removes the chip. Give it an `aria-label` naming
- * the item, such as "Remove design.pdf", and remove the item in `onClick`. In a composer's prompt
- * it removes the chip from the text itself, and is for pointers only: hidden from assistive
- * technology and out of the Tab order, since Backspace and Delete remove a chip there. Renders
- * `data-chip-remove`.
+ * the item, such as "Remove design.pdf", and remove the item in `onClick`.
  */
 export function ChipRemove({
   ref,
@@ -169,27 +158,10 @@ export function ChipRemove({
   children = <CloseSmallIcon />,
   ...props
 }: ChipRemoveProps) {
-  const host = use(ChipHostContext);
-  const {onPointerDown, onClick} = props;
-  const hosted: Partial<IconButtonProps> | null = host && {
-    'aria-hidden': true,
-    tabIndex: -1,
-    onPointerDown: (event) => {
-      onPointerDown?.(event);
-      // Keeps the focus and the caret in the text.
-      event.preventDefault();
-    },
-    onClick: (event) => {
-      onClick?.(event);
-      if (!event.defaultPrevented) host.remove(event.nativeEvent);
-    },
-  };
   return (
     <IconButton
       {...props}
-      {...hosted}
       ref={ref}
-      data-chip-remove=""
       className={mergeClassName<ButtonState>(styles.remove, className)}
     >
       {children}

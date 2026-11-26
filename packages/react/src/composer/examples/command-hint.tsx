@@ -19,20 +19,21 @@ function CommandHint() {
   return hint ? <Text>{hint}</Text> : null;
 }
 
+const renderChip = (command: Command) => (
+  <Chip.Root variant="soft" density="compact">
+    <Chip.Icon>
+      <TerminalIcon />
+    </Chip.Icon>
+    <Chip.Label>{`/${command.label}`}</Chip.Label>
+  </Chip.Root>
+);
+
 export default function ComposerCommandHint() {
   return (
     <Composer.Root
       toText={toText}
       defaultValue={[review, ' and focus on the tests']}
-      renderChip={(command) => (
-        <Chip.Root variant="soft" density="compact">
-          <Chip.Icon>
-            <TerminalIcon />
-          </Chip.Icon>
-          <Chip.Label>{`/${command.label}`}</Chip.Label>
-          <Chip.Remove />
-        </Chip.Root>
-      )}
+      renderChip={renderChip}
     >
       <Composer.Panel>
         <Composer.Field>

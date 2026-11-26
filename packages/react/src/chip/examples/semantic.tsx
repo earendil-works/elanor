@@ -1,11 +1,11 @@
 import {UploadIcon} from '@earendil-works/elanor-icons-react';
-import {Chip, type ChipSemantic, Stack} from '@earendil-works/elanor-react';
+import {Chip, type ChipSemantic, Stack, Text} from '@earendil-works/elanor-react';
 
-const uploads: ReadonlyArray<{name: string; semantic: ChipSemantic}> = [
-  {name: 'screen.png', semantic: 'neutral'},
-  {name: 'release-notes.md', semantic: 'positive'},
-  {name: 'recording.mov', semantic: 'warning'},
-  {name: 'crash.log', semantic: 'negative'},
+const uploads: ReadonlyArray<{name: string; semantic: ChipSemantic; state: string}> = [
+  {name: 'screen.png', semantic: 'neutral', state: 'is uploaded'},
+  {name: 'release-notes.md', semantic: 'positive', state: 'passed its checks'},
+  {name: 'recording.mov', semantic: 'warning', state: 'is too long to preview'},
+  {name: 'crash.log', semantic: 'negative', state: "didn't upload: connection lost"},
 ];
 
 export default function ChipSemanticExample() {
@@ -31,6 +31,8 @@ export default function ChipSemanticExample() {
           </Chip.Root>
         ))}
       </Stack>
+      {/* The color doesn't say why: the state in words, beside the chips. */}
+      <Text>{uploads.map(({name, state}) => `${name} ${state}.`).join(' ')}</Text>
     </Stack>
   );
 }

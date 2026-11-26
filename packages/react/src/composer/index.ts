@@ -3,7 +3,6 @@ export {
   ComposerPanel as Panel,
   ComposerHeader as Header,
   ComposerField as Field,
-  ComposerAttachments as Attachments,
   ComposerControls as Controls,
   ComposerAttach as Attach,
   ComposerSubmit as Submit,

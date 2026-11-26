@@ -271,6 +271,19 @@ export class EditorView<T extends ComposerChip> {
     return {start: Math.min(start, end), end: Math.max(start, end)};
   }
 
+  /** The selection's moving end, which Shift and an arrow move. */
+  focusOffset(): number | null {
+    const selection = document.getSelection();
+    if (!selection?.focusNode || !this.#element.contains(selection.focusNode)) return null;
+    return this.offsetAt(selection.focusNode, selection.focusOffset);
+  }
+
+  /** Moves the selection's focus to `offset`, keeping its anchor. */
+  extendTo(offset: number): void {
+    const [node, index] = this.#pointAt(offset);
+    document.getSelection()?.extend(node, index);
+  }
+
   select({start, end}: ComposerTextRange): void {
     const selection = document.getSelection();
     if (!selection) return;
@@ -330,7 +343,8 @@ export class EditorView<T extends ComposerChip> {
     };
   }
 
-  markSelected(ids: ReadonlySet<string>): void {
-    for (const [id, {host}] of this.#hosts) host.toggleAttribute('data-selected', ids.has(id));
+  /** `data-selected` on the chips in the selection and the armed one, `data-dragging` on those dragged. */
+  mark(attribute: 'data-selected' | 'data-dragging', ids: ReadonlySet<string>): void {
+    for (const [id, {host}] of this.#hosts) host.toggleAttribute(attribute, ids.has(id));
   }
 }

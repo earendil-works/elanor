@@ -144,7 +144,6 @@ export type {
 } from './code-snippet/highlighted-code.tsx';
 
 export type {
-  ComposerAttachmentsProps,
   ComposerAttachProps,
   ComposerControlsProps,
   ComposerFieldProps,
@@ -164,6 +163,7 @@ export type {
   ComposerChangeReason,
   ComposerChipDeletion,
   ComposerInsertOptions,
+  ComposerPasteDetails,
   ComposerSubmitDetails,
   ComposerSubmitShortcut,
 } from './composer/editor/editor.ts';

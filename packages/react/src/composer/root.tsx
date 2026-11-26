@@ -32,6 +32,7 @@ import {
   type ComposerAttachDetails,
   type ComposerChangeDetails,
   type ComposerChipDeletion,
+  type ComposerPasteDetails,
   type ComposerSubmitDetails,
   type ComposerSubmitShortcut,
   type EditorOptions,
@@ -54,7 +55,7 @@ export interface ComposerRootProps<T extends ComposerChip = ComposerChip> {
     | undefined;
   /** The value as text: what is copied, what a form submits, and what a `revert` chip becomes. */
   readonly toText: (value: ComposerValue<T>) => string;
-  /** Draws a chip's content, usually a `Chip.Root`, `variant="soft"` and `density="compact"`. */
+  /** Draws a chip's content, usually a soft, compact `Chip.Root`. */
   readonly renderChip?: ((chip: T) => ReactNode) | undefined;
   /** What Backspace and Delete do to a chip beside the caret, for all chips or per chip. */
   readonly chipDeletion?: ComposerChipDeletion | ((chip: T) => ComposerChipDeletion) | undefined;
@@ -62,7 +63,7 @@ export interface ComposerRootProps<T extends ComposerChip = ComposerChip> {
   readonly getChipDescription?: ((chip: T) => string) | undefined;
   /** Announced when chips are removed. Defaults to "Removed {label}". */
   readonly getChipRemovedMessage?: ((chip: T) => string) | undefined;
-  /** Announced when Backspace or Delete selects a `select` chip. */
+  /** Announced when a chip is selected: by an arrow, a press, or a first Backspace or Delete. */
   readonly getChipSelectedMessage?: ((chip: T, key: 'Backspace' | 'Delete') => string) | undefined;
   /** Names the draft shown, so each draft keeps its own undo history. */
   readonly historyKey?: string | undefined;
@@ -74,6 +75,10 @@ export interface ComposerRootProps<T extends ComposerChip = ComposerChip> {
   readonly submitShortcut?: ComposerSubmitShortcut | undefined;
   /** Called with files picked in `Composer.Attach`, pasted, dropped, or passed to `attach()`. */
   readonly onAttach?: ((files: File[], details: ComposerAttachDetails) => void) | undefined;
+  /** The value pasted text goes in as, such as a chip for a long text. */
+  readonly getPastedValue?:
+    | ((text: string, details: ComposerPasteDetails) => ComposerValue<T>)
+    | undefined;
   /** Disables the prompt and the composer's buttons. */
   readonly disabled?: boolean | undefined;
   /** Keeps the text focusable and copyable, but not editable. */
@@ -108,6 +113,7 @@ export function ComposerRoot<T extends ComposerChip = ComposerChip>({
   onSubmit,
   submitShortcut = 'enter',
   onAttach,
+  getPastedValue,
   disabled: disabledProp = false,
   readOnly = false,
   name,
@@ -138,6 +144,7 @@ export function ComposerRoot<T extends ComposerChip = ComposerChip>({
     submitShortcut,
     editable: !disabled && !readOnly,
     onAttach,
+    getPastedValue,
     getChipRemovedMessage,
     getChipSelectedMessage,
   };
@@ -243,10 +250,7 @@ function ChipHostView<T extends ComposerChip>({chip, renderChip, editor}: ChipHo
     () => editor.isChipSelected(chip.id),
     () => false,
   );
-  const host = useMemo<ChipHostContextValue>(
-    () => ({selected, remove: (event) => editor.removeChip(chip.id, event)}),
-    [selected, editor, chip.id],
-  );
+  const host = useMemo<ChipHostContextValue>(() => ({selected}), [selected]);
   return (
     <ChipHostContext value={host}>
       {renderChip ? (

@@ -91,7 +91,7 @@ Behaviors make components work on static pages: rendered on the server, without 
 - Keep every control's mouse size on touch screens. Only menu items, table of contents links and file tree rows get a minimum height of `semantic.dimension.size.medium` under `@media (pointer: coarse)`.
 - Prefer logical properties and flexible layouts. Handle narrow containers, RTL, and long content without hiding meaningful content.
 - Keep selectors scoped; avoid global overrides and specificity escalation.
-- When a container styles another component's part, the part renders a marker, `data-<component>[-<part>]` (`data-icon-button`, `data-chip-remove`), documented in its JSDoc. Containers select the marker, never another component's classes.
+- When a container styles another component's part, the part renders a marker, `data-<component>[-<part>]` (`data-icon-button`), documented in its JSDoc. Containers select the marker, never another component's classes.
 - For motion, use `semantic.transition` tokens: `movement.*` for anything that moves, scales, rotates, or resizes, `fade` for opacity, and `feedback` for color changes. Movement becomes instant when a person prefers reduced motion, so add no reduced-motion queries. List transitioned properties explicitly - no `transition: all`.
 - Use the design-token plugin's strict configuration for the target brand. `stylelint.config.mjs` defines allowed Base UI runtime variables.
 

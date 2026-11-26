@@ -162,12 +162,12 @@ export interface ComposerFieldState {
 export interface ComposerFieldProps extends useRender.ComponentProps<'div', ComposerFieldState> {}
 
 /**
- * The frame that looks like one text field: `Composer.Attachments`, `Composer.Prompt` and
- * `Composer.Controls`. A press on anything in it but the text keeps the focus where it is, so a
- * phone's keyboard stays up; presses in popups opened from it are left alone. Renders
- * `data-empty`, `data-disabled`, `data-readonly`, and `data-pressed` while a finger is on it, not
- * on one of its buttons. Inside a `Field.Root` it also
- * renders the field's `data-valid` or `data-invalid`, unstyled, for your own styles.
+ * The frame that looks like one text field: `Composer.Prompt` and `Composer.Controls`. A press on
+ * anything in it but the text keeps the focus where it is, so a phone's keyboard stays up; presses
+ * in popups opened from it are left alone. Renders `data-empty`, `data-disabled`,
+ * `data-readonly`, and `data-pressed` while a finger is on it, not on one of its buttons. Inside a
+ * `Field.Root` it also renders the field's `data-valid` or `data-invalid`, unstyled, for your own
+ * styles.
  */
 export function ComposerField({ref, render, ...props}: ComposerFieldProps) {
   const status = useComposerStatus('Composer.Field');
@@ -272,36 +272,6 @@ export function ComposerAttach({
       </IconButton>
     </>
   );
-}
-
-export interface ComposerAttachmentsProps extends useRender.ComponentProps<'ul'> {}
-
-/**
- * The attached files, above the prompt: a list of `Chip.Root render={<li />}`, which are
- * yours. Needs an `aria-label`. When a `Chip.Remove` reached with the keyboard removes one,
- * the focus returns to the prompt where the caret was. Takes no room while empty.
- */
-export function ComposerAttachments({ref, render, ...props}: ComposerAttachmentsProps) {
-  const meta = useComposerMeta('Composer.Attachments');
-  return useRender({
-    defaultTagName: 'ul',
-    render,
-    ref,
-    props: mergeProps<'ul'>(
-      {
-        className: styles.attachments,
-        // After the button's own click, while it still has the focus and before it unmounts.
-        onClick: (event) => {
-          // SAFETY: click events target elements, never text nodes.
-          const remove = (event.target as Element).closest('[data-chip-remove]');
-          if (remove && remove === remove.ownerDocument.activeElement) {
-            meta.actions.focus({at: 'caret'});
-          }
-        },
-      },
-      props,
-    ),
-  });
 }
 
 export interface ComposerSubmitProps extends Omit<IconButtonProps, 'density' | 'hierarchy'> {
