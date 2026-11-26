@@ -9,7 +9,7 @@
    * bubble's. `--composer-padding` is the field's padding, where its buttons sit; with the border,
    * a fixed size. `--composer-icon-inset` is the distance from an IconButton's edge to its icon,
    * `--composer-prompt-padding` the prompt's block padding. `--composer-indent` indents the text to
-   * the icons' drawing, a quarter of an icon inside its box, so text and icons share an edge to the
+   * the icons' drawing, a fifth of an icon inside its box, so text and icons share an edge to the
    * eye.
    */
   .panel,
@@ -19,14 +19,12 @@
     --composer-padding: calc(
       var(--semantic-dimension-space-padding-small) - var(--composer-border)
     );
-    /* Mirrors IconButton's default density, the icon plus this padding. If it becomes
-       `size-medium`, use `calc((var(--semantic-dimension-size-medium) -
-       var(--semantic-dimension-size-icon)) / 2)`. */
-    --composer-icon-inset: var(--semantic-dimension-space-control-padding-block-small);
-    --composer-prompt-padding: var(--semantic-dimension-space-control-padding-block-small);
-    --composer-indent: calc(
-      var(--composer-icon-inset) + 0.25 * var(--semantic-dimension-size-icon)
+    /* Mirrors IconButton's default density, `size.medium` with the icon centred in it. */
+    --composer-icon-inset: calc(
+      (var(--semantic-dimension-size-medium) - var(--semantic-dimension-size-icon)) / 2
     );
+    --composer-prompt-padding: var(--semantic-dimension-space-padding-small);
+    --composer-indent: calc(var(--composer-icon-inset) + 0.2 * var(--semantic-dimension-size-icon));
   }
 
   /*
@@ -148,10 +146,7 @@
     max-block-size: min(
       calc(
         var(--composer-prompt-max-rows) * 1lh + 2 *
-          var(
-            --composer-prompt-padding,
-            var(--semantic-dimension-space-control-padding-block-small)
-          )
+          var(--composer-prompt-padding, var(--semantic-dimension-space-padding-small))
       ),
       40dvh
     );
@@ -190,8 +185,8 @@
         var(
           --composer-indent,
           calc(
-            var(--semantic-dimension-space-control-padding-block-small) + 0.25 *
-              var(--semantic-dimension-size-icon)
+            (var(--semantic-dimension-size-medium) - var(--semantic-dimension-size-icon)) / 2 +
+              0.2 * var(--semantic-dimension-size-icon)
           )
         )
     );
@@ -202,14 +197,10 @@
     inline-size: 100%;
     min-inline-size: 0;
     min-block-size: calc(
-      1lh + 2 *
-        var(--composer-prompt-padding, var(--semantic-dimension-space-control-padding-block-small))
+      1lh + 2 * var(--composer-prompt-padding, var(--semantic-dimension-space-padding-small))
     );
     margin: 0;
-    padding-block: var(
-      --composer-prompt-padding,
-      var(--semantic-dimension-space-control-padding-block-small)
-    );
+    padding-block: var(--composer-prompt-padding, var(--semantic-dimension-space-padding-small));
     padding-inline: var(--composer-prompt-inline);
     outline: 0;
     color: var(--semantic-color-text-primary);
