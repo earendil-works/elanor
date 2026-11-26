@@ -13,8 +13,7 @@
       var(--semantic-dimension-space-control-padding-inline-small) -
         var(--semantic-dimension-border-width-default)
     );
-    border: var(--semantic-dimension-border-width-default) solid
-      var(--semantic-color-background-fill-secondary);
+    border: var(--semantic-dimension-border-width-default) solid transparent;
     border-radius: var(--semantic-dimension-radius-small);
     background: var(--semantic-color-background-fill-secondary);
     color: var(--semantic-color-text-primary);
@@ -27,7 +26,6 @@
 
   @media (hover: hover) {
     .root:where(:hover:not(:has(.input:disabled, .input[data-disabled]))) {
-      border-color: var(--semantic-color-background-fill-secondary-hover);
       background: var(--semantic-color-background-fill-secondary-hover);
     }
   }
@@ -38,13 +36,17 @@
   }
 
   .root:has(.input:focus-visible) {
-    outline: var(--semantic-dimension-border-width-focus-ring) solid
-      var(--semantic-color-focus-ring);
-    outline-offset: var(--semantic-dimension-border-width-medium);
+    outline: var(--semantic-dimension-border-width-focus-halo) solid
+      var(--semantic-color-focus-halo);
+    outline-offset: 0;
   }
 
   .root:where(:has(.input[data-invalid], .input[aria-invalid='true'])) {
     border-color: var(--semantic-color-focus-ring-negative);
+  }
+
+  .root:has(.input:focus-visible):where(:has(.input[data-invalid], .input[aria-invalid='true'])) {
+    outline-color: var(--semantic-color-focus-halo-negative);
   }
 
   .root:where(:has(.input:disabled, .input[data-disabled])) {

@@ -12,8 +12,6 @@
     border-radius: var(--semantic-dimension-radius-small);
     background: var(--semantic-color-background-fill-secondary);
     color: var(--semantic-color-text-code);
-    box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
-      var(--semantic-color-background-fill-secondary);
   }
 
   .code {

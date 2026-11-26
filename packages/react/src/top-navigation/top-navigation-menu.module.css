@@ -42,9 +42,9 @@
   }
 
   .trigger:focus-visible {
-    outline: var(--semantic-dimension-border-width-focus-ring) solid
-      var(--semantic-color-focus-ring);
-    outline-offset: calc(-1 * var(--semantic-dimension-border-width-focus-ring));
+    outline: var(--semantic-dimension-border-width-focus-halo) solid
+      var(--semantic-color-focus-halo);
+    outline-offset: calc(-1 * var(--semantic-dimension-border-width-focus-halo));
   }
 
   /* The open menu fills the window below the top navigation. Its panels fill the menu, so the
@@ -185,9 +185,9 @@
 
   .link:focus-visible,
   .back:focus-visible {
-    outline: var(--semantic-dimension-border-width-focus-ring) solid
-      var(--semantic-color-focus-ring);
-    outline-offset: var(--semantic-dimension-border-width-medium);
+    outline: var(--semantic-dimension-border-width-focus-halo) solid
+      var(--semantic-color-focus-halo);
+    outline-offset: 0;
   }
 
   .label {

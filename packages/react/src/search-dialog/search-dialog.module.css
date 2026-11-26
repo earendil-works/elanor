@@ -16,8 +16,7 @@
       var(--semantic-dimension-space-control-padding-inline-small) -
         var(--semantic-dimension-border-width-default)
     );
-    border: var(--semantic-dimension-border-width-default) solid
-      var(--semantic-color-background-fill-secondary);
+    border: var(--semantic-dimension-border-width-default) solid transparent;
     border-radius: var(--semantic-dimension-radius-small);
     background: var(--semantic-color-background-fill-secondary);
     color: var(--semantic-color-text-secondary);
@@ -29,16 +28,15 @@
 
   @media (hover: hover) {
     .trigger:hover {
-      border-color: var(--semantic-color-background-fill-secondary-hover);
       background: var(--semantic-color-background-fill-secondary-hover);
     }
   }
 
   .trigger:focus-visible {
     border-color: var(--semantic-color-focus-ring);
-    outline: var(--semantic-dimension-border-width-focus-ring) solid
-      var(--semantic-color-focus-ring);
-    outline-offset: var(--semantic-dimension-border-width-medium);
+    outline: var(--semantic-dimension-border-width-focus-halo) solid
+      var(--semantic-color-focus-halo);
+    outline-offset: 0;
   }
 
   .icon {

@@ -112,6 +112,30 @@
           "$description": "Use for the default visible keyboard-focus indicator around an interactive element."
         }
       },
+      "focusHalo": {
+        "$root": {
+          "$value": {
+            "colorSpace": {
+              "$ref": "#/primitive/color/warm/600/$value/colorSpace"
+            },
+            "components": [
+              {
+                "$ref": "#/primitive/color/warm/600/$value/components/0"
+              },
+              {
+                "$ref": "#/primitive/color/warm/600/$value/components/1"
+              },
+              {
+                "$ref": "#/primitive/color/warm/600/$value/components/2"
+              }
+            ],
+            "alpha": {
+              "$ref": "#/primitive/number/opacity/350/$value"
+            }
+          },
+          "$description": "Use for the halo around an interactive element with keyboard focus."
+        }
+      },
       "text": {
         "primary": {
           "$value": "{primitive.color.warm.900}",

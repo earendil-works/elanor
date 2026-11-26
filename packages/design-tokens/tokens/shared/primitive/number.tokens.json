@@ -151,8 +151,24 @@
             }
           }
         },
+        "80": {
+          "$value": 0.08,
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/opacity.json"
+            }
+          }
+        },
         "100": {
           "$value": 0.1,
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/opacity.json"
+            }
+          }
+        },
+        "140": {
+          "$value": 0.14,
           "$extensions": {
             "com.earendil-works.generation": {
               "source": "recipes/shared/primitive/opacity.json"
@@ -175,8 +191,24 @@
             }
           }
         },
+        "350": {
+          "$value": 0.35,
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/opacity.json"
+            }
+          }
+        },
         "400": {
           "$value": 0.4,
+          "$extensions": {
+            "com.earendil-works.generation": {
+              "source": "recipes/shared/primitive/opacity.json"
+            }
+          }
+        },
+        "500": {
+          "$value": 0.5,
           "$extensions": {
             "com.earendil-works.generation": {
               "source": "recipes/shared/primitive/opacity.json"

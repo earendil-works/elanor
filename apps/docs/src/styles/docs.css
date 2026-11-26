@@ -165,23 +165,17 @@
 
   /* "Copy page" is a gray tertiary button; Elanor's tertiary button is the link color. */
   .docs-copy-page {
-    box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
-      var(--semantic-color-background-fill-ghost-neutral);
     background: var(--semantic-color-background-fill-ghost-neutral);
     color: var(--semantic-color-text-secondary);
   }
 
   @media (hover: hover) {
     .docs-copy-page:hover:not([data-disabled]) {
-      box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
-        var(--semantic-color-background-fill-ghost-neutral-hover);
       background: var(--semantic-color-background-fill-ghost-neutral-hover);
     }
   }
 
   .docs-copy-page:active:not([data-disabled]) {
-    box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
-      var(--semantic-color-background-fill-ghost-neutral-active);
     background: var(--semantic-color-background-fill-ghost-neutral-active);
   }
 
