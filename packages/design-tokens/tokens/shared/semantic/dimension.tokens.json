@@ -7,16 +7,16 @@
       "borderWidth": {
         "$description": "Use the default border width unless a component needs a different level of emphasis.",
         "default": {
-          "$value": "{semantic.dimension.borderWidth.medium}",
-          "$description": "Use as the default 2px border width. Choose a T-shirt size only when the default is not appropriate."
+          "$value": "{semantic.dimension.borderWidth.small}",
+          "$description": "Use as the default border width. Choose a T-shirt size only when the default is not appropriate."
         },
         "small": {
           "$value": "{primitive.dimension.borderWidth.100}",
-          "$description": "Use for subtle 1px borders that need less visual emphasis than the default."
+          "$description": "Use for hairline borders that must stay at the thinnest width, even where the default is wider."
         },
         "medium": {
           "$value": "{primitive.dimension.borderWidth.200}",
-          "$description": "Use for the default 2px border treatment."
+          "$description": "Use for borders that need more visual emphasis than the thinnest width."
         },
         "large": {
           "$value": "{primitive.dimension.borderWidth.300}",

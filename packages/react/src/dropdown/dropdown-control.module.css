@@ -27,6 +27,11 @@
     color: var(--semantic-color-text-secondary);
   }
 
+  /* A ghost trigger's gap is already a word space. */
+  [data-variant='ghost'] > .valueCount {
+    margin-inline-start: 0;
+  }
+
   /* "+2", not "2+", in right-to-left text. */
   .valueCountNumber {
     direction: ltr;
