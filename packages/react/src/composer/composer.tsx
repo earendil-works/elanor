@@ -1,13 +1,23 @@
 import {mergeProps} from '@base-ui/react/merge-props';
 import {useRender} from '@base-ui/react/use-render';
 import {AddIcon, ArrowUpwardIcon, StopIcon} from '@earendil-works/elanor-icons-react';
-import {useRef, type ChangeEvent, type MouseEvent, type PointerEvent, type ReactNode} from 'react';
+import {
+  useEffect,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type DragEvent,
+  type MouseEvent,
+  type PointerEvent,
+  type ReactNode,
+} from 'react';
 
 import {IconButton, type IconButtonProps} from '../icon-button/icon-button.tsx';
 import {useFieldRootContext} from '../utils/base-ui-internals.ts';
 import {fieldValidityMapping} from '../utils/field-validity.ts';
 import {useMergedRef} from '../utils/refs.ts';
 import {useComposerMeta, useComposerSettings, useComposerStatus} from './context.ts';
+import type {EditorBinding} from './editor/editor.ts';
 
 import styles from './composer.module.css';
 
@@ -157,32 +167,96 @@ export interface ComposerFieldState {
   readonly readOnly: boolean;
   /** The validity of the `Field.Root` around the composer, `null` before it is validated. */
   readonly valid: boolean | null;
+  /** Files that `onAttach` takes are dragged over the field. */
+  readonly dragOver: boolean;
 }
+
+/**
+ * How long (ms) a file drag shows without a `dragover`, which browsers repeat while the pointer is
+ * over the field, also at rest. Ends a drag whose `dragleave` didn't say it left, as after Escape.
+ */
+const DRAG_OVER_TIMEOUT_MS = 1000;
+
+/** Files dropped anywhere on the field go to `onAttach`; `dragOver` while they're over it. */
+function useFileDrag(editor: EditorBinding) {
+  const [dragOver, setDragOver] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  const stop = () => {
+    clearTimeout(timer.current);
+    setDragOver(false);
+  };
+  useEffect(() => {
+    if (!dragOver) return undefined;
+    // A drag from the page that is cancelled over the field ends here.
+    const end = () => {
+      clearTimeout(timer.current);
+      setDragOver(false);
+    };
+    window.addEventListener('dragend', end, true);
+    return () => {
+      clearTimeout(timer.current);
+      window.removeEventListener('dragend', end, true);
+    };
+  }, [dragOver]);
+  return {
+    dragOver,
+    props: {
+      onDragOver: (event: DragEvent<HTMLDivElement>) => {
+        if (!editor.takesFiles(event.nativeEvent)) return;
+        event.preventDefault();
+        event.dataTransfer.dropEffect = 'copy';
+        setDragOver(true);
+        clearTimeout(timer.current);
+        timer.current = setTimeout(stop, DRAG_OVER_TIMEOUT_MS);
+      },
+      // Moving onto a child leaves its parent too; only a point off the field leaves it.
+      onDragLeave: (event: DragEvent<HTMLDivElement>) => {
+        const box = event.currentTarget.getBoundingClientRect();
+        const {clientX: x, clientY: y} = event;
+        if (x <= box.left || x >= box.right || y <= box.top || y >= box.bottom) stop();
+      },
+      // The prompt takes its own drops first.
+      onDrop: (event: DragEvent<HTMLDivElement>) => {
+        stop();
+        if (!event.defaultPrevented && editor.dropFiles(event.nativeEvent)) event.preventDefault();
+      },
+    },
+  };
+}
+
+const fieldStateMapping = {
+  ...fieldValidityMapping,
+  dragOver: (dragOver: boolean) => (dragOver ? {'data-drag-over': ''} : null),
+};
 
 export interface ComposerFieldProps extends useRender.ComponentProps<'div', ComposerFieldState> {}
 
 /**
  * The frame that looks like one text field: `Composer.Prompt` and `Composer.Controls`. A press on
  * anything in it but the text keeps the focus where it is, so a phone's keyboard stays up; presses
- * in popups opened from it are left alone. Renders `data-empty`, `data-disabled`,
- * `data-readonly`, and `data-pressed` while a finger is on it, not on one of its buttons. Inside a
- * `Field.Root` it also renders the field's `data-valid` or `data-invalid`, unstyled, for your own
- * styles.
+ * in popups opened from it are left alone. Files dropped anywhere on it go to `onAttach`, at the
+ * caret. Renders `data-empty`, `data-disabled`, `data-readonly`, `data-pressed` while a finger is
+ * on it, not on one of its buttons, and `data-drag-over` while files `onAttach` takes are dragged
+ * over it, unstyled. Inside a `Field.Root` it also renders the field's `data-valid` or
+ * `data-invalid`, unstyled, for your own styles.
  */
 export function ComposerField({ref, render, ...props}: ComposerFieldProps) {
   const status = useComposerStatus('Composer.Field');
   const {valid} = useFieldRootContext().state;
+  const {editor} = useComposerMeta('Composer.Field');
+  const fileDrag = useFileDrag(editor);
   return useRender({
     defaultTagName: 'div',
     render,
     ref,
-    state: {...status, valid},
-    stateAttributesMapping: fieldValidityMapping,
+    state: {...status, valid, dragOver: fileDrag.dragOver},
+    stateAttributesMapping: fieldStateMapping,
     props: mergeProps<'div'>(
       {
         className: styles.field,
         onPointerDown: showPress,
         onMouseDown: keepFocus,
+        ...fileDrag.props,
       },
       props,
     ),
