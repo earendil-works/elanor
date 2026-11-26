@@ -102,11 +102,14 @@
     pointer-events: none;
   }
 
+  /* Room between the text and the halo, taken from the margin so the text doesn't move. */
   .link:focus-visible {
     border-radius: var(--semantic-dimension-radius-small);
-    outline: var(--semantic-dimension-border-width-focus-ring) solid
-      var(--semantic-color-focus-ring);
-    outline-offset: var(--semantic-dimension-border-width-medium);
+    outline: var(--semantic-dimension-border-width-focus-halo) solid
+      var(--semantic-color-focus-halo);
+    outline-offset: 0;
+    padding-inline: var(--semantic-dimension-space-padding-xx-small);
+    margin-inline: calc(-1 * var(--semantic-dimension-space-padding-xx-small));
   }
 
   @media (pointer: coarse) {
@@ -184,9 +187,9 @@
   }
 
   .menuTrigger:focus-visible {
-    outline: var(--semantic-dimension-border-width-focus-ring) solid
-      var(--semantic-color-focus-ring);
-    outline-offset: var(--semantic-dimension-border-width-medium);
+    outline: var(--semantic-dimension-border-width-focus-halo) solid
+      var(--semantic-color-focus-halo);
+    outline-offset: 0;
   }
 
   /* The prefix names the control for assistive technology only. */

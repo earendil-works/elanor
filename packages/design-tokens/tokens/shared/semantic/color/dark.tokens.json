@@ -475,6 +475,53 @@
           "$description": "Use for the visible keyboard-focus indicator around an element in a positive or success state."
         }
       },
+      "focusHalo": {
+        "$description": "Use these translucent colors for the halo drawn around an element with keyboard focus, according to its status.",
+        "$root": {
+          "$value": {
+            "colorSpace": {
+              "$ref": "#/primitive/color/cerulianBlue/400/$value/colorSpace"
+            },
+            "components": [
+              {
+                "$ref": "#/primitive/color/cerulianBlue/400/$value/components/0"
+              },
+              {
+                "$ref": "#/primitive/color/cerulianBlue/400/$value/components/1"
+              },
+              {
+                "$ref": "#/primitive/color/cerulianBlue/400/$value/components/2"
+              }
+            ],
+            "alpha": {
+              "$ref": "#/primitive/number/opacity/500/$value"
+            }
+          },
+          "$description": "Use for the halo around an interactive element with keyboard focus."
+        },
+        "negative": {
+          "$value": {
+            "colorSpace": {
+              "$ref": "#/primitive/color/coralRed/400/$value/colorSpace"
+            },
+            "components": [
+              {
+                "$ref": "#/primitive/color/coralRed/400/$value/components/0"
+              },
+              {
+                "$ref": "#/primitive/color/coralRed/400/$value/components/1"
+              },
+              {
+                "$ref": "#/primitive/color/coralRed/400/$value/components/2"
+              }
+            ],
+            "alpha": {
+              "$ref": "#/primitive/number/opacity/500/$value"
+            }
+          },
+          "$description": "Use for the halo around an element with keyboard focus in a negative or error state."
+        }
+      },
       "text": {
         "$description": "Use these colors for text according to its emphasis, status, or interaction role.",
         "primary": {

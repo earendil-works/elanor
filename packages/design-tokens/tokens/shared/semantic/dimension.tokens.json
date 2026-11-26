@@ -25,6 +25,10 @@
         "focusRing": {
           "$value": "{primitive.dimension.borderWidth.200}",
           "$description": "Use for the width of the keyboard-focus ring, whether it is drawn outside a control or inset within it."
+        },
+        "focusHalo": {
+          "$value": "{primitive.dimension.75}",
+          "$description": "Use for the width of the keyboard-focus halo drawn flush around a control."
         }
       },
       "breakpoint": {
