@@ -62,7 +62,7 @@ export interface ComposerRootProps<T extends ComposerChip = ComposerChip> {
   readonly getChipDescription?: ((chip: T) => string) | undefined;
   /** Announced when chips are removed. Defaults to "Removed {label}". */
   readonly getChipRemovedMessage?: ((chip: T) => string) | undefined;
-  /** Announced when Backspace or Delete selects a `select` chip. */
+  /** Announced when a chip is selected: by an arrow, a press, or a first Backspace or Delete. */
   readonly getChipSelectedMessage?: ((chip: T, key: 'Backspace' | 'Delete') => string) | undefined;
   /** Names the draft shown, so each draft keeps its own undo history. */
   readonly historyKey?: string | undefined;

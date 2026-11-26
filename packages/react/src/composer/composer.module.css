@@ -217,6 +217,11 @@
     user-select: all;
   }
 
+  /* A chip being dragged stays faint where it was, until it is dropped. */
+  .prompt [data-chip-id][data-dragging] {
+    opacity: var(--semantic-number-opacity-dragging);
+  }
+
   .prompt [data-chip-id]::selection,
   .prompt [data-chip-id] ::selection {
     background: transparent;
