@@ -95,6 +95,8 @@ Omitted primitive categories have no `type`; continue with the next applicable p
 
 `semantic.color.focusRing` is the keyboard-focus indicator, distinct from normal borders regardless of implementation (outline, shadow, or stroke). Variants include `warning`, `negative`, and `positive`.
 
+`semantic.color.focusHalo` is the translucent halo drawn flush around a focused control, `semantic.dimension.borderWidth.focusHalo` wide. It has a `negative` variant for errors and destructive actions.
+
 ## Color fill roles
 
 Use `background.fill` for bounded shapes (buttons, chips, badges, selected options), not structural pages, panels, or dialogs. Primary fills have high prominence; secondary fills have lower prominence. Pair them with relational content roles:

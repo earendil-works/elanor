@@ -41,13 +41,17 @@
   }
 
   .input:focus-visible {
-    outline: var(--semantic-dimension-border-width-focus-ring) solid
-      var(--semantic-color-focus-ring);
-    outline-offset: var(--semantic-dimension-border-width-medium);
+    outline: var(--semantic-dimension-border-width-focus-halo) solid
+      var(--semantic-color-focus-halo);
+    outline-offset: 0;
   }
 
   .input:where([data-invalid]) {
     border-color: var(--semantic-color-focus-ring-negative);
+  }
+
+  .input:focus-visible:where([data-invalid]) {
+    outline-color: var(--semantic-color-focus-halo-negative);
   }
 
   .input:disabled,

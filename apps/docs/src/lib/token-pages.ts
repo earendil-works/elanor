@@ -119,7 +119,7 @@ const areaSpecs: readonly AreaSpec[] = [
           color('border.secondary'),
           color('border'),
         ),
-        group('focus-ring', 'Focus ring', color('focusRing')),
+        group('focus-ring', 'Focus ring and halo', color('focusRing'), color('focusHalo')),
       ),
       section(
         'fills',

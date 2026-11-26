@@ -38,13 +38,17 @@
   }
 
   .root:has(.input:focus-visible) {
-    outline: var(--semantic-dimension-border-width-focus-ring) solid
-      var(--semantic-color-focus-ring);
-    outline-offset: var(--semantic-dimension-border-width-medium);
+    outline: var(--semantic-dimension-border-width-focus-halo) solid
+      var(--semantic-color-focus-halo);
+    outline-offset: 0;
   }
 
   .root:where(:has(.input[data-invalid], .input[aria-invalid='true'])) {
     border-color: var(--semantic-color-focus-ring-negative);
+  }
+
+  .root:has(.input:focus-visible):where(:has(.input[data-invalid], .input[aria-invalid='true'])) {
+    outline-color: var(--semantic-color-focus-halo-negative);
   }
 
   .root:where(:has(.input:disabled, .input[data-disabled])) {

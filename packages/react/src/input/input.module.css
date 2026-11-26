@@ -36,13 +36,17 @@
   }
 
   .control:focus-visible {
-    outline: var(--semantic-dimension-border-width-focus-ring) solid
-      var(--semantic-color-focus-ring);
-    outline-offset: var(--semantic-dimension-border-width-medium);
+    outline: var(--semantic-dimension-border-width-focus-halo) solid
+      var(--semantic-color-focus-halo);
+    outline-offset: 0;
   }
 
   .control:where([data-invalid], [aria-invalid='true']) {
     border-color: var(--semantic-color-focus-ring-negative);
+  }
+
+  .control:focus-visible:where([data-invalid], [aria-invalid='true']) {
+    outline-color: var(--semantic-color-focus-halo-negative);
   }
 
   .control:disabled,
