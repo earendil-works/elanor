@@ -65,3 +65,8 @@
     display: none;
   }
 }
+
+.description {
+  margin-inline-start: auto;
+  color: var(--semantic-color-text-secondary);
+}

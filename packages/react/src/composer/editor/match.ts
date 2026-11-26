@@ -4,18 +4,20 @@
 import {CHIP_CHARACTER, type ComposerTextRange} from './model.ts';
 
 /**
- * Where a trigger counts. `word-start`: after whitespace, an opening bracket or quotation mark, or
- * a chip.
+ * Where a trigger counts. `word-start`: after whitespace, an opening mark, a chip, an emoji, or a
+ * Chinese or Japanese character, since those scripts are written without spaces.
  */
 export type ComposerSuggestionPosition = 'start' | 'line-start' | 'word-start' | 'anywhere';
 
 export type ComposerSuggestionTrigger = {
+  /** Also matches its full-width form, such as `＠` for `@`. */
   readonly character: string;
   /** Defaults to `word-start`. */
   readonly position?: ComposerSuggestionPosition | undefined;
 };
 
 export type ComposerSuggestionMatch = {
+  /** The configured trigger, also when its full-width form was typed; the text has the typed one. */
   readonly character: string;
   /** The text between the trigger and the caret. */
   readonly query: string;
@@ -23,17 +25,54 @@ export type ComposerSuggestionMatch = {
   readonly range: ComposerTextRange;
 };
 
-const OPENING = new Set(['(', '[', '{', '<', '"', "'", '`', '“', '‘', '«', CHIP_CHARACTER]);
+// Script_Extensions, not Script: `ー`, `。`, `「」` and `々` count as Han or kana only there. No
+// Hangul: Korean uses spaces.
+const WORD_START = new RegExp(
+  `[\\s\\p{Ps}\\p{Pi}"'\`<${CHIP_CHARACTER}\\p{Extended_Pictographic}\\p{Emoji_Modifier}` +
+    `\\p{Regional_Indicator}\\u20E3` +
+    `\\p{scx=Han}\\p{scx=Hira}\\p{scx=Kana}\\p{scx=Bopo}\\uFF01-\\uFF65]`,
+  'u',
+);
+// End a query as whitespace does; in text without spaces it would run on through the sentence.
+// Only CJK marks: ASCII ones occur in paths and addresses, and `’` is also an apostrophe.
+const WORD_END = /[\s、。，．！？：；｡､」』）】〕〉》｣］｝〗〙〛]/u;
+
+const VARIATION_SELECTOR = /[\uFE0E\uFE0F]/;
+
+/** By code point, so a surrogate pair (Ext-B Han, emoji) is one; skips VS15 and VS16. */
+function pointBefore(text: string, index: number): string | undefined {
+  let end = index;
+  if (VARIATION_SELECTOR.test(text[end - 1] ?? '')) end -= 1;
+  const low = text.charCodeAt(end - 1);
+  const pair = low >= 0xdc00 && low <= 0xdfff && end >= 2;
+  return pair ? text.slice(end - 2, end) : text[end - 1];
+}
+
+const endsWord = (character: string | undefined): boolean =>
+  character !== undefined && (character === CHIP_CHARACTER || WORD_END.test(character));
+
+const FULL_WIDTH = /[\uFF01-\uFF5E]/g;
+
+/**
+ * Full-width ASCII (U+FF01–FF5E) as ASCII, so a Japanese or Chinese keyboard's `＠` matches `@`.
+ * By offset rather than NFKC, which can change the length and so the offsets.
+ */
+const halfWidth = (text: string): string =>
+  text.replace(FULL_WIDTH, (character) => String.fromCharCode(character.charCodeAt(0) - 0xfee0));
+
+/** Whether `text` still has the trigger `character`, in either width, at `index`. */
+export const hasTrigger = (text: string, index: number, character: string): boolean =>
+  halfWidth(text.slice(index, index + character.length)) === halfWidth(character);
 
 function at(text: string, index: number, position: ComposerSuggestionPosition): boolean {
-  const before = text[index - 1];
+  const before = pointBefore(text, index);
   switch (position) {
     case 'start':
       return index === 0;
     case 'line-start':
       return before === undefined || before === '\n';
     case 'word-start':
-      return before === undefined || /\s/.test(before) || OPENING.has(before);
+      return before === undefined || WORD_START.test(before);
     case 'anywhere':
       return true;
   }
@@ -41,21 +80,23 @@ function at(text: string, index: number, position: ComposerSuggestionPosition): 
 
 /**
  * The last trigger in the word that ends at the caret. `before` is the text before the caret, from
- * `offsetText`. Words end at whitespace and chips.
+ * `offsetText`. Words end at chips and `WORD_END`.
  */
 export function findMatch(
   before: string,
   triggers: readonly ComposerSuggestionTrigger[],
 ): ComposerSuggestionMatch | null {
   let start = before.length;
-  while (start > 0 && !/\s/.test(before[start - 1] ?? '') && before[start - 1] !== CHIP_CHARACTER)
-    start -= 1;
+  while (start > 0 && !endsWord(before[start - 1])) start -= 1;
+  // The boundary check reads the text as typed; only the trigger's search is folded.
+  const word = halfWidth(before.slice(start));
   let found: ComposerSuggestionMatch | null = null;
   for (const {character, position = 'word-start'} of triggers) {
+    const folded = halfWidth(character);
     for (
-      let index = before.lastIndexOf(character);
+      let index = word.lastIndexOf(folded) + start;
       index >= start;
-      index = index > 0 ? before.lastIndexOf(character, index - 1) : -1
+      index = index > start ? word.lastIndexOf(folded, index - start - 1) + start : -1
     ) {
       if (!at(before, index, position)) continue;
       if (!found || index > found.range.start)

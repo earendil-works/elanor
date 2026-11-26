@@ -21,6 +21,7 @@ import {
   ComposerSettingsContext,
   ComposerStatusContext,
   ComposerTextContext,
+  createPromptPopupStore,
   type ComposerMeta,
   type ComposerSettings,
   type ComposerStatus,
@@ -143,6 +144,7 @@ export function ComposerRoot<T extends ComposerChip = ComposerChip>({
   const latest = useRef({options, defaultValue});
   const [{editor, meta}] = useState(() => {
     let handedOffAt = Number.NEGATIVE_INFINITY;
+    let suggestions: symbol | null = null;
     const created = new Editor(options, value, historyKey);
     const context: ComposerMeta = {
       editor: created,
@@ -159,6 +161,17 @@ export function ComposerRoot<T extends ComposerChip = ComposerChip>({
         }
         return () => {
           if (element.ownerDocument.activeElement === element) handedOffAt = performance.now();
+        };
+      },
+      popup: createPromptPopupStore(),
+      claimSuggestions: (owner) => {
+        if (suggestions !== null && suggestions !== owner)
+          throw new Error(
+            'A Composer.Root takes one Composer.Suggestions. For several triggers, use one Composer.useSuggestionMatch(triggers) with all your triggers, such as @ and /, and branch on match.character.',
+          );
+        suggestions = owner;
+        return () => {
+          if (suggestions === owner) suggestions = null;
         };
       },
     };

@@ -2,6 +2,7 @@ import {createContext, use, useRef, useSyncExternalStore, type RefObject} from '
 
 import type {ComposerActions, EditorBinding} from './editor/editor.ts';
 import type {ComposerChip, ComposerValue} from './editor/model.ts';
+import {createStore, type Store} from './store.ts';
 
 export interface ComposerStatus {
   /** Nothing is written: no text and no chips. */
@@ -22,6 +23,23 @@ export interface ComposerSettings {
   readonly form: string | undefined;
 }
 
+/** The suggestions list, as the prompt's ARIA attributes name it. */
+export interface PromptPopup {
+  /** The list's id while it shows; the popup's while only the empty state does. */
+  readonly controls: string | undefined;
+  /** The highlighted option's id, set only once a person used the arrow keys. */
+  readonly active: string | undefined;
+}
+
+/** `null` while no `Composer.Suggestions` is mounted. */
+export type PromptPopupStore = Store<PromptPopup | null>;
+
+const samePopup = (a: PromptPopup | null, b: PromptPopup | null): boolean =>
+  a === b || (a !== null && b !== null && a.controls === b.controls && a.active === b.active);
+
+export const createPromptPopupStore = (): PromptPopupStore =>
+  createStore<PromptPopup | null>(null, samePopup);
+
 /** Stays the same object for Root's lifetime; its functions read Root's latest props. */
 export interface ComposerMeta {
   readonly editor: EditorBinding;
@@ -39,6 +57,9 @@ export interface ComposerMeta {
    * in this composer takes the focus up.
    */
   readonly handOff: (element: HTMLElement | null) => (() => void) | undefined;
+  readonly popup: PromptPopupStore;
+  /** Makes `owner` this Root's one `Composer.Suggestions`, or throws; returns the release. */
+  readonly claimSuggestions: (owner: symbol) => () => void;
 }
 
 export const ComposerMetaContext = /* @__PURE__ */ createContext<ComposerMeta | null>(null);
