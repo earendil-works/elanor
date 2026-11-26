@@ -70,3 +70,8 @@
   margin-inline-start: auto;
   color: var(--semantic-color-text-secondary);
 }
+
+/* A pasted text's first lines, as lines. */
+.lines {
+  white-space: pre-line;
+}
