@@ -90,7 +90,7 @@ type AttachSource =
 export type ComposerAttachDetails<T extends ComposerChip = ComposerChip> = AttachSource & {
   /** Where the files go: the selection a paste replaces, else the caret after any selected text. */
   readonly at: ComposerTextRange;
-  /** One step at `at`: `input-drop`, `input-paste`, else `imperative-action`; `false` if stale. */
+  /** Inserts at `at`, spaced, as one undo step; `false` once the text changed or if canceled. */
   readonly insert: (content: string | T | ComposerValue<T>) => boolean;
 };
 
@@ -102,7 +102,7 @@ export type ComposerAttachDetails<T extends ComposerChip = ComposerChip> = Attac
 export type ComposerInsertOptions = {
   readonly at?: 'caret' | 'end' | ComposerTextRange;
   readonly startLine?: boolean;
-  /** Adds a space around chips where the text needs one. Defaults to `true` for `item-press`. */
+  /** Adds a space around chips where the text needs one, for an insert a person made. */
   readonly space?: boolean;
 } & (
   | {readonly reason?: 'imperative-action'; readonly event?: Event}
@@ -122,8 +122,8 @@ export interface ComposerActions<T extends ComposerChip = ComposerChip> {
   /**
    * Inserts as one undo step. `caret` (the default) is the last known caret, also while the editor
    * is blurred. `startLine` prepends a line break unless the insert point starts a line. Commits
-   * pending IME text first. Returns `false` when nothing changed. Inserts `content` as given,
-   * unless `space`.
+   * pending IME text first. Returns `false` when nothing changed. Inserts exactly `content`; set
+   * `space: true` for an insert a person made, such as a suggestion pick.
    */
   insert(content: string | T | ComposerValue<T>, options?: ComposerInsertOptions): boolean;
   undo(): void;
@@ -136,7 +136,7 @@ export interface ComposerActions<T extends ComposerChip = ComposerChip> {
   /** Calls `onSubmit` without the keyboard's checks (composing, open suggestions). */
   submit(event?: Event): void;
   getValue(): ComposerValue<T>;
-  /** Calls `onAttach` with reason `api`, at the caret after any selected text; not for none. */
+  /** Calls `onAttach` (reason `api`) at the caret after selected text; ignores an empty list. */
   attach(files: File[]): void;
 }
 
@@ -947,13 +947,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     blur: () => this.#element?.blur(),
     insert: (
       content,
-      {
-        at = 'caret',
-        startLine = false,
-        reason = 'imperative-action',
-        event,
-        space = reason === 'item-press',
-      } = {},
+      {at = 'caret', startLine = false, reason = 'imperative-action', event, space = false} = {},
     ) => {
       if (!this.options.editable) return false;
       this.#endComposition();

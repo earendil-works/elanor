@@ -1,6 +1,7 @@
 // The space a person expects around a chip they add, as a typist would leave it.
 import {UNSPACED_SCRIPT, pointBefore} from './match.ts';
 import {
+  CHIP_CHARACTER,
   isChip,
   offsetText,
   sliceValue,
@@ -10,18 +11,37 @@ import {
   type ComposerValue,
 } from './model.ts';
 
-const UNSPACED = new RegExp(`[${UNSPACED_SCRIPT}]`, 'u');
+// Thai, Lao, Khmer and Myanmar don't space words either, though `@` may follow them as a word.
+const UNSPACED = new RegExp(
+  `[${UNSPACED_SCRIPT}\\p{scx=Thai}\\p{scx=Laoo}\\p{scx=Khmr}\\p{scx=Mymr}]`,
+  'u',
+);
 /** Marks that follow a word without a space, closing quotes and brackets included. */
 const CLOSING = /[\p{Pe}\p{Pf}.,!?:;…'"%]/u;
 const WORD = /[\p{L}\p{N}]/u;
 const SPACE = /\s/u;
+/** The spaces the rule adds or drops; never a line break. */
+const HORIZONTAL = /[ \t]/;
 const BLANK = /^[ \t]+$/;
+const MARK = /\p{M}/u;
 
 const spaceAfter = (next: string | undefined): boolean =>
   next === undefined || !(SPACE.test(next) || CLOSING.test(next) || UNSPACED.test(next));
 
 const spaceBefore = (previous: string | undefined): boolean =>
-  previous !== undefined && WORD.test(previous) && !UNSPACED.test(previous);
+  previous === CHIP_CHARACTER ||
+  (previous !== undefined && WORD.test(previous) && !UNSPACED.test(previous));
+
+/** The character a combining mark at `index` belongs to, as a reader sees it. */
+function baseBefore(text: string, index: number): string | undefined {
+  let end = index;
+  let point = pointBefore(text, end);
+  while (point !== undefined && MARK.test(point)) {
+    end -= point.length;
+    point = pointBefore(text, end);
+  }
+  return point;
+}
 
 /** Text of spaces only, as a caller puts between chips. */
 const isBlank = (segment: ComposerSegment<ComposerChip> | undefined): boolean =>
@@ -34,9 +54,9 @@ const firstPoint = (text: string): string | undefined => {
 
 /**
  * `content` to put at `range` of `value`, with one space between two chips, after a chip unless
- * whitespace, a closing mark or an unspaced script follows, and before one that follows a letter or
- * digit of a spaced script. Spaces in `content` count, so none doubles. By logical order, so
- * right-to-left text gets the same.
+ * whitespace, a closing mark or an unspaced script follows, and before one that follows a chip or a
+ * letter or digit of a spaced script. Spaces in `content` count, so none doubles; line breaks stay.
+ * By logical order, so right-to-left text gets the same.
  */
 export function withSpaces<T extends ComposerChip>(
   value: ComposerValue<T>,
@@ -52,21 +72,25 @@ export function withSpaces<T extends ComposerChip>(
     if (isChip(segment) && isChip(spaced.at(-1))) spaced.push(' ');
     spaced.push(segment);
   }
-  const previous = pointBefore(offsetText(sliceValue(value, 0, range.start)), range.start);
+  const previous = baseBefore(offsetText(sliceValue(value, 0, range.start)), range.start);
   const next = firstPoint(offsetText(sliceValue(value, range.end)));
   const first = spaced[0];
   const last = spaced.at(-1);
   // Text at either end keeps its own spaces, short of doubling one beside it.
   if (isChip(last)) {
     if (spaceAfter(next)) spaced.push(' ');
-  } else if (last !== undefined && SPACE.test(last.at(-1) ?? '') && SPACE.test(next ?? ''))
+  } else if (
+    last !== undefined &&
+    HORIZONTAL.test(last.at(-1) ?? '') &&
+    HORIZONTAL.test(next ?? '')
+  )
     spaced[spaced.length - 1] = last.slice(0, -1);
   if (isChip(first)) {
     if (spaceBefore(previous)) spaced.unshift(' ');
   } else if (
     first !== undefined &&
-    SPACE.test(first[0] ?? '') &&
-    (previous === undefined || SPACE.test(previous))
+    HORIZONTAL.test(first[0] ?? '') &&
+    (previous === undefined || HORIZONTAL.test(previous))
   )
     spaced[0] = first.slice(1);
   return spaced;
