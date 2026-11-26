@@ -31,6 +31,7 @@ import {
   valueLength,
   withNewIds,
 } from './model.ts';
+import {withSpaces} from './spacing.ts';
 import {EditorView, type Rect} from './view.ts';
 
 /**
@@ -101,6 +102,8 @@ export type ComposerAttachDetails<T extends ComposerChip = ComposerChip> = Attac
 export type ComposerInsertOptions = {
   readonly at?: 'caret' | 'end' | ComposerTextRange;
   readonly startLine?: boolean;
+  /** Adds a space around chips where the text needs one. Defaults to `true` for `item-press`. */
+  readonly space?: boolean;
 } & (
   | {readonly reason?: 'imperative-action'; readonly event?: Event}
   | {
@@ -119,7 +122,8 @@ export interface ComposerActions<T extends ComposerChip = ComposerChip> {
   /**
    * Inserts as one undo step. `caret` (the default) is the last known caret, also while the editor
    * is blurred. `startLine` prepends a line break unless the insert point starts a line. Commits
-   * pending IME text first. Returns `false` when nothing changed.
+   * pending IME text first. Returns `false` when nothing changed. Inserts `content` as given,
+   * unless `space`.
    */
   insert(content: string | T | ComposerValue<T>, options?: ComposerInsertOptions): boolean;
   undo(): void;
@@ -943,7 +947,13 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     blur: () => this.#element?.blur(),
     insert: (
       content,
-      {at = 'caret', startLine = false, reason = 'imperative-action', event} = {},
+      {
+        at = 'caret',
+        startLine = false,
+        reason = 'imperative-action',
+        event,
+        space = reason === 'item-press',
+      } = {},
     ) => {
       if (!this.options.editable) return false;
       this.#endComposition();
@@ -953,7 +963,12 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       const before = offsetText(sliceValue(this.#latest, 0, range.start));
       const segments =
         startLine && before !== '' && !before.endsWith('\n') ? ['\n', ...given] : given;
-      return this.#insert(segments, range, event, reason);
+      return this.#insert(
+        space ? withSpaces(this.#latest, range, segments) : segments,
+        range,
+        event,
+        reason,
+      );
     },
     undo: () => this.#applyStep(undefined, this.#history.undo(), 'history-undo'),
     redo: () => this.#applyStep(undefined, this.#history.redo(), 'history-redo'),
@@ -1013,7 +1028,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       at,
       insert: (content) => {
         this.#endComposition();
-        return this.#revision === seen && this.actions.insert(content, {...how, at});
+        return this.#revision === seen && this.actions.insert(content, {...how, at, space: true});
       },
     });
   }

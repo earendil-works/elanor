@@ -25,12 +25,16 @@ export type ComposerSuggestionMatch = {
   readonly range: ComposerTextRange;
 };
 
-// Script_Extensions, not Script: `ー`, `。`, `「」` and `々` count as Han or kana only there. No
-// Hangul: Korean uses spaces.
+/**
+ * Scripts written without spaces, with their punctuation and full-width forms, as a character class
+ * body. Script_Extensions, not Script: `ー`, `。`, `「」` and `々` count as Han or kana only there.
+ * No Hangul: Korean uses spaces.
+ */
+export const UNSPACED_SCRIPT = '\\p{scx=Han}\\p{scx=Hira}\\p{scx=Kana}\\p{scx=Bopo}\\uFF01-\\uFF65';
+
 const WORD_START = new RegExp(
   `[\\s\\p{Ps}\\p{Pi}"'\`<${CHIP_CHARACTER}\\p{Extended_Pictographic}\\p{Emoji_Modifier}` +
-    `\\p{Regional_Indicator}\\u20E3` +
-    `\\p{scx=Han}\\p{scx=Hira}\\p{scx=Kana}\\p{scx=Bopo}\\uFF01-\\uFF65]`,
+    `\\p{Regional_Indicator}\\u20E3${UNSPACED_SCRIPT}]`,
   'u',
 );
 // End a query as whitespace does; in text without spaces it would run on through the sentence.
@@ -40,7 +44,7 @@ const WORD_END = /[\s、。，．！？：；｡､」』）】〕〉》｣］�
 const VARIATION_SELECTOR = /[\uFE0E\uFE0F]/;
 
 /** By code point, so a surrogate pair (Ext-B Han, emoji) is one; skips VS15 and VS16. */
-function pointBefore(text: string, index: number): string | undefined {
+export function pointBefore(text: string, index: number): string | undefined {
   let end = index;
   if (VARIATION_SELECTOR.test(text[end - 1] ?? '')) end -= 1;
   const low = text.charCodeAt(end - 1);

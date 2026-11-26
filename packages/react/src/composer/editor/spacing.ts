@@ -1,0 +1,73 @@
+// The space a person expects around a chip they add, as a typist would leave it.
+import {UNSPACED_SCRIPT, pointBefore} from './match.ts';
+import {
+  isChip,
+  offsetText,
+  sliceValue,
+  type ComposerChip,
+  type ComposerSegment,
+  type ComposerTextRange,
+  type ComposerValue,
+} from './model.ts';
+
+const UNSPACED = new RegExp(`[${UNSPACED_SCRIPT}]`, 'u');
+/** Marks that follow a word without a space, closing quotes and brackets included. */
+const CLOSING = /[\p{Pe}\p{Pf}.,!?:;…'"%]/u;
+const WORD = /[\p{L}\p{N}]/u;
+const SPACE = /\s/u;
+const BLANK = /^[ \t]+$/;
+
+const spaceAfter = (next: string | undefined): boolean =>
+  next === undefined || !(SPACE.test(next) || CLOSING.test(next) || UNSPACED.test(next));
+
+const spaceBefore = (previous: string | undefined): boolean =>
+  previous !== undefined && WORD.test(previous) && !UNSPACED.test(previous);
+
+/** Text of spaces only, as a caller puts between chips. */
+const isBlank = (segment: ComposerSegment<ComposerChip> | undefined): boolean =>
+  segment !== undefined && !isChip(segment) && BLANK.test(segment);
+
+const firstPoint = (text: string): string | undefined => {
+  const point = text.codePointAt(0);
+  return point === undefined ? undefined : String.fromCodePoint(point);
+};
+
+/**
+ * `content` to put at `range` of `value`, with one space between two chips, after a chip unless
+ * whitespace, a closing mark or an unspaced script follows, and before one that follows a letter or
+ * digit of a spaced script. Spaces in `content` count, so none doubles. By logical order, so
+ * right-to-left text gets the same.
+ */
+export function withSpaces<T extends ComposerChip>(
+  value: ComposerValue<T>,
+  range: ComposerTextRange,
+  content: readonly ComposerSegment<T>[],
+): ComposerSegment<T>[] {
+  const given = [...content];
+  // A space given beside a chip at either end is decided here, as if it weren't given.
+  if (isChip(given.at(-2)) && isBlank(given.at(-1))) given.pop();
+  if (isChip(given[1]) && isBlank(given[0])) given.shift();
+  const spaced: ComposerSegment<T>[] = [];
+  for (const segment of given) {
+    if (isChip(segment) && isChip(spaced.at(-1))) spaced.push(' ');
+    spaced.push(segment);
+  }
+  const previous = pointBefore(offsetText(sliceValue(value, 0, range.start)), range.start);
+  const next = firstPoint(offsetText(sliceValue(value, range.end)));
+  const first = spaced[0];
+  const last = spaced.at(-1);
+  // Text at either end keeps its own spaces, short of doubling one beside it.
+  if (isChip(last)) {
+    if (spaceAfter(next)) spaced.push(' ');
+  } else if (last !== undefined && SPACE.test(last.at(-1) ?? '') && SPACE.test(next ?? ''))
+    spaced[spaced.length - 1] = last.slice(0, -1);
+  if (isChip(first)) {
+    if (spaceBefore(previous)) spaced.unshift(' ');
+  } else if (
+    first !== undefined &&
+    SPACE.test(first[0] ?? '') &&
+    (previous === undefined || SPACE.test(previous))
+  )
+    spaced[0] = first.slice(1);
+  return spaced;
+}
