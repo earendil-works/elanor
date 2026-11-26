@@ -98,7 +98,7 @@ function FileAndCommandSuggestions() {
       match={match}
       results={results}
       onItemPick={(item, picked, {event}) =>
-        insert(item, {at: picked.range, reason: 'item-press', event})
+        insert(item, {at: picked.range, reason: 'item-press', event, space: true})
       }
       onOpenChange={(open) => {
         if (!open) request.current?.abort();
