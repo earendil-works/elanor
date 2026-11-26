@@ -17,8 +17,7 @@
         var(--semantic-dimension-border-width-default)
     );
     padding-inline: 0;
-    border: var(--semantic-dimension-border-width-default) solid
-      var(--semantic-color-background-fill-secondary);
+    border: var(--semantic-dimension-border-width-default) solid transparent;
     border-radius: var(--semantic-dimension-radius-small);
     background: var(--semantic-color-background-fill-secondary);
     color: var(--semantic-color-text-primary);
@@ -30,7 +29,6 @@
 
   @media (hover: hover) {
     .input:where(:hover:not(:disabled, [data-disabled], [data-readonly])) {
-      border-color: var(--semantic-color-background-fill-secondary-hover);
       background: var(--semantic-color-background-fill-secondary-hover);
     }
   }
