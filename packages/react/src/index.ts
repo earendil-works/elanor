@@ -144,7 +144,6 @@ export type {
 } from './code-snippet/highlighted-code.tsx';
 
 export type {
-  ComposerAttachmentsProps,
   ComposerAttachProps,
   ComposerControlsProps,
   ComposerFieldProps,

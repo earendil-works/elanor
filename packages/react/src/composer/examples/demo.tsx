@@ -1,4 +1,4 @@
-import {DescriptionIcon} from '@earendil-works/elanor-icons-react';
+import {UploadIcon} from '@earendil-works/elanor-icons-react';
 import {
   Chip,
   Composer,
@@ -6,26 +6,37 @@ import {
   Meter,
   Stack,
   type ComposerActions,
+  type ComposerChip,
   type ComposerValue,
 } from '@earendil-works/elanor-react';
 import {useRef, useState} from 'react';
 
 import styles from './composer.module.css';
 
-const toText = (value: ComposerValue) => Composer.toText(value, (chip) => chip.label);
+const toText = (value: ComposerValue) => Composer.toText(value, (chip) => `@uploads:${chip.label}`);
+
+let uploads = 0;
+
+// Outside the component: a new function on every render would draw every chip again.
+const renderChip = (chip: ComposerChip) => (
+  <Chip.Root variant="soft" density="compact">
+    <Chip.Icon>
+      <UploadIcon />
+    </Chip.Icon>
+    <Chip.Label>Upload</Chip.Label>
+    <Chip.Separator />
+    <Chip.Label>{chip.label}</Chip.Label>
+  </Chip.Root>
+);
 
 const models = [
   {value: 'large', label: 'Large model'},
   {value: 'fast', label: 'Fast model'},
 ];
 
-type Attachment = {id: number; file: File};
-
 export default function ComposerDemo() {
   const [value, setValue] = useState<ComposerValue>([]);
-  const [files, setFiles] = useState<Attachment[]>([]);
   const actions = useRef<ComposerActions>(null);
-  const added = useRef(0);
 
   return (
     <Composer.Root
@@ -33,33 +44,20 @@ export default function ComposerDemo() {
       onValueChange={setValue}
       toText={toText}
       actionsRef={actions}
-      onAttach={(picked) => {
-        const attached = picked.map((file) => ({id: (added.current += 1), file}));
-        setFiles((current) => [...current, ...attached]);
-      }}
+      onAttach={(files) =>
+        actions.current?.insert(
+          files.flatMap((file) => [{id: `upload-${(uploads += 1)}`, label: file.name}, ' ']),
+        )
+      }
+      renderChip={renderChip}
       onSubmit={(sent) => {
-        if (!toText(sent).trim() && files.length === 0) return;
+        if (!toText(sent).trim()) return;
         actions.current?.clearHistory();
         setValue([]);
-        setFiles([]);
       }}
     >
       <Composer.Panel>
         <Composer.Field>
-          <Composer.Attachments aria-label="Attached files">
-            {files.map(({id, file}) => (
-              <Chip.Root key={id} render={<li />}>
-                <Chip.Icon>
-                  <DescriptionIcon />
-                </Chip.Icon>
-                <Chip.Label>{file.name}</Chip.Label>
-                <Chip.Remove
-                  aria-label={`Remove ${file.name}`}
-                  onClick={() => setFiles((current) => current.filter((item) => item.id !== id))}
-                />
-              </Chip.Root>
-            ))}
-          </Composer.Attachments>
           <Composer.Prompt aria-label="Message" placeholder="Write a message…" />
           <Composer.Controls render={<Stack direction="row" gap="auto" align="center" />}>
             <Composer.Attach aria-label="Attach files" />

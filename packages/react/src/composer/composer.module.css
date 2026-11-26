@@ -66,7 +66,6 @@
 
   /* An empty container takes no room, so it adds no gap. */
   .header:empty,
-  .attachments:empty,
   .controls:empty,
   .footer:empty {
     display: none;
@@ -120,18 +119,6 @@
      clamped to none. */
   .field [data-icon-button][data-density='default']::before {
     border-radius: calc(var(--composer-radius) - var(--composer-border) - var(--composer-padding));
-  }
-
-  /* Indented to the text, above it. */
-  .attachments {
-    box-sizing: border-box;
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--semantic-dimension-space-control-gap-small);
-    min-inline-size: 0;
-    margin: 0;
-    padding: var(--composer-prompt-padding) var(--composer-indent) 0;
-    list-style: none;
   }
 
   /* Reaches the field's sides, so the scrollbar sits in the field's padding, clear of the text. */

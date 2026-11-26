@@ -17,7 +17,6 @@ import {Composer} from '@earendil-works/elanor-react';
   <Composer.Panel>
     <Composer.Header />
     <Composer.Field>
-      <Composer.Attachments />
       <Composer.Prompt />
       <Composer.Controls>
         <Composer.Attach />
@@ -46,8 +45,7 @@ import {Composer} from '@earendil-works/elanor-react';
 - **Root** holds the prompt's value, its undo history and its settings. It renders no element: the other parts and the hooks work anywhere inside it, also outside Panel and in portals, and the parts and the hooks throw outside it. `toText` is required: it gives the text that is copied, submitted with a form, and sent.
 - **Panel** renders a `div` around the rows and fills its container's width. For a form, see [In a form](#in-a-form).
 - **Header** is the row above the field, for notices, errors, and the message being replied to.
-- **Field** is the frame, which looks like one text field holding the attachments, the prompt and the buttons. It has no focus ring; the caret shows the focus, and the field keeps its fill while a person writes, darkening only under the pointer or a press. Pressing anything in it other than the text keeps the focus where it is, so a phone's keyboard stays up. Field also works without a Panel.
-- **Attachments** lists the attached files above the prompt.
+- **Field** is the frame, which looks like one text field holding the prompt, with its chips, and the buttons. It has no focus ring; the caret shows the focus, and the field keeps its fill while a person writes, darkening only under the pointer or a press. Pressing anything in it other than the text keeps the focus where it is, so a phone's keyboard stays up. Field also works without a Panel.
 - **Prompt** is the text. `maxRows` sets how many lines of text the prompt grows to before it scrolls (10 by default; at most 40% of the viewport, so it stays above a phone's keyboard). Name it with `aria-label` or a `Field.Label`.
 - **Controls** is the row of buttons inside the field, in DOM order; place them as you like. Use [Icon buttons](/components/icon-button/) with `density="default"`. **Attach**, **Submit** and **Stop** are icon buttons for attaching files, sending and stopping a reply.
 - **Footer** is the row below the field, for your own controls and figures, such as a model picker and the context used. It's layout only: it sets no text style, so the size of its text is yours to choose.
@@ -68,12 +66,6 @@ Prompt's `onKeyDown` runs before the composer handles a key; call `preventDefaul
 `Stop` is a button for stopping a reply: stop it in `onClick`. The composer doesn't know whether a reply is running, so render `Submit` or `Stop` yourself. `Composer.useStatus()` gives `empty`, `disabled` and `readOnly`, so you can offer Stop only while nothing new is written. Give each its own `key`: a press meant for Stop then never sends. When the one with the keyboard focus goes, the other takes it.
 
 <Demo example="./examples/stop.tsx" />
-
-## Attachments
-
-`Attach` opens the file picker; set `accept` and `multiple` on it. Root's `onAttach` receives the picked files, and files pasted or dropped on the prompt, with a `reason` of `picker`, `paste` or `drop`. The attachments are yours: render each in `Attachments` as a [Chip](/components/chip/) with `render={<li />}`. When a chip's remove button is used with the keyboard, the focus returns to the prompt where the caret was.
-
-<Demo example="./examples/attachments.tsx" />
 
 ## Chips
 
