@@ -96,6 +96,12 @@ The prompt doesn't show a chip's text on hover; wrap the chip in a [Tooltip](/co
 
 <Demo example="./examples/chip-tooltip.tsx" />
 
+## Long pastes
+
+Root's `getPastedValue` receives pasted text and returns the value it goes in as, such as a chip for a long text that would fill the prompt; return `[text]` to keep it as text. The threshold is yours: this example makes a chip of more than ten lines, and its `toText` sends the text in its place. Undo right after such a paste gives the text as text, and a second Undo removes the paste. Cmd+Shift+V or Ctrl+Shift+V always pastes text as text. `getPastedValue` isn't called for files, which go to `onAttach`, for a copy from the same prompt, whose chips come back, or for text dropped on the prompt. Returning `[]` drops the paste.
+
+<Demo example="./examples/long-paste.tsx" />
+
 ## Actions
 
 `Composer.useActions()` gives the composer's actions to any part inside Root, such as a dictation button that inserts its text: `insert`, `focus`, `blur`, `submit`, `attach`, `undo`, `redo`, `clearHistory` and `getValue`. `insert` goes where the caret was, also while the prompt isn't focused. The object never changes, so reading it doesn't render your part again. Root's `actionsRef` gets the same object, for code outside Root.

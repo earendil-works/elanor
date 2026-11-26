@@ -77,6 +77,10 @@ export interface ComposerSubmitDetails {
   readonly event: Event | undefined;
 }
 
+export interface ComposerPasteDetails {
+  readonly event: ClipboardEvent;
+}
+
 export type ComposerAttachDetails =
   | {readonly reason: 'picker'; readonly event: Event}
   | {readonly reason: 'paste'; readonly event: ClipboardEvent}
@@ -190,6 +194,14 @@ export interface EditorOptions<T extends ComposerChip> {
    * name or address. Without `onAttach`, the text is pasted.
    */
   readonly onAttach: ((files: File[], details: ComposerAttachDetails) => void) | undefined;
+  /**
+   * The value pasted text goes in as, such as a chip for a long text. Not called for a copy from
+   * this editor, whose chips come back, for files, or for Cmd/Ctrl+Shift+V, which pastes text as
+   * text. When it returns more than the text, Undo first gives the text as text.
+   */
+  readonly getPastedValue:
+    | ((text: string, details: ComposerPasteDetails) => ComposerValue<T>)
+    | undefined;
   /** Announced when chips are removed, joined into one message. Defaults to "Removed {label}". */
   readonly getChipRemovedMessage: ((chip: T) => string) | undefined;
   /**
@@ -210,6 +222,8 @@ type Edit<T extends ComposerChip> = {
   readonly value: ComposerValue<T>;
   readonly selection: SavedSelection;
   readonly group: EditGroup | undefined;
+  /** A step recorded before this edit's own, as a paste's text before what it became. */
+  readonly prior: Step<T> | undefined;
 };
 
 /** Per `historyKey`; the least recently shown is dropped first. */
@@ -270,6 +284,8 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
   #lastEnd = -1;
   #afterSpace = false;
   #dragged: ComposerTextRange | undefined;
+  /** Cmd/Ctrl+Shift+V is down: the next paste is text as text. */
+  #plainPaste = false;
   /** Pasting this copy back here restores its chips. */
   #clip: {readonly id: string; readonly value: ComposerValue<T>} | undefined;
   #keyHandler: ((event: KeyboardEvent) => boolean) | undefined;
@@ -375,6 +391,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     this.#edit = undefined;
     // The controlling component took the pending edit: it enters the history now.
     if (edit && value === edit.value && !this.#cleared) {
+      if (edit.prior) this.#history.record(edit.prior);
       this.#history.record({value, selection: edit.selection}, edit.group);
       return;
     }
@@ -430,14 +447,20 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
    * starts where the last one ended (`at` and `#lastEnd`) within `GROUP_PAUSE`. Typing joins one
    * step until a new word starts after a space (`#afterSpace`). `seal()` closes the open step.
    * Every other edit (paste, drop, cut, one key on a chip, `insert`, an input method's commit, a
-   * form reset) is a step of its own. Undo and redo move through the history without recording.
+   * form reset) is a step of its own; a paste `getPastedValue` changed records its text as the
+   * step before it (`prior`). Undo and redo move through the history without recording.
    */
   #commit(
     next: readonly ComposerSegment<T>[],
     selection: SavedSelection,
     reason: ComposerChangeReason,
     event: Event | undefined,
-    {group, at, record = true}: {group?: EditGroup; at?: number; record?: boolean} = {},
+    {
+      group,
+      at,
+      record = true,
+      prior,
+    }: {group?: EditGroup; at?: number; record?: boolean; prior?: Step<T> | undefined} = {},
   ): boolean {
     if (group && at !== undefined && at !== this.#lastEnd) this.#history.seal();
     const before = this.#latest;
@@ -458,7 +481,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     }
     this.#armed = undefined;
     this.#latest = value;
-    this.#edit = record ? {value, selection, group} : undefined;
+    this.#edit = record ? {value, selection, group, prior} : undefined;
     if (selection) this.#selection = selection;
     this.#lastEnd = group && selection ? selection.end : -1;
     this.#render(selection);
@@ -491,10 +514,11 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     range: ComposerTextRange,
     event: Event | undefined,
     reason: ComposerChangeReason,
+    prior?: Step<T> | undefined,
   ) {
     const next = replaceRange(this.#latest, range, content);
     const end = range.start + valueLength(content);
-    return this.#commit(next, caretAt(end), reason, event);
+    return this.#commit(next, caretAt(end), reason, event, {prior});
   }
 
   #insertTyped(text: string, range: ComposerTextRange, event: InputEvent): void {
@@ -722,13 +746,11 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     data.setData('text/html', `<span ${CLIP}="${id}">${escapeHtml(text)}</span>`);
   }
 
-  /** A copy from this editor pastes back with its chips. */
-  #readClipboard(data: DataTransfer | null): readonly ComposerSegment<T>[] {
-    if (!data) return [];
+  /** The value of a copy from this editor. */
+  #ownClip(data: DataTransfer | null): ComposerValue<T> | undefined {
     const clip = this.#clip;
-    const pasted = new RegExp(`${CLIP}="([^"]+)"`).exec(data.getData('text/html'))?.[1];
-    if (!clip || pasted !== clip.id) return [data.getData('text/plain').replace(/\r\n?/g, '\n')];
-    return clip.value;
+    const pasted = new RegExp(`${CLIP}="([^"]+)"`).exec(data?.getData('text/html') ?? '')?.[1];
+    return clip && pasted === clip.id ? clip.value : undefined;
   }
 
   #markSelected(range: ComposerTextRange): void {
@@ -784,6 +806,13 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
   }
 
   handleKeyDown = (event: KeyboardEvent): void => {
+    // Paste as text, on the key: browsers differ in what the paste event carries. The paste comes
+    // before the key's keyup, which clears it. With Alt too, as Safari's Paste and Match Style
+    // (⌥⇧⌘V), whose `key` is a symbol, so the key's place counts as well.
+    this.#plainPaste =
+      (isApple() ? event.metaKey : event.ctrlKey) &&
+      event.shiftKey &&
+      (event.key.toLowerCase() === 'v' || event.code === 'KeyV');
     // Safari sends the key that ends a composition after its end, as key 229. A keyboard that
     // sends Enter as 229 (`key` "Unidentified", on some Android keyboards) gets a new line.
     if (event.defaultPrevented || event.isComposing || this.#composing || event.keyCode === 229)
@@ -1004,8 +1033,11 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       return true;
     };
 
+    // Cmd/Ctrl+Shift+V pastes text as text: neither a copy's chips nor `getPastedValue`'s.
     const onPaste = (event: ClipboardEvent) => {
       event.preventDefault();
+      const plain = this.#plainPaste;
+      this.#plainPaste = false;
       const range = view()?.selection();
       if (
         !range ||
@@ -1013,12 +1045,21 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
         takeFiles(event.clipboardData, {reason: 'paste', event})
       )
         return;
-      const content = withNewIds(
-        this.#readClipboard(event.clipboardData),
-        replaceRange(this.#latest, range, []),
-      );
+      const data = event.clipboardData;
+      const text = plainText(data);
+      const own = plain ? undefined : this.#ownClip(data);
+      const made = own || plain || !text ? undefined : this.options.getPastedValue?.(text, {event});
+      // Made from the text: the text as text is the step before, so Undo gives it.
+      const prior =
+        made && !sameValue(normalize(made), [text])
+          ? {
+              value: replaceRange(this.#latest, range, [text]),
+              selection: caretAt(range.start + text.length),
+            }
+          : undefined;
+      const content = withNewIds(own ?? made ?? [text], replaceRange(this.#latest, range, []));
       if (!content.some((segment) => segment !== '')) return;
-      this.#insert(content, range, event, 'input-paste');
+      this.#insert(content, range, event, 'input-paste', prior);
     };
 
     let faint = 0;
@@ -1136,7 +1177,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       const content = withNewIds(
         source
           ? sliceValue(this.#latest, source.start, source.end)
-          : this.#readClipboard(event.dataTransfer),
+          : (this.#ownClip(event.dataTransfer) ?? [plainText(event.dataTransfer)]),
         value,
       );
       const next = replaceRange(value, caretAt(at), content);
@@ -1239,6 +1280,9 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     on('dragend', endDrag);
     on('dragover', onDragOver);
     on('drop', onDrop);
+    on('keyup', () => {
+      this.#plainPaste = false;
+    });
     on('pointerdown', onPointerDown);
     on('pointerover', onPointerOver);
     on('pointerout', onPointerOut);
@@ -1259,6 +1303,10 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     };
   }
 }
+
+/** Line breaks as the value has them. */
+const plainText = (data: DataTransfer | null): string =>
+  data?.getData('text/plain').replace(/\r\n?/g, '\n') ?? '';
 
 function pointFrom(event: DragEvent): [Node, number] | null {
   const position = document.caretPositionFromPoint?.(event.clientX, event.clientY);

@@ -32,6 +32,7 @@ import {
   type ComposerAttachDetails,
   type ComposerChangeDetails,
   type ComposerChipDeletion,
+  type ComposerPasteDetails,
   type ComposerSubmitDetails,
   type ComposerSubmitShortcut,
   type EditorOptions,
@@ -74,6 +75,10 @@ export interface ComposerRootProps<T extends ComposerChip = ComposerChip> {
   readonly submitShortcut?: ComposerSubmitShortcut | undefined;
   /** Called with files picked in `Composer.Attach`, pasted, dropped, or passed to `attach()`. */
   readonly onAttach?: ((files: File[], details: ComposerAttachDetails) => void) | undefined;
+  /** The value pasted text goes in as, such as a chip for a long text. */
+  readonly getPastedValue?:
+    | ((text: string, details: ComposerPasteDetails) => ComposerValue<T>)
+    | undefined;
   /** Disables the prompt and the composer's buttons. */
   readonly disabled?: boolean | undefined;
   /** Keeps the text focusable and copyable, but not editable. */
@@ -108,6 +113,7 @@ export function ComposerRoot<T extends ComposerChip = ComposerChip>({
   onSubmit,
   submitShortcut = 'enter',
   onAttach,
+  getPastedValue,
   disabled: disabledProp = false,
   readOnly = false,
   name,
@@ -138,6 +144,7 @@ export function ComposerRoot<T extends ComposerChip = ComposerChip>({
     submitShortcut,
     editable: !disabled && !readOnly,
     onAttach,
+    getPastedValue,
     getChipRemovedMessage,
     getChipSelectedMessage,
   };
