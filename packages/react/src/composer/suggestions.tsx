@@ -28,6 +28,7 @@ import {useMergedRef} from '../utils/refs.ts';
 import {useComposerMeta, useComposerStatus} from './context.ts';
 import {
   findMatch,
+  hasTrigger,
   type ComposerSuggestionMatch,
   type ComposerSuggestionTrigger,
 } from './editor/match.ts';
@@ -245,8 +246,7 @@ export function ComposerSuggestions<I>({
     if (!dismissed) return undefined;
     const {character, start} = dismissed;
     return editor.subscribeValue(() => {
-      const text = offsetText(editor.getValue()).slice(start, start + character.length);
-      if (text !== character) setDismissed(null);
+      if (!hasTrigger(offsetText(editor.getValue()), start, character)) setDismissed(null);
     });
   }, [editor, dismissed]);
 

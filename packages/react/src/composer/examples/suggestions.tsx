@@ -44,15 +44,10 @@ const commands = [
   command('deploy', 'Needs a clean branch', false),
 ];
 
-// Japanese and Chinese keyboards type the full-width forms.
 const triggers: readonly ComposerSuggestionTrigger[] = [
   {character: '@'},
-  {character: '＠'},
   {character: '/', position: 'start'},
-  {character: '／', position: 'start'},
 ];
-
-const isFileTrigger = (character: string) => character === '@' || character === '＠';
 
 function searchFiles(query: string, signal: AbortSignal): Promise<Suggestion[]> {
   const found = paths
@@ -83,7 +78,7 @@ function FileAndCommandSuggestions() {
   const request = useRef<AbortController>(null);
 
   useEffect(() => {
-    if (!match || !isFileTrigger(match.character)) return undefined;
+    if (!match || match.character !== '@') return undefined;
     const controller = new AbortController();
     request.current = controller;
     searchFiles(match.query, controller.signal).then(
@@ -94,7 +89,7 @@ function FileAndCommandSuggestions() {
   }, [match]);
 
   const results =
-    match && !isFileTrigger(match.character)
+    match && match.character !== '@'
       ? {match, items: commands.filter((command) => command.label.startsWith(match.query))}
       : files;
 
@@ -132,9 +127,7 @@ function FileAndCommandSuggestions() {
               ))}
             </Composer.SuggestionList>
             <Composer.SuggestionEmpty>
-              {match && isFileTrigger(match.character)
-                ? 'No matching files'
-                : 'No matching commands'}
+              {match && match.character === '@' ? 'No matching files' : 'No matching commands'}
             </Composer.SuggestionEmpty>
           </Composer.SuggestionPopup>
         </Composer.SuggestionPositioner>

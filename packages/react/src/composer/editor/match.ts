@@ -10,12 +10,14 @@ import {CHIP_CHARACTER, type ComposerTextRange} from './model.ts';
 export type ComposerSuggestionPosition = 'start' | 'line-start' | 'word-start' | 'anywhere';
 
 export type ComposerSuggestionTrigger = {
+  /** Also matches its full-width form, such as `＠` for `@`. */
   readonly character: string;
   /** Defaults to `word-start`. */
   readonly position?: ComposerSuggestionPosition | undefined;
 };
 
 export type ComposerSuggestionMatch = {
+  /** The configured trigger, also when its full-width form was typed; the text has the typed one. */
   readonly character: string;
   /** The text between the trigger and the caret. */
   readonly query: string;
@@ -49,6 +51,19 @@ function pointBefore(text: string, index: number): string | undefined {
 const endsWord = (character: string | undefined): boolean =>
   character !== undefined && (character === CHIP_CHARACTER || WORD_END.test(character));
 
+/**
+ * Full-width ASCII (U+FF01–FF5E) as ASCII, so a Japanese or Chinese keyboard's `＠` matches `@`.
+ * By offset rather than NFKC, which can change the length and so the offsets.
+ */
+const halfWidth = (text: string): string =>
+  text.replace(/[\uFF01-\uFF5E]/g, (character) =>
+    String.fromCharCode(character.charCodeAt(0) - 0xfee0),
+  );
+
+/** Whether `text` still has the trigger `character`, in either width, at `index`. */
+export const hasTrigger = (text: string, index: number, character: string): boolean =>
+  halfWidth(text.slice(index, index + character.length)) === halfWidth(character);
+
 function at(text: string, index: number, position: ComposerSuggestionPosition): boolean {
   const before = pointBefore(text, index);
   switch (position) {
@@ -73,12 +88,15 @@ export function findMatch(
 ): ComposerSuggestionMatch | null {
   let start = before.length;
   while (start > 0 && !endsWord(before[start - 1])) start -= 1;
+  // The boundary check reads the text as typed; only the trigger's search is folded.
+  const word = halfWidth(before.slice(start));
   let found: ComposerSuggestionMatch | null = null;
   for (const {character, position = 'word-start'} of triggers) {
+    const folded = halfWidth(character);
     for (
-      let index = before.lastIndexOf(character);
+      let index = word.lastIndexOf(folded) + start;
       index >= start;
-      index = index > 0 ? before.lastIndexOf(character, index - 1) : -1
+      index = index > start ? word.lastIndexOf(folded, index - start - 1) + start : -1
     ) {
       if (!at(before, index, position)) continue;
       if (!found || index > found.range.start)
