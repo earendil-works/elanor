@@ -21,12 +21,10 @@
 
   .root:hover:not([data-disabled]) {
     background: var(--semantic-color-background-fill-ghost-neutral-hover);
-    box-shadow: none;
   }
 
   .root:active:not([data-disabled]) {
     background: var(--semantic-color-background-fill-ghost-neutral-active);
-    box-shadow: none;
   }
 
   .root:focus-visible {

@@ -1,5 +1,5 @@
 {
   "$schema": "../../../schemas/opacity.recipe.schema.json",
   "path": ["primitive"],
-  "steps": [0, 100, 150, 250, 350, 400, 500, 600, 1000]
+  "steps": [0, 80, 100, 140, 150, 250, 350, 400, 500, 600, 1000]
 }
