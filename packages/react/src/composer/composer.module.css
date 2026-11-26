@@ -7,24 +7,25 @@
   /*
    * `--composer-border` is the field's thin border and `--composer-radius` its corners', a message
    * bubble's. `--composer-padding` is the field's padding, where its buttons sit; with the border,
-   * a fixed size. `--composer-icon-inset` is the distance from an IconButton's edge to its icon,
-   * `--composer-prompt-padding` the prompt's block padding. `--composer-indent` indents the text to
-   * the icons' drawing, a fifth of an icon inside its box, so text and icons share an edge to the
-   * eye.
+   * a fixed size. `--composer-prompt-padding` is the prompt's block padding. `--composer-indent`
+   * indents the text to the icons' keyline, a fifth of an icon inside its box, so text and icons
+   * share an edge to the eye. Declared on the scroll area too, so a prompt outside a field has them.
    */
   .panel,
-  .field {
+  .field,
+  .scroll {
     --composer-border: var(--semantic-dimension-border-width-small);
     --composer-radius: var(--semantic-dimension-radius-large);
     --composer-padding: calc(
       var(--semantic-dimension-space-padding-small) - var(--composer-border)
     );
-    /* Mirrors IconButton's default density, `size.medium` with the icon centred in it. */
+    /* From an IconButton's edge to its icon: its default density, `size.medium` with the icon
+       centred in it. */
     --composer-icon-inset: calc(
       (var(--semantic-dimension-size-medium) - var(--semantic-dimension-size-icon)) / 2
     );
     --composer-prompt-padding: var(--semantic-dimension-space-padding-small);
-    --composer-indent: calc(var(--composer-icon-inset) + 0.2 * var(--semantic-dimension-size-icon));
+    --composer-indent: calc(var(--composer-icon-inset) + var(--semantic-dimension-size-icon) / 5);
   }
 
   /*
@@ -138,16 +139,16 @@
 
   /*
    * The text's scroll area: `maxRows` lines at most, fewer in a low window such as a phone's above
-   * its keyboard. It reaches the field's sides, so its scrollbar is in the field's padding, clear
-   * of the text.
+   * its keyboard. In a field it reaches the field's sides, so its scrollbar is in the field's
+   * padding, clear of the text.
    */
-  .scroll {
+  .field .scroll {
     margin-inline: calc(-1 * var(--composer-padding));
+  }
+
+  .scroll {
     max-block-size: min(
-      calc(
-        var(--composer-prompt-max-rows) * 1lh + 2 *
-          var(--composer-prompt-padding, var(--semantic-dimension-space-padding-small))
-      ),
+      calc(var(--composer-prompt-max-rows) * 1lh + 2 * var(--composer-prompt-padding)),
       40dvh
     );
     font: var(--semantic-typography-ui-primary);
@@ -168,40 +169,19 @@
   }
 
   /*
-   * One line at least, then as tall as its text: the scroll area scrolls, never the text. The block
-   * padding is `--composer-prompt-padding`, with a fallback for a prompt outside a field. No focus
+   * One line at least, then as tall as its text: the scroll area scrolls, never the text. No focus
    * ring of its own: the field's frame is the field.
    */
   .prompt {
-    /* The field's padding plus the text's indent, with the same values outside a field. */
-    --composer-prompt-inline: calc(
-      var(
-          --composer-padding,
-          calc(
-            var(--semantic-dimension-space-padding-small) -
-              var(--semantic-dimension-border-width-small)
-          )
-        ) +
-        var(
-          --composer-indent,
-          calc(
-            (var(--semantic-dimension-size-medium) - var(--semantic-dimension-size-icon)) / 2 +
-              0.2 * var(--semantic-dimension-size-icon)
-          )
-        )
-    );
-
     position: relative;
     box-sizing: border-box;
     display: block;
     inline-size: 100%;
     min-inline-size: 0;
-    min-block-size: calc(
-      1lh + 2 * var(--composer-prompt-padding, var(--semantic-dimension-space-padding-small))
-    );
+    min-block-size: calc(1lh + 2 * var(--composer-prompt-padding));
     margin: 0;
-    padding-block: var(--composer-prompt-padding, var(--semantic-dimension-space-padding-small));
-    padding-inline: var(--composer-prompt-inline);
+    padding-block: var(--composer-prompt-padding);
+    padding-inline: calc(var(--composer-padding) + var(--composer-indent));
     outline: 0;
     color: var(--semantic-color-text-primary);
     font: var(--semantic-typography-ui-primary);
@@ -214,7 +194,7 @@
      line, cut with an ellipsis: the prompt is one line tall while empty. */
   .prompt[data-empty]::before {
     position: absolute;
-    inset-inline: var(--composer-prompt-inline);
+    inset-inline: calc(var(--composer-padding) + var(--composer-indent));
     overflow: hidden;
     color: var(--semantic-color-text-secondary);
     text-overflow: ellipsis;
