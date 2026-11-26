@@ -115,7 +115,7 @@ Escape calls `preventDefault()` when it closes the list. If you handle Escape on
 
 `SuggestionStatus` tells screen readers how many suggestions there are once typing pauses, that nothing matches, or that results are loading; the keys to choose with are said once each time the list opens, where there is a keyboard. Keep it mounted inside `Suggestions`, outside the portal. It's visually hidden; to show it, give it a `className` that overrides its position, size and clipping, such as `position: static; inline-size: auto; block-size: auto; clip-path: none; white-space: normal`. Children as a function replace its text.
 
-Use one `Suggestions` per Root, with all your triggers; the list doesn't open while the prompt is disabled or read-only. Inside a [Modal](/components/modal/), pass the modal's popup element to `SuggestionPortal` as `container`.
+Use one `Suggestions` per Root: pass all your triggers to one `useSuggestionMatch` and branch on `match.character`, since a second `Suggestions` in the same Root throws. The list doesn't open while the prompt is disabled or read-only. Inside a [Modal](/components/modal/), pass the modal's popup element to `SuggestionPortal` as `container`.
 
 <Demo example="./examples/suggestions.tsx" />
 

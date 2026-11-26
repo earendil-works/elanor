@@ -144,6 +144,7 @@ export function ComposerRoot<T extends ComposerChip = ComposerChip>({
   const latest = useRef({options, defaultValue});
   const [{editor, meta}] = useState(() => {
     let handedOffAt = Number.NEGATIVE_INFINITY;
+    let suggestions: symbol | null = null;
     const created = new Editor(options, value, historyKey);
     const context: ComposerMeta = {
       editor: created,
@@ -163,6 +164,16 @@ export function ComposerRoot<T extends ComposerChip = ComposerChip>({
         };
       },
       popup: createPromptPopupStore(),
+      claimSuggestions: (owner) => {
+        if (suggestions !== null && suggestions !== owner)
+          throw new Error(
+            "A Composer.Root takes one Composer.Suggestions. For several triggers, use one useSuggestionMatch([{character: '@'}, {character: '/'}]) and branch on match.character.",
+          );
+        suggestions = owner;
+        return () => {
+          if (suggestions === owner) suggestions = null;
+        };
+      },
     };
     return {editor: created, meta: context};
   });

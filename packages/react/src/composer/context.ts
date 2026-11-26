@@ -75,6 +75,8 @@ export interface ComposerMeta {
    */
   readonly handOff: (element: HTMLElement | null) => (() => void) | undefined;
   readonly popup: PromptPopupStore;
+  /** Makes `owner` this Root's one `Composer.Suggestions`, or throws; returns the release. */
+  readonly claimSuggestions: (owner: symbol) => () => void;
 }
 
 export const ComposerMetaContext = /* @__PURE__ */ createContext<ComposerMeta | null>(null);

@@ -184,7 +184,7 @@ export interface ComposerSuggestionsProps<I> {
  * prompt: arrow keys move, Enter or Tab picks, and Escape closes the list with `preventDefault()`.
  * While items show, Enter never submits. After Escape, that trigger stays closed until a new one is
  * typed. Without items it opens only for a `Composer.SuggestionEmpty`, and never in a disabled or
- * read-only prompt. Use one per `Composer.Root`.
+ * read-only prompt. A second one in the same `Composer.Root` throws.
  */
 export function ComposerSuggestions<I>({
   match,
@@ -194,8 +194,11 @@ export function ComposerSuggestions<I>({
   onItemHighlighted,
   children,
 }: ComposerSuggestionsProps<I>) {
-  const {editor, popup} = useComposerMeta('Composer.Suggestions');
+  const {editor, popup, claimSuggestions} = useComposerMeta('Composer.Suggestions');
   const {disabled, readOnly} = useComposerStatus('Composer.Suggestions');
+  // Two would both claim the prompt's keys and ARIA attributes.
+  const [owner] = useState(() => Symbol('Composer.Suggestions'));
+  useLayoutEffect(() => claimSuggestions(owner), [claimSuggestions, owner]);
 
   const shown =
     match !== null &&
