@@ -1,12 +1,5 @@
 import {DnsIcon, UploadIcon} from '@earendil-works/elanor-icons-react';
-import {
-  Chip,
-  Composer,
-  Stack,
-  type ComposerActions,
-  type ComposerValue,
-} from '@earendil-works/elanor-react';
-import {useRef} from 'react';
+import {Chip, Composer, Stack, type ComposerValue} from '@earendil-works/elanor-react';
 
 type FileChip = {id: string; label: string; place: string; path: string; uploadId?: string};
 
@@ -35,15 +28,11 @@ const renderChip = (chip: FileChip) => (
 );
 
 export default function ComposerFiles() {
-  // Root's own props can't call `Composer.useActions()`; `actionsRef` gives `onAttach` the actions.
-  const actions = useRef<ComposerActions<FileChip>>(null);
-
   return (
     <Composer.Root
       defaultValue={draft}
       toText={toText}
-      actionsRef={actions}
-      onAttach={(files) => {
+      onAttach={(files, details) => {
         // Demo only: this uploads nothing; start each upload here and keep its state by uploadId.
         const chips = files.map((file) => ({
           id: `file-${(uploads += 1)}`,
@@ -52,7 +41,7 @@ export default function ComposerFiles() {
           place: 'Upload',
           path: file.name,
         }));
-        actions.current?.insert(chips.flatMap((chip) => [chip, ' ']));
+        details.insert(chips);
       }}
       getChipDescription={() => 'file'}
       renderChip={renderChip}

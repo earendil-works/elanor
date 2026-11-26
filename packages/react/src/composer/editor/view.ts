@@ -53,6 +53,14 @@ function layout<T extends ComposerChip>(value: ComposerValue<T>): Layout<T> {
 
 const realLength = (text: string): number => text.replaceAll(ZERO_WIDTH_SPACE, '').length;
 
+/** Falls back to `caretRangeFromPoint`: older Chrome and Safari lack `caretPositionFromPoint`. */
+function caretFromPoint(x: number, y: number): [Node, number] | null {
+  const position = document.caretPositionFromPoint?.(x, y);
+  if (position) return [position.offsetNode, position.offset];
+  const range = document.caretRangeFromPoint?.(x, y);
+  return range ? [range.startContainer, range.startOffset] : null;
+}
+
 /**
  * The app renders the chip into `content` (`data-chip-content`); a sibling span holds its screen
  * reader description (`data-description`).
@@ -237,6 +245,27 @@ export class EditorView<T extends ComposerChip> {
       if (child) total += this.#lengthOf(child);
     }
     return total;
+  }
+
+  /**
+   * The offset at a point in the viewport, as for a drop. On a chip, the side nearer the point.
+   * `null` off the text: outside the element, or in its padding below the last line.
+   */
+  offsetAtPoint(x: number, y: number): number | null {
+    const host = this.#hostOf(document.elementFromPoint(x, y));
+    if (host) {
+      const box = host.getBoundingClientRect();
+      const rtl = getComputedStyle(this.#element).direction === 'rtl';
+      return this.#startOf(host) + (x > box.left + box.width / 2 !== rtl ? 1 : 0);
+    }
+    // The caret APIs give the nearest line, also for a point below the last.
+    const style = getComputedStyle(this.#element);
+    const bottom =
+      this.#element.getBoundingClientRect().bottom -
+      Number.parseFloat(style.borderBottomWidth) -
+      Number.parseFloat(style.paddingBottom);
+    const point = y > bottom ? null : caretFromPoint(x, y);
+    return point && this.#element.contains(point[0]) ? this.offsetAt(...point) : null;
   }
 
   /**

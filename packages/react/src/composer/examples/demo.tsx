@@ -44,10 +44,8 @@ export default function ComposerDemo() {
       onValueChange={setValue}
       toText={toText}
       actionsRef={actions}
-      onAttach={(files) =>
-        actions.current?.insert(
-          files.flatMap((file) => [{id: `upload-${(uploads += 1)}`, label: file.name}, ' ']),
-        )
+      onAttach={(files, details) =>
+        details.insert(files.map((file) => ({id: `upload-${(uploads += 1)}`, label: file.name})))
       }
       renderChip={renderChip}
       onSubmit={(sent) => {

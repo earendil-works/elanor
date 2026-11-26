@@ -1,13 +1,23 @@
 import {mergeProps} from '@base-ui/react/merge-props';
 import {useRender} from '@base-ui/react/use-render';
 import {AddIcon, ArrowUpwardIcon, StopIcon} from '@earendil-works/elanor-icons-react';
-import {useRef, type ChangeEvent, type MouseEvent, type PointerEvent, type ReactNode} from 'react';
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  type ChangeEvent,
+  type MouseEvent,
+  type PointerEvent,
+  type ReactNode,
+} from 'react';
 
 import {IconButton, type IconButtonProps} from '../icon-button/icon-button.tsx';
 import {useFieldRootContext} from '../utils/base-ui-internals.ts';
 import {fieldValidityMapping} from '../utils/field-validity.ts';
 import {useMergedRef} from '../utils/refs.ts';
 import {useComposerMeta, useComposerSettings, useComposerStatus} from './context.ts';
+import type {EditorBinding} from './editor/editor.ts';
 
 import styles from './composer.module.css';
 
@@ -157,27 +167,95 @@ export interface ComposerFieldState {
   readonly readOnly: boolean;
   /** The validity of the `Field.Root` around the composer, `null` before it is validated. */
   readonly valid: boolean | null;
+  /** Files that `onAttach` takes are dragged over the field. */
+  readonly dragOver: boolean;
 }
+
+/**
+ * How long (ms) a file drag shows without a `dragover`, which browsers repeat while the pointer is
+ * over the field, also at rest: it ends a drag that left without a `dragleave`, as after Escape.
+ */
+const DRAG_OVER_TIMEOUT_MS = 1000;
+
+function useFileDrag(editor: EditorBinding) {
+  const [dragOver, setDragOver] = useState(false);
+  const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
+  useEffect(() => {
+    if (!dragOver) return undefined;
+    // A drag from the page cancelled over the field ends with `dragend`.
+    const end = () => setDragOver(false);
+    window.addEventListener('dragend', end, true);
+    return () => {
+      clearTimeout(timer.current);
+      window.removeEventListener('dragend', end, true);
+    };
+  }, [dragOver]);
+  const ref = useCallback(
+    (field: HTMLElement | null) => {
+      if (!field) return undefined;
+      // Taking the drag hides the browser's drop caret under the pointer, which would show the
+      // wrong place: files go in at the caret. `copy`: files are copied in, not moved.
+      const onDragOver = (event: DragEvent) => {
+        if (!editor.takesFiles(event)) return;
+        event.preventDefault();
+        if (event.dataTransfer) event.dataTransfer.dropEffect = 'copy';
+        setDragOver(true);
+        clearTimeout(timer.current);
+        timer.current = setTimeout(() => setDragOver(false), DRAG_OVER_TIMEOUT_MS);
+      };
+      // Moving onto a child also fires `dragleave`; only a point outside the field ends the drag.
+      const onDragLeave = (event: DragEvent) => {
+        const box = field.getBoundingClientRect();
+        const {clientX: x, clientY: y} = event;
+        if (x <= box.left || x >= box.right || y <= box.top || y >= box.bottom) setDragOver(false);
+      };
+      // Captured: React hands a drop on a chip, rendered through Root's portal, to the page's
+      // handlers before it bubbles here. `preventDefault` tells the page's drop zones it's taken.
+      const onDrop = (event: DragEvent) => {
+        setDragOver(false);
+        if (!event.defaultPrevented && editor.dropFiles(event)) event.preventDefault();
+      };
+      field.addEventListener('dragover', onDragOver);
+      field.addEventListener('dragleave', onDragLeave);
+      field.addEventListener('drop', onDrop, true);
+      return () => {
+        field.removeEventListener('dragover', onDragOver);
+        field.removeEventListener('dragleave', onDragLeave);
+        field.removeEventListener('drop', onDrop, true);
+      };
+    },
+    [editor],
+  );
+  return {dragOver, ref};
+}
+
+const fieldStateMapping = {
+  ...fieldValidityMapping,
+  dragOver: (dragOver: boolean) => (dragOver ? {'data-drag-over': ''} : null),
+};
 
 export interface ComposerFieldProps extends useRender.ComponentProps<'div', ComposerFieldState> {}
 
 /**
  * The frame that looks like one text field: `Composer.Prompt` and `Composer.Controls`. A press on
  * anything in it but the text keeps the focus where it is, so a phone's keyboard stays up; presses
- * in popups opened from it are left alone. Renders `data-empty`, `data-disabled`,
- * `data-readonly`, and `data-pressed` while a finger is on it, not on one of its buttons. Inside a
- * `Field.Root` it also renders the field's `data-valid` or `data-invalid`, unstyled, for your own
- * styles.
+ * in popups opened from it are left alone. Files dropped anywhere on it go to `onAttach`, at the
+ * caret. Renders `data-empty`, `data-disabled`, `data-readonly`, `data-pressed` while a finger is
+ * on it, not on one of its buttons, and `data-drag-over` while files `onAttach` takes are dragged
+ * over it, unstyled. Inside a `Field.Root` it also renders the field's `data-valid` or
+ * `data-invalid`, unstyled, for your own styles.
  */
 export function ComposerField({ref, render, ...props}: ComposerFieldProps) {
   const status = useComposerStatus('Composer.Field');
   const {valid} = useFieldRootContext().state;
+  const {editor} = useComposerMeta('Composer.Field');
+  const fileDrag = useFileDrag(editor);
   return useRender({
     defaultTagName: 'div',
     render,
-    ref,
-    state: {...status, valid},
-    stateAttributesMapping: fieldValidityMapping,
+    ref: ref ? [ref, fileDrag.ref] : fileDrag.ref,
+    state: {...status, valid, dragOver: fileDrag.dragOver},
+    stateAttributesMapping: fieldStateMapping,
     props: mergeProps<'div'>(
       {
         className: styles.field,
@@ -224,6 +302,8 @@ export interface ComposerAttachProps extends Omit<IconButtonProps, 'density'> {
   readonly accept?: string | undefined;
   /** Whether several files can be picked at once. */
   readonly multiple?: boolean | undefined;
+  /** The camera to take a photo or video with on phones, as a file input's `capture`. */
+  readonly capture?: boolean | 'user' | 'environment' | undefined;
   /** The icon. Defaults to a plus. */
   readonly children?: ReactNode;
 }
@@ -236,6 +316,7 @@ export interface ComposerAttachProps extends Omit<IconButtonProps, 'density'> {
 export function ComposerAttach({
   accept,
   multiple = true,
+  capture,
   disabled = false,
   onClick,
   children = <AddIcon />,
@@ -252,6 +333,7 @@ export function ComposerAttach({
         hidden
         accept={accept}
         multiple={multiple}
+        capture={capture}
         onChange={(event: ChangeEvent<HTMLInputElement>) => {
           const files = [...(event.currentTarget.files ?? [])];
           // Picking the same file again is a change again.

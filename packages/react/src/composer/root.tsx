@@ -73,8 +73,8 @@ export interface ComposerRootProps<T extends ComposerChip = ComposerChip> {
     | undefined;
   /** The keys that submit: `enter` or `mod-enter`. */
   readonly submitShortcut?: ComposerSubmitShortcut | undefined;
-  /** Called with files picked in `Composer.Attach`, pasted, dropped, or passed to `attach()`. */
-  readonly onAttach?: ((files: File[], details: ComposerAttachDetails) => void) | undefined;
+  /** Files picked, pasted, dropped on the field or passed to `attach()`, for `details.insert`. */
+  readonly onAttach?: ((files: File[], details: ComposerAttachDetails<T>) => void) | undefined;
   /** The value pasted text goes in as, such as a chip for a long text. */
   readonly getPastedValue?:
     | ((text: string, details: ComposerPasteDetails) => ComposerValue<T>)
@@ -157,7 +157,7 @@ export function ComposerRoot<T extends ComposerChip = ComposerChip>({
       editor: created,
       actions: created.actions,
       formValue: {current: null},
-      pick: (files, event) => created.options.onAttach?.(files, {reason: 'picker', event}),
+      pick: (files, event) => created.pick(files, event),
       takesSubmit: () => latest.current.options.onSubmit !== undefined,
       reset: (event) => created.reset(latest.current.defaultValue, event),
       handOff: (element) => {

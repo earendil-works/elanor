@@ -31,6 +31,7 @@ import {
   valueLength,
   withNewIds,
 } from './model.ts';
+import {withSpaces} from './spacing.ts';
 import {EditorView, type Rect} from './view.ts';
 
 /**
@@ -80,25 +81,37 @@ export interface ComposerPasteDetails {
   readonly event: ClipboardEvent;
 }
 
-export type ComposerAttachDetails =
+type AttachSource =
   | {readonly reason: 'picker'; readonly event: Event}
   | {readonly reason: 'paste'; readonly event: ClipboardEvent}
   | {readonly reason: 'drop'; readonly event: DragEvent}
   | {readonly reason: 'api'; readonly event?: undefined};
 
+export type ComposerAttachDetails<T extends ComposerChip = ComposerChip> = AttachSource & {
+  /** Where the files go: the selection a paste replaces, else the caret after any selected text. */
+  readonly at: ComposerTextRange;
+  /** Inserts at `at`, spaced, as one undo step; `false` once the text changed or if canceled. */
+  readonly insert: (content: string | T | ComposerValue<T>) => boolean;
+};
+
 /**
  * Where `insert` puts its content, and why: the change details carry `reason` and `event`. A picked
- * suggestion (`item-press`) always has the press behind it.
+ * suggestion (`item-press`), a drop (`input-drop`) and a paste (`input-paste`) always have their
+ * event behind them.
  */
 export type ComposerInsertOptions = {
   readonly at?: 'caret' | 'end' | ComposerTextRange;
   readonly startLine?: boolean;
+  /** Adds a space around chips where the text needs one, for an insert a person made. */
+  readonly space?: boolean;
 } & (
   | {readonly reason?: 'imperative-action'; readonly event?: Event}
   | {
       readonly reason: 'item-press';
       readonly event: BaseUIChangeEventDetails<'item-press'>['event'];
     }
+  | {readonly reason: 'input-drop'; readonly event: DragEvent}
+  | {readonly reason: 'input-paste'; readonly event: ClipboardEvent}
 );
 
 /** One object for the editor's lifetime. It reads the latest options when called. */
@@ -109,7 +122,8 @@ export interface ComposerActions<T extends ComposerChip = ComposerChip> {
   /**
    * Inserts as one undo step. `caret` (the default) is the last known caret, also while the editor
    * is blurred. `startLine` prepends a line break unless the insert point starts a line. Commits
-   * pending IME text first. Returns `false` when nothing changed.
+   * pending IME text first. Returns `false` when nothing changed. Inserts exactly `content`; set
+   * `space: true` for an insert a person made, such as a suggestion pick.
    */
   insert(content: string | T | ComposerValue<T>, options?: ComposerInsertOptions): boolean;
   undo(): void;
@@ -122,7 +136,7 @@ export interface ComposerActions<T extends ComposerChip = ComposerChip> {
   /** Calls `onSubmit` without the keyboard's checks (composing, open suggestions). */
   submit(event?: Event): void;
   getValue(): ComposerValue<T>;
-  /** Calls `onAttach` with reason `api`. */
+  /** Calls `onAttach` (reason `api`) at the caret after selected text; ignores an empty list. */
   attach(files: File[]): void;
 }
 
@@ -157,6 +171,10 @@ export interface EditorBinding {
    * text), and a selected chip is dropped when the list opens.
    */
   setKeyHandler(handler: ((event: KeyboardEvent) => boolean) | undefined): void;
+  /** Whether a drag carries files `onAttach` takes; a drag from this editor never does. */
+  takesFiles(event: DragEvent): boolean;
+  /** Gives dropped files to `onAttach`, at the caret after any selected text; `true` if taken. */
+  dropFiles(event: DragEvent): boolean;
   /**
    * For `useSuggestionMatch`: fires on value, caret and focus changes, and during IME
    * composition.
@@ -191,7 +209,7 @@ export interface EditorOptions<T extends ComposerChip> {
    * A paste or drop with files sends only the files: the text that comes with them is usually their
    * name or address. Without `onAttach`, the text is pasted.
    */
-  readonly onAttach: ((files: File[], details: ComposerAttachDetails) => void) | undefined;
+  readonly onAttach: ((files: File[], details: ComposerAttachDetails<T>) => void) | undefined;
   /**
    * The value pasted text goes in as, such as a chip for a long text. Not called for a copy from
    * this editor, whose chips come back, for files, or for Cmd/Ctrl+Shift+V, which pastes text as
@@ -263,6 +281,11 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
   #pressedChip: string | undefined;
   /** Where `insert` goes while the editor is blurred. */
   #selection: ComposerTextRange | null = null;
+  /**
+   * Bumped when `#latest`'s content or draft changes, so `details.insert` knows its offsets still
+   * hold. Not compared by identity: a parent's equal copy keeps them, a draft sharing one doesn't.
+   */
+  #revision = 0;
   #composing = false;
   /**
    * The chip selected for removal, kept while the caret stays at `caret`. Only its information fill
@@ -406,6 +429,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       this.#history.record({value, selection: null});
     }
     this.#armed = undefined;
+    if (!sameValue(value, this.#latest)) this.#revision += 1;
     this.#latest = value;
     this.#render(null);
     this.#emitValue();
@@ -425,6 +449,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     this.#armed = undefined;
     this.#selection = null;
     this.#lastEnd = -1;
+    this.#revision += 1;
   }
 
   #render(selection: SavedSelection): void {
@@ -479,6 +504,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     }
     this.#armed = undefined;
     this.#latest = value;
+    this.#revision += 1;
     this.#edit = record ? {value, selection, group, prior} : undefined;
     if (selection) this.#selection = selection;
     this.#lastEnd = group && selection ? selection.end : -1;
@@ -784,6 +810,21 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
 
   getValue = (): ComposerValue<T> => this.#latest;
 
+  takesFiles = (event: DragEvent): boolean =>
+    this.options.editable &&
+    this.options.onAttach !== undefined &&
+    this.#dragged === undefined &&
+    (event.dataTransfer?.types.includes('Files') ?? false);
+
+  /** Files go in at the caret the person placed, not under the pointer. */
+  dropFiles = (event: DragEvent): boolean => {
+    const files = [...(event.dataTransfer?.files ?? [])];
+    if (!this.takesFiles(event) || !files.length) return false;
+    this.#endComposition();
+    this.#attach(files, this.#fileCaret(), {reason: 'drop', event});
+    return true;
+  };
+
   setKeyHandler(handler: ((event: KeyboardEvent) => boolean) | undefined): void {
     this.#keyHandler = handler;
     if (!handler || !this.#armed) return;
@@ -903,22 +944,22 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     blur: () => this.#element?.blur(),
     insert: (
       content,
-      {at = 'caret', startLine = false, reason = 'imperative-action', event} = {},
+      {at = 'caret', startLine = false, reason = 'imperative-action', event, space = false} = {},
     ) => {
       if (!this.options.editable) return false;
-      // Commit pending IME text before inserting beside it.
-      if (this.#composing) {
-        this.#composing = false;
-        this.#readBack(undefined);
-      }
+      this.#endComposition();
       const length = valueLength(this.#latest);
-      const range =
-        at === 'end' ? caretAt(length) : at === 'caret' ? (this.#selection ?? caretAt(length)) : at;
+      const range = at === 'end' ? caretAt(length) : at === 'caret' ? this.#caret() : at;
       const given = typeof content === 'string' || 'id' in content ? [content] : content;
       const before = offsetText(sliceValue(this.#latest, 0, range.start));
       const segments =
         startLine && before !== '' && !before.endsWith('\n') ? ['\n', ...given] : given;
-      return this.#insert(segments, range, event, reason);
+      return this.#insert(
+        space ? withSpaces(this.#latest, range, segments) : segments,
+        range,
+        event,
+        reason,
+      );
     },
     undo: () => this.#applyStep(undefined, this.#history.undo(), 'history-undo'),
     redo: () => this.#applyStep(undefined, this.#history.redo(), 'history-redo'),
@@ -936,8 +977,50 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     },
     submit: (event) => this.options.onSubmit?.(this.#latest, {event}),
     getValue: () => this.#latest,
-    attach: (files) => this.options.onAttach?.(files, {reason: 'api'}),
+    attach: (files) => {
+      if (files.length) this.#attach(files, this.#fileCaret(), {reason: 'api'});
+    },
   };
+
+  pick(files: File[], event: Event): void {
+    this.#attach(files, this.#fileCaret(), {reason: 'picker', event});
+  }
+
+  /**
+   * The last caret, also while blurred, clamped: a value shown since may be shorter. The end
+   * before there was one.
+   */
+  #caret(): ComposerTextRange {
+    return this.#clamp(this.#selection ?? caretAt(valueLength(this.#latest)));
+  }
+
+  /** Files never replace selected text: they go after it, at its logical end. */
+  #fileCaret(): ComposerTextRange {
+    return caretAt(this.#caret().end);
+  }
+
+  /** Commits pending IME text, before an edit that may land beside it. */
+  #endComposition(): void {
+    if (!this.#composing) return;
+    this.#composing = false;
+    this.#readBack(undefined);
+  }
+
+  /** `details.insert` refuses once the text changed: `at` is an offset into what `onAttach` saw. */
+  #attach(files: File[], at: ComposerTextRange, source: AttachSource): void {
+    const {onAttach} = this.options;
+    if (!onAttach) return;
+    const seen = this.#revision;
+    const how = insertOptionsFor(source);
+    onAttach(files, {
+      ...source,
+      at,
+      insert: (content) => {
+        this.#endComposition();
+        return this.#revision === seen && this.actions.insert(content, {...how, at, space: true});
+      },
+    });
+  }
 
   #listen(element: HTMLElement): () => void {
     const view = (): EditorView<T> | undefined => this.#view;
@@ -1011,26 +1094,20 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       this.#commit(replaceRange(this.#latest, range, []), caretAt(range.start), 'input-cut', event);
     };
 
-    /** `true` when files went to `onAttach`. */
-    const takeFiles = (data: DataTransfer | null, details: ComposerAttachDetails): boolean => {
-      const files = [...(data?.files ?? [])];
-      if (!files.length || !this.options.onAttach) return false;
-      this.options.onAttach(files, details);
-      return true;
-    };
-
     // Cmd/Ctrl+Shift+V pastes text as text: neither a copy's chips nor `getPastedValue`'s.
     const onPaste = (event: ClipboardEvent) => {
       event.preventDefault();
       const plain = this.#plainPaste;
       this.#plainPaste = false;
+      if (!this.options.editable) return;
+      this.#endComposition();
       const range = view()?.selection();
-      if (
-        !range ||
-        !this.options.editable ||
-        takeFiles(event.clipboardData, {reason: 'paste', event})
-      )
+      if (!range) return;
+      const files = [...(event.clipboardData?.files ?? [])];
+      if (files.length && this.options.onAttach) {
+        this.#attach(files, range, {reason: 'paste', event});
         return;
+      }
       const data = event.clipboardData;
       const text = plainText(data);
       const own = plain ? undefined : this.#ownClip(data);
@@ -1132,26 +1209,19 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       releaseHost();
     };
 
-    const onDragOver = (event: DragEvent) => {
-      // Accept a file drop only when `onAttach` takes the files.
-      if (this.options.onAttach && event.dataTransfer?.types.includes('Files'))
-        event.preventDefault();
-    };
-
+    // Text and a drag from this editor go in at the drop point; files are `Composer.Field`'s.
+    // Captured, as Field's: a drop on a chip reaches the page's React handlers through Root's
+    // portal before it bubbles here, and `preventDefault` tells them the prompt took it.
     const onDrop = (event: DragEvent) => {
+      if (this.takesFiles(event)) return;
       event.preventDefault();
       const source = this.#dragged;
       // Also here: `dragend` doesn't reach the editor when the drop removed the node it started on.
       endDrag();
       const current = view();
-      if (
-        !this.options.editable ||
-        !current ||
-        takeFiles(event.dataTransfer, {reason: 'drop', event})
-      )
-        return;
-      const point = pointFrom(event);
-      let at = point ? current.offsetAt(point[0], point[1]) : valueLength(this.#latest);
+      if (!this.options.editable || !current) return;
+      this.#endComposition();
+      let at = current.offsetAtPoint(event.clientX, event.clientY) ?? valueLength(this.#latest);
       let value = this.#latest;
       // A drag inside the editor moves the text, unless it's dropped onto itself or Ctrl or Alt
       // copies it.
@@ -1252,6 +1322,8 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       element.addEventListener(type, listener);
       stops.push(() => element.removeEventListener(type, listener));
     };
+    element.addEventListener('drop', onDrop, true);
+    stops.push(() => element.removeEventListener('drop', onDrop, true));
     on('beforeinput', onBeforeInput);
     on('input', onInput);
     on('copy', onCopy);
@@ -1259,8 +1331,6 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     on('paste', onPaste);
     on('dragstart', onDragStart);
     on('dragend', endDrag);
-    on('dragover', onDragOver);
-    on('drop', onDrop);
     on('keyup', () => {
       this.#plainPaste = false;
     });
@@ -1285,13 +1355,19 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
   }
 }
 
+function insertOptionsFor(source: AttachSource): ComposerInsertOptions {
+  switch (source.reason) {
+    case 'drop':
+      return {reason: 'input-drop', event: source.event};
+    case 'paste':
+      return {reason: 'input-paste', event: source.event};
+    case 'picker':
+      return {event: source.event};
+    case 'api':
+      return {};
+  }
+}
+
 /** Line breaks as the value has them. */
 const plainText = (data: DataTransfer | null): string =>
   data?.getData('text/plain').replace(/\r\n?/g, '\n') ?? '';
-
-function pointFrom(event: DragEvent): [Node, number] | null {
-  const position = document.caretPositionFromPoint?.(event.clientX, event.clientY);
-  if (position) return [position.offsetNode, position.offset];
-  const range = document.caretRangeFromPoint?.(event.clientX, event.clientY);
-  return range ? [range.startContainer, range.startOffset] : null;
-}
