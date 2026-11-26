@@ -10,8 +10,7 @@
       var(--semantic-dimension-space-control-padding-inline-small) -
         var(--semantic-dimension-border-width-default)
     );
-    border: var(--semantic-dimension-border-width-default) solid
-      var(--semantic-color-background-fill-secondary);
+    border: var(--semantic-dimension-border-width-default) solid transparent;
     border-radius: var(--semantic-dimension-radius-small);
     background: var(--semantic-color-background-fill-secondary);
     color: var(--semantic-color-text-primary);
@@ -30,7 +29,6 @@
 
   @media (hover: hover) {
     .textarea:where(:hover:not(:disabled, [data-disabled])) {
-      border-color: var(--semantic-color-background-fill-secondary-hover);
       background: var(--semantic-color-background-fill-secondary-hover);
     }
   }

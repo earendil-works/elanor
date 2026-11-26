@@ -61,8 +61,7 @@
         var(--semantic-dimension-space-control-padding-inline-small) -
           var(--semantic-dimension-border-width-default)
       );
-    border: var(--semantic-dimension-border-width-default) solid
-      var(--semantic-color-background-fill-secondary);
+    border: var(--semantic-dimension-border-width-default) solid transparent;
     border-inline-start: 0;
     border-start-end-radius: var(--semantic-dimension-radius-small);
     border-end-end-radius: var(--semantic-dimension-radius-small);
@@ -99,12 +98,10 @@
   }
 
   .clear:where(:hover:not(:disabled, [data-disabled])) {
-    border-color: var(--semantic-color-background-fill-secondary-hover);
     background: var(--semantic-color-background-fill-secondary-hover);
   }
 
   .clear:where(:active:not(:disabled, [data-disabled])) {
-    border-color: var(--semantic-color-background-fill-secondary-active);
     background: var(--semantic-color-background-fill-secondary-active);
   }
 
