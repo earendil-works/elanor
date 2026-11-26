@@ -4,12 +4,15 @@
     inset: 0;
     min-block-size: 100dvh;
     background: var(--semantic-color-background-backdrop);
-    backdrop-filter: blur(var(--semantic-dimension-blur-backdrop));
     opacity: calc(var(--semantic-number-opacity-visible) - var(--drawer-swipe-progress));
   }
 
+  .backdrop[data-variant='blur'] {
+    backdrop-filter: blur(var(--semantic-dimension-blur-backdrop));
+  }
+
   @media (prefers-reduced-transparency: reduce) {
-    .backdrop {
+    .backdrop[data-variant='blur'] {
       backdrop-filter: none;
     }
   }

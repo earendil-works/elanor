@@ -304,10 +304,6 @@
       forced-color-adjust: none;
     }
 
-    .menuPopup {
-      border: var(--semantic-dimension-border-width-default) solid CanvasText;
-    }
-
     .menuPopup .link:focus-visible,
     .menuPopup .link[data-active] {
       outline: var(--semantic-dimension-border-width-default) solid Highlight;

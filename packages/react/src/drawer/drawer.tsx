@@ -23,14 +23,26 @@ export type {
 export type DrawerHandle<Payload = unknown> = BaseDrawer.Handle<Payload>;
 export type DrawerSnapPoint = BaseDrawer.Root.SnapPoint;
 
-export type DrawerBackdropProps = BaseDrawer.Backdrop.Props;
+export type DrawerBackdropVariant = 'default' | 'blur';
+
+export interface DrawerBackdropProps extends BaseDrawer.Backdrop.Props {
+  /** `blur` blurs the page behind the backdrop. */
+  readonly variant?: DrawerBackdropVariant | undefined;
+}
 export type DrawerBackdropState = BaseDrawer.Backdrop.State;
 
-export function DrawerBackdrop({ref, className, ...props}: DrawerBackdropProps) {
+/** Renders `data-variant`. */
+export function DrawerBackdrop({
+  ref,
+  variant = 'default',
+  className,
+  ...props
+}: DrawerBackdropProps) {
   return (
     <BaseDrawer.Backdrop
       {...props}
       ref={ref}
+      data-variant={variant}
       className={mergeClassName<BaseDrawer.Backdrop.State>(styles.backdrop, className)}
     />
   );

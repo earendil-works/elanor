@@ -348,7 +348,7 @@
         "$description": "How much a layer blurs what lies behind it.",
         "backdrop": {
           "$value": "{primitive.dimension.100}",
-          "$description": "Use for the blur of the backdrop behind modal dialogs, drawers and other blocking overlays, together with the backdrop color: it sets the overlay apart from the page where dimming alone does not. Show no blur where the reader prefers reduced transparency."
+          "$description": "Use for the radius of the opt-in backdrop blur behind modal dialogs, drawers and other blocking overlays, together with the backdrop color: it sets the overlay apart from the page where dimming alone does not."
         }
       }
     }

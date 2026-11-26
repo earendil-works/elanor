@@ -52,6 +52,14 @@ The Trigger looks like a search field. The dialog binds no shortcut. To add one,
 
 <Demo example="./examples/keyboard-shortcut.tsx" />
 
+## Blurred backdrop
+
+`backdropVariant="blur"` on `SearchDialog.Popup` blurs the page behind the dialog. Use it where dimming alone doesn't set the dialog apart. It's off when a person prefers reduced transparency. On static pages, set it on `SearchDialog.StaticPopup`.
+
+```tsx
+<SearchDialog.Popup aria-label="Search documentation" backdropVariant="blur" />
+```
+
 ## Static pages
 
 On [static pages](/application-setup/#static-pages), use the static parts. `Form`, `Footer`, and `Hint` stay the same. The results come from a source you pass in your script instead of React, here a JSON list of `{url, context, title, excerpt}` objects at `/search-index.json`:

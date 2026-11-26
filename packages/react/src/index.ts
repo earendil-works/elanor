@@ -436,6 +436,7 @@ export type {
   ModalActionsProps,
   ModalBackdropProps,
   ModalBackdropState,
+  ModalBackdropVariant,
   ModalBodyProps,
   ModalCloseProps,
   ModalCloseState,
@@ -753,6 +754,7 @@ export type {
 } from './top-navigation/top-navigation.tsx';
 
 export type {
+  SearchDialogBackdropVariant,
   SearchDialogCloseProps,
   SearchDialogFooterProps,
   SearchDialogFormProps,
@@ -812,6 +814,7 @@ export type {
   DrawerSnapPoint,
   DrawerBackdropProps,
   DrawerBackdropState,
+  DrawerBackdropVariant,
   DrawerViewportProps,
   DrawerViewportState,
   DrawerPopupProps,

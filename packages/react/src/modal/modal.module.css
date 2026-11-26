@@ -4,13 +4,6 @@
     inset: 0;
     min-block-size: 100dvh;
     background: var(--semantic-color-background-backdrop);
-    backdrop-filter: blur(var(--semantic-dimension-blur-backdrop));
-  }
-
-  @media (prefers-reduced-transparency: reduce) {
-    .backdrop {
-      backdrop-filter: none;
-    }
   }
 
   @supports (-webkit-touch-callout: none) {
@@ -115,6 +108,18 @@
   dialog.popup::backdrop {
     background: var(--semantic-color-background-backdrop);
     transition: opacity var(--semantic-transition-fade);
+  }
+
+  .backdrop[data-variant='blur'],
+  dialog.popup[data-backdrop-variant='blur']::backdrop {
+    backdrop-filter: blur(var(--semantic-dimension-blur-backdrop));
+  }
+
+  @media (prefers-reduced-transparency: reduce) {
+    .backdrop[data-variant='blur'],
+    dialog.popup[data-backdrop-variant='blur']::backdrop {
+      backdrop-filter: none;
+    }
   }
 
   dialog.popup[data-starting-style]::backdrop,

@@ -15,6 +15,9 @@ packages/design-tokens/tokens/
 │       ├── color/
 │       │   ├── light.tokens.json
 │       │   └── dark.tokens.json
+│       ├── shadow/
+│       │   ├── light.tokens.json
+│       │   └── dark.tokens.json
 │       ├── dimension.tokens.json
 │       ├── number.tokens.json
 │       ├── duration.tokens.json
@@ -87,7 +90,7 @@ Static breakpoints remain in `semantic/dimension.tokens.json`; a threshold is no
 
 | Modifier      | Example contexts                                       | Applies to             |
 | ------------- | ------------------------------------------------------ | ---------------------- |
-| `colorScheme` | `light`, `dark`                                        | `color`                |
+| `colorScheme` | `light`, `dark`                                        | `color` and `shadow`   |
 | `textContext` | `ui`, `prose`                                          | Running-text styles    |
 | `motion`      | `default`, `reduced`                                   | `movement` transitions |
 | `viewport`    | `base`, `xSmall`, `small`, `medium`, `large`, `xLarge` | Responsive overrides   |

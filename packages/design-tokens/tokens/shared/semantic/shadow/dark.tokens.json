@@ -4,7 +4,7 @@
     "shadow": {
       "$type": "shadow",
       "popup": {
-        "$description": "Use to separate floating panels such as dropdowns from the surface beneath them. Stronger in the dark scheme, where a soft shadow barely shows against a dark page.",
+        "$description": "Use to separate floating panels such as dropdowns from the surface beneath them.",
         "$value": {
           "color": {"colorSpace": "srgb", "components": [0, 0, 0], "alpha": 0.5},
           "offsetX": {"value": 2, "unit": "px"},

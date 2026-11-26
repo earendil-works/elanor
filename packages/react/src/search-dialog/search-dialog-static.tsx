@@ -14,6 +14,7 @@ import {
 import {IconButton, type IconButtonProps} from '../icon-button/icon-button.tsx';
 import * as ScrollArea from '../scroll-area/index.ts';
 import {classes} from '../utils/class-names.ts';
+import type {SearchDialogBackdropVariant} from './search-dialog.tsx';
 
 import styles from './search-dialog.module.css';
 
@@ -95,6 +96,8 @@ export function SearchDialogStaticTrigger({
 }
 
 export interface SearchDialogStaticPopupProps extends DialogHTMLAttributes<HTMLDialogElement> {
+  /** `blur` blurs the page behind the backdrop this part renders. */
+  readonly backdropVariant?: SearchDialogBackdropVariant | undefined;
   /** More `enhance` names for this element, space-separated; they run after the component's own. */
   readonly 'data-elanor'?: string;
   readonly ref?: Ref<HTMLDialogElement> | undefined;
@@ -102,8 +105,10 @@ export interface SearchDialogStaticPopupProps extends DialogHTMLAttributes<HTMLD
   readonly 'aria-label': string;
 }
 
+/** Renders `data-backdrop-variant`. */
 export function SearchDialogStaticPopup({
   'data-elanor': pageBehaviors,
+  backdropVariant = 'default',
   ref,
   className,
   ...props
@@ -115,6 +120,7 @@ export function SearchDialogStaticPopup({
       ref={ref}
       id={dialogId}
       data-elanor={pageBehaviors ? `modal search-dialog ${pageBehaviors}` : 'modal search-dialog'}
+      data-backdrop-variant={backdropVariant}
       data-closed=""
       className={classes(styles.popup, className)}
     />

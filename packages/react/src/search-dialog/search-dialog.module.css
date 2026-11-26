@@ -71,14 +71,7 @@
     inset: 0;
     z-index: var(--semantic-number-layer-overlay);
     background: var(--semantic-color-background-backdrop);
-    backdrop-filter: blur(var(--semantic-dimension-blur-backdrop));
     transition: opacity var(--semantic-transition-fade);
-  }
-
-  @media (prefers-reduced-transparency: reduce) {
-    .backdrop {
-      backdrop-filter: none;
-    }
   }
 
   /* The dialog sits near the top of the window, so results grow downward without moving the
@@ -142,12 +135,17 @@
 
   dialog.popup::backdrop {
     background: var(--semantic-color-background-backdrop);
-    backdrop-filter: blur(var(--semantic-dimension-blur-backdrop));
     transition: opacity var(--semantic-transition-fade);
   }
 
+  .backdrop[data-variant='blur'],
+  dialog.popup[data-backdrop-variant='blur']::backdrop {
+    backdrop-filter: blur(var(--semantic-dimension-blur-backdrop));
+  }
+
   @media (prefers-reduced-transparency: reduce) {
-    dialog.popup::backdrop {
+    .backdrop[data-variant='blur'],
+    dialog.popup[data-backdrop-variant='blur']::backdrop {
       backdrop-filter: none;
     }
   }
