@@ -136,7 +136,7 @@ export interface ComposerActions<T extends ComposerChip = ComposerChip> {
   /** Calls `onSubmit` without the keyboard's checks (composing, open suggestions). */
   submit(event?: Event): void;
   getValue(): ComposerValue<T>;
-  /** Calls `onAttach` with reason `api`, at the caret after any selected text. */
+  /** Calls `onAttach` with reason `api`, at the caret after any selected text; not for none. */
   attach(files: File[]): void;
 }
 
@@ -986,7 +986,9 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     },
     submit: (event) => this.options.onSubmit?.(this.#latest, {event}),
     getValue: () => this.#latest,
-    attach: (files) => this.#attach(files, this.#fileCaret(), {reason: 'api'}),
+    attach: (files) => {
+      if (files.length) this.#attach(files, this.#fileCaret(), {reason: 'api'});
+    },
   };
 
   /** For `Composer.Attach`. */
@@ -1221,7 +1223,9 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     };
 
     // Text, and a drag from this editor, go in at the drop point. Files are `Composer.Field`'s,
-    // which takes them anywhere on it, the prompt included.
+    // which takes them anywhere on it, the prompt included. Captured, as Field's: a drop on a chip
+    // reaches the page's React handlers through Root's portal before it bubbles here, and
+    // `preventDefault` tells them the prompt took it.
     const onDrop = (event: DragEvent) => {
       if (this.takesFiles(event)) return;
       event.preventDefault();
@@ -1332,6 +1336,8 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       element.addEventListener(type, listener);
       stops.push(() => element.removeEventListener(type, listener));
     };
+    element.addEventListener('drop', onDrop, true);
+    stops.push(() => element.removeEventListener('drop', onDrop, true));
     on('beforeinput', onBeforeInput);
     on('input', onInput);
     on('copy', onCopy);
@@ -1339,7 +1345,6 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     on('paste', onPaste);
     on('dragstart', onDragStart);
     on('dragend', endDrag);
-    on('drop', onDrop);
     on('keyup', () => {
       this.#plainPaste = false;
     });
