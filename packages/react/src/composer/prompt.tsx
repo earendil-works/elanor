@@ -1,6 +1,13 @@
 import {mergeProps} from '@base-ui/react/merge-props';
 import {useRender} from '@base-ui/react/use-render';
-import {useEffect, useLayoutEffect, useRef, type CSSProperties, type RefObject} from 'react';
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useSyncExternalStore,
+  type CSSProperties,
+  type RefObject,
+} from 'react';
 
 import * as ScrollArea from '../scroll-area/index.ts';
 import {
@@ -58,7 +65,8 @@ const scrollStyle = (maxRows: number): CSSProperties & {'--composer-prompt-max-r
  * the composer's keys; call `preventDefault()` to handle a key yourself. Inside a `Field.Root` it
  * is the field's control, through a hidden form value that a form submits and validates. `render`,
  * `className` and `ref` go to the editable element, which renders `data-empty`, `data-disabled`,
- * `data-readonly` and the field's states.
+ * `data-readonly` and the field's states. While `Composer.Suggestions` is mounted it has
+ * `aria-haspopup="listbox"`, and while the list shows, `aria-controls` and `data-popup-open`.
  */
 export function ComposerPrompt({
   ref,
@@ -75,6 +83,15 @@ export function ComposerPrompt({
   const {labelId, getDescriptionProps} = useLabelableContext();
   const id = useLabelableId({id: idProp});
   const control = useRef<HTMLDivElement>(null);
+  const popup = useSyncExternalStore(meta.popup.subscribe, meta.popup.get, meta.popup.get);
+
+  const popupProps = {
+    'aria-haspopup': popup ? 'listbox' : undefined,
+    'aria-autocomplete': popup ? 'list' : undefined,
+    'aria-controls': popup?.list,
+    'aria-activedescendant': popup?.active,
+    'data-popup-open': popup?.list === undefined ? undefined : '',
+  } as const;
 
   const editable = !disabled && !readOnly;
   const {valid, touched, dirty, filled, focused} = field.state;
@@ -86,6 +103,7 @@ export function ComposerPrompt({
     stateAttributesMapping: fieldValidityMapping,
     props: mergeProps<'div'>(
       getDescriptionProps({}),
+      popupProps,
       {
         id,
         className: styles.prompt,

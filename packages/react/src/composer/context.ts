@@ -22,6 +22,41 @@ export interface ComposerSettings {
   readonly form: string | undefined;
 }
 
+/** What the prompt says about `Composer.Suggestions` while it is mounted. */
+export interface PromptPopup {
+  /** The list's id while the list shows. */
+  readonly list: string | undefined;
+  /** The highlighted option's id, once a person moved through the list with the arrow keys. */
+  readonly active: string | undefined;
+}
+
+/** `null` while no `Composer.Suggestions` is mounted. */
+export interface PromptPopupStore {
+  readonly get: () => PromptPopup | null;
+  readonly set: (popup: PromptPopup | null) => void;
+  readonly subscribe: (listener: () => void) => () => void;
+}
+
+const samePopup = (a: PromptPopup | null, b: PromptPopup | null): boolean =>
+  a === b || (a !== null && b !== null && a.list === b.list && a.active === b.active);
+
+export function createPromptPopupStore(): PromptPopupStore {
+  let current: PromptPopup | null = null;
+  const listeners = new Set<() => void>();
+  return {
+    get: () => current,
+    set: (popup) => {
+      if (samePopup(popup, current)) return;
+      current = popup;
+      for (const listener of [...listeners]) listener();
+    },
+    subscribe: (listener) => {
+      listeners.add(listener);
+      return () => listeners.delete(listener);
+    },
+  };
+}
+
 /** Stays the same object for Root's lifetime; its functions read Root's latest props. */
 export interface ComposerMeta {
   readonly editor: EditorBinding;
@@ -39,6 +74,8 @@ export interface ComposerMeta {
    * in this composer takes the focus up.
    */
   readonly handOff: (element: HTMLElement | null) => (() => void) | undefined;
+  /** Set by `Composer.Suggestions`, read by the prompt for its ARIA attributes. */
+  readonly popup: PromptPopupStore;
 }
 
 export const ComposerMetaContext = /* @__PURE__ */ createContext<ComposerMeta | null>(null);

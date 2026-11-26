@@ -21,6 +21,7 @@ import {
   ComposerSettingsContext,
   ComposerStatusContext,
   ComposerTextContext,
+  createPromptPopupStore,
   type ComposerMeta,
   type ComposerSettings,
   type ComposerStatus,
@@ -161,6 +162,7 @@ export function ComposerRoot<T extends ComposerChip = ComposerChip>({
           if (element.ownerDocument.activeElement === element) handedOffAt = performance.now();
         };
       },
+      popup: createPromptPopupStore(),
     };
     return {editor: created, meta: context};
   });
