@@ -17,8 +17,7 @@
         var(--semantic-dimension-border-width-default)
     );
     padding-inline: 0;
-    border: var(--semantic-dimension-border-width-default) solid
-      var(--semantic-color-background-fill-secondary);
+    border: var(--semantic-dimension-border-width-default) solid transparent;
     border-radius: var(--semantic-dimension-radius-small);
     background: var(--semantic-color-background-fill-secondary);
     color: var(--semantic-color-text-primary);
@@ -30,7 +29,6 @@
 
   @media (hover: hover) {
     .input:where(:hover:not(:disabled, [data-disabled], [data-readonly])) {
-      border-color: var(--semantic-color-background-fill-secondary-hover);
       background: var(--semantic-color-background-fill-secondary-hover);
     }
   }
@@ -41,13 +39,17 @@
   }
 
   .input:focus-visible {
-    outline: var(--semantic-dimension-border-width-focus-ring) solid
-      var(--semantic-color-focus-ring);
-    outline-offset: var(--semantic-dimension-border-width-medium);
+    outline: var(--semantic-dimension-border-width-focus-halo) solid
+      var(--semantic-color-focus-halo);
+    outline-offset: 0;
   }
 
   .input:where([data-invalid]) {
     border-color: var(--semantic-color-focus-ring-negative);
+  }
+
+  .input:focus-visible:where([data-invalid]) {
+    outline-color: var(--semantic-color-focus-halo-negative);
   }
 
   .input:disabled,

@@ -43,21 +43,15 @@
   @media (hover: hover) {
     .item:hover:not([data-disabled]) {
       background: var(--semantic-color-background-fill-secondary-hover);
-      box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
-        var(--semantic-color-background-fill-secondary-hover);
     }
   }
 
   .item[data-highlighted] {
     background: var(--semantic-color-background-fill-secondary-hover);
-    box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
-      var(--semantic-color-background-fill-secondary-hover);
   }
 
   .item:active:not([data-disabled]) {
     background: var(--semantic-color-background-fill-secondary-active);
-    box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
-      var(--semantic-color-background-fill-secondary-active);
   }
 
   .item[data-disabled] {

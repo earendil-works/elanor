@@ -182,11 +182,47 @@
               "$description": "Use when a default bounded element intentionally has no visible fill and should reveal its parent background."
             },
             "hover": {
-              "$value": "{primitive.color.cerulianBlue.860}",
+              "$value": {
+                "colorSpace": {
+                  "$ref": "#/primitive/color/cerulianBlue/400/$value/colorSpace"
+                },
+                "components": [
+                  {
+                    "$ref": "#/primitive/color/cerulianBlue/400/$value/components/0"
+                  },
+                  {
+                    "$ref": "#/primitive/color/cerulianBlue/400/$value/components/1"
+                  },
+                  {
+                    "$ref": "#/primitive/color/cerulianBlue/400/$value/components/2"
+                  }
+                ],
+                "alpha": {
+                  "$ref": "#/primitive/number/opacity/80/$value"
+                }
+              },
               "$description": "Use when a default ghost filled interactive element is hovered."
             },
             "active": {
-              "$value": "{primitive.color.cerulianBlue.820}",
+              "$value": {
+                "colorSpace": {
+                  "$ref": "#/primitive/color/cerulianBlue/400/$value/colorSpace"
+                },
+                "components": [
+                  {
+                    "$ref": "#/primitive/color/cerulianBlue/400/$value/components/0"
+                  },
+                  {
+                    "$ref": "#/primitive/color/cerulianBlue/400/$value/components/1"
+                  },
+                  {
+                    "$ref": "#/primitive/color/cerulianBlue/400/$value/components/2"
+                  }
+                ],
+                "alpha": {
+                  "$ref": "#/primitive/number/opacity/140/$value"
+                }
+              },
               "$description": "Use while a default ghost filled interactive element is actively pressed."
             },
             "neutral": {
@@ -195,11 +231,47 @@
                 "$description": "Use when a neutral bounded element intentionally has no visible fill and should reveal its parent background."
               },
               "hover": {
-                "$value": "{primitive.color.graphite.860}",
+                "$value": {
+                  "colorSpace": {
+                    "$ref": "#/primitive/color/white/$value/colorSpace"
+                  },
+                  "components": [
+                    {
+                      "$ref": "#/primitive/color/white/$value/components/0"
+                    },
+                    {
+                      "$ref": "#/primitive/color/white/$value/components/1"
+                    },
+                    {
+                      "$ref": "#/primitive/color/white/$value/components/2"
+                    }
+                  ],
+                  "alpha": {
+                    "$ref": "#/primitive/number/opacity/80/$value"
+                  }
+                },
                 "$description": "Use when a neutral ghost filled interactive element is hovered."
               },
               "active": {
-                "$value": "{primitive.color.graphite.820}",
+                "$value": {
+                  "colorSpace": {
+                    "$ref": "#/primitive/color/white/$value/colorSpace"
+                  },
+                  "components": [
+                    {
+                      "$ref": "#/primitive/color/white/$value/components/0"
+                    },
+                    {
+                      "$ref": "#/primitive/color/white/$value/components/1"
+                    },
+                    {
+                      "$ref": "#/primitive/color/white/$value/components/2"
+                    }
+                  ],
+                  "alpha": {
+                    "$ref": "#/primitive/number/opacity/140/$value"
+                  }
+                },
                 "$description": "Use while a neutral ghost filled interactive element is actively pressed."
               }
             },
@@ -209,11 +281,47 @@
                 "$description": "Use when an informational bounded element intentionally has no visible fill and should reveal its parent background."
               },
               "hover": {
-                "$value": "{primitive.color.cerulianBlue.860}",
+                "$value": {
+                  "colorSpace": {
+                    "$ref": "#/primitive/color/cerulianBlue/400/$value/colorSpace"
+                  },
+                  "components": [
+                    {
+                      "$ref": "#/primitive/color/cerulianBlue/400/$value/components/0"
+                    },
+                    {
+                      "$ref": "#/primitive/color/cerulianBlue/400/$value/components/1"
+                    },
+                    {
+                      "$ref": "#/primitive/color/cerulianBlue/400/$value/components/2"
+                    }
+                  ],
+                  "alpha": {
+                    "$ref": "#/primitive/number/opacity/80/$value"
+                  }
+                },
                 "$description": "Use when an informational ghost filled interactive element is hovered."
               },
               "active": {
-                "$value": "{primitive.color.cerulianBlue.820}",
+                "$value": {
+                  "colorSpace": {
+                    "$ref": "#/primitive/color/cerulianBlue/400/$value/colorSpace"
+                  },
+                  "components": [
+                    {
+                      "$ref": "#/primitive/color/cerulianBlue/400/$value/components/0"
+                    },
+                    {
+                      "$ref": "#/primitive/color/cerulianBlue/400/$value/components/1"
+                    },
+                    {
+                      "$ref": "#/primitive/color/cerulianBlue/400/$value/components/2"
+                    }
+                  ],
+                  "alpha": {
+                    "$ref": "#/primitive/number/opacity/140/$value"
+                  }
+                },
                 "$description": "Use while an informational ghost filled interactive element is actively pressed."
               }
             },
@@ -223,11 +331,47 @@
                 "$description": "Use when a negative bounded element intentionally has no visible fill and should reveal its parent background."
               },
               "hover": {
-                "$value": "{primitive.color.coralRed.860}",
+                "$value": {
+                  "colorSpace": {
+                    "$ref": "#/primitive/color/coralRed/400/$value/colorSpace"
+                  },
+                  "components": [
+                    {
+                      "$ref": "#/primitive/color/coralRed/400/$value/components/0"
+                    },
+                    {
+                      "$ref": "#/primitive/color/coralRed/400/$value/components/1"
+                    },
+                    {
+                      "$ref": "#/primitive/color/coralRed/400/$value/components/2"
+                    }
+                  ],
+                  "alpha": {
+                    "$ref": "#/primitive/number/opacity/80/$value"
+                  }
+                },
                 "$description": "Use when a negative ghost filled interactive element is hovered."
               },
               "active": {
-                "$value": "{primitive.color.coralRed.820}",
+                "$value": {
+                  "colorSpace": {
+                    "$ref": "#/primitive/color/coralRed/400/$value/colorSpace"
+                  },
+                  "components": [
+                    {
+                      "$ref": "#/primitive/color/coralRed/400/$value/components/0"
+                    },
+                    {
+                      "$ref": "#/primitive/color/coralRed/400/$value/components/1"
+                    },
+                    {
+                      "$ref": "#/primitive/color/coralRed/400/$value/components/2"
+                    }
+                  ],
+                  "alpha": {
+                    "$ref": "#/primitive/number/opacity/140/$value"
+                  }
+                },
                 "$description": "Use while a negative ghost filled interactive element is actively pressed."
               }
             },
@@ -237,11 +381,47 @@
                 "$description": "Use when a positive bounded element intentionally has no visible fill and should reveal its parent background."
               },
               "hover": {
-                "$value": "{primitive.color.turquoiseGreen.860}",
+                "$value": {
+                  "colorSpace": {
+                    "$ref": "#/primitive/color/turquoiseGreen/400/$value/colorSpace"
+                  },
+                  "components": [
+                    {
+                      "$ref": "#/primitive/color/turquoiseGreen/400/$value/components/0"
+                    },
+                    {
+                      "$ref": "#/primitive/color/turquoiseGreen/400/$value/components/1"
+                    },
+                    {
+                      "$ref": "#/primitive/color/turquoiseGreen/400/$value/components/2"
+                    }
+                  ],
+                  "alpha": {
+                    "$ref": "#/primitive/number/opacity/80/$value"
+                  }
+                },
                 "$description": "Use when a positive ghost filled interactive element is hovered."
               },
               "active": {
-                "$value": "{primitive.color.turquoiseGreen.820}",
+                "$value": {
+                  "colorSpace": {
+                    "$ref": "#/primitive/color/turquoiseGreen/400/$value/colorSpace"
+                  },
+                  "components": [
+                    {
+                      "$ref": "#/primitive/color/turquoiseGreen/400/$value/components/0"
+                    },
+                    {
+                      "$ref": "#/primitive/color/turquoiseGreen/400/$value/components/1"
+                    },
+                    {
+                      "$ref": "#/primitive/color/turquoiseGreen/400/$value/components/2"
+                    }
+                  ],
+                  "alpha": {
+                    "$ref": "#/primitive/number/opacity/140/$value"
+                  }
+                },
                 "$description": "Use while a positive ghost filled interactive element is actively pressed."
               }
             }
@@ -473,6 +653,53 @@
         "positive": {
           "$value": "{primitive.color.turquoiseGreen.400}",
           "$description": "Use for the visible keyboard-focus indicator around an element in a positive or success state."
+        }
+      },
+      "focusHalo": {
+        "$description": "Use these translucent colors for the halo drawn around an element with keyboard focus, according to its status.",
+        "$root": {
+          "$value": {
+            "colorSpace": {
+              "$ref": "#/primitive/color/cerulianBlue/400/$value/colorSpace"
+            },
+            "components": [
+              {
+                "$ref": "#/primitive/color/cerulianBlue/400/$value/components/0"
+              },
+              {
+                "$ref": "#/primitive/color/cerulianBlue/400/$value/components/1"
+              },
+              {
+                "$ref": "#/primitive/color/cerulianBlue/400/$value/components/2"
+              }
+            ],
+            "alpha": {
+              "$ref": "#/primitive/number/opacity/500/$value"
+            }
+          },
+          "$description": "Use for the halo around an interactive element with keyboard focus."
+        },
+        "negative": {
+          "$value": {
+            "colorSpace": {
+              "$ref": "#/primitive/color/coralRed/400/$value/colorSpace"
+            },
+            "components": [
+              {
+                "$ref": "#/primitive/color/coralRed/400/$value/components/0"
+              },
+              {
+                "$ref": "#/primitive/color/coralRed/400/$value/components/1"
+              },
+              {
+                "$ref": "#/primitive/color/coralRed/400/$value/components/2"
+              }
+            ],
+            "alpha": {
+              "$ref": "#/primitive/number/opacity/500/$value"
+            }
+          },
+          "$description": "Use for the halo around an element with keyboard focus in a negative or error state."
         }
       },
       "text": {
