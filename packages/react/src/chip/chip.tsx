@@ -21,17 +21,9 @@ export interface ChipRootProps extends useRender.ComponentProps<'span'> {
    * `soft`: a filled pill with a faint edge.
    */
   readonly variant?: ChipVariant | undefined;
-  /**
-   * `default`: 24px tall, for lists, such as a form's files or a set of filters.
-   * `compact`: as tall as its text (20px) and centred in the line of the text around it, such
-   * as 2px above and below in a 24px line, so it sits in a sentence.
-   */
+  /** `default`: 24px tall, for lists. `compact`: as tall as its text, centred in its line. */
   readonly density?: ChipDensity | undefined;
-  /**
-   * The item's state: `negative` for one that failed, such as an upload, `warning` and
-   * `positive` for others. Tints the fill of `soft` and the edge of `outline`; say the state in
-   * words too, such as in a tooltip or a notice.
-   */
+  /** Tints the fill of `soft` or the edge of `outline`; say the state in words too. */
   readonly semantic?: ChipSemantic | undefined;
 }
 
