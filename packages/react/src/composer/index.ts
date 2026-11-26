@@ -16,6 +16,7 @@ export {isChip, toText} from './editor/model.ts';
 export {
   ComposerSuggestions as Suggestions,
   ComposerSuggestionStatus as SuggestionStatus,
+  ComposerSuggestionPortal as SuggestionPortal,
   ComposerSuggestionPositioner as SuggestionPositioner,
   ComposerSuggestionPopup as SuggestionPopup,
   ComposerSuggestionList as SuggestionList,

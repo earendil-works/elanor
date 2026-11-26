@@ -4,12 +4,20 @@
     z-index: var(--semantic-number-layer-floating);
   }
 
-  /* Elanor's popover, with a list's padding: the items' own padding spaces their text. */
+  /* The trigger scrolled out of the prompt's view. */
+  .positioner[data-anchor-hidden] {
+    visibility: hidden;
+  }
+
+  /* Elanor's popover with Menu's surface, and a list's padding: the items space their own text. */
   .popup {
     padding: calc(
       var(--semantic-dimension-space-padding-x-small) -
         var(--semantic-dimension-border-width-default)
     );
+    border-color: var(--semantic-color-background-surface);
+    box-shadow: var(--semantic-shadow-popup);
+    background: var(--semantic-color-background-surface);
   }
 
   .list {
@@ -36,9 +44,20 @@
     background: var(--semantic-color-background-fill-secondary-hover);
   }
 
-  /* Answering an earlier query; `Text` inside reads the primary colour, so it's set too. */
+  .item:active:not([data-stale], [data-disabled]) {
+    background: var(--semantic-color-background-fill-secondary-active);
+  }
+
+  /* Menu's disabled item. */
+  .item[data-disabled] {
+    opacity: var(--semantic-number-opacity-disabled);
+    cursor: not-allowed;
+  }
+
+  /* Answering an earlier query. `Text` and icons inside read these tokens, so they're set too. */
   .item[data-stale] {
     --semantic-color-text-primary: var(--semantic-color-text-secondary);
+    --semantic-color-icon-primary: var(--semantic-color-icon-secondary);
 
     color: var(--semantic-color-text-secondary);
   }
@@ -49,10 +68,28 @@
     color: var(--semantic-color-text-secondary);
   }
 
+  /* Read by screen readers only, unless your own class overrides it. */
+  .status {
+    position: absolute;
+    inline-size: var(--semantic-dimension-border-width-small);
+    block-size: var(--semantic-dimension-border-width-small);
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
   @media (forced-colors: active) {
+    .popup {
+      border-color: CanvasText;
+    }
+
     .item[data-highlighted] {
       outline: var(--semantic-dimension-border-width-default) solid Highlight;
       outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
+    }
+
+    .item[data-stale] {
+      color: GrayText;
     }
   }
 }

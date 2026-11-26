@@ -179,15 +179,19 @@ export type {ComposerPromptProps, ComposerPromptState} from './composer/prompt.t
 export type {ComposerRootProps} from './composer/root.tsx';
 export type {
   ComposerSuggestionEmptyProps,
+  ComposerSuggestionHighlightDetails,
   ComposerSuggestionItemProps,
   ComposerSuggestionItemState,
   ComposerSuggestionListProps,
   ComposerSuggestionPickDetails,
   ComposerSuggestionPopupProps,
+  ComposerSuggestionPortalProps,
   ComposerSuggestionPositionerProps,
   ComposerSuggestionResults,
   ComposerSuggestionStatusProps,
   ComposerSuggestionStatusState,
+  ComposerSuggestionsChangeDetails,
+  ComposerSuggestionsChangeReason,
   ComposerSuggestionsProps,
 } from './composer/suggestions.tsx';
 
