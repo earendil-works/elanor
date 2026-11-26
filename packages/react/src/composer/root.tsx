@@ -167,7 +167,7 @@ export function ComposerRoot<T extends ComposerChip = ComposerChip>({
       claimSuggestions: (owner) => {
         if (suggestions !== null && suggestions !== owner)
           throw new Error(
-            "A Composer.Root takes one Composer.Suggestions. For several triggers, use one useSuggestionMatch([{character: '@'}, {character: '/'}]) and branch on match.character.",
+            'A Composer.Root takes one Composer.Suggestions. For several triggers, use one Composer.useSuggestionMatch(triggers) with all your triggers, such as @ and /, and branch on match.character.',
           );
         suggestions = owner;
         return () => {

@@ -32,6 +32,7 @@ import {
   type ComposerSuggestionTrigger,
 } from './editor/match.ts';
 import {offsetText} from './editor/model.ts';
+import {createStore, useStoreSelector, type Store} from './store.ts';
 
 import styles from './suggestions.module.css';
 
@@ -67,7 +68,16 @@ type Place = {readonly character: string; readonly start: number};
 const samePlace = (a: Place, b: ComposerSuggestionMatch): boolean =>
   a.character === b.character && a.start === b.range.start;
 
-interface SuggestionsContextValue {
+type StatusSnapshot = ComposerSuggestionStatusState & {
+  readonly key: string;
+  readonly opening: number;
+};
+
+/**
+ * What the parts render, in a store rather than the context, so an arrow key renders only the two
+ * items whose highlight changes.
+ */
+interface SuggestionsState {
   readonly count: number;
   /** The items answer an earlier query: they show, but can't be picked. */
   readonly stale: boolean;
@@ -75,10 +85,23 @@ interface SuggestionsContextValue {
   /** Open, with items or a `Composer.SuggestionEmpty` to show. */
   readonly visible: boolean;
   /** What `Composer.SuggestionStatus` says after a pause; `opening` numbers the list's openings. */
-  readonly status:
-    | (ComposerSuggestionStatusState & {readonly key: string; readonly opening: number})
-    | null;
+  readonly status: StatusSnapshot | null;
   readonly activeIndex: number;
+  readonly anchor: PopoverPositionerProps['anchor'];
+}
+
+const sameState = (a: SuggestionsState, b: SuggestionsState): boolean =>
+  a.count === b.count &&
+  a.stale === b.stale &&
+  a.loading === b.loading &&
+  a.visible === b.visible &&
+  a.status === b.status &&
+  a.activeIndex === b.activeIndex &&
+  a.anchor === b.anchor;
+
+/** The same object for the life of `Composer.Suggestions`. */
+interface SuggestionsContextValue {
+  readonly store: Store<SuggestionsState>;
   readonly listId: string;
   readonly popupId: string;
   readonly optionId: (index: number) => string;
@@ -88,7 +111,6 @@ interface SuggestionsContextValue {
   readonly registerDisabled: (index: number) => () => void;
   /** A ref callback for the positioner, which follows its `data-anchor-hidden`. */
   readonly watchAnchor: (element: HTMLElement | null) => (() => void) | undefined;
-  readonly anchor: PopoverPositionerProps['anchor'];
 }
 
 const SuggestionsContext = /* @__PURE__ */ createContext<SuggestionsContextValue | null>(null);
@@ -97,6 +119,13 @@ function useSuggestions(part: string): SuggestionsContextValue {
   const context = use(SuggestionsContext);
   if (!context) throw new Error(`${part} must be inside Composer.Suggestions.`);
   return context;
+}
+
+function useSuggestionsState<Selected>(
+  {store}: SuggestionsContextValue,
+  selector: (state: SuggestionsState) => Selected,
+): Selected {
+  return useStoreSelector(store, selector);
 }
 
 /**
@@ -321,7 +350,7 @@ export function ComposerSuggestions<I>({
 
   const listId = useId();
   const popupId = useId();
-  const optionId = (index: number) => `${listId}-${index}`;
+  const optionId = useCallback((index: number) => `${listId}-${index}`, [listId]);
 
   // A pick closes the list a render later, when its edit arrives. Cleared after that render, so a
   // pick that leaves the list open names no later closing.
@@ -473,38 +502,51 @@ export function ComposerSuggestions<I>({
     };
   }, [editor, start]);
 
-  const status =
-    open && typed !== null && (loading || !stale)
-      ? {
-          key: `${opened.count}:${typed}:${loading}`,
-          opening: opened.count,
-          count: pickableCount,
-          loading,
-        }
-      : null;
+  const speaks = open && typed !== null && (loading || !stale);
+  const statusKey = `${opened.count}:${typed}:${loading}`;
+  const status = useMemo(
+    () => (speaks ? {key: statusKey, opening: opened.count, count: pickableCount, loading} : null),
+    [speaks, statusKey, opened.count, pickableCount, loading],
+  );
 
-  const context: SuggestionsContextValue = {
+  const highlight = (index: number, event: MouseEvent) => {
+    const item = items[index];
+    if (item === undefined || !pickable(index)) return;
+    setHighlighted({typed, answered, index, byKeyboard: current?.byKeyboard ?? false});
+    onItemHighlighted?.(item, {reason: 'pointer', event, index});
+  };
+
+  const state: SuggestionsState = {
     count: items.length,
     stale,
     loading,
     visible,
     status,
     activeIndex,
-    listId,
-    popupId,
-    optionId,
-    pick,
-    highlight: (index, event) => {
-      const item = items[index];
-      if (item === undefined || !pickable(index)) return;
-      setHighlighted({typed, answered, index, byKeyboard: current?.byKeyboard ?? false});
-      onItemHighlighted?.(item, {reason: 'pointer', event, index});
-    },
-    registerEmpty,
-    registerDisabled,
-    watchAnchor,
     anchor,
   };
+  const [store] = useState(() => createStore(state, sameState));
+  useLayoutEffect(() => store.set(state));
+
+  // Items call these from events; reading the latest keeps the context the same object.
+  const latest = useRef({pick, highlight});
+  useLayoutEffect(() => {
+    latest.current = {pick, highlight};
+  });
+  const context = useMemo<SuggestionsContextValue>(
+    () => ({
+      store,
+      listId,
+      popupId,
+      optionId,
+      pick: (index, event) => latest.current.pick(index, event),
+      highlight: (index, event) => latest.current.highlight(index, event),
+      registerEmpty,
+      registerDisabled,
+      watchAnchor,
+    }),
+    [store, listId, popupId, optionId, registerEmpty, registerDisabled, watchAnchor],
+  );
 
   return (
     <SuggestionsContext value={context}>
@@ -550,7 +592,10 @@ export function ComposerSuggestionPositioner({
   collisionPadding = 8,
   ...props
 }: ComposerSuggestionPositionerProps) {
-  const {anchor, visible, watchAnchor} = useSuggestions('Composer.SuggestionPositioner');
+  const context = useSuggestions('Composer.SuggestionPositioner');
+  const anchor = useSuggestionsState(context, (state) => state.anchor);
+  const visible = useSuggestionsState(context, (state) => state.visible);
+  const {watchAnchor} = context;
   const positionerRef = useMergedRef(ref, watchAnchor);
   return (
     <Popover.Positioner
@@ -583,7 +628,10 @@ export function ComposerSuggestionPopup({
   onMouseDown,
   ...props
 }: ComposerSuggestionPopupProps) {
-  const {stale, loading, popupId} = useSuggestions('Composer.SuggestionPopup');
+  const context = useSuggestions('Composer.SuggestionPopup');
+  const stale = useSuggestionsState(context, (state) => state.stale);
+  const loading = useSuggestionsState(context, (state) => state.loading);
+  const {popupId} = context;
   return (
     <Popover.Popup
       {...props}
@@ -613,7 +661,9 @@ export interface ComposerSuggestionListProps extends useRender.ComponentProps<'d
  * are no items.
  */
 export function ComposerSuggestionList({ref, render, ...props}: ComposerSuggestionListProps) {
-  const {listId, visible, count} = useSuggestions('Composer.SuggestionList');
+  const context = useSuggestions('Composer.SuggestionList');
+  const shown = useSuggestionsState(context, (state) => state.visible && state.count > 0);
+  const {listId} = context;
   const element = useRender({
     defaultTagName: 'div',
     render,
@@ -621,7 +671,7 @@ export function ComposerSuggestionList({ref, render, ...props}: ComposerSuggesti
     props: mergeProps<'div'>({id: listId, role: 'listbox', className: styles.list}, props),
   });
   // Hidden, it would still be found by `[role="listbox"]` queries; empty, it has no options.
-  return visible && count > 0 ? element : null;
+  return shown ? element : null;
 }
 
 /**
@@ -687,13 +737,14 @@ export function ComposerSuggestionItem({
   disabled = false,
   ...props
 }: ComposerSuggestionItemProps) {
-  const {activeIndex, stale, optionId, pick, highlight, registerDisabled} =
-    useSuggestions('Composer.SuggestionItem');
+  const context = useSuggestions('Composer.SuggestionItem');
+  const highlighted = useSuggestionsState(context, (state) => state.activeIndex === index);
+  const stale = useSuggestionsState(context, (state) => state.stale);
+  const {optionId, pick, highlight, registerDisabled} = context;
   useLayoutEffect(
     () => (disabled ? registerDisabled(index) : undefined),
     [disabled, index, registerDisabled],
   );
-  const highlighted = index === activeIndex;
   return useRender({
     defaultTagName: 'div',
     render,
@@ -742,7 +793,9 @@ export interface ComposerSuggestionEmptyProps extends useRender.ComponentProps<'
  * items. Without it, the popup stays closed when nothing matches.
  */
 export function ComposerSuggestionEmpty({ref, render, ...props}: ComposerSuggestionEmptyProps) {
-  const {count, registerEmpty} = useSuggestions('Composer.SuggestionEmpty');
+  const context = useSuggestions('Composer.SuggestionEmpty');
+  const empty = useSuggestionsState(context, (state) => state.count === 0);
+  const {registerEmpty} = context;
   useLayoutEffect(registerEmpty, [registerEmpty]);
   const element = useRender({
     defaultTagName: 'div',
@@ -750,7 +803,7 @@ export function ComposerSuggestionEmpty({ref, render, ...props}: ComposerSuggest
     ref,
     props: mergeProps<'div'>({className: styles.empty}, props),
   });
-  return count === 0 ? element : null;
+  return empty ? element : null;
 }
 
 export interface ComposerSuggestionStatusProps extends Omit<
@@ -783,7 +836,10 @@ export function ComposerSuggestionStatus({
   children,
   ...props
 }: ComposerSuggestionStatusProps) {
-  const {status} = useSuggestions('Composer.SuggestionStatus');
+  const status = useSuggestionsState(
+    useSuggestions('Composer.SuggestionStatus'),
+    (state) => state.status,
+  );
   const [said, setSaid] = useState<{readonly key: string; readonly instructions: boolean}>();
   // The opening the keys were last explained for.
   const explained = useRef<number | undefined>(undefined);

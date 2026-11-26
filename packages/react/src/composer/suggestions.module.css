@@ -9,7 +9,7 @@
     visibility: hidden;
   }
 
-  /* Menu's surface; the items' own padding spaces their text. */
+  /* Menu's surface and shadow; the items' own padding spaces their text. */
   .popup {
     padding: calc(
       var(--semantic-dimension-space-padding-x-small) -
