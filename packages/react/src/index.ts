@@ -125,8 +125,11 @@ export type {
   ChipDensity,
   ChipIconProps,
   ChipLabelProps,
+  ChipProgressProps,
   ChipRemoveProps,
   ChipRootProps,
+  ChipSemantic,
+  ChipSeparatorProps,
   ChipVariant,
 } from './chip/chip.tsx';
 
