@@ -282,8 +282,8 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
   /** Where `insert` goes while the editor is blurred. */
   #selection: ComposerTextRange | null = null;
   /**
-   * Counts changes of `#latest`'s content and draft, so `details.insert` can tell its offsets still
-   * hold: a parent's equal copy keeps it, and drafts that share one value don't.
+   * Bumped when `#latest`'s content or draft changes, so `details.insert` knows its offsets still
+   * hold. Not compared by identity: a parent's equal copy keeps them, a draft sharing one doesn't.
    */
   #revision = 0;
   #composing = false;
@@ -816,10 +816,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     this.#dragged === undefined &&
     (event.dataTransfer?.types.includes('Files') ?? false);
 
-  /**
-   * Wherever they are dropped on the field, files go in at the caret the person placed, after any
-   * selected text, not under the pointer.
-   */
+  /** Files go in at the caret the person placed, not under the pointer. */
   dropFiles = (event: DragEvent): boolean => {
     const files = [...(event.dataTransfer?.files ?? [])];
     if (!this.takesFiles(event) || !files.length) return false;
@@ -985,20 +982,19 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     },
   };
 
-  /** For `Composer.Attach`. */
   pick(files: File[], event: Event): void {
     this.#attach(files, this.#fileCaret(), {reason: 'picker', event});
   }
 
   /**
-   * The last caret, also while the editor is blurred, within the text: a value shown since may be
-   * shorter. The end before there was one.
+   * The last caret, also while blurred, clamped: a value shown since may be shorter. The end
+   * before there was one.
    */
   #caret(): ComposerTextRange {
     return this.#clamp(this.#selection ?? caretAt(valueLength(this.#latest)));
   }
 
-  /** Files never replace selected text: they go after it, at its end in the text's order. */
+  /** Files never replace selected text: they go after it, at its logical end. */
   #fileCaret(): ComposerTextRange {
     return caretAt(this.#caret().end);
   }
@@ -1010,10 +1006,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     this.#readBack(undefined);
   }
 
-  /**
-   * `details.insert` refuses once the text has changed: `at` is an offset into what `onAttach`
-   * saw.
-   */
+  /** `details.insert` refuses once the text changed: `at` is an offset into what `onAttach` saw. */
   #attach(files: File[], at: ComposerTextRange, source: AttachSource): void {
     const {onAttach} = this.options;
     if (!onAttach) return;
@@ -1216,10 +1209,9 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       releaseHost();
     };
 
-    // Text, and a drag from this editor, go in at the drop point. Files are `Composer.Field`'s,
-    // which takes them anywhere on it, the prompt included. Captured, as Field's: a drop on a chip
-    // reaches the page's React handlers through Root's portal before it bubbles here, and
-    // `preventDefault` tells them the prompt took it.
+    // Text and a drag from this editor go in at the drop point; files are `Composer.Field`'s.
+    // Captured, as Field's: a drop on a chip reaches the page's React handlers through Root's
+    // portal before it bubbles here, and `preventDefault` tells them the prompt took it.
     const onDrop = (event: DragEvent) => {
       if (this.takesFiles(event)) return;
       event.preventDefault();

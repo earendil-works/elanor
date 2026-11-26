@@ -173,17 +173,16 @@ export interface ComposerFieldState {
 
 /**
  * How long (ms) a file drag shows without a `dragover`, which browsers repeat while the pointer is
- * over the field, also at rest. Ends a drag whose `dragleave` didn't say it left, as after Escape.
+ * over the field, also at rest: it ends a drag that left without a `dragleave`, as after Escape.
  */
 const DRAG_OVER_TIMEOUT_MS = 1000;
 
-/** Files dropped anywhere on the field go to `onAttach`; `dragOver` while they're over it. */
 function useFileDrag(editor: EditorBinding) {
   const [dragOver, setDragOver] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
   useEffect(() => {
     if (!dragOver) return undefined;
-    // A drag from the page that is cancelled over the field ends here.
+    // A drag from the page cancelled over the field ends with `dragend`.
     const end = () => setDragOver(false);
     window.addEventListener('dragend', end, true);
     return () => {
@@ -194,8 +193,8 @@ function useFileDrag(editor: EditorBinding) {
   const ref = useCallback(
     (field: HTMLElement | null) => {
       if (!field) return undefined;
-      // Taking the drag over keeps the browser from drawing a drop caret under the pointer, at the
-      // wrong place: files go in at the caret. They're copied in, and the cursor says so.
+      // Taking the drag hides the browser's drop caret under the pointer, which would show the
+      // wrong place: files go in at the caret. `copy`: files are copied in, not moved.
       const onDragOver = (event: DragEvent) => {
         if (!editor.takesFiles(event)) return;
         event.preventDefault();
@@ -204,15 +203,14 @@ function useFileDrag(editor: EditorBinding) {
         clearTimeout(timer.current);
         timer.current = setTimeout(() => setDragOver(false), DRAG_OVER_TIMEOUT_MS);
       };
-      // Moving onto a child leaves its parent too; only a point off the field leaves it.
+      // Moving onto a child also fires `dragleave`; only a point outside the field ends the drag.
       const onDragLeave = (event: DragEvent) => {
         const box = field.getBoundingClientRect();
         const {clientX: x, clientY: y} = event;
         if (x <= box.left || x >= box.right || y <= box.top || y >= box.bottom) setDragOver(false);
       };
-      // `preventDefault` marks the drop as taken, for the page's own drop zones. Captured: a chip
-      // renders through a portal from Root, so React hands a drop on it to the page's handlers
-      // before it bubbles to the field.
+      // Captured: React hands a drop on a chip, rendered through Root's portal, to the page's
+      // handlers before it bubbles here. `preventDefault` tells the page's drop zones it's taken.
       const onDrop = (event: DragEvent) => {
         setDragOver(false);
         if (!event.defaultPrevented && editor.dropFiles(event)) event.preventDefault();

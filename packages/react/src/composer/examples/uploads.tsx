@@ -44,7 +44,6 @@ let uploadCount = 0;
 const toText = (value: ComposerValue<FileChip>) =>
   Composer.toText(value, (chip) => `@uploads:${chip.label}`);
 
-// What is sent: each file's address, read when sending.
 const messageOf = (value: ComposerValue<FileChip>) =>
   Composer.toText(value, (chip) => `@${uploads.get(chip.uploadId)?.url ?? chip.label}`);
 
@@ -80,7 +79,6 @@ function UploadChip({chip}: {chip: FileChip}) {
 // Outside the component: a new function on every render would draw every chip again.
 const renderChip = (chip: FileChip) => <UploadChip chip={chip} />;
 
-/** Disabled while a file in the text is uploading. */
 function SendButton() {
   // Compared by `sameIds`, so typing doesn't render the button again.
   const uploadIds = Composer.useValue(uploadIdsOf, sameIds);

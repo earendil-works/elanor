@@ -26,9 +26,9 @@ export type ComposerSuggestionMatch = {
 };
 
 /**
- * Scripts written without spaces, with their punctuation and full-width forms, as a character class
- * body. Script_Extensions, not Script: `ー`, `。`, `「」` and `々` count as Han or kana only there.
- * No Hangul: Korean uses spaces.
+ * Scripts written without spaces, with their punctuation and full-width forms, as the body of a
+ * character class. Script_Extensions, not Script: `ー`, `。`, `「」` and `々` count as Han or kana
+ * only there. No Hangul: Korean uses spaces.
  */
 export const UNSPACED_SCRIPT = '\\p{scx=Han}\\p{scx=Hira}\\p{scx=Kana}\\p{scx=Bopo}\\uFF01-\\uFF65';
 
