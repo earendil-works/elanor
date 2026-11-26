@@ -73,7 +73,10 @@ type StatusSnapshot = ComposerSuggestionStatusState & {
   readonly opening: number;
 };
 
-/** What the parts render, besides the highlight. Changes when results or the match do. */
+/**
+ * What the parts render, besides the highlight. Changes mostly with the results and the match, and
+ * also with the loading timer and disabled items registering.
+ */
 interface SuggestionsView {
   readonly count: number;
   /** The items answer an earlier query: they show, but can't be picked. */
@@ -108,6 +111,8 @@ const SuggestionsContext = /* @__PURE__ */ createContext<SuggestionsContextValue
 // A context, not the store: a change here comes with the consumer's new item elements, so the
 // parts render in that same pass rather than again after it.
 const SuggestionsViewContext = /* @__PURE__ */ createContext<SuggestionsView | null>(null);
+// The one view value items read, alone, so the loading timer and the status don't render them.
+const StaleContext = /* @__PURE__ */ createContext(false);
 
 function useSuggestions(part: string): SuggestionsContextValue {
   const context = use(SuggestionsContext);
@@ -540,19 +545,21 @@ export function ComposerSuggestions<I>({
   return (
     <SuggestionsContext value={context}>
       <SuggestionsViewContext value={view}>
-        <Popover.Root
-          open={open}
-          onOpenChange={(next, details) => {
-            // A press in the prompt moves the caret, and the match follows it; Escape is handled with
-            // the keys.
-            const target = details.event.target;
-            if (next || details.reason !== 'outside-press') return;
-            if (target instanceof Node && editor.element()?.contains(target)) return;
-            dismiss('outside-press', details.event);
-          }}
-        >
-          {children}
-        </Popover.Root>
+        <StaleContext value={stale}>
+          <Popover.Root
+            open={open}
+            onOpenChange={(next, details) => {
+              // A press in the prompt moves the caret, and the match follows it; Escape is handled with
+              // the keys.
+              const target = details.event.target;
+              if (next || details.reason !== 'outside-press') return;
+              if (target instanceof Node && editor.element()?.contains(target)) return;
+              dismiss('outside-press', details.event);
+            }}
+          >
+            {children}
+          </Popover.Root>
+        </StaleContext>
       </SuggestionsViewContext>
     </SuggestionsContext>
   );
@@ -726,7 +733,7 @@ export function ComposerSuggestionItem({
   const {activeIndex, optionId, pick, highlight, registerDisabled} =
     useSuggestions('Composer.SuggestionItem');
   const highlighted = useStoreSelector(activeIndex, (active) => active === index);
-  const {stale} = useSuggestionsView('Composer.SuggestionItem');
+  const stale = use(StaleContext);
   useLayoutEffect(
     () => (disabled ? registerDisabled(index) : undefined),
     [disabled, index, registerDisabled],
