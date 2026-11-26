@@ -44,6 +44,22 @@
           },
           "$description": "Instant when the reader prefers reduced motion. Use for a pressed control settling back to its size when it is let go, without overshooting. Grow it with `movement.press`."
         },
+        "scroll": {
+          "$value": {
+            "duration": "{primitive.duration.0}",
+            "delay": "{primitive.duration.0}",
+            "timingFunction": "{primitive.cubicBezier.easeOut.cubic}"
+          },
+          "$description": "Instant when the reader prefers reduced motion. Use for content moving inside its scroll area on its own, such as a list following its end while text streams in, an item added at the end gliding into view, or content that arrived out of view sliding in. A component following a moving target can run it as a critically damped spring that is most of the way there (about 92%) after the duration."
+        },
+        "navigation": {
+          "$value": {
+            "duration": "{primitive.duration.0}",
+            "delay": "{primitive.duration.0}",
+            "timingFunction": "{primitive.cubicBezier.easeOut.quart}"
+          },
+          "$description": "Instant when the reader prefers reduced motion. Use for moving between places in an interface, such as a page sliding in, a view swiped aside and snapping back, or a tab indicator following the view in use, and for panes growing or shrinking as one comes or goes."
+        },
         "tableOfContents": {
           "indicator": {
             "$value": {

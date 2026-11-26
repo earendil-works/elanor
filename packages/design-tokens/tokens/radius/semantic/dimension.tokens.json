@@ -1,0 +1,14 @@
+{
+  "$schema": "https://designtokens.org/schemas/2025.10/format.json",
+  "semantic": {
+    "dimension": {
+      "$type": "dimension",
+      "borderWidth": {
+        "default": {
+          "$value": "{semantic.dimension.borderWidth.medium}",
+          "$description": "Use as the default border width. Choose a T-shirt size only when the default is not appropriate."
+        }
+      }
+    }
+  }
+}

@@ -11,6 +11,14 @@
       "press": {
         "$value": "{primitive.duration.150}",
         "$description": "Use for how long a press shows at least, so a quick tap on a touch screen is seen, such as a composer's field pressed under a finger."
+      },
+      "transcript": {
+        "reveal": {
+          "catchUp": {
+            "$value": "{primitive.duration.600}",
+            "$description": "Component token for the furthest streamed text in a transcript may fall behind what has arrived. Further behind, the reveal speeds up from `number.transcript.reveal.pace` so that what arrived shows within this time."
+          }
+        }
       }
     }
   }

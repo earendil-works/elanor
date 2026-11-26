@@ -40,15 +40,10 @@
     block-size: var(--semantic-dimension-size-icon);
   }
 
-  .root[data-density='default'] {
-    inline-size: auto;
-    block-size: auto;
-    padding: var(--semantic-dimension-space-control-padding-block-small);
-  }
-
+  .root[data-density='default'],
   .root[data-density='default']::before {
-    inline-size: auto;
-    block-size: auto;
+    inline-size: var(--semantic-dimension-size-medium);
+    block-size: var(--semantic-dimension-size-medium);
   }
 
   @media (hover: hover) {
