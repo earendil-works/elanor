@@ -27,21 +27,23 @@ export type ComposerSuggestionMatch = {
 // Before a trigger, these start a word. Script_Extensions, not Script: `ー`, `。`, `「」` and `々`
 // are Han or kana only there. Hangul is left out: Korean is written with spaces.
 const WORD_START = new RegExp(
-  `[\\s\\p{Ps}\\p{Pi}"'\`<${CHIP_CHARACTER}\\p{Extended_Pictographic}\\p{Emoji_Modifier}\\u20E3` +
+  `[\\s\\p{Ps}\\p{Pi}"'\`<${CHIP_CHARACTER}\\p{Extended_Pictographic}\\p{Emoji_Modifier}` +
+    `\\p{Regional_Indicator}\\u20E3` +
     `\\p{scx=Han}\\p{scx=Hira}\\p{scx=Kana}\\p{scx=Bopo}\\uFF01-\\uFF65]`,
   'u',
 );
 // These end a word, and so a query, as whitespace does: in text without spaces the query would
-// run on through the sentence. Chinese and Japanese punctuation and closing marks, not ASCII ones,
-// which paths and addresses contain.
-const WORD_END = /[\s、。，．！？：；｡､]|(?!\p{ASCII})[\p{Pe}\p{Pf}]/u;
+// run on through the sentence. Only Chinese and Japanese punctuation and closing marks: ASCII ones
+// are in paths and addresses, and `’` is an apostrophe too.
+const WORD_END = /[\s、。，．！？：；｡､」』）】〕〉》｣］｝〗〙〛]/u;
 
-const VARIATION_SELECTOR_16 = '\uFE0F';
+/** The text and emoji variation selectors, VS15 and VS16. */
+const VARIATION_SELECTOR = /[\uFE0E\uFE0F]/;
 
-/** The code point that ends `text` before `index`, skipping an emoji's variation selector. */
+/** The code point that ends `text` before `index`, skipping a variation selector. */
 function pointBefore(text: string, index: number): string | undefined {
   let end = index;
-  if (text[end - 1] === VARIATION_SELECTOR_16) end -= 1;
+  if (VARIATION_SELECTOR.test(text[end - 1] ?? '')) end -= 1;
   const low = text.charCodeAt(end - 1);
   const pair = low >= 0xdc00 && low <= 0xdfff && end >= 2;
   return pair ? text.slice(end - 2, end) : text[end - 1];

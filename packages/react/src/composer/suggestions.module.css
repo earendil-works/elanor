@@ -15,7 +15,7 @@
       var(--semantic-dimension-space-padding-x-small) -
         var(--semantic-dimension-border-width-default)
     );
-    border-color: var(--semantic-color-background-surface);
+    border-color: var(--semantic-color-border-edge);
     box-shadow: var(--semantic-shadow-popup);
     background: var(--semantic-color-background-surface);
   }
@@ -88,7 +88,8 @@
       outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
     }
 
-    .item[data-stale] {
+    .item[data-stale],
+    .item[data-disabled] {
       color: GrayText;
     }
   }

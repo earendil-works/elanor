@@ -24,6 +24,7 @@ import type {
 } from '../popover/popover.tsx';
 import {createChangeEventDetails} from '../utils/change-event-details.ts';
 import {mergeClassName} from '../utils/class-names.ts';
+import {useMergedRef} from '../utils/refs.ts';
 import {useComposerMeta, useComposerStatus} from './context.ts';
 import {
   findMatch,
@@ -91,6 +92,8 @@ interface SuggestionsContextValue {
   readonly highlight: (index: number, event: MouseEvent) => void;
   readonly registerEmpty: () => () => void;
   readonly registerDisabled: (index: number) => () => void;
+  /** A ref callback for the positioner, which follows its `data-anchor-hidden`. */
+  readonly watchAnchor: (element: HTMLElement | null) => (() => void) | undefined;
   readonly anchor: PopoverPositionerProps['anchor'];
 }
 
@@ -174,9 +177,9 @@ export interface ComposerSuggestionsProps<I> {
   readonly onOpenChange?:
     | ((open: boolean, details: ComposerSuggestionsChangeDetails) => void)
     | undefined;
-  /** Called when a person moves the highlight by key or pointer; with `null` when it clears. */
+  /** Called when a person moves the highlight by key or pointer; with `undefined` when it clears. */
   readonly onItemHighlighted?:
-    | ((item: I | null, details: ComposerSuggestionHighlightDetails) => void)
+    | ((item: I | undefined, details: ComposerSuggestionHighlightDetails) => void)
     | undefined;
   readonly children?: ReactNode;
 }
@@ -272,6 +275,21 @@ export function ComposerSuggestions<I>({
   }, []);
   // While results load, the empty state stays up rather than flickering away.
   const visible = open && (items.length > 0 || empties > 0);
+  // With the trigger scrolled out of view the popup is hidden, so it takes no keys and the prompt
+  // controls nothing.
+  const [anchorHidden, setAnchorHidden] = useState(false);
+  const watchAnchor = useCallback((element: HTMLElement | null) => {
+    if (!element) return undefined;
+    const update = () => setAnchorHidden(element.hasAttribute('data-anchor-hidden'));
+    update();
+    const observer = new MutationObserver(update);
+    observer.observe(element, {attributes: true, attributeFilter: ['data-anchor-hidden']});
+    return () => {
+      observer.disconnect();
+      setAnchorHidden(false);
+    };
+  }, []);
+  const seen = visible && !anchorHidden;
 
   const [disabledItems, setDisabledItems] = useState<ReadonlySet<number>>(() => new Set());
   const registerDisabled = useCallback((index: number) => {
@@ -357,7 +375,7 @@ export function ComposerSuggestions<I>({
 
   const highlightedItem = current === undefined ? undefined : items[current.index];
   const reportCleared = useEffectEvent(() =>
-    onItemHighlighted?.(null, {reason: 'none', event: undefined, index: -1}),
+    onItemHighlighted?.(undefined, {reason: 'none', event: undefined, index: -1}),
   );
   const hadHighlight = useRef(false);
   useLayoutEffect(() => {
@@ -431,15 +449,15 @@ export function ComposerSuggestions<I>({
   });
 
   useLayoutEffect(() => {
-    if (!visible) return undefined;
+    if (!seen) return undefined;
     editor.setKeyHandler((event) => handleKey(event));
     return () => editor.setKeyHandler(undefined);
-  }, [editor, visible]);
+  }, [editor, seen]);
 
-  const active = visible && current?.byKeyboard ? optionId(activeIndex) : undefined;
+  const active = seen && current?.byKeyboard ? optionId(activeIndex) : undefined;
   useLayoutEffect(() => {
     openAt.current = visible ? match?.range.start : undefined;
-    popup.set({controls: visible ? (items.length > 0 ? listId : popupId) : undefined, active});
+    popup.set({controls: seen ? (items.length > 0 ? listId : popupId) : undefined, active});
   });
   useLayoutEffect(() => () => popup.set(null), [popup]);
 
@@ -490,6 +508,7 @@ export function ComposerSuggestions<I>({
     },
     registerEmpty,
     registerDisabled,
+    watchAnchor,
     anchor,
   };
 
@@ -529,6 +548,7 @@ export interface ComposerSuggestionPositionerProps extends Omit<PopoverPositione
  * `Composer.SuggestionPortal`. Takes Base UI's `Popover.Positioner` props, except `anchor`.
  */
 export function ComposerSuggestionPositioner({
+  ref,
   className,
   side = 'top',
   align = 'start',
@@ -536,10 +556,12 @@ export function ComposerSuggestionPositioner({
   collisionPadding = 8,
   ...props
 }: ComposerSuggestionPositionerProps) {
-  const {anchor, visible} = useSuggestions('Composer.SuggestionPositioner');
+  const {anchor, visible, watchAnchor} = useSuggestions('Composer.SuggestionPositioner');
+  const positionerRef = useMergedRef(ref, watchAnchor);
   return (
     <Popover.Positioner
       {...props}
+      ref={positionerRef}
       anchor={anchor}
       side={side}
       align={align}
@@ -618,18 +640,25 @@ const pressedItems = new WeakSet<Element>();
  * The release that picked unmounts the popup, and the browser still sends the click that follows
  * to whatever is under it then; this takes that click.
  */
-function swallowNextClick(document: Document): void {
+function swallowNextClick(item: Element): void {
+  const document = item.ownerDocument;
   const stop = () => {
     clearTimeout(timer);
     document.removeEventListener('click', swallow, true);
+    document.removeEventListener('pointerdown', disarm, true);
   };
   const swallow = (event: MouseEvent) => {
     event.preventDefault();
     event.stopPropagation();
     stop();
   };
+  // A new press elsewhere, such as a quick tap on Send, gets its own click.
+  const disarm = (event: PointerEvent) => {
+    if (!(event.target instanceof Node && item.contains(event.target))) stop();
+  };
   const timer = setTimeout(stop, CLICK_AFTER_RELEASE);
   document.addEventListener('click', swallow, true);
+  document.addEventListener('pointerdown', disarm, true);
 }
 
 export interface ComposerSuggestionItemState {
@@ -637,6 +666,7 @@ export interface ComposerSuggestionItemState {
   readonly highlighted: boolean;
   /** The item answers an earlier query and can't be picked. */
   readonly stale: boolean;
+  /** The item has `disabled`: the arrow keys skip it and it can't be picked. */
   readonly disabled: boolean;
 }
 
@@ -652,10 +682,9 @@ export interface ComposerSuggestionItemProps extends useRender.ComponentProps<
 
 /**
  * One `option` of the results, by its `index`. Renders `data-highlighted`, `data-stale` and
- * `data-disabled`. A press
- * keeps the focus and the caret in the prompt, and a phone's keyboard up; the item is picked when
- * the press ends on it, and a press that scrolls the list picks nothing. Only a mouse highlights
- * the item under it.
+ * `data-disabled`. A press keeps the focus and the caret in the prompt, and a phone's keyboard up;
+ * the item is picked when the press ends on it, and a press that scrolls the list picks nothing.
+ * Only a mouse highlights the item under it.
  */
 export function ComposerSuggestionItem({
   ref,
@@ -694,7 +723,7 @@ export function ComposerSuggestionItem({
           // A touch stays captured by the item it started on, so check where it ended.
           const under = item.ownerDocument.elementFromPoint(event.clientX, event.clientY);
           if (under && item.contains(under) && pick(index, event.nativeEvent))
-            swallowNextClick(item.ownerDocument);
+            swallowNextClick(item);
         },
         onPointerCancel: (event) => {
           pressedItems.delete(event.currentTarget);
