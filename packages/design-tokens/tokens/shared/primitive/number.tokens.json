@@ -271,6 +271,12 @@
         },
         "$description": "Transform scale factors where 1000 is an element's own size (a factor of 1), so 980 is 0.98."
       },
+      "pace": {
+        "300": {
+          "$value": 300
+        },
+        "$description": "Rates in characters a second."
+      },
       "fontScale": {
         "9375": {
           "$value": 0.9375

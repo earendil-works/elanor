@@ -15,14 +15,27 @@
         "$description": "Use for color, background, border, and shadow changes, such as hover, press, and the switch track."
       },
       "fade": {
-        "$value": {
-          "duration": "{primitive.duration.150}",
-          "delay": "{primitive.duration.0}",
-          "timingFunction": {
-            "$ref": "#/primitive/cubicBezier/easeOut/$root/$value"
-          }
+        "$description": "Opacity when something appears or disappears: `$root` for small things, `content` for content taking the place of other content.",
+        "$root": {
+          "$value": {
+            "duration": "{primitive.duration.150}",
+            "delay": "{primitive.duration.0}",
+            "timingFunction": {
+              "$ref": "#/primitive/cubicBezier/easeOut/$root/$value"
+            }
+          },
+          "$description": "Use for opacity when something appears or disappears, such as popups, scrollbars, and backdrops. Fade content that takes the place of other content with `fade.content`."
         },
-        "$description": "Use for opacity when something appears or disappears, such as popups, scrollbars, backdrops, and page crossfades."
+        "content": {
+          "$value": {
+            "duration": "{primitive.duration.300}",
+            "delay": "{primitive.duration.0}",
+            "timingFunction": {
+              "$ref": "#/primitive/cubicBezier/easeOut/$root/$value"
+            }
+          },
+          "$description": "Use for content fading in as it takes the place of its placeholder or of other content, such as a skeleton giving way to what loaded, a crossfade between pages, or streamed text appearing letter by letter."
+        }
       },
       "pulse": {
         "$value": {
@@ -30,7 +43,7 @@
           "delay": "{primitive.duration.0}",
           "timingFunction": "{primitive.cubicBezier.easeInOut.cubic}"
         },
-        "$description": "Use for one half of a repeating opacity pulse that shows content is loading, such as a skeleton, between `opacity.visible` and `opacity.pulse`. Do not use for elements appearing or disappearing; use `fade`."
+        "$description": "Use for one half of a repeating opacity pulse that shows content is loading or work is going on, such as a skeleton or the label of a running step, between `opacity.visible` and `opacity.pulse`. Do not use for elements appearing or disappearing; use `fade`."
       },
       "stale": {
         "$value": {
@@ -83,6 +96,22 @@
             "timingFunction": "{primitive.cubicBezier.easeOut.cubic}"
           },
           "$description": "Use for a pressed control settling back to its size when it is let go, without overshooting. Grow it with `movement.press`."
+        },
+        "scroll": {
+          "$value": {
+            "duration": "{primitive.duration.300}",
+            "delay": "{primitive.duration.0}",
+            "timingFunction": "{primitive.cubicBezier.easeOut.cubic}"
+          },
+          "$description": "Use for content moving inside its scroll area on its own, such as a list following its end while text streams in, an item added at the end gliding into view, or content that arrived out of view sliding in. A component following a moving target can run it as a critically damped spring that is most of the way there (about 92%) after the duration."
+        },
+        "navigation": {
+          "$value": {
+            "duration": "{primitive.duration.300}",
+            "delay": "{primitive.duration.0}",
+            "timingFunction": "{primitive.cubicBezier.easeOut.quart}"
+          },
+          "$description": "Use for moving between places in an interface, such as a page sliding in, a view swiped aside and snapping back, or a tab indicator following the view in use, and for panes growing or shrinking as one comes or goes."
         },
         "tableOfContents": {
           "indicator": {
