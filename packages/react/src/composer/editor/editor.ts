@@ -195,7 +195,10 @@ export interface EditorBinding {
    * editable prompt, with no list at the caret open and nothing composing.
    */
   recallEdge(event: KeyboardEvent): 'up' | 'down' | undefined;
-  /** Whether the text is a recalled message nobody changed since. */
+  /**
+   * Whether the text is a recalled message nobody changed since. Suggestions stay closed on it.
+   * Changes fire `subscribe`.
+   */
   recalling(): boolean;
   /** Whether the text is `value`, with its chips as the editor names them. */
   shows(value: ComposerValue<ComposerChip>): boolean;
@@ -333,6 +336,8 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
   /** Pasting this copy back here restores its chips. */
   #clip: {readonly id: string; readonly value: ComposerValue<T>} | undefined;
   #keyHandler: ((event: KeyboardEvent) => boolean) | undefined;
+  /** The message the last recall showed, until another edit. */
+  #recalled: ComposerValue<T> | undefined;
   readonly #listeners = new Set<() => void>();
   readonly #valueListeners = new Set<() => void>();
   readonly #hostListeners = new Set<() => void>();
@@ -460,6 +465,9 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
 
   /** Takes up `historyKey`'s history where it was left, or starts one at `value`. */
   #switchHistory(historyKey: string, value: ComposerValue<T>): void {
+    // A recall there ends: back in that draft, the next recall is a step of its own.
+    this.#history.seal();
+    this.#recalled = undefined;
     this.#historyKey = historyKey;
     this.#history =
       this.#histories.get(historyKey) ?? new History<Step<T>>({value, selection: null});
@@ -528,6 +536,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     }
     this.#armed = undefined;
     this.#latest = value;
+    this.#recalled = group === 'recall' ? value : undefined;
     this.#revision += 1;
     this.#edit = record ? {value, selection, group, prior} : undefined;
     if (selection) this.#selection = selection;
@@ -938,7 +947,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
   }
 
   recalling(): boolean {
-    return this.#history.isOpen('recall') && sameValue(this.#history.current().value, this.#latest);
+    return this.#recalled !== undefined && sameValue(this.#recalled, this.#latest);
   }
 
   shows(value: ComposerValue<ComposerChip>): boolean {
@@ -1049,6 +1058,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       this.#histories.set(historyKey, this.#history);
       this.#edit = undefined;
       this.#cleared = true;
+      this.#recalled = undefined;
     },
     submit: (event) => this.options.onSubmit?.(this.#latest, {event}),
     getValue: () => this.#latest,

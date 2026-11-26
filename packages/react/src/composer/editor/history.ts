@@ -46,11 +46,6 @@ export class History<State> {
     this.#open = undefined;
   }
 
-  /** Whether the current step takes the next edit of `group`. */
-  isOpen(group: EditGroup): boolean {
-    return this.#open?.group === group;
-  }
-
   /** The state of the step before the current one. */
   previous(): State | undefined {
     return this.#entries[this.#index - 1];
