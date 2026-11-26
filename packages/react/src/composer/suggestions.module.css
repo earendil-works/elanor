@@ -4,12 +4,12 @@
     z-index: var(--semantic-number-layer-floating);
   }
 
-  /* The trigger scrolled out of the prompt's view. */
+  /* While the trigger is scrolled out of the prompt's view. */
   .positioner[data-anchor-hidden] {
     visibility: hidden;
   }
 
-  /* Elanor's popover with Menu's surface, and a list's padding: the items space their own text. */
+  /* Menu's surface; the items' own padding spaces their text. */
   .popup {
     padding: calc(
       var(--semantic-dimension-space-padding-x-small) -
@@ -25,7 +25,7 @@
     flex-direction: column;
   }
 
-  /* Dropdown's item, outside a Select. */
+  /* Dropdown's item styles: `Dropdown.Item` works only inside a Select. */
   .item {
     box-sizing: border-box;
     display: flex;
@@ -48,13 +48,12 @@
     background: var(--semantic-color-background-fill-secondary-active);
   }
 
-  /* Menu's disabled item. */
   .item[data-disabled] {
     opacity: var(--semantic-number-opacity-disabled);
     cursor: not-allowed;
   }
 
-  /* Answering an earlier query. `Text` and icons inside read these tokens, so they're set too. */
+  /* `Text` and icons inside read these tokens, not `color`. */
   .item[data-stale] {
     --semantic-color-text-primary: var(--semantic-color-text-secondary);
     --semantic-color-icon-primary: var(--semantic-color-icon-secondary);
@@ -68,7 +67,7 @@
     color: var(--semantic-color-text-secondary);
   }
 
-  /* Read by screen readers only, unless your own class overrides it. */
+  /* Visually hidden by default; an unlayered class of yours overrides it. */
   .status {
     position: absolute;
     inline-size: var(--semantic-dimension-border-width-small);

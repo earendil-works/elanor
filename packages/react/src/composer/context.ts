@@ -22,11 +22,11 @@ export interface ComposerSettings {
   readonly form: string | undefined;
 }
 
-/** What the prompt says about `Composer.Suggestions` while it is mounted. */
+/** The suggestions list, as the prompt's ARIA attributes name it. */
 export interface PromptPopup {
-  /** While the popup shows: the list's id, or the popup's while it shows only its empty state. */
+  /** The list's id while it shows; the popup's while only the empty state does. */
   readonly controls: string | undefined;
-  /** The highlighted option's id, once a person moved through the list with the arrow keys. */
+  /** The highlighted option's id, set only once a person used the arrow keys. */
   readonly active: string | undefined;
 }
 
@@ -74,7 +74,6 @@ export interface ComposerMeta {
    * in this composer takes the focus up.
    */
   readonly handOff: (element: HTMLElement | null) => (() => void) | undefined;
-  /** Set by `Composer.Suggestions`, read by the prompt for its ARIA attributes. */
   readonly popup: PromptPopupStore;
 }
 

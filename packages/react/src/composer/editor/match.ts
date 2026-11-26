@@ -4,9 +4,8 @@
 import {CHIP_CHARACTER, type ComposerTextRange} from './model.ts';
 
 /**
- * Where a trigger counts. `word-start`: after whitespace, an opening bracket or quotation mark, a
- * chip, an emoji, or a Chinese or Japanese character, since those scripts are written without
- * spaces.
+ * Where a trigger counts. `word-start`: after whitespace, an opening mark, a chip, an emoji, or a
+ * Chinese or Japanese character, since those scripts are written without spaces.
  */
 export type ComposerSuggestionPosition = 'start' | 'line-start' | 'word-start' | 'anywhere';
 
@@ -24,23 +23,21 @@ export type ComposerSuggestionMatch = {
   readonly range: ComposerTextRange;
 };
 
-// Before a trigger, these start a word. Script_Extensions, not Script: `ー`, `。`, `「」` and `々`
-// are Han or kana only there. Hangul is left out: Korean is written with spaces.
+// Script_Extensions, not Script: `ー`, `。`, `「」` and `々` count as Han or kana only there. No
+// Hangul: Korean uses spaces.
 const WORD_START = new RegExp(
   `[\\s\\p{Ps}\\p{Pi}"'\`<${CHIP_CHARACTER}\\p{Extended_Pictographic}\\p{Emoji_Modifier}` +
     `\\p{Regional_Indicator}\\u20E3` +
     `\\p{scx=Han}\\p{scx=Hira}\\p{scx=Kana}\\p{scx=Bopo}\\uFF01-\\uFF65]`,
   'u',
 );
-// These end a word, and so a query, as whitespace does: in text without spaces the query would
-// run on through the sentence. Only Chinese and Japanese punctuation and closing marks: ASCII ones
-// are in paths and addresses, and `’` is an apostrophe too.
+// End a query as whitespace does; in text without spaces it would run on through the sentence.
+// Only CJK marks: ASCII ones occur in paths and addresses, and `’` is also an apostrophe.
 const WORD_END = /[\s、。，．！？：；｡､」』）】〕〉》｣］｝〗〙〛]/u;
 
-/** The text and emoji variation selectors, VS15 and VS16. */
 const VARIATION_SELECTOR = /[\uFE0E\uFE0F]/;
 
-/** The code point that ends `text` before `index`, skipping a variation selector. */
+/** By code point, so a surrogate pair (Ext-B Han, emoji) is one; skips VS15 and VS16. */
 function pointBefore(text: string, index: number): string | undefined {
   let end = index;
   if (VARIATION_SELECTOR.test(text[end - 1] ?? '')) end -= 1;
@@ -68,7 +65,7 @@ function at(text: string, index: number, position: ComposerSuggestionPosition): 
 
 /**
  * The last trigger in the word that ends at the caret. `before` is the text before the caret, from
- * `offsetText`. Words end at whitespace, chips and `WORD_END`.
+ * `offsetText`. Words end at chips and `WORD_END`.
  */
 export function findMatch(
   before: string,

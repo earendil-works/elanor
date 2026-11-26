@@ -44,7 +44,7 @@ const commands = [
   command('deploy', 'Needs a clean branch', false),
 ];
 
-// The full-width forms are what Japanese and Chinese keyboards type.
+// Japanese and Chinese keyboards type the full-width forms.
 const triggers: readonly ComposerSuggestionTrigger[] = [
   {character: '@'},
   {character: '＠'},
@@ -63,7 +63,7 @@ function searchFiles(query: string, signal: AbortSignal): Promise<Suggestion[]> 
       label: path.split('/').at(-1) ?? path,
       path,
     }));
-  // Demo only: the delay stands in for a request to your server.
+  // Demo only: replace the timer with a request to your server that takes `signal`.
   return new Promise((resolve, reject) => {
     const timer = setTimeout(() => resolve(found), 300);
     signal.addEventListener('abort', () => {

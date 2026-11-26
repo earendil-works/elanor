@@ -55,14 +55,11 @@ export interface ComposerSuggestionStatusState {
   readonly loading: boolean;
 }
 
-/**
- * How long, in milliseconds, results for an earlier query may show before they count as loading,
- * and how long Enter or Tab on them waits for the results of the query typed now.
- */
+/** Milliseconds before stale results count as loading; also the longest Enter or Tab waits. */
 const LOADING_DELAY = 1000;
-/** How long, in milliseconds, typing must pause before `Composer.SuggestionStatus` speaks. */
+/** Milliseconds of pause in typing before `Composer.SuggestionStatus` speaks. */
 const STATUS_PAUSE = 500;
-/** How long, in milliseconds, after a release that picked, the click that follows may come. */
+/** Milliseconds within which the click after a picking release arrives. */
 const CLICK_AFTER_RELEASE = 500;
 
 type Place = {readonly character: string; readonly start: number};
@@ -77,10 +74,7 @@ interface SuggestionsContextValue {
   readonly loading: boolean;
   /** Open, with items or a `Composer.SuggestionEmpty` to show. */
   readonly visible: boolean;
-  /**
-   * What `Composer.SuggestionStatus` says once typing pauses; `null` for nothing. `opening` counts
-   * the times the list opened.
-   */
+  /** What `Composer.SuggestionStatus` says after a pause; `opening` numbers the list's openings. */
   readonly status:
     | (ComposerSuggestionStatusState & {readonly key: string; readonly opening: number})
     | null;
@@ -177,7 +171,7 @@ export interface ComposerSuggestionsProps<I> {
   readonly onOpenChange?:
     | ((open: boolean, details: ComposerSuggestionsChangeDetails) => void)
     | undefined;
-  /** Called when a person moves the highlight by key or pointer; with `undefined` when it clears. */
+  /** Called when a person moves the highlight by key or pointer; `undefined` when it clears. */
   readonly onItemHighlighted?:
     | ((item: I | undefined, details: ComposerSuggestionHighlightDetails) => void)
     | undefined;
@@ -185,14 +179,12 @@ export interface ComposerSuggestionsProps<I> {
 }
 
 /**
- * Suggestions at the trigger being typed, such as `@` for files or `/` for commands. Renders no
- * element. It opens when `results` answer the trigger at `match`, and results for an earlier query
- * at that trigger stay until new ones arrive. The focus stays in the prompt: the arrow keys move
- * through the list, Enter or Tab picks, and Escape closes it and calls `preventDefault()`, so check
- * `event.defaultPrevented` in your own Escape handlers. While items show, Enter never submits;
- * with only the empty state up, it submits as usual. After Escape, that trigger stays closed until
- * a new one is typed. With no items, it opens only to show a `Composer.SuggestionEmpty`. It doesn't
- * open while the prompt is disabled or read-only. Use one per `Composer.Root`.
+ * Suggestions at the trigger being typed, such as `@` for files. Renders no element. Opens when
+ * `results` answer `match`; stale results stay until new ones arrive. The focus stays in the
+ * prompt: arrow keys move, Enter or Tab picks, and Escape closes the list with `preventDefault()`.
+ * While items show, Enter never submits. After Escape, that trigger stays closed until a new one is
+ * typed. Without items it opens only for a `Composer.SuggestionEmpty`, and never in a disabled or
+ * read-only prompt. Use one per `Composer.Root`.
  */
 export function ComposerSuggestions<I>({
   match,
@@ -229,7 +221,7 @@ export function ComposerSuggestions<I>({
   }, [editor, dismissed]);
 
   // Android keyboards compose nearly every word, so a list open at the trigger stays open while
-  // composing; one that wasn't open doesn't open over an input method's own candidates.
+  // composing; a closed one doesn't open over the input method's candidates.
   const [composition, setComposition] = useState<{
     readonly start: number;
     readonly openAt: number | undefined;
@@ -309,7 +301,7 @@ export function ComposerSuggestions<I>({
   const [opened, setOpened] = useState({open: false, count: 0});
   if (opened.open !== open) setOpened({open, count: opened.count + (open ? 1 : 0)});
 
-  // A highlight a person moved holds while the query, and the query its results answer, stay.
+  // A highlight a person moved lasts while the typed query and the one its results answer stay.
   const answered = shown?.match.query;
   const [highlighted, setHighlighted] = useState<{
     readonly typed: string | null;
@@ -328,13 +320,12 @@ export function ComposerSuggestions<I>({
   const popupId = useId();
   const optionId = (index: number) => `${listId}-${index}`;
 
-  // Why the list closes next, when it's something the list did: the pick's change comes in a later
-  // render. Cleared after that render, so a pick that leaves the list open doesn't name a later
-  // closing.
+  // A pick closes the list a render later, when its edit arrives. Cleared after that render, so a
+  // pick that leaves the list open names no later closing.
   const cause = useRef<{readonly reason: 'item-press'; readonly event: Event} | undefined>(
     undefined,
   );
-  // Escape and outside presses report their closing as they happen, so it can be cancelled.
+  // Escape and outside presses report their closing at once, so it can be cancelled.
   const reported = useRef(false);
 
   const pick = (index: number, event: ComposerSuggestionPickDetails['event']): boolean => {
@@ -431,8 +422,7 @@ export function ComposerSuggestions<I>({
       return true;
     }
     if ((event.key === 'Enter' || event.key === 'Tab') && !event.shiftKey) {
-      // While items show, Enter is the list's and never submits; with only the empty state up,
-      // it's the editor's.
+      // With items showing, Enter never submits; with only the empty state, it's the editor's.
       const enter = event.key === 'Enter';
       if (stale && typed !== null && items.length > 0) {
         const wait = waiting.current;
@@ -518,8 +508,8 @@ export function ComposerSuggestions<I>({
       <Popover.Root
         open={open}
         onOpenChange={(next, details) => {
-          // A press in the prompt moves the caret, and the match follows it. Escape is the key
-          // handler's.
+          // A press in the prompt moves the caret, and the match follows it; Escape is handled with
+          // the keys.
           const target = details.event.target;
           if (next || details.reason !== 'outside-press') return;
           if (target instanceof Node && editor.element()?.contains(target)) return;
@@ -638,8 +628,8 @@ export function ComposerSuggestionList({ref, render, ...props}: ComposerSuggesti
 const pressedItems = new WeakSet<Element>();
 
 /**
- * The release that picked unmounts the popup, and the browser still sends the click that follows
- * to whatever is under it then; this takes that click.
+ * The picking release unmounts the popup, and the browser, Chromium on Android at least, then sends
+ * the click that follows to whatever is under it; this swallows that click.
  */
 function swallowNextClick(item: Element): void {
   const document = item.ownerDocument;
@@ -779,11 +769,10 @@ function defaultStatus(
 }
 
 /**
- * A polite live region that tells screen readers how many suggestions there are once typing
- * pauses, that nothing matches, or that results are loading. The default text says how to choose
- * once per opening, where there is a keyboard. Visually hidden; to show it, override its styles
- * with your own `className`. Always mounted: place it inside `Composer.Suggestions`, outside the
- * portal.
+ * A visually hidden polite live region: the count once typing pauses, that nothing matches, or
+ * that results are loading; the default text names the keys once per opening, with a keyboard. To
+ * show it, override its styles with your own `className`. Keep it mounted inside
+ * `Composer.Suggestions`, outside the portal.
  */
 export function ComposerSuggestionStatus({
   ref,

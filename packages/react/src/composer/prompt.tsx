@@ -87,7 +87,7 @@ export function ComposerPrompt({
   const popup = useSyncExternalStore(meta.popup.subscribe, meta.popup.get, meta.popup.get);
 
   const editable = !disabled && !readOnly;
-  // Suggestions don't open in a prompt that isn't editable.
+  // Suggestions never open in a prompt that isn't editable, so it announces no popup.
   const suggests = editable && popup !== null;
   const popupProps = {
     'aria-haspopup': suggests ? 'listbox' : undefined,
