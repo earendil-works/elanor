@@ -22,17 +22,24 @@ export type {
 
 export type ModalHandle<Payload = unknown> = BaseDialog.Handle<Payload>;
 
-export type ModalBackdropProps = BaseDialog.Backdrop.Props;
+export type ModalBackdropVariant = 'default' | 'blur';
+
+export interface ModalBackdropProps extends BaseDialog.Backdrop.Props {
+  /** `blur` blurs the page behind the backdrop. */
+  readonly variant?: ModalBackdropVariant | undefined;
+}
 export type ModalViewportProps = BaseDialog.Viewport.Props;
 export type ModalPopupProps = BaseDialog.Popup.Props;
 export type ModalTitleProps = BaseDialog.Title.Props;
 export type ModalDescriptionProps = BaseDialog.Description.Props;
 
-export function ModalBackdrop({ref, className, ...props}: ModalBackdropProps) {
+/** Renders `data-variant`. */
+export function ModalBackdrop({ref, variant = 'default', className, ...props}: ModalBackdropProps) {
   return (
     <BaseDialog.Backdrop
       {...props}
       ref={ref}
+      data-variant={variant}
       className={mergeClassName<BaseDialog.Backdrop.State>(styles.backdrop, className)}
     />
   );
