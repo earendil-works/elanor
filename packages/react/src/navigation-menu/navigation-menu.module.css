@@ -40,9 +40,9 @@
   }
 
   .navigationItem:focus-visible {
-    outline: var(--semantic-dimension-border-width-focus-ring) solid
-      var(--semantic-color-focus-ring);
-    outline-offset: var(--semantic-dimension-border-width-medium);
+    outline: var(--semantic-dimension-border-width-focus-halo) solid
+      var(--semantic-color-focus-halo);
+    outline-offset: 0;
   }
 
   .navigationItem[data-disabled] {
@@ -101,10 +101,10 @@
     max-inline-size: var(--available-width);
     max-block-size: var(--available-height);
     overflow: hidden;
-    border: var(--semantic-dimension-border-width-default) solid
-      var(--semantic-color-border-secondary);
+    border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-edge);
     border-radius: var(--semantic-dimension-radius-small);
     outline: 0;
+    box-shadow: var(--semantic-shadow-popup);
     background: var(--semantic-color-background-surface);
     color: var(--semantic-color-text-primary);
     font: var(--semantic-typography-ui-primary);

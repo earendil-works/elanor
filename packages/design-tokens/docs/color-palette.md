@@ -63,17 +63,19 @@ Use `semantic.color.logo.*` only for logo artwork: `symbol.1`–`4` use the four
 
 Structural backgrounds are neutral Graphite in both themes:
 
-| Theme | Canvas                     | Surface                    |
-| ----- | -------------------------- | -------------------------- |
-| Light | `graphite.25` (`#F8F8F8`)  | `graphite.50` (`#F1F1F1`)  |
-| Dark  | `graphite.900` (`#161616`) | `graphite.800` (`#2E2E2E`) |
+| Theme | Canvas                     | Surface                   |
+| ----- | -------------------------- | ------------------------- |
+| Light | `graphite.25` (`#F8F8F8`)  | `graphite.50` (`#F1F1F1`) |
+| Dark  | `graphite.900` (`#161616`) | `black` (`#111111`)       |
 
 Primary and ghost fills each have default, neutral, information, negative, and positive variants; default and information intentionally use the same Cerulian Blue steps. Every variant uses these steps of its family:
 
-| Fill    | Light rest / hover / active | Dark rest / hover / active  |
-| ------- | --------------------------- | --------------------------- |
-| Primary | `600` / `640` / `680`       | `400` / `360` / `320`       |
-| Ghost   | transparent / `40` / `80`   | transparent / `860` / `820` |
+| Fill    | Light rest / hover / active | Dark rest / hover / active |
+| ------- | --------------------------- | -------------------------- |
+| Primary | `600` / `640` / `680`       | `600` / `560` / `520`      |
+| Ghost   | transparent / 8% / 14%      | transparent / 8% / 14%     |
+
+Ghost hover and active are translucent layers over whatever is behind them, so they show the same step on the canvas, a surface or a fill: the neutral ones black (light) or white (dark), the others their family's `600` (light) or `400` (dark), at `primitive.number.opacity.80` and `.140`.
 
 Consumers use [semantic fill roles](token-naming.md#color-fill-roles), not family names.
 
@@ -83,8 +85,9 @@ Required WCAG 2.1 resting-state pairs:
 
 - ordinary text and content on canvas, surface, primary fills, and secondary fills at **4.5:1**;
 - source code text (`semantic.color.text.code` and its roles) on the secondary fill at **4.5:1**;
-- meaningful borders, focus rings, selected fills, indicators, and switch knobs at **3:1**.
+- meaningful borders, focus rings, selected fills, indicators, and switch knobs at **3:1**;
+- a primary fill's outline, the edge drawn inside it (`border.edge` over the fill), against canvas and surface at **3:1**.
 
-All 196 pairs pass. The smallest margin is dark selected fill on dark surface: **3.09:1** against **3:1** required. Run `pnpm tokens:check:contrast` to recheck.
+All 202 pairs pass. The smallest margin is the dark edge on a primary fill against the canvas: **3.07:1** against **3:1** required. Run `pnpm tokens:check:contrast` to recheck.
 
 Project policy excludes hover/active states from conformance checks. Secondary borders, secondary fills against their surroundings, and transparent ghost fills may fall below 3:1 only when decorative or lower-prominence and not the sole cue for a control or state.

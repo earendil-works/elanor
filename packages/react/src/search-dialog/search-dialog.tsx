@@ -86,10 +86,14 @@ export function SearchDialogTrigger({
   );
 }
 
+export type SearchDialogBackdropVariant = 'default' | 'blur';
+
 export interface SearchDialogPopupProps
   extends
     Omit<BaseDialog.Popup.Props, 'children'>,
     Pick<BaseAutocomplete.Root.Props<string>, 'value' | 'defaultValue' | 'onValueChange'> {
+  /** `blur` blurs the page behind the backdrop this part renders. */
+  readonly backdropVariant?: SearchDialogBackdropVariant | undefined;
   /** The accessible name, such as "Search documentation". */
   readonly 'aria-label': string;
   readonly children?: ReactNode;
@@ -102,6 +106,7 @@ export interface SearchDialogPopupProps
  */
 export function SearchDialogPopup({
   ref,
+  backdropVariant = 'default',
   value,
   defaultValue,
   onValueChange,
@@ -111,7 +116,7 @@ export function SearchDialogPopup({
 }: SearchDialogPopupProps) {
   return (
     <BaseDialog.Portal>
-      <BaseDialog.Backdrop className={styles.backdrop} />
+      <BaseDialog.Backdrop className={styles.backdrop} data-variant={backdropVariant} />
       <BaseDialog.Popup
         {...props}
         ref={ref}

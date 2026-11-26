@@ -7,6 +7,16 @@
     opacity: calc(var(--semantic-number-opacity-visible) - var(--drawer-swipe-progress));
   }
 
+  .backdrop[data-variant='blur'] {
+    backdrop-filter: blur(var(--semantic-dimension-blur-backdrop));
+  }
+
+  @media (prefers-reduced-transparency: reduce) {
+    .backdrop[data-variant='blur'] {
+      backdrop-filter: none;
+    }
+  }
+
   @supports (-webkit-touch-callout: none) {
     .backdrop {
       position: absolute;
@@ -33,8 +43,7 @@
       var(--semantic-dimension-space-padding-x-large),
       env(safe-area-inset-bottom)
     );
-    border: var(--semantic-dimension-border-width-default) solid
-      var(--semantic-color-border-secondary);
+    border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-edge);
     background: var(--semantic-color-background-canvas);
     color: var(--semantic-color-text-primary);
     font: var(--semantic-typography-ui-primary);
@@ -74,9 +83,9 @@
   }
 
   .popup:focus-visible {
-    outline: var(--semantic-dimension-border-width-focus-ring) solid
-      var(--semantic-color-focus-ring);
-    outline-offset: calc(-1 * var(--semantic-dimension-border-width-focus-ring));
+    outline: var(--semantic-dimension-border-width-focus-halo) solid
+      var(--semantic-color-focus-halo);
+    outline-offset: calc(-1 * var(--semantic-dimension-border-width-focus-halo));
   }
 
   .title {

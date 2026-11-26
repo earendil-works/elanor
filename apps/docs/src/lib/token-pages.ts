@@ -119,7 +119,7 @@ const areaSpecs: readonly AreaSpec[] = [
           color('border.secondary'),
           color('border'),
         ),
-        group('focus-ring', 'Focus ring', color('focusRing')),
+        group('focus-ring', 'Focus ring and halo', color('focusRing'), color('focusHalo')),
       ),
       section(
         'fills',
@@ -254,7 +254,7 @@ const areaSpecs: readonly AreaSpec[] = [
   {
     id: 'shape-and-depth',
     label: 'Shape & depth',
-    summary: 'Corner radius, border width, scale, shadows, layers, and opacity.',
+    summary: 'Corner radius, border width, scale, shadows, blur, layers, and opacity.',
     tier: 'semantic',
     sections: [
       section(
@@ -268,6 +268,7 @@ const areaSpecs: readonly AreaSpec[] = [
         'depth',
         'Depth',
         group('shadows', 'Shadows', 'semantic.shadow'),
+        group('blur', 'Blur', 'semantic.dimension.blur'),
         group('layers', 'Layers', 'semantic.number.layer'),
         group('opacity', 'Opacity', 'semantic.number.opacity'),
       ),

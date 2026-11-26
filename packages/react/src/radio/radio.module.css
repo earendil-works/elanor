@@ -59,9 +59,15 @@
   }
 
   .radio:focus-visible {
-    outline: var(--semantic-dimension-border-width-focus-ring) solid
-      var(--semantic-color-focus-ring);
-    outline-offset: var(--semantic-dimension-border-width-medium);
+    outline: 0;
+  }
+
+  /* The halo is drawn around the circle, which is smaller than the control's target, so it follows the
+     shape you see. */
+  .radio:focus-visible::before {
+    outline: var(--semantic-dimension-border-width-focus-halo) solid
+      var(--semantic-color-focus-halo);
+    outline-offset: 0;
   }
 
   .indicator {

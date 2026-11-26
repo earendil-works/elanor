@@ -20,8 +20,7 @@
       var(--semantic-dimension-space-control-padding-inline-small) -
         var(--semantic-dimension-border-width-default)
     );
-    border: var(--semantic-dimension-border-width-default) solid
-      var(--semantic-color-background-fill-secondary);
+    border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-edge);
     border-radius: var(--semantic-dimension-radius-small);
     background: var(--semantic-color-background-fill-secondary);
     color: var(--semantic-color-text-primary);
@@ -79,7 +78,6 @@
   }
 
   .trigger:where(:hover:not(:disabled, [data-disabled])) {
-    border-color: var(--semantic-color-background-fill-secondary-hover);
     background: var(--semantic-color-background-fill-secondary-hover);
   }
 
@@ -99,7 +97,7 @@
     /* `fit-content`, not `auto`, so a column flex parent such as Field doesn't stretch it. */
     inline-size: fit-content;
     max-inline-size: 100%;
-    border-color: var(--semantic-color-background-fill-ghost-neutral);
+    border-color: transparent;
     background: var(--semantic-color-background-fill-ghost-neutral);
     transition:
       background-color var(--semantic-transition-feedback),
@@ -108,7 +106,6 @@
 
   @media (hover: hover) {
     .trigger:where([data-variant='ghost']:hover:not(:disabled, [data-disabled])) {
-      border-color: var(--semantic-color-background-fill-ghost-neutral-hover);
       background: var(--semantic-color-background-fill-ghost-neutral-hover);
     }
   }
@@ -117,7 +114,6 @@
     [data-variant='ghost']:active:not(:disabled, [data-disabled]),
     [data-variant='ghost'][data-popup-open]
   ) {
-    border-color: var(--semantic-color-background-fill-ghost-neutral-active);
     background: var(--semantic-color-background-fill-ghost-neutral-active);
   }
 
@@ -127,9 +123,9 @@
   }
 
   .trigger:focus-visible {
-    outline: var(--semantic-dimension-border-width-focus-ring) solid
-      var(--semantic-color-focus-ring);
-    outline-offset: var(--semantic-dimension-border-width-medium);
+    outline: var(--semantic-dimension-border-width-focus-halo) solid
+      var(--semantic-color-focus-halo);
+    outline-offset: 0;
   }
 
   .trigger:where([data-invalid], [aria-invalid='true']) {
@@ -168,9 +164,8 @@
     overflow: hidden;
     border: 0;
     border-radius: var(--semantic-dimension-radius-small);
-    /* stylelint-disable design-tokens/token-property-compatibility -- This inset outline is the panel's surface stroke, not a focus ring. */
-    outline: var(--semantic-dimension-border-width-default) solid
-      var(--semantic-color-background-surface);
+    /* stylelint-disable design-tokens/token-property-compatibility -- This inset outline is the panel's edge, not a focus ring. */
+    outline: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-edge);
     /* stylelint-enable design-tokens/token-property-compatibility */
     outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
     box-shadow: var(--semantic-shadow-popup);

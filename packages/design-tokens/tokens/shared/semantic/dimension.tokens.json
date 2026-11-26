@@ -25,6 +25,10 @@
         "focusRing": {
           "$value": "{primitive.dimension.borderWidth.200}",
           "$description": "Use for the width of the keyboard-focus ring, whether it is drawn outside a control or inset within it."
+        },
+        "focusHalo": {
+          "$value": "{primitive.dimension.75}",
+          "$description": "Use for the width of the keyboard-focus halo drawn flush around a control."
         }
       },
       "breakpoint": {
@@ -132,6 +136,10 @@
             "$value": "{primitive.dimension.300}",
             "$description": "Use for an icon set in a line of secondary text."
           }
+        },
+        "inlineElement": {
+          "$value": "{primitive.dimension.500}",
+          "$description": "Use as the block size of a bounded element set in a line of primary text, such as a chip or a mention, centred in the line with room above and below it. Use with `semantic.typography.primary` or `semantic.typography.ui.primary`: in secondary text it would fill the line. Do not use for icons in text or for controls."
         },
         "xxxSmall": {
           "$value": "{primitive.dimension.100}",
@@ -334,6 +342,13 @@
         "press": {
           "$value": "{primitive.dimension.50}",
           "$description": "Use for how far a control's edges move out while it is pressed: it grows by this much at each side, whatever its size, so a small button and a wide field answer a finger alike. Work its scale out from the control's size (1 + 2 × travel ÷ size); do not use a fixed scale factor."
+        }
+      },
+      "blur": {
+        "$description": "How much a layer blurs what lies behind it.",
+        "backdrop": {
+          "$value": "{primitive.dimension.100}",
+          "$description": "Use for the radius of the opt-in backdrop blur behind modal dialogs, drawers and other blocking overlays, together with the backdrop color: it sets the overlay apart from the page where dimming alone does not."
         }
       }
     }

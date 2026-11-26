@@ -16,8 +16,7 @@
       var(--semantic-dimension-space-control-padding-inline-small) -
         var(--semantic-dimension-border-width-default)
     );
-    border: var(--semantic-dimension-border-width-default) solid
-      var(--semantic-color-background-fill-secondary);
+    border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-edge);
     border-radius: var(--semantic-dimension-radius-small);
     background: var(--semantic-color-background-fill-secondary);
     color: var(--semantic-color-text-secondary);
@@ -29,16 +28,15 @@
 
   @media (hover: hover) {
     .trigger:hover {
-      border-color: var(--semantic-color-background-fill-secondary-hover);
       background: var(--semantic-color-background-fill-secondary-hover);
     }
   }
 
   .trigger:focus-visible {
     border-color: var(--semantic-color-focus-ring);
-    outline: var(--semantic-dimension-border-width-focus-ring) solid
-      var(--semantic-color-focus-ring);
-    outline-offset: var(--semantic-dimension-border-width-medium);
+    outline: var(--semantic-dimension-border-width-focus-halo) solid
+      var(--semantic-color-focus-halo);
+    outline-offset: 0;
   }
 
   .icon {
@@ -97,8 +95,7 @@
     );
     margin-inline: auto;
     overflow: hidden;
-    border: var(--semantic-dimension-border-width-default) solid
-      var(--semantic-color-border-secondary);
+    border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-edge);
     border-radius: var(--semantic-dimension-radius-medium);
     outline: 0;
     box-shadow: var(--semantic-shadow-popup);
@@ -139,6 +136,18 @@
   dialog.popup::backdrop {
     background: var(--semantic-color-background-backdrop);
     transition: opacity var(--semantic-transition-fade);
+  }
+
+  .backdrop[data-variant='blur'],
+  dialog.popup[data-backdrop-variant='blur']::backdrop {
+    backdrop-filter: blur(var(--semantic-dimension-blur-backdrop));
+  }
+
+  @media (prefers-reduced-transparency: reduce) {
+    .backdrop[data-variant='blur'],
+    dialog.popup[data-backdrop-variant='blur']::backdrop {
+      backdrop-filter: none;
+    }
   }
 
   dialog.popup[data-starting-style]::backdrop,

@@ -20,8 +20,6 @@
     border: 0;
     border-radius: var(--semantic-dimension-radius-small);
     background: var(--semantic-color-background-fill-secondary);
-    box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
-      var(--semantic-color-background-fill-secondary);
     color: var(--semantic-color-text-on-secondary-fill);
     font: var(--semantic-typography-ui-primary);
     cursor: pointer;
@@ -42,15 +40,13 @@
 
   .item[data-pressed] {
     background: var(--semantic-color-background-canvas);
-    box-shadow: inset 0 0 0 var(--semantic-dimension-border-width-default)
-      var(--semantic-color-background-canvas);
     color: var(--semantic-color-text-primary);
   }
 
   .item:focus-visible {
-    outline: var(--semantic-dimension-border-width-focus-ring) solid
-      var(--semantic-color-focus-ring);
-    outline-offset: var(--semantic-dimension-border-width-medium);
+    outline: var(--semantic-dimension-border-width-focus-halo) solid
+      var(--semantic-color-focus-halo);
+    outline-offset: 0;
   }
 
   .item[data-disabled] {

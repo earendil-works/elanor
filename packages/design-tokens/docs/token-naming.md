@@ -66,18 +66,18 @@ strokeStyle, border, transition, shadow, gradient, typography
 
 The first category selects the type vocabulary:
 
-| Layer       | First category | Allowed types                                                    |
-| ----------- | -------------- | ---------------------------------------------------------------- |
-| `primitive` | `dimension`    | `borderWidth`, `breakpoint`, `fontSize`, `letterSpacing`         |
-| `primitive` | `number`       | `fontScale`, `layer`, `lineHeight`, `opacity`, `scale`           |
-| `semantic`  | `color`        | `background`, `border`, `focusRing`, `icon`, `text`              |
-| `semantic`  | `dimension`    | `borderWidth`, `breakpoint`, `radius`, `size`, `space`, `travel` |
-| `semantic`  | `number`       | `opacity`, `layer`, `scale`, `fontScale`                         |
-| `semantic`  | `fontFamily`   | `prose`, `ui`, `code`                                            |
-| `semantic`  | `fontWeight`   | `emphasis`, `ui`                                                 |
-| `semantic`  | `typography`   | `code`, `heading`, `primary`, `prose`, `secondary`, `ui`         |
-| `semantic`  | `transition`   | `feedback`, `fade`, `movement`, `pulse`, `stale`                 |
-| `semantic`  | `duration`     | `confirmation`, `loading`                                        |
+| Layer       | First category | Allowed types                                                            |
+| ----------- | -------------- | ------------------------------------------------------------------------ |
+| `primitive` | `dimension`    | `borderWidth`, `breakpoint`, `fontSize`, `letterSpacing`                 |
+| `primitive` | `number`       | `fontScale`, `layer`, `lineHeight`, `opacity`, `scale`                   |
+| `semantic`  | `color`        | `background`, `border`, `focusRing`, `icon`, `text`                      |
+| `semantic`  | `dimension`    | `blur`, `borderWidth`, `breakpoint`, `radius`, `size`, `space`, `travel` |
+| `semantic`  | `number`       | `opacity`, `layer`, `scale`, `fontScale`                                 |
+| `semantic`  | `fontFamily`   | `prose`, `ui`, `code`                                                    |
+| `semantic`  | `fontWeight`   | `emphasis`, `ui`                                                         |
+| `semantic`  | `typography`   | `code`, `heading`, `primary`, `prose`, `secondary`, `ui`                 |
+| `semantic`  | `transition`   | `feedback`, `fade`, `movement`, `pulse`, `stale`                         |
+| `semantic`  | `duration`     | `confirmation`, `loading`                                                |
 
 Context-neutral tokens stand directly under their category because they apply in any text context: `semantic.fontWeight.emphasis`, and `semantic.typography.primary` and `.secondary`, which the `textContext` modifier resolves to the UI styles in interfaces and the prose styles in long-form content. `fontWeight.ui.*` and `typography.ui.*` are for interface text only.
 
@@ -95,6 +95,8 @@ Omitted primitive categories have no `type`; continue with the next applicable p
 
 `semantic.color.focusRing` is the keyboard-focus indicator, distinct from normal borders regardless of implementation (outline, shadow, or stroke). Variants include `warning`, `negative`, and `positive`.
 
+`semantic.color.focusHalo` is the translucent halo drawn flush around a focused control, `semantic.dimension.borderWidth.focusHalo` wide. It has a `negative` variant for errors and destructive actions.
+
 ## Color fill roles
 
 Use `background.fill` for bounded shapes (buttons, chips, badges, selected options), not structural pages, panels, or dialogs. Primary fills have high prominence; secondary fills have lower prominence. Pair them with relational content roles:
@@ -111,7 +113,7 @@ semantic.color.icon.onSecondaryFill.information
 
 - **Primary:** base brand treatment plus `neutral`, `information`, `negative`, and `positive`. Base and information currently share Cerulian Blue but retain distinct intent. All primary variants use the shared `text.onPrimaryFill` and `icon.onPrimaryFill`; add a variant-specific content token only when its color must differ.
 - **Secondary:** base plus `information`, `warning`, `negative`, and `positive`. Keep background, text, and icon status paths parallel, as above.
-- **Ghost:** base plus the primary variants. Resting values are transparent, so the parent shows through. Hover/active use Cerulian Blue (base/information), Graphite (neutral), Coral Red (negative), or Turquoise Green (positive).
+- **Ghost:** base plus the primary variants. Resting values are transparent, so the parent shows through. Hover/active are translucent layers of Cerulian Blue (base/information), black or white (neutral), Coral Red (negative), or Turquoise Green (positive), so they are a step off any background they lie on: the canvas, a surface or a fill. Do not draw a ring in the same color around them; it doubles at the edge.
 - **Selected:** `background.fill.selected` is an accent for selected controls and progress indicators. Use `icon.onSelectedFill` for indicators; no text role exists because current components put no text inside this fill.
 - **Data visualization:** `background.fill.dataViz.100` through `.1000` alias the ordered `primitive.color.dataViz` palette for chart series and meter indicators. They are categorical, not status colors; assign them in series order. No content roles exist.
 
