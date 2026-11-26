@@ -79,6 +79,8 @@ Prompt's `onKeyDown` runs before the composer handles a key; call `preventDefaul
 
 The value is a list of text and chips, each chip at least `{id, label}`. Draw a chip's content with [Chip](/components/chip/), `variant="soft"` and `density="compact"`, in Root's `renderChip`: a `Chip.Icon` and a `Chip.Label` for its place, `Chip.Separator`, and a `Chip.Label` for its name. It is 20px tall in the prompt's 24px line and at most three quarters of the text's width; the name takes the ellipsis. `getChipDescription` tells screen readers what a chip is. `renderChip`, `chipDeletion` and `getChipDescription` take the chip, so each chip can differ.
 
+Keep `renderChip` stable, at module scope or with `useCallback`: the chips draw again when it changes. The undo history keeps the chips as they were, so keep state that changes, such as an upload's progress or its failure, out of the chip. Give the chip an id of yours, such as `uploadId`, not its `id`: a copy gets a new `id`. Read the live state by it in `renderChip`, from a component that subscribes to it. To cancel an upload or start it again, compare the chips in `onValueChange`'s value with your uploads: Undo brings a removed chip back.
+
 In the prompt a chip is one character, and it goes as text does:
 
 - Left or Right beside a chip selects it, and a second press moves the caret past it. Shift and an arrow extend the selection over it. A press or a tap on a chip in the focused prompt selects it; a tap beside it places the caret.

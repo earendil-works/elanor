@@ -55,7 +55,7 @@ export interface ComposerRootProps<T extends ComposerChip = ComposerChip> {
     | undefined;
   /** The value as text: what is copied, what a form submits, and what a `revert` chip becomes. */
   readonly toText: (value: ComposerValue<T>) => string;
-  /** Draws a chip's content, usually a `Chip.Root`, `variant="soft"` and `density="compact"`. */
+  /** Draws a chip's content, usually a soft, compact `Chip.Root`. */
   readonly renderChip?: ((chip: T) => ReactNode) | undefined;
   /** What Backspace and Delete do to a chip beside the caret, for all chips or per chip. */
   readonly chipDeletion?: ComposerChipDeletion | ((chip: T) => ComposerChipDeletion) | undefined;
