@@ -11,10 +11,10 @@
       var(--semantic-dimension-space-padding-medium) -
         var(--semantic-dimension-border-width-default)
     );
-    border: var(--semantic-dimension-border-width-default) solid
-      var(--semantic-color-border-secondary);
+    border: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-edge);
     border-radius: var(--semantic-dimension-radius-small);
     outline: 0;
+    box-shadow: var(--semantic-shadow-popup);
     background: var(--semantic-color-background-canvas);
     color: var(--semantic-color-text-primary);
     font: var(--semantic-typography-ui-primary);

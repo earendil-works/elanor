@@ -10,6 +10,7 @@ import {
 } from 'react';
 
 import {classes} from '../utils/class-names.ts';
+import type {ModalBackdropVariant} from './modal.tsx';
 
 import styles from './modal.module.css';
 
@@ -69,14 +70,17 @@ export function ModalStaticTrigger({ref, ...props}: ModalStaticTriggerProps) {
 }
 
 export interface ModalStaticPopupProps extends DialogHTMLAttributes<HTMLDialogElement> {
+  /** The Backdrop's `variant`; this part renders the backdrop. */
+  readonly backdropVariant?: ModalBackdropVariant | undefined;
   /** More `enhance` names for this element, space-separated; they run after the component's own. */
   readonly 'data-elanor'?: string;
   readonly ref?: Ref<HTMLDialogElement> | undefined;
 }
 
-/** The dialog, centered over the page's backdrop. */
+/** The dialog, centered over the page's backdrop. Renders `data-backdrop-variant`. */
 export function ModalStaticPopup({
   'data-elanor': pageBehaviors,
+  backdropVariant = 'default',
   ref,
   className,
   ...props
@@ -90,6 +94,7 @@ export function ModalStaticPopup({
       ref={ref}
       id={dialogId}
       data-elanor={pageBehaviors ? `modal ${pageBehaviors}` : 'modal'}
+      data-backdrop-variant={backdropVariant}
       data-closed=""
       className={classes(styles.popup, className)}
     />

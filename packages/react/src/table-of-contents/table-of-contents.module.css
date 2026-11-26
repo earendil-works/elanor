@@ -238,7 +238,10 @@
     overflow: auto;
     overscroll-behavior: contain;
     border-radius: var(--semantic-dimension-radius-small);
-    outline: 0;
+    /* stylelint-disable design-tokens/token-property-compatibility -- This inset outline is the panel's edge, not a focus ring. */
+    outline: var(--semantic-dimension-border-width-default) solid var(--semantic-color-border-edge);
+    /* stylelint-enable design-tokens/token-property-compatibility */
+    outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
     box-shadow: var(--semantic-shadow-popup);
     background: var(--semantic-color-background-canvas);
     color: var(--semantic-color-text-primary);
@@ -299,10 +302,6 @@
     .indicator::before {
       background: CanvasText;
       forced-color-adjust: none;
-    }
-
-    .menuPopup {
-      border: var(--semantic-dimension-border-width-default) solid CanvasText;
     }
 
     .menuPopup .link:focus-visible,
