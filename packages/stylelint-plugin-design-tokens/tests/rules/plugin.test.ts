@@ -444,6 +444,20 @@ describe(`${tokenPropertyCompatibilityName} for motion`, () => {
     ).toHaveLength(0);
   });
 
+  it('accepts state durations as delays, not as durations', async () => {
+    const warnings = await lint(
+      `.a {
+      transition-delay: var(--semantic-duration-loading-delay);
+      animation-delay: var(--semantic-duration-loading-delay);
+      animation-duration: var(--semantic-duration-confirmation);
+    }`,
+      tokenPropertyCompatibilityName,
+    );
+    expect(warnings.map((warning) => warning.text)).toEqual([
+      expect.stringContaining('wrong role for "animation-duration"'),
+    ]);
+  });
+
   it('lets a configured transform role replace the roles inside transform functions', async () => {
     expect(
       await lint(

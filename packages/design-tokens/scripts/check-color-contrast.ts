@@ -20,7 +20,7 @@ type Mode = (typeof MODES)[number];
 type ColorToken =
   | {readonly kind: 'alias'; readonly path: string}
   | {readonly kind: 'color'; readonly color: Color}
-  | {readonly kind: 'pointer'};
+  | {readonly kind: 'pointer'; readonly value: JsonValue};
 
 interface TokenTree {
   readonly token: ColorToken | undefined;
@@ -31,11 +31,15 @@ interface ColorDocuments {
   readonly primitive: TokenTree;
   readonly light: TokenTree;
   readonly dark: TokenTree;
+  /** The primitive token files as JSON, which JSON Pointer colors refer into. */
+  readonly pointerRoot: JsonValue;
 }
 
 interface ContrastPair {
   readonly foreground: string;
   readonly background: string;
+  /** A translucent foreground is laid over this color first, as an edge drawn inside a fill. */
+  readonly over?: string;
 }
 
 interface ContrastRule {
@@ -126,7 +130,7 @@ function decodeTokenValue(value: JsonValue, label: string): ColorToken {
   const components = fields.get('components');
   const alpha = fields.get('alpha');
   if (hasJsonPointer(colorSpace) || hasJsonPointer(alpha) || hasJsonPointerItems(components)) {
-    return {kind: 'pointer'};
+    return {kind: 'pointer', value};
   }
   if (
     colorSpace === undefined ||
@@ -365,9 +369,17 @@ function createRules(paths: readonly string[]): ContrastRule[] {
       ),
     },
     {
-      category: 'fill/primary-boundary',
+      // A primary fill's outline is the edge drawn inside it (`border.edge`, over the fill), which stands apart
+      // from the page where a deep fill alone may not.
+      category: 'fill/primary-edge',
       threshold: REQUIRED_NON_TEXT_CONTRAST,
-      pairs: everyCombination(primaryFills, page),
+      pairs: primaryFills.flatMap((fill) =>
+        page.map((background) => ({
+          foreground: requirePath(pathSet, 'semantic.color.border.edge'),
+          background,
+          over: fill,
+        })),
+      ),
     },
     {
       category: 'text/on-secondary-fill',
@@ -475,7 +487,7 @@ function createRules(paths: readonly string[]): ContrastRule[] {
         [
           requirePath(pathSet, 'semantic.color.background.fill.dataViz.100'),
           requirePath(pathSet, 'semantic.color.border.warning'),
-          requirePath(pathSet, 'semantic.color.background.fill.primary.negative'),
+          requirePath(pathSet, 'semantic.color.border.negative'),
         ],
         [requirePath(pathSet, 'semantic.color.background.fill.secondary')],
       ),
@@ -490,12 +502,13 @@ function createChecks(paths: readonly string[]): ContrastCheck[] {
 
   for (const mode of MODES) {
     for (const rule of rules) {
-      for (const {foreground, background} of rule.pairs) {
+      for (const {foreground, background, over} of rule.pairs) {
         checks.push({
           mode,
           category: rule.category,
           foreground,
           background,
+          ...(over === undefined ? {} : {over}),
           threshold: rule.threshold,
         });
       }
@@ -520,12 +533,58 @@ function resolveColor(
   const document = tokenPath.startsWith('primitive.') ? documents.primitive : documents[mode];
   const token = tokenAt(document, tokenPath);
   if (token.kind === 'color') return token.color;
-  if (token.kind === 'pointer') {
-    throw new Error(
-      `${mode} ${tokenPath} uses a JSON Pointer color and cannot be contrast-checked`,
-    );
-  }
+  if (token.kind === 'pointer')
+    return resolvePointerColor(token.value, documents.pointerRoot, tokenPath);
   return resolveColor(mode, token.path, documents, [...stack, cycleKey]);
+}
+
+/** Resolves a color composed of JSON Pointers into the primitive files, such as a translucent primitive. */
+function resolvePointerColor(value: JsonValue, root: JsonValue, label: string): Color {
+  const at = (field: JsonValue | undefined): JsonValue | undefined => {
+    if (field === undefined || !isJsonObject(field) || typeof field.$ref !== 'string') return field;
+    let node: JsonValue = root;
+    for (const segment of field.$ref.replace(/^#\//, '').split('/')) {
+      if (!isJsonObject(node) && !Array.isArray(node)) {
+        throw new Error(`${label}: unresolvable pointer ${field.$ref}`);
+      }
+      const next: JsonValue | undefined = Array.isArray(node)
+        ? node[Number(segment)]
+        : node[segment];
+      if (next === undefined) throw new Error(`${label}: unresolvable pointer ${field.$ref}`);
+      node = next;
+    }
+    return node;
+  };
+  if (!isJsonObject(value)) throw new Error(`${label}: expected a color object`);
+  const colorSpace = at(value.colorSpace);
+  const components = Array.isArray(value.components) ? value.components.map(at) : [];
+  const alpha = at(value.alpha);
+  const [first, second, third] = components;
+  if (
+    typeof colorSpace !== 'string' ||
+    typeof first !== 'number' ||
+    typeof second !== 'number' ||
+    typeof third !== 'number' ||
+    (alpha !== undefined && typeof alpha !== 'number')
+  ) {
+    throw new Error(`${label}: expected a three-component color behind its pointers`);
+  }
+  return new Color(colorSpace, [first, second, third], alpha ?? 1);
+}
+
+/** Lays a translucent color over an opaque one, in sRGB as browsers blend. */
+function composite(top: Color, under: Color): Color {
+  const alpha = top.alpha;
+  const t = top.to('srgb').coords;
+  const u = under.to('srgb').coords;
+  return new Color(
+    'srgb',
+    [0, 1, 2].map((index) => (t[index] ?? 0) * alpha + (u[index] ?? 0) * (1 - alpha)) as [
+      number,
+      number,
+      number,
+    ],
+  );
 }
 
 /** Returns the token stored at a logical path, including explicit `$root`. */
@@ -557,10 +616,25 @@ async function main(): Promise<void> {
     readColorTokenFile(path.join(TOKEN_DIRECTORY, 'semantic', 'color', 'light.tokens.json')),
     readColorTokenFile(path.join(TOKEN_DIRECTORY, 'semantic', 'color', 'dark.tokens.json')),
   ]);
-  const documents = {primitive, light, dark};
+  const primitiveFiles = await Promise.all(
+    ['color.tokens.json', 'number.tokens.json'].map(async (name) => {
+      const file = path.join(TOKEN_DIRECTORY, 'primitive', name);
+      return parseJson(await readFile(file, 'utf8'), path.relative(ROOT_DIRECTORY, file));
+    }),
+  );
+  const pointerRoot: JsonValue = {
+    primitive: Object.assign(
+      {},
+      ...primitiveFiles.map((file) =>
+        isJsonObject(file) && isJsonObject(file.primitive) ? file.primitive : {},
+      ),
+    ),
+  };
+  const documents = {primitive, light, dark, pointerRoot};
   const checks = createChecks(sharedRestingPaths(light, dark));
   const checkKeys = checks.map(
-    ({mode, category, foreground, background}) => `${mode}|${category}|${foreground}|${background}`,
+    ({mode, category, foreground, background, over}) =>
+      `${mode}|${category}|${foreground}|${over ?? ''}|${background}`,
   );
   const duplicateCheckKeys = checkKeys.filter((key, index) => checkKeys.indexOf(key) !== index);
   if (duplicateCheckKeys.length > 0) {
@@ -570,7 +644,11 @@ async function main(): Promise<void> {
   }
 
   const results: ContrastResult[] = checks.map((check) => {
-    const foregroundColor = resolveColor(check.mode, check.foreground, documents);
+    const ownColor = resolveColor(check.mode, check.foreground, documents);
+    const foregroundColor =
+      check.over === undefined
+        ? ownColor
+        : composite(ownColor, resolveColor(check.mode, check.over, documents));
     const backgroundColor = resolveColor(check.mode, check.background, documents);
     return {
       ...check,
@@ -589,7 +667,7 @@ async function main(): Promise<void> {
       console.error(
         [
           `- ${failure.mode} ${failure.category}:`,
-          `${failure.foreground} (${displayColor(failure.foregroundColor)})`,
+          `${failure.foreground}${failure.over === undefined ? '' : ` over ${failure.over}`} (${displayColor(failure.foregroundColor)})`,
           `on ${failure.background} (${displayColor(failure.backgroundColor)})`,
           `is ${failure.ratio.toFixed(2)}:1; requires ${failure.threshold.toFixed(1)}:1`,
         ].join(' '),

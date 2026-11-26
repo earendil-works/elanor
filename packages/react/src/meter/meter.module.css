@@ -30,7 +30,7 @@
   }
 
   .root[data-semantic='negative'] .indicator {
-    background: var(--semantic-color-background-fill-primary-negative);
+    background: var(--semantic-color-border-negative);
   }
 
   @media (forced-colors: active) {
