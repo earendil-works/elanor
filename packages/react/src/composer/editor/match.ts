@@ -51,14 +51,14 @@ function pointBefore(text: string, index: number): string | undefined {
 const endsWord = (character: string | undefined): boolean =>
   character !== undefined && (character === CHIP_CHARACTER || WORD_END.test(character));
 
+const FULL_WIDTH = /[\uFF01-\uFF5E]/g;
+
 /**
  * Full-width ASCII (U+FF01–FF5E) as ASCII, so a Japanese or Chinese keyboard's `＠` matches `@`.
  * By offset rather than NFKC, which can change the length and so the offsets.
  */
 const halfWidth = (text: string): string =>
-  text.replace(/[\uFF01-\uFF5E]/g, (character) =>
-    String.fromCharCode(character.charCodeAt(0) - 0xfee0),
-  );
+  text.replace(FULL_WIDTH, (character) => String.fromCharCode(character.charCodeAt(0) - 0xfee0));
 
 /** Whether `text` still has the trigger `character`, in either width, at `index`. */
 export const hasTrigger = (text: string, index: number, character: string): boolean =>
