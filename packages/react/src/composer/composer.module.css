@@ -5,11 +5,9 @@
    sets it. */
 @layer elanor.components {
   /*
-   * `--composer-border` is the field's thin border and `--composer-radius` its corners', a message
-   * bubble's. `--composer-padding` is the field's padding, where its buttons sit; with the border,
-   * a fixed size. `--composer-prompt-padding` is the prompt's block padding. `--composer-indent`
-   * indents the text to the icons' keyline, a fifth of an icon inside its box, so text and icons
-   * share an edge to the eye. Declared on the scroll area too, so a prompt outside a field has them.
+   * The radius is a message bubble's. The padding gives up the border's width, so the buttons sit
+   * `space.padding-small` from the frame's edge. The indent puts the text on the icons' keyline, a
+   * fifth of an icon inside its box. On the scroll area too, for a prompt outside a field.
    */
   .panel,
   .field,
@@ -19,8 +17,7 @@
     --composer-padding: calc(
       var(--semantic-dimension-space-padding-small) - var(--composer-border)
     );
-    /* From an IconButton's edge to its icon: its default density, `size.medium` with the icon
-       centred in it. */
+    /* IconButton's default density: the icon centred in `size.medium`. */
     --composer-icon-inset: calc(
       (var(--semantic-dimension-size-medium) - var(--semantic-dimension-size-icon)) / 2
     );
@@ -137,15 +134,12 @@
     list-style: none;
   }
 
-  /*
-   * The text's scroll area: `maxRows` lines at most, fewer in a low window such as a phone's above
-   * its keyboard. In a field it reaches the field's sides, so its scrollbar is in the field's
-   * padding, clear of the text.
-   */
+  /* Reaches the field's sides, so the scrollbar sits in the field's padding, clear of the text. */
   .field .scroll {
     margin-inline: calc(-1 * var(--composer-padding));
   }
 
+  /* At most `maxRows` lines; fewer in a low window, such as a phone's above its keyboard. */
   .scroll {
     max-block-size: min(
       calc(var(--composer-prompt-max-rows) * 1lh + 2 * var(--composer-prompt-padding)),
@@ -169,8 +163,8 @@
   }
 
   /*
-   * One line at least, then as tall as its text: the scroll area scrolls, never the text. No focus
-   * ring of its own: the field's frame is the field.
+   * As tall as its text: the scroll area scrolls, never the prompt. No outline: the frame marks the
+   * field and the caret the focus.
    */
   .prompt {
     position: relative;
