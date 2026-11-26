@@ -6,7 +6,7 @@
 @layer elanor.components {
   /*
    * The radius is a message bubble's. The padding gives up the border's width, so the buttons sit
-   * `space.padding-small` from the frame's edge. The indent puts the text on the icons' keyline, a
+   * `space.padding.small` from the frame's edge. The indent puts the text on the icons' keyline, a
    * fifth of an icon inside its box. On the scroll area too, for a prompt outside a field.
    */
   .panel,
