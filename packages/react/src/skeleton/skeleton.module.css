@@ -5,10 +5,16 @@
     background: var(--semantic-color-background-skeleton);
   }
 
+  /* Hidden for the loading delay, keeping their room. */
   .skeleton[data-loading],
   .text {
-    animation: pulse var(--semantic-transition-pulse-duration)
-      var(--semantic-transition-pulse-timing-function) infinite alternate;
+    /* stylelint-disable design-tokens/no-hardcoded-token-values -- The reveal is a step, not motion. */
+    animation:
+      reveal 0s backwards,
+      pulse var(--semantic-transition-pulse-duration)
+        var(--semantic-transition-pulse-timing-function) infinite alternate;
+    /* stylelint-enable design-tokens/no-hardcoded-token-values */
+    animation-delay: var(--semantic-duration-loading-delay);
   }
 
   .skeleton[data-loading] {
@@ -37,6 +43,12 @@
     inline-size: 60%;
   }
 
+  @keyframes reveal {
+    from {
+      visibility: hidden;
+    }
+  }
+
   @keyframes pulse {
     from {
       opacity: var(--semantic-number-opacity-visible);
@@ -56,7 +68,7 @@
 
     .skeleton[data-loading],
     .text {
-      animation: none;
+      animation-name: reveal;
     }
   }
 }

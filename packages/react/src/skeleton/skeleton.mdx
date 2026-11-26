@@ -25,6 +25,18 @@ Skeleton covers its content in `semantic.color.background.skeleton` and pulses w
 
 <Demo example="./examples/loading.tsx" />
 
+## Delay
+
+Skeleton and SkeletonText stay hidden for `semantic.duration.loading.delay`, keeping their room, then show and pulse. The delay starts when Skeleton's `loading` turns on and when SkeletonText mounts. Fast loads appear without a placeholder, so they don't flash. The delay is `0ms` by default; set it for your project at `:root`, or on a container for everything inside it:
+
+```css
+:root {
+  --semantic-duration-loading-delay: 300ms;
+}
+```
+
+<Demo example="./examples/delay.tsx" />
+
 ## Text
 
 SkeletonText shows placeholder lines in the size of the surrounding text. Put it inside [Text](/components/text/) or [Heading](/components/heading/). In a [Stack](/components/stack/), use `align="stretch"` so the lines fill the width.
