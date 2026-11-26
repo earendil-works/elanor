@@ -51,6 +51,7 @@ export type ComposerChangeReason =
   | 'history-undo'
   | 'history-redo'
   | 'item-press'
+  | 'list-navigation'
   | 'imperative-action'
   | 'form-reset';
 
@@ -138,6 +139,12 @@ export interface ComposerActions<T extends ComposerChip = ComposerChip> {
   getValue(): ComposerValue<T>;
   /** Calls `onAttach` (reason `api`) at the caret after selected text; ignores an empty list. */
   attach(files: File[]): void;
+  /**
+   * Whether the caret is on the first line (`up`) or the last (`down`) as the text wraps, with
+   * nothing selected, so that ArrowUp or ArrowDown has no line to move it to. `false` while the
+   * prompt isn't focused, a chip is selected or an input method composes.
+   */
+  atEdge(edge: 'up' | 'down'): boolean;
 }
 
 /** The editor without its chip type, for parts that read it from context. */
@@ -183,6 +190,22 @@ export interface EditorBinding {
   /** For `useValue`: fires on value changes only. `getValue` keeps its identity until then. */
   subscribeValue(listener: () => void): () => void;
   getValue(): ComposerValue<ComposerChip>;
+  /**
+   * The edge a plain ArrowUp or ArrowDown leaves the text at, for recalling messages: in an
+   * editable prompt, with no list at the caret open and nothing composing.
+   */
+  recallEdge(event: KeyboardEvent): 'up' | 'down' | undefined;
+  /** Whether the text is a recalled message nobody changed since. */
+  recalling(): boolean;
+  /** Whether the text is `value`, with its chips as the editor names them. */
+  shows(value: ComposerValue<ComposerChip>): boolean;
+  /**
+   * Shows a recalled message, with the caret at the end. The first is an undo step of its own,
+   * and the next ones replace it, so Undo gives back the text from before. `false` when refused.
+   */
+  recall(value: ComposerValue<ComposerChip>, event: KeyboardEvent): boolean;
+  /** Back to the text from before the recall, dropping its undo step. */
+  recallDraft(event: KeyboardEvent): void;
 }
 
 export interface EditorOptions<T extends ComposerChip> {
@@ -469,6 +492,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
    * deleting (`group` `insert` and `delete`) join the open step of their group while each edit
    * starts where the last one ended (`at` and `#lastEnd`) within `GROUP_PAUSE`. Typing joins one
    * step until a new word starts after a space (`#afterSpace`). `seal()` closes the open step.
+   * Recalled messages (`group` `recall`) replace one another in one step until another edit.
    * Every other edit (paste, drop, cut, one key on a chip, `insert`, an input method's commit, a
    * form reset) is a step of its own; a paste `getPastedValue` changed records its text as the
    * step before it (`prior`). Undo and redo move through the history without recording.
@@ -840,10 +864,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       (isApple() ? event.metaKey : event.ctrlKey) &&
       event.shiftKey &&
       (event.key.toLowerCase() === 'v' || event.code === 'KeyV');
-    // Safari sends the key that ends a composition after its end, as key 229. A keyboard that
-    // sends Enter as 229 (`key` "Unidentified", on some Android keyboards) gets a new line.
-    if (event.defaultPrevented || event.isComposing || this.#composing || event.keyCode === 229)
-      return;
+    if (event.defaultPrevented || this.#composingKey(event)) return;
     if (this.#keyHandler?.(event)) {
       event.preventDefault();
       return;
@@ -890,6 +911,60 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       onSubmit(this.#latest, {event});
     }
   };
+
+  /**
+   * Safari sends the key that ends a composition after its end, as key 229. A keyboard that sends
+   * Enter as 229 (`key` "Unidentified", on some Android keyboards) gets a new line.
+   */
+  #composingKey(event: KeyboardEvent): boolean {
+    return event.isComposing || this.#composing || event.keyCode === 229;
+  }
+
+  recallEdge(event: KeyboardEvent): 'up' | 'down' | undefined {
+    const edge = event.key === 'ArrowUp' ? 'up' : event.key === 'ArrowDown' ? 'down' : undefined;
+    if (
+      !edge ||
+      event.defaultPrevented ||
+      event.shiftKey ||
+      event.altKey ||
+      event.ctrlKey ||
+      event.metaKey ||
+      this.#composingKey(event) ||
+      !this.options.editable ||
+      this.#keyHandler
+    )
+      return undefined;
+    return this.actions.atEdge(edge) ? edge : undefined;
+  }
+
+  recalling(): boolean {
+    return this.#history.isOpen('recall') && sameValue(this.#history.current().value, this.#latest);
+  }
+
+  shows(value: ComposerValue<ComposerChip>): boolean {
+    // SAFETY: as with `ComposerValue<T>` in the hooks, the caller names this editor's chip type.
+    return sameValue(this.#normalizeGiven(value as ComposerValue<T>), this.#latest);
+  }
+
+  recall(value: ComposerValue<ComposerChip>, event: KeyboardEvent): boolean {
+    if (!this.options.editable) return false;
+    // SAFETY: as in `shows`.
+    const given = value as ComposerValue<T>;
+    return this.#commit(given, caretAt(valueLength(given)), 'list-navigation', event, {
+      group: 'recall',
+    });
+  }
+
+  recallDraft(event: KeyboardEvent): void {
+    const draft = this.#history.previous();
+    if (!draft || !this.recalling()) return;
+    const back =
+      sameValue(draft.value, this.#latest) ||
+      this.#commit(draft.value, caretAt(valueLength(draft.value)), 'list-navigation', event, {
+        record: false,
+      });
+    if (back) this.#history.drop();
+  }
 
   /**
    * Left or Right towards a chip beside the caret: the first press selects it for removal, as a
@@ -980,7 +1055,32 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     attach: (files) => {
       if (files.length) this.#attach(files, this.#fileCaret(), {reason: 'api'});
     },
+    atEdge: (edge) => {
+      const view = this.#view;
+      const range = view?.selection();
+      if (!this.#focused || !view || !range || range.start !== range.end) return false;
+      if (this.#armed || this.#composing) return false;
+      // A line break between the caret and the edge settles it; within a line, the layout does.
+      const text = offsetText(this.#latest);
+      const caret = range.start;
+      if (edge === 'up') {
+        if (text.slice(0, caret).includes('\n')) return false;
+        return caret === 0 || view.onSameLine(0, this.#charAtCaret(text, caret));
+      }
+      if (text.includes('\n', caret)) return false;
+      return (
+        caret === text.length || view.onSameLine(text.length - 1, this.#charAtCaret(text, caret))
+      );
+    },
   };
+
+  /**
+   * The character on the caret's line: the one after it, where the caret shows when the line wraps
+   * before it, else the one before it, at the end of a line.
+   */
+  #charAtCaret(text: string, caret: number): number {
+    return caret < text.length && text[caret] !== '\n' ? caret : caret - 1;
+  }
 
   pick(files: File[], event: Event): void {
     this.#attach(files, this.#fileCaret(), {reason: 'picker', event});

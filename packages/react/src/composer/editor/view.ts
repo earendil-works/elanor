@@ -372,6 +372,30 @@ export class EditorView<T extends ComposerChip> {
     };
   }
 
+  /** The box of the character or chip at `offset`. */
+  #boxAt(offset: number): DOMRect {
+    const [node, index] = this.#pointAt(offset);
+    // A chip's point is in the text before its host, with only zero-width spaces after it.
+    const host =
+      node instanceof Text && realLength(node.data.slice(index)) === 0 ? node.nextSibling : null;
+    if (host instanceof HTMLElement && host.hasAttribute(HOST)) return host.getBoundingClientRect();
+    const range = document.createRange();
+    range.setStart(node, index);
+    range.setEnd(...this.#pointAt(offset + 1));
+    return range.getBoundingClientRect();
+  }
+
+  /**
+   * Whether the characters or chips at two offsets are laid out on the same line: their middles are
+   * less than half the shorter one's height apart. A chip is shorter than the line it sits in.
+   */
+  onSameLine(a: number, b: number): boolean {
+    const first = this.#boxAt(a);
+    const second = this.#boxAt(b);
+    const middle = (box: DOMRect) => box.top + box.height / 2;
+    return Math.abs(middle(first) - middle(second)) < Math.min(first.height, second.height) / 2;
+  }
+
   /** `data-selected` on the chips in the selection and the armed one, `data-dragging` on those dragged. */
   mark(attribute: 'data-selected' | 'data-dragging', ids: ReadonlySet<string>): void {
     for (const [id, {host}] of this.#hosts) host.toggleAttribute(attribute, ids.has(id));

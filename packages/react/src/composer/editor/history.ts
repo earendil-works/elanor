@@ -3,14 +3,14 @@
 // THIRD-PARTY-NOTICES in this package.
 //
 // A run of typing or of deleting is one undo step until a pause, a `seal()` or an edit of another
-// group. Ungrouped edits are steps of their own. The editor decides what seals a step: see "Undo
-// steps" on `Editor`'s `#commit`.
+// group. A run of recalled messages is one step however long it takes. Ungrouped edits are steps
+// of their own. The editor decides what seals a step: see "Undo steps" on `Editor`'s `#commit`.
 
 const LIMIT = 100;
 /** Milliseconds. */
 const GROUP_PAUSE = 500;
 
-export type EditGroup = 'insert' | 'delete';
+export type EditGroup = 'insert' | 'delete' | 'recall';
 
 export class History<State> {
   #entries: State[];
@@ -30,7 +30,8 @@ export class History<State> {
   record(state: State, group?: EditGroup): void {
     const at = Date.now();
     this.#entries = this.#entries.slice(0, this.#index + 1);
-    if (group && this.#open?.group === group && at - this.#open.at < GROUP_PAUSE) {
+    const open = this.#open;
+    if (group && open?.group === group && (group === 'recall' || at - open.at < GROUP_PAUSE)) {
       this.#entries[this.#index] = state;
     } else {
       this.#entries.push(state);
@@ -42,6 +43,26 @@ export class History<State> {
   }
 
   seal(): void {
+    this.#open = undefined;
+  }
+
+  /** Whether the current step takes the next edit of `group`. */
+  isOpen(group: EditGroup): boolean {
+    return this.#open?.group === group;
+  }
+
+  /** The state of the step before the current one. */
+  previous(): State | undefined {
+    return this.#entries[this.#index - 1];
+  }
+
+  /** Removes the current step, with nothing to redo, so the one before is current. */
+  drop(): void {
+    const state = this.previous();
+    if (state === undefined) return;
+    this.#entries = this.#entries.slice(0, this.#index);
+    this.#index -= 1;
+    this.#current = state;
     this.#open = undefined;
   }
 
