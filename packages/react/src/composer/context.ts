@@ -2,6 +2,7 @@ import {createContext, use, useRef, useSyncExternalStore, type RefObject} from '
 
 import type {ComposerActions, EditorBinding} from './editor/editor.ts';
 import type {ComposerChip, ComposerValue} from './editor/model.ts';
+import {createStore, type Store} from './store.ts';
 
 export interface ComposerStatus {
   /** Nothing is written: no text and no chips. */
@@ -31,31 +32,13 @@ export interface PromptPopup {
 }
 
 /** `null` while no `Composer.Suggestions` is mounted. */
-export interface PromptPopupStore {
-  readonly get: () => PromptPopup | null;
-  readonly set: (popup: PromptPopup | null) => void;
-  readonly subscribe: (listener: () => void) => () => void;
-}
+export type PromptPopupStore = Store<PromptPopup | null>;
 
 const samePopup = (a: PromptPopup | null, b: PromptPopup | null): boolean =>
   a === b || (a !== null && b !== null && a.controls === b.controls && a.active === b.active);
 
-export function createPromptPopupStore(): PromptPopupStore {
-  let current: PromptPopup | null = null;
-  const listeners = new Set<() => void>();
-  return {
-    get: () => current,
-    set: (popup) => {
-      if (samePopup(popup, current)) return;
-      current = popup;
-      for (const listener of [...listeners]) listener();
-    },
-    subscribe: (listener) => {
-      listeners.add(listener);
-      return () => listeners.delete(listener);
-    },
-  };
-}
+export const createPromptPopupStore = (): PromptPopupStore =>
+  createStore<PromptPopup | null>(null, samePopup);
 
 /** Stays the same object for Root's lifetime; its functions read Root's latest props. */
 export interface ComposerMeta {

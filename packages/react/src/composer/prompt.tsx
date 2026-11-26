@@ -1,13 +1,6 @@
 import {mergeProps} from '@base-ui/react/merge-props';
 import {useRender} from '@base-ui/react/use-render';
-import {
-  useEffect,
-  useLayoutEffect,
-  useRef,
-  useSyncExternalStore,
-  type CSSProperties,
-  type RefObject,
-} from 'react';
+import {useEffect, useLayoutEffect, useRef, type CSSProperties, type RefObject} from 'react';
 
 import * as ScrollArea from '../scroll-area/index.ts';
 import {
@@ -26,6 +19,7 @@ import {
   useComposerStatus,
   useComposerText,
 } from './context.ts';
+import {useStoreSelector} from './store.ts';
 
 import styles from './composer.module.css';
 
@@ -84,7 +78,7 @@ export function ComposerPrompt({
   const {labelId, getDescriptionProps} = useLabelableContext();
   const id = useLabelableId({id: idProp});
   const control = useRef<HTMLDivElement>(null);
-  const popup = useSyncExternalStore(meta.popup.subscribe, meta.popup.get, meta.popup.get);
+  const popup = useStoreSelector(meta.popup, (state) => state);
 
   const editable = !disabled && !readOnly;
   // Suggestions never open in a prompt that isn't editable, so it announces no popup.
