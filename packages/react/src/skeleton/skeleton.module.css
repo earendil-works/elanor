@@ -5,10 +5,9 @@
     background: var(--semantic-color-background-skeleton);
   }
 
-  /* Hidden for the loading delay, keeping their room. */
   .skeleton[data-loading],
   .text {
-    /* stylelint-disable design-tokens/no-hardcoded-token-values -- The reveal is a step, not motion. */
+    /* stylelint-disable design-tokens/no-hardcoded-token-values -- Zero duration keeps the delayed visibility change discrete. */
     animation:
       reveal 0s backwards,
       pulse var(--semantic-transition-pulse-duration)
@@ -31,9 +30,8 @@
     flex-direction: column;
   }
 
-  /* A 1em bar centered in each line box. */
   .line {
-    /* stylelint-disable design-tokens/no-hardcoded-token-values -- The bar stands in for one line of text, as tall as its font size. */
+    /* stylelint-disable design-tokens/no-hardcoded-token-values -- The bar is intrinsically one em tall and centered in its line box. */
     block-size: 1em;
     margin-block: calc((1lh - 1em) / 2);
     /* stylelint-enable design-tokens/no-hardcoded-token-values */

@@ -9,10 +9,10 @@
         "$description": "Use for how long a confirmation stays, such as a copy button's check after copying, before the control returns to its resting state."
       },
       "loading": {
-        "$description": "When loading indicators, such as skeletons, appear. Override the delay on a container to change it for everything inside it.",
+        "$description": "Timing shared by loading indicators inside a container.",
         "delay": {
           "$value": "{primitive.duration.0}",
-          "$description": "Use for how long something must be loading before its loading indicator shows; content that arrives sooner appears without one, so fast loads don't flash."
+          "$description": "Time from the start of loading until its indicator appears."
         }
       },
       "transcript": {

@@ -22,10 +22,14 @@ export default function SkeletonDelay() {
         Owner: <Skeleton loading={loading}>{owner}</Skeleton>
       </Text>
       <Stack direction="row" gap="small">
-        <Button hierarchy="secondary" onClick={() => load('Grace Hopper', 100)}>
+        <Button hierarchy="secondary" disabled={loading} onClick={() => load('Grace Hopper', 100)}>
           Fast answer
         </Button>
-        <Button hierarchy="secondary" onClick={() => load('Katherine Johnson', 1500)}>
+        <Button
+          hierarchy="secondary"
+          disabled={loading}
+          onClick={() => load('Katherine Johnson', 1500)}
+        >
           Slow answer
         </Button>
       </Stack>

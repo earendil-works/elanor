@@ -27,7 +27,7 @@ Skeleton covers its content in `semantic.color.background.skeleton` and pulses w
 
 ## Delay
 
-Skeleton and SkeletonText stay hidden for `semantic.duration.loading.delay`, keeping their room, then show and pulse. The delay starts when Skeleton's `loading` turns on and when SkeletonText mounts. Fast loads appear without a placeholder, so they don't flash. The delay is `0ms` by default; set it for your project at `:root`, or on a container for everything inside it:
+Skeleton and SkeletonText reserve their space but stay hidden for `semantic.duration.loading.delay`. The delay starts when Skeleton's `loading` becomes true or SkeletonText mounts, so fast loads skip the placeholder. It defaults to `0ms`; override it at `:root` or on a container:
 
 ```css
 :root {

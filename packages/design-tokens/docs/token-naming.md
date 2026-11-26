@@ -198,7 +198,7 @@ Items under `movement` name a purpose (`popup`, `disclosure`, `indicator`) or, a
 
 Durations of states rather than motion are `semantic.duration` tokens, not transitions: `semantic.duration.confirmation` is how long a confirmation, such as a copy button's check, stays before the control returns to rest. Nothing animates over it, so it stays the same when the reader prefers reduced motion. Components that time a state in JavaScript read it from the element's computed style.
 
-`semantic.duration.loading.delay` is how long something must be loading before its indicator, such as a skeleton, shows. It is generic, not per component, so a project or a container sets it once for every indicator inside it.
+`semantic.duration.loading.delay` sets how long a loading indicator waits before it appears. Projects or containers can override it for all indicators inside them.
 
 Primitive easings are named by shape, never by use: `primitive.cubicBezier.<direction>[.<curve>]`. Directions are `linear`, `easeIn`, `easeOut`, and `easeInOut`; `$root` is the CSS keyword curve; curve families from gentle to strong are `quad`, `cubic`, `quart`, `quint`, and `expo`, and `back` overshoots. Add only standard curves.
 
