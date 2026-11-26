@@ -86,7 +86,9 @@ export function OverflowTooltip({store}: {store: OverflowTooltipStore}) {
       disableHoverablePopup
     >
       <Tooltip.Portal>
+        {/* `align="start"` follows the positioner's computed direction, so `dir="auto"` lines the full name up with the label. */}
         <Tooltip.Positioner
+          dir="auto"
           anchor={tip.anchor}
           side="bottom"
           align="start"
