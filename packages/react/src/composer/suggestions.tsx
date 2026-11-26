@@ -212,7 +212,8 @@ export interface ComposerSuggestionsProps<I> {
  * prompt: arrow keys move, Enter or Tab picks, and Escape closes the list with `preventDefault()`.
  * While items show, Enter never submits. After Escape, that trigger stays closed until a new one is
  * typed. Without items it opens only for a `Composer.SuggestionEmpty`, and never in a disabled or
- * read-only prompt. A second one in the same `Composer.Root` throws.
+ * read-only prompt, or on a message `Composer.useRecall` brought back until it's edited. A second
+ * one in the same `Composer.Root` throws.
  */
 export function ComposerSuggestions<I>({
   match,
@@ -282,12 +283,21 @@ export function ComposerSuggestions<I>({
     composition.start <= match.range.start &&
     composition.openAt !== match.range.start;
 
+  // A recalled message doesn't open the list until it's edited, so ArrowUp goes on recalling
+  // through one that ends in a trigger. Read only with a match: without one, recalling renders
+  // nothing here.
+  const recalled = useSyncExternalStore(
+    editor.subscribe,
+    () => match !== null && editor.recalling(),
+    () => false,
+  );
   const open =
     match !== null &&
     shown !== undefined &&
     !disabled &&
     !readOnly &&
     !held &&
+    !recalled &&
     !(dismissed !== null && samePlace(dismissed, match));
 
   const [empties, setEmpties] = useState(0);
