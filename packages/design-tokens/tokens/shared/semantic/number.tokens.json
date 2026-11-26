@@ -20,7 +20,7 @@
         },
         "pulse": {
           "$value": "{primitive.number.opacity.600}",
-          "$description": "Use for the dim end of a loading pulse, such as a skeleton, alternating with `visible` over `transition.pulse`. Do not use for disabled elements."
+          "$description": "Use for the dim end of a pulse that shows loading or work going on, such as a skeleton, alternating with `visible` over `transition.pulse`. Do not use for disabled elements."
         },
         "stale": {
           "$value": "{primitive.number.opacity.250}",
@@ -40,6 +40,14 @@
         "navigationMenu": {
           "$value": "{primitive.number.scale.900}",
           "$description": "Component token for the size the navigation menu popup grows from as it opens."
+        }
+      },
+      "transcript": {
+        "reveal": {
+          "pace": {
+            "$value": "{primitive.number.pace.300}",
+            "$description": "Component token for the pace, in characters a second, at which streamed text in a transcript appears, about as fast as a model writes. When it falls further behind than `duration.transcript.reveal.catchUp`, it speeds up."
+          }
         }
       },
       "fontScale": {

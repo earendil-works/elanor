@@ -7,6 +7,14 @@
       "confirmation": {
         "$value": "{primitive.duration.2000}",
         "$description": "Use for how long a confirmation stays, such as a copy button's check after copying, before the control returns to its resting state."
+      },
+      "transcript": {
+        "reveal": {
+          "catchUp": {
+            "$value": "{primitive.duration.600}",
+            "$description": "Component token for the furthest streamed text in a transcript may fall behind what has arrived. Further behind, the reveal speeds up from `number.transcript.reveal.pace` so that what arrived shows within this time."
+          }
+        }
       }
     }
   }
