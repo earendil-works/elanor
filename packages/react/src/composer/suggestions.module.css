@@ -1,0 +1,58 @@
+@layer elanor.components {
+  /* Above sticky or fixed containers a composer often sits in, such as a docked chat. */
+  .positioner {
+    z-index: var(--semantic-number-layer-floating);
+  }
+
+  /* Elanor's popover, with a list's padding: the items' own padding spaces their text. */
+  .popup {
+    padding: calc(
+      var(--semantic-dimension-space-padding-x-small) -
+        var(--semantic-dimension-border-width-default)
+    );
+  }
+
+  .list {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Dropdown's item, outside a Select. */
+  .item {
+    box-sizing: border-box;
+    display: flex;
+    flex: none;
+    align-items: center;
+    gap: var(--semantic-dimension-space-control-gap-small);
+    min-inline-size: 0;
+    padding-block: var(--semantic-dimension-space-control-padding-block-small);
+    padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
+    border-radius: var(--semantic-dimension-radius-small);
+    cursor: default;
+    overflow-wrap: anywhere;
+  }
+
+  .item[data-highlighted] {
+    background: var(--semantic-color-background-fill-secondary-hover);
+  }
+
+  /* Answering an earlier query; `Text` inside reads the primary colour, so it's set too. */
+  .item[data-stale] {
+    --semantic-color-text-primary: var(--semantic-color-text-secondary);
+
+    color: var(--semantic-color-text-secondary);
+  }
+
+  .empty {
+    padding-block: var(--semantic-dimension-space-control-padding-block-small);
+    padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
+    color: var(--semantic-color-text-secondary);
+  }
+
+  @media (forced-colors: active) {
+    .item[data-highlighted] {
+      outline: var(--semantic-dimension-border-width-default) solid Highlight;
+      outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
+    }
+  }
+}

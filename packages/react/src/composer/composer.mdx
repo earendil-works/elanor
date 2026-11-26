@@ -27,6 +27,17 @@ import {Composer} from '@earendil-works/elanor-react';
     </Composer.Field>
     <Composer.Footer />
   </Composer.Panel>
+  <Composer.Suggestions>
+    <Composer.SuggestionStatus />
+    <Composer.SuggestionPositioner>
+      <Composer.SuggestionPopup>
+        <Composer.SuggestionList>
+          <Composer.SuggestionItem />
+        </Composer.SuggestionList>
+        <Composer.SuggestionEmpty />
+      </Composer.SuggestionPopup>
+    </Composer.SuggestionPositioner>
+  </Composer.Suggestions>
 </Composer.Root>;
 ```
 
@@ -38,12 +49,13 @@ import {Composer} from '@earendil-works/elanor-react';
 - **Prompt** is the text. `maxRows` sets how many lines of text the prompt grows to before it scrolls (10 by default; at most 40% of the viewport, so it stays above a phone's keyboard). Name it with `aria-label` or a `Field.Label`.
 - **Controls** is the row of buttons inside the field, in DOM order; place them as you like. Use [Icon buttons](/components/icon-button/) with `density="default"`. **Attach**, **Submit** and **Stop** are icon buttons for attaching files, sending and stopping a reply.
 - **Footer** is the row below the field, for your own controls and figures, such as a model picker and the context used. It's layout only: it sets no text style, so the size of its text is yours to choose.
+- **Suggestions** shows a list at a trigger being typed, such as `@` for files. It renders no element; **SuggestionPositioner** places **SuggestionPopup** at the trigger, which holds the **SuggestionList** of **SuggestionItem**s and **SuggestionEmpty** for when nothing matches. **SuggestionStatus** tells screen readers about the list. See [Suggestions](#suggestions).
 
 The containers take any number of children, and an empty one takes no room. Panel is a size container named `composer`, so your own styles can follow the composer's width with `@container composer (…)`. Its public custom properties are `--composer-hang` and `--composer-footer-inset`, which you set, and `--composer-text-inset`, which you read; see [Footer](#footer) and [Alignment](#alignment). If you load code separately, such as plugins, share one copy of this package with it: the hooks find Root through React context.
 
 ## Sending
 
-Enter and Alt+Enter call Root's `onSubmit`, and so does Submit. The details carry the event, so Alt+Enter can do something else, such as queue a follow-up. Shift+Enter adds a line. Set `submitShortcut="mod-enter"` to send with Cmd+Enter or Ctrl+Enter instead; then Enter adds a line. Nothing is sent while an input method is composing, and the composer doesn't check whether the prompt is empty: Submit stays enabled, and you decide, for example with `empty` from `Composer.useStatus()`. Some Android keyboards don't report which key was pressed, so there Enter adds a line and Submit sends.
+Enter and Alt+Enter call Root's `onSubmit`, and so does Submit. The details carry the event, so Alt+Enter can do something else, such as queue a follow-up. Shift+Enter adds a line. Set `submitShortcut="mod-enter"` to send with Cmd+Enter or Ctrl+Enter instead; then Enter adds a line. Nothing is sent while an input method is composing, or while [suggestions](#suggestions) show, where Enter picks one. The composer doesn't check whether the prompt is empty: Submit stays enabled, and you decide, for example with `empty` from `Composer.useStatus()`. Some Android keyboards don't report which key was pressed, so there Enter adds a line and Submit sends.
 
 Prompt's `onKeyDown` runs before the composer handles a key; call `preventDefault()` to handle it yourself.
 
@@ -88,6 +100,20 @@ The value is a list of text and chips, each chip at least `{id, label}`. Draw a 
 ### Command hint
 
 <Demo example="./examples/command-hint.tsx" />
+
+## Suggestions
+
+`Composer.useSuggestionMatch(triggers)` gives the trigger being typed before the caret and the query after it, such as `@` anywhere a word starts or `/` at the start. Find items for it and pass them to `Suggestions` as `results`, with the match they answer. In `onItemPick`, replace the match's range, such as with a chip through `insert`; undo then brings the typed text back. Add the full-width `＠` and `／` as triggers of their own for Japanese and Chinese keyboards.
+
+The composer doesn't match, rank or load items: filter, sort and fetch them yourself, and debounce your requests if your source needs it. While new results load, the previous ones for the same trigger stay in secondary text and can't be picked; Enter or Tab picks the first new item if it arrives within a second. After a second, `SuggestionPopup` renders `data-loading`. With no items, the popup opens only to show `SuggestionEmpty`. The list has no groups or separators; give each kind of item its own trigger.
+
+The focus stays in the prompt. The arrow keys move through the list, and Enter or Tab picks. Escape closes the list, and it stays closed while typing goes on in that word, until a new trigger is typed. A tap picks when the finger lifts on an item. While an input method composes, its keys go to it, and a closed list doesn't open; an open one stays open, since Android keyboards compose nearly every word.
+
+Escape calls `preventDefault()` when it closes the list. If you handle Escape on the page yourself, such as to stop a reply, skip events whose `defaultPrevented` is set. The prompt also renders `data-popup-open` while the list shows.
+
+`SuggestionStatus` tells screen readers how many suggestions there are and how to choose once typing pauses, that nothing matches, or that results are loading. Keep it mounted inside `Suggestions` and hide it visually. Children as a function replace its text.
+
+<Demo example="./examples/suggestions.tsx" />
 
 ## Controls
 

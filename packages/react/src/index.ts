@@ -170,8 +170,26 @@ export type {
   ComposerTextRange,
   ComposerValue,
 } from './composer/editor/model.ts';
+export type {
+  ComposerSuggestionMatch,
+  ComposerSuggestionPosition,
+  ComposerSuggestionTrigger,
+} from './composer/editor/match.ts';
 export type {ComposerPromptProps, ComposerPromptState} from './composer/prompt.tsx';
 export type {ComposerRootProps} from './composer/root.tsx';
+export type {
+  ComposerSuggestionEmptyProps,
+  ComposerSuggestionItemProps,
+  ComposerSuggestionItemState,
+  ComposerSuggestionListProps,
+  ComposerSuggestionPickDetails,
+  ComposerSuggestionPopupProps,
+  ComposerSuggestionPositionerProps,
+  ComposerSuggestionResults,
+  ComposerSuggestionStatusProps,
+  ComposerSuggestionStatusState,
+  ComposerSuggestionsProps,
+} from './composer/suggestions.tsx';
 
 export {CopyButton} from './copy-button/copy-button.tsx';
 export type {CopyButtonProps} from './copy-button/copy-button.tsx';
