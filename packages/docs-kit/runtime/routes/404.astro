@@ -1,0 +1,17 @@
+---
+// The page for addresses without a page; GitHub Pages serves it as `404.html`.
+import {Link, Text} from '@earendil-works/elanor-react';
+import DocsLayout from '../components/DocsLayout.astro';
+import {DocsPageHeader} from '../components/DocsPageHeader.tsx';
+import {config, getSite} from '../content/context.ts';
+import {navigationGroups} from '../content/navigation.ts';
+---
+
+<DocsLayout title="Page not found" current="" groups={navigationGroups(getSite(), '')}>
+  <article class="docs-article">
+    <DocsPageHeader title="Page not found" />
+    <Text>
+      There is no page at this address. Search the documentation, or go to the <Link href={config.base}>home page</Link>.
+    </Text>
+  </article>
+</DocsLayout>

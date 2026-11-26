@@ -1,0 +1,104 @@
+---
+import 'virtual:elanor-docs/styles';
+import {renderToStaticMarkup} from 'react-dom/server';
+import {createElement} from 'react';
+import {Footer, Head, Identity} from 'virtual:elanor-docs/components';
+import {config} from '../content/context.ts';
+import type {DocsPage} from '../content/site.ts';
+import {DocsHeader} from './DocsHeader.tsx';
+import {DocsContainer} from './DocsLayoutParts.tsx';
+import {DocsSideNavigation, type NavigationGroup, type NavigationLink} from './DocsNavigation.tsx';
+import {DocsSearch} from './DocsSearch.tsx';
+import {SkipLink} from './SkipLink.tsx';
+import {brandSymbols} from './SiteIdentity.tsx';
+
+interface Props {
+  /** The page's own title; the site's name is added. */
+  title?: string | undefined;
+  description?: string | undefined;
+  /** The current page's address, to mark it in the navigation. */
+  current: string;
+  groups: readonly NavigationGroup[];
+  page?: DocsPage | undefined;
+  /** The page's Markdown, advertised to agents. */
+  markdown?: string | undefined;
+}
+
+const {title, description = config.description, current, groups, page, markdown} = Astro.props;
+const fullTitle = title && title !== config.name ? `${title} · ${config.name}` : config.name;
+const scripts = `${config.base}_scripts/`;
+const links: NavigationLink[] = [...config.links];
+const canonical = config.site ? new URL(current, config.site).href : undefined;
+// The configured favicon (or logo), or the brand's symbol.
+const favicon = config.favicon
+  ? `${config.base}${config.favicon}`
+  : `data:image/svg+xml,${encodeURIComponent(
+      renderToStaticMarkup(createElement(brandSymbols[config.brand], {scheme: 'light'})),
+    )}`;
+const hasSideNavigation = groups.reduce((count, group) => count + group.items.length, 0) > 1;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    {/* Inline and first, so the order holds before the bundled styles. */}
+    <style is:inline>
+      @layer elanor, base, components, utilities;
+    </style>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{fullTitle}</title>
+    {description && <meta name="description" content={description} />}
+    {canonical && <link rel="canonical" href={canonical} />}
+    {markdown && <link rel="alternate" type="text/markdown" href={markdown} />}
+    <link rel="icon" href={favicon} />
+    {
+      config.themeColor && (
+        <meta
+          name="theme-color"
+          content={config.themeColor.light}
+          data-light={config.themeColor.light}
+          data-dark={config.themeColor.dark}
+        />
+      )
+    }
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={config.name} />
+    <meta property="og:title" content={fullTitle} />
+    {description && <meta property="og:description" content={description} />}
+    {canonical && <meta property="og:url" content={canonical} />}
+    <meta name="twitter:card" content="summary" />
+    {/* Sets the color scheme before the first paint; keep the key in sync with scripts/color-scheme.ts. */}
+    <script is:inline>
+      (() => {
+        let saved = null;
+        try {
+          saved = localStorage.getItem('elanor-docs-color-scheme');
+        } catch {}
+        const system = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+        const scheme = saved === 'dark' || saved === 'light' ? saved : system;
+        document.documentElement.dataset.colorScheme = scheme;
+        const themeColor = document.querySelector('meta[name="theme-color"]');
+        if (themeColor) themeColor.content = themeColor.dataset[scheme];
+      })();
+    </script>
+    <Head config={config} page={page} />
+  </head>
+  <body class="docs-layout">
+    <SkipLink />
+    <DocsHeader groups={groups} links={links} current={current} repository={config.repository}>
+      <Identity slot="identity" config={config} page={page} />
+    </DocsHeader>
+    {hasSideNavigation && <DocsSideNavigation groups={groups} current={current} name={config.name} />}
+    {/* Blocking, so the navigation's restored state is there before the first paint. */}
+    <script is:inline src={`${scripts}navigation-behaviors.js`}></script>
+    <main id="main" tabindex="-1" class="docs-main" data-side-navigation={hasSideNavigation ? '' : undefined}>
+      <DocsContainer className="docs-content">
+        <slot />
+        <Footer config={config} page={page} />
+      </DocsContainer>
+    </main>
+    <DocsSearch index={`${config.base}search-index.json`} />
+    <script is:inline type="module" src={`${scripts}page-behaviors.js`}></script>
+  </body>
+</html>
