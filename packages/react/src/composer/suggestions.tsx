@@ -189,10 +189,10 @@ export interface ComposerSuggestionsProps<I> {
  * element. It opens when `results` answer the trigger at `match`, and results for an earlier query
  * at that trigger stay until new ones arrive. The focus stays in the prompt: the arrow keys move
  * through the list, Enter or Tab picks, and Escape closes it and calls `preventDefault()`, so check
- * `event.defaultPrevented` in your own Escape handlers. While the list shows, Enter never submits.
- * After Escape, that trigger stays closed until a new one is typed. With no items, it opens only to
- * show a `Composer.SuggestionEmpty`. It doesn't open while the prompt is disabled or read-only. Use
- * one per `Composer.Root`.
+ * `event.defaultPrevented` in your own Escape handlers. While items show, Enter never submits;
+ * with only the empty state up, it submits as usual. After Escape, that trigger stays closed until
+ * a new one is typed. With no items, it opens only to show a `Composer.SuggestionEmpty`. It doesn't
+ * open while the prompt is disabled or read-only. Use one per `Composer.Root`.
  */
 export function ComposerSuggestions<I>({
   match,
@@ -431,7 +431,8 @@ export function ComposerSuggestions<I>({
       return true;
     }
     if ((event.key === 'Enter' || event.key === 'Tab') && !event.shiftKey) {
-      // Enter belongs to the list while it shows: it never submits then.
+      // While items show, Enter is the list's and never submits; with only the empty state up,
+      // it's the editor's.
       const enter = event.key === 'Enter';
       if (stale && typed !== null && items.length > 0) {
         const wait = waiting.current;
@@ -439,7 +440,7 @@ export function ComposerSuggestions<I>({
         waiting.current = {typed, since: performance.now(), event};
         return true;
       }
-      return pick(activeIndex, event) || enter;
+      return pick(activeIndex, event) || (enter && items.length > 0);
     }
     if (event.key === 'Escape') {
       dismiss('escape-key', event);
