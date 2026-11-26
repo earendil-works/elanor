@@ -133,6 +133,10 @@
             "$description": "Use for an icon set in a line of secondary text."
           }
         },
+        "inlineElement": {
+          "$value": "{primitive.dimension.500}",
+          "$description": "Use as the block size of a bounded element set in a line of primary text, such as a chip or a mention, centred in the line with room above and below it. Use with `semantic.typography.primary` or `semantic.typography.ui.primary`: in secondary text it would fill the line. Do not use for icons in text or for controls."
+        },
         "xxxSmall": {
           "$value": "{primitive.dimension.100}",
           "$description": "Use for the thinnest bounded elements, such as a thin meter track."
