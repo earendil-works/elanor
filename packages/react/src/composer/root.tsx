@@ -168,7 +168,7 @@ export function ComposerRoot<T extends ComposerChip = ComposerChip>({
       formValue: {current: null},
       // React renders the same text once the commit renders.
       fillFormValue: () => {
-        created.endComposition();
+        created.takeComposed();
         const input = context.formValue.current;
         if (input) input.value = latest.current.options.toText(created.getValue());
       },
