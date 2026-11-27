@@ -443,12 +443,6 @@ For filled controls, such as a default Dropdown trigger, set `--composer-footer-
 
 <Demo example="./examples/filled-footer.tsx" />
 
-### Narrow
-
-In a composer 40rem wide or narrower, the footer stays on one line: its children shrink and cut their text with an ellipsis; give a child that must stay whole, such as the figures, `flex: none`. The footer then has no gap, since controls are spaced by their padding; for children without padding, such as plain text, set a gap in a class. The width is the composer's, hang included, so a hung composer narrows to 40rem about 2 × `--composer-text-inset` later.
-
-<Demo example="./examples/narrow.tsx" />
-
 ### Your own breakpoints
 
 Use the `composer` container to change the footer at widths of your own, such as hiding the cache figure in a narrow composer, as the narrow example does. You could also let the footer wrap instead, with `flex-wrap: wrap`.
@@ -460,6 +454,8 @@ Use the `composer` container to change the footer at widths of your own, such as
   }
 }
 ```
+
+<Demo example="./examples/narrow.tsx" />
 
 ## Alignment
 
