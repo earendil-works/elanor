@@ -158,6 +158,10 @@ function SendOrStop({replying, onStop}: SendOrStopProps) {
   );
 }
 
+// Demo only: a reply that takes longer for a longer message. Send the text to your server, and
+// cancel the request in Stop's `onClick`.
+const replyTo = (text: string, done: () => void) => setTimeout(done, 2000 + text.length * 20);
+
 export default function ComposerDemo() {
   const [messages, setMessages] = useState(earlier);
   const [notice, setNotice] = useState('');
@@ -167,11 +171,9 @@ export default function ComposerDemo() {
   const send = (message: Message) => {
     setMessages((current) => [...current, message]);
     setNotice('');
-    // Demo only: nothing replies. Send `messageText(message)` to your server, and cancel the
-    // request in Stop's `onClick`.
     clearTimeout(reply.current);
     setReplying(true);
-    reply.current = setTimeout(() => setReplying(false), 4000);
+    reply.current = replyTo(messageText(message), () => setReplying(false));
   };
 
   const stop = () => {
@@ -182,14 +184,6 @@ export default function ComposerDemo() {
   return (
     <MessageComposer onSend={send} onNotice={setNotice}>
       <DropZone>
-        <Stack gap="small" align="stretch">
-          {messages.map((message, index) => (
-            // Sent messages only grow, so their place is their key.
-            <Text key={index} className={styles.message}>
-              {messageText(message)}
-            </Text>
-          ))}
-        </Stack>
         <Composer.Panel className={styles.textAligned}>
           <Composer.Header>
             <SecretNotice />

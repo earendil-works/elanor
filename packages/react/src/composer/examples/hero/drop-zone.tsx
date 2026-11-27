@@ -5,7 +5,7 @@ import styles from '../composer.module.css';
 
 const hasFiles = (event: DragEvent) => event.dataTransfer.types.includes('Files');
 
-/** The conversation view: files dropped anywhere on it go in at the prompt's caret. */
+/** The view around the composer: files dropped anywhere on it go in at the prompt's caret. */
 export function DropZone({children}: {children: ReactNode}) {
   const {attach} = Composer.useActions();
   const [dragging, setDragging] = useState(false);
