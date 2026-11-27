@@ -500,7 +500,7 @@ Pass `render={<form />}` to Panel to make it a form. Submit then submits it, and
 
 ## Your own state
 
-Pass `value` and `onValueChange` to Root to keep the prompt elsewhere, such as one draft per conversation. `onValueChange` receives Base UI's change details, with the chips the change removed; `details.cancel()` refuses the change. Set `historyKey` to the draft's key, so each draft keeps its own undo. After sending, call `clearHistory()`, so undo can't bring the sent message back.
+Pass `value` and `onValueChange` to Root to keep the prompt elsewhere, such as one draft per conversation. `onValueChange` receives Base UI's change details, with the chips the change removed; `details.cancel()` refuses the change. Set `historyKey` to the draft's key, so each draft keeps its own undo. After sending, call `clearHistory()`, so undo can't bring the sent message back. A value you set while a person is composing with an input method shows once the composition ends, in place of the composed text.
 
 When the value comes from a store, subscribe in a small component that renders Root and takes the rest of the composer as `children`. Typing then renders only that component and the prompt, not the buttons or the footer; the example's `MessageComposer` is one. Define `renderChip` outside that component.
 
