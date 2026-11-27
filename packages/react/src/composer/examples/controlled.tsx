@@ -3,7 +3,7 @@ import {useState, type ReactNode} from 'react';
 
 import styles from './composer.module.css';
 
-const toText = (value: ComposerValue) => Composer.toText(value, (chip) => chip.label);
+const toText = (value: ComposerValue) => Composer.valueToText(value, (chip) => chip.label);
 
 type Conversation = 'design' | 'release';
 
@@ -44,12 +44,12 @@ export default function ComposerControlled() {
       </SegmentedControl.Root>
       <Drafts draft={conversation[0] ?? 'design'}>
         <Composer.Panel>
-          <Composer.Field>
+          <Composer.InputGroup>
             <Composer.Prompt aria-label="Message" placeholder="Write a message…" />
             <Composer.Controls className={styles.end}>
               <Composer.Submit />
             </Composer.Controls>
-          </Composer.Field>
+          </Composer.InputGroup>
         </Composer.Panel>
       </Drafts>
     </Stack>

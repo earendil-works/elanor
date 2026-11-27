@@ -16,18 +16,17 @@ import {useMergedRef} from '../utils/refs.ts';
 import {
   useComposerMeta,
   useComposerSettings,
-  useComposerStatus,
+  useComposerState,
   useComposerText,
+  type ComposerState,
 } from './context.ts';
 import {useStoreSelector} from './store.ts';
 
 import styles from './composer.module.css';
 
-export interface ComposerPromptState {
+export interface ComposerPromptState extends ComposerState {
   /** Nothing is written; the placeholder shows. */
   readonly empty: boolean;
-  readonly disabled: boolean;
-  readonly readOnly: boolean;
   /** The field's validity, `null` before it is validated. */
   readonly valid: boolean | null;
   readonly touched: boolean;
@@ -73,7 +72,7 @@ export function ComposerPrompt({
 }: ComposerPromptProps) {
   const meta = useComposerMeta('Composer.Prompt');
   const {required} = useComposerSettings('Composer.Prompt');
-  const {empty, disabled, readOnly} = useComposerStatus('Composer.Prompt');
+  const {empty, disabled, readOnly} = useComposerState('Composer.Prompt');
   const field = useFieldRootContext();
   const {labelId, getDescriptionProps} = useLabelableContext();
   const id = useLabelableId({id: idProp});

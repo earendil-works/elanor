@@ -4,7 +4,7 @@ category: forms
 
 # Composer
 
-The field where a person writes a chat message: the prompt with chips, buttons inside the frame, and rows above and below for notices and settings. For a plain multi-line field, use [Text area](/components/text-area/).
+The input where a person writes a chat message: the prompt with chips, buttons inside the frame, and rows above and below for notices and settings. For a plain multi-line text input, use [Text area](/components/text-area/).
 
 <Demo example="./examples/demo.tsx" />
 
@@ -18,14 +18,14 @@ import {Composer} from '@earendil-works/elanor-react';
 <Composer.Root>
   <Composer.Panel>
     <Composer.Header />
-    <Composer.Field>
+    <Composer.InputGroup>
       <Composer.Prompt />
       <Composer.Controls>
         <Composer.Attach />
         <Composer.Submit />
         <Composer.Stop />
       </Composer.Controls>
-    </Composer.Field>
+    </Composer.InputGroup>
     <Composer.Footer />
   </Composer.Panel>
   <Composer.Suggestions>
@@ -44,13 +44,13 @@ import {Composer} from '@earendil-works/elanor-react';
 </Composer.Root>;
 ```
 
-- **Root** holds the prompt's value, its undo history and its settings. It renders no element: the other parts and the hooks work anywhere inside it, also outside Panel and in portals, and the parts and the hooks throw outside it. `toText` is required: it gives the text that is copied, submitted with a form, and sent.
+- **Root** holds the prompt's value, its undo history and its settings. It renders no element: the other parts and the hooks work anywhere inside it, also outside Panel and in portals, and the parts and the hooks throw outside it. `toText` is required: it gives the text that is copied, submitted with a form, and sent. `Composer.valueToText(value, chipToText)` writes the text with each chip as `chipToText` gives it.
 - **Panel** renders a `div` around the rows and fills its container's width. For a form, see [In a form](#in-a-form).
-- **Header** is the row above the field, for notices, errors, and the message being replied to.
-- **Field** is the frame, which looks like one text field holding the prompt, with its chips, and the buttons. It has no focus ring; the caret shows the focus, and the field keeps its fill while a person writes, darkening only under the pointer or a press. Pressing anything in it other than the text keeps the focus where it is, so a phone's keyboard stays up. Field also works without a Panel.
+- **Header** is the row above the input group, for notices, errors, and the message being replied to.
+- **InputGroup** is the frame, which looks like one text input holding the prompt, with its chips, and the buttons. It has no focus ring; the caret shows the focus, and the input group keeps its fill while a person writes, darkening only under the pointer or a press. Pressing anything in it other than the text keeps the focus where it is, so a phone's keyboard stays up. InputGroup also works without a Panel.
 - **Prompt** is the text. `maxRows` sets how many lines of text the prompt grows to before it scrolls (10 by default; at most 40% of the viewport, so it stays above a phone's keyboard). Name it with `aria-label` or a `Field.Label`.
-- **Controls** is the row of buttons inside the field, in DOM order; place them as you like. Use [Icon buttons](/components/icon-button/) with `density="default"`. **Attach**, **Submit** and **Stop** are icon buttons for attaching files, sending and stopping a reply.
-- **Footer** is the row below the field, for your own controls and figures, such as a model picker and the context used. It's layout only: it sets no text style, so the size of its text is yours to choose.
+- **Controls** is the row of buttons inside the input group, in DOM order; place them as you like. Use [Icon buttons](/components/icon-button/) with `density="default"`. **Attach**, **Submit** and **Stop** are icon buttons for attaching files, sending and stopping a reply.
+- **Footer** is the row below the input group, for your own controls and figures, such as a model picker and the context used. It's layout only: it sets no text style, so the size of its text is yours to choose.
 - **Suggestions** shows a list at a trigger being typed, such as `@` for files. It renders no element; **SuggestionPortal** renders into the page's body, or a `container`, and **SuggestionPositioner** places **SuggestionPopup** at the trigger, which holds the **SuggestionList** of **SuggestionItem**s and **SuggestionEmpty** for when nothing matches. **SuggestionStatus** tells screen readers about the list. See [Suggestions](#suggestions).
 
 The containers take any number of children, and an empty one takes no room. Panel is a size container named `composer`, so your own styles can follow the composer's width with `@container composer (…)`. Its public custom properties are `--composer-hang` and `--composer-footer-inset`, which you set, and `--composer-text-inset`, which you read; see [Footer](#footer) and [Alignment](#alignment). If you load code separately, such as plugins, share one copy of this package with it: the hooks find Root through React context.
@@ -100,15 +100,15 @@ function SendOrStop({replying, onStop}: SendOrStopProps) {
 
 ## Files
 
-`Attach` opens the file picker; set `accept` and `multiple` on it, and `capture` to offer the camera on phones. Root's `onAttach` receives the picked files, and files pasted on the prompt or dropped on the field, with a `reason` of `picker`, `paste` or `drop`. Files are chips in the text, where they are mentioned: in `onAttach`, pass one chip per file, drawn as `Upload › name`, to `details.insert`. `details.insert` always puts a space around what it inserts where the text needs one. `actions.insert` inserts exactly what you pass; set `space: true` for an insert a person made, as the example does for a suggestion pick.
+`Attach` opens the file picker; set `accept` and `multiple` on it, and `capture` to offer the camera on phones. It's labelled "Attach files"; give a second Attach its own `aria-label`, as the example's camera button has. Root's `onAttach` receives the picked files, and files pasted on the prompt or dropped on the input group, with a `reason` of `picker`, `paste` or `drop`. Files are chips in the text, where they are mentioned: in `onAttach`, pass one chip per file, drawn as `Upload › name`, to `details.insert`. `details.insert` always puts a space around what it inserts where the text needs one. `actions.insert` inserts exactly what you pass; set `space: true` for an insert a person made, as the example does for a suggestion pick.
 
-- `details.insert` puts them at `details.at`. Files go in at the caret, after any selected text, or at the end if the prompt was never focused; dropped files go there wherever on the field they are dropped. A paste replaces the selection. After `details.insert`, the caret collapses after the chips.
+- `details.insert` puts them at `details.at`. Files go in at the caret, after any selected text, or at the end if the prompt was never focused; dropped files go there wherever on the input group they are dropped. A paste replaces the selection. After `details.insert`, the caret collapses after the chips.
 - They are one undo step, with the paste's or drop's reason and event in `onValueChange`'s details.
 - Call it in `onAttach` or before the person edits again, such as once you've read a file. Once the text has changed it inserts nothing and returns `false`; then insert with `actions.insert` at the caret, or drop the files.
 - Text that comes with pasted or dropped files, usually their names, isn't inserted. A chip dragged within the prompt moves to where it is dropped, and never reaches `onAttach`.
-- File drops need a `Field`: a Prompt outside one ignores dropped files. While files are dragged over it, Field renders `data-drag-over`: style a file drag over the field, or know a drop would land. A drop zone outside the composer, such as the whole conversation view, is yours: cancel `dragover` and `drop` there, and pass the files to `actions.attach()`. A drop on the field bubbles to it too, so skip a `drop` whose `defaultPrevented` is set: the composer took it.
+- File drops need an `InputGroup`: a Prompt outside one ignores dropped files. While files are dragged over it, InputGroup renders `data-drag-over`: style a file drag over the input group, or know a drop would land. A drop zone outside the composer, such as the whole conversation view, is yours: cancel `dragover` and `drop` there, and pass the files to `actions.attach()`. A drop on the input group bubbles to it too, so skip a `drop` whose `defaultPrevented` is set: the composer took it.
 
-The example's conversation view is such a drop zone: while files are dragged over it, it shows a scrim with a dashed outline and "Drop files to attach", under the pointer so a drop on the field still reaches the field.
+The example's conversation view is such a drop zone: while files are dragged over it, it shows a scrim with a dashed outline and "Drop files to attach", under the pointer so a drop on the input group still reaches it.
 
 ```tsx from="./examples/hero/drop-zone.tsx"
 onDrop={(event) => {
@@ -308,6 +308,8 @@ function DictateButton() {
 
 `Composer.useValue(selector)` renders your part again only when what the selector returns changes. The selector runs on every edit: keep it cheap, and return a primitive or a stable reference, or pass `isEqual` as the second argument. To read the value once, in a handler, use `getValue()` from `useActions()`.
 
+Type the selector's parameter with your value type, as `hasSecret` does below, and `useValue` reads your chips. With type arguments, name both, the chip type first and the result second: `Composer.useValue<MessageChip, boolean>(hasSecret)`.
+
 The example's secret notice returns a boolean, so it renders only when the answer changes; its Send button, in [Uploads](#uploads), compares the upload ids with `isEqual`. Other parts read it the same way, such as a token count that returns a number, or a hint for the command at the start that returns a string or `null`.
 
 ```tsx from="./examples/demo.tsx"
@@ -389,7 +391,7 @@ function MessagePrompt({messages}: {messages: readonly Message[]}) {
 ```tsx from="./examples/demo.tsx"
 <Composer.Controls render={<Stack direction="row" gap="auto" align="center" />}>
   <Stack direction="row" gap="xSmall" align="center">
-    <Composer.Attach aria-label="Attach files" accept="image/*,.pdf" />
+    <Composer.Attach accept="image/*,.pdf" />
     <Composer.Attach
       aria-label="Take a photo"
       accept="image/*"
@@ -475,7 +477,7 @@ By default the frame lines up with the content around it. `--composer-hang` hang
 
 ## In a field
 
-Inside a [Field](/components/field/), the prompt is the field's control: `Field.Label` names it, and the field's states and errors apply to it. Show an error with `Field.Error`: the composer doesn't mark validity on its own, but Field and Prompt render the field's `data-valid` or `data-invalid` for your own styles. A native label can't focus the prompt, so render the label as `Field.Label nativeLabel={false} render={<span />}`; a click on it then focuses the prompt. Set `required` on Root, and `name` on Root or `Field.Root`: a form submits the `toText` text, and a form reset returns to `defaultValue`. Without `onSubmit`, Enter and Submit submit the form, which validates first.
+Inside a [Field](/components/field/), the prompt is the field's control: `Field.Label` names it, and the field's states and errors apply to it. Show an error with `Field.Error`: the composer doesn't mark validity on its own, but InputGroup and Prompt render the field's `data-valid` or `data-invalid` for your own styles. A native label can't focus the prompt, so render the label as `Field.Label nativeLabel={false} render={<span />}`; a click on it then focuses the prompt. Set `required` on Root, and `name` on Root or `Field.Root`: a form submits the `toText` text, and a form reset returns to `defaultValue`. Without `onSubmit`, Enter and Submit submit the form, which validates first.
 
 <Demo example="./examples/in-field.tsx" />
 
@@ -486,12 +488,12 @@ Pass `render={<form />}` to Panel to make it a form. Submit then submits it, and
 ```tsx
 <Composer.Root toText={toText} onSubmit={(message, {event}) => send(message, event)}>
   <Composer.Panel render={<form />}>
-    <Composer.Field>
+    <Composer.InputGroup>
       <Composer.Prompt aria-label="Message" />
       <Composer.Controls>
         <Composer.Submit />
       </Composer.Controls>
-    </Composer.Field>
+    </Composer.InputGroup>
   </Composer.Panel>
 </Composer.Root>
 ```
@@ -506,6 +508,6 @@ When the value comes from a store, subscribe in a small component that renders R
 
 ## Disabled and read-only
 
-`disabled` on Root disables the prompt, Attach and Submit. `readOnly` keeps the text focusable and copyable but not editable, and doesn't raise a phone's keyboard. Panel, Field and Prompt render `data-disabled`, `data-readonly` and `data-empty`, for your own styles.
+`disabled` on Root disables the prompt, Attach and Submit. `readOnly` keeps the text focusable and copyable but not editable, and doesn't raise a phone's keyboard. Panel, InputGroup and Prompt render `data-disabled`, `data-readonly` and `data-empty`, for your own styles.
 
 <Demo example="./examples/disabled.tsx" />

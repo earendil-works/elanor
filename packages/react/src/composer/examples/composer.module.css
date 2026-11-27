@@ -15,7 +15,7 @@
   white-space: pre-wrap;
 }
 
-/* Under the pointer, so a drop on the composer's field still reaches the field. */
+/* Under the pointer, so a drop on the composer's input group still reaches it. */
 .dropTarget {
   position: absolute;
   inset: 0;

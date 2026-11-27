@@ -2,7 +2,7 @@ export {ComposerRoot as Root} from './root.tsx';
 export {
   ComposerPanel as Panel,
   ComposerHeader as Header,
-  ComposerField as Field,
+  ComposerInputGroup as InputGroup,
   ComposerControls as Controls,
   ComposerAttach as Attach,
   ComposerSubmit as Submit,
@@ -12,7 +12,7 @@ export {
 export {ComposerPrompt as Prompt} from './prompt.tsx';
 export {useActions, useStatus, useValue} from './context.ts';
 export {useRecall} from './recall.ts';
-export {isChip, toText} from './editor/model.ts';
+export {isChip, valueToText} from './editor/model.ts';
 export {
   ComposerSuggestions as Suggestions,
   ComposerSuggestionStatus as SuggestionStatus,

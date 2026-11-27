@@ -23,6 +23,7 @@ export type ComposerTextRange = {readonly start: number; readonly end: number};
 /** Stands for a chip in `offsetText`, so string indices match value offsets. */
 export const CHIP_CHARACTER = '\uFFFC';
 
+/** Whether a segment of a value is a chip rather than text. */
 export const isChip = <T extends ComposerChip>(
   segment: ComposerSegment<T> | undefined,
 ): segment is T => segment !== undefined && typeof segment !== 'string';
@@ -171,7 +172,8 @@ export const sameContent = <T extends ComposerChip>(
     return isChip(segment) ? isChip(other) && other.id === segment.id : segment === other;
   });
 
-export const toText = <T extends ComposerChip>(
+/** The value as text, with each chip written as `chipToText` gives it. */
+export const valueToText = <T extends ComposerChip>(
   value: ComposerValue<T>,
   chipToText: (chip: T) => string,
 ): string => value.map((segment) => (isChip(segment) ? chipToText(segment) : segment)).join('');

@@ -63,7 +63,7 @@
     --chip-edge: var(--semantic-color-border-negative);
   }
 
-  /* The edge of a fill: it holds the pill on a field of the same fill. */
+  /* The edge of a fill: it holds the pill on a surface of the same fill. */
   .root:where([data-variant='soft']) {
     --chip-fill: var(--semantic-color-background-fill-secondary);
     --chip-edge: var(--semantic-color-border-edge);

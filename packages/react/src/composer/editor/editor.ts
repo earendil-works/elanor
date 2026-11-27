@@ -1388,8 +1388,8 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       releaseHost();
     };
 
-    // Text and a drag from this editor go in at the drop point; files are `Composer.Field`'s.
-    // Captured, as Field's: a drop on a chip reaches the page's React handlers through Root's
+    // Text and a drag from this editor go in at the drop point; files are `Composer.InputGroup`'s.
+    // Captured, as InputGroup's: a drop on a chip reaches the page's React handlers through Root's
     // portal before it bubbles here, and `preventDefault` tells them the prompt took it.
     const onDrop = (event: DragEvent) => {
       if (this.takesFiles(event)) return;

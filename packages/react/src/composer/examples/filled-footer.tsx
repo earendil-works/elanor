@@ -2,7 +2,7 @@ import {Composer, Dropdown, Meter, Stack, type ComposerValue} from '@earendil-wo
 
 import styles from './composer.module.css';
 
-const toText = (value: ComposerValue) => Composer.toText(value, (chip) => chip.label);
+const toText = (value: ComposerValue) => Composer.valueToText(value, (chip) => chip.label);
 
 const models = [
   {value: 'large', label: 'Large model'},
@@ -18,12 +18,12 @@ export default function ComposerFilledFooter() {
   return (
     <Composer.Root toText={toText}>
       <Composer.Panel className={styles.filledControls}>
-        <Composer.Field>
+        <Composer.InputGroup>
           <Composer.Prompt aria-label="Message" placeholder="Write a message…" />
           <Composer.Controls className={styles.end}>
             <Composer.Submit />
           </Composer.Controls>
-        </Composer.Field>
+        </Composer.InputGroup>
         <Composer.Footer>
           <Dropdown.Root items={models} defaultValue="fast">
             <Dropdown.Trigger density="compact" aria-label="Model">

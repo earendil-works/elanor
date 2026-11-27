@@ -25,7 +25,7 @@ import type {
 import {createChangeEventDetails} from '../utils/change-event-details.ts';
 import {mergeClassName} from '../utils/class-names.ts';
 import {useMergedRef} from '../utils/refs.ts';
-import {useComposerMeta, useComposerStatus} from './context.ts';
+import {useComposerMeta, useComposerState} from './context.ts';
 import {
   findMatch,
   hasTrigger,
@@ -99,6 +99,10 @@ interface SuggestionsContextValue {
   readonly activeIndex: Store<number>;
   readonly listId: string;
   readonly popupId: string;
+  /** Report the `id` given to `Composer.SuggestionList`, `undefined` once it's gone. */
+  readonly setListId: (id: string | undefined) => void;
+  /** Report the `id` given to `Composer.SuggestionPopup`, `undefined` once it's gone. */
+  readonly setPopupId: (id: string | undefined) => void;
   readonly optionId: (index: number) => string;
   readonly pick: (index: number, event: ComposerSuggestionPickDetails['event']) => boolean;
   readonly highlight: (index: number, event: MouseEvent) => void;
@@ -224,7 +228,7 @@ export function ComposerSuggestions<I>({
   children,
 }: ComposerSuggestionsProps<I>) {
   const {editor, popup, claimSuggestions} = useComposerMeta('Composer.Suggestions');
-  const {disabled, readOnly} = useComposerStatus('Composer.Suggestions');
+  const {disabled, readOnly} = useComposerState('Composer.Suggestions');
   // Two would both claim the prompt's keys and ARIA attributes.
   const [owner] = useState(() => Symbol('Composer.Suggestions'));
   useLayoutEffect(() => claimSuggestions(owner), [claimSuggestions, owner]);
@@ -356,8 +360,13 @@ export function ComposerSuggestions<I>({
       : undefined;
   const activeIndex = current?.index ?? items.findIndex((_, index) => pickable(index));
 
-  const listId = useId();
-  const popupId = useId();
+  // A part's own `id` wins, as in Base UI; the part reports it, so the prompt's ARIA names it.
+  const [givenListId, setListId] = useState<string>();
+  const [givenPopupId, setPopupId] = useState<string>();
+  const generatedListId = useId();
+  const generatedPopupId = useId();
+  const listId = givenListId ?? generatedListId;
+  const popupId = givenPopupId ?? generatedPopupId;
   const optionId = useCallback((index: number) => `${listId}-${index}`, [listId]);
 
   // A pick closes the list a render later, when its edit arrives. Cleared after that render, so a
@@ -542,6 +551,8 @@ export function ComposerSuggestions<I>({
       activeIndex: activeStore,
       listId,
       popupId,
+      setListId,
+      setPopupId,
       optionId,
       pick: (index, event) => latest.current.pick(index, event),
       highlight: (index, event) => latest.current.highlight(index, event),
@@ -591,11 +602,15 @@ export function ComposerSuggestionPortal(props: ComposerSuggestionPortalProps) {
   return <Popover.Portal {...props} />;
 }
 
-export interface ComposerSuggestionPositionerProps extends Omit<PopoverPositionerProps, 'anchor'> {}
+export interface ComposerSuggestionPositionerProps extends Omit<
+  PopoverPositionerProps,
+  'anchor' | 'hidden'
+> {}
 
 /**
  * Places the popup at the trigger, above its line by default. Goes inside
- * `Composer.SuggestionPortal`. Takes Base UI's `Popover.Positioner` props, except `anchor`.
+ * `Composer.SuggestionPortal`. Takes Base UI's `Popover.Positioner` props, except `anchor` and
+ * `hidden`, which follow the match.
  */
 export function ComposerSuggestionPositioner({
   ref,
@@ -624,9 +639,18 @@ export function ComposerSuggestionPositioner({
   );
 }
 
+/** Reports a part's own `id` to `Composer.Suggestions` while the part has it. */
+function useReportedId(id: string | undefined, report: (id: string | undefined) => void): void {
+  useLayoutEffect(() => {
+    if (id === undefined) return undefined;
+    report(id);
+    return () => report(undefined);
+  }, [id, report]);
+}
+
 export interface ComposerSuggestionPopupProps extends Omit<
   PopoverPopupProps,
-  'initialFocus' | 'finalFocus'
+  'initialFocus' | 'finalFocus' | 'role'
 > {}
 
 /**
@@ -635,12 +659,14 @@ export interface ComposerSuggestionPopupProps extends Omit<
  * `data-loading` once that has lasted a second.
  */
 export function ComposerSuggestionPopup({
+  id,
   className,
   onPointerDown,
   onMouseDown,
   ...props
 }: ComposerSuggestionPopupProps) {
-  const {popupId} = useSuggestions('Composer.SuggestionPopup');
+  const {popupId, setPopupId} = useSuggestions('Composer.SuggestionPopup');
+  useReportedId(id, setPopupId);
   const {stale, loading} = useSuggestionsView('Composer.SuggestionPopup');
   return (
     <Popover.Popup
@@ -653,7 +679,7 @@ export function ComposerSuggestionPopup({
         event.preventDefault();
         onMouseDown?.(event);
       }}
-      id={popupId}
+      id={id ?? popupId}
       initialFocus={false}
       finalFocus={false}
       role="presentation"
@@ -664,20 +690,24 @@ export function ComposerSuggestionPopup({
   );
 }
 
-export interface ComposerSuggestionListProps extends useRender.ComponentProps<'div'> {}
+export interface ComposerSuggestionListProps extends Omit<
+  useRender.ComponentProps<'div'>,
+  'role'
+> {}
 
 /**
  * The `listbox` of `Composer.SuggestionItem`s. Name it with `aria-label`. Not rendered while there
  * are no items.
  */
-export function ComposerSuggestionList({ref, render, ...props}: ComposerSuggestionListProps) {
-  const {listId} = useSuggestions('Composer.SuggestionList');
+export function ComposerSuggestionList({ref, render, id, ...props}: ComposerSuggestionListProps) {
+  const {listId, setListId} = useSuggestions('Composer.SuggestionList');
+  useReportedId(id, setListId);
   const {visible, count} = useSuggestionsView('Composer.SuggestionList');
   const element = useRender({
     defaultTagName: 'div',
     render,
     ref,
-    props: mergeProps<'div'>({id: listId, role: 'listbox', className: styles.list}, props),
+    props: mergeProps<'div'>({id: id ?? listId, className: styles.list}, props, {role: 'listbox'}),
   });
   // Hidden, it would still be found by `[role="listbox"]` queries; empty, it has no options.
   return visible && count > 0 ? element : null;
@@ -723,9 +753,9 @@ export interface ComposerSuggestionItemState {
   readonly disabled: boolean;
 }
 
-export interface ComposerSuggestionItemProps extends useRender.ComponentProps<
-  'div',
-  ComposerSuggestionItemState
+export interface ComposerSuggestionItemProps extends Omit<
+  useRender.ComponentProps<'div', ComposerSuggestionItemState>,
+  'id' | 'role'
 > {
   /** The item's position in `results.items`. */
   readonly index: number;
@@ -737,7 +767,8 @@ export interface ComposerSuggestionItemProps extends useRender.ComponentProps<
  * One `option` of the results, by its `index`. Renders `data-highlighted`, `data-stale` and
  * `data-disabled`. A press keeps the focus and the caret in the prompt, and a phone's keyboard up;
  * the item is picked when the press ends on it, and a press that scrolls the list picks nothing.
- * Only a mouse highlights the item under it.
+ * Only a mouse highlights the item under it. Its `id` comes from the list's and its `index`, for the
+ * prompt's `aria-activedescendant`, so it takes none of its own.
  */
 export function ComposerSuggestionItem({
   ref,
@@ -761,8 +792,6 @@ export function ComposerSuggestionItem({
     state: {highlighted, stale, disabled},
     props: mergeProps<'div'>(
       {
-        id: optionId(index),
-        role: 'option',
         'aria-selected': highlighted,
         'aria-disabled': stale || disabled || undefined,
         className: styles.item,
@@ -791,6 +820,7 @@ export function ComposerSuggestionItem({
         },
       },
       props,
+      {id: optionId(index), role: 'option'},
     ),
   });
 }

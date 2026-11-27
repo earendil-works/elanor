@@ -46,7 +46,7 @@ const earlier: Message[] = [
 
 /** The message as your server takes it: each upload by its address, read when it's sent. */
 const messageText = (message: Message) =>
-  Composer.toText(message, (chip) =>
+  Composer.valueToText(message, (chip) =>
     chip.kind === 'upload' ? `@${uploadUrl(chip.uploadId) ?? chip.label}` : chipText(chip),
   );
 
@@ -202,11 +202,11 @@ export default function ComposerDemo() {
             <UploadErrors />
             {notice ? <Text role="alert">{notice}</Text> : null}
           </Composer.Header>
-          <Composer.Field>
+          <Composer.InputGroup>
             <MessagePrompt messages={messages} />
             <Composer.Controls render={<Stack direction="row" gap="auto" align="center" />}>
               <Stack direction="row" gap="xSmall" align="center">
-                <Composer.Attach aria-label="Attach files" accept="image/*,.pdf" />
+                <Composer.Attach accept="image/*,.pdf" />
                 <Composer.Attach
                   aria-label="Take a photo"
                   accept="image/*"
@@ -221,7 +221,7 @@ export default function ComposerDemo() {
                 <SendOrStop replying={replying} onStop={stop} />
               </Stack>
             </Composer.Controls>
-          </Composer.Field>
+          </Composer.InputGroup>
           <Composer.Footer>
             <ModelPicker />
             <Figures />
