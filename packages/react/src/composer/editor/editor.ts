@@ -1149,7 +1149,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     ) => {
       if (!this.options.editable) return false;
       // The insert rewrites the text an input method composes, which ends its composition, often
-      // without `compositionend`. What it composes next is read back as usual.
+      // without `compositionend`.
       this.#endComposition();
       const length = valueLength(this.#latest);
       const range = at === 'end' ? caretAt(length) : at === 'caret' ? this.#caret() : at;
