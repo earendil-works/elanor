@@ -111,8 +111,8 @@ function UploadChip({chip}: {chip: Extract<MessageChip, {kind: 'upload'}>}) {
         <Chip.Progress value={upload.progress} aria-label={`Uploading ${chip.label}`} />
       ) : null}
       {upload?.state === 'failed' ? (
-        // Here, not in `getChipDescription`: Root reads that only when it renders the chip, and a
-        // failure doesn't render it again.
+        // Here, not in `getChipDescription`: the prompt reads that when it places the chip in the
+        // text, which a failure doesn't do.
         <span className={styles.visuallyHidden}>{`, ${upload.error}`}</span>
       ) : null}
     </>
@@ -128,7 +128,7 @@ function UploadChip({chip}: {chip: Extract<MessageChip, {kind: 'upload'}>}) {
   );
 }
 
-// Outside a component: a new function on every render would render every chip again.
+// Outside a component, so it stays one function and the chips don't render again.
 export const renderChip = (chip: MessageChip) => {
   switch (chip.kind) {
     case 'file':

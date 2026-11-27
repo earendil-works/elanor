@@ -51,15 +51,15 @@ const toText = (value: ComposerValue) => Composer.valueToText(value, (chip) => c
 - **Header** is the row above the input group, for notices, errors, and the message being replied to.
 - **InputGroup** is the frame, which looks like one text input holding the prompt, with its chips, and the buttons. It has no focus ring; the caret shows the focus, and the input group keeps its fill while a person writes, darkening only under the pointer or a press. Pressing anything in it other than the text keeps the focus where it is, so a phone's keyboard stays up. InputGroup also works without a Panel.
 - **Prompt** is the text. `maxRows` sets how many lines it grows to before it scrolls (10 by default; at most 40% of the viewport, so it stays above a phone's keyboard). Name it with `aria-label` or a `Field.Label`. Keep `placeholder` to one short line: it doesn't wrap.
-- **Controls** is the row of buttons inside the input group, in DOM order; place them as you like. Use [Icon buttons](/components/icon-button/) with `density="default"`. **Attach**, **Submit** and **Stop** are icon buttons for attaching files, sending and stopping a reply.
+- **Controls** is the row of buttons inside the input group, in DOM order; arrange them as you like. Use [Icon buttons](/components/icon-button/) with `density="default"`. **Attach**, **Submit** and **Stop** are icon buttons for attaching files, sending and stopping a reply.
 - **Footer** is the row below the input group, for your own controls and figures, such as a model picker and the context used. It's layout only: it sets no text style, so the size of its text is yours to choose.
-- **Suggestions** shows a list at a trigger being typed, such as `@` for files. It renders no element; **SuggestionPortal** renders into the page's body, or a `container`, and **SuggestionPositioner** places **SuggestionPopup** at the trigger, which holds the **SuggestionList** of **SuggestionItem**s and **SuggestionEmpty** for when nothing matches. **SuggestionStatus** tells screen readers about the list. See [Suggestions](#suggestions).
+- **Suggestions** shows a list at a trigger being typed, such as `@` for files. It renders no element; **SuggestionPortal** renders into the page's body, or a `container`, and **SuggestionPositioner** positions **SuggestionPopup** at the trigger, which holds the **SuggestionList** of **SuggestionItem**s and **SuggestionEmpty** for when nothing matches. **SuggestionStatus** tells screen readers about the list. See [Suggestions](#suggestions).
 
 The containers take any number of children, and an empty one takes no room. Panel is a size container named `composer`, so your own styles can follow the composer's width with `@container composer (…)`. Its public custom properties are `--composer-hang` and `--composer-footer-inset`, which you set, and `--composer-text-inset`, which you read; see [Footer](#footer) and [Alignment](#alignment). If you load code separately, such as plugins, share one copy of this package with it: the hooks find Root through React context.
 
 ## Sending
 
-Enter and Alt+Enter call Root's `onSubmit`, and so does Submit. The details carry the event, so Alt+Enter can do something else, such as queue a follow-up. Shift+Enter adds a line. Set `submitShortcut="mod-enter"` to send with Cmd+Enter or Ctrl+Enter instead; then Enter adds a line. Nothing is sent while an input method is composing, or while the [suggestions](#suggestions) list is open, where Enter picks an item. The composer doesn't check whether the prompt is empty: Submit stays enabled, and you decide, for example with `empty` from `Composer.useStatus()`. Some Android keyboards don't report which key was pressed, so there Enter adds a line and Submit sends.
+Enter and Alt+Enter call Root's `onSubmit`, and so does Submit. The details carry the event, so Alt+Enter can do something else, such as queue a follow-up. Shift+Enter adds a line. Set `submitShortcut="mod-enter"` to send with Cmd+Enter or Ctrl+Enter instead; then Enter adds a line. Nothing is sent while an input method is composing, or while [suggestion](#suggestions) items show, where Enter picks one. The composer doesn't check whether the prompt is empty: Submit stays enabled, and you decide, for example with `empty` from `Composer.useStatus()`. Some Android keyboards don't report which key was pressed, so there Enter adds a line and Submit sends.
 
 The example checks the message in `onSubmit`, then clears the prompt and its undo history:
 
@@ -86,7 +86,7 @@ Prompt's `onKeyDown` runs before the composer handles a key; call `preventDefaul
 
 ## Stop
 
-The composer doesn't know whether a reply is running: render `Stop` or `Submit` yourself, and stop the reply in Stop's `onClick`. Give each its own `key`; the one that comes takes the keyboard focus the other had. The example shows Stop while a reply runs and `empty` from `Composer.useStatus()` is true, so a press meant for Stop never sends; once a person writes, Send comes back:
+The composer doesn't know whether a reply is running: render `Stop` or `Submit` yourself, and stop the reply in Stop's `onClick`. Give each its own `key`, so a press on Stop never lands on a reused Submit; the one that comes takes the keyboard focus the other had. The example shows Stop while a reply runs and `empty` from `Composer.useStatus()` is true; once a person writes, Send comes back. Its `onSubmit` skips an empty message, so a press meant for Stop never sends:
 
 ```tsx from="./examples/demo.tsx"
 /** Stop while a reply runs and nothing new is written, so a press meant for Stop never sends. */
@@ -191,9 +191,13 @@ export const SendButton = memo(function SendButton() {
 
 ## Chips
 
-The value is a list of strings and chips, each chip at least `{id, label}`; `Composer.isChip(segment)` tells a chip from a string. Root's `toText` gives the value as the text that is copied, that a form submits, and that a `revert` chip becomes; `Composer.valueToText(value, chipToText)` builds it from one text per chip. Render a chip's content with [Chip](/components/chip/), `variant="soft"` and `density="compact"`, in Root's `renderChip`: a `Chip.Icon` and a `Chip.Label` for its place, `Chip.Separator`, and a `Chip.Label` for its name, as the example's `Upload › build-log.png` does. It is 20px tall in the prompt's 24px line and at most three quarters of the text's width; the name takes the ellipsis. `renderChip`, `chipDeletion` and `getChipDescription` take the chip, so each chip can differ.
+The value is a list of strings and chips, each chip at least `{id, label}`; `Composer.isChip(segment)` tells a chip from a string. Root's `toText` gives the value as the text that is copied, that a form submits, and that a `revert` chip becomes. `Composer.valueToText(value, chipToText)` builds it from one text per chip.
 
-Keep `renderChip` stable, at module scope or with `useCallback`: every chip renders again when it changes. The undo history keeps chips as they were, so keep state that changes, such as an upload's progress, out of the chip: give it an id of yours, such as `uploadId` (a copy gets a new `id`), and read the state by it in a component `renderChip` renders. Undo brings a removed chip back, so cancel and restart uploads from the chips in `onValueChange`'s value, as [Uploads](#uploads) shows.
+Render a chip's content with [Chip](/components/chip/), `variant="soft"` and `density="compact"`, in Root's `renderChip`: a `Chip.Icon` and a `Chip.Label` for its place, `Chip.Separator`, and a `Chip.Label` for its name, as the example's `Upload › build-log.png` does. It is 20px tall in the prompt's 24px line and at most three quarters of the text's width; the name takes the ellipsis. `renderChip`, `chipDeletion` and `getChipDescription` take the chip, so each chip can differ.
+
+Keep `renderChip` stable, at module scope or with `useCallback`: every chip renders again when it changes.
+
+The undo history keeps chips as they were, so keep state that changes, such as an upload's progress, out of the chip. Give the chip an id of yours, such as `uploadId`, since a copy gets a new `id`, and read the state by it in `renderChip`, from a component that subscribes to it. Undo brings a removed chip back, so cancel and restart uploads from the chips in `onValueChange`'s value, as [Uploads](#uploads) shows.
 
 In the prompt a chip is one character, and it goes as text does:
 
@@ -215,7 +219,7 @@ export const chipDeletion = (chip: MessageChip) =>
 
 ### Chip tooltips
 
-The prompt doesn't show a chip's text on hover; wrap the chip in a [Tooltip](/components/tooltip/) in `renderChip`, with `Tooltip.Trigger render={<Chip.Root />}`, to say where it is or why its upload failed. Tooltips open for a pointer only, so on a touch screen say why an upload failed in a notice too. The example gives a file chip its path, a command its description, a failed upload its error, and a pasted text its first lines. Root's `getChipDescription` tells screen readers what a chip is; the example's says the path and the description too. Root reads it when it renders a chip, so put text that changes, such as an upload's error, in the chip's content as visually hidden text, as the example does:
+The prompt doesn't show a chip's text on hover; wrap the chip in a [Tooltip](/components/tooltip/) in `renderChip`, with `Tooltip.Trigger render={<Chip.Root />}`, to say where it is or why its upload failed. Tooltips open for a pointer only, so on a touch screen say why an upload failed in a notice too. The example gives a file chip its path, a command its description, a failed upload its error, and a pasted text its first lines. Root's `getChipDescription` tells screen readers what a chip is; the example's says the path and the description too. The prompt reads it when it places a chip in the text, so put text that changes without an edit, such as an upload's error, in the chip's content as visually hidden text, as the example does:
 
 ```tsx from="./examples/hero/chips.tsx"
 function TooltipChip({tooltip, semantic = 'neutral', children}: TooltipChipProps) {
@@ -263,8 +267,8 @@ const content = (
       <Chip.Progress value={upload.progress} aria-label={`Uploading ${chip.label}`} />
     ) : null}
     {upload?.state === 'failed' ? (
-      // Here, not in `getChipDescription`: Root reads that only when it renders the chip, and a
-      // failure doesn't render it again.
+      // Here, not in `getChipDescription`: the prompt reads that when it places the chip in the
+      // text, which a failure doesn't do.
       <span className={styles.visuallyHidden}>{`, ${upload.error}`}</span>
     ) : null}
   </>
@@ -330,11 +334,11 @@ function SecretNotice() {
 
 Set `spaces` on a trigger to let its query hold single spaces: `true` for any number, such as `@Sam Altman`, or a whole number for at most that many. A space right after the trigger, two in a row, more spaces than the number allows, a line break, `. `, another trigger at its `position`, or more than 64 characters with the trigger ends the query. The composer doesn't close the list for words that follow a trigger; when the query has a space and your results are empty, pass `match={null}`, or `SuggestionEmpty` stays up.
 
-The composer doesn't match, rank or load items: filter, sort and fetch them yourself, and debounce your requests if your source needs it. `onOpenChange` tells you when the list opens or closes, with a `reason` such as `escape-key`, `item-press` or `focus-out`, so you can cancel a request; `onItemHighlighted` tells you which item a person moved to, such as to preview it. While new results load, the previous ones for the same trigger stay in secondary text and can't be picked; Enter or Tab picks the first new item if it arrives within a second. After a second, `SuggestionPopup` renders `data-loading`. With no items, the list opens only to show `SuggestionEmpty`. The list has no groups or separators; give each kind of item its own trigger.
+The composer doesn't match, rank or load items: filter, sort and fetch them yourself, and debounce your requests if your source needs it. `onOpenChange` tells you when the list opens or closes, with a `reason` such as `escape-key`, `item-press` or `focus-out`, so you can cancel a request; `onItemHighlighted` tells you which item a person moved to, such as to preview it. While new results load, the previous ones for the same trigger stay in secondary text and can't be picked; Enter or Tab picks the first new item if it arrives within a second. After a second, `SuggestionPopup` renders `data-loading`. With no items, the popup opens only to show `SuggestionEmpty`. The list has no groups or separators; give each kind of item its own trigger.
 
 The focus stays in the prompt. The arrow keys move through the list, skipping items with `disabled`, and Enter or Tab picks. While items show, Enter never submits, also while it waits for new results or every item is disabled; with only `SuggestionEmpty` up, Enter submits as usual. Tab with nothing to pick, or after a second's wait, moves the focus on. Escape closes the list, and it stays closed while typing goes on in that query, until a new trigger is typed. A tap picks when the finger lifts on an item. While an input method composes, its keys go to it, and a closed list doesn't open; an open one stays open, since Android keyboards compose nearly every word.
 
-Escape calls `preventDefault()` when it closes the list. While the list shows nothing, such as with its trigger scrolled out of the prompt's view, it leaves the keys, Escape too, to the prompt and the page. If you handle Escape on the page yourself, such as to stop a reply, listen in the bubbling phase on the document or the window and skip events whose `defaultPrevented` is set; a capturing listener runs before the list sees the key. Prompt's own `onKeyDown` runs first too: check whether the prompt has `data-popup-open`, which it renders while the list is open.
+Escape calls `preventDefault()` when it closes the list. While the popup is hidden, such as with its trigger scrolled out of the prompt's view, it leaves the keys, Escape too, to the prompt and the page. If you handle Escape on the page yourself, such as to stop a reply, listen in the bubbling phase on the document or the window and skip events whose `defaultPrevented` is set; a capturing listener runs before the list sees the key. Prompt's own `onKeyDown` runs first too: check whether the prompt has `data-popup-open`, which it renders while the popup shows.
 
 `SuggestionStatus` tells screen readers how many suggestions there are once typing pauses, that nothing matches, or that results are loading; the keys to choose with are said once each time the list opens, where there is a keyboard. Keep it mounted inside `Suggestions`, outside the portal. It's visually hidden; to show it, give it a `className` that overrides its position, size and clipping, such as `position: static; inline-size: auto; block-size: auto; clip-path: none; white-space: normal`. Children as a function replace its text.
 
@@ -382,7 +386,7 @@ function MessagePrompt({messages}: {messages: readonly Message[]}) {
 
 ## Controls
 
-`Controls` lays out its children in a row, in DOM order, so the order on screen is the order of focus; it places nothing. Put spacing and placement on a wrapper, such as a [Stack](/components/stack/) with `gap="auto"` or `justify-content`. The example puts the Attach buttons at the start, and Dictate and Send or Stop at the end:
+`Controls` lays out its children in a row, in DOM order, so the order on screen is the order of focus; it positions nothing. Put spacing and placement on a wrapper, such as a [Stack](/components/stack/) with `gap="auto"` or `justify-content`. The example puts the Attach buttons at the start, and Dictate and Send or Stop at the end:
 
 ```tsx from="./examples/demo.tsx"
 <Composer.Controls render={<Stack direction="row" gap="auto" align="center" />}>
@@ -420,7 +424,7 @@ Put notices, errors about the last message, and the message being replied to in 
 
 Put your own controls and figures in `Footer`, such as a ghost [Dropdown](/components/dropdown/) trigger for the model and, at the end, a row of figures: a [Meter](/components/meter/) laid out inline for the context used, and `span`s for the rest. The row sets `margin-inline-start: auto` to sit at the end, and tertiary text on its own class, which the meter's value inherits; the controls keep their default size. Footer sets no text style, so these choices are yours.
 
-Without a hang, the footer's controls put their text 2px inside the frame, so a ghost control's hover fill reaches past it. Hung by `--composer-text-inset`, their text lines up with the prompt's, as in the example in a window 48rem wide or wider:
+Without a hang, the footer's controls put their text 2px inside the frame, so a ghost control's hover fill reaches past it. With a hang, they put it on the hang: in the example, hung by `--composer-text-inset` in a window 48rem wide or wider, the model picker's text lines up with the prompt's:
 
 ```tsx from="./examples/demo.tsx"
 <Composer.Footer>
@@ -459,7 +463,7 @@ Use the `composer` container to change the footer at widths of your own, such as
 
 ## Alignment
 
-By default the frame lines up with the content around it. `--composer-hang` hangs Panel out of its container by its value; set to `--composer-text-inset`, the distance from the frame's edge to the text, it lines up the prompt's text and the footer's with the content around it, as the example's prompt text lines up with the messages above it in a wide window.
+By default the frame lines up with the content around it. `--composer-hang` hangs Panel out of its container by its value. Set it to `--composer-text-inset`, the distance from the frame's edge to the text, to line up the prompt's and the footer's text with the content around it instead, as the example does with its messages in a wide window.
 
 Set it in a class on `Composer.Panel` itself: the inset is set on Panel, so a wrapper can't read it. Hang the frame only where there's room, `--composer-text-inset` at each side, such as inside `@media (min-width: …)` or a parent's container query; Panel is the `composer` container itself, so `@container composer` can't style it. A composer rendered by code you don't control can only be hung if that code passes your `className` through.
 
@@ -498,7 +502,7 @@ Pass `render={<form />}` to Panel to make it a form. Submit then submits it, and
 
 Pass `value` and `onValueChange` to Root to keep the prompt elsewhere, such as one draft per conversation. `onValueChange` receives Base UI's change details, with the chips the change removed; `details.cancel()` refuses the change. Set `historyKey` to the draft's key, so each draft keeps its own undo. After sending, call `clearHistory()`, so undo can't bring the sent message back.
 
-When the value comes from a store, subscribe in a small component that renders Root and takes the rest of the composer as `children`. Typing then renders only that component and the prompt, not the buttons or the footer; the example's `MessageComposer` is one. Define `renderChip` outside that component, or memoize it: a new function on every render renders every chip again.
+When the value comes from a store, subscribe in a small component that renders Root and takes the rest of the composer as `children`. Typing then renders only that component and the prompt, not the buttons or the footer; the example's `MessageComposer` is one. Define `renderChip` outside that component.
 
 <Demo example="./examples/controlled.tsx" />
 

@@ -608,7 +608,7 @@ export interface ComposerSuggestionPositionerProps extends Omit<
 > {}
 
 /**
- * Places the popup at the trigger, above its line by default. Goes inside
+ * Positions the popup at the trigger, above its line by default. Goes inside
  * `Composer.SuggestionPortal`. Takes Base UI's `Popover.Positioner` props, except `anchor` and
  * `hidden`, which follow the match.
  */
@@ -829,7 +829,7 @@ export interface ComposerSuggestionEmptyProps extends useRender.ComponentProps<'
 
 /**
  * What the popup says when nothing matches, such as "No matching files"; nothing while there are
- * items. Without it, the list stays closed when nothing matches.
+ * items. Without it, the popup stays closed when nothing matches.
  */
 export function ComposerSuggestionEmpty({ref, render, ...props}: ComposerSuggestionEmptyProps) {
   const {registerEmpty} = useSuggestions('Composer.SuggestionEmpty');
