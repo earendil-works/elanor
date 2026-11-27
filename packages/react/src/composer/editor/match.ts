@@ -14,7 +14,11 @@ export type ComposerSuggestionTrigger = {
   readonly character: string;
   /** Defaults to `word-start`. */
   readonly position?: ComposerSuggestionPosition | undefined;
-  /** Single spaces the query may hold: `true` for any number; two in a row end it. */
+  // Counts spaces, not words as vercel-labs/ui's `spaces` does: `1` allows `Mary Ann`.
+  /**
+   * How many single spaces the query may hold, a whole number such as `2` for `@Mary Ann Lee`, or
+   * `true` for any number. Defaults to `false`.
+   */
   readonly spaces?: boolean | number | undefined;
 };
 
@@ -113,26 +117,41 @@ function at(text: string, index: number, position: ComposerSuggestionPosition): 
 }
 
 /**
+ * How far back from the caret a query holding a space reaches, its trigger included. Fits names of
+ * several parts, such as `@María José García Fernández`, while a sentence typed after a trigger
+ * stops being searched within about ten words; it also bounds the walk back.
+ */
+const SPACED_REACH = 64;
+
+/**
  * Where a query ending at the caret may start: the word start `start`, or an earlier word start
- * across up to `limit` single spaces.
+ * across up to `limit` single spaces, within `SPACED_REACH`.
  */
 function queryStart(before: string, start: number, limit: number): number {
+  const floor = Math.max(0, before.length - SPACED_REACH);
   let reach = start;
-  for (
-    let gaps = 0;
-    gaps < limit && before[reach - 1] === ' ' && before[reach - 2] !== ' ';
-    gaps += 1
+  let gaps = 0;
+  // Two spaces in a row, or `. ` at the end of a sentence, end the query.
+  while (
+    gaps < limit &&
+    before[reach - 1] === ' ' &&
+    before[reach - 2] !== ' ' &&
+    before[reach - 2] !== '.'
   ) {
-    reach -= 1;
-    while (reach > 0 && !endsWord(before[reach - 1])) reach -= 1;
+    let next = reach - 1;
+    while (next > floor && !endsWord(before[next - 1])) next -= 1;
+    if (next < floor || (next > 0 && !endsWord(before[next - 1]))) break;
+    reach = next;
+    gaps += 1;
   }
   return reach;
 }
 
 /**
- * The last trigger in the word that ends at the caret, or across single spaces for a trigger with
- * `spaces`. `before` is the text before the caret, from `offsetText`. Words end at chips and
- * `WORD_END`; a query also ends at a closing bracket it didn't open.
+ * The trigger nearest the caret, at its position, in the word that ends at the caret, or across
+ * single spaces for a trigger with `spaces`. `before` is the text before the caret, from
+ * `offsetText`. Words end at chips and `WORD_END`; a query also ends at a closing bracket it didn't
+ * open.
  */
 export function findMatch(
   before: string,
@@ -140,12 +159,21 @@ export function findMatch(
 ): ComposerSuggestionMatch | null {
   let start = before.length;
   while (start > 0 && !endsWord(before[start - 1])) start -= 1;
-  let found: ComposerSuggestionMatch | null = null;
-  for (const {character, position = 'word-start', spaces = false} of triggers) {
-    const limit = spaces === true ? Number.POSITIVE_INFINITY : spaces || 0;
+  const reaching = triggers.map(({character, position = 'word-start', spaces = false}) => ({
+    character,
+    position,
+    reach: queryStart(before, start, spaces === true ? Number.POSITIVE_INFINITY : spaces || 0),
+  }));
+  // Every trigger is searched as far back as the farthest reach, so the nearest one owns the
+  // query: `#` in `@sam #tag x` ends `@`'s query, though `#` alone takes no spaces.
+  const farthest = Math.min(start, ...reaching.map(({reach}) => reach));
+  let owner:
+    | {readonly character: string; readonly index: number; readonly reach: number}
+    | undefined;
+  for (const {character, position, reach} of reaching) {
     // The backward scan stops after a trigger that is itself an ending character, such as `:`, so
     // the search starts one trigger length earlier.
-    const from = Math.max(0, queryStart(before, start, limit) - character.length);
+    const from = Math.max(0, farthest - character.length);
     // The boundary check reads the text as typed; only the trigger's search is folded.
     const text = halfWidth(before.slice(from));
     const folded = halfWidth(character);
@@ -155,14 +183,15 @@ export function findMatch(
       index = index > from ? text.lastIndexOf(folded, index - from - 1) + from : -1
     ) {
       if (!at(before, index, position)) continue;
-      const query = before.slice(index + character.length);
-      // A space right after the trigger, as in `@ home`, or a closer ends the last trigger's
-      // query; an earlier trigger doesn't take it over.
-      if (query.startsWith(' ') || endsQuery(query)) break;
-      if (!found || index > found.range.start)
-        found = {character, query, range: {start: index, end: before.length}};
+      if (!owner || index > owner.index) owner = {character, index, reach};
       break;
     }
   }
-  return found;
+  if (!owner) return null;
+  const {character, index, reach} = owner;
+  const query = before.slice(index + character.length);
+  // Too many spaces for this trigger, a space right after it, as in `@ home`, or a closer end its
+  // query; an earlier trigger doesn't take it over.
+  if (index < reach - character.length || query.startsWith(' ') || endsQuery(query)) return null;
+  return {character, query, range: {start: index, end: before.length}};
 }
