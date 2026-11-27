@@ -171,6 +171,7 @@ Use one `Suggestions` per Root: pass all your triggers to one `useSuggestionMatc
 - Editing a recalled message makes it the draft: the draft from before is gone, and the next ArrowUp starts again from the newest message.
 - Going through messages is one undo step: Undo gives the draft back, and Redo the message. `onValueChange` receives them with the reason `list-navigation`.
 - Messages that equal the text are skipped, so a message sent twice in a row is one stop.
+- A message comes back exactly as it was sent: no space is added around its chips.
 - A recalled message opens no [suggestions](#suggestions), even when it ends in a trigger such as `/compact`, so ArrowUp goes on through it; once it's edited, the list may open again.
 - Nothing is recalled while suggestions show, while an input method composes, while a chip is selected, or in a disabled or read-only prompt. Arrows with Shift, Alt, Ctrl or Cmd keep their usual meaning.
 - Set `from: 'empty'` to start only from an empty prompt.
