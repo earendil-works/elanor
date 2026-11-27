@@ -70,7 +70,7 @@ export default function ComposerNarrow() {
               </Meter.Track>
               <Meter.Value className={styles.meterValue} />
             </Meter.Root>
-            <span>CH 97%</span>
+            <span className={styles.cache}>CH 97%</span>
             <span>$0.84</span>
           </Stack>
         </Composer.Footer>

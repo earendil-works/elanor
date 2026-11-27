@@ -5,8 +5,8 @@ import styles from './composer.module.css';
 const toText = (value: ComposerValue) => Composer.toText(value, (chip) => chip.label);
 
 const models = [
-  {value: 'large', label: 'Large model with extended reasoning'},
-  {value: 'fast', label: 'Fast model with extended reasoning'},
+  {value: 'large', label: 'Large model'},
+  {value: 'fast', label: 'Fast model'},
 ];
 
 const levels = [
@@ -14,10 +14,10 @@ const levels = [
   {value: 'high', label: 'High'},
 ];
 
-export default function ComposerNarrowPolicy() {
+export default function ComposerFilledFooter() {
   return (
     <Composer.Root toText={toText}>
-      <Composer.Panel className={styles.narrow}>
+      <Composer.Panel className={styles.filledControls}>
         <Composer.Field>
           <Composer.Prompt aria-label="Message" placeholder="Write a message…" />
           <Composer.Controls className={styles.end}>
@@ -26,7 +26,7 @@ export default function ComposerNarrowPolicy() {
         </Composer.Field>
         <Composer.Footer>
           <Dropdown.Root items={models} defaultValue="fast">
-            <Dropdown.Trigger variant="ghost" density="compact" aria-label="Model">
+            <Dropdown.Trigger density="compact" aria-label="Model">
               <Dropdown.Value />
               <Dropdown.Icon />
             </Dropdown.Trigger>
@@ -45,7 +45,7 @@ export default function ComposerNarrowPolicy() {
             </Dropdown.Portal>
           </Dropdown.Root>
           <Dropdown.Root items={levels} defaultValue="high">
-            <Dropdown.Trigger variant="ghost" density="compact" aria-label="Thinking">
+            <Dropdown.Trigger density="compact" aria-label="Thinking">
               <Dropdown.Value />
               <Dropdown.Icon />
             </Dropdown.Trigger>
@@ -70,7 +70,7 @@ export default function ComposerNarrowPolicy() {
               </Meter.Track>
               <Meter.Value className={styles.meterValue} />
             </Meter.Root>
-            <span className={styles.cache}>CH 97%</span>
+            <span>CH 97%</span>
             <span>$0.84</span>
           </Stack>
         </Composer.Footer>

@@ -1,47 +1,37 @@
-import {DescriptionIcon, TerminalIcon} from '@earendil-works/elanor-icons-react';
 import {
-  Chip,
   Composer,
   type ComposerSuggestionResults,
   type ComposerSuggestionTrigger,
-  type ComposerValue,
 } from '@earendil-works/elanor-react';
 import {useEffect, useRef, useState} from 'react';
 
-import styles from './composer.module.css';
+import type {MessageChip} from './chips.tsx';
 
-type Suggestion =
-  | {readonly kind: 'file'; readonly id: string; readonly label: string; readonly path: string}
-  | {
-      readonly kind: 'command';
-      readonly id: string;
-      readonly label: string;
-      readonly description: string;
-      readonly available: boolean;
-    };
+import styles from '../composer.module.css';
+
+type Command = {
+  readonly kind: 'command';
+  readonly label: string;
+  readonly description: string;
+  readonly available: boolean;
+};
+
+type Suggestion = {readonly kind: 'file'; readonly path: string} | Command;
 
 const paths = [
   'README.md',
   'package.json',
   'docs/releases.md',
+  'scripts/build.mjs',
   'src/composer/prompt.tsx',
   'src/composer/root.tsx',
-  'src/composer/suggestions.tsx',
 ];
 
-const command = (label: string, description: string, available = true): Suggestion => ({
-  kind: 'command',
-  id: label,
-  label,
-  description,
-  available,
-});
-
-const commands = [
-  command('review', 'Review the current branch'),
-  command('test', 'Run the tests'),
-  command('release-notes', 'Draft release notes'),
-  command('deploy', 'Needs a clean branch', false),
+const commands: readonly Command[] = [
+  {kind: 'command', label: 'review', description: 'Review the current branch', available: true},
+  {kind: 'command', label: 'test', description: 'Run the tests', available: true},
+  {kind: 'command', label: 'release-notes', description: 'Draft release notes', available: true},
+  {kind: 'command', label: 'deploy', description: 'Needs a clean branch', available: false},
 ];
 
 const triggers: readonly ComposerSuggestionTrigger[] = [
@@ -52,12 +42,7 @@ const triggers: readonly ComposerSuggestionTrigger[] = [
 function searchFiles(query: string, signal: AbortSignal): Promise<Suggestion[]> {
   const found = paths
     .filter((path) => path.toLowerCase().includes(query.toLowerCase()))
-    .map((path): Suggestion => ({
-      kind: 'file',
-      id: path,
-      label: path.split('/').at(-1) ?? path,
-      path,
-    }));
+    .map((path): Suggestion => ({kind: 'file', path}));
   // Demo only: replace the timer with a request to your server that takes `signal`.
   return new Promise((resolve, reject) => {
     const timer = setTimeout(() => resolve(found), 300);
@@ -68,11 +53,18 @@ function searchFiles(query: string, signal: AbortSignal): Promise<Suggestion[]> 
   });
 }
 
-const toText = (value: ComposerValue<Suggestion>) =>
-  Composer.toText(value, (chip) => (chip.kind === 'file' ? `@${chip.path}` : `/${chip.label}`));
+const chipOf = (item: Suggestion): MessageChip => {
+  const id = crypto.randomUUID();
+  return item.kind === 'file'
+    ? {kind: 'file', id, label: item.path.split('/').at(-1) ?? item.path, path: item.path}
+    : {kind: 'command', id, label: item.label, description: item.description};
+};
 
-function FileAndCommandSuggestions() {
-  const {insert} = Composer.useActions<Suggestion>();
+const keyOf = (item: Suggestion) => (item.kind === 'file' ? item.path : item.label);
+
+/** `@` for a file anywhere a word starts, `/` for a command at the start. */
+export function FileAndCommandSuggestions() {
+  const {insert} = Composer.useActions<MessageChip>();
   const match = Composer.useSuggestionMatch(triggers);
   const [files, setFiles] = useState<ComposerSuggestionResults<Suggestion>>();
   const request = useRef<AbortController>(null);
@@ -98,7 +90,7 @@ function FileAndCommandSuggestions() {
       match={match}
       results={results}
       onItemPick={(item, picked, {event}) =>
-        insert(item, {at: picked.range, reason: 'item-press', event, space: true})
+        insert(chipOf(item), {at: picked.range, reason: 'item-press', event, space: true})
       }
       onOpenChange={(open) => {
         if (!open) request.current?.abort();
@@ -111,7 +103,7 @@ function FileAndCommandSuggestions() {
             <Composer.SuggestionList aria-label="Suggestions">
               {results?.items.map((item, index) => (
                 <Composer.SuggestionItem
-                  key={item.id}
+                  key={keyOf(item)}
                   index={index}
                   disabled={item.kind === 'command' && !item.available}
                 >
@@ -127,37 +119,11 @@ function FileAndCommandSuggestions() {
               ))}
             </Composer.SuggestionList>
             <Composer.SuggestionEmpty>
-              {match && match.character === '@' ? 'No matching files' : 'No matching commands'}
+              {match?.character === '@' ? 'No matching files' : 'No matching commands'}
             </Composer.SuggestionEmpty>
           </Composer.SuggestionPopup>
         </Composer.SuggestionPositioner>
       </Composer.SuggestionPortal>
     </Composer.Suggestions>
-  );
-}
-
-const renderChip = (chip: Suggestion) => (
-  <Chip.Root variant="soft" density="compact">
-    <Chip.Icon>{chip.kind === 'file' ? <DescriptionIcon /> : <TerminalIcon />}</Chip.Icon>
-    <Chip.Label>{chip.kind === 'file' ? chip.label : `/${chip.label}`}</Chip.Label>
-  </Chip.Root>
-);
-
-export default function ComposerSuggestions() {
-  return (
-    <Composer.Root toText={toText} getChipDescription={(chip) => chip.kind} renderChip={renderChip}>
-      <Composer.Panel>
-        <Composer.Field>
-          <Composer.Prompt
-            aria-label="Message"
-            placeholder="Type @ for a file, or / at the start for a command…"
-          />
-          <Composer.Controls className={styles.end}>
-            <Composer.Submit />
-          </Composer.Controls>
-        </Composer.Field>
-      </Composer.Panel>
-      <FileAndCommandSuggestions />
-    </Composer.Root>
   );
 }

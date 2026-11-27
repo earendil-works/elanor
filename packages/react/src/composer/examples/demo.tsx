@@ -1,98 +1,207 @@
-import {UploadIcon} from '@earendil-works/elanor-icons-react';
+import {MicIcon, PhotoCameraIcon} from '@earendil-works/elanor-icons-react';
 import {
-  Chip,
   Composer,
-  Dropdown,
-  Meter,
+  IconButton,
   Stack,
+  Text,
   type ComposerActions,
-  type ComposerChip,
-  type ComposerValue,
 } from '@earendil-works/elanor-react';
-import {useRef, useState} from 'react';
+import {useRef, useState, type ReactNode} from 'react';
+
+import {
+  chipDeletion,
+  chipText,
+  describeChip,
+  getPastedValue,
+  renderChip,
+  toText,
+  type Message,
+  type MessageChip,
+} from './hero/chips.tsx';
+import {DropZone} from './hero/drop-zone.tsx';
+import {Figures, ModelPicker} from './hero/footer.tsx';
+import {FileAndCommandSuggestions} from './hero/suggestions.tsx';
+import {pending, SendButton, startUpload, uploadIdsOf, uploadUrl} from './hero/uploads.tsx';
 
 import styles from './composer.module.css';
 
-const toText = (value: ComposerValue) => Composer.toText(value, (chip) => `@uploads:${chip.label}`);
-
-let uploads = 0;
-
-// Outside the component: a new function on every render would draw every chip again.
-const renderChip = (chip: ComposerChip) => (
-  <Chip.Root variant="soft" density="compact">
-    <Chip.Icon>
-      <UploadIcon />
-    </Chip.Icon>
-    <Chip.Label>Upload</Chip.Label>
-    <Chip.Separator />
-    <Chip.Label>{chip.label}</Chip.Label>
-  </Chip.Root>
-);
-
-const models = [
-  {value: 'large', label: 'Large model'},
-  {value: 'fast', label: 'Fast model'},
+// Demo only: earlier messages; load the conversation's sent messages from your store.
+const earlier: Message[] = [
+  ['Why does the docs build fail on Node 24?'],
+  [
+    'Compare ',
+    {kind: 'file', id: 'file-build', label: 'build.mjs', path: 'scripts/build.mjs'},
+    ' with the version on main.',
+  ],
+  ['Write the release notes for 0.4, grouped by component.'],
 ];
 
-export default function ComposerDemo() {
-  const [value, setValue] = useState<ComposerValue>([]);
-  const actions = useRef<ComposerActions>(null);
+/** The message as your server takes it: each upload by its address, read when it's sent. */
+const messageText = (message: Message) =>
+  Composer.toText(message, (chip) =>
+    chip.kind === 'upload' ? `@${uploadUrl(chip.uploadId) ?? chip.label}` : chipText(chip),
+  );
+
+const MAX_BYTES = 20 * 1024 * 1024;
+
+// `accept` limits only the picker: dropped and pasted files come whatever their type.
+const attachable = (file: File) =>
+  (file.type.startsWith('image/') || file.type === 'application/pdf') && file.size <= MAX_BYTES;
+
+interface MessageComposerProps {
+  readonly onSend: (message: Message) => void;
+  readonly onNotice: (notice: string) => void;
+  readonly children: ReactNode;
+}
+
+/** Owns the draft. Typing renders this and the prompt, not `children`. */
+function MessageComposer({onSend, onNotice, children}: MessageComposerProps) {
+  const [value, setValue] = useState<Message>([]);
+  const actions = useRef<ComposerActions<MessageChip>>(null);
 
   return (
     <Composer.Root
       value={value}
       onValueChange={setValue}
-      toText={toText}
       actionsRef={actions}
-      onAttach={(files, details) =>
-        details.insert(files.map((file) => ({id: `upload-${(uploads += 1)}`, label: file.name})))
-      }
+      toText={toText}
       renderChip={renderChip}
-      onSubmit={(sent) => {
-        if (!toText(sent).trim()) return;
+      chipDeletion={chipDeletion}
+      getChipDescription={describeChip}
+      getPastedValue={getPastedValue}
+      onAttach={(files, details) => {
+        const accepted = files.filter(attachable);
+        onNotice(
+          accepted.length < files.length ? 'Only images and PDFs up to 20 MB can be attached.' : '',
+        );
+        const added = accepted.map((file) => {
+          const chip = {
+            kind: 'upload',
+            id: crypto.randomUUID(),
+            label: file.name,
+            uploadId: crypto.randomUUID(),
+          } as const;
+          return {file, chip};
+        });
+        // Only files that went into the text start uploading.
+        if (!details.insert(added.map(({chip}) => chip))) return;
+        for (const {file, chip} of added) startUpload(chip.uploadId, file);
+      }}
+      // Enter sends without Submit, so check here too.
+      onSubmit={(message) => {
+        if (pending(uploadIdsOf(message)) || !toText(message).trim()) return;
+        onSend(message);
         actions.current?.clearHistory();
         setValue([]);
       }}
     >
-      <Composer.Panel>
-        <Composer.Field>
-          <Composer.Prompt aria-label="Message" placeholder="Write a message…" />
-          <Composer.Controls render={<Stack direction="row" gap="auto" align="center" />}>
-            <Composer.Attach aria-label="Attach files" />
-            <Composer.Submit />
-          </Composer.Controls>
-        </Composer.Field>
-        <Composer.Footer>
-          <Dropdown.Root items={models} defaultValue="fast">
-            <Dropdown.Trigger variant="ghost" density="compact" aria-label="Model">
-              <Dropdown.Value />
-              <Dropdown.Icon />
-            </Dropdown.Trigger>
-            <Dropdown.Portal>
-              <Dropdown.Positioner>
-                <Dropdown.Popup>
-                  <Dropdown.List>
-                    {models.map((model) => (
-                      <Dropdown.Item key={model.value} value={model.value}>
-                        {model.label}
-                      </Dropdown.Item>
-                    ))}
-                  </Dropdown.List>
-                </Dropdown.Popup>
-              </Dropdown.Positioner>
-            </Dropdown.Portal>
-          </Dropdown.Root>
-          <Stack direction="row" gap="medium" className={styles.figures}>
-            <Meter.Root value={42} aria-label="Context used" className={styles.meter}>
-              <Meter.Track className={styles.track}>
-                <Meter.Indicator className={styles.indicator} />
-              </Meter.Track>
-              <Meter.Value className={styles.meterValue} />
-            </Meter.Root>
-            <span>$0.84</span>
-          </Stack>
-        </Composer.Footer>
-      </Composer.Panel>
+      {children}
     </Composer.Root>
+  );
+}
+
+/** Inside Root, where `useRecall` finds the prompt. */
+function MessagePrompt({messages}: {messages: readonly Message[]}) {
+  const recall = Composer.useRecall(messages);
+  return (
+    <Composer.Prompt
+      aria-label="Message"
+      placeholder="Write a message, @ for a file, / for a command…"
+      onKeyDown={recall}
+    />
+  );
+}
+
+const secret = /\b(?:sk|ghp|xox[bp])-[A-Za-z0-9]{16,}/;
+const hasSecret = (value: Message) => secret.test(toText(value));
+
+function SecretNotice() {
+  // A boolean: renders again only when the answer changes, not on every key.
+  const found = Composer.useValue(hasSecret);
+  return found ? <Text role="alert">This looks like a key or a password.</Text> : null;
+}
+
+function DictateButton() {
+  const {insert, focus} = Composer.useActions<MessageChip>();
+  return (
+    <IconButton
+      density="default"
+      aria-label="Dictate"
+      onClick={() => {
+        // Demo only: a fixed sentence; insert the text your speech recognition hears.
+        insert('Summarize the open pull requests.', {space: true});
+        focus({at: 'caret'});
+      }}
+    >
+      <MicIcon />
+    </IconButton>
+  );
+}
+
+export default function ComposerDemo() {
+  const [messages, setMessages] = useState(earlier);
+  const [notice, setNotice] = useState('');
+  const [replying, setReplying] = useState(false);
+  const reply = useRef<ReturnType<typeof setTimeout>>(undefined);
+
+  const send = (message: Message) => {
+    setMessages((current) => [...current, message]);
+    setNotice('');
+    // Demo only: nothing replies. Send `messageText(message)` to your server, and cancel the
+    // request in Stop's `onClick`.
+    clearTimeout(reply.current);
+    setReplying(true);
+    reply.current = setTimeout(() => setReplying(false), 4000);
+  };
+
+  const stop = () => {
+    clearTimeout(reply.current);
+    setReplying(false);
+  };
+
+  return (
+    <MessageComposer onSend={send} onNotice={setNotice}>
+      <DropZone>
+        <Stack gap="small" align="stretch">
+          {messages.map((message, index) => (
+            // Sent messages only grow, so their place is their key.
+            <Text key={index} className={styles.message}>
+              {messageText(message)}
+            </Text>
+          ))}
+        </Stack>
+        <Composer.Panel className={styles.textAligned}>
+          <Composer.Header>
+            <SecretNotice />
+            {notice ? <Text role="alert">{notice}</Text> : null}
+          </Composer.Header>
+          <Composer.Field>
+            <MessagePrompt messages={messages} />
+            <Composer.Controls render={<Stack direction="row" gap="auto" align="center" />}>
+              <Stack direction="row" gap="xSmall" align="center">
+                <Composer.Attach aria-label="Attach files" accept="image/*,.pdf" />
+                <Composer.Attach
+                  aria-label="Take a photo"
+                  accept="image/*"
+                  capture="environment"
+                  className={styles.camera}
+                >
+                  <PhotoCameraIcon />
+                </Composer.Attach>
+              </Stack>
+              <Stack direction="row" gap="xSmall" align="center">
+                <DictateButton />
+                {replying ? <Composer.Stop key="stop" onClick={stop} /> : <SendButton key="send" />}
+              </Stack>
+            </Composer.Controls>
+          </Composer.Field>
+          <Composer.Footer>
+            <ModelPicker />
+            <Figures />
+          </Composer.Footer>
+        </Composer.Panel>
+      </DropZone>
+      <FileAndCommandSuggestions />
+    </MessageComposer>
   );
 }
