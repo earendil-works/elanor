@@ -455,13 +455,12 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     if (historyKey !== this.#historyKey) this.#switchHistory(historyKey, value);
     const edit = this.#edit;
     this.#edit = undefined;
-    // The controlling component took the pending edit: it enters the history now, also the one
-    // after `clearHistory` when no value from outside came between.
-    if (edit && value === edit.value) {
+    // The controlling component took the pending edit, maybe as a copy: it enters the history
+    // now, also the one after `clearHistory` when no value from outside came between.
+    if (edit && sameContent(value, edit.value)) {
       this.#cleared = false;
       if (edit.prior) this.#history.record(edit.prior);
       this.#history.record({value, selection: edit.selection}, edit.group);
-      return;
     }
     // Nothing new, such as a render for something else.
     if (value === this.#latest) return;
@@ -475,10 +474,14 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       // an edit it didn't take. It's an undo step of its own.
       this.#history.record({value, selection: null});
     }
-    this.#armed = undefined;
-    if (!sameValue(value, this.#latest)) this.#revision += 1;
+    // A copy, as from a parent that copies the value on every render, changes nothing shown.
+    const changed = !sameValue(value, this.#latest);
     this.#latest = value;
-    this.#render(this.#keptSelection(edit?.before));
+    if (changed) {
+      this.#armed = undefined;
+      this.#revision += 1;
+      this.#render(this.#keptSelection(edit?.before));
+    }
     this.#emitValue();
   }
 
