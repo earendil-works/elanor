@@ -338,6 +338,14 @@ function createRules(paths: readonly string[]): ContrastRule[] {
       ]),
     },
     {
+      // A conversation's sender names stand on a message's bubble, the secondary fill.
+      category: 'text/message-on-secondary-fill',
+      threshold: REQUIRED_TEXT_CONTRAST,
+      pairs: everyCombination(under(paths, 'semantic.color.text.message'), [
+        requirePath(pathSet, 'semantic.color.background.fill.secondary'),
+      ]),
+    },
+    {
       category: 'icon/page',
       threshold: REQUIRED_NON_TEXT_CONTRAST,
       pairs: everyCombination(

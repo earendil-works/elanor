@@ -796,6 +796,36 @@
             "$value": "{primitive.color.amethystViolet.300}",
             "$description": "Use for types, classes, and built-ins in code."
           }
+        },
+        "message": {
+          "$description": "Colors for text in a conversation's messages.",
+          "sender": {
+            "$description": "Use for the names of a conversation's senders above their messages, one color each, so readers tell senders apart; give each sender the color fewest senders in the conversation have so far. They are identities, not status colors.",
+            "1": {
+              "$value": "{primitive.color.cerulianBlue.300}",
+              "$description": "Use for the first sender's name in a conversation, on a message's bubble. Do not use to signal status."
+            },
+            "2": {
+              "$value": "{primitive.color.coralRed.300}",
+              "$description": "Use for the second sender's name in a conversation, on a message's bubble. Do not use to signal status."
+            },
+            "3": {
+              "$value": "{primitive.color.turquoiseGreen.300}",
+              "$description": "Use for the third sender's name in a conversation, on a message's bubble. Do not use to signal status."
+            },
+            "4": {
+              "$value": "{primitive.color.amethystViolet.300}",
+              "$description": "Use for the fourth sender's name in a conversation, on a message's bubble. Do not use to signal status."
+            },
+            "5": {
+              "$value": "{primitive.color.calamineBlue.300}",
+              "$description": "Use for the fifth sender's name in a conversation, on a message's bubble. Do not use to signal status."
+            },
+            "6": {
+              "$value": "{primitive.color.creamYellow.300}",
+              "$description": "Use for the sixth sender's name in a conversation, on a message's bubble. Do not use to signal status."
+            }
+          }
         }
       },
       "icon": {

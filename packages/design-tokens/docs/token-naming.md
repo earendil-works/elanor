@@ -28,7 +28,7 @@ State vocabulary:
 - Numeric primitive steps or [derived-color operations](#derived-primitive-colors).
 - Semantic heading levels `1`–`6`.
 - T-shirt sizes: `xxxSmall`, `xxSmall`, `xSmall`, `small`, `medium`, `large`, `xLarge`, `xxLarge`, `xxxLarge`, `xxxxLarge`.
-- `none`, `default`, `full`, `rest`, `hidden`, `visible`, `pulse`, `stale`, `hover`, `focus`, `active`, `selected`, `checked`, `disabled`, `visited`. Reserve `none` for explicit zero spacing and `full` for radii. `rest` is the value when nothing moves (`scale.rest`, `travel.rest`); `hidden` and `visible` are the ends of a fade; `pulse` is the far end of a repeating loading pulse; `stale` is content shown while its replacement loads.
+- `none`, `default`, `full`, `rest`, `hidden`, `visible`, `pulse`, `stale`, `pending`, `hover`, `focus`, `active`, `selected`, `checked`, `disabled`, `visited`. Reserve `none` for explicit zero spacing and `full` for radii. `rest` is the value when nothing moves (`scale.rest`, `travel.rest`); `hidden` and `visible` are the ends of a fade; `pulse` is the far end of a repeating loading pulse; `stale` is content shown while its replacement loads; `pending` is something waiting for its turn, such as a queued message.
 
 Examples:
 
@@ -76,7 +76,7 @@ The first category selects the type vocabulary:
 | `semantic`  | `fontFamily`   | `prose`, `ui`, `code`                                                    |
 | `semantic`  | `fontWeight`   | `emphasis`, `ui`                                                         |
 | `semantic`  | `typography`   | `code`, `heading`, `primary`, `prose`, `secondary`, `ui`                 |
-| `semantic`  | `transition`   | `feedback`, `fade`, `movement`, `pulse`, `stale`                         |
+| `semantic`  | `transition`   | `feedback`, `fade`, `movement`, `pulse`, `spin`, `stale`                 |
 | `semantic`  | `duration`     | `confirmation`, `loading`                                                |
 
 Context-neutral tokens stand directly under their category because they apply in any text context: `semantic.fontWeight.emphasis`, and `semantic.typography.primary` and `.secondary`, which the `textContext` modifier resolves to the UI styles in interfaces and the prose styles in long-form content. `fontWeight.ui.*` and `typography.ui.*` are for interface text only.
@@ -181,12 +181,14 @@ Transitions are DTCG `transition` composites. Each references one primitive dura
 | `fade`     | Opacity when something appears or disappears                           | Unchanged      |
 | `movement` | Position, size, scale, rotation, and height                            | Instant        |
 | `pulse`    | A repeating opacity pulse while content loads, such as a skeleton      | Unchanged      |
+| `spin`     | A turn repeated without end while something waits, such as a clock     | Stopped        |
 | `stale`    | Dimming content while its replacement loads, after a delay             | Unchanged      |
 
 ```text
 semantic.transition.feedback
 semantic.transition.fade
 semantic.transition.pulse
+semantic.transition.spin
 semantic.transition.stale
 semantic.transition.movement.popup
 semantic.transition.movement.disclosure
