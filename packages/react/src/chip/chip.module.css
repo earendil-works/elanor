@@ -1,61 +1,107 @@
 @layer elanor.components {
-  /* stylelint-disable design-tokens/no-non-token-custom-properties -- The edge width and the remove button's size, set per density. */
+  /* stylelint-disable design-tokens/no-non-token-custom-properties -- The fill, the edge and the remove button's size, set per variant, semantic, state and density. */
 
   /*
-   * No fixed height, so chips grow with larger type: block padding sets it, or the remove button
-   * where there is one. The `outline` edge is an inset shadow, so it adds no height.
+   * No fixed height, so chips grow with larger type: block padding and the text's line set it, or
+   * the remove button where there is one. The edge is an inset shadow, so it takes no room. The
+   * parts set the font, not the chip, so the chip's `1lh` is the line of the text around it.
    */
   .root {
-    --chip-edge: var(--semantic-dimension-border-width-default);
+    --chip-fill: var(--semantic-color-background-canvas);
+    --chip-edge: var(--semantic-color-border-secondary);
+    --chip-edge-width: var(--semantic-dimension-border-width-default);
     --chip-remove-size: var(--semantic-dimension-size-small);
 
+    position: relative;
     box-sizing: border-box;
     display: inline-flex;
     align-items: center;
-    gap: var(--semantic-dimension-space-control-gap-small);
+    gap: var(--semantic-dimension-space-gap-x-small);
     min-inline-size: 0;
     max-inline-size: 100%;
     margin: 0;
     padding: 0;
-    padding-inline-start: var(--semantic-dimension-space-control-padding-inline-small);
+    padding-inline: var(--semantic-dimension-space-padding-medium);
+    box-shadow: inset 0 0 0 var(--chip-edge-width) var(--chip-edge);
+    background: var(--chip-fill);
     color: var(--semantic-color-text-primary);
-    font: var(--semantic-typography-ui-secondary);
     /* `baseline` would align the leading icon's bottom edge, not the text. */
     vertical-align: middle;
     white-space: nowrap;
   }
 
-  /* Compact fits a line of text: a thinner edge, a 12px icon and a 16px remove button. */
-  .root[data-density='compact'] {
-    --chip-edge: var(--semantic-dimension-border-width-small);
-    --chip-remove-size: var(--semantic-dimension-size-x-small);
-  }
-
-  .root[data-variant='outline'] {
-    border-radius: var(--semantic-dimension-radius-small);
-    background: var(--semantic-color-background-canvas);
-    box-shadow: inset 0 0 0 var(--chip-edge) var(--semantic-color-border-secondary);
-  }
-
-  .root[data-variant='soft'] {
-    border-radius: var(--semantic-dimension-radius-full);
-    background: var(--semantic-color-background-fill-secondary);
-  }
-
-  /* An icon's glyph sits inside its box, so a leading icon needs less padding than text. */
-  .root:has(> .icon:first-child) {
-    padding-inline-start: var(--semantic-dimension-space-control-padding-inline-x-small);
-  }
-
-  .root:not(:has(> .remove)) {
-    padding-inline-end: var(--semantic-dimension-space-control-padding-inline-small);
-  }
-
+  /* Default is 24px: the text's 20px line and 2px above and below, or Remove's 24px. */
   .root[data-density='default']:not(:has(> .remove)) {
-    padding-block: var(--semantic-dimension-space-control-padding-block-small);
+    padding-block: var(--semantic-dimension-space-padding-xx-small);
   }
 
-  .icon {
+  /*
+   * Compact is as tall as its text's line, the inline element size, and centred in the line of the
+   * text around it: on the line's top, with half of what the line has to spare above and below
+   * (2px in a 24px line). Centring by `middle` would depend on the font's metrics.
+   */
+  .root[data-density='compact'] {
+    --chip-remove-size: var(--semantic-dimension-size-x-small);
+
+    margin-block: calc((1lh - var(--semantic-dimension-size-inline-element)) / 2);
+    vertical-align: top;
+  }
+
+  .root:where([data-variant='outline']) {
+    border-radius: var(--semantic-dimension-radius-small);
+  }
+
+  .root:where([data-variant='outline'][data-semantic='positive']) {
+    --chip-edge: var(--semantic-color-border-positive);
+  }
+
+  .root:where([data-variant='outline'][data-semantic='warning']) {
+    --chip-edge: var(--semantic-color-border-warning);
+  }
+
+  .root:where([data-variant='outline'][data-semantic='negative']) {
+    --chip-edge: var(--semantic-color-border-negative);
+  }
+
+  /* The edge of a fill: it holds the pill on a surface of the same fill. */
+  .root:where([data-variant='soft']) {
+    --chip-fill: var(--semantic-color-background-fill-secondary);
+    --chip-edge: var(--semantic-color-border-edge);
+
+    border-radius: var(--semantic-dimension-radius-full);
+  }
+
+  .root:where([data-variant='soft'][data-semantic='positive']) {
+    --chip-fill: var(--semantic-color-background-fill-secondary-positive);
+  }
+
+  .root:where([data-variant='soft'][data-semantic='warning']) {
+    --chip-fill: var(--semantic-color-background-fill-secondary-warning);
+  }
+
+  .root:where([data-variant='soft'][data-semantic='negative']) {
+    --chip-fill: var(--semantic-color-background-fill-secondary-negative);
+  }
+
+  /*
+   * Selected as a whole, a key then acts on all of it: the information fill, as selected text, at
+   * once. It covers any semantic while selected, so a person sees what the key will act on. The
+   * variant and semantic rules weigh no more than `.root`, so this one wins.
+   */
+  .root[data-selected] {
+    --chip-fill: var(--semantic-color-background-fill-secondary-information);
+  }
+
+  .root[data-variant='outline'][data-selected] {
+    --chip-edge: var(--semantic-color-border-information);
+  }
+
+  .root:has(> .remove) {
+    padding-inline-end: 0;
+  }
+
+  .icon,
+  .separator {
     display: inline-flex;
     flex: none;
     inline-size: var(--semantic-dimension-size-x-small);
@@ -64,27 +110,37 @@
   }
 
   .icon > svg,
-  .icon > img {
+  .icon > img,
+  .separator > svg {
     inline-size: 100%;
     block-size: 100%;
   }
 
-  .root[data-density='compact'] > .icon,
-  .root[data-density='compact'] > .remove > svg {
-    inline-size: var(--semantic-dimension-size-icon-small);
-    block-size: var(--semantic-dimension-size-icon-small);
+  /* From the place to the name, which comes first in right-to-left text. */
+  .separator:dir(rtl) {
+    rotate: 180deg;
   }
 
   /* Flex, so a `q`'s quotation marks are flex items and the ellipsis falls inside them. */
   .label {
     display: flex;
     min-inline-size: 0;
+    font: var(--semantic-typography-ui-secondary);
   }
 
-  /* A label before another keeps its width, up to half the chip. */
+  /*
+   * A label before another is the place: quieter, and it keeps its width, so the name takes the
+   * ellipsis. Up to half the chip, so a long place can't push the name out.
+   */
   .label:has(~ .label) {
     flex-shrink: 0;
     max-inline-size: 50%;
+    color: var(--semantic-color-text-secondary);
+  }
+
+  /* An item on its way: its name is quieter until it is there. */
+  .root:has(> .progress) > .label {
+    color: var(--semantic-color-text-secondary);
   }
 
   /* Room for a last glyph that overhangs its advance (a serif "f"), without moving the layout. */
@@ -97,12 +153,63 @@
   }
 
   /*
+   * Over the chip and clipped to its shape, so the bar at its foot follows the pill's corners.
+   * Only this layer clips: Remove's focus ring stays whole.
+   */
+  .progress {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    border-radius: inherit;
+    pointer-events: none;
+  }
+
+  .track {
+    position: absolute;
+    inset-block-end: 0;
+    inset-inline: 0;
+    block-size: var(--semantic-dimension-border-width-medium);
+  }
+
+  /*
+   * Base UI sets the width of a known value. The bar grows, so it moves by the indicator's movement,
+   * as Meter's does, and jumps when a person prefers reduced motion.
+   */
+  .indicator {
+    display: block;
+    block-size: 100%;
+    background: var(--semantic-color-background-fill-selected);
+    transition: width var(--semantic-transition-movement-indicator);
+  }
+
+  .indicator[data-indeterminate] {
+    inline-size: 100%;
+    animation: pulse var(--semantic-transition-pulse-duration)
+      var(--semantic-transition-pulse-timing-function) infinite alternate;
+  }
+
+  @keyframes pulse {
+    from {
+      opacity: var(--semantic-number-opacity-visible);
+    }
+
+    to {
+      opacity: var(--semantic-number-opacity-pulse);
+    }
+  }
+
+  /*
    * The remove button sits flush at the chip's end, as tall as the chip, and its fill is concentric
    * with that end: the whole end cap in `soft`, inside the edge in `outline`.
    */
   .root > .remove {
     inline-size: var(--chip-remove-size);
     block-size: var(--chip-remove-size);
+  }
+
+  .root[data-density='compact'] > .remove > svg {
+    inline-size: var(--semantic-dimension-size-icon-small);
+    block-size: var(--semantic-dimension-size-icon-small);
   }
 
   .root > .remove::before {
@@ -118,31 +225,31 @@
 
   /*
    * The chip's radius minus the edge: concentric corners. The `calc` passes
-   * token-property-compatibility only because `--chip-edge` stands in for the border token.
+   * token-property-compatibility only because `--chip-edge-width` stands in for the border token.
    */
   .root[data-variant='outline'] > .remove::before {
-    inset: var(--chip-edge);
-    border-radius: calc(var(--semantic-dimension-radius-small) - var(--chip-edge));
+    inset: var(--chip-edge-width);
+    border-radius: calc(var(--semantic-dimension-radius-small) - var(--chip-edge-width));
   }
 
-  /* IconButton's ghost fills don't show on the pill; use its own fill steps. */
-  @media (hover: hover) {
-    .root[data-variant='soft'] > .remove:hover:not([data-disabled])::before {
-      background: var(--semantic-color-background-fill-secondary-hover);
-      box-shadow: none;
-    }
-  }
-
-  .root[data-variant='soft'] > .remove:active:not([data-disabled])::before {
-    background: var(--semantic-color-background-fill-secondary-active);
-    box-shadow: none;
-  }
-
-  /* Forced colours drop shadows: an outline draws the edge without changing the size. */
+  /*
+   * Forced colors drop shadows and fills: an outline draws the edge without changing the size, and
+   * a selected chip's ring sits on its edge, clear of the letters beside it with any font.
+   */
   @media (forced-colors: active) {
     .root {
-      outline: var(--chip-edge) solid CanvasText;
-      outline-offset: calc(-1 * var(--chip-edge));
+      outline: var(--chip-edge-width) solid CanvasText;
+      outline-offset: calc(-1 * var(--chip-edge-width));
+    }
+
+    .root[data-selected] {
+      outline: var(--semantic-dimension-border-width-focus-ring) solid Highlight;
+      outline-offset: 0;
+    }
+
+    .indicator {
+      background: Highlight;
+      forced-color-adjust: none;
     }
   }
 

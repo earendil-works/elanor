@@ -1,34 +1,28 @@
-import {DraftIcon, FormatQuoteIcon} from '@earendil-works/elanor-icons-react';
+import {DnsIcon, LaptopMacIcon, UploadIcon} from '@earendil-works/elanor-icons-react';
 import {Chip, Text} from '@earendil-works/elanor-react';
-import {useState} from 'react';
+import type {ReactNode} from 'react';
+
+import styles from './chip.module.css';
+
+function FileChip({icon, place, name}: {icon: ReactNode; place: string; name: string}) {
+  return (
+    <Chip.Root variant="soft" density="compact">
+      <Chip.Icon>{icon}</Chip.Icon>
+      <Chip.Label>{place}</Chip.Label>
+      <Chip.Separator />
+      <Chip.Label>{name}</Chip.Label>
+    </Chip.Root>
+  );
+}
 
 export default function ChipInText() {
-  const [quoted, setQuoted] = useState(true);
-
   return (
-    <Text>
-      Compare the totals in{' '}
-      <Chip.Root variant="soft" density="compact">
-        <Chip.Icon>
-          <DraftIcon />
-        </Chip.Icon>
-        <Chip.Label>quarterly-report.pdf</Chip.Label>
-      </Chip.Root>{' '}
-      with the figures from the call
-      {quoted ? (
-        <>
-          {' '}
-          <Chip.Root variant="soft" density="compact">
-            <Chip.Icon>
-              <FormatQuoteIcon />
-            </Chip.Icon>
-            <Chip.Label>Quoted response:</Chip.Label>
-            <Chip.Label render={<q />}>Revenue grew 12% over the third quarter</Chip.Label>
-            <Chip.Remove aria-label="Remove quoted response" onClick={() => setQuoted(false)} />
-          </Chip.Root>
-        </>
-      ) : null}
-      , and tell me which one is off, and by how much, before Friday's review with the finance team.
+    // Demo only: a narrow paragraph, so the chips wrap; your layout sets the width.
+    <Text className={styles.narrow}>
+      Compare <FileChip icon={<UploadIcon />} place="Upload" name="before.png" />{' '}
+      <FileChip icon={<UploadIcon />} place="Upload" name="after.png" />{' '}
+      <FileChip icon={<DnsIcon />} place="devbox" name="design.png" />{' '}
+      <FileChip icon={<LaptopMacIcon />} place="MacBook" name="notes.md" /> and tell me what moved
     </Text>
   );
 }

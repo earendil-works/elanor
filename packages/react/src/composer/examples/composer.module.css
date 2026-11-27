@@ -1,0 +1,123 @@
+/*
+ * The view around the composer, the drop zone for files. Its padding leaves room for the hung composer,
+ * so the drop target covers it too.
+ */
+.view {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--semantic-dimension-space-gap-medium);
+  padding: var(--semantic-dimension-space-padding-x-large);
+}
+
+/* Under the pointer, so a drop on the composer's input group still reaches it. */
+.dropTarget {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--semantic-color-background-backdrop);
+  border: var(--semantic-dimension-border-width-medium) dashed
+    var(--semantic-color-border-information);
+  border-radius: var(--semantic-dimension-radius-large);
+  pointer-events: none;
+}
+
+.dropLabel {
+  padding-block: var(--semantic-dimension-space-padding-x-small);
+  padding-inline: var(--semantic-dimension-space-padding-medium);
+  color: var(--semantic-color-text-information);
+  font: var(--semantic-typography-ui-secondary);
+  background: var(--semantic-color-background-surface);
+  border-radius: var(--semantic-dimension-radius-medium);
+}
+
+/* The camera button only where there's a touch screen; a mouse gets the file picker. */
+@media not (any-pointer: coarse) {
+  .camera {
+    display: none;
+  }
+}
+
+/*
+ * The frame hangs out, so the prompt's text lines up with the content around it. Only where
+ * there's room at the sides: Panel is the `composer` container itself, so a media query (or a
+ * parent's container query) decides.
+ */
+@media (min-width: 48rem) {
+  .textAligned {
+    --composer-hang: var(--composer-text-inset);
+  }
+}
+
+/* A suggestion's description, at the item's end. */
+.description {
+  margin-inline-start: auto;
+  color: var(--semantic-color-text-secondary);
+}
+
+/* Read by screen readers, not shown. */
+.visuallyHidden {
+  position: absolute;
+  inline-size: var(--semantic-dimension-border-width-small);
+  block-size: var(--semantic-dimension-border-width-small);
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* A pasted text's first lines, as lines. */
+.lines {
+  white-space: pre-line;
+}
+
+/*
+ * The figures at the footer's end, kept whole: tertiary text, and tabular figures that hold still
+ * as they change. They end where the footer's controls end their text, a small control's padding
+ * inside the row.
+ */
+.figures {
+  flex: none;
+  align-items: baseline;
+  margin-inline: auto var(--semantic-dimension-space-control-padding-inline-small);
+  overflow: visible;
+  color: var(--semantic-color-text-secondary);
+  font: var(--semantic-typography-ui-tertiary);
+  font-variant-numeric: tabular-nums;
+}
+
+/* A meter's value takes the figures' text instead of its own. */
+.meterValue {
+  font: inherit;
+}
+
+/* A meter in the line: its value on the figures' baseline, its track centred on the line. */
+.meter {
+  display: inline-flex;
+  align-items: baseline;
+  gap: var(--semantic-dimension-space-control-gap-large);
+}
+
+.track {
+  flex: none;
+  align-self: center;
+  inline-size: var(--semantic-dimension-size-x-large);
+  block-size: var(--semantic-dimension-size-xxx-small);
+}
+
+/* Grey like the figures beside it, for a neutral meter. Forced colours keep the system colour. */
+@media not (forced-colors: active) {
+  .indicator {
+    background: var(--semantic-color-background-fill-primary-neutral);
+  }
+}
+
+/* Filled controls: their fill sits flush with the frame, their text a control's padding inside. */
+.filledControls {
+  --composer-footer-inset: var(--semantic-dimension-space-control-padding-inline-small);
+}
+
+/* A lone Send at the row's end. */
+.end {
+  justify-content: flex-end;
+}

@@ -1,6 +1,7 @@
 export * as Checkbox from './checkbox/index.ts';
 export * as Chip from './chip/index.ts';
 export * as Collapsible from './collapsible/index.ts';
+export * as Composer from './composer/index.ts';
 export * as ContextMenu from './context-menu/index.ts';
 export * as Drawer from './drawer/index.ts';
 export * as Dropdown from './dropdown/index.ts';
@@ -124,8 +125,11 @@ export type {
   ChipDensity,
   ChipIconProps,
   ChipLabelProps,
+  ChipProgressProps,
   ChipRemoveProps,
   ChipRootProps,
+  ChipSemantic,
+  ChipSeparatorProps,
   ChipVariant,
 } from './chip/chip.tsx';
 
@@ -138,6 +142,62 @@ export type {
   HighlightedCodeProps,
   HighlightedLines,
 } from './code-snippet/highlighted-code.tsx';
+
+export type {
+  ComposerAttachProps,
+  ComposerControlsProps,
+  ComposerInputGroupProps,
+  ComposerInputGroupState,
+  ComposerFooterProps,
+  ComposerHeaderProps,
+  ComposerPanelProps,
+  ComposerStopProps,
+  ComposerSubmitProps,
+} from './composer/composer.tsx';
+export type {ComposerState} from './composer/context.ts';
+export type {
+  ComposerActions,
+  ComposerAttachDetails,
+  ComposerChangeDetails,
+  ComposerChangeReason,
+  ComposerChipDeletion,
+  ComposerInsertOptions,
+  ComposerPasteDetails,
+  ComposerRecallFrom,
+  ComposerSubmitDetails,
+  ComposerSubmitShortcut,
+} from './composer/editor/editor.ts';
+export type {
+  ComposerChip,
+  ComposerSegment,
+  ComposerTextRange,
+  ComposerValue,
+} from './composer/editor/model.ts';
+export type {
+  ComposerSuggestionMatch,
+  ComposerSuggestionPosition,
+  ComposerSuggestionTrigger,
+} from './composer/editor/match.ts';
+export type {ComposerPromptProps, ComposerPromptState} from './composer/prompt.tsx';
+export type {ComposerRecallOptions} from './composer/recall.ts';
+export type {ComposerRootProps} from './composer/root.tsx';
+export type {
+  ComposerSuggestionEmptyProps,
+  ComposerSuggestionHighlightDetails,
+  ComposerSuggestionItemProps,
+  ComposerSuggestionItemState,
+  ComposerSuggestionListProps,
+  ComposerSuggestionPickDetails,
+  ComposerSuggestionPopupProps,
+  ComposerSuggestionPortalProps,
+  ComposerSuggestionPositionerProps,
+  ComposerSuggestionResults,
+  ComposerSuggestionStatusProps,
+  ComposerSuggestionStatusState,
+  ComposerSuggestionsChangeDetails,
+  ComposerSuggestionsChangeReason,
+  ComposerSuggestionsProps,
+} from './composer/suggestions.tsx';
 
 export {CopyButton} from './copy-button/copy-button.tsx';
 export type {CopyButtonProps} from './copy-button/copy-button.tsx';

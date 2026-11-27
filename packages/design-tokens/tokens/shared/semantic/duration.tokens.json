@@ -15,6 +15,10 @@
           "$description": "Time from the start of loading until its indicator appears."
         }
       },
+      "press": {
+        "$value": "{primitive.duration.150}",
+        "$description": "Use for how long a press shows at least, so a quick tap on a touch screen is seen, such as a composer's input group pressed under a finger."
+      },
       "transcript": {
         "reveal": {
           "catchUp": {

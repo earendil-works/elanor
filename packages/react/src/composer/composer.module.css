@@ -1,0 +1,314 @@
+/* stylelint-disable design-tokens/no-non-token-custom-properties -- The input group's geometry,
+   derived once from tokens and shared by the input group, its buttons and the footer. Public:
+   Panel sets `--composer-text-inset` for you to read; `--composer-hang` and
+   `--composer-footer-inset` are yours to set and only read here. `--composer-prompt-max-rows` is
+   internal: Prompt's `maxRows` sets it. */
+@layer elanor.components {
+  /*
+   * The radius is a message bubble's. The padding gives up the border's width, so the buttons sit
+   * `space.padding.small` from the frame's edge. The indent puts the text on the icons' keyline, a
+   * fifth of an icon inside its box. On the scroll area too, for a prompt outside an input
+   * group.
+   */
+  .panel,
+  .inputGroup,
+  .scroll {
+    --composer-border: var(--semantic-dimension-border-width-small);
+    --composer-radius: var(--semantic-dimension-radius-large);
+    --composer-padding: calc(
+      var(--semantic-dimension-space-padding-small) - var(--composer-border)
+    );
+    /* IconButton's default density: the icon centred in `size.medium`. */
+    --composer-icon-inset: calc(
+      (var(--semantic-dimension-size-medium) - var(--semantic-dimension-size-icon)) / 2
+    );
+    --composer-prompt-padding: var(--semantic-dimension-space-padding-small);
+    --composer-indent: calc(var(--composer-icon-inset) + var(--semantic-dimension-size-icon) / 5);
+  }
+
+  /*
+   * Public: `--composer-text-inset` is the distance from the frame's edge to the text. The panel
+   * hangs out of its container by `--composer-hang`, none unless you set it.
+   */
+  .panel {
+    --composer-text-inset: calc(
+      var(--composer-padding) + var(--composer-border) + var(--composer-indent)
+    );
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-gap-small);
+    /* Size containment gives it no content width, so it takes its container's: a flex or grid
+       container that sized it to its content would collapse it. */
+    align-self: stretch;
+    justify-self: stretch;
+    min-inline-size: 0;
+    margin-inline: calc(-1 * var(--composer-hang, var(--semantic-dimension-space-padding-none)));
+    /* The footer follows the composer's width, not the window's. You can query it by name too. */
+    container: composer / inline-size;
+  }
+
+  /* A held finger is a press, not a selection of the buttons' and figures' words with the
+     system's menu. The text keeps its caret, selection and paste, and the header's notices stay
+     selectable, to copy an error. */
+  @media (pointer: coarse) {
+    .panel {
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
+    .panel :where(.header, textarea, input, [contenteditable]:not([contenteditable='false'])) {
+      -webkit-touch-callout: default;
+      -webkit-user-select: text;
+      user-select: text;
+    }
+  }
+
+  /* An empty container takes no room, so it adds no gap. */
+  .header:empty,
+  .controls:empty,
+  .footer:empty {
+    display: none;
+  }
+
+  .header {
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-gap-small);
+    min-inline-size: 0;
+  }
+
+  /*
+   * No focus ring: the caret shows the focus. The border is the translucent edge, a step off both
+   * the fill and the page in every state and scheme, so it never changes. Positioned, so a form's
+   * message about the prompt's hidden input points at the input group.
+   */
+  .inputGroup {
+    position: relative;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: var(--semantic-dimension-space-control-gap-small);
+    min-inline-size: 0;
+    padding: var(--composer-padding);
+    border: var(--composer-border) solid var(--semantic-color-border-edge);
+    border-radius: var(--composer-radius);
+    background: var(--semantic-color-background-fill-secondary);
+    color: var(--semantic-color-text-primary);
+    transition: background-color var(--semantic-transition-feedback);
+  }
+
+  /* Hovered and pressed only: the input group doesn't change while a person writes. */
+  @media (hover: hover) {
+    .inputGroup:hover:not([data-disabled]) {
+      background: var(--semantic-color-background-fill-secondary-hover);
+    }
+  }
+
+  .inputGroup:is(:active, [data-pressed]):not([data-disabled]) {
+    background: var(--semantic-color-background-fill-secondary-hover);
+  }
+
+  .inputGroup[data-disabled] {
+    cursor: not-allowed;
+    opacity: var(--semantic-number-opacity-disabled);
+  }
+
+  /* A radius inside another is the outer one less the space between them, so the curves of a
+     corner button and of the input group's corner run alongside each other. A negative result
+     is clamped to none. */
+  .inputGroup [data-icon-button][data-density='default']::before {
+    border-radius: calc(var(--composer-radius) - var(--composer-border) - var(--composer-padding));
+  }
+
+  /* Reaches the input group's sides, so the scrollbar sits in its padding, clear of the text. */
+  .inputGroup .scroll {
+    margin-inline: calc(-1 * var(--composer-padding));
+  }
+
+  /* At most `maxRows` lines; fewer in a low window, such as a phone's above its keyboard. */
+  .scroll {
+    max-block-size: min(
+      calc(var(--composer-prompt-max-rows) * 1lh + 2 * var(--composer-prompt-padding)),
+      40dvh
+    );
+    font: var(--semantic-typography-ui-primary);
+  }
+
+  .scrollContent {
+    padding: 0;
+  }
+
+  /*
+   * A read-only prompt is a Tab stop without a caret, so its frame shows the keyboard focus. On the
+   * frame: the scroll area would clip an outline on the prompt.
+   */
+  .inputGroup:has(.prompt[data-readonly]:focus-visible) {
+    outline: var(--semantic-dimension-border-width-focus-ring) solid
+      var(--semantic-color-focus-ring);
+    outline-offset: var(--semantic-dimension-border-width-default);
+  }
+
+  /*
+   * As tall as its text: the scroll area scrolls, never the prompt. No outline: the input group
+   * marks the place to write and the caret the focus.
+   */
+  .prompt {
+    position: relative;
+    box-sizing: border-box;
+    display: block;
+    inline-size: 100%;
+    min-inline-size: 0;
+    min-block-size: calc(1lh + 2 * var(--composer-prompt-padding));
+    margin: 0;
+    padding-block: var(--composer-prompt-padding);
+    padding-inline: calc(var(--composer-padding) + var(--composer-indent));
+    outline: 0;
+    color: var(--semantic-color-text-primary);
+    font: var(--semantic-typography-ui-primary);
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+    cursor: text;
+  }
+
+  /* Out of the flow, so the caret stands at the start of the line it covers, not after it. One
+     line, cut with an ellipsis: the prompt is one line tall while empty. */
+  .prompt[data-empty]:not([data-composing])::before {
+    position: absolute;
+    inset-inline: calc(var(--composer-padding) + var(--composer-indent));
+    overflow: hidden;
+    color: var(--semantic-color-text-secondary);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    content: attr(aria-placeholder);
+    /* Empty alternative text: screen readers have `aria-placeholder` already. */
+    content: attr(aria-placeholder) / '';
+    pointer-events: none;
+  }
+
+  .prompt[data-disabled] {
+    cursor: not-allowed;
+  }
+
+  /* A chip selected for removal shows by its information fill; a caret beside it would compete. */
+  .prompt[data-chip-armed] {
+    caret-color: transparent;
+  }
+
+  /*
+   * A chip's host is one character of the text: a selection takes all of it or none, and shows on
+   * it by the chip's selected fill alone.
+   */
+  .prompt [data-chip-id] {
+    -webkit-user-select: all;
+    user-select: all;
+  }
+
+  /* A chip being dragged stays faint where it was, until it is dropped. */
+  .prompt [data-chip-id][data-dragging] {
+    opacity: var(--semantic-number-opacity-dragging);
+  }
+
+  .prompt [data-chip-id]::selection,
+  .prompt [data-chip-id] ::selection {
+    background: transparent;
+  }
+
+  /*
+   * No wider than three quarters of the text, so a chip reads as part of the message, not a bar
+   * across it. An inline block on the text's baseline, in the text's font, keeps the line's height:
+   * a compact chip centres itself in its `1lh`.
+   */
+  .prompt [data-chip-content] {
+    display: inline-block;
+    max-inline-size: 75%;
+  }
+
+  /* For screen readers only: what a chip is, and the value a form submits. */
+  .prompt [data-description],
+  .formValue {
+    position: absolute;
+    inline-size: var(--semantic-dimension-border-width-small);
+    block-size: var(--semantic-dimension-border-width-small);
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .controls {
+    display: flex;
+    align-items: center;
+    min-inline-size: 0;
+  }
+
+  /* Without specificity, so a gap from `render`, such as a Stack's, always wins. */
+  :where(.controls) {
+    gap: var(--semantic-dimension-space-control-gap-small);
+  }
+
+  /* As wide as their content, also controls that fill their container elsewhere. Without
+     specificity, so a child's own flex rules win. */
+  :where(.controls > *, .footer > *) {
+    flex: 0 1 content;
+  }
+
+  /*
+   * Layout only: its children keep their own text styles. Its first control's text, inside a small
+   * control's padding, follows the frame or the hang.
+   */
+  .footer {
+    display: flex;
+    flex-wrap: wrap;
+    /* Controls and figures differ in size; their texts share a line. */
+    align-items: baseline;
+    gap: var(--semantic-dimension-space-control-gap-medium)
+      var(--semantic-dimension-space-gap-small);
+    min-inline-size: 0;
+    /*
+     * Its controls' text sits `--composer-footer-inset` inside the frame, or on the hang if that's
+     * more. The default suits ghost controls, whose hover fill reaches past the frame.
+     */
+    margin-inline: calc(
+      max(
+          var(--composer-hang, var(--semantic-dimension-space-padding-none)),
+          var(--composer-footer-inset, var(--semantic-dimension-space-padding-xx-small))
+        ) -
+        var(--semantic-dimension-space-control-padding-inline-small)
+    );
+  }
+
+  /*
+   * In a narrow composer the footer stays on one line, its children closer together. They shrink
+   * and cut their text with an ellipsis; a child that must stay whole sets `flex: none`. Without
+   * specificity, so controls keep their own overflow. At 40rem, a phone in landscape or a narrow
+   * pane, a model picker, a level picker and a few figures stop fitting side by side at full size.
+   */
+  @container composer (inline-size <= 40rem) {
+    /* The controls' own padding spaces their texts. */
+    .footer {
+      flex-wrap: nowrap;
+      column-gap: 0;
+    }
+
+    :where(.footer > *) {
+      min-inline-size: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+  }
+
+  @media (forced-colors: active) {
+    .inputGroup {
+      border-color: ButtonBorder;
+    }
+
+    .inputGroup:has(.prompt[data-readonly]:focus-visible) {
+      outline-color: Highlight;
+    }
+  }
+}
+/* stylelint-enable design-tokens/no-non-token-custom-properties */

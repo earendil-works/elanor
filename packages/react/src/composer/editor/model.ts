@@ -6,23 +6,24 @@
 // edits by range.
 
 /**
- * Apps extend the type with their own fields. `id` is unique within a value: a chip repeating an
+ * Extend the type with your own fields. `id` is unique within a value: a chip repeating an
  * earlier chip's id gets a new one (`${id}-2`, `-3`, …), and so does a pasted or dropped copy of a
  * chip that's still in the text, so the original keeps its id. To reference the same file twice,
  * give each chip its own id; two chips can carry the same path.
  */
 export type ComposerChip = {readonly id: string; readonly label: string};
 
-export type ComposerSegment<T extends ComposerChip> = string | T;
+export type ComposerSegment<T extends ComposerChip = ComposerChip> = string | T;
 
 /** Normalized: no adjacent or empty strings. */
-export type ComposerValue<T extends ComposerChip> = readonly ComposerSegment<T>[];
+export type ComposerValue<T extends ComposerChip = ComposerChip> = readonly ComposerSegment<T>[];
 
 export type ComposerTextRange = {readonly start: number; readonly end: number};
 
 /** Stands for a chip in `offsetText`, so string indices match value offsets. */
 export const CHIP_CHARACTER = '\uFFFC';
 
+/** Whether a segment of a value is a chip rather than text. */
 export const isChip = <T extends ComposerChip>(
   segment: ComposerSegment<T> | undefined,
 ): segment is T => segment !== undefined && typeof segment !== 'string';
@@ -160,7 +161,19 @@ export const sameValue = <T extends ComposerChip>(
   b: ComposerValue<T>,
 ): boolean => a.length === b.length && a.every((segment, index) => segment === b[index]);
 
-export const toText = <T extends ComposerChip>(
+/** Compares chips by id, so a value and one with copies of its chips are the same text. */
+export const sameContent = <T extends ComposerChip>(
+  a: ComposerValue<T>,
+  b: ComposerValue<T>,
+): boolean =>
+  a.length === b.length &&
+  a.every((segment, index) => {
+    const other = b[index];
+    return isChip(segment) ? isChip(other) && other.id === segment.id : segment === other;
+  });
+
+/** The value as text, with each chip written as `chipToText` gives it. */
+export const valueToText = <T extends ComposerChip>(
   value: ComposerValue<T>,
   chipToText: (chip: T) => string,
 ): string => value.map((segment) => (isChip(segment) ? chipToText(segment) : segment)).join('');

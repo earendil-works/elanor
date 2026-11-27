@@ -37,5 +37,13 @@ export default createStrictConfig({
     // FileTree.Item sets its depth; FileTree.Root exposes the indentation guide image for overriding.
     '--file-tree-level',
     '--file-tree-guide',
+    // Composer.Panel's distance from the frame's edge to the text, for hanging the panel by it.
+    '--composer-text-inset',
+    // Set by you on Composer.Panel to hang it out of its container.
+    '--composer-hang',
+    // Set by you on Composer.Panel or Footer: where the footer's control text sits in the frame.
+    '--composer-footer-inset',
+    // Internal: Composer.Prompt's `maxRows` prop sets it on the prompt's scroll area.
+    '--composer-prompt-max-rows',
   ],
 });

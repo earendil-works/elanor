@@ -1,4 +1,4 @@
-import {useCallback, type Ref, type RefCallback} from 'react';
+import {useCallback, useLayoutEffect, useRef, type Ref, type RefCallback} from 'react';
 
 /** One ref callback that sets both refs, such as a part's own ref and the one passed to it. */
 export function useMergedRef<T>(a: Ref<T> | undefined, b: Ref<T> | undefined): RefCallback<T> {
@@ -11,6 +11,33 @@ export function useMergedRef<T>(a: Ref<T> | undefined, b: Ref<T> | undefined): R
     },
     [a, b],
   );
+}
+
+/**
+ * A ref callback that keeps its identity while `ref` changes, as an inline callback does on every
+ * render, so the refs merged with it stay attached. A new `ref` gets the element after the commit.
+ */
+export function useStableRef<T>(ref: Ref<T> | undefined): RefCallback<T> {
+  const latest = useRef(ref);
+  const attached = useRef<{
+    readonly element: T;
+    readonly ref: typeof ref;
+    readonly detach: () => void;
+  }>(undefined);
+  useLayoutEffect(() => {
+    latest.current = ref;
+    const current = attached.current;
+    if (!current || current.ref === ref) return;
+    current.detach();
+    attached.current = {element: current.element, ref, detach: setRef(ref, current.element)};
+  }, [ref]);
+  return useCallback((element: T) => {
+    attached.current = {element, ref: latest.current, detach: setRef(latest.current, element)};
+    return () => {
+      attached.current?.detach();
+      attached.current = undefined;
+    };
+  }, []);
 }
 
 /** Sets a ref and returns how to unset it, following React 19's ref cleanup functions. */

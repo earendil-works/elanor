@@ -23,7 +23,8 @@ Each component directory has a `<component>.mdx` page and an `examples/` directo
 - Then a hero demo (`examples/demo.tsx`), `## Usage` with the import and a minimal snippet or anatomy, and one `##` section per variant or state. Add notes only where needed.
 - Don't write an API section. It's generated from the props types; document props with JSDoc on Elanor's declarations, and parts with JSDoc on the component.
 - Write live previews as `<Demo example="./examples/<name>.tsx" />` on one line. MDX contains no other JSX or imports; use code fences for code that can't render on a page.
-- Each example file default-exports one component and imports from `@earendil-works/elanor-react`, as code using the package does. Show one concept per demo. Local imports, such as a CSS Module, appear in the demo's code panel.
+- Each example file default-exports one component and imports from `@earendil-works/elanor-react`, as code using the package does. Show one concept per focused demo. Local imports, such as a CSS Module or a part of a full example, appear in the demo's code panel.
+- A complex component gets one full example; sections quote it in fences such as ` ```tsx from="./examples/demo.tsx" `, which the docs build checks against the file. Add a focused demo only for a concept the full example can't show (a state, a width, a field in a form).
 - Demo links use `href="#"`. Headings inside demos use `level={2}` in the hero and `level={3}` under a `##` section.
 
 ## Writing docs
@@ -91,6 +92,7 @@ Behaviors make components work on static pages: rendered on the server, without 
 - Keep every control's mouse size on touch screens. Only menu items, table of contents links and file tree rows get a minimum height of `semantic.dimension.size.medium` under `@media (pointer: coarse)`.
 - Prefer logical properties and flexible layouts. Handle narrow containers, RTL, and long content without hiding meaningful content.
 - Keep selectors scoped; avoid global overrides and specificity escalation.
+- When a container styles another component's part, the part renders a marker, `data-<component>[-<part>]` (`data-icon-button`), documented in its JSDoc. Containers select the marker, never another component's classes.
 - For motion, use `semantic.transition` tokens: `movement.*` for anything that moves, scales, rotates, or resizes, `fade` for opacity, and `feedback` for color changes. Movement becomes instant when a person prefers reduced motion, so add no reduced-motion queries. List transitioned properties explicitly - no `transition: all`.
 - Use the design-token plugin's strict configuration for the target brand. `stylelint.config.mjs` defines allowed Base UI runtime variables.
 

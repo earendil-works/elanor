@@ -1,13 +1,14 @@
 ---
 import {dirname, resolve} from 'node:path';
 import {getCollection, render, type CollectionEntry} from 'astro:content';
-import {ApiReference, apiPartId} from '../../components/api-reference.tsx';
+import {ApiReference, apiHeadings} from '../../components/api-reference.tsx';
 import Demo from '../../components/demo.astro';
 import DocsArticle from '../../components/docs-article.astro';
 import {OmittedTitle, docsMarkdownComponents} from '../../components/docs-markdown.tsx';
 import DocsLayout from '../../layouts/docs-layout.astro';
-import {orderedApi} from '../../lib/component-api.ts';
+import {orderedApi, typeDeclarations} from '../../lib/component-api.ts';
 import {componentName} from '../../lib/component-name.ts';
+import {highlight} from '../../lib/highlight.ts';
 import {lastUpdated} from '../../lib/last-updated.ts';
 
 interface Props {
@@ -25,7 +26,13 @@ export async function getStaticPaths() {
 
 const {entry} = Astro.props;
 const {Content, headings} = await render(entry);
-const parts = orderedApi(entry.id, entry.body ?? '');
+const api = orderedApi(entry.id, entry.body ?? '');
+const sources = [
+  ...api.functions.flatMap((item) => ('signature' in item ? [item.signature] : [])),
+  ...(api.types.length ? [typeDeclarations(api)] : []),
+];
+const code = new Map(await Promise.all(sources.map(async (source) => [source, await highlight(source, 'ts')] as const)));
+const apiToc = apiHeadings(api);
 const title = componentName(entry.id);
 const markdown = `/components/${entry.id}.md`;
 // The page shows the component's MDX, examples, and the API read from its sources.
@@ -35,11 +42,8 @@ const toc = [
   ...headings
     .filter((heading) => heading.depth === 2 || heading.depth === 3)
     .map((heading) => ({depth: heading.depth, id: heading.slug, title: heading.text})),
-  ...(parts.length > 0
-    ? [
-        {depth: 2, id: 'api', title: 'API'},
-        ...parts.map((part) => ({depth: 3, id: apiPartId(part), title: part.name})),
-      ]
+  ...(apiToc.length > 0
+    ? [{depth: 2, id: 'api', title: 'API'}, ...apiToc.map((heading) => ({depth: 3, ...heading}))]
     : []),
 ];
 ---
@@ -48,6 +52,6 @@ const toc = [
   <DocsArticle title={title} markdown={markdown} lastUpdated={updated} toc={toc}>
     {/* The article renders the title. */}
     <Content components={{...docsMarkdownComponents, Demo, h1: OmittedTitle}} />
-    <ApiReference parts={parts} />
+    <ApiReference api={api} code={code} />
   </DocsArticle>
 </DocsLayout>

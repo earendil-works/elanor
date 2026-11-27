@@ -1,10 +1,11 @@
 import type {Plugin} from 'vite';
 
-import {assertDemoSyntax, demoBlock, demoFiles} from '../src/lib/demo-blocks.ts';
+import {assertDemos, demoBlock, demoFiles} from '../src/lib/demo-blocks.ts';
 
 /**
  * Expands `<Demo example="./examples/name.tsx" />` in component MDX into a hydrated
- * example plus its raw source files, so each page shows the code it renders.
+ * example plus its raw source files, so each page shows the code it renders. Checks that code
+ * fences quoting an example (```` ```tsx from="./examples/demo.tsx" ````) still match it.
  * `Demo` itself is supplied through the MDX `components` prop.
  */
 export function demos(): Plugin {
@@ -15,8 +16,8 @@ export function demos(): Plugin {
       order: 'pre',
       filter: {id: /\.mdx$/},
       handler(code, id) {
+        assertDemos(code, id);
         if (!code.includes('<Demo')) return;
-        assertDemoSyntax(code, id);
         const imports: string[] = [];
         let count = 0;
         const body = code.replace(demoBlock, (_, example: string) => {

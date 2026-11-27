@@ -25,17 +25,21 @@ import {
   type ComposerValue,
   removedChips,
   replaceRange,
+  sameContent,
   sameValue,
   sliceValue,
   type ComposerTextRange,
   valueLength,
   withNewIds,
 } from './model.ts';
+import {withSpaces} from './spacing.ts';
 import {EditorView, type Rect} from './view.ts';
 
 /**
- * What Backspace or Delete does to an adjacent chip. `select`: the first press selects it, the
- * second removes it. `revert`: replaces it with its text, so suggestions reopen on it.
+ * What Backspace or Delete does to an adjacent chip. `whole`: removes it. `select`: the first press
+ * selects it, the second removes it; while suggestions are open, the first removes it. `revert`:
+ * replaces it with its text, so suggestions reopen on it. A selected chip, by an arrow, a press or
+ * a first Backspace, is removed whole.
  */
 export type ComposerChipDeletion = 'whole' | 'select' | 'revert';
 
@@ -47,13 +51,16 @@ export type ComposerChangeReason =
   | 'input-drop'
   | 'history-undo'
   | 'history-redo'
-  | 'chip-remove-press'
   | 'item-press'
+  | 'list-navigation'
   | 'imperative-action'
   | 'form-reset';
 
+/** `first-line`: ArrowUp recalls from anywhere on the first line. `empty`: only from an empty prompt. */
+export type ComposerRecallFrom = 'first-line' | 'empty';
+
 /** `cancel()` keeps the previous value. */
-export type ComposerChangeDetails<T extends ComposerChip> = BaseUIChangeEventDetails<
+export type ComposerChangeDetails<T extends ComposerChip = ComposerChip> = BaseUIChangeEventDetails<
   ComposerChangeReason,
   {
     readonly removedChips: readonly T[];
@@ -61,8 +68,9 @@ export type ComposerChangeDetails<T extends ComposerChip> = BaseUIChangeEventDet
 >;
 
 /**
- * `enter`: Enter and Alt+Enter submit, Shift+Enter adds a line. `mod-enter`: Cmd/Ctrl+Enter and
- * Cmd/Ctrl+Alt+Enter submit, Enter adds a line.
+ * `enter`: Enter or Alt+Enter without Shift, Ctrl or Meta submits, and Shift+Enter adds a line.
+ * `mod-enter`: Cmd/Ctrl+Enter or Cmd/Ctrl+Alt+Enter without Shift submits, and Enter adds a line.
+ * Any other Enter is left to the browser.
  */
 export type ComposerSubmitShortcut = 'enter' | 'mod-enter';
 
@@ -74,32 +82,60 @@ export interface ComposerSubmitDetails {
   readonly event: Event | undefined;
 }
 
-export type ComposerAttachDetails =
+export interface ComposerPasteDetails {
+  readonly event: ClipboardEvent;
+}
+
+type AttachSource =
   | {readonly reason: 'picker'; readonly event: Event}
   | {readonly reason: 'paste'; readonly event: ClipboardEvent}
   | {readonly reason: 'drop'; readonly event: DragEvent}
   | {readonly reason: 'api'; readonly event?: undefined};
 
+export type ComposerAttachDetails<T extends ComposerChip = ComposerChip> = AttachSource & {
+  /** Where the files go: the selection a paste replaces, else the caret after any selected text. */
+  readonly at: ComposerTextRange;
+  /** Inserts at `at`, spaced, as one undo step; `false` once the text changed or if canceled. */
+  readonly insert: (content: string | T | ComposerValue<T>) => boolean;
+};
+
+/**
+ * Where `insert` puts its content, and why: the change details carry `reason` and `event`. A picked
+ * suggestion (`item-press`), a drop (`input-drop`) and a paste (`input-paste`) always have their
+ * event behind them.
+ */
+export type ComposerInsertOptions = {
+  readonly at?: 'caret' | 'end' | ComposerTextRange;
+  readonly startLine?: boolean;
+  /**
+   * For an insert a person made: adds a space at either edge, and between two chips, where the
+   * text needs one, as in `Hi` + `there` or `fail?` + a chip, but not after `(` or before `.`.
+   * Never next to a script written without spaces. Drops a space you pass where it would double
+   * or start the prompt.
+   */
+  readonly space?: boolean;
+} & (
+  | {readonly reason?: 'imperative-action'; readonly event?: Event}
+  | {
+      readonly reason: 'item-press';
+      readonly event: BaseUIChangeEventDetails<'item-press'>['event'];
+    }
+  | {readonly reason: 'input-drop'; readonly event: DragEvent}
+  | {readonly reason: 'input-paste'; readonly event: ClipboardEvent}
+);
+
 /** One object for the editor's lifetime. It reads the latest options when called. */
-export interface ComposerActions<T extends ComposerChip> {
+export interface ComposerActions<T extends ComposerChip = ComposerChip> {
   /** `at` defaults to `end`; `caret` restores the last caret. */
   focus(options?: {readonly at?: 'start' | 'end' | 'caret'}): void;
   blur(): void;
   /**
    * Inserts as one undo step. `caret` (the default) is the last known caret, also while the editor
    * is blurred. `startLine` prepends a line break unless the insert point starts a line. Commits
-   * pending IME text first. Returns `false` when nothing changed.
+   * pending IME text first. Returns `false` when nothing changed. Inserts exactly `content`; set
+   * `space: true` for an insert a person made, such as a suggestion pick.
    */
-  insert(
-    content: string | T | ComposerValue<T>,
-    options?: {
-      readonly at?: 'caret' | 'end' | ComposerTextRange;
-      readonly startLine?: boolean;
-      readonly reason?: 'imperative-action' | 'item-press';
-      /** The click or key press behind the insert, passed on in the change details. */
-      readonly event?: Event;
-    },
-  ): boolean;
+  insert(content: string | T | ComposerValue<T>, options?: ComposerInsertOptions): boolean;
   undo(): void;
   redo(): void;
   /**
@@ -107,26 +143,35 @@ export interface ComposerActions<T extends ComposerChip> {
    * empty value after sending.
    */
   clearHistory(historyKey?: string): void;
-  /** Calls `onSubmit` without the keyboard's checks (composing, open suggestions). */
+  /**
+   * Commits pending IME text, then calls `onSubmit` without the keyboard's checks (composing,
+   * suggestion items showing). Does nothing while the prompt is disabled or read-only.
+   */
   submit(event?: Event): void;
+  /** With the text an input method is still composing, which the value gets when it ends. */
   getValue(): ComposerValue<T>;
-  /** Calls `onAttach` with reason `api`. */
+  /** Calls `onAttach` (reason `api`) at the caret after selected text; ignores an empty list. */
   attach(files: File[]): void;
+  /** Whether the focused caret, with nothing selected or composing, is on the first or last line. */
+  atEdge(edge: 'up' | 'down'): boolean;
 }
 
 /** The editor without its chip type, for parts that read it from context. */
 export interface EditorBinding {
   /**
    * A React ref callback for the editable element. While a chip is armed for removal, the element
-   * has `data-chip-armed` and the chip's host keeps `data-selected`.
+   * has `data-chip-armed` and the chip's host keeps `data-selected`. While chips are dragged, their
+   * hosts have `data-dragging`. While an input method composes, the element has `data-composing`.
    */
   bind(element: HTMLElement | null): (() => void) | undefined;
   /**
-   * Call from the element's React `onKeyDown`, after the app's handler, with the native event.
-   * Skips keys the app called `preventDefault()` on and keys during IME composition.
+   * Call from the element's React `onKeyDown`, after the `onKeyDown` prop's handler, with the
+   * native event. Skips keys that handler called `preventDefault()` on and keys during IME
+   * composition.
    */
   handleKeyDown(event: KeyboardEvent): void;
-  removeChip(id: string, event: MouseEvent): void;
+  /** Whether the chip is in the selection or armed for removal. Changes fire `subscribe`. */
+  isChipSelected(id: string): boolean;
   /**
    * `null` unless focused with a collapsed selection. Chips appear as `CHIP_CHARACTER`. While an
    * input method composes, it reads the DOM, since the value gets the text only at
@@ -135,8 +180,17 @@ export interface EditorBinding {
   textBeforeCaret(): string | null;
   caretRect(offset: number): Rect | null;
   element(): HTMLElement | null;
-  /** Runs before the editor's own keys, such as for open suggestions. `true` prevents the key. */
+  /**
+   * Set while a list at the caret is open, such as suggestions: it runs before the editor's own
+   * keys, and `true` prevents the key. Meanwhile no chip is selected: the arrows move past a chip,
+   * Backspace and Delete remove a `select` chip at once (a `revert` chip still turns into its
+   * text), and a selected chip is dropped when the list opens.
+   */
   setKeyHandler(handler: ((event: KeyboardEvent) => boolean) | undefined): void;
+  /** Whether a drag carries files `onAttach` takes; a drag from this editor never does. */
+  takesFiles(event: DragEvent): boolean;
+  /** Gives dropped files to `onAttach`, at the caret after any selected text; `true` if taken. */
+  dropFiles(event: DragEvent): boolean;
   /**
    * For `useSuggestionMatch`: fires on value, caret and focus changes, and during IME
    * composition.
@@ -145,6 +199,22 @@ export interface EditorBinding {
   /** For `useValue`: fires on value changes only. `getValue` keeps its identity until then. */
   subscribeValue(listener: () => void): () => void;
   getValue(): ComposerValue<ComposerChip>;
+  /**
+   * For `useRecall`: a plain ArrowUp on the first line shows the message before the one shown, or
+   * the newest; a plain ArrowDown on the last line the one after, or the draft from before the
+   * recall. Skips messages equal to the text. Not in a prompt that isn't editable, with a list at
+   * the caret open or while composing. `true` when it took the key.
+   */
+  recallKey(
+    event: KeyboardEvent,
+    messages: readonly ComposerValue<ComposerChip>[],
+    from: ComposerRecallFrom,
+  ): boolean;
+  /**
+   * Whether the text is a recalled message nobody changed since. Suggestions stay closed on it.
+   * Changes fire `subscribe`.
+   */
+  recalling(): boolean;
 }
 
 export interface EditorOptions<T extends ComposerChip> {
@@ -157,21 +227,35 @@ export interface EditorOptions<T extends ComposerChip> {
   readonly getChipDescription: (chip: T) => string;
   /**
    * Called for the submit shortcut, except while an input method composes (including Safari's key
-   * 229 after it) or the key handler takes Enter, such as open suggestions; and for `submit()`,
-   * which skips those checks: a programmatic submit is the caller's call. An empty value is
-   * submitted too; the app decides. Without it, the submit shortcut adds a line.
+   * 229 after it) or the key handler takes Enter, such as while suggestion items show; and for
+   * `submit()`.
+   * `submit()` skips those checks and submits empty values too; check the value in `onSubmit`.
+   * Without it, the submit shortcut adds a line. Never called while not `editable`.
    */
   readonly onSubmit:
     | ((value: ComposerValue<T>, details: ComposerSubmitDetails) => void)
     | undefined;
   readonly submitShortcut: ComposerSubmitShortcut;
+  /**
+   * Before the submit shortcut calls `onSubmit`: `false`, once the form showed what's invalid,
+   * stops it. `submit()` doesn't ask.
+   */
+  readonly reportValidity: () => boolean;
   /** `false` when disabled or read-only. */
   readonly editable: boolean;
   /**
    * A paste or drop with files sends only the files: the text that comes with them is usually their
    * name or address. Without `onAttach`, the text is pasted.
    */
-  readonly onAttach: ((files: File[], details: ComposerAttachDetails) => void) | undefined;
+  readonly onAttach: ((files: File[], details: ComposerAttachDetails<T>) => void) | undefined;
+  /**
+   * The value pasted text goes in as, such as a chip for a long text. Not called for a copy from
+   * this editor, whose chips come back, for files, or for Cmd/Ctrl+Shift+V, which pastes text as
+   * text. When it returns more than the text, Undo first gives the text as text.
+   */
+  readonly getPastedValue:
+    | ((text: string, details: ComposerPasteDetails) => ComposerValue<T>)
+    | undefined;
   /** Announced when chips are removed, joined into one message. Defaults to "Removed {label}". */
   readonly getChipRemovedMessage: ((chip: T) => string) | undefined;
   /**
@@ -188,10 +272,24 @@ type Step<T extends ComposerChip> = {
   readonly value: ComposerValue<T>;
   readonly selection: SavedSelection;
 };
+/**
+ * A message recalled, as given, where it was in the messages and as shown, and the draft from
+ * before the first recall. It shows while `shown` is the value.
+ */
+type Recall<T extends ComposerChip> = {
+  readonly message: ComposerValue<ComposerChip>;
+  readonly index: number;
+  readonly shown: ComposerValue<T>;
+  readonly draft: ComposerValue<T>;
+};
 type Edit<T extends ComposerChip> = {
   readonly value: ComposerValue<T>;
   readonly selection: SavedSelection;
   readonly group: EditGroup | undefined;
+  /** A step recorded before this edit's own, as a paste's text before what it became. */
+  readonly prior: Step<T> | undefined;
+  /** The value and selection the edit started from. */
+  readonly before: Step<T>;
 };
 
 /** Per `historyKey`; the least recently shown is dropped first. */
@@ -209,17 +307,13 @@ const granularity = (type: string): 'word' | 'lineboundary' | 'character' =>
 
 /** Create one per `Composer.Root`. */
 export class Editor<T extends ComposerChip> implements EditorBinding {
-  /**
-   * Root assigns it in a layout effect, not during render, then calls `show`. Events read the
-   * latest.
-   */
-  options: EditorOptions<T>;
+  #options: EditorOptions<T>;
   /**
    * The value committed or shown last. Edits build on it, since a controlled value comes back only
-   * once the owner renders.
+   * once the controlling component renders.
    */
   #latest: ComposerValue<T>;
-  /** Owner values by identity, normalized, so a value passed back keeps its normalized form. */
+  /** Values given to `show` by identity, normalized, so a value passed back keeps its form. */
   readonly #normalized = new WeakMap<ComposerValue<T>, ComposerValue<T>>();
   readonly #histories = new Map<string, History<Step<T>>>();
   #historyKey: string;
@@ -231,13 +325,38 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
   #focused = false;
   /** A pointer press places its own caret, so focusing doesn't restore the last one. */
   #pressing = false;
+  /** The last press's `pointerType`: a finger's starts no drag. */
+  #pressedBy = '';
+  /**
+   * The chip a press hit, to select at the click. A finger's press in the focused editor leaves it
+   * unset: that press selects the chip at once.
+   */
+  #pressedChip: string | undefined;
   /** Where `insert` goes while the editor is blurred. */
   #selection: ComposerTextRange | null = null;
-  #composing = false;
   /**
-   * The chip selected for removal, kept while the caret stays at `caret`. Only an outline shows it,
-   * with the caret collapsed: iOS draws a native range over a chip across the rest of the line,
-   * with handles.
+   * Bumped when `#latest`'s content or draft changes, so `details.insert` knows its offsets still
+   * hold. Not compared by identity: a parent's equal copy keeps them, a draft sharing one doesn't.
+   */
+  #revision = 0;
+  #composingNow = false;
+  /** Also marks the prompt, so its placeholder hides while composed text isn't in the value yet. */
+  get #composing(): boolean {
+    return this.#composingNow;
+  }
+  set #composing(next: boolean) {
+    this.#composingNow = next;
+    this.#element?.toggleAttribute('data-composing', next);
+  }
+  /**
+   * A value from outside came, or an edit was made, while an input method composed: the DOM shows
+   * it at `compositionend`, with the caret here, and drops what the input method committed.
+   */
+  #stale: ComposerTextRange | undefined;
+  /**
+   * The chip selected for removal, kept while the caret stays at `caret`. Only its information fill
+   * shows it, with the caret collapsed: iOS draws a native range over a chip across the rest of the
+   * line, with handles.
    */
   #armedChip: Armed | undefined;
   get #armed() {
@@ -252,23 +371,38 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
   #lastEnd = -1;
   #afterSpace = false;
   #dragged: ComposerTextRange | undefined;
+  /** Cmd/Ctrl+Shift+V is down: the next paste is text as text. */
+  #plainPaste = false;
   /** Pasting this copy back here restores its chips. */
   #clip: {readonly id: string; readonly value: ComposerValue<T>} | undefined;
   #keyHandler: ((event: KeyboardEvent) => boolean) | undefined;
+  #recall: Recall<T> | undefined;
   readonly #listeners = new Set<() => void>();
   readonly #valueListeners = new Set<() => void>();
   readonly #hostListeners = new Set<() => void>();
   #hosts: readonly ChipHost<T>[] = [];
+  /** The chips in the selection and the armed one, as `data-selected` shows them. */
+  #selected: ReadonlySet<string> = new Set();
   /** Renamed copies by source chip and id, so a value with duplicates normalizes to equal chips. */
   readonly #renamed = new WeakMap<T, Map<string, T>>();
 
-  constructor(options: EditorOptions<T>, owned: ComposerValue<T>, historyKey: string) {
-    this.options = options;
-    const value = this.#fromOwner(owned);
+  constructor(options: EditorOptions<T>, given: ComposerValue<T>, historyKey: string) {
+    this.#options = options;
+    const value = this.#normalizeGiven(given);
     this.#latest = value;
     this.#historyKey = historyKey;
     this.#history = new History<Step<T>>({value, selection: null});
     this.#histories.set(historyKey, this.#history);
+  }
+
+  /** The latest, which events read. */
+  get options(): EditorOptions<T> {
+    return this.#options;
+  }
+
+  /** Root calls it in a layout effect, not during render, then calls `show`. */
+  setOptions(options: EditorOptions<T>): void {
+    this.#options = options;
   }
 
   bind = (element: HTMLElement | null): (() => void) | undefined => {
@@ -287,6 +421,9 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     return () => {
       unbind();
       this.#armed = undefined;
+      // A prompt removed while an input method composed gets no `compositionend`.
+      this.#composing = false;
+      this.#stale = undefined;
       this.#element = undefined;
       this.#view = undefined;
       this.#hosts = [];
@@ -295,7 +432,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
   };
 
   /**
-   * The owner portals `renderChip(chip)` into each `content`. The same array until hosts come or
+   * Root portals `renderChip(chip)` into each `content`. The same array until hosts come or
    * go.
    */
   hosts = (): readonly ChipHost<T>[] => this.#hosts;
@@ -320,32 +457,37 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     return renamed;
   };
 
-  #fromOwner(owned: ComposerValue<T>): ComposerValue<T> {
-    let value = this.#normalized.get(owned);
+  #normalizeGiven(given: ComposerValue<T>): ComposerValue<T> {
+    let value = this.#normalized.get(given);
     if (!value) {
-      const normalized = normalize(owned, this.#rename);
-      value = sameValue(normalized, owned) ? owned : normalized;
-      this.#normalized.set(owned, value);
+      const normalized = normalize(given, this.#rename);
+      value = sameValue(normalized, given) ? given : normalized;
+      this.#normalized.set(given, value);
     }
     return value;
   }
 
   /**
-   * Root calls it after every render, and must re-render on every commit, even when a controlled
-   * owner ignores the change (with a state tick in `onChange`, say): only then is an edit the owner
-   * didn't take replaced by the owner's value. Another `historyKey` switches to that key's history.
+   * Root calls it after every render, and must re-render on every commit, even when the
+   * controlling component ignores the change (with a state tick in `onChange`, say): only then is
+   * an edit it didn't take replaced by its value. Another `historyKey` switches to that key's
+   * history.
    * A value from outside, like a controlled reset after sending, is its own undo step; the value
-   * this editor sent, passed back, isn't.
+   * this editor sent, passed back, isn't, and puts the caret at the end. While an input method
+   * composes, a value from outside waits for `compositionend`, then replaces the text composed:
+   * rewriting that text breaks the input method.
    */
-  show(owned: ComposerValue<T>, historyKey: string): void {
-    const value = this.#fromOwner(owned);
+  show(given: ComposerValue<T>, historyKey: string): void {
+    const value = this.#normalizeGiven(given);
     if (historyKey !== this.#historyKey) this.#switchHistory(historyKey, value);
     const edit = this.#edit;
     this.#edit = undefined;
-    // The owner took the pending edit: it enters the history now.
-    if (edit && value === edit.value && !this.#cleared) {
+    // The controlling component took the pending edit, maybe as a copy: it enters the history
+    // now, also the one after `clearHistory` when no value from outside came between.
+    if (edit && sameContent(value, edit.value)) {
+      this.#cleared = false;
+      if (edit.prior) this.#history.record(edit.prior);
       this.#history.record({value, selection: edit.selection}, edit.group);
-      return;
     }
     // Nothing new, such as a render for something else.
     if (value === this.#latest) return;
@@ -354,19 +496,34 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       this.#cleared = false;
       this.#history = new History<Step<T>>({value, selection: null});
       this.#histories.set(historyKey, this.#history);
-    } else if (!sameValue(value, this.#history.current().value)) {
-      // A value from outside: a reset, a draft, or the owner's value in place of an edit it didn't
-      // take. It's an undo step of its own.
+    } else if (!sameContent(value, this.#history.current().value)) {
+      // A value from outside: a reset, a draft, or the controlling component's value in place of
+      // an edit it didn't take. It's an undo step of its own.
       this.#history.record({value, selection: null});
     }
-    this.#armed = undefined;
+    const previous = this.#latest;
     this.#latest = value;
-    this.#render(null);
+    // A copy, as from a parent that copies the value or its chips on every render, keeps the text
+    // and the caret, also an input method's.
+    if (sameContent(value, previous)) this.#view?.updateChips(value);
+    else {
+      this.#armed = undefined;
+      this.#revision += 1;
+      if (this.#composing) this.#stale = caretAt(valueLength(value));
+      else if (!edit) this.#render(caretAt(valueLength(value)));
+      // The controlling component ignored the edit, or changed it, as by clamping its length.
+      else if (sameContent(value, edit.before.value))
+        this.#render(edit.before.selection ?? edit.selection);
+      else this.#render(edit.selection);
+    }
     this.#emitValue();
   }
 
   /** Takes up `historyKey`'s history where it was left, or starts one at `value`. */
   #switchHistory(historyKey: string, value: ComposerValue<T>): void {
+    // A recall there ends, and the message stays that draft.
+    this.#history.seal();
+    this.#recall = undefined;
     this.#historyKey = historyKey;
     this.#history =
       this.#histories.get(historyKey) ?? new History<Step<T>>({value, selection: null});
@@ -379,11 +536,14 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     this.#armed = undefined;
     this.#selection = null;
     this.#lastEnd = -1;
+    this.#revision += 1;
   }
 
   #render(selection: SavedSelection): void {
     this.#view?.render(this.#latest);
-    if (selection && this.#focused) this.#view?.select(this.#clamp(selection));
+    if (!selection || !this.#focused) return;
+    this.#selection = this.#clamp(selection);
+    this.#view?.select(this.#selection);
   }
 
   #clamp({start, end}: ComposerTextRange): ComposerTextRange {
@@ -392,27 +552,45 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
   }
 
   /**
-   * The owner may cancel.
+   * `onChange` may cancel.
    *
-   * Undo steps: an edit enters the history only once the owner shows it back (`show`). Typing and
+   * Undo steps: an edit enters the history only once Root shows it back (`show`). Typing and
    * deleting (`group` `insert` and `delete`) join the open step of their group while each edit
    * starts where the last one ended (`at` and `#lastEnd`) within `GROUP_PAUSE`. Typing joins one
    * step until a new word starts after a space (`#afterSpace`). `seal()` closes the open step.
+   * Recalled messages (`group` `recall`) replace one another in one step until another edit.
    * Every other edit (paste, drop, cut, one key on a chip, `insert`, an input method's commit, a
-   * form reset) is a step of its own. Undo and redo move through the history without recording.
+   * form reset) is a step of its own; a paste `getPastedValue` changed records its text as the
+   * step before it (`prior`). Undo and redo move through the history without recording.
    */
   #commit(
     next: readonly ComposerSegment<T>[],
     selection: SavedSelection,
     reason: ComposerChangeReason,
     event: Event | undefined,
-    {group, at, record = true}: {group?: EditGroup; at?: number; record?: boolean} = {},
+    {
+      group,
+      at,
+      record = true,
+      prior,
+      deferred = false,
+    }: {
+      group?: EditGroup;
+      at?: number;
+      record?: boolean;
+      prior?: Step<T> | undefined;
+      /** Leaves the DOM to the input method composing in it, which rendering would break. */
+      deferred?: boolean;
+    } = {},
   ): boolean {
     if (group && at !== undefined && at !== this.#lastEnd) this.#history.seal();
     const before = this.#latest;
     const value = normalize(next, this.#rename);
+    const render = (shown: SavedSelection) => {
+      if (!deferred) this.#render(shown);
+    };
     if (sameValue(before, value)) {
-      this.#render(selection);
+      render(selection);
       return false;
     }
     const removed = removedChips(before, value);
@@ -422,15 +600,18 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     this.options.onChange(value, details);
     if (details.isCanceled) {
       // A canceled edit the browser already made comes out of the DOM.
-      this.#render(this.#view?.selection() ?? null);
+      render(this.#selection);
       return false;
     }
     this.#armed = undefined;
     this.#latest = value;
-    this.#edit = record ? {value, selection, group} : undefined;
+    this.#revision += 1;
+    this.#edit = record
+      ? {value, selection, group, prior, before: {value: before, selection: this.#selection}}
+      : undefined;
     if (selection) this.#selection = selection;
     this.#lastEnd = group && selection ? selection.end : -1;
-    this.#render(selection);
+    render(selection);
     if (removed.length && this.#element) {
       const message = this.options.getChipRemovedMessage ?? ((chip: T) => `Removed ${chip.label}`);
       // Joined, so several chips removed at once are one message.
@@ -440,10 +621,14 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     return true;
   }
 
-  /** For a form's reset event. */
-  reset(value: ComposerValue<T>, event: Event): void {
+  /** For a form's reset event. `false` when nothing changed or `onChange` canceled it. */
+  reset(value: ComposerValue<T>, event: Event): boolean {
     this.#armed = undefined;
-    this.#commit(value, caretAt(valueLength(value)), 'form-reset', event);
+    const caret = caretAt(valueLength(value));
+    const deferred = this.#composing;
+    const reset = this.#commit(value, caret, 'form-reset', event, {deferred});
+    if (reset && deferred) this.#stale = caret;
+    return reset;
   }
 
   #emit(): void {
@@ -460,10 +645,11 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     range: ComposerTextRange,
     event: Event | undefined,
     reason: ComposerChangeReason,
+    prior?: Step<T> | undefined,
   ) {
     const next = replaceRange(this.#latest, range, content);
     const end = range.start + valueLength(content);
-    return this.#commit(next, caretAt(end), reason, event);
+    return this.#commit(next, caretAt(end), reason, event, {prior});
   }
 
   #insertTyped(text: string, range: ComposerTextRange, event: InputEvent): void {
@@ -511,9 +697,11 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     );
   }
 
+  /** While a list at the caret is open, no chip is selected: a `select` chip goes whole. */
   #deletion(chip: T): ComposerChipDeletion {
     const {chipDeletion} = this.options;
-    return typeof chipDeletion === 'function' ? chipDeletion(chip) : chipDeletion;
+    const deletion = typeof chipDeletion === 'function' ? chipDeletion(chip) : chipDeletion;
+    return deletion === 'select' && this.#keyHandler ? 'whole' : deletion;
   }
 
   /**
@@ -555,11 +743,15 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       return true;
     };
     if (range.start === range.end && /^delete(Content|Word)/.test(type)) {
-      const neighbour = type.includes('Backward') ? range.start - 1 : range.start;
+      // A selected chip goes with either key, as a selection does: see `handleKeyDown`, which
+      // takes the keys first unless the keyboard sends none (key 229).
+      const backward = type.includes('Backward');
+      const neighbour =
+        this.#find(this.#armed?.id)?.at ?? (backward ? range.start - 1 : range.start);
       const chip = chipAt(this.#latest, neighbour);
       if (chip && event.cancelable) {
         event.preventDefault();
-        this.#removeChip(chip, neighbour, event);
+        this.#removeChip(chip, neighbour, event, backward);
         return;
       }
     }
@@ -604,11 +796,11 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     );
   }
 
-  #removeChip(chip: T, offset: number, event: InputEvent): void {
-    const deletion = this.#deletion(chip);
+  /** A selected (armed) chip is removed whole, whatever its `chipDeletion`. */
+  #removeChip(chip: T, offset: number, event: Event, backward: boolean): void {
+    const deletion = this.#armed?.id === chip.id ? 'whole' : this.#deletion(chip);
     const range = {start: offset, end: offset + 1};
-    if (deletion === 'select' && this.#armed?.id !== chip.id) {
-      const backward = event.inputType.includes('Backward');
+    if (deletion === 'select') {
       this.#arm(chip, backward ? offset + 1 : offset, backward ? 'Backspace' : 'Delete');
       return;
     }
@@ -620,6 +812,19 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       'input-change',
       event,
     );
+  }
+
+  /** The chip with `id` in the value, and its offset. */
+  #find(id: string | undefined): {readonly chip: T; readonly at: number} | undefined {
+    const at = id === undefined ? undefined : offsetOfChip(this.#latest, id);
+    const chip = at === undefined ? undefined : chipAt(this.#latest, at);
+    return chip && at !== undefined ? {chip, at} : undefined;
+  }
+
+  /** The chip whose host `target` is in. */
+  #chipOf(target: EventTarget | null): {readonly chip: T; readonly at: number} | undefined {
+    const host = target instanceof Element ? target.closest<HTMLElement>('[data-chip-id]') : null;
+    return host && this.#element?.contains(host) ? this.#find(host.dataset.chipId) : undefined;
   }
 
   #arm(chip: T, caret: number, key: 'Backspace' | 'Delete'): void {
@@ -637,24 +842,9 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     );
   }
 
-  removeChip(id: string, event: MouseEvent): void {
-    if (!this.options.editable) return;
-    const offset = offsetOfChip(this.#latest, id);
-    if (offset === undefined) return;
-    this.#commit(
-      replaceRange(this.#latest, {start: offset, end: offset + 1}, []),
-      caretAt(offset),
-      'chip-remove-press',
-      event,
-    );
-  }
-
-  /** Shows an undo or redo step without recording it. */
-  #applyStep(
-    event: Event | undefined,
-    step: Step<T> | undefined,
-    reason: 'history-undo' | 'history-redo',
-  ): void {
+  /** Shows the previous or next undo step without recording it. */
+  #applyStep(reason: 'history-undo' | 'history-redo', event?: Event): void {
+    const step = reason === 'history-undo' ? this.#history.undo() : this.#history.redo();
     if (!step) return;
     this.#armed = undefined;
     this.#commit(step.value, step.selection ?? caretAt(valueLength(step.value)), reason, event, {
@@ -672,13 +862,11 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     data.setData('text/html', `<span ${CLIP}="${id}">${escapeHtml(text)}</span>`);
   }
 
-  /** A copy from this editor pastes back with its chips. */
-  #readClipboard(data: DataTransfer | null): readonly ComposerSegment<T>[] {
-    if (!data) return [];
+  /** The value of a copy from this editor. */
+  #ownClip(data: DataTransfer | null): ComposerValue<T> | undefined {
     const clip = this.#clip;
-    const pasted = new RegExp(`${CLIP}="([^"]+)"`).exec(data.getData('text/html'))?.[1];
-    if (!clip || pasted !== clip.id) return [data.getData('text/plain').replace(/\r\n?/g, '\n')];
-    return clip.value;
+    const pasted = new RegExp(`${CLIP}="([^"]+)"`).exec(data?.getData('text/html') ?? '')?.[1];
+    return clip && pasted === clip.id ? clip.value : undefined;
   }
 
   #markSelected(range: ComposerTextRange): void {
@@ -686,8 +874,18 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       chipsOf(sliceValue(this.#latest, range.start, range.end)).map((chip) => chip.id),
     );
     if (this.#armed) ids.add(this.#armed.id);
-    this.#view?.markSelected(ids);
+    this.#setSelected(ids);
   }
+
+  #setSelected(ids: ReadonlySet<string>): void {
+    this.#view?.mark('data-selected', ids);
+    const changed =
+      ids.size !== this.#selected.size || [...ids].some((id) => !this.#selected.has(id));
+    this.#selected = ids;
+    if (changed) this.#emit();
+  }
+
+  isChipSelected = (id: string): boolean => this.#selected.has(id);
 
   textBeforeCaret(): string | null {
     const view = this.#focused ? this.#view : undefined;
@@ -716,15 +914,37 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
 
   getValue = (): ComposerValue<T> => this.#latest;
 
+  takesFiles = (event: DragEvent): boolean =>
+    this.options.editable &&
+    this.options.onAttach !== undefined &&
+    this.#dragged === undefined &&
+    (event.dataTransfer?.types.includes('Files') ?? false);
+
+  /** Files go in at the caret the person placed, not under the pointer. */
+  dropFiles = (event: DragEvent): boolean => {
+    const files = [...(event.dataTransfer?.files ?? [])];
+    if (!this.takesFiles(event) || !files.length) return false;
+    this.#endComposition();
+    this.#attach(files, this.#fileCaret(), {reason: 'drop', event});
+    return true;
+  };
+
   setKeyHandler(handler: ((event: KeyboardEvent) => boolean) | undefined): void {
     this.#keyHandler = handler;
+    if (!handler || !this.#armed) return;
+    this.#armed = undefined;
+    this.#markSelected(this.#selection ?? caretAt(0));
   }
 
   handleKeyDown = (event: KeyboardEvent): void => {
-    // Safari sends the key that ends a composition after its end, as key 229. A keyboard that
-    // sends Enter as 229 (`key` "Unidentified", on some Android keyboards) gets a new line.
-    if (event.defaultPrevented || event.isComposing || this.#composing || event.keyCode === 229)
-      return;
+    // Paste as text, on the key: browsers differ in what the paste event carries. The paste comes
+    // before the key's keyup, which clears it. With Alt too, as Safari's Paste and Match Style
+    // (⌥⇧⌘V), whose `key` is a symbol, so the key's place counts as well.
+    this.#plainPaste =
+      (isApple() ? event.metaKey : event.ctrlKey) &&
+      event.shiftKey &&
+      (event.key.toLowerCase() === 'v' || event.code === 'KeyV');
+    if (event.defaultPrevented || this.#composingKey(event)) return;
     if (this.#keyHandler?.(event)) {
       event.preventDefault();
       return;
@@ -733,21 +953,30 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     const key = event.key.toLowerCase();
     if (mod && !event.altKey && key === 'z') {
       event.preventDefault();
-      if (this.options.editable) (event.shiftKey ? this.actions.redo : this.actions.undo)();
+      if (this.options.editable) {
+        this.#applyStep(event.shiftKey ? 'history-redo' : 'history-undo', event);
+      }
       return;
     }
     if (!isApple() && event.ctrlKey && key === 'y') {
       event.preventDefault();
-      if (this.options.editable) this.actions.redo();
+      if (this.options.editable) this.#applyStep('history-redo', event);
       return;
     }
-    if (
-      (event.key === 'ArrowLeft' || event.key === 'ArrowRight') &&
-      !event.shiftKey &&
-      !mod &&
-      !event.altKey
-    ) {
-      this.#crossChip(event);
+    // While a list at the caret is open, the keys it doesn't take edit the text: no chip is
+    // selected, and the arrows move past a chip in one press.
+    const listOpen = this.#keyHandler !== undefined;
+    // A selected chip goes with Backspace or Delete, as a selection does. On the key: WebKit fires
+    // no `beforeinput` for Backspace at the start of the text.
+    const armed = listOpen ? undefined : this.#find(this.#armed?.id);
+    if (armed && (event.key === 'Backspace' || event.key === 'Delete') && !event.altKey) {
+      event.preventDefault();
+      if (this.options.editable)
+        this.#removeChip(armed.chip, armed.at, event, event.key === 'Backspace');
+      return;
+    }
+    if ((event.key === 'ArrowLeft' || event.key === 'ArrowRight') && !mod && !event.altKey) {
+      this.#arrowBesideChip(event);
       return;
     }
     if (mod && (key === 'b' || key === 'i' || key === 'u')) {
@@ -756,28 +985,155 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     }
     if (event.key === 'Enter') {
       const {onSubmit, submitShortcut} = this.options;
-      // Alt is allowed with either shortcut; the app reads `event.altKey`.
-      const submits = !event.shiftKey && (submitShortcut === 'enter' ? !mod : mod);
-      if (!submits || !onSubmit) return;
+      // Alt is allowed with either shortcut; `onSubmit` reads `event.altKey`.
+      const submits =
+        !event.shiftKey && (submitShortcut === 'enter' ? !event.ctrlKey && !event.metaKey : mod);
+      if (!submits || !onSubmit || !this.options.editable) return;
       event.preventDefault();
-      onSubmit(this.#latest, {event});
+      if (this.options.reportValidity()) onSubmit(this.#latest, {event});
     }
   };
 
   /**
-   * An arrow next to a chip moves past it in one press. The anchors around a host are caret stops
-   * of their own to the browser, which would cost one more.
+   * Safari sends the key that ends a composition after its end, as key 229. A keyboard that sends
+   * Enter as 229 (`key` "Unidentified", on some Android keyboards) gets a new line.
    */
-  #crossChip(event: KeyboardEvent): void {
+  #composingKey(event: KeyboardEvent): boolean {
+    return event.isComposing || this.#composing || event.keyCode === 229;
+  }
+
+  recallKey(
+    event: KeyboardEvent,
+    messages: readonly ComposerValue<ComposerChip>[],
+    from: ComposerRecallFrom,
+  ): boolean {
+    const edge = event.key === 'ArrowUp' ? 'up' : event.key === 'ArrowDown' ? 'down' : undefined;
+    if (
+      !edge ||
+      event.defaultPrevented ||
+      event.shiftKey ||
+      event.altKey ||
+      event.ctrlKey ||
+      event.metaKey ||
+      this.#composingKey(event) ||
+      !this.options.editable ||
+      this.#keyHandler
+    )
+      return false;
+    const recall = this.recalling() ? this.#recall : undefined;
+    if (!recall && (edge === 'down' || (from === 'empty' && valueLength(this.#latest) > 0)))
+      return false;
+    if (!this.actions.atEdge(edge)) return false;
+    const at = recall ? this.#indexOf(recall, messages) : -1;
+    let index = at === -1 ? messages.length : at;
+    let message: ComposerValue<ComposerChip> | undefined;
+    do {
+      index += edge === 'up' ? -1 : 1;
+      message = messages[index];
+    } while (message && this.#shows(message));
+    if (message) this.#showRecalled(message, index, recall?.draft ?? this.#latest, event);
+    else if (edge === 'down' && recall) this.#restoreDraft(recall, event);
+    else return false;
+    return true;
+  }
+
+  recalling(): boolean {
+    return this.#recall !== undefined && sameValue(this.#recall.shown, this.#latest);
+  }
+
+  /**
+   * Where the message shown is in `messages`, which may have changed since: at the same index, by
+   * identity elsewhere, as in a list trimmed from the front, or, in one built anew on every render,
+   * by content nearest the same index, earlier first, so a message sent twice stays apart from its
+   * copy. `-1` when it's gone, and the recall starts again from the newest.
+   */
+  #indexOf(recall: Recall<T>, messages: readonly ComposerValue<ComposerChip>[]): number {
+    if (messages[recall.index] === recall.message) return recall.index;
+    const at = messages.lastIndexOf(recall.message);
+    if (at !== -1) return at;
+    for (let distance = 0; distance <= recall.index + messages.length; distance += 1) {
+      for (const index of [recall.index - distance, recall.index + distance]) {
+        const message = messages[index];
+        if (message && this.#shows(message)) return index;
+      }
+    }
+    return -1;
+  }
+
+  /** Chips by id: a message with chips is the text also when its chips are copies. */
+  #shows(message: ComposerValue<ComposerChip>): boolean {
+    // SAFETY: as with `ComposerValue<T>` in the hooks, the caller names this editor's chip type.
+    return sameContent(this.#normalizeGiven(message as ComposerValue<T>), this.#latest);
+  }
+
+  /** The first recall is an undo step of its own; the next ones replace it. */
+  #showRecalled(
+    message: ComposerValue<ComposerChip>,
+    index: number,
+    draft: ComposerValue<T>,
+    event: KeyboardEvent,
+  ): void {
+    // SAFETY: as in `#shows`.
+    const given = message as ComposerValue<T>;
+    const shown = this.#commit(given, caretAt(valueLength(given)), 'list-navigation', event, {
+      group: 'recall',
+    });
+    if (shown) this.#recall = {message, index, shown: this.#latest, draft};
+  }
+
+  /**
+   * Shows the draft again. While the recall's undo step is the current one, it goes, and the draft
+   * is the step before it again; otherwise, after an undo and a redo, the draft is a new step.
+   */
+  #restoreDraft(recall: Recall<T>, event: KeyboardEvent): void {
+    const onRecall = this.#history.current().value === recall.shown;
+    const before = onRecall ? this.#history.previous() : undefined;
+    const {draft} = recall;
+    // A draft equal to the message shown needs no change, but the recall still ends.
+    const back =
+      sameValue(draft, this.#latest) ||
+      this.#commit(draft, caretAt(valueLength(draft)), 'list-navigation', event, {
+        record: !(before && sameValue(before.value, draft)),
+      });
+    if (!back) return;
+    if (onRecall) this.#history.drop();
+    this.#recall = undefined;
+  }
+
+  /**
+   * Left or Right towards a chip beside the caret: the first press selects it for removal, as a
+   * press on it does, and the second moves the caret past it; in a read-only prompt, or while a
+   * list at the caret is open, the first moves past. With Shift, the selection's moving end goes
+   * past the chip in one press. The editor moves the caret: the zero-width spaces around a host are
+   * caret stops of their own to the browser, which would cost one more press.
+   */
+  #arrowBesideChip(event: KeyboardEvent): void {
     const view = this.#view;
     const range = view?.selection();
-    if (!view || !this.#element || !range || range.start !== range.end) return;
+    const focus = view?.focusOffset();
+    if (!view || !this.#element || !range || focus == null) return;
+    if (!event.shiftKey && range.start !== range.end) return;
+    const before = chipAt(this.#latest, focus - 1);
+    const after = chipAt(this.#latest, focus);
+    // Reading the direction recalculates styles, so only with a chip beside the caret.
+    if (!before && !after) return;
     const forward =
       (event.key === 'ArrowRight') !== (getComputedStyle(this.#element).direction === 'rtl');
-    const target = forward ? range.end : range.start - 1;
-    if (!chipAt(this.#latest, target)) return;
+    const chip = forward ? after : before;
+    if (!chip) return;
     event.preventDefault();
-    view.select(caretAt(forward ? target + 1 : target));
+    const past = forward ? focus + 1 : focus - 1;
+    if (event.shiftKey) {
+      view.extendTo(past);
+      return;
+    }
+    if (this.options.editable && !this.#keyHandler && this.#armed?.id !== chip.id) {
+      this.#arm(chip, focus, forward ? 'Delete' : 'Backspace');
+      return;
+    }
+    this.#armed = undefined;
+    this.#selection = caretAt(past);
+    view.select(this.#selection);
   }
 
   readonly actions: ComposerActions<T> = {
@@ -797,41 +1153,141 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     blur: () => this.#element?.blur(),
     insert: (
       content,
-      {at = 'caret', startLine = false, reason = 'imperative-action', event} = {},
+      {at = 'caret', startLine = false, reason = 'imperative-action', event, space = false} = {},
     ) => {
       if (!this.options.editable) return false;
-      // Commit pending IME text before inserting beside it.
-      if (this.#composing) {
-        this.#composing = false;
-        this.#readBack(undefined);
-      }
+      // The insert rewrites the text an input method composes, which ends its composition, often
+      // without `compositionend`.
+      this.#endComposition();
       const length = valueLength(this.#latest);
-      const range =
-        at === 'end' ? caretAt(length) : at === 'caret' ? (this.#selection ?? caretAt(length)) : at;
+      const range = at === 'end' ? caretAt(length) : at === 'caret' ? this.#caret() : at;
       const given = typeof content === 'string' || 'id' in content ? [content] : content;
       const before = offsetText(sliceValue(this.#latest, 0, range.start));
       const segments =
         startLine && before !== '' && !before.endsWith('\n') ? ['\n', ...given] : given;
-      return this.#insert(segments, range, event, reason);
+      return this.#insert(
+        space ? withSpaces(this.#latest, range, segments) : segments,
+        range,
+        event,
+        reason,
+      );
     },
-    undo: () => this.#applyStep(undefined, this.#history.undo(), 'history-undo'),
-    redo: () => this.#applyStep(undefined, this.#history.redo(), 'history-redo'),
+    undo: () => this.#applyStep('history-undo'),
+    redo: () => this.#applyStep('history-redo'),
     clearHistory: (historyKey = this.#historyKey) => {
       if (historyKey !== this.#historyKey) {
         this.#histories.delete(historyKey);
         return;
       }
-      // The owner may clear the history before showing the value it starts from, such as when
+      // You may clear the history before Root shows the value it starts from, such as when
       // sending, so the next value shown starts it.
       this.#history = new History<Step<T>>({value: this.#latest, selection: null});
       this.#histories.set(historyKey, this.#history);
       this.#edit = undefined;
       this.#cleared = true;
+      this.#recall = undefined;
     },
-    submit: (event) => this.options.onSubmit?.(this.#latest, {event}),
-    getValue: () => this.#latest,
-    attach: (files) => this.options.onAttach?.(files, {reason: 'api'}),
+    submit: (event) => {
+      if (!this.options.editable) return;
+      this.takeComposed();
+      this.options.onSubmit?.(this.#latest, {event});
+    },
+    getValue: () =>
+      this.#composing && !this.#stale && this.#view
+        ? normalize(this.#view.read(), this.#rename)
+        : this.#latest,
+    attach: (files) => {
+      if (files.length) this.#attach(files, this.#fileCaret(), {reason: 'api'});
+    },
+    atEdge: (edge) => {
+      const view = this.#view;
+      const range = view?.selection();
+      if (!this.#focused || !view || !range || range.start !== range.end) return false;
+      if (this.#armed || this.#composing) return false;
+      // A line break between the caret and the edge settles it; within a line, the layout does.
+      const text = offsetText(this.#latest);
+      const caret = range.start;
+      if (edge === 'up') {
+        if (text.slice(0, caret).includes('\n')) return false;
+        return caret === 0 || view.onSameLine(0, this.#charAtCaret(text, caret, 'up'));
+      }
+      if (text.includes('\n', caret)) return false;
+      return (
+        caret === text.length ||
+        view.onSameLine(text.length - 1, this.#charAtCaret(text, caret, 'down'))
+      );
+    },
   };
+
+  /**
+   * A character on the caret's line. Where a line wraps, the caret before its first character
+   * shows on either line, so each edge measures the character away from it: the one after the
+   * caret for `up`, the one before for `down`. A caret at a wrap then takes one press more:
+   * ArrowUp moves it to the line's start, ArrowDown to its end.
+   */
+  #charAtCaret(text: string, caret: number, edge: 'up' | 'down'): number {
+    if (edge === 'up') return caret < text.length && text[caret] !== '\n' ? caret : caret - 1;
+    return caret > 0 && text[caret - 1] !== '\n' ? caret - 1 : caret;
+  }
+
+  pick(files: File[], event: Event): void {
+    this.#attach(files, this.#fileCaret(), {reason: 'picker', event});
+  }
+
+  /**
+   * The last caret, also while blurred, clamped: a value shown since may be shorter. The end
+   * before there was one.
+   */
+  #caret(): ComposerTextRange {
+    return this.#clamp(this.#selection ?? caretAt(valueLength(this.#latest)));
+  }
+
+  /** Files never replace selected text: they go after it, at its logical end. */
+  #fileCaret(): ComposerTextRange {
+    return caretAt(this.#caret().end);
+  }
+
+  /**
+   * Commits the text an input method composes, which goes on composing, so sending has it. A value
+   * from outside before `compositionend`, such as a reset after sending, replaces it then.
+   */
+  takeComposed = (): void => {
+    const view = this.#view;
+    if (!this.#composing || this.#stale || !view) return;
+    this.#commit(view.read(), view.selection(), 'input-change', undefined, {deferred: true});
+  };
+
+  /**
+   * Commits pending IME text, as one step of its own, also before an edit that may land beside it;
+   * or shows the value from outside that came meanwhile.
+   */
+  #endComposition(): void {
+    if (!this.#composing) return;
+    this.#composing = false;
+    const stale = this.#stale;
+    if (!stale) {
+      this.#readBack(undefined);
+      return;
+    }
+    this.#stale = undefined;
+    this.#render(stale);
+  }
+
+  /** `details.insert` refuses once the text changed: `at` is an offset into what `onAttach` saw. */
+  #attach(files: File[], at: ComposerTextRange, source: AttachSource): void {
+    const {onAttach} = this.options;
+    if (!onAttach) return;
+    const seen = this.#revision;
+    const how = insertOptionsFor(source);
+    onAttach(files, {
+      ...source,
+      at,
+      insert: (content) => {
+        this.#endComposition();
+        return this.#revision === seen && this.actions.insert(content, {...how, at, space: true});
+      },
+    });
+  }
 
   #listen(element: HTMLElement): () => void {
     const view = (): EditorView<T> | undefined => this.#view;
@@ -844,10 +1300,12 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       }
       if (type === 'historyUndo' || type === 'historyRedo') {
         event.preventDefault();
-        if (type === 'historyUndo') this.actions.undo();
-        else this.actions.redo();
+        this.#applyStep(type === 'historyUndo' ? 'history-undo' : 'history-redo', event);
         return;
       }
+      // Where the edit starts, also for a key right after an arrow, before `selectionchange`.
+      const range = view()?.selection();
+      if (range) this.#selection = range;
       // Also during IME composition: deleting a chip beside it is the editor's job.
       if (type.startsWith('delete')) {
         this.#delete(event);
@@ -855,7 +1313,6 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       }
       // Composition is never cancelled: the input method owns it until it ends.
       if (type === 'insertCompositionText' || this.#composing) return;
-      const range = view()?.selection();
       if (!range) return;
       if (type === 'insertText' || type === 'insertReplacementText') {
         const text = event.data ?? event.dataTransfer?.getData('text/plain') ?? '';
@@ -881,8 +1338,9 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     const onInput = (event: Event) => {
       const input = event instanceof InputEvent ? event : undefined;
       // IME text is read back at `compositionend`. Listeners still get each update, for
-      // suggestions.
-      if (this.#composing || input?.isComposing) {
+      // suggestions. An input method may go on composing after `#endComposition`.
+      if (input?.isComposing) this.#composing = true;
+      if (this.#composing) {
         this.#emit();
         return;
       }
@@ -905,61 +1363,134 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       this.#commit(replaceRange(this.#latest, range, []), caretAt(range.start), 'input-cut', event);
     };
 
-    /** `true` when files went to `onAttach`. */
-    const takeFiles = (data: DataTransfer | null, details: ComposerAttachDetails): boolean => {
-      const files = [...(data?.files ?? [])];
-      if (!files.length || !this.options.onAttach) return false;
-      this.options.onAttach(files, details);
-      return true;
-    };
-
+    // Cmd/Ctrl+Shift+V pastes text as text: neither a copy's chips nor `getPastedValue`'s.
     const onPaste = (event: ClipboardEvent) => {
       event.preventDefault();
+      const plain = this.#plainPaste;
+      this.#plainPaste = false;
+      if (!this.options.editable) return;
+      this.#endComposition();
       const range = view()?.selection();
-      if (
-        !range ||
-        !this.options.editable ||
-        takeFiles(event.clipboardData, {reason: 'paste', event})
-      )
+      if (!range) return;
+      const files = [...(event.clipboardData?.files ?? [])];
+      if (files.length && this.options.onAttach) {
+        this.#attach(files, range, {reason: 'paste', event});
         return;
-      const content = withNewIds(
-        this.#readClipboard(event.clipboardData),
-        replaceRange(this.#latest, range, []),
-      );
+      }
+      const data = event.clipboardData;
+      const text = plainText(data);
+      const own = plain ? undefined : this.#ownClip(data);
+      const made = own || plain || !text ? undefined : this.options.getPastedValue?.(text, {event});
+      // Made from the text: the text as text is the step before, so Undo gives it.
+      const prior =
+        made && !sameValue(normalize(made), [text])
+          ? {
+              value: replaceRange(this.#latest, range, [text]),
+              selection: caretAt(range.start + text.length),
+            }
+          : undefined;
+      const content = withNewIds(own ?? made ?? [text], replaceRange(this.#latest, range, []));
       if (!content.some((segment) => segment !== '')) return;
-      this.#insert(content, range, event, 'input-paste');
+      this.#insert(content, range, event, 'input-paste', prior);
     };
 
+    let faint = 0;
+    // A finger doesn't drag a chip: its long press stays the text's own selection. Any other
+    // pointer, a mouse or a pen, or one whose type the engine leaves empty, makes the host
+    // draggable while it is over it, so before the press, when WebKit decides whether it starts a
+    // drag, and on through the press, whatever boundary events come, since Firefox decides only
+    // once the pointer has moved, maybe off the chip.
+    let draggableHost: HTMLElement | undefined;
+    let held = false;
+    const releaseHost = () => {
+      if (draggableHost) draggableHost.draggable = false;
+      draggableHost = undefined;
+    };
+    const holdHost = (event: PointerEvent) => {
+      // Also when a mouse rests on the chip a finger presses: the finger's press takes none.
+      if (event.pointerType === 'touch') {
+        releaseHost();
+        return;
+      }
+      const host =
+        event.target instanceof Element
+          ? event.target.closest<HTMLElement>('[data-chip-id]')
+          : null;
+      if (host === draggableHost) return;
+      releaseHost();
+      if (!host || !element.contains(host)) return;
+      host.draggable = true;
+      draggableHost = host;
+    };
+    const onPointerOver = (event: PointerEvent) => {
+      if (!held) holdHost(event);
+    };
+    const onPointerOut = (event: PointerEvent) => {
+      const to = event.relatedTarget;
+      if (held || (to instanceof Node && draggableHost?.contains(to))) return;
+      releaseHost();
+    };
+    // The press may end anywhere; off the chip, it's no longer draggable. Chromium cancels the
+    // press when a drag starts, and the drag's end releases the chip.
+    const onPointerEnd = (event: PointerEvent) => {
+      held = false;
+      if (
+        event.type === 'pointerup' &&
+        !(event.target instanceof Node && draggableHost?.contains(event.target))
+      )
+        releaseHost();
+    };
+
+    // A chip drags by itself unless it's in the selection, which then drags as a whole. Its chips
+    // stay faint where they were until the drop. No dragging by a finger: a long press is the
+    // text's own selection, and cut and paste move a chip.
     const onDragStart = (event: DragEvent) => {
-      const range = view()?.selection();
+      this.#pressedChip = undefined;
+      const current = view();
+      if (!current) return;
+      if (this.#pressedBy === 'touch') {
+        event.preventDefault();
+        return;
+      }
+      const selection = current.selection();
+      const pressed = this.#chipOf(event.target);
+      const range =
+        pressed && !(selection && selection.start <= pressed.at && pressed.at < selection.end)
+          ? {start: pressed.at, end: pressed.at + 1}
+          : selection;
       if (!range || range.start === range.end) return;
       this.#dragged = range;
       this.#writeClipboard(event.dataTransfer, range);
+      // A read-only prompt keeps its chips: a drag out of it copies them.
+      if (!this.options.editable) return;
+      const ids = new Set(
+        chipsOf(sliceValue(this.#latest, range.start, range.end)).map(({id}) => id),
+      );
+      // After the browser drew the drag image from the chip, which stays at full strength.
+      faint = requestAnimationFrame(() => current.mark('data-dragging', ids));
     };
 
-    const onDragEnd = () => {
+    const endDrag = () => {
       this.#dragged = undefined;
+      cancelAnimationFrame(faint);
+      view()?.mark('data-dragging', new Set());
+      held = false;
+      releaseHost();
     };
 
-    const onDragOver = (event: DragEvent) => {
-      // Accept a file drop only when `onAttach` takes the files.
-      if (this.options.onAttach && event.dataTransfer?.types.includes('Files'))
-        event.preventDefault();
-    };
-
+    // Text and a drag from this editor go in at the drop point; files are `Composer.InputGroup`'s.
+    // Captured, as InputGroup's: a drop on a chip reaches the page's React handlers through Root's
+    // portal before it bubbles here, and `preventDefault` tells them the prompt took it.
     const onDrop = (event: DragEvent) => {
+      if (this.takesFiles(event)) return;
       event.preventDefault();
       const source = this.#dragged;
-      this.#dragged = undefined;
+      // Also here: `dragend` doesn't reach the editor when the drop removed the node it started on.
+      endDrag();
       const current = view();
-      if (
-        !this.options.editable ||
-        !current ||
-        takeFiles(event.dataTransfer, {reason: 'drop', event})
-      )
-        return;
-      const point = pointFrom(event);
-      let at = point ? current.offsetAt(point[0], point[1]) : valueLength(this.#latest);
+      if (!this.options.editable || !current) return;
+      this.#endComposition();
+      let at = current.offsetAtPoint(event.clientX, event.clientY) ?? valueLength(this.#latest);
       let value = this.#latest;
       // A drag inside the editor moves the text, unless it's dropped onto itself or Ctrl or Alt
       // copies it.
@@ -971,44 +1502,52 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       const content = withNewIds(
         source
           ? sliceValue(this.#latest, source.start, source.end)
-          : this.#readClipboard(event.dataTransfer),
+          : (this.#ownClip(event.dataTransfer) ?? [plainText(event.dataTransfer)]),
         value,
       );
       const next = replaceRange(value, caretAt(at), content);
       this.#commit(next, caretAt(at + valueLength(content)), 'input-drop', event);
     };
 
-    // A press on a chip of the focused editor selects it, with the caret collapsed after it: a
-    // native range would make iOS draw a highlight with handles across the line. The keyboard stays
-    // up. The remove button handles its own press.
+    // A press on a chip selects it, with the caret collapsed after it: a native range would make
+    // iOS draw a highlight with handles across the line. A finger's in the focused editor selects
+    // it at once, and the keyboard stays up. Any other press selects it at the click: a mouse or a
+    // pen may start a drag, and a finger's first press focuses the editor.
     const onPointerDown = (event: PointerEvent) => {
       this.#pressing = true;
-      const current = view();
-      if (
-        !current ||
-        !this.#focused ||
-        !this.options.editable ||
-        !(event.target instanceof Element)
-      )
+      held = true;
+      holdHost(event);
+      this.#pressedBy = event.pointerType;
+      this.#pressedChip = undefined;
+      if (!this.options.editable) return;
+      const pressed = this.#chipOf(event.target);
+      if (!pressed) return;
+      if (event.pointerType !== 'touch' || !this.#focused) {
+        this.#pressedChip = pressed.chip.id;
         return;
-      const host = event.target.closest<HTMLElement>('[data-chip-id]');
-      if (!host || event.target.closest('[data-chip-remove]')) return;
-      const offset = offsetOfChip(this.#latest, host.dataset.chipId ?? '');
-      if (offset === undefined) return;
-      const chip = chipAt(this.#latest, offset);
-      if (!chip) return;
+      }
       event.preventDefault();
-      this.#arm(chip, offset + 1, 'Backspace');
+      this.#arm(pressed.chip, pressed.at + 1, 'Backspace');
+    };
+
+    const onClick = (event: MouseEvent) => {
+      const id = this.#pressedChip;
+      this.#pressedChip = undefined;
+      const pressed = this.#chipOf(event.target);
+      if (pressed) {
+        if (pressed.chip.id === id) this.#arm(pressed.chip, pressed.at + 1, 'Backspace');
+        return;
+      }
+      // Chromium puts the caret before a chip for a click past it. A double click's second click
+      // selects a word, so it's left alone.
+      const current = view();
+      if (event.detail !== 1 || !current?.caretBesideHost()) return;
+      const offset = current.offsetAtPoint(event.clientX, event.clientY);
+      if (offset !== null) current.select(caretAt(offset));
     };
 
     const onCompositionStart = () => {
       this.#composing = true;
-    };
-
-    // The committed text is read back as one step of its own.
-    const onCompositionEnd = () => {
-      this.#composing = false;
-      this.#readBack(undefined);
     };
 
     // A caret inside a chip's host moves to its edge, and the chips in the selection are marked.
@@ -1040,9 +1579,9 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     const onBlur = () => {
       this.#focused = false;
       this.#pressing = false;
-      this.#composing = false;
+      this.#endComposition();
       this.#armed = undefined;
-      this.#view?.markSelected(new Set());
+      this.#setSelected(new Set());
       this.#emit();
     };
 
@@ -1054,22 +1593,32 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       element.addEventListener(type, listener);
       stops.push(() => element.removeEventListener(type, listener));
     };
+    element.addEventListener('drop', onDrop, true);
+    stops.push(() => element.removeEventListener('drop', onDrop, true));
     on('beforeinput', onBeforeInput);
     on('input', onInput);
     on('copy', onCopy);
     on('cut', onCut);
     on('paste', onPaste);
     on('dragstart', onDragStart);
-    on('dragend', onDragEnd);
-    on('dragover', onDragOver);
-    on('drop', onDrop);
+    on('dragend', endDrag);
+    on('keyup', () => {
+      this.#plainPaste = false;
+    });
     on('pointerdown', onPointerDown);
+    on('pointerover', onPointerOver);
+    on('pointerout', onPointerOut);
+    on('click', onClick);
     on('compositionstart', onCompositionStart);
-    on('compositionend', onCompositionEnd);
+    on('compositionend', () => this.#endComposition());
     on('focus', onFocus);
     on('blur', onBlur);
     document.addEventListener('selectionchange', onSelectionChange);
     stops.push(() => document.removeEventListener('selectionchange', onSelectionChange));
+    for (const type of ['pointerup', 'pointercancel'] as const) {
+      document.addEventListener(type, onPointerEnd);
+      stops.push(() => document.removeEventListener(type, onPointerEnd));
+    }
     if (document.activeElement === element) onFocus();
     return () => {
       for (const stop of stops) stop();
@@ -1077,9 +1626,19 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
   }
 }
 
-function pointFrom(event: DragEvent): [Node, number] | null {
-  const position = document.caretPositionFromPoint?.(event.clientX, event.clientY);
-  if (position) return [position.offsetNode, position.offset];
-  const range = document.caretRangeFromPoint?.(event.clientX, event.clientY);
-  return range ? [range.startContainer, range.startOffset] : null;
+function insertOptionsFor(source: AttachSource): ComposerInsertOptions {
+  switch (source.reason) {
+    case 'drop':
+      return {reason: 'input-drop', event: source.event};
+    case 'paste':
+      return {reason: 'input-paste', event: source.event};
+    case 'picker':
+      return {event: source.event};
+    case 'api':
+      return {};
+  }
 }
+
+/** Line breaks as the value has them. */
+const plainText = (data: DataTransfer | null): string =>
+  data?.getData('text/plain').replace(/\r\n?/g, '\n') ?? '';

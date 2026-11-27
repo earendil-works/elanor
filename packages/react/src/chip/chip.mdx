@@ -16,32 +16,55 @@ import {Chip} from '@earendil-works/elanor-react';
 <Chip.Root>
   <Chip.Icon />
   <Chip.Label />
+  <Chip.Separator />
+  <Chip.Label />
+  <Chip.Progress />
   <Chip.Remove />
 </Chip.Root>;
 ```
 
 - **Root** renders a `<span>`; use `render` for an `<li>`. It stays on one line and is at most as wide as its container.
-- **Icon** holds a decorative icon before the label.
-- **Label** shortens its text with an ellipsis. A chip can have more than one; a label before another keeps its width, up to half the chip.
+- **Icon** holds a decorative icon before a label.
+- **Label** shortens its text with an ellipsis. A chip can have more than one; a label before another is the item's place and keeps its width, up to half the chip.
+- **Separator** is the arrow between a place and the name.
+- **Progress** draws a bar at the chip's foot while the item is on its way, such as uploading.
 - **Remove** is a button at the chip's end. Name it with `aria-label` after what it removes, such as "Remove design.pdf", and remove the item in `onClick`.
 
 ## Variant
 
-`outline`, the default, is a bordered box. `soft` is a filled pill.
+`outline`, the default, is a bordered box. `soft` is a filled pill with a faint edge, which holds it on a surface of the same fill, such as a composer's input group.
 
 <Demo example="./examples/variant.tsx" />
 
 ## Density
 
-`compact` removes block padding and uses a smaller icon and Remove, so a chip fits a line of text.
+`default` is 24px tall, with or without Remove, for lists, such as a form's files or a set of filters. `compact` is as tall as its text, 20px, so a chip fits a line of text, and its Remove is 16px.
 
 <Demo example="./examples/density.tsx" />
 
+## Semantic
+
+`semantic` tints the fill of `soft` and the edge of `outline`: `negative` for an item that failed, such as an upload, and `warning` or `positive` for other states. The color alone doesn't say why; say it in words too, such as in a tooltip or a notice beside the chips.
+
+<Demo example="./examples/semantic.tsx" />
+
 ## Icon
 
-An icon says what kind of item the chip is. It is hidden from screen readers; the label names the item.
+An icon says what kind of item the chip is, or where it is. It is hidden from screen readers; the label names the item.
 
 <Demo example="./examples/icon.tsx" />
+
+## Place
+
+Say where an item is with a label before its name and a `Chip.Separator` between them: "devbox › build.mjs" for a file on a machine, "Upload › screen.png" for one uploaded from the browser, "MacBook › notes.md" for one on a connected device. End a folder's name with a slash, as in "devbox › src/". For a long pasted text, use "Pasted" with a clipboard icon and say how long it is, as in "Pasted › 142 lines". The place is quieter and keeps its width; the name takes the ellipsis. The separator points to the name in either direction and is hidden from screen readers, which read the place, then the name. To use another icon, pass it as the separator's children.
+
+<Demo example="./examples/place.tsx" />
+
+## Progress
+
+Add a `Chip.Progress` while an item is on its way, such as a file uploading, and name it with `aria-label`, such as "Uploading crash.log". Set `value` from 0 to 100 as it goes, or `null` while you don't know how far it is; the bar then pulses. The name turns quieter while the bar shows. Chip doesn't upload anything; remove `Chip.Progress` when your upload is done, or set `semantic="negative"` when it fails.
+
+<Demo example="./examples/progress.tsx" />
 
 ## Removable
 
@@ -57,12 +80,12 @@ Render the label as a `<q>` for a quotation, with the quote icon, so it reads as
 
 ## In text
 
-A chip flows in text like a word; it stays on one line and wraps as a whole. In running text, use `density="compact"`.
+A chip flows in text like a word; it stays on one line and wraps as a whole. In running text, use `variant="soft"` and `density="compact"`: the chip is centred in the line, 2px above and below it in a 24px line, so chips on lines above each other stand 4px apart.
 
 <Demo example="./examples/in-text.tsx" />
 
 ## In a list
 
-For a set of chips, such as attached files, render each as an `<li>` in a list, and name the list.
+For a set of chips, such as a form's files, render each as an `<li>` in a list, and name the list.
 
 <Demo example="./examples/list.tsx" />
