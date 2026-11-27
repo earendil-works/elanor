@@ -106,8 +106,8 @@ function at(text: string, index: number, position: ComposerSuggestionPosition): 
 
 /**
  * The last trigger in the word that ends at the caret. `before` is the text before the caret, from
- * `offsetText`. Words end at chips and `WORD_END`, and a query at a closing bracket without its
- * opener.
+ * `offsetText`. Words end at chips and `WORD_END`; a query also ends at a closing bracket it didn't
+ * open.
  */
 export function findMatch(
   before: string,
