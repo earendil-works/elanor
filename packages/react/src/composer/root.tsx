@@ -145,6 +145,12 @@ export function ComposerRoot<T extends ComposerChip = ComposerChip>({
     getChipDescription,
     onSubmit,
     submitShortcut,
+    // Enter validates the form as its Submit button does, keeping its key event for `onSubmit`.
+    // Without `onSubmit`, `requestSubmit` validates once more and finds nothing new.
+    reportValidity: () => {
+      const form = meta.formValue.current?.form;
+      return !form || form.noValidate || form.reportValidity();
+    },
     editable: !disabled && !readOnly,
     onAttach,
     getPastedValue,

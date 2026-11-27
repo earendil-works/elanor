@@ -236,6 +236,11 @@ export interface EditorOptions<T extends ComposerChip> {
     | ((value: ComposerValue<T>, details: ComposerSubmitDetails) => void)
     | undefined;
   readonly submitShortcut: ComposerSubmitShortcut;
+  /**
+   * Before the submit shortcut calls `onSubmit`: `false`, once the form showed what's invalid,
+   * stops it. `submit()` doesn't ask.
+   */
+  readonly reportValidity: () => boolean;
   /** `false` when disabled or read-only. */
   readonly editable: boolean;
   /**
@@ -967,7 +972,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
         !event.shiftKey && (submitShortcut === 'enter' ? !event.ctrlKey && !event.metaKey : mod);
       if (!submits || !onSubmit || !this.options.editable) return;
       event.preventDefault();
-      onSubmit(this.#latest, {event});
+      if (this.options.reportValidity()) onSubmit(this.#latest, {event});
     }
   };
 
