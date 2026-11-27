@@ -43,7 +43,7 @@ export const chipText = (chip: MessageChip) => {
   }
 };
 
-// Root calls `toText` on an edit, so it reads nothing that changes without one.
+// Root calls `toText` when it renders, not when an upload changes, so it reads only the chips.
 export const toText = (value: Message) => Composer.valueToText(value, chipText);
 
 /** More lines than the prompt shows at once. */
@@ -56,7 +56,7 @@ export const getPastedValue = (text: string): Message => {
 };
 
 // A pasted text is costly to lose: the first Backspace selects it. A file turns back into its
-// `@path`, where the suggestions open on it again.
+// `@path`, where the suggestions list opens on it again.
 export const chipDeletion = (chip: MessageChip) =>
   chip.kind === 'paste' ? 'select' : chip.kind === 'file' ? 'revert' : 'whole';
 
@@ -111,8 +111,8 @@ function UploadChip({chip}: {chip: Extract<MessageChip, {kind: 'upload'}>}) {
         <Chip.Progress value={upload.progress} aria-label={`Uploading ${chip.label}`} />
       ) : null}
       {upload?.state === 'failed' ? (
-        // Here, not in `getChipDescription`: Root reads that only when it draws the chip, and a
-        // failure doesn't draw it again.
+        // Here, not in `getChipDescription`: the prompt reads that when it places the chip in the
+        // text, which a failure doesn't do.
         <span className={styles.visuallyHidden}>{`, ${upload.error}`}</span>
       ) : null}
     </>
@@ -128,7 +128,7 @@ function UploadChip({chip}: {chip: Extract<MessageChip, {kind: 'upload'}>}) {
   );
 }
 
-// Outside a component: a new function on every render would draw every chip again.
+// Outside a component, so it stays one function and the chips don't render again.
 export const renderChip = (chip: MessageChip) => {
   switch (chip.kind) {
     case 'file':

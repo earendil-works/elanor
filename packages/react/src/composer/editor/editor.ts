@@ -143,7 +143,7 @@ export interface ComposerActions<T extends ComposerChip = ComposerChip> {
    * empty value after sending.
    */
   clearHistory(historyKey?: string): void;
-  /** Calls `onSubmit` without the keyboard's checks (composing, open suggestions). */
+  /** Calls `onSubmit` without the keyboard's checks (composing, suggestion items showing). */
   submit(event?: Event): void;
   getValue(): ComposerValue<T>;
   /** Calls `onAttach` (reason `api`) at the caret after selected text; ignores an empty list. */
@@ -223,7 +223,8 @@ export interface EditorOptions<T extends ComposerChip> {
   readonly getChipDescription: (chip: T) => string;
   /**
    * Called for the submit shortcut, except while an input method composes (including Safari's key
-   * 229 after it) or the key handler takes Enter, such as open suggestions; and for `submit()`.
+   * 229 after it) or the key handler takes Enter, such as while suggestion items show; and for
+   * `submit()`.
    * `submit()` skips those checks and submits empty values too; check the value in `onSubmit`.
    * Without it, the submit shortcut adds a line.
    */

@@ -269,7 +269,7 @@ export function ComposerInputGroup({ref, render, ...props}: ComposerInputGroupPr
 
 export interface ComposerControlsProps extends useRender.ComponentProps<'div'> {}
 
-/** A row of controls in the input group, in DOM order. Place them as you like. */
+/** A row of controls in the input group, in DOM order. Arrange them as you like. */
 export function ComposerControls({ref, render, ...props}: ComposerControlsProps) {
   return useRender({
     defaultTagName: 'div',

@@ -1,6 +1,6 @@
 import type {Plugin} from 'vite';
 
-import {assertDemoSyntax, assertExcerpts, demoBlock, demoFiles} from '../src/lib/demo-blocks.ts';
+import {assertDemos, demoBlock, demoFiles} from '../src/lib/demo-blocks.ts';
 
 /**
  * Expands `<Demo example="./examples/name.tsx" />` in component MDX into a hydrated
@@ -16,9 +16,8 @@ export function demos(): Plugin {
       order: 'pre',
       filter: {id: /\.mdx$/},
       handler(code, id) {
-        assertExcerpts(code, id);
+        assertDemos(code, id);
         if (!code.includes('<Demo')) return;
-        assertDemoSyntax(code, id);
         const imports: string[] = [];
         let count = 0;
         const body = code.replace(demoBlock, (_, example: string) => {

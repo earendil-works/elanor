@@ -116,7 +116,7 @@ export class EditorView<T extends ComposerChip> {
 
   /**
    * Patches the children to match the value, reusing text nodes and hosts, so the caret, spelling
-   * marks and what `renderChip` drew survive.
+   * marks and what `renderChip` rendered survive.
    */
   render(value: ComposerValue<T>): void {
     const element = this.#element;

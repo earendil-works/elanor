@@ -4,7 +4,8 @@ const pending = new WeakMap<Element, ReturnType<typeof setTimeout>>();
 
 /**
  * Announces `message` to screen readers without moving focus. `from` picks the document and the
- * open modal dialog it is in, if any. A newer message replaces one not yet read.
+ * open modal dialog it is in, if any. A newer message replaces one not yet read. `priority`
+ * defaults to `polite`.
  */
 export function announce(
   message: string,

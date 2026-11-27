@@ -87,3 +87,20 @@ export function assertExcerpts(source: string, mdxPath: string): void {
     }
   });
 }
+
+/**
+ * Throws unless the page's demos and excerpts are well formed and match the example files, as
+ * `pnpm check` and the docs build both require.
+ */
+export function assertDemos(source: string, mdxPath: string): void {
+  assertDemoSyntax(source, mdxPath);
+  assertExcerpts(source, mdxPath);
+  for (const [, example = ''] of source.matchAll(demoBlock)) {
+    try {
+      demoFiles(mdxPath, example);
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : String(error);
+      throw new Error(`${mdxPath}: the demo ${example}: ${reason}`, {cause: error});
+    }
+  }
+}

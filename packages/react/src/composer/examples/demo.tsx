@@ -114,13 +114,7 @@ function MessageComposer({onSend, onNotice, children}: MessageComposerProps) {
 /** Inside Root, where `useRecall` finds the prompt. */
 function MessagePrompt({messages}: {messages: readonly Message[]}) {
   const recall = Composer.useRecall(messages);
-  return (
-    <Composer.Prompt
-      aria-label="Message"
-      placeholder="Write a message, @ for a file, / for a command…"
-      onKeyDown={recall}
-    />
-  );
+  return <Composer.Prompt aria-label="Message" placeholder="Message Pi…" onKeyDown={recall} />;
 }
 
 const secret = /\b(?:sk-|ghp_|xox[bp]-)[A-Za-z0-9]{16,}/;

@@ -45,11 +45,15 @@ function searchFiles(query: string, signal: AbortSignal): Promise<Suggestion[]> 
     .map((path): Suggestion => ({kind: 'file', path}));
   // Demo only: replace the timer with a request to your server that takes `signal`.
   return new Promise((resolve, reject) => {
-    const timer = setTimeout(() => resolve(found), 300);
-    signal.addEventListener('abort', () => {
+    const abort = () => {
       clearTimeout(timer);
       reject(signal.reason);
-    });
+    };
+    const timer = setTimeout(() => {
+      signal.removeEventListener('abort', abort);
+      resolve(found);
+    }, 300);
+    signal.addEventListener('abort', abort, {once: true});
   });
 }
 

@@ -608,7 +608,7 @@ export interface ComposerSuggestionPositionerProps extends Omit<
 > {}
 
 /**
- * Places the popup at the trigger, above its line by default. Goes inside
+ * Positions the popup at the trigger, above its line by default. Goes inside
  * `Composer.SuggestionPortal`. Takes Base UI's `Popover.Positioner` props, except `anchor` and
  * `hidden`, which follow the match.
  */
