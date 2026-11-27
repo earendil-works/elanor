@@ -164,6 +164,7 @@ export type {
   ComposerChipDeletion,
   ComposerInsertOptions,
   ComposerPasteDetails,
+  ComposerRecallFrom,
   ComposerSubmitDetails,
   ComposerSubmitShortcut,
 } from './composer/editor/editor.ts';
@@ -179,6 +180,7 @@ export type {
   ComposerSuggestionTrigger,
 } from './composer/editor/match.ts';
 export type {ComposerPromptProps, ComposerPromptState} from './composer/prompt.tsx';
+export type {ComposerRecallOptions} from './composer/recall.ts';
 export type {ComposerRootProps} from './composer/root.tsx';
 export type {
   ComposerSuggestionEmptyProps,
