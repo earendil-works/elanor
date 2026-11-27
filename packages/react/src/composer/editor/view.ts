@@ -51,7 +51,10 @@ function layout<T extends ComposerChip>(value: ComposerValue<T>): Layout<T> {
   return nodes;
 }
 
-/** The length before `end` without zero-width spaces, found by search: a copy costs every key. */
+/**
+ * The length before `end` without zero-width spaces. Counts them in place: a long prompt would copy
+ * its text several times a key.
+ */
 function realLength(text: string, end = text.length): number {
   let length = end;
   let at = text.indexOf(ZERO_WIDTH_SPACE);
@@ -310,8 +313,8 @@ export class EditorView<T extends ComposerChip> {
     const offset = selection.anchorOffset;
     if (node instanceof Text)
       return (
-        (isHost(node.nextSibling) && realLength(node.data.slice(offset)) === 0) ||
-        (isHost(node.previousSibling) && realLength(node.data.slice(0, offset)) === 0)
+        (isHost(node.nextSibling) && realLength(node.data) === realLength(node.data, offset)) ||
+        (isHost(node.previousSibling) && realLength(node.data, offset) === 0)
       );
     return isHost(node.childNodes[offset - 1]) || isHost(node.childNodes[offset]);
   }
@@ -322,22 +325,27 @@ export class EditorView<T extends ComposerChip> {
    */
   #pointAt(offset: number): [Node, number] {
     let remaining = offset;
-    for (const child of this.#element.childNodes) {
+    for (const [index, child] of this.#element.childNodes.entries()) {
       if (child instanceof Text) {
         const length = this.#textLength(child);
         if (remaining <= length) {
-          let index = child.data.startsWith(ZERO_WIDTH_SPACE) && child.data.length > 1 ? 1 : 0;
+          let at = child.data.startsWith(ZERO_WIDTH_SPACE) && child.data.length > 1 ? 1 : 0;
           // Skips the zero-width spaces before the point.
-          let space = child.data.indexOf(ZERO_WIDTH_SPACE, index);
-          while (space !== -1 && space - index < remaining) {
-            remaining -= space - index;
-            index = space + 1;
-            space = child.data.indexOf(ZERO_WIDTH_SPACE, index);
+          let space = child.data.indexOf(ZERO_WIDTH_SPACE, at);
+          while (space !== -1 && space - at < remaining) {
+            remaining -= space - at;
+            at = space + 1;
+            space = child.data.indexOf(ZERO_WIDTH_SPACE, at);
           }
-          return [child, index + remaining];
+          return [child, at + remaining];
         }
         remaining -= length;
-      } else remaining -= this.#lengthOf(child);
+        continue;
+      }
+      const length = this.#lengthOf(child);
+      // A host with no text before it, as a browser's edit can leave it: the point before it.
+      if (remaining < length) return [this.#element, index];
+      remaining -= length;
     }
     const last = this.#element.lastChild;
     const sentinel = last instanceof HTMLElement && last.hasAttribute(SENTINEL);
@@ -432,7 +440,9 @@ export class EditorView<T extends ComposerChip> {
     const [node, index] = this.#pointAt(offset);
     // A chip's point is in the text before its host, with only zero-width spaces after it.
     const host =
-      node instanceof Text && realLength(node.data.slice(index)) === 0 ? node.nextSibling : null;
+      node instanceof Text && realLength(node.data) === realLength(node.data, index)
+        ? node.nextSibling
+        : null;
     if (host instanceof HTMLElement && host.hasAttribute(HOST)) return host.getBoundingClientRect();
     const range = document.createRange();
     range.setStart(node, index);
