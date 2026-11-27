@@ -357,7 +357,10 @@ export function ComposerAttach({
   );
 }
 
-export interface ComposerSubmitProps extends Omit<IconButtonProps, 'density' | 'hierarchy'> {
+export interface ComposerSubmitProps extends Omit<
+  IconButtonProps,
+  'density' | 'hierarchy' | 'type'
+> {
   /** The icon. Defaults to an upward arrow. */
   readonly children?: ReactNode;
 }
