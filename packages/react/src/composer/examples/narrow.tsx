@@ -18,12 +18,12 @@ export default function ComposerNarrow() {
   return (
     <Composer.Root toText={toText}>
       <Composer.Panel className={styles.narrow}>
-        <Composer.Field>
+        <Composer.InputGroup>
           <Composer.Prompt aria-label="Message" placeholder="Write a message…" />
           <Composer.Controls className={styles.end}>
             <Composer.Submit />
           </Composer.Controls>
-        </Composer.Field>
+        </Composer.InputGroup>
         <Composer.Footer>
           <Dropdown.Root items={models} defaultValue="fast">
             <Dropdown.Trigger variant="ghost" density="compact" aria-label="Model">

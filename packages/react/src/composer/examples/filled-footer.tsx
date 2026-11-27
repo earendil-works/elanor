@@ -18,12 +18,12 @@ export default function ComposerFilledFooter() {
   return (
     <Composer.Root toText={toText}>
       <Composer.Panel className={styles.filledControls}>
-        <Composer.Field>
+        <Composer.InputGroup>
           <Composer.Prompt aria-label="Message" placeholder="Write a message…" />
           <Composer.Controls className={styles.end}>
             <Composer.Submit />
           </Composer.Controls>
-        </Composer.Field>
+        </Composer.InputGroup>
         <Composer.Footer>
           <Dropdown.Root items={models} defaultValue="fast">
             <Dropdown.Trigger density="compact" aria-label="Model">

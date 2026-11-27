@@ -202,7 +202,7 @@ export default function ComposerDemo() {
             <UploadErrors />
             {notice ? <Text role="alert">{notice}</Text> : null}
           </Composer.Header>
-          <Composer.Field>
+          <Composer.InputGroup>
             <MessagePrompt messages={messages} />
             <Composer.Controls render={<Stack direction="row" gap="auto" align="center" />}>
               <Stack direction="row" gap="xSmall" align="center">
@@ -221,7 +221,7 @@ export default function ComposerDemo() {
                 <SendOrStop replying={replying} onStop={stop} />
               </Stack>
             </Composer.Controls>
-          </Composer.Field>
+          </Composer.InputGroup>
           <Composer.Footer>
             <ModelPicker />
             <Figures />

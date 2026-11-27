@@ -7,13 +7,13 @@ export default function ComposerDisabled() {
     <Stack gap="large" align="stretch">
       <Composer.Root toText={toText} disabled>
         <Composer.Panel>
-          <Composer.Field>
+          <Composer.InputGroup>
             <Composer.Prompt aria-label="Message" placeholder="Sign in to send messages" />
             <Composer.Controls render={<Stack direction="row" gap="auto" align="center" />}>
               <Composer.Attach aria-label="Attach files" />
               <Composer.Submit />
             </Composer.Controls>
-          </Composer.Field>
+          </Composer.InputGroup>
         </Composer.Panel>
       </Composer.Root>
       <Composer.Root
@@ -22,13 +22,13 @@ export default function ComposerDisabled() {
         defaultValue={['Only the session owner can write here. You can still copy this text.']}
       >
         <Composer.Panel>
-          <Composer.Field>
+          <Composer.InputGroup>
             <Composer.Prompt aria-label="Message" />
             <Composer.Controls render={<Stack direction="row" gap="auto" align="center" />}>
               <Composer.Attach aria-label="Attach files" />
               <Composer.Submit />
             </Composer.Controls>
-          </Composer.Field>
+          </Composer.InputGroup>
         </Composer.Panel>
       </Composer.Root>
     </Stack>

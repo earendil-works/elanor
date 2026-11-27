@@ -1,16 +1,17 @@
-/* stylelint-disable design-tokens/no-non-token-custom-properties -- The field's geometry, derived
-   once from tokens and shared by the field, its buttons and the footer. Public: Panel sets
-   `--composer-text-inset` for you to read; `--composer-hang` and `--composer-footer-inset` are
-   yours to set and only read here. `--composer-prompt-max-rows` is internal: Prompt's `maxRows`
-   sets it. */
+/* stylelint-disable design-tokens/no-non-token-custom-properties -- The input group's geometry,
+   derived once from tokens and shared by the input group, its buttons and the footer. Public:
+   Panel sets `--composer-text-inset` for you to read; `--composer-hang` and
+   `--composer-footer-inset` are yours to set and only read here. `--composer-prompt-max-rows` is
+   internal: Prompt's `maxRows` sets it. */
 @layer elanor.components {
   /*
    * The radius is a message bubble's. The padding gives up the border's width, so the buttons sit
    * `space.padding.small` from the frame's edge. The indent puts the text on the icons' keyline, a
-   * fifth of an icon inside its box. On the scroll area too, for a prompt outside a field.
+   * fifth of an icon inside its box. On the scroll area too, for a prompt outside an input
+   * group.
    */
   .panel,
-  .field,
+  .inputGroup,
   .scroll {
     --composer-border: var(--semantic-dimension-border-width-small);
     --composer-radius: var(--semantic-dimension-radius-large);
@@ -81,9 +82,9 @@
   /*
    * No focus ring: the caret shows the focus. The border is the translucent edge, a step off both
    * the fill and the page in every state and scheme, so it never changes. Positioned, so a form's
-   * message about the prompt's hidden input points at the field.
+   * message about the prompt's hidden input points at the input group.
    */
-  .field {
+  .inputGroup {
     position: relative;
     box-sizing: border-box;
     display: flex;
@@ -98,31 +99,31 @@
     transition: background-color var(--semantic-transition-feedback);
   }
 
-  /* Hovered and pressed only: the field doesn't change while a person writes. */
+  /* Hovered and pressed only: the input group doesn't change while a person writes. */
   @media (hover: hover) {
-    .field:hover:not([data-disabled]) {
+    .inputGroup:hover:not([data-disabled]) {
       background: var(--semantic-color-background-fill-secondary-hover);
     }
   }
 
-  .field:is(:active, [data-pressed]):not([data-disabled]) {
+  .inputGroup:is(:active, [data-pressed]):not([data-disabled]) {
     background: var(--semantic-color-background-fill-secondary-hover);
   }
 
-  .field[data-disabled] {
+  .inputGroup[data-disabled] {
     cursor: not-allowed;
     opacity: var(--semantic-number-opacity-disabled);
   }
 
   /* A radius inside another is the outer one less the space between them, so the curves of a
-     corner button and of the field's corner run alongside each other. A negative result is
-     clamped to none. */
-  .field [data-icon-button][data-density='default']::before {
+     corner button and of the input group's corner run alongside each other. A negative result
+     is clamped to none. */
+  .inputGroup [data-icon-button][data-density='default']::before {
     border-radius: calc(var(--composer-radius) - var(--composer-border) - var(--composer-padding));
   }
 
-  /* Reaches the field's sides, so the scrollbar sits in the field's padding, clear of the text. */
-  .field .scroll {
+  /* Reaches the input group's sides, so the scrollbar sits in its padding, clear of the text. */
+  .inputGroup .scroll {
     margin-inline: calc(-1 * var(--composer-padding));
   }
 
@@ -143,15 +144,15 @@
    * A read-only prompt is a Tab stop without a caret, so its frame shows the keyboard focus. On the
    * frame: the scroll area would clip an outline on the prompt.
    */
-  .field:has(.prompt[data-readonly]:focus-visible) {
+  .inputGroup:has(.prompt[data-readonly]:focus-visible) {
     outline: var(--semantic-dimension-border-width-focus-ring) solid
       var(--semantic-color-focus-ring);
     outline-offset: var(--semantic-dimension-border-width-default);
   }
 
   /*
-   * As tall as its text: the scroll area scrolls, never the prompt. No outline: the frame marks the
-   * field and the caret the focus.
+   * As tall as its text: the scroll area scrolls, never the prompt. No outline: the input group
+   * marks the place to write and the caret the focus.
    */
   .prompt {
     position: relative;
@@ -301,11 +302,11 @@
   }
 
   @media (forced-colors: active) {
-    .field {
+    .inputGroup {
       border-color: ButtonBorder;
     }
 
-    .field:has(.prompt[data-readonly]:focus-visible) {
+    .inputGroup:has(.prompt[data-readonly]:focus-visible) {
       outline-color: Highlight;
     }
   }

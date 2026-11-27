@@ -2,7 +2,7 @@ export {ComposerRoot as Root} from './root.tsx';
 export {
   ComposerPanel as Panel,
   ComposerHeader as Header,
-  ComposerField as Field,
+  ComposerInputGroup as InputGroup,
   ComposerControls as Controls,
   ComposerAttach as Attach,
   ComposerSubmit as Submit,

@@ -26,12 +26,12 @@ export default function ComposerInField() {
           </Field.Label>
           <Composer.Root toText={toText} required>
             <Composer.Panel>
-              <Composer.Field>
+              <Composer.InputGroup>
                 <Composer.Prompt placeholder="What should we improve?" />
                 <Composer.Controls className={styles.end}>
                   <Composer.Submit />
                 </Composer.Controls>
-              </Composer.Field>
+              </Composer.InputGroup>
             </Composer.Panel>
           </Composer.Root>
           <Field.Error match="valueMissing">Write something before sending.</Field.Error>

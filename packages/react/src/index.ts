@@ -146,8 +146,8 @@ export type {
 export type {
   ComposerAttachProps,
   ComposerControlsProps,
-  ComposerFieldProps,
-  ComposerFieldState,
+  ComposerInputGroupProps,
+  ComposerInputGroupState,
   ComposerFooterProps,
   ComposerHeaderProps,
   ComposerPanelProps,
