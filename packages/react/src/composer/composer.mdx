@@ -508,6 +508,6 @@ When the value comes from a store, subscribe in a small component that renders R
 
 ## Disabled and read-only
 
-`disabled` on Root disables the prompt, Attach and Submit. `readOnly` keeps the text focusable and copyable but not editable, and doesn't raise a phone's keyboard. Panel, InputGroup and Prompt render `data-disabled`, `data-readonly` and `data-empty`, for your own styles.
+`disabled` on Root disables the prompt, Attach and Submit. `readOnly` keeps the text focusable and copyable but not editable, and doesn't raise a phone's keyboard. Either way nothing is sent: Submit is disabled, and neither Enter nor `submit()` calls `onSubmit` or submits the form. Panel, InputGroup and Prompt render `data-disabled`, `data-readonly` and `data-empty`, for your own styles.
 
 <Demo example="./examples/disabled.tsx" />

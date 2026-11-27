@@ -67,7 +67,10 @@ export interface ComposerRootProps<T extends ComposerChip = ComposerChip> {
   readonly getChipSelectedMessage?: ((chip: T, key: 'Backspace' | 'Delete') => string) | undefined;
   /** Names the draft shown, so each draft keeps its own undo history. */
   readonly historyKey?: string | undefined;
-  /** Called by the submit shortcut, `Composer.Submit`, the Panel's form and `submit()`. */
+  /**
+   * Called by the submit shortcut, `Composer.Submit`, the Panel's form and `submit()`, never while
+   * disabled or read-only.
+   */
   readonly onSubmit?:
     | ((value: ComposerValue<T>, details: ComposerSubmitDetails) => void)
     | undefined;

@@ -145,7 +145,7 @@ export interface ComposerActions<T extends ComposerChip = ComposerChip> {
   clearHistory(historyKey?: string): void;
   /**
    * Commits pending IME text, then calls `onSubmit` without the keyboard's checks (composing,
-   * suggestion items showing).
+   * suggestion items showing). Does nothing while the prompt is disabled or read-only.
    */
   submit(event?: Event): void;
   /** With the text an input method is still composing, which the value gets when it ends. */
@@ -230,7 +230,7 @@ export interface EditorOptions<T extends ComposerChip> {
    * 229 after it) or the key handler takes Enter, such as while suggestion items show; and for
    * `submit()`.
    * `submit()` skips those checks and submits empty values too; check the value in `onSubmit`.
-   * Without it, the submit shortcut adds a line.
+   * Without it, the submit shortcut adds a line. Never called while not `editable`.
    */
   readonly onSubmit:
     | ((value: ComposerValue<T>, details: ComposerSubmitDetails) => void)
@@ -964,7 +964,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       // Alt is allowed with either shortcut; `onSubmit` reads `event.altKey`.
       const submits =
         !event.shiftKey && (submitShortcut === 'enter' ? !event.ctrlKey && !event.metaKey : mod);
-      if (!submits || !onSubmit) return;
+      if (!submits || !onSubmit || !this.options.editable) return;
       event.preventDefault();
       onSubmit(this.#latest, {event});
     }
@@ -1162,6 +1162,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       this.#recall = undefined;
     },
     submit: (event) => {
+      if (!this.options.editable) return;
       this.#endComposition();
       this.options.onSubmit?.(this.#latest, {event});
     },
