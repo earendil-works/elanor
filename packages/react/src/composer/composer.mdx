@@ -150,7 +150,7 @@ onAttach={(files, details) => {
 }}
 ```
 
-Its upload chip reads its progress from that store and draws it with `Chip.Progress`; a progress tick renders only that chip. A file whose name starts with "fail" fails halfway: its chip turns negative, its tooltip and its description say why, and so does `UploadErrors` in `Header`, for a touch screen. Removing a chip cancels its upload, and Undo starts it again, since `onValueChange` passes every value's upload ids to `syncUploads`:
+Its upload chip reads its progress from that store and draws it with `Chip.Progress`; a progress tick renders only that chip. A file whose name starts with "fail" fails halfway: its chip turns negative and says why in its tooltip and in visually hidden text for screen readers, and `UploadErrors` says it in `Header`, for a touch screen. Removing a chip cancels its upload, and Undo starts it again, since `onValueChange` passes every value's upload ids to `syncUploads`:
 
 ```tsx from="./examples/hero/uploads.tsx"
 export function syncUploads(uploadIds: readonly string[]) {
@@ -213,7 +213,7 @@ export const chipDeletion = (chip: MessageChip) =>
 
 ### Chip tooltips
 
-The prompt doesn't show a chip's text on hover; wrap the chip in a [Tooltip](/components/tooltip/) in `renderChip`, with `Tooltip.Trigger render={<Chip.Root />}`, to say where it is or why its upload failed. Tooltips open for a pointer only, so on a touch screen say why an upload failed in a notice too. The example gives a file chip its path, a command its description, a failed upload its error, and a pasted text its first lines. Its `getChipDescription` says the same, but for the pasted lines, so screen readers hear it too:
+The prompt doesn't show a chip's text on hover; wrap the chip in a [Tooltip](/components/tooltip/) in `renderChip`, with `Tooltip.Trigger render={<Chip.Root />}`, to say where it is or why its upload failed. Tooltips open for a pointer only, so on a touch screen say why an upload failed in a notice too. The example gives a file chip its path, a command its description, a failed upload its error, and a pasted text its first lines. Its `getChipDescription` says the path and the description too, so screen readers hear them. Root reads `getChipDescription` only when it draws a chip, so a failed upload says why in its own content, which follows your store:
 
 ```tsx from="./examples/hero/chips.tsx"
 function TooltipChip({tooltip, semantic = 'neutral', children}: TooltipChipProps) {
@@ -240,14 +240,33 @@ export const describeChip = (chip: MessageChip) => {
       return `file, ${chip.path}`;
     case 'command':
       return `command, ${chip.description}`;
-    case 'upload': {
-      const error = uploadError(chip.uploadId);
-      return error ? `file, ${error}` : 'file';
-    }
+    case 'upload':
+      return 'file';
     case 'paste':
       return 'pasted text';
   }
 };
+```
+
+```tsx from="./examples/hero/chips.tsx"
+const content = (
+  <>
+    <Chip.Icon>
+      <UploadIcon />
+    </Chip.Icon>
+    <Chip.Label>Upload</Chip.Label>
+    <Chip.Separator />
+    <Chip.Label>{chip.label}</Chip.Label>
+    {upload?.state === 'uploading' ? (
+      <Chip.Progress value={upload.progress} aria-label={`Uploading ${chip.label}`} />
+    ) : null}
+    {upload?.state === 'failed' ? (
+      // Here, not in `getChipDescription`: Root reads that only when it draws the chip, and a
+      // failure doesn't draw it again.
+      <span className={styles.visuallyHidden}>{`, ${upload.error}`}</span>
+    ) : null}
+  </>
+);
 ```
 
 ## Long pastes

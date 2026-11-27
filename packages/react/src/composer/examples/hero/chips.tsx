@@ -7,7 +7,7 @@ import {
 import {Chip, Composer, Tooltip, type ComposerValue} from '@earendil-works/elanor-react';
 import type {ReactNode} from 'react';
 
-import {uploadError, useUpload} from './uploads.tsx';
+import {useUpload} from './uploads.tsx';
 
 import styles from '../composer.module.css';
 
@@ -67,10 +67,8 @@ export const describeChip = (chip: MessageChip) => {
       return `file, ${chip.path}`;
     case 'command':
       return `command, ${chip.description}`;
-    case 'upload': {
-      const error = uploadError(chip.uploadId);
-      return error ? `file, ${error}` : 'file';
-    }
+    case 'upload':
+      return 'file';
     case 'paste':
       return 'pasted text';
   }
@@ -111,6 +109,11 @@ function UploadChip({chip}: {chip: Extract<MessageChip, {kind: 'upload'}>}) {
       <Chip.Label>{chip.label}</Chip.Label>
       {upload?.state === 'uploading' ? (
         <Chip.Progress value={upload.progress} aria-label={`Uploading ${chip.label}`} />
+      ) : null}
+      {upload?.state === 'failed' ? (
+        // Here, not in `getChipDescription`: Root reads that only when it draws the chip, and a
+        // failure doesn't draw it again.
+        <span className={styles.visuallyHidden}>{`, ${upload.error}`}</span>
       ) : null}
     </>
   );

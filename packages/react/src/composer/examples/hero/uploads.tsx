@@ -85,8 +85,7 @@ export const uploadUrl = (uploadId: string) => {
   return upload?.state === 'done' ? upload.url : undefined;
 };
 
-/** Read when screen readers describe the chip, so it says a failure too. */
-export const uploadError = (uploadId: string) => {
+const uploadError = (uploadId: string) => {
   const upload = uploads.get(uploadId);
   return upload?.state === 'failed' ? upload.error : undefined;
 };
