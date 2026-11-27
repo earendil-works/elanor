@@ -16,19 +16,17 @@ import {IconButton, type IconButtonProps} from '../icon-button/icon-button.tsx';
 import {useFieldRootContext} from '../utils/base-ui-internals.ts';
 import {fieldValidityMapping} from '../utils/field-validity.ts';
 import {useMergedRef} from '../utils/refs.ts';
-import {useComposerMeta, useComposerSettings, useComposerStatus} from './context.ts';
+import {
+  useComposerMeta,
+  useComposerSettings,
+  useComposerState,
+  type ComposerState,
+} from './context.ts';
 import type {EditorBinding} from './editor/editor.ts';
 
 import styles from './composer.module.css';
 
-export interface ComposerPanelState {
-  /** Nothing is written in the prompt. */
-  readonly empty: boolean;
-  readonly disabled: boolean;
-  readonly readOnly: boolean;
-}
-
-export interface ComposerPanelProps extends useRender.ComponentProps<'div', ComposerPanelState> {}
+export interface ComposerPanelProps extends useRender.ComponentProps<'div', ComposerState> {}
 
 /**
  * The composer's visible wrapper: `Composer.Header`, `Composer.InputGroup` and `Composer.Footer` in
@@ -44,12 +42,13 @@ export interface ComposerPanelProps extends useRender.ComponentProps<'div', Comp
  */
 export function ComposerPanel({ref, render, ...props}: ComposerPanelProps) {
   const meta = useComposerMeta('Composer.Panel');
-  const status = useComposerStatus('Composer.Panel');
+  const state = useComposerState('Composer.Panel');
   return useRender({
     defaultTagName: 'div',
     render,
     ref,
-    state: {...status},
+    // Spread: `useRender` takes a record, which an interface isn't.
+    state: {...state},
     props: mergeProps<'div'>(
       {
         className: styles.panel,
@@ -161,11 +160,7 @@ function showPress(event: PointerEvent<HTMLDivElement>): void {
   window.addEventListener('pointercancel', release);
 }
 
-export interface ComposerInputGroupState {
-  /** Nothing is written in the prompt. */
-  readonly empty: boolean;
-  readonly disabled: boolean;
-  readonly readOnly: boolean;
+export interface ComposerInputGroupState extends ComposerState {
   /** The validity of the `Field.Root` around the composer, `null` before it is validated. */
   readonly valid: boolean | null;
   /** Files that `onAttach` takes are dragged over the input group. */
@@ -251,7 +246,7 @@ export interface ComposerInputGroupProps extends useRender.ComponentProps<
  * `data-invalid`, unstyled, for your own styles.
  */
 export function ComposerInputGroup({ref, render, ...props}: ComposerInputGroupProps) {
-  const status = useComposerStatus('Composer.InputGroup');
+  const state = useComposerState('Composer.InputGroup');
   const {valid} = useFieldRootContext().state;
   const {editor} = useComposerMeta('Composer.InputGroup');
   const fileDrag = useFileDrag(editor);
@@ -259,7 +254,7 @@ export function ComposerInputGroup({ref, render, ...props}: ComposerInputGroupPr
     defaultTagName: 'div',
     render,
     ref: ref ? [ref, fileDrag.ref] : fileDrag.ref,
-    state: {...status, valid, dragOver: fileDrag.dragOver},
+    state: {...state, valid, dragOver: fileDrag.dragOver},
     stateAttributesMapping: inputGroupStateMapping,
     props: mergeProps<'div'>(
       {
@@ -328,7 +323,7 @@ export function ComposerAttach({
   ...props
 }: ComposerAttachProps) {
   const meta = useComposerMeta('Composer.Attach');
-  const status = useComposerSettings('Composer.Attach');
+  const settings = useComposerSettings('Composer.Attach');
   const input = useRef<HTMLInputElement>(null);
   return (
     <>
@@ -349,7 +344,7 @@ export function ComposerAttach({
       <IconButton
         {...props}
         density="default"
-        disabled={disabled || status.disabled || status.readOnly}
+        disabled={disabled || settings.disabled || settings.readOnly}
         onClick={(event) => {
           onClick?.(event);
           if (!event.defaultPrevented) input.current?.click();
@@ -379,7 +374,7 @@ export function ComposerSubmit({
   ...props
 }: ComposerSubmitProps) {
   const meta = useComposerMeta('Composer.Submit');
-  const status = useComposerSettings('Composer.Submit');
+  const settings = useComposerSettings('Composer.Submit');
   const handOff = useMergedRef(ref, meta.handOff);
   return (
     <IconButton
@@ -389,7 +384,7 @@ export function ComposerSubmit({
       type="submit"
       density="default"
       hierarchy="primary"
-      disabled={disabled || status.disabled || status.readOnly}
+      disabled={disabled || settings.disabled || settings.readOnly}
       onClick={(event) => {
         onClick?.(event);
         if (event.defaultPrevented || event.currentTarget.form) return;

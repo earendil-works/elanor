@@ -25,7 +25,7 @@ import type {
 import {createChangeEventDetails} from '../utils/change-event-details.ts';
 import {mergeClassName} from '../utils/class-names.ts';
 import {useMergedRef} from '../utils/refs.ts';
-import {useComposerMeta, useComposerStatus} from './context.ts';
+import {useComposerMeta, useComposerState} from './context.ts';
 import {
   findMatch,
   hasTrigger,
@@ -224,7 +224,7 @@ export function ComposerSuggestions<I>({
   children,
 }: ComposerSuggestionsProps<I>) {
   const {editor, popup, claimSuggestions} = useComposerMeta('Composer.Suggestions');
-  const {disabled, readOnly} = useComposerStatus('Composer.Suggestions');
+  const {disabled, readOnly} = useComposerState('Composer.Suggestions');
   // Two would both claim the prompt's keys and ARIA attributes.
   const [owner] = useState(() => Symbol('Composer.Suggestions'));
   useLayoutEffect(() => claimSuggestions(owner), [claimSuggestions, owner]);

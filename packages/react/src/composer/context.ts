@@ -4,7 +4,8 @@ import type {ComposerActions, EditorBinding} from './editor/editor.ts';
 import type {ComposerChip, ComposerValue} from './editor/model.ts';
 import {createStore, type Store} from './store.ts';
 
-export interface ComposerStatus {
+/** Whether the prompt is empty, disabled or read-only, for the parts' `render` and `useStatus`. */
+export interface ComposerState {
   /** Nothing is written: no text and no chips. */
   readonly empty: boolean;
   readonly disabled: boolean;
@@ -63,7 +64,7 @@ export interface ComposerMeta {
 }
 
 export const ComposerMetaContext = /* @__PURE__ */ createContext<ComposerMeta | null>(null);
-export const ComposerStatusContext = /* @__PURE__ */ createContext<ComposerStatus | null>(null);
+export const ComposerStateContext = /* @__PURE__ */ createContext<ComposerState | null>(null);
 export const ComposerSettingsContext = /* @__PURE__ */ createContext<ComposerSettings | null>(null);
 /** The value as `toText` gives it, which a form submits. Changes with every edit. */
 export const ComposerTextContext = /* @__PURE__ */ createContext<string | null>(null);
@@ -76,8 +77,8 @@ function required<Value>(value: Value | null, part: string): Value {
 export const useComposerMeta = (part: string): ComposerMeta =>
   required(use(ComposerMetaContext), part);
 
-export const useComposerStatus = (part: string): ComposerStatus =>
-  required(use(ComposerStatusContext), part);
+export const useComposerState = (part: string): ComposerState =>
+  required(use(ComposerStateContext), part);
 
 export const useComposerSettings = (part: string): ComposerSettings =>
   required(use(ComposerSettingsContext), part);
@@ -98,8 +99,8 @@ export function useActions<T extends ComposerChip = ComposerChip>(): ComposerAct
  * Whether the prompt is empty, disabled or read-only. Renders again only when one of these
  * changes. Throws outside `Composer.Root`.
  */
-export function useStatus(): ComposerStatus {
-  return useComposerStatus('Composer.useStatus');
+export function useStatus(): ComposerState {
+  return useComposerState('Composer.useStatus');
 }
 
 /**

@@ -16,7 +16,7 @@ import {useMergedRef} from '../utils/refs.ts';
 import {
   useComposerMeta,
   useComposerSettings,
-  useComposerStatus,
+  useComposerState,
   useComposerText,
 } from './context.ts';
 import {useStoreSelector} from './store.ts';
@@ -73,7 +73,7 @@ export function ComposerPrompt({
 }: ComposerPromptProps) {
   const meta = useComposerMeta('Composer.Prompt');
   const {required} = useComposerSettings('Composer.Prompt');
-  const {empty, disabled, readOnly} = useComposerStatus('Composer.Prompt');
+  const {empty, disabled, readOnly} = useComposerState('Composer.Prompt');
   const field = useFieldRootContext();
   const {labelId, getDescriptionProps} = useLabelableContext();
   const id = useLabelableId({id: idProp});

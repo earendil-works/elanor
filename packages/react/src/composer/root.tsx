@@ -19,12 +19,12 @@ import {DisabledContext} from '../utils/disabled-context.ts';
 import {
   ComposerMetaContext,
   ComposerSettingsContext,
-  ComposerStatusContext,
+  ComposerStateContext,
   ComposerTextContext,
   createPromptPopupStore,
   type ComposerMeta,
   type ComposerSettings,
-  type ComposerStatus,
+  type ComposerState,
 } from './context.ts';
 import {
   Editor,
@@ -203,7 +203,7 @@ export function ComposerRoot<T extends ComposerChip = ComposerChip>({
   useImperativeHandle(actionsRef, () => editor.actions, [editor]);
 
   const empty = valueLength(value) === 0;
-  const status = useMemo<ComposerStatus>(
+  const state = useMemo<ComposerState>(
     () => ({empty, disabled, readOnly}),
     [empty, disabled, readOnly],
   );
@@ -216,7 +216,7 @@ export function ComposerRoot<T extends ComposerChip = ComposerChip>({
 
   return (
     <ComposerMetaContext value={meta}>
-      <ComposerStatusContext value={status}>
+      <ComposerStateContext value={state}>
         <ComposerSettingsContext value={settings}>
           <ComposerTextContext value={text}>
             {children}
@@ -229,7 +229,7 @@ export function ComposerRoot<T extends ComposerChip = ComposerChip>({
             )}
           </ComposerTextContext>
         </ComposerSettingsContext>
-      </ComposerStatusContext>
+      </ComposerStateContext>
     </ComposerMetaContext>
   );
 }

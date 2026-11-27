@@ -151,11 +151,10 @@ export type {
   ComposerFooterProps,
   ComposerHeaderProps,
   ComposerPanelProps,
-  ComposerPanelState,
   ComposerStopProps,
   ComposerSubmitProps,
 } from './composer/composer.tsx';
-export type {ComposerStatus} from './composer/context.ts';
+export type {ComposerState} from './composer/context.ts';
 export type {
   ComposerActions,
   ComposerAttachDetails,
