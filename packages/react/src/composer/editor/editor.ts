@@ -339,7 +339,15 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
    * hold. Not compared by identity: a parent's equal copy keeps them, a draft sharing one doesn't.
    */
   #revision = 0;
-  #composing = false;
+  #composingNow = false;
+  /** Also marks the prompt, so its placeholder hides while composed text isn't in the value yet. */
+  get #composing(): boolean {
+    return this.#composingNow;
+  }
+  set #composing(next: boolean) {
+    this.#composingNow = next;
+    this.#element?.toggleAttribute('data-composing', next);
+  }
   /**
    * A value from outside came, or an edit was made, while an input method composed: the DOM shows
    * it at `compositionend`, with the caret here, and drops what the input method committed.
