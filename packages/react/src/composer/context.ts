@@ -105,9 +105,10 @@ export function useStatus(): ComposerStatus {
 /**
  * What `selector` picks from the value, rendering again only when that changes by `isEqual`
  * (`Object.is` by default); an equal result keeps the previous reference. `selector` runs on every
- * edit: keep it cheap. Throws outside `Composer.Root`.
+ * edit: keep it cheap. Type `selector`'s parameter to name your chip type; with type arguments,
+ * name both, as `useValue<MyChip, boolean>`. Throws outside `Composer.Root`.
  */
-export function useValue<Selected, T extends ComposerChip = ComposerChip>(
+export function useValue<T extends ComposerChip = ComposerChip, Selected = unknown>(
   selector: (value: ComposerValue<T>) => Selected,
   isEqual: (a: Selected, b: Selected) => boolean = Object.is,
 ): Selected {
