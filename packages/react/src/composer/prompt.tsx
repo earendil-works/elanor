@@ -117,6 +117,8 @@ export function ComposerPrompt({
         tabIndex: readOnly && !disabled ? 0 : undefined,
         suppressContentEditableWarning: true,
         spellCheck: true,
+        // Page translation rewrites the text in `<font>` elements, which the value would take in.
+        translate: 'no',
         onFocus: () => field.setFocused(true),
         onBlur: () => {
           field.setTouched(true);
