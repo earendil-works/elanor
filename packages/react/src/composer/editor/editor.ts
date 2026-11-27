@@ -438,8 +438,10 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     if (historyKey !== this.#historyKey) this.#switchHistory(historyKey, value);
     const edit = this.#edit;
     this.#edit = undefined;
-    // The controlling component took the pending edit: it enters the history now.
-    if (edit && value === edit.value && !this.#cleared) {
+    // The controlling component took the pending edit: it enters the history now, also the one
+    // after `clearHistory` when no value from outside came between.
+    if (edit && value === edit.value) {
+      this.#cleared = false;
       if (edit.prior) this.#history.record(edit.prior);
       this.#history.record({value, selection: edit.selection}, edit.group);
       return;
