@@ -18,16 +18,15 @@ import {
   useComposerSettings,
   useComposerState,
   useComposerText,
+  type ComposerState,
 } from './context.ts';
 import {useStoreSelector} from './store.ts';
 
 import styles from './composer.module.css';
 
-export interface ComposerPromptState {
+export interface ComposerPromptState extends ComposerState {
   /** Nothing is written; the placeholder shows. */
   readonly empty: boolean;
-  readonly disabled: boolean;
-  readonly readOnly: boolean;
   /** The field's validity, `null` before it is validated. */
   readonly valid: boolean | null;
   readonly touched: boolean;
