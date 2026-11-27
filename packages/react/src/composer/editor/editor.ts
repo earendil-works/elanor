@@ -161,7 +161,7 @@ export interface EditorBinding {
   /**
    * A React ref callback for the editable element. While a chip is armed for removal, the element
    * has `data-chip-armed` and the chip's host keeps `data-selected`. While chips are dragged, their
-   * hosts have `data-dragging`.
+   * hosts have `data-dragging`. While an input method composes, the element has `data-composing`.
    */
   bind(element: HTMLElement | null): (() => void) | undefined;
   /**
@@ -339,7 +339,15 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
    * hold. Not compared by identity: a parent's equal copy keeps them, a draft sharing one doesn't.
    */
   #revision = 0;
-  #composing = false;
+  #composingNow = false;
+  /** Also marks the prompt, so its placeholder hides while composed text isn't in the value yet. */
+  get #composing(): boolean {
+    return this.#composingNow;
+  }
+  set #composing(next: boolean) {
+    this.#composingNow = next;
+    this.#element?.toggleAttribute('data-composing', next);
+  }
   /**
    * A value from outside came, or an edit was made, while an input method composed: the DOM shows
    * it at `compositionend`, with the caret here, and drops what the input method committed.

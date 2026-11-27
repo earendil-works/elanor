@@ -174,7 +174,7 @@
 
   /* Out of the flow, so the caret stands at the start of the line it covers, not after it. One
      line, cut with an ellipsis: the prompt is one line tall while empty. */
-  .prompt[data-empty]::before {
+  .prompt[data-empty]:not([data-composing])::before {
     position: absolute;
     inset-inline: calc(var(--composer-padding) + var(--composer-indent));
     overflow: hidden;
