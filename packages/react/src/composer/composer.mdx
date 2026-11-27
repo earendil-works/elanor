@@ -13,13 +13,15 @@ The example is a conversation view with a whole composer: suggestions for files 
 ## Usage
 
 ```tsx
-import {Composer} from '@earendil-works/elanor-react';
+import {Composer, type ComposerValue} from '@earendil-works/elanor-react';
 
-<Composer.Root>
+const toText = (value: ComposerValue) => Composer.valueToText(value, (chip) => chip.label);
+
+<Composer.Root toText={toText}>
   <Composer.Panel>
     <Composer.Header />
     <Composer.InputGroup>
-      <Composer.Prompt />
+      <Composer.Prompt aria-label="Message" placeholder="Message Pi…" />
       <Composer.Controls>
         <Composer.Attach />
         <Composer.Submit />
@@ -33,7 +35,7 @@ import {Composer} from '@earendil-works/elanor-react';
     <Composer.SuggestionPortal>
       <Composer.SuggestionPositioner>
         <Composer.SuggestionPopup>
-          <Composer.SuggestionList>
+          <Composer.SuggestionList aria-label="Suggestions">
             <Composer.SuggestionItem />
           </Composer.SuggestionList>
           <Composer.SuggestionEmpty />
@@ -44,11 +46,11 @@ import {Composer} from '@earendil-works/elanor-react';
 </Composer.Root>;
 ```
 
-- **Root** holds the prompt's value, its undo history and its settings. It renders no element: the other parts and the hooks work anywhere inside it, also outside Panel and in portals, and the parts and the hooks throw outside it. `toText` is required: it gives the text that is copied, submitted with a form, and sent. `Composer.valueToText(value, chipToText)` writes the text with each chip as `chipToText` gives it.
+- **Root** holds the prompt's value, its undo history and its settings. It renders no element: the other parts and the hooks work anywhere inside it, also outside Panel and in portals, and throw outside it. Its required `toText` gives the value as text; see [Chips](#chips).
 - **Panel** renders a `div` around the rows and fills its container's width. For a form, see [In a form](#in-a-form).
 - **Header** is the row above the input group, for notices, errors, and the message being replied to.
 - **InputGroup** is the frame, which looks like one text input holding the prompt, with its chips, and the buttons. It has no focus ring; the caret shows the focus, and the input group keeps its fill while a person writes, darkening only under the pointer or a press. Pressing anything in it other than the text keeps the focus where it is, so a phone's keyboard stays up. InputGroup also works without a Panel.
-- **Prompt** is the text. `maxRows` sets how many lines of text the prompt grows to before it scrolls (10 by default; at most 40% of the viewport, so it stays above a phone's keyboard). Name it with `aria-label` or a `Field.Label`.
+- **Prompt** is the text. `maxRows` sets how many lines it grows to before it scrolls (10 by default; at most 40% of the viewport, so it stays above a phone's keyboard). Name it with `aria-label` or a `Field.Label`. Keep `placeholder` to one short line: it doesn't wrap.
 - **Controls** is the row of buttons inside the input group, in DOM order; place them as you like. Use [Icon buttons](/components/icon-button/) with `density="default"`. **Attach**, **Submit** and **Stop** are icon buttons for attaching files, sending and stopping a reply.
 - **Footer** is the row below the input group, for your own controls and figures, such as a model picker and the context used. It's layout only: it sets no text style, so the size of its text is yours to choose.
 - **Suggestions** shows a list at a trigger being typed, such as `@` for files. It renders no element; **SuggestionPortal** renders into the page's body, or a `container`, and **SuggestionPositioner** places **SuggestionPopup** at the trigger, which holds the **SuggestionList** of **SuggestionItem**s and **SuggestionEmpty** for when nothing matches. **SuggestionStatus** tells screen readers about the list. See [Suggestions](#suggestions).
@@ -57,7 +59,7 @@ The containers take any number of children, and an empty one takes no room. Pane
 
 ## Sending
 
-Enter and Alt+Enter call Root's `onSubmit`, and so does Submit. The details carry the event, so Alt+Enter can do something else, such as queue a follow-up. Shift+Enter adds a line. Set `submitShortcut="mod-enter"` to send with Cmd+Enter or Ctrl+Enter instead; then Enter adds a line. Nothing is sent while an input method is composing, or while [suggestions](#suggestions) show, where Enter picks one. The composer doesn't check whether the prompt is empty: Submit stays enabled, and you decide, for example with `empty` from `Composer.useStatus()`. Some Android keyboards don't report which key was pressed, so there Enter adds a line and Submit sends.
+Enter and Alt+Enter call Root's `onSubmit`, and so does Submit. The details carry the event, so Alt+Enter can do something else, such as queue a follow-up. Shift+Enter adds a line. Set `submitShortcut="mod-enter"` to send with Cmd+Enter or Ctrl+Enter instead; then Enter adds a line. Nothing is sent while an input method is composing, or while the [suggestions](#suggestions) list is open, where Enter picks an item. The composer doesn't check whether the prompt is empty: Submit stays enabled, and you decide, for example with `empty` from `Composer.useStatus()`. Some Android keyboards don't report which key was pressed, so there Enter adds a line and Submit sends.
 
 The example checks the message in `onSubmit`, then clears the prompt and its undo history:
 
@@ -84,7 +86,7 @@ Prompt's `onKeyDown` runs before the composer handles a key; call `preventDefaul
 
 ## Stop
 
-`Stop` is a button for stopping a reply: stop it in `onClick`. The composer doesn't know whether a reply is running, so render `Submit` or `Stop` yourself. `Composer.useStatus()` gives `empty`, `disabled` and `readOnly`, so you can offer Stop only while nothing new is written. Give each its own `key`: a press meant for Stop then never sends. When the one with the keyboard focus goes, the other takes it. The example shows Stop while a reply runs and the prompt is empty; once a person writes, Send comes back, and Enter on the empty prompt sends nothing, since `onSubmit` skips an empty message:
+The composer doesn't know whether a reply is running: render `Stop` or `Submit` yourself, and stop the reply in Stop's `onClick`. Give each its own `key`; the one that comes takes the keyboard focus the other had. The example shows Stop while a reply runs and `empty` from `Composer.useStatus()` is true, so a press meant for Stop never sends; once a person writes, Send comes back:
 
 ```tsx from="./examples/demo.tsx"
 /** Stop while a reply runs and nothing new is written, so a press meant for Stop never sends. */
@@ -100,7 +102,7 @@ function SendOrStop({replying, onStop}: SendOrStopProps) {
 
 ## Files
 
-`Attach` opens the file picker; set `accept` and `multiple` on it, and `capture` to offer the camera on phones. It's labelled "Attach files"; give a second Attach its own `aria-label`, as the example's camera button has. Root's `onAttach` receives the picked files, and files pasted on the prompt or dropped on the input group, with a `reason` of `picker`, `paste` or `drop`. Files are chips in the text, where they are mentioned: in `onAttach`, pass one chip per file, drawn as `Upload › name`, to `details.insert`. `details.insert` always puts a space around what it inserts where the text needs one. `actions.insert` inserts exactly what you pass; set `space: true` for an insert a person made, as the example does for a suggestion pick.
+`Attach` opens the file picker for several files; set `accept` on it, `multiple={false}` for one file, and `capture` to offer the camera on phones. It's labelled "Attach files"; give a second Attach its own `aria-label`, as the example's camera button has. Root's `onAttach` receives the picked files, and files pasted on the prompt or dropped on the input group, with a `reason` of `picker`, `paste` or `drop`. Files are chips in the text, where they are mentioned: in `onAttach`, pass one chip per file, rendered as `Upload › name`, to `details.insert`. `details.insert` puts a space around them where the text needs one.
 
 - `details.insert` puts them at `details.at`. Files go in at the caret, after any selected text, or at the end if the prompt was never focused; dropped files go there wherever on the input group they are dropped. A paste replaces the selection. After `details.insert`, the caret collapses after the chips.
 - They are one undo step, with the paste's or drop's reason and event in `onValueChange`'s details.
@@ -125,9 +127,9 @@ The example has two Attach buttons, as [Controls](#controls) shows: one for file
 
 ### Uploads
 
-The upload is yours: start it in `onAttach` and keep its state in your own store, by the chip's `uploadId`, as [Chips](#chips) says. Read the file's address when the message is sent, as the example's `messageText` does, not in `toText`: Root calls `toText` only on an edit.
+The upload is yours: start it in `onAttach` and keep its state in your own store, by the chip's `uploadId`. Root calls `toText` when it renders, not when an upload changes, so build the text you send yourself: the example's `messageText` reads each upload's address when the message is sent.
 
-The composer checks no files: refuse types, sizes, counts and duplicates in `onAttach`, and say why in `Header`. `accept` limits only the picker; dropped and pasted files arrive whatever their type, so check types in `onAttach` too. Retrying a failed upload and cancelling one whose chip was removed are yours, as [Chips](#chips) says, and so is holding the message while uploads are pending. The example refuses files in `onAttach`, says why in `Header`, and starts an upload only for files that went into the text:
+The composer checks no files: refuse types, sizes, counts and duplicates in `onAttach`, and say why in `Header`. `accept` limits only the picker; dropped and pasted files arrive whatever their type. Retrying a failed upload, cancelling one whose chip was removed, and holding the message while uploads are pending are yours too. The example refuses files in `onAttach`, says why in `Header`, and starts an upload only for files that went into the text:
 
 ```tsx from="./examples/demo.tsx"
 onAttach={(files, details) => {
@@ -150,7 +152,7 @@ onAttach={(files, details) => {
 }}
 ```
 
-Its upload chip reads its progress from that store and draws it with `Chip.Progress`; a progress tick renders only that chip. A file whose name starts with "fail" fails halfway: its chip turns negative and says why in its tooltip and in visually hidden text for screen readers, and `UploadErrors` says it in `Header`, for a touch screen. Removing a chip cancels its upload, and Undo starts it again, since `onValueChange` passes every value's upload ids to `syncUploads`:
+Its upload chip reads its progress from that store and renders it with `Chip.Progress`; a progress tick renders only that chip. A file whose name starts with "fail" fails halfway: its chip turns negative and says why in its tooltip and in visually hidden text for screen readers, and `UploadErrors` says it in `Header`, for a touch screen. Removing a chip cancels its upload, and Undo starts it again, since `onValueChange` passes every value's upload ids to `syncUploads`:
 
 ```tsx from="./examples/hero/uploads.tsx"
 export function syncUploads(uploadIds: readonly string[]) {
@@ -189,14 +191,14 @@ export const SendButton = memo(function SendButton() {
 
 ## Chips
 
-The value is a list of text and chips, each chip at least `{id, label}`. Draw a chip's content with [Chip](/components/chip/), `variant="soft"` and `density="compact"`, in Root's `renderChip`: a `Chip.Icon` and a `Chip.Label` for its place, `Chip.Separator`, and a `Chip.Label` for its name, as the example's `Upload › build-log.png` does. It is 20px tall in the prompt's 24px line and at most three quarters of the text's width; the name takes the ellipsis. `getChipDescription` tells screen readers what a chip is. `renderChip`, `chipDeletion` and `getChipDescription` take the chip, so each chip can differ.
+The value is a list of strings and chips, each chip at least `{id, label}`; `Composer.isChip(segment)` tells a chip from a string. Root's `toText` gives the value as the text that is copied, that a form submits, and that a `revert` chip becomes; `Composer.valueToText(value, chipToText)` builds it from one text per chip. Render a chip's content with [Chip](/components/chip/), `variant="soft"` and `density="compact"`, in Root's `renderChip`: a `Chip.Icon` and a `Chip.Label` for its place, `Chip.Separator`, and a `Chip.Label` for its name, as the example's `Upload › build-log.png` does. It is 20px tall in the prompt's 24px line and at most three quarters of the text's width; the name takes the ellipsis. `renderChip`, `chipDeletion` and `getChipDescription` take the chip, so each chip can differ.
 
-Keep `renderChip` stable, at module scope or with `useCallback`: the chips draw again when it changes. The undo history keeps the chips as they were, so keep state that changes, such as an upload's progress or its failure, out of the chip. Give the chip an id of yours, such as `uploadId`, not its `id`: a copy gets a new `id`. Read the live state by it in `renderChip`, from a component that subscribes to it. To cancel an upload or start it again, compare the chips in `onValueChange`'s value with your uploads, as [Uploads](#uploads) shows: Undo brings a removed chip back.
+Keep `renderChip` stable, at module scope or with `useCallback`: every chip renders again when it changes. The undo history keeps chips as they were, so keep state that changes, such as an upload's progress, out of the chip: give it an id of yours, such as `uploadId` (a copy gets a new `id`), and read the state by it in a component `renderChip` renders. Undo brings a removed chip back, so cancel and restart uploads from the chips in `onValueChange`'s value, as [Uploads](#uploads) shows.
 
 In the prompt a chip is one character, and it goes as text does:
 
 - Left or Right beside a chip selects it, and a second press moves the caret past it. Shift and an arrow extend the selection over it. A press or a tap on a chip selects it; a tap beside it places the caret.
-- Backspace and Delete remove a selected chip. Beside the caret, Backspace removes a chip whole by default; set `chipDeletion` to `select` to select it first, or to `revert` to turn it back into its `toText` text: Backspace beside the example's `build.mjs` gives `@scripts/build.mjs`, with the caret at its end, where [suggestions](#suggestions) open on it.
+- Backspace and Delete remove a selected chip. Beside the caret, Backspace removes a chip whole by default; set `chipDeletion` to `select` to select it first, or to `revert` to turn it back into its `toText` text: Backspace beside the example's `build.mjs` gives `@scripts/build.mjs`, with the caret at its end, where the [suggestions](#suggestions) list opens on it.
 - A mouse or a pen drags a chip to another place in the text; it stays faint where it was until it is dropped. A finger doesn't drag: cut and paste move a chip there.
 - Copied text is the `toText` text. Pasted back into the same prompt, its chips come back; after a cut, as the same chips.
 
@@ -206,14 +208,14 @@ The example's chips are files, commands, uploads and long pastes. A pasted text 
 
 ```tsx from="./examples/hero/chips.tsx"
 // A pasted text is costly to lose: the first Backspace selects it. A file turns back into its
-// `@path`, where the suggestions open on it again.
+// `@path`, where the suggestions list opens on it again.
 export const chipDeletion = (chip: MessageChip) =>
   chip.kind === 'paste' ? 'select' : chip.kind === 'file' ? 'revert' : 'whole';
 ```
 
 ### Chip tooltips
 
-The prompt doesn't show a chip's text on hover; wrap the chip in a [Tooltip](/components/tooltip/) in `renderChip`, with `Tooltip.Trigger render={<Chip.Root />}`, to say where it is or why its upload failed. Tooltips open for a pointer only, so on a touch screen say why an upload failed in a notice too. The example gives a file chip its path, a command its description, a failed upload its error, and a pasted text its first lines. Its `getChipDescription` says the path and the description too, so screen readers hear them. Root reads `getChipDescription` when it draws a chip, so put text that changes, such as an upload's error, in the chip's content as visually hidden text, as the example does:
+The prompt doesn't show a chip's text on hover; wrap the chip in a [Tooltip](/components/tooltip/) in `renderChip`, with `Tooltip.Trigger render={<Chip.Root />}`, to say where it is or why its upload failed. Tooltips open for a pointer only, so on a touch screen say why an upload failed in a notice too. The example gives a file chip its path, a command its description, a failed upload its error, and a pasted text its first lines. Root's `getChipDescription` tells screen readers what a chip is; the example's says the path and the description too. Root reads it when it renders a chip, so put text that changes, such as an upload's error, in the chip's content as visually hidden text, as the example does:
 
 ```tsx from="./examples/hero/chips.tsx"
 function TooltipChip({tooltip, semantic = 'neutral', children}: TooltipChipProps) {
@@ -261,8 +263,8 @@ const content = (
       <Chip.Progress value={upload.progress} aria-label={`Uploading ${chip.label}`} />
     ) : null}
     {upload?.state === 'failed' ? (
-      // Here, not in `getChipDescription`: Root reads that only when it draws the chip, and a
-      // failure doesn't draw it again.
+      // Here, not in `getChipDescription`: Root reads that only when it renders the chip, and a
+      // failure doesn't render it again.
       <span className={styles.visuallyHidden}>{`, ${upload.error}`}</span>
     ) : null}
   </>
@@ -328,11 +330,11 @@ function SecretNotice() {
 
 Set `spaces` on a trigger to let its query hold single spaces: `true` for any number, such as `@Sam Altman`, or a whole number for at most that many. A space right after the trigger, two in a row, more spaces than the number allows, a line break, `. `, another trigger at its `position`, or more than 64 characters with the trigger ends the query. The composer doesn't close the list for words that follow a trigger; when the query has a space and your results are empty, pass `match={null}`, or `SuggestionEmpty` stays up.
 
-The composer doesn't match, rank or load items: filter, sort and fetch them yourself, and debounce your requests if your source needs it. `onOpenChange` tells you when the list opens or closes, with a `reason` such as `escape-key`, `item-press` or `focus-out`, so you can cancel a request; `onItemHighlighted` tells you which item a person moved to, such as to preview it. While new results load, the previous ones for the same trigger stay in secondary text and can't be picked; Enter or Tab picks the first new item if it arrives within a second. After a second, `SuggestionPopup` renders `data-loading`. With no items, the popup opens only to show `SuggestionEmpty`. The list has no groups or separators; give each kind of item its own trigger.
+The composer doesn't match, rank or load items: filter, sort and fetch them yourself, and debounce your requests if your source needs it. `onOpenChange` tells you when the list opens or closes, with a `reason` such as `escape-key`, `item-press` or `focus-out`, so you can cancel a request; `onItemHighlighted` tells you which item a person moved to, such as to preview it. While new results load, the previous ones for the same trigger stay in secondary text and can't be picked; Enter or Tab picks the first new item if it arrives within a second. After a second, `SuggestionPopup` renders `data-loading`. With no items, the list opens only to show `SuggestionEmpty`. The list has no groups or separators; give each kind of item its own trigger.
 
 The focus stays in the prompt. The arrow keys move through the list, skipping items with `disabled`, and Enter or Tab picks. While items show, Enter never submits, also while it waits for new results or every item is disabled; with only `SuggestionEmpty` up, Enter submits as usual. Tab with nothing to pick, or after a second's wait, moves the focus on. Escape closes the list, and it stays closed while typing goes on in that query, until a new trigger is typed. A tap picks when the finger lifts on an item. While an input method composes, its keys go to it, and a closed list doesn't open; an open one stays open, since Android keyboards compose nearly every word.
 
-Escape calls `preventDefault()` when it closes the list. While the list shows nothing, such as with its trigger scrolled out of the prompt's view, it leaves the keys, Escape too, to the prompt and the page. If you handle Escape on the page yourself, such as to stop a reply, listen in the bubbling phase on the document or the window and skip events whose `defaultPrevented` is set; a capturing listener runs before the list sees the key. Prompt's own `onKeyDown` runs first too: check whether the prompt has `data-popup-open`, which it renders while the popup shows.
+Escape calls `preventDefault()` when it closes the list. While the list shows nothing, such as with its trigger scrolled out of the prompt's view, it leaves the keys, Escape too, to the prompt and the page. If you handle Escape on the page yourself, such as to stop a reply, listen in the bubbling phase on the document or the window and skip events whose `defaultPrevented` is set; a capturing listener runs before the list sees the key. Prompt's own `onKeyDown` runs first too: check whether the prompt has `data-popup-open`, which it renders while the list is open.
 
 `SuggestionStatus` tells screen readers how many suggestions there are once typing pauses, that nothing matches, or that results are loading; the keys to choose with are said once each time the list opens, where there is a keyboard. Keep it mounted inside `Suggestions`, outside the portal. It's visually hidden; to show it, give it a `className` that overrides its position, size and clipping, such as `position: static; inline-size: auto; block-size: auto; clip-path: none; white-space: normal`. Children as a function replace its text.
 
@@ -355,18 +357,18 @@ The example's `@` searches files, with a request it cancels, and `/` filters com
 
 ## Recalling messages
 
-`Composer.useRecall(messages)` lets a person bring back what they sent before: ArrowUp on the prompt's first line shows the previous message, and ArrowDown on its last goes forward again, back to their draft after the newest. Pass the messages oldest first, as `onSubmit` received them, and the handler it returns to Prompt's `onKeyDown`. Call it in a component inside Root.
+`Composer.useRecall(messages)` lets a person bring back what they sent before: ArrowUp on the prompt's first line shows the previous message, and ArrowDown on its last goes forward again, back to their draft after the newest. Pass the messages oldest first, as `onSubmit` received them, and the handler it returns to Prompt's `onKeyDown`.
 
 - The caret goes to the end of each message. In a message of several lines, or one that wraps, the arrows move through its lines first. Where a line wraps, the caret can show at the end of one line or at the start of the next, such as after Cmd+Right; there the first ArrowUp or ArrowDown moves the caret, and the second recalls.
 - Editing a recalled message makes it the draft: the draft from before is gone, and the next ArrowUp starts again from the newest message.
 - Going through messages is one undo step: Undo gives the draft back, and Redo the message. The recalled messages, and the draft coming back, reach `onValueChange` with reason `list-navigation`.
 - Messages that equal the text are skipped, so a message sent twice in a row is one stop.
 - A message comes back exactly as it was sent: no space is added around its chips.
-- A recalled message opens no [suggestions](#suggestions), even when it ends in a trigger such as `/compact`, so ArrowUp goes on through it; once it's edited, the list may open again.
-- Nothing is recalled while suggestions show, while an input method composes, while a chip is selected, or in a disabled or read-only prompt. Arrows with Shift, Alt, Ctrl or Cmd keep their usual meaning.
+- A recalled message doesn't open the [suggestions](#suggestions) list, even when it ends in a trigger such as `/compact`, so ArrowUp goes on through it; once it's edited, the list may open again.
+- Nothing is recalled while the suggestions list is open, while an input method composes, while a chip is selected, or in a disabled or read-only prompt. Arrows with Shift, Alt, Ctrl or Cmd keep their usual meaning.
 - Set `from: 'empty'` to start only from an empty prompt.
 
-The composer doesn't keep the messages: store what was sent yourself, one list per conversation if you have several, and choose how many to keep. Switching `historyKey` ends a recall, and the message shown stays that draft. To handle other keys in `onKeyDown` too, call the handler from your own; it skips keys you called `preventDefault()` on. For an ArrowUp of your own, such as editing the last message, check `atEdge('up')` from `useActions()` instead, and skip the key while suggestions show, which `event.currentTarget.hasAttribute('data-popup-open')` tells.
+The composer doesn't keep the messages: store what was sent yourself, one list per conversation if you have several, and choose how many to keep. Switching `historyKey` ends a recall, and the message shown stays that draft. To handle other keys in `onKeyDown` too, call the handler from your own; it skips keys you called `preventDefault()` on. For an ArrowUp of your own, such as editing the last message, check `atEdge('up')` from `useActions()` instead, and skip the key while the suggestions list is open, which `event.currentTarget.hasAttribute('data-popup-open')` tells.
 
 In the example, ArrowUp brings back the conversation's messages:
 
@@ -374,13 +376,7 @@ In the example, ArrowUp brings back the conversation's messages:
 /** Inside Root, where `useRecall` finds the prompt. */
 function MessagePrompt({messages}: {messages: readonly Message[]}) {
   const recall = Composer.useRecall(messages);
-  return (
-    <Composer.Prompt
-      aria-label="Message"
-      placeholder="Write a message, @ for a file, / for a command…"
-      onKeyDown={recall}
-    />
-  );
+  return <Composer.Prompt aria-label="Message" placeholder="Message Pi…" onKeyDown={recall} />;
 }
 ```
 
@@ -424,7 +420,7 @@ Put notices, errors about the last message, and the message being replied to in 
 
 Put your own controls and figures in `Footer`, such as a ghost [Dropdown](/components/dropdown/) trigger for the model and, at the end, a row of figures: a [Meter](/components/meter/) laid out inline for the context used, and `span`s for the rest. The row sets `margin-inline-start: auto` to sit at the end, and tertiary text on its own class, which the meter's value inherits; the controls keep their default size. Footer sets no text style, so these choices are yours.
 
-Without a hang, the footer's controls put their text 2px inside the frame, which suits ghost controls: their hover fill reaches past it. With a hang, they put it on the hang, as in the example in a window 48rem wide or wider, where the model picker's text lines up with the prompt's. Its footer holds the ghost picker and the figures:
+Without a hang, the footer's controls put their text 2px inside the frame, so a ghost control's hover fill reaches past it. Hung by `--composer-text-inset`, their text lines up with the prompt's, as in the example in a window 48rem wide or wider:
 
 ```tsx from="./examples/demo.tsx"
 <Composer.Footer>
@@ -445,7 +441,7 @@ For filled controls, such as a default Dropdown trigger, set `--composer-footer-
 
 ### Narrow
 
-In a composer 40rem wide or narrower, the footer stays on one line: its children shrink and cut their text with an ellipsis. Give a child that must stay whole, such as the figures, `flex: none`. The footer then sets no gap of its own: controls are spaced by their padding. Children without padding of their own, such as plain text, need a gap you set; override the footer's with a class. It follows the composer's width, not the window's. A hung composer's container includes the hang, so it reaches 40rem about 2 × `--composer-text-inset` later.
+In a composer 40rem wide or narrower, the footer stays on one line: its children shrink and cut their text with an ellipsis; give a child that must stay whole, such as the figures, `flex: none`. The footer then has no gap, since controls are spaced by their padding; for children without padding, such as plain text, set a gap in a class. The width is the composer's, hang included, so a hung composer narrows to 40rem about 2 × `--composer-text-inset` later.
 
 <Demo example="./examples/narrow.tsx" />
 
@@ -463,6 +459,10 @@ Use the `composer` container to change the footer at widths of your own, such as
 
 ## Alignment
 
+By default the frame lines up with the content around it. `--composer-hang` hangs Panel out of its container by its value; set to `--composer-text-inset`, the distance from the frame's edge to the text, it lines up the prompt's text and the footer's with the content around it, as the example's prompt text lines up with the messages above it in a wide window.
+
+Set it in a class on `Composer.Panel` itself: the inset is set on Panel, so a wrapper can't read it. Hang the frame only where there's room, `--composer-text-inset` at each side, such as inside `@media (min-width: …)` or a parent's container query; Panel is the `composer` container itself, so `@container composer` can't style it. A composer rendered by code you don't control can only be hung if that code passes your `className` through.
+
 ```css from="./examples/composer.module.css"
 @media (min-width: 48rem) {
   .textAligned {
@@ -470,10 +470,6 @@ Use the `composer` container to change the footer at widths of your own, such as
   }
 }
 ```
-
-Set it on `Composer.Panel` itself (via `className`): the inset is set on Panel, so a wrapper can't read it. Hang the frame only where there's room, `--composer-text-inset` at each side, such as inside `@media (min-width: …)` or a parent's container query; Panel is the `composer` container itself, so `@container composer` can't style it.
-
-By default the frame lines up with the content around it. `--composer-hang` hangs the Panel out of its container by that much; set to `--composer-text-inset`, the distance from the frame's edge to the text, it lines up the prompt's text and the footer's with the content around it. A composer rendered by code you don't control can only be hung if that code passes your `className` through. In a wide window, the example's prompt text lines up with the messages above it.
 
 ## In a field
 
@@ -502,7 +498,7 @@ Pass `render={<form />}` to Panel to make it a form. Submit then submits it, and
 
 Pass `value` and `onValueChange` to Root to keep the prompt elsewhere, such as one draft per conversation. `onValueChange` receives Base UI's change details, with the chips the change removed; `details.cancel()` refuses the change. Set `historyKey` to the draft's key, so each draft keeps its own undo. After sending, call `clearHistory()`, so undo can't bring the sent message back.
 
-When the value comes from a store, subscribe in a small component that renders Root and takes the rest of the composer as `children`. Typing then renders only that component and the prompt, not the buttons or the footer; the example's `MessageComposer` is one. Define `renderChip` outside that component, or memoize it: a new function on every render draws every chip again.
+When the value comes from a store, subscribe in a small component that renders Root and takes the rest of the composer as `children`. Typing then renders only that component and the prompt, not the buttons or the footer; the example's `MessageComposer` is one. Define `renderChip` outside that component, or memoize it: a new function on every render renders every chip again.
 
 <Demo example="./examples/controlled.tsx" />
 

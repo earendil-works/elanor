@@ -59,7 +59,7 @@ const scrollStyle = (maxRows: number): CSSProperties & {'--composer-prompt-max-r
  * is the field's control, through a hidden form value that a form submits and validates. `render`,
  * `className` and `ref` go to the editable element, which renders `data-empty`, `data-disabled`,
  * `data-readonly` and the field's states. While `Composer.Suggestions` is mounted and the prompt
- * is editable, it has `aria-haspopup="listbox"`, and while the popup shows, `aria-controls` and
+ * is editable, it has `aria-haspopup="listbox"`, and while the list is open, `aria-controls` and
  * `data-popup-open`.
  */
 export function ComposerPrompt({

@@ -1,5 +1,11 @@
-import {Composer, SegmentedControl, Stack, type ComposerValue} from '@earendil-works/elanor-react';
-import {useState, type ReactNode} from 'react';
+import {
+  Composer,
+  SegmentedControl,
+  Stack,
+  type ComposerActions,
+  type ComposerValue,
+} from '@earendil-works/elanor-react';
+import {useRef, useState, type ReactNode} from 'react';
 
 import styles from './composer.module.css';
 
@@ -15,12 +21,20 @@ const initial = {
 /** Owns the drafts. Typing renders this and the prompt, not `children`. */
 function Drafts({draft, children}: {draft: Conversation; children: ReactNode}) {
   const [drafts, setDrafts] = useState<Record<Conversation, ComposerValue>>(initial);
+  const actions = useRef<ComposerActions>(null);
   return (
     <Composer.Root
       toText={toText}
       historyKey={draft}
       value={drafts[draft]}
       onValueChange={(value) => setDrafts((current) => ({...current, [draft]: value}))}
+      actionsRef={actions}
+      onSubmit={(message) => {
+        if (!toText(message).trim()) return;
+        // Demo only: send `message` to your server here.
+        actions.current?.clearHistory();
+        setDrafts((current) => ({...current, [draft]: []}));
+      }}
     >
       {children}
     </Composer.Root>

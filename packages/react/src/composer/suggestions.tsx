@@ -829,7 +829,7 @@ export interface ComposerSuggestionEmptyProps extends useRender.ComponentProps<'
 
 /**
  * What the popup says when nothing matches, such as "No matching files"; nothing while there are
- * items. Without it, the popup stays closed when nothing matches.
+ * items. Without it, the list stays closed when nothing matches.
  */
 export function ComposerSuggestionEmpty({ref, render, ...props}: ComposerSuggestionEmptyProps) {
   const {registerEmpty} = useSuggestions('Composer.SuggestionEmpty');

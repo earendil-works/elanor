@@ -143,7 +143,7 @@ export interface ComposerActions<T extends ComposerChip = ComposerChip> {
    * empty value after sending.
    */
   clearHistory(historyKey?: string): void;
-  /** Calls `onSubmit` without the keyboard's checks (composing, open suggestions). */
+  /** Calls `onSubmit` without the keyboard's checks (composing, an open suggestions list). */
   submit(event?: Event): void;
   getValue(): ComposerValue<T>;
   /** Calls `onAttach` (reason `api`) at the caret after selected text; ignores an empty list. */
