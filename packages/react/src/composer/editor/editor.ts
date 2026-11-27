@@ -315,7 +315,10 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
   #pressing = false;
   /** The last press's `pointerType`: a finger's starts no drag. */
   #pressedBy = '';
-  /** The chip a press hit, to select at the click. */
+  /**
+   * The chip a press hit, to select at the click. A finger's press in the focused editor leaves it
+   * unset: that press selects the chip at once.
+   */
   #pressedChip: string | undefined;
   /** Where `insert` goes while the editor is blurred. */
   #selection: ComposerTextRange | null = null;

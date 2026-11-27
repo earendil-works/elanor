@@ -276,7 +276,7 @@ export class EditorView<T extends ComposerChip> {
     return this.#startOf(host) + (x > box.left + box.width / 2 !== rtl ? 1 : 0);
   }
 
-  /** Also true inside a host. Reads no layout: every click calls it. */
+  /** A caret beside or inside a host. Reads no layout: every click calls it. */
   caretBesideHost(): boolean {
     const selection = document.getSelection();
     const node = selection?.isCollapsed ? selection.anchorNode : null;
