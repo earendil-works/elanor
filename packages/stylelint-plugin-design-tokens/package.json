@@ -1,6 +1,6 @@
 {
   "name": "@earendil-works/stylelint-plugin-design-tokens",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Stylelint rules for consuming generated DTCG design tokens.",
   "license": "MIT",
   "repository": {
