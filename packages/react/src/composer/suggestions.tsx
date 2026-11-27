@@ -560,7 +560,13 @@ export function ComposerSuggestions<I>({
             open={open}
             onOpenChange={(next, details) => {
               // A press in the prompt moves the caret, and the match follows it; Escape is handled with
-              // the keys.
+              // the keys. While the trigger is scrolled out of view, the list is hidden and Escape is
+              // the page's, as the missing `data-popup-open` says.
+              if (details.reason === 'escape-key' && anchorHidden) {
+                details.cancel();
+                details.allowPropagation();
+                return;
+              }
               const target = details.event.target;
               if (next || details.reason !== 'outside-press') return;
               if (target instanceof Node && editor.element()?.contains(target)) return;

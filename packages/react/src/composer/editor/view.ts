@@ -330,9 +330,9 @@ export class EditorView<T extends ComposerChip> {
   }
 
   /**
-   * The caret's rectangle at an offset. A collapsed range in a non-empty text node measures in
-   * every engine; an empty line or a point next to a host measures zero, so the neighbouring
-   * character or host stands in, else the element's first line.
+   * The caret's rectangle at an offset, 1px wide toward the line's end. A collapsed range in a
+   * non-empty text node measures in every engine; an empty line or a point next to a host measures
+   * zero, so the neighbouring character or host stands in, else the element's first line.
    */
   rectAt(offset: number): Rect | null {
     if (!this.#element.isConnected) return null;
@@ -341,16 +341,19 @@ export class EditorView<T extends ComposerChip> {
     range.setStart(node, index);
     range.collapse(true);
     const rect = range.getBoundingClientRect();
-    if (rect.height) return {x: rect.x, y: rect.y, width: 0, height: rect.height};
     const style = getComputedStyle(this.#element);
     const rtl = style.direction === 'rtl';
-    // The caret stands after what precedes it: at its right, or at its left in right-to-left text.
-    const after = (box: DOMRect): Rect => ({
-      x: rtl ? box.left : box.right,
-      y: box.y,
-      width: 0,
-      height: box.height,
+    // Floating UI's `hide` counts a rect without width at the clip's edge as outside, as at the
+    // start of a prompt without padding. Toward the line's end, a start-aligned popup stays put.
+    const caret = (x: number, y: number, height: number): Rect => ({
+      x: rtl ? x - 1 : x,
+      y,
+      width: 1,
+      height,
     });
+    if (rect.height) return caret(rect.x, rect.y, rect.height);
+    // The caret stands after what precedes it: at its right, or at its left in right-to-left text.
+    const after = (box: DOMRect): Rect => caret(rtl ? box.left : box.right, box.y, box.height);
     if (node instanceof Text && index > 0) {
       range.setStart(node, index - 1);
       range.setEnd(node, index);
@@ -362,14 +365,13 @@ export class EditorView<T extends ComposerChip> {
       return after(previous.getBoundingClientRect());
     const box = this.#element.getBoundingClientRect();
     const px = (value: string): number => Number.parseFloat(value) || 0;
-    return {
-      x: rtl
+    return caret(
+      rtl
         ? box.right - px(style.borderRightWidth) - px(style.paddingRight)
         : box.left + px(style.borderLeftWidth) + px(style.paddingLeft),
-      y: box.top + px(style.borderTopWidth) + px(style.paddingTop),
-      width: 0,
-      height: px(style.lineHeight) || box.height,
-    };
+      box.top + px(style.borderTopWidth) + px(style.paddingTop),
+      px(style.lineHeight) || box.height,
+    );
   }
 
   /** The box of the character or chip at `offset`. */
