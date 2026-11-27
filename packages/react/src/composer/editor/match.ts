@@ -14,6 +14,8 @@ export type ComposerSuggestionTrigger = {
   readonly character: string;
   /** Defaults to `word-start`. */
   readonly position?: ComposerSuggestionPosition | undefined;
+  /** Single spaces the query may hold: a whole number, or `true` for any. Defaults to `false`. */
+  readonly spaces?: boolean | number | undefined;
 };
 
 export type ComposerSuggestionMatch = {
@@ -111,9 +113,35 @@ function at(text: string, index: number, position: ComposerSuggestionPosition): 
 }
 
 /**
- * The last trigger in the word that ends at the caret. `before` is the text before the caret, from
- * `offsetText`. Words end at chips and `WORD_END`; a query also ends at a closing bracket it didn't
- * open.
+ * How far back a query with a space reaches, its trigger included: room for a name such as
+ * `@María José García Fernández`, short enough to stop searching a sentence and to bound the walk.
+ */
+const SPACED_REACH = 64;
+
+function queryStart(before: string, start: number, limit: number): number {
+  const floor = Math.max(0, before.length - SPACED_REACH);
+  let reach = start;
+  let gaps = 0;
+  // `. ` ends a sentence, and file names don't contain it.
+  while (
+    gaps < limit &&
+    before[reach - 1] === ' ' &&
+    before[reach - 2] !== ' ' &&
+    before[reach - 2] !== '.'
+  ) {
+    let next = reach - 1;
+    while (next > floor && !endsWord(before[next - 1])) next -= 1;
+    if (next < floor || (next > 0 && !endsWord(before[next - 1]))) break;
+    reach = next;
+    gaps += 1;
+  }
+  return reach;
+}
+
+/**
+ * The trigger nearest the caret at its position, in the word that ends at the caret or, with
+ * `spaces`, across single spaces. `before` is the text before the caret, from `offsetText`. Words
+ * end at chips and `WORD_END`; a query also ends at a closing bracket it didn't open.
  */
 export function findMatch(
   before: string,
@@ -121,11 +149,20 @@ export function findMatch(
 ): ComposerSuggestionMatch | null {
   let start = before.length;
   while (start > 0 && !endsWord(before[start - 1])) start -= 1;
-  let found: ComposerSuggestionMatch | null = null;
-  for (const {character, position = 'word-start'} of triggers) {
+  const reaching = triggers.map(({character, position = 'word-start', spaces = false}) => ({
+    character,
+    position,
+    reach: queryStart(before, start, spaces === true ? Number.POSITIVE_INFINITY : spaces || 0),
+  }));
+  // Searching every trigger this far back lets the nearest own the query: `#` in `@sam #tag x`
+  // ends `@`'s, though `#` takes no spaces.
+  const farthest = Math.min(start, ...reaching.map(({reach}) => reach));
+  let owner: ((typeof reaching)[number] & {readonly index: number}) | undefined;
+  for (const trigger of reaching) {
+    const {character, position} = trigger;
     // The backward scan stops after a trigger that is itself an ending character, such as `:`, so
     // the search starts one trigger length earlier.
-    const from = Math.max(0, start - character.length);
+    const from = Math.max(0, farthest - character.length);
     // The boundary check reads the text as typed; only the trigger's search is folded.
     const text = halfWidth(before.slice(from));
     const folded = halfWidth(character);
@@ -135,16 +172,15 @@ export function findMatch(
       index = index > from ? text.lastIndexOf(folded, index - from - 1) + from : -1
     ) {
       if (!at(before, index, position)) continue;
-      // The closer ends the last trigger's query; an earlier trigger doesn't take it over.
-      if (endsQuery(before.slice(index + character.length))) break;
-      if (!found || index > found.range.start)
-        found = {
-          character,
-          query: before.slice(index + character.length),
-          range: {start: index, end: before.length},
-        };
+      if (!owner || index > owner.index) owner = {...trigger, index};
       break;
     }
   }
-  return found;
+  if (!owner) return null;
+  const {character, index, reach} = owner;
+  const query = before.slice(index + character.length);
+  // No earlier trigger takes over when the nearest one's query has more spaces than it allows,
+  // starts with one (`@ home`) or has an unopened closer.
+  if (index < reach - character.length || query.startsWith(' ') || endsQuery(query)) return null;
+  return {character, query, range: {start: index, end: before.length}};
 }
