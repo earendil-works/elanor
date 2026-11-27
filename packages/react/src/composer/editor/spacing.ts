@@ -18,6 +18,7 @@ const UNSPACED = new RegExp(
 );
 /** Marks that follow a word without a space, closing quotes and brackets included. */
 const CLOSING = /[\p{Pe}\p{Pf}.,!?:;…'"%]/u;
+const OPENING = /[\p{Ps}\p{Pi}]/u;
 const WORD = /[\p{L}\p{N}]/u;
 const SPACE = /\s/u;
 /** Only spaces and tabs are added or trimmed: a line break is the text's. */
@@ -28,9 +29,18 @@ const MARK = /\p{M}/u;
 const spaceAfter = (next: string | undefined): boolean =>
   next === undefined || !(SPACE.test(next) || CLOSING.test(next) || UNSPACED.test(next));
 
-const spaceBefore = (previous: string | undefined): boolean =>
-  previous === CHIP_CHARACTER ||
-  (previous !== undefined && WORD.test(previous) && !UNSPACED.test(previous));
+/** Whether a chip after `text`, whose last character is `previous`, gets a space before it. */
+function spaceBefore(text: string, previous: string | undefined): boolean {
+  if (previous === undefined || SPACE.test(previous) || UNSPACED.test(previous)) return false;
+  if (previous === CHIP_CHARACTER || WORD.test(previous)) return true;
+  // A straight quote opens at the start, after a space or after an opening mark, as smart quotes
+  // read it; anywhere else it closes.
+  if (previous === '"' || previous === "'") {
+    const before = baseBefore(text, text.lastIndexOf(previous));
+    return before !== undefined && !SPACE.test(before) && !OPENING.test(before);
+  }
+  return CLOSING.test(previous);
+}
 
 /** The character before `index`, past the combining marks that belong to it. */
 function baseBefore(text: string, index: number): string | undefined {
@@ -54,8 +64,8 @@ const firstPoint = (text: string): string | undefined => {
 /**
  * `content` to put at `range` of `value`, with one space between two chips, after a chip unless
  * whitespace, a closing mark or an unspaced script follows, and before one that follows a chip or a
- * letter or digit of a spaced script. Spaces in `content` count, so none doubles; line breaks stay.
- * In logical order, also for right-to-left text.
+ * letter, digit or closing mark of a spaced script. Spaces in `content` count, so none doubles; line
+ * breaks stay. In logical order, also for right-to-left text.
  */
 export function withSpaces<T extends ComposerChip>(
   value: ComposerValue<T>,
@@ -71,7 +81,8 @@ export function withSpaces<T extends ComposerChip>(
     if (isChip(segment) && isChip(spaced.at(-1))) spaced.push(' ');
     spaced.push(segment);
   }
-  const previous = baseBefore(offsetText(sliceValue(value, 0, range.start)), range.start);
+  const before = offsetText(sliceValue(value, 0, range.start));
+  const previous = baseBefore(before, range.start);
   const next = firstPoint(offsetText(sliceValue(value, range.end)));
   const first = spaced[0];
   const last = spaced.at(-1);
@@ -85,7 +96,7 @@ export function withSpaces<T extends ComposerChip>(
   )
     spaced[spaced.length - 1] = last.slice(0, -1);
   if (isChip(first)) {
-    if (spaceBefore(previous)) spaced.unshift(' ');
+    if (spaceBefore(before, previous)) spaced.unshift(' ');
   } else if (
     first !== undefined &&
     HORIZONTAL.test(first[0] ?? '') &&
