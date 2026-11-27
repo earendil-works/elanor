@@ -23,7 +23,8 @@ Each component directory has a `<component>.mdx` page and an `examples/` directo
 - Then a hero demo (`examples/demo.tsx`), `## Usage` with the import and a minimal snippet or anatomy, and one `##` section per variant or state. Add notes only where needed.
 - Don't write an API section. It's generated from the props types; document props with JSDoc on Elanor's declarations, and parts with JSDoc on the component.
 - Write live previews as `<Demo example="./examples/<name>.tsx" />` on one line. MDX contains no other JSX or imports; use code fences for code that can't render on a page.
-- Each example file default-exports one component and imports from `@earendil-works/elanor-react`, as code using the package does. Show one concept per demo. Local imports, such as a CSS Module, appear in the demo's code panel.
+- Each example file default-exports one component and imports from `@earendil-works/elanor-react`, as code using the package does. Show one concept per focused demo. Local imports, such as a CSS Module or a part of a full example, appear in the demo's code panel.
+- A complex component gets one full example; sections quote it in fences such as ` ```tsx from="./examples/demo.tsx" `, which the docs build checks against the file. Add a focused demo only for a concept the full example can't show (a state, a width, a field in a form).
 - Demo links use `href="#"`. Headings inside demos use `level={2}` in the hero and `level={3}` under a `##` section.
 
 ## Writing docs

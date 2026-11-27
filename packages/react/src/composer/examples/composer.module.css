@@ -1,10 +1,47 @@
-.narrow {
-  max-inline-size: var(--semantic-dimension-size-max-width-content-small);
+/*
+ * The conversation view, the drop zone for files. Its padding leaves room for the hung composer,
+ * so the drop target covers it too.
+ */
+.view {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--semantic-dimension-space-gap-medium);
+  padding: var(--semantic-dimension-space-padding-x-large);
 }
 
-/* A lone Send at the row's end. */
-.end {
-  justify-content: flex-end;
+/* A sent message keeps its line breaks. */
+.message {
+  white-space: pre-wrap;
+}
+
+/* Under the pointer, so a drop on the composer's field still reaches the field. */
+.dropTarget {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  place-items: center;
+  background: var(--semantic-color-background-backdrop);
+  border: var(--semantic-dimension-border-width-medium) dashed
+    var(--semantic-color-border-information);
+  border-radius: var(--semantic-dimension-radius-large);
+  pointer-events: none;
+}
+
+.dropLabel {
+  padding-block: var(--semantic-dimension-space-padding-x-small);
+  padding-inline: var(--semantic-dimension-space-padding-medium);
+  color: var(--semantic-color-text-information);
+  font: var(--semantic-typography-ui-secondary);
+  background: var(--semantic-color-background-surface);
+  border-radius: var(--semantic-dimension-radius-medium);
+}
+
+/* The camera button only where there's a touch screen; a mouse gets the file picker. */
+@media not (any-pointer: coarse) {
+  .camera {
+    display: none;
+  }
 }
 
 /*
@@ -16,6 +53,27 @@
   .textAligned {
     --composer-hang: var(--composer-text-inset);
   }
+}
+
+/* A suggestion's description, at the item's end. */
+.description {
+  margin-inline-start: auto;
+  color: var(--semantic-color-text-secondary);
+}
+
+/* Read by screen readers, not shown. */
+.visuallyHidden {
+  position: absolute;
+  inline-size: var(--semantic-dimension-border-width-small);
+  block-size: var(--semantic-dimension-border-width-small);
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* A pasted text's first lines, as lines. */
+.lines {
+  white-space: pre-line;
 }
 
 /*
@@ -59,6 +117,15 @@
   }
 }
 
+/* Filled controls: their fill sits flush with the frame, their text a control's padding inside. */
+.filledControls {
+  --composer-footer-inset: var(--semantic-dimension-space-control-padding-inline-small);
+}
+
+.narrow {
+  max-inline-size: var(--semantic-dimension-size-max-width-content-small);
+}
+
 /* Your own policy: in a narrow composer, the cache figure gives its room to the rest. */
 @container composer (inline-size <= 30rem) {
   .cache {
@@ -66,12 +133,7 @@
   }
 }
 
-.description {
-  margin-inline-start: auto;
-  color: var(--semantic-color-text-secondary);
-}
-
-/* A pasted text's first lines, as lines. */
-.lines {
-  white-space: pre-line;
+/* A lone Send at the row's end. */
+.end {
+  justify-content: flex-end;
 }
