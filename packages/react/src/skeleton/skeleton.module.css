@@ -1,7 +1,12 @@
 @layer elanor.components {
-  .skeleton[data-loading],
-  .line {
+  .skeleton[data-loading]:not([data-text]) {
     border-radius: var(--semantic-dimension-radius-small);
+  }
+
+  /* Text bars are square: rounding needs box-decoration-break: clone, which changes how text wraps in WebKit. */
+  .skeleton[data-loading]:not([data-text]),
+  .fill,
+  .bar {
     background: var(--semantic-color-background-skeleton);
   }
 
@@ -18,27 +23,55 @@
 
   .skeleton[data-loading] {
     color: transparent;
+  }
+
+  .skeleton[data-loading]:not([data-text]) {
     box-decoration-break: clone;
   }
 
-  .skeleton[data-loading] > * {
+  .skeleton[data-loading]:not([data-text]) > * {
     visibility: hidden;
+  }
+
+  /* Trimmed to the capitals, the background is a bar on the baseline of each line. Browsers that trim
+     only blocks, such as Chromium before inline-box support, keep a bar as tall as the font. */
+  .fill {
+    text-box: trim-both cap alphabetic;
   }
 
   .text {
     display: flex;
     flex-direction: column;
+    inline-size: 100%;
   }
 
-  .line {
-    /* stylelint-disable design-tokens/no-hardcoded-token-values -- The bar is intrinsically one em tall and centered in its line box. */
-    block-size: 1em;
-    margin-block: calc((1lh - 1em) / 2);
-    /* stylelint-enable design-tokens/no-hardcoded-token-values */
+  .bar {
+    display: inline-block;
+    inline-size: 100%;
+    /* stylelint-disable-next-line design-tokens/no-hardcoded-token-values -- About a capital's height, where the browser can't measure it. */
+    block-size: 0.7em;
   }
 
   .line:last-child:not(:first-child) {
     inline-size: 60%;
+  }
+
+  @supports (block-size: 1cap) {
+    .bar {
+      /* stylelint-disable-next-line design-tokens/no-hardcoded-token-values -- As tall as the capitals of one line of text. */
+      block-size: 1cap;
+    }
+  }
+
+  /* Where text-box isn't supported (Firefox), draw a cap-high underline instead of a font-tall background. */
+  @supports (not (text-box: trim-both cap alphabetic)) and (text-decoration-thickness: 1cap) {
+    .fill {
+      background: none;
+      text-decoration: underline var(--semantic-color-background-skeleton);
+      text-decoration-thickness: 1cap;
+      text-decoration-skip-ink: none;
+      text-underline-offset: calc(-1 * 1cap);
+    }
   }
 
   @keyframes reveal {
@@ -58,8 +91,9 @@
   }
 
   @media (forced-colors: active) {
-    .skeleton[data-loading],
-    .line {
+    .skeleton[data-loading]:not([data-text]),
+    .fill,
+    .bar {
       forced-color-adjust: none;
       background: GrayText;
     }
@@ -67,6 +101,13 @@
     .skeleton[data-loading],
     .text {
       animation-name: reveal;
+    }
+
+    @supports (not (text-box: trim-both cap alphabetic)) and (text-decoration-thickness: 1cap) {
+      .fill {
+        background: none;
+        text-decoration-color: GrayText;
+      }
     }
   }
 }
