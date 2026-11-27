@@ -308,7 +308,7 @@ function DictateButton() {
 
 `Composer.useValue(selector)` renders your part again only when what the selector returns changes. The selector runs on every edit: keep it cheap, and return a primitive or a stable reference, or pass `isEqual` as the second argument. To read the value once, in a handler, use `getValue()` from `useActions()`.
 
-Type the selector's parameter with your value type, as `hasSecret` does below, and `useValue` reads your chips. With type arguments, give the chip type first and the result second, such as `Composer.useValue<MessageChip, boolean>(hasSecret)`: naming only the chip type leaves the result `unknown`.
+Type the selector's parameter with your value type, as `hasSecret` does below, and `useValue` reads your chips. With type arguments, name both, the chip type first and the result second: `Composer.useValue<MessageChip, boolean>(hasSecret)`.
 
 The example's secret notice returns a boolean, so it renders only when the answer changes; its Send button, in [Uploads](#uploads), compares the upload ids with `isEqual`. Other parts read it the same way, such as a token count that returns a number, or a hint for the command at the start that returns a string or `null`.
 

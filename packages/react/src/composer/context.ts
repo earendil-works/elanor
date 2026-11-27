@@ -109,7 +109,7 @@ export function useStatus(): ComposerState {
  * edit: keep it cheap. Type `selector`'s parameter to name your chip type; with type arguments,
  * name both, as `useValue<MyChip, boolean>`. Throws outside `Composer.Root`.
  */
-export function useValue<T extends ComposerChip = ComposerChip, Selected = unknown>(
+export function useValue<T extends ComposerChip, Selected>(
   selector: (value: ComposerValue<T>) => Selected,
   isEqual: (a: Selected, b: Selected) => boolean = Object.is,
 ): Selected {
