@@ -1,4 +1,5 @@
 @layer elanor.components {
+  /* stylelint-disable design-tokens/no-non-token-custom-properties -- Private --file-tree-step and --file-tree-indent. */
   .root {
     /*
      * One tile per level, painted repeat-x. Override with any image (for example a hand-drawn SVG)
@@ -19,7 +20,15 @@
   }
 
   .item {
+    /* The gap keeps a nested row's fill clear of the parent's guide. */
+    --file-tree-step: calc(
+      var(--semantic-dimension-size-x-small) + var(--semantic-dimension-border-width-default) +
+        var(--semantic-dimension-space-gap-x-small)
+    );
+    --file-tree-indent: calc((var(--file-tree-level) - 1) * var(--file-tree-step));
+
     position: relative;
+    isolation: isolate;
     box-sizing: border-box;
     display: flex;
     align-items: center;
@@ -28,7 +37,6 @@
     padding-block: var(--semantic-dimension-space-control-padding-block-small);
     padding-inline: var(--semantic-dimension-space-control-padding-inline-small);
     border-radius: var(--semantic-dimension-radius-small);
-    background: var(--semantic-color-background-fill-ghost-neutral);
     color: inherit;
     text-decoration: none;
     cursor: pointer;
@@ -39,36 +47,48 @@
       position: absolute;
       /* Up through the gap above, so the guide runs unbroken from the parent folder's row. */
       inset-block: calc(-1 * var(--semantic-dimension-space-gap-x-small)) 0;
-      /* Under the parent's chevron centre; one tile per level, each as wide as the indent step (Figma: 18px). */
+      /* Under the parent's chevron centre. */
       inset-inline-start: calc(
         var(--semantic-dimension-space-control-padding-inline-small) +
           (var(--semantic-dimension-size-x-small) - var(--semantic-dimension-border-width-default)) /
           2
       );
-      inline-size: calc(
-        (var(--file-tree-level) - 1) *
-          (var(--semantic-dimension-size-x-small) + var(--semantic-dimension-border-width-default))
-      );
+      inline-size: var(--file-tree-indent);
       background: var(--file-tree-guide) repeat-x;
-      background-size: calc(
-          var(--semantic-dimension-size-x-small) + var(--semantic-dimension-border-width-default)
-        )
-        100%;
+      background-size: var(--file-tree-step) 100%;
+      content: '';
+      pointer-events: none;
+    }
+
+    /* Guide images are drawn for left to right. */
+    &:dir(rtl)::before {
+      /* stylelint-disable-next-line design-tokens/no-hardcoded-token-values -- A mirror, not a design value. */
+      scale: -1 1;
+    }
+
+    /* A pseudo-element, so the fill starts at the indent while the whole row stays clickable. */
+    &::after {
+      position: absolute;
+      inset-block: 0;
+      inset-inline: var(--file-tree-indent) 0;
+      z-index: var(--semantic-number-layer-background);
+      border-radius: inherit;
+      background: var(--semantic-color-background-fill-ghost-neutral);
       content: '';
       pointer-events: none;
     }
 
     @media (hover: hover) {
-      &:hover {
+      &:hover::after {
         background: var(--semantic-color-background-fill-ghost-neutral-hover);
       }
     }
 
-    &[data-current] {
+    &[data-current]::after {
       background: var(--semantic-color-background-fill-ghost-neutral-active);
     }
 
-    &:focus-visible {
+    &:focus-visible::after {
       outline: var(--semantic-dimension-border-width-focus-halo) solid
         var(--semantic-color-focus-halo);
       outline-offset: calc(-1 * var(--semantic-dimension-border-width-focus-halo));
@@ -86,9 +106,7 @@
     justify-content: flex-end;
     /* Indentation lives here, not on the row, so the label keeps its full width to truncate. */
     inline-size: calc(
-      (var(--file-tree-level) - 1) *
-        (var(--semantic-dimension-size-x-small) + var(--semantic-dimension-border-width-default)) +
-        2 * var(--semantic-dimension-size-x-small) +
+      var(--file-tree-indent) + 2 * var(--semantic-dimension-size-x-small) +
         var(--semantic-dimension-space-control-gap-large)
     );
     gap: var(--semantic-dimension-space-control-gap-large);
@@ -142,12 +160,17 @@
       );
     }
 
-    .item[data-current] {
+    /* Forced colours remove background images, which would hide the guide. */
+    .item::before {
+      forced-color-adjust: none;
+    }
+
+    .item[data-current]::after {
       outline: var(--semantic-dimension-border-width-default) solid Highlight;
       outline-offset: calc(-1 * var(--semantic-dimension-border-width-default));
     }
 
-    .item:focus-visible {
+    .item:focus-visible::after {
       outline: var(--semantic-dimension-border-width-focus-ring) solid Highlight;
     }
   }
