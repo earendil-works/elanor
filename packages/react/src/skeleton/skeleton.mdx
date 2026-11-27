@@ -19,6 +19,8 @@ import {Skeleton, SkeletonText} from '@earendil-works/elanor-react';
 
 Skeleton covers its content in `semantic.color.background.skeleton` and pulses with `semantic.transition.pulse`. The content keeps its size but is hidden from screen readers and keyboard focus, so set `aria-busy` on the region that is loading. Skeleton renders a `span`; use `render={<div />}` around blocks.
 
+When the children are only text (strings or numbers, not elements or fragments), each line of it gets a bar as tall as the capitals, on the baseline, and the element keeps its size. Around other children, such as a [Button](/components/button/) or a [Card](/components/card/), the placeholder covers the whole element. Text bars are square, as text has no corners; the placeholder of other children keeps rounded corners.
+
 ## Loading
 
 `loading` switches between the placeholder and the content in the same element, without a layout shift.
@@ -43,6 +45,6 @@ Skeleton and SkeletonText reserve their space but stay hidden for `semantic.dura
 
 ## Text
 
-SkeletonText shows placeholder lines in the size of the surrounding text. Put it inside [Text](/components/text/) or [Heading](/components/heading/). In a [Stack](/components/stack/), use `align="stretch"` so the lines fill the width.
+SkeletonText shows placeholder lines in the size of the surrounding text, each a bar as tall as the capitals on the baseline. Put it inside [Text](/components/text/) or [Heading](/components/heading/). In a [Stack](/components/stack/), use `align="stretch"` so the lines fill the width.
 
 <Demo example="./examples/text.tsx" />
