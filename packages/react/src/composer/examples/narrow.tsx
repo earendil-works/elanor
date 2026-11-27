@@ -2,7 +2,7 @@ import {Composer, Dropdown, Meter, Stack, type ComposerValue} from '@earendil-wo
 
 import styles from './composer.module.css';
 
-const toText = (value: ComposerValue) => Composer.toText(value, (chip) => chip.label);
+const toText = (value: ComposerValue) => Composer.valueToText(value, (chip) => chip.label);
 
 const models = [
   {value: 'large', label: 'Large model with extended reasoning'},

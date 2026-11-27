@@ -44,7 +44,7 @@ import {Composer} from '@earendil-works/elanor-react';
 </Composer.Root>;
 ```
 
-- **Root** holds the prompt's value, its undo history and its settings. It renders no element: the other parts and the hooks work anywhere inside it, also outside Panel and in portals, and the parts and the hooks throw outside it. `toText` is required: it gives the text that is copied, submitted with a form, and sent.
+- **Root** holds the prompt's value, its undo history and its settings. It renders no element: the other parts and the hooks work anywhere inside it, also outside Panel and in portals, and the parts and the hooks throw outside it. `toText` is required: it gives the text that is copied, submitted with a form, and sent. `Composer.valueToText(value, chipToText)` writes the text with each chip as `chipToText` gives it.
 - **Panel** renders a `div` around the rows and fills its container's width. For a form, see [In a form](#in-a-form).
 - **Header** is the row above the input group, for notices, errors, and the message being replied to.
 - **InputGroup** is the frame, which looks like one text input holding the prompt, with its chips, and the buttons. It has no focus ring; the caret shows the focus, and the input group keeps its fill while a person writes, darkening only under the pointer or a press. Pressing anything in it other than the text keeps the focus where it is, so a phone's keyboard stays up. InputGroup also works without a Panel.

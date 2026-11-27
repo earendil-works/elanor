@@ -44,7 +44,7 @@ export const chipText = (chip: MessageChip) => {
 };
 
 // Root calls `toText` on an edit, so it reads nothing that changes without one.
-export const toText = (value: Message) => Composer.toText(value, chipText);
+export const toText = (value: Message) => Composer.valueToText(value, chipText);
 
 /** More lines than the prompt shows at once. */
 const MAX_LINES = 10;

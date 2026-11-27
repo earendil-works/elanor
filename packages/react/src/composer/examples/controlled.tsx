@@ -3,7 +3,7 @@ import {useState, type ReactNode} from 'react';
 
 import styles from './composer.module.css';
 
-const toText = (value: ComposerValue) => Composer.toText(value, (chip) => chip.label);
+const toText = (value: ComposerValue) => Composer.valueToText(value, (chip) => chip.label);
 
 type Conversation = 'design' | 'release';
 

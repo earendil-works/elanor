@@ -46,7 +46,7 @@ const earlier: Message[] = [
 
 /** The message as your server takes it: each upload by its address, read when it's sent. */
 const messageText = (message: Message) =>
-  Composer.toText(message, (chip) =>
+  Composer.valueToText(message, (chip) =>
     chip.kind === 'upload' ? `@${uploadUrl(chip.uploadId) ?? chip.label}` : chipText(chip),
   );
 

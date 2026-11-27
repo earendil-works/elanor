@@ -11,7 +11,7 @@ import {useState} from 'react';
 
 import styles from './composer.module.css';
 
-const toText = (value: ComposerValue) => Composer.toText(value, (chip) => chip.label);
+const toText = (value: ComposerValue) => Composer.valueToText(value, (chip) => chip.label);
 
 export default function ComposerInField() {
   const [sent, setSent] = useState('Nothing sent yet.');

@@ -1,6 +1,6 @@
 import {Composer, Stack, type ComposerValue} from '@earendil-works/elanor-react';
 
-const toText = (value: ComposerValue) => Composer.toText(value, (chip) => chip.label);
+const toText = (value: ComposerValue) => Composer.valueToText(value, (chip) => chip.label);
 
 export default function ComposerDisabled() {
   return (
