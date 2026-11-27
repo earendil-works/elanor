@@ -315,7 +315,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
   #pressing = false;
   /** The last press's `pointerType`: a finger's starts no drag. */
   #pressedBy = '';
-  /** The chip a press other than a finger's hit in the focused editor, selected at the click. */
+  /** The chip a press hit, to select at the click. */
   #pressedChip: string | undefined;
   /** Where `insert` goes while the editor is blurred. */
   #selection: ComposerTextRange | null = null;
@@ -1418,20 +1418,20 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       this.#commit(next, caretAt(at + valueLength(content)), 'input-drop', event);
     };
 
-    // A press on a chip of the focused editor selects it, with the caret collapsed after it: a
-    // native range would make iOS draw a highlight with handles across the line. A finger's
-    // selects it at once, and the keyboard stays up. Another pointer's may start a drag, so the
-    // chip is selected at the click.
+    // A press on a chip selects it, with the caret collapsed after it: a native range would make
+    // iOS draw a highlight with handles across the line. A finger's in the focused editor selects
+    // it at once, and the keyboard stays up. Any other press selects it at the click: a mouse or a
+    // pen may start a drag, and a finger's first press focuses the editor.
     const onPointerDown = (event: PointerEvent) => {
       this.#pressing = true;
       held = true;
       holdHost(event);
       this.#pressedBy = event.pointerType;
       this.#pressedChip = undefined;
-      if (!this.#focused || !this.options.editable) return;
+      if (!this.options.editable) return;
       const pressed = this.#chipOf(event.target);
       if (!pressed) return;
-      if (event.pointerType !== 'touch') {
+      if (event.pointerType !== 'touch' || !this.#focused) {
         this.#pressedChip = pressed.chip.id;
         return;
       }
