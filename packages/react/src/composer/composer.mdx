@@ -213,7 +213,7 @@ export const chipDeletion = (chip: MessageChip) =>
 
 ### Chip tooltips
 
-The prompt doesn't show a chip's text on hover; wrap the chip in a [Tooltip](/components/tooltip/) in `renderChip`, with `Tooltip.Trigger render={<Chip.Root />}`, to say where it is or why its upload failed. Tooltips open for a pointer only, so on a touch screen say why an upload failed in a notice too. The example gives a file chip its path, a command its description, a failed upload its error, and a pasted text its first lines. Its `getChipDescription` says the path and the description too, so screen readers hear them. Root reads `getChipDescription` only when it draws a chip, so a failed upload says why in its own content, which follows your store:
+The prompt doesn't show a chip's text on hover; wrap the chip in a [Tooltip](/components/tooltip/) in `renderChip`, with `Tooltip.Trigger render={<Chip.Root />}`, to say where it is or why its upload failed. Tooltips open for a pointer only, so on a touch screen say why an upload failed in a notice too. The example gives a file chip its path, a command its description, a failed upload its error, and a pasted text its first lines. Its `getChipDescription` says the path and the description too, so screen readers hear them. Root reads `getChipDescription` when it draws a chip, so put text that changes, such as an upload's error, in the chip's content as visually hidden text, as the example does:
 
 ```tsx from="./examples/hero/chips.tsx"
 function TooltipChip({tooltip, semantic = 'neutral', children}: TooltipChipProps) {
@@ -283,27 +283,19 @@ export const getPastedValue = (text: string): Message => {
 
 ## Actions
 
-`Composer.useActions()` gives the composer's actions to any part inside Root, such as a dictation button that inserts its text: `insert`, `focus`, `blur`, `submit`, `attach`, `undo`, `redo`, `clearHistory`, `getValue` and `atEdge`, which tells whether the caret is on the first or the last line, for keys of your own. `insert` goes where the caret was, also while the prompt isn't focused. The object never changes, so reading it doesn't render your part again. Root's `actionsRef` gets the same object, for code outside Root. `space` adds spaces around chips only, so text needs its own: the example's Dictate button adds its sentence at the end, where it knows the text before it, with a space after a word or a chip. Its drop zone passes files to `attach()`.
+`Composer.useActions()` gives the composer's actions to any part inside Root, such as a dictation button that inserts its text: `insert`, `focus`, `blur`, `submit`, `attach`, `undo`, `redo`, `clearHistory`, `getValue` and `atEdge`, which tells whether the caret is on the first or the last line, for keys of your own. `insert` goes where the caret was, also while the prompt isn't focused. The object never changes, so reading it doesn't render your part again. Root's `actionsRef` gets the same object, for code outside Root. With `space: true`, `insert` adds a space where the text needs one, as the example's Dictate button does. Its drop zone passes files to `attach()`.
 
 ```tsx from="./examples/demo.tsx"
-/** Whether a sentence added at the end needs a space first: after a word or a chip. */
-const endsInWord = (value: Message) => {
-  const last = value.at(-1);
-  return last !== undefined && (Composer.isChip(last) || /\S$/.test(last));
-};
-
 function DictateButton() {
-  const {insert, focus, getValue} = Composer.useActions<MessageChip>();
+  const {insert, focus} = Composer.useActions<MessageChip>();
   return (
     <IconButton
       density="default"
       aria-label="Dictate"
       onClick={() => {
-        // Demo only: a fixed sentence; insert the text your speech recognition hears. It goes at
-        // the end, where the text before it is known: `space` spaces only around chips.
-        const sentence = 'Summarize the open pull requests.';
-        insert(endsInWord(getValue()) ? ` ${sentence}` : sentence, {at: 'end'});
-        focus({at: 'end'});
+        // Demo only: a fixed sentence; insert the text your speech recognition hears.
+        insert('Summarize the open pull requests.', {space: true});
+        focus({at: 'caret'});
       }}
     >
       <MicIcon />

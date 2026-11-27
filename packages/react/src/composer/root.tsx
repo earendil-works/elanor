@@ -59,7 +59,7 @@ export interface ComposerRootProps<T extends ComposerChip = ComposerChip> {
   readonly renderChip?: ((chip: T) => ReactNode) | undefined;
   /** What Backspace and Delete do to a chip beside the caret, for all chips or per chip. */
   readonly chipDeletion?: ComposerChipDeletion | ((chip: T) => ComposerChipDeletion) | undefined;
-  /** What a chip is, read by screen readers after its label, such as "file". */
+  /** For screen readers, such as "file"; read when drawn, so text that changes goes in the chip. */
   readonly getChipDescription?: ((chip: T) => string) | undefined;
   /** Announced when chips are removed. Defaults to "Removed {label}". */
   readonly getChipRemovedMessage?: ((chip: T) => string) | undefined;

@@ -132,24 +132,16 @@ function SecretNotice() {
   return found ? <Text role="alert">This looks like a key or a password.</Text> : null;
 }
 
-/** Whether a sentence added at the end needs a space first: after a word or a chip. */
-const endsInWord = (value: Message) => {
-  const last = value.at(-1);
-  return last !== undefined && (Composer.isChip(last) || /\S$/.test(last));
-};
-
 function DictateButton() {
-  const {insert, focus, getValue} = Composer.useActions<MessageChip>();
+  const {insert, focus} = Composer.useActions<MessageChip>();
   return (
     <IconButton
       density="default"
       aria-label="Dictate"
       onClick={() => {
-        // Demo only: a fixed sentence; insert the text your speech recognition hears. It goes at
-        // the end, where the text before it is known: `space` spaces only around chips.
-        const sentence = 'Summarize the open pull requests.';
-        insert(endsInWord(getValue()) ? ` ${sentence}` : sentence, {at: 'end'});
-        focus({at: 'end'});
+        // Demo only: a fixed sentence; insert the text your speech recognition hears.
+        insert('Summarize the open pull requests.', {space: true});
+        focus({at: 'caret'});
       }}
     >
       <MicIcon />
