@@ -56,8 +56,11 @@ export interface ComposerMeta {
   readonly pick: (files: File[], event: Event) => void;
   /** Whether Root's `onSubmit` takes a submit event of the Panel's form. */
   readonly takesSubmit: () => boolean;
-  /** Sets the value back to `defaultValue`, for the form's reset. */
-  readonly reset: (event: Event) => void;
+  /**
+   * Sets the value back to `defaultValue`, for the form's reset. Returns its text, `undefined` when
+   * nothing changed.
+   */
+  readonly reset: (event: Event) => string | undefined;
   /**
    * A ref callback for Submit and Stop: when the one with the focus goes, the one that comes next
    * in this composer takes the focus up.

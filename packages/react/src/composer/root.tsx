@@ -168,7 +168,10 @@ export function ComposerRoot<T extends ComposerChip = ComposerChip>({
       },
       pick: (files, event) => created.pick(files, event),
       takesSubmit: () => latest.current.options.onSubmit !== undefined,
-      reset: (event) => created.reset(latest.current.defaultValue, event),
+      reset: (event) => {
+        const {defaultValue: value, options} = latest.current;
+        return created.reset(value, event) ? options.toText(value) : undefined;
+      },
       handOff: (element) => {
         if (!element) return undefined;
         if (performance.now() - handedOffAt < HAND_OFF_MS) {

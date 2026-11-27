@@ -595,9 +595,10 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
   }
 
   /** For a form's reset event. */
-  reset(value: ComposerValue<T>, event: Event): void {
+  /** `false` when nothing changed or `onChange` canceled it. */
+  reset(value: ComposerValue<T>, event: Event): boolean {
     this.#armed = undefined;
-    this.#commit(value, caretAt(valueLength(value)), 'form-reset', event);
+    return this.#commit(value, caretAt(valueLength(value)), 'form-reset', event);
   }
 
   #emit(): void {
