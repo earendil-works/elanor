@@ -47,6 +47,11 @@ export interface ComposerMeta {
   readonly actions: ComposerActions<ComposerChip>;
   /** The prompt's hidden form value, whose form the prompt submits and resets with. */
   readonly formValue: RefObject<HTMLTextAreaElement | null>;
+  /**
+   * Commits pending IME text and writes the text into `formValue` at once: a form validates and
+   * submits it before React renders the commit.
+   */
+  readonly fillFormValue: () => void;
   /** Calls `onAttach` with the files picked in `Composer.Attach`. */
   readonly pick: (files: File[], event: Event) => void;
   /** Whether Root's `onSubmit` takes a submit event of the Panel's form. */

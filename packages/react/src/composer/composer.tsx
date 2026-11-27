@@ -391,8 +391,10 @@ export function ComposerSubmit({
       disabled={disabled || settings.disabled || settings.readOnly}
       onClick={(event) => {
         onClick?.(event);
-        if (event.defaultPrevented || event.currentTarget.form) return;
-        meta.actions.submit(event.nativeEvent);
+        if (event.defaultPrevented) return;
+        // The form validates and submits after the click.
+        if (event.currentTarget.form) meta.fillFormValue();
+        else meta.actions.submit(event.nativeEvent);
       }}
     >
       {children}

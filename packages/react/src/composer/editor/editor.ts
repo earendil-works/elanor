@@ -143,8 +143,12 @@ export interface ComposerActions<T extends ComposerChip = ComposerChip> {
    * empty value after sending.
    */
   clearHistory(historyKey?: string): void;
-  /** Calls `onSubmit` without the keyboard's checks (composing, suggestion items showing). */
+  /**
+   * Commits pending IME text, then calls `onSubmit` without the keyboard's checks (composing,
+   * suggestion items showing).
+   */
   submit(event?: Event): void;
+  /** With the text an input method is still composing, which the value gets when it ends. */
   getValue(): ComposerValue<T>;
   /** Calls `onAttach` (reason `api`) at the caret after selected text; ignores an empty list. */
   attach(files: File[]): void;
@@ -856,7 +860,14 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     const view = this.#focused ? this.#view : undefined;
     const range = view?.selection();
     if (!view || !range || range.start !== range.end) return null;
-    return offsetText(sliceValue(this.#composing ? view.read() : this.#latest, 0, range.start));
+    return offsetText(sliceValue(this.#shown(), 0, range.start));
+  }
+
+  /** The value with the text an input method is composing, which `#latest` gets at its end. */
+  #shown(): ComposerValue<T> {
+    return this.#composing && this.#view
+      ? normalize(this.#view.read(), this.#rename)
+      : this.#latest;
   }
 
   caretRect(offset: number): Rect | null {
@@ -1150,8 +1161,11 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       this.#cleared = true;
       this.#recall = undefined;
     },
-    submit: (event) => this.options.onSubmit?.(this.#latest, {event}),
-    getValue: () => this.#latest,
+    submit: (event) => {
+      this.#endComposition();
+      this.options.onSubmit?.(this.#latest, {event});
+    },
+    getValue: () => this.#shown(),
     attach: (files) => {
       if (files.length) this.#attach(files, this.#fileCaret(), {reason: 'api'});
     },
@@ -1202,6 +1216,9 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
   #fileCaret(): ComposerTextRange {
     return caretAt(this.#caret().end);
   }
+
+  /** For a form, which reads the text before React renders the commit. */
+  endComposition = (): void => this.#endComposition();
 
   /**
    * Commits pending IME text, as one step of its own, also before an edit that may land beside it;
@@ -1283,8 +1300,9 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     const onInput = (event: Event) => {
       const input = event instanceof InputEvent ? event : undefined;
       // IME text is read back at `compositionend`. Listeners still get each update, for
-      // suggestions.
-      if (this.#composing || input?.isComposing) {
+      // suggestions. An input method may go on composing after `#endComposition`.
+      if (input?.isComposing) this.#composing = true;
+      if (this.#composing) {
         this.#emit();
         return;
       }

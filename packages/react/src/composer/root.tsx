@@ -157,6 +157,12 @@ export function ComposerRoot<T extends ComposerChip = ComposerChip>({
       editor: created,
       actions: created.actions,
       formValue: {current: null},
+      // React renders the same text once the commit renders.
+      fillFormValue: () => {
+        created.endComposition();
+        const input = context.formValue.current;
+        if (input) input.value = latest.current.options.toText(created.getValue());
+      },
       pick: (files, event) => created.pick(files, event),
       takesSubmit: () => latest.current.options.onSubmit !== undefined,
       reset: (event) => created.reset(latest.current.defaultValue, event),
@@ -195,7 +201,16 @@ export function ComposerRoot<T extends ComposerChip = ComposerChip>({
       // found when submitting: the prompt may mount later, or its `form` change. Outside a form
       // there is nothing to submit, and the shortcut adds a line.
       get onSubmit() {
-        return submit ?? (owner() ? () => owner()?.requestSubmit() : undefined);
+        const form = owner();
+        return (
+          submit ??
+          (form
+            ? () => {
+                meta.fillFormValue();
+                form.requestSubmit();
+              }
+            : undefined)
+        );
       },
     });
     editor.show(value, historyKey);
