@@ -164,6 +164,11 @@ export class EditorView<T extends ComposerChip> {
     }
   }
 
+  /** Copies of the chips shown, for their hosts, while the text stays as it is. */
+  updateChips(value: ComposerValue<T>): void {
+    for (const segment of value) if (isChip(segment)) this.#hostFor(segment);
+  }
+
   /**
    * The value the DOM holds now: text without zero-width spaces, and a chip per known host.
    * Anything else, like a `<div>` a browser wrapped a line in, becomes its text, after a line

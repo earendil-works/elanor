@@ -331,6 +331,8 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
    */
   #revision = 0;
   #composing = false;
+  /** A value from outside came while an input method composed; the DOM shows it at the end. */
+  #stale = false;
   /**
    * The chip selected for removal, kept while the caret stays at `caret`. Only its information fill
    * shows it, with the caret collapsed: iOS draws a native range over a chip across the rest of the
@@ -448,7 +450,8 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
    * an edit it didn't take replaced by its value. Another `historyKey` switches to that key's
    * history.
    * A value from outside, like a controlled reset after sending, is its own undo step; the value
-   * this editor sent, passed back, isn't.
+   * this editor sent, passed back, isn't. While an input method composes, it shows once the
+   * composition ends, in place of the text composed: rewriting that text breaks the input method.
    */
   show(given: ComposerValue<T>, historyKey: string): void {
     const value = this.#normalizeGiven(given);
@@ -474,13 +477,16 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       // an edit it didn't take. It's an undo step of its own.
       this.#history.record({value, selection: null});
     }
-    // A copy, as from a parent that copies the value on every render, changes nothing shown.
-    const changed = !sameValue(value, this.#latest);
+    const previous = this.#latest;
     this.#latest = value;
-    if (changed) {
+    // A copy, as from a parent that copies the value on every render, changes nothing shown.
+    if (!sameValue(value, previous)) {
       this.#armed = undefined;
       this.#revision += 1;
-      this.#render(this.#keptSelection(edit?.before));
+      if (!this.#composing) this.#render(this.#keptSelection(edit?.before));
+      // Copies of the chips shown: the text composed is read back with them.
+      else if (sameContent(value, previous)) this.#view?.updateChips(value);
+      else this.#stale = true;
     }
     this.#emitValue();
   }
@@ -1200,11 +1206,19 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     return caretAt(this.#caret().end);
   }
 
-  /** Commits pending IME text, before an edit that may land beside it. */
+  /**
+   * Commits pending IME text, as one step of its own, also before an edit that may land beside it;
+   * or shows the value from outside that came meanwhile.
+   */
   #endComposition(): void {
     if (!this.#composing) return;
     this.#composing = false;
-    this.#readBack(undefined);
+    if (!this.#stale) {
+      this.#readBack(undefined);
+      return;
+    }
+    this.#stale = false;
+    this.#render(this.#keptSelection(undefined));
   }
 
   /** `details.insert` refuses once the text changed: `at` is an offset into what `onAttach` saw. */
@@ -1481,12 +1495,6 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       this.#composing = true;
     };
 
-    // The committed text is read back as one step of its own.
-    const onCompositionEnd = () => {
-      this.#composing = false;
-      this.#readBack(undefined);
-    };
-
     // A caret inside a chip's host moves to its edge, and the chips in the selection are marked.
     const onSelectionChange = () => {
       const selection = document.getSelection();
@@ -1516,7 +1524,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     const onBlur = () => {
       this.#focused = false;
       this.#pressing = false;
-      this.#composing = false;
+      this.#endComposition();
       this.#armed = undefined;
       this.#setSelected(new Set());
       this.#emit();
@@ -1547,7 +1555,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     on('pointerout', onPointerOut);
     on('click', onClick);
     on('compositionstart', onCompositionStart);
-    on('compositionend', onCompositionEnd);
+    on('compositionend', () => this.#endComposition());
     on('focus', onFocus);
     on('blur', onBlur);
     document.addEventListener('selectionchange', onSelectionChange);
