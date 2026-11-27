@@ -279,6 +279,8 @@ type Edit<T extends ComposerChip> = {
   readonly group: EditGroup | undefined;
   /** A step recorded before this edit's own, as a paste's text before what it became. */
   readonly prior: Step<T> | undefined;
+  /** The value and selection the edit started from. */
+  readonly before: Step<T>;
 };
 
 /** Per `historyKey`; the least recently shown is dropped first. */
@@ -476,7 +478,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     this.#armed = undefined;
     if (!sameValue(value, this.#latest)) this.#revision += 1;
     this.#latest = value;
-    this.#render(null);
+    this.#render(this.#keptSelection(edit?.before));
     this.#emitValue();
   }
 
@@ -502,7 +504,20 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
 
   #render(selection: SavedSelection): void {
     this.#view?.render(this.#latest);
-    if (selection && this.#focused) this.#view?.select(this.#clamp(selection));
+    if (!selection || !this.#focused) return;
+    this.#selection = this.#clamp(selection);
+    this.#view?.select(this.#selection);
+  }
+
+  /**
+   * The selection to restore once a render replaced the text it was in, which moves the caret to
+   * that text's start: the one before an edit the value undoes, else the DOM's. Read before the
+   * render.
+   */
+  #keptSelection(before: Step<T> | undefined): SavedSelection {
+    if (!this.#focused) return null;
+    if (before?.selection && sameContent(before.value, this.#latest)) return before.selection;
+    return this.#view?.selection() ?? null;
   }
 
   #clamp({start, end}: ComposerTextRange): ComposerTextRange {
@@ -548,13 +563,15 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     this.options.onChange(value, details);
     if (details.isCanceled) {
       // A canceled edit the browser already made comes out of the DOM.
-      this.#render(this.#view?.selection() ?? null);
+      this.#render(this.#keptSelection({value: before, selection: this.#selection}));
       return false;
     }
     this.#armed = undefined;
     this.#latest = value;
     this.#revision += 1;
-    this.#edit = record ? {value, selection, group, prior} : undefined;
+    this.#edit = record
+      ? {value, selection, group, prior, before: {value: before, selection: this.#selection}}
+      : undefined;
     if (selection) this.#selection = selection;
     this.#lastEnd = group && selection ? selection.end : -1;
     this.#render(selection);
