@@ -37,9 +37,11 @@ const WORD_START = new RegExp(
     `\\p{Regional_Indicator}\\u20E3${UNSPACED_SCRIPT}]`,
   'u',
 );
-// End a query as whitespace does; in text without spaces it would run on through the sentence.
-// Only CJK marks: ASCII ones occur in paths and addresses, and `’` is also an apostrophe.
-const WORD_END = /[\s、。，．！？：；｡､」』）】〕〉》｣］｝〗〙〛]/u;
+// End a query as whitespace does, such as `@sam,` at the comma; in text without spaces it would
+// otherwise run on through the sentence. Not `.`, `-`, `_`, `/`, `\`, `~`, `+`, `=`, `@`, `#` or
+// apostrophes: they occur in paths and names, such as `@~/a+b.ts` and `@O'Brien`, and a `.` may
+// end a sentence or start a file extension.
+const WORD_END = /[\s,;:!?)\]}"、。，．！？：；｡､」』）】〕〉》｣］｝〗〙〛]/u;
 
 const VARIATION_SELECTOR = /[\uFE0E\uFE0F]/;
 
@@ -92,15 +94,17 @@ export function findMatch(
 ): ComposerSuggestionMatch | null {
   let start = before.length;
   while (start > 0 && !endsWord(before[start - 1])) start -= 1;
-  // The boundary check reads the text as typed; only the trigger's search is folded.
-  const word = halfWidth(before.slice(start));
   let found: ComposerSuggestionMatch | null = null;
   for (const {character, position = 'word-start'} of triggers) {
+    // A trigger such as `:` may end the word before; only its query can't hold one.
+    const from = Math.max(0, start - character.length);
+    // The boundary check reads the text as typed; only the trigger's search is folded.
+    const text = halfWidth(before.slice(from));
     const folded = halfWidth(character);
     for (
-      let index = word.lastIndexOf(folded) + start;
-      index >= start;
-      index = index > start ? word.lastIndexOf(folded, index - start - 1) + start : -1
+      let index = text.lastIndexOf(folded) + from;
+      index >= from;
+      index = index > from ? text.lastIndexOf(folded, index - from - 1) + from : -1
     ) {
       if (!at(before, index, position)) continue;
       if (!found || index > found.range.start)
