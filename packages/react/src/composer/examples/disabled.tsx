@@ -10,7 +10,7 @@ export default function ComposerDisabled() {
           <Composer.InputGroup>
             <Composer.Prompt aria-label="Message" placeholder="Sign in to send messages" />
             <Composer.Controls render={<Stack direction="row" gap="auto" align="center" />}>
-              <Composer.Attach aria-label="Attach files" />
+              <Composer.Attach />
               <Composer.Submit />
             </Composer.Controls>
           </Composer.InputGroup>
@@ -25,7 +25,7 @@ export default function ComposerDisabled() {
           <Composer.InputGroup>
             <Composer.Prompt aria-label="Message" />
             <Composer.Controls render={<Stack direction="row" gap="auto" align="center" />}>
-              <Composer.Attach aria-label="Attach files" />
+              <Composer.Attach />
               <Composer.Submit />
             </Composer.Controls>
           </Composer.InputGroup>

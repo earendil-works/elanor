@@ -100,7 +100,7 @@ function SendOrStop({replying, onStop}: SendOrStopProps) {
 
 ## Files
 
-`Attach` opens the file picker; set `accept` and `multiple` on it, and `capture` to offer the camera on phones. Root's `onAttach` receives the picked files, and files pasted on the prompt or dropped on the input group, with a `reason` of `picker`, `paste` or `drop`. Files are chips in the text, where they are mentioned: in `onAttach`, pass one chip per file, drawn as `Upload › name`, to `details.insert`. `details.insert` always puts a space around what it inserts where the text needs one. `actions.insert` inserts exactly what you pass; set `space: true` for an insert a person made, as the example does for a suggestion pick.
+`Attach` opens the file picker; set `accept` and `multiple` on it, and `capture` to offer the camera on phones. It's labelled "Attach files"; give a second Attach its own `aria-label`, as the example's camera button has. Root's `onAttach` receives the picked files, and files pasted on the prompt or dropped on the input group, with a `reason` of `picker`, `paste` or `drop`. Files are chips in the text, where they are mentioned: in `onAttach`, pass one chip per file, drawn as `Upload › name`, to `details.insert`. `details.insert` always puts a space around what it inserts where the text needs one. `actions.insert` inserts exactly what you pass; set `space: true` for an insert a person made, as the example does for a suggestion pick.
 
 - `details.insert` puts them at `details.at`. Files go in at the caret, after any selected text, or at the end if the prompt was never focused; dropped files go there wherever on the input group they are dropped. A paste replaces the selection. After `details.insert`, the caret collapses after the chips.
 - They are one undo step, with the paste's or drop's reason and event in `onValueChange`'s details.
@@ -391,7 +391,7 @@ function MessagePrompt({messages}: {messages: readonly Message[]}) {
 ```tsx from="./examples/demo.tsx"
 <Composer.Controls render={<Stack direction="row" gap="auto" align="center" />}>
   <Stack direction="row" gap="xSmall" align="center">
-    <Composer.Attach aria-label="Attach files" accept="image/*,.pdf" />
+    <Composer.Attach accept="image/*,.pdf" />
     <Composer.Attach
       aria-label="Take a photo"
       accept="image/*"

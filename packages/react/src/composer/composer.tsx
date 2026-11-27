@@ -309,9 +309,9 @@ export interface ComposerAttachProps extends Omit<IconButtonProps, 'density'> {
 }
 
 /**
- * An `IconButton` with `density="default"` that opens the browser's file picker and passes the
- * picked files to Root's `onAttach`, with reason `picker`. Needs an `aria-label`. Disabled while
- * the composer is disabled or read-only.
+ * An `IconButton` with `density="default"`, labelled "Attach files", that opens the browser's file
+ * picker and passes the picked files to Root's `onAttach`, with reason `picker`. Disabled while the
+ * composer is disabled or read-only.
  */
 export function ComposerAttach({
   accept,
@@ -342,6 +342,7 @@ export function ComposerAttach({
         }}
       />
       <IconButton
+        aria-label="Attach files"
         {...props}
         density="default"
         disabled={disabled || settings.disabled || settings.readOnly}

@@ -206,7 +206,7 @@ export default function ComposerDemo() {
             <MessagePrompt messages={messages} />
             <Composer.Controls render={<Stack direction="row" gap="auto" align="center" />}>
               <Stack direction="row" gap="xSmall" align="center">
-                <Composer.Attach aria-label="Attach files" accept="image/*,.pdf" />
+                <Composer.Attach accept="image/*,.pdf" />
                 <Composer.Attach
                   aria-label="Take a photo"
                   accept="image/*"
