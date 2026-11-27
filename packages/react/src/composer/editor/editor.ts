@@ -143,8 +143,12 @@ export interface ComposerActions<T extends ComposerChip = ComposerChip> {
    * empty value after sending.
    */
   clearHistory(historyKey?: string): void;
-  /** Calls `onSubmit` without the keyboard's checks (composing, suggestion items showing). */
+  /**
+   * Commits pending IME text, then calls `onSubmit` without the keyboard's checks (composing,
+   * suggestion items showing). Does nothing while the prompt is disabled or read-only.
+   */
   submit(event?: Event): void;
+  /** With the text an input method is still composing, which the value gets when it ends. */
   getValue(): ComposerValue<T>;
   /** Calls `onAttach` (reason `api`) at the caret after selected text; ignores an empty list. */
   attach(files: File[]): void;
@@ -226,12 +230,17 @@ export interface EditorOptions<T extends ComposerChip> {
    * 229 after it) or the key handler takes Enter, such as while suggestion items show; and for
    * `submit()`.
    * `submit()` skips those checks and submits empty values too; check the value in `onSubmit`.
-   * Without it, the submit shortcut adds a line.
+   * Without it, the submit shortcut adds a line. Never called while not `editable`.
    */
   readonly onSubmit:
     | ((value: ComposerValue<T>, details: ComposerSubmitDetails) => void)
     | undefined;
   readonly submitShortcut: ComposerSubmitShortcut;
+  /**
+   * Before the submit shortcut calls `onSubmit`: `false`, once the form showed what's invalid,
+   * stops it. `submit()` doesn't ask.
+   */
+  readonly reportValidity: () => boolean;
   /** `false` when disabled or read-only. */
   readonly editable: boolean;
   /**
@@ -331,8 +340,11 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
    */
   #revision = 0;
   #composing = false;
-  /** A value from outside came while an input method composed; the DOM shows it at the end. */
-  #stale = false;
+  /**
+   * A value from outside came, or an edit was made, while an input method composed: the DOM shows
+   * it at `compositionend`, with the caret here, and drops what the input method committed.
+   */
+  #stale: ComposerTextRange | undefined;
   /**
    * The chip selected for removal, kept while the caret stays at `caret`. Only its information fill
    * shows it, with the caret collapsed: iOS draws a native range over a chip across the rest of the
@@ -403,7 +415,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       this.#armed = undefined;
       // A prompt removed while an input method composed gets no `compositionend`.
       this.#composing = false;
-      this.#stale = false;
+      this.#stale = undefined;
       this.#element = undefined;
       this.#view = undefined;
       this.#hosts = [];
@@ -489,7 +501,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     else {
       this.#armed = undefined;
       this.#revision += 1;
-      if (this.#composing) this.#stale = true;
+      if (this.#composing) this.#stale = caretAt(valueLength(value));
       else if (!edit) this.#render(caretAt(valueLength(value)));
       // The controlling component ignored the edit, or changed it, as by clamping its length.
       else if (sameContent(value, edit.before.value))
@@ -553,13 +565,24 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       at,
       record = true,
       prior,
-    }: {group?: EditGroup; at?: number; record?: boolean; prior?: Step<T> | undefined} = {},
+      deferred = false,
+    }: {
+      group?: EditGroup;
+      at?: number;
+      record?: boolean;
+      prior?: Step<T> | undefined;
+      /** Leaves the DOM to the input method composing in it, which rendering would break. */
+      deferred?: boolean;
+    } = {},
   ): boolean {
     if (group && at !== undefined && at !== this.#lastEnd) this.#history.seal();
     const before = this.#latest;
     const value = normalize(next, this.#rename);
+    const render = (shown: SavedSelection) => {
+      if (!deferred) this.#render(shown);
+    };
     if (sameValue(before, value)) {
-      this.#render(selection);
+      render(selection);
       return false;
     }
     const removed = removedChips(before, value);
@@ -569,7 +592,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     this.options.onChange(value, details);
     if (details.isCanceled) {
       // A canceled edit the browser already made comes out of the DOM.
-      this.#render(this.#selection);
+      render(this.#selection);
       return false;
     }
     this.#armed = undefined;
@@ -580,7 +603,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       : undefined;
     if (selection) this.#selection = selection;
     this.#lastEnd = group && selection ? selection.end : -1;
-    this.#render(selection);
+    render(selection);
     if (removed.length && this.#element) {
       const message = this.options.getChipRemovedMessage ?? ((chip: T) => `Removed ${chip.label}`);
       // Joined, so several chips removed at once are one message.
@@ -590,10 +613,14 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     return true;
   }
 
-  /** For a form's reset event. */
-  reset(value: ComposerValue<T>, event: Event): void {
+  /** For a form's reset event. `false` when nothing changed or `onChange` canceled it. */
+  reset(value: ComposerValue<T>, event: Event): boolean {
     this.#armed = undefined;
-    this.#commit(value, caretAt(valueLength(value)), 'form-reset', event);
+    const caret = caretAt(valueLength(value));
+    const deferred = this.#composing;
+    const reset = this.#commit(value, caret, 'form-reset', event, {deferred});
+    if (reset && deferred) this.#stale = caret;
+    return reset;
   }
 
   #emit(): void {
@@ -953,9 +980,9 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       // Alt is allowed with either shortcut; `onSubmit` reads `event.altKey`.
       const submits =
         !event.shiftKey && (submitShortcut === 'enter' ? !event.ctrlKey && !event.metaKey : mod);
-      if (!submits || !onSubmit) return;
+      if (!submits || !onSubmit || !this.options.editable) return;
       event.preventDefault();
-      onSubmit(this.#latest, {event});
+      if (this.options.reportValidity()) onSubmit(this.#latest, {event});
     }
   };
 
@@ -1121,19 +1148,22 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       {at = 'caret', startLine = false, reason = 'imperative-action', event, space = false} = {},
     ) => {
       if (!this.options.editable) return false;
-      this.#endComposition();
+      this.takeComposed();
       const length = valueLength(this.#latest);
       const range = at === 'end' ? caretAt(length) : at === 'caret' ? this.#caret() : at;
       const given = typeof content === 'string' || 'id' in content ? [content] : content;
       const before = offsetText(sliceValue(this.#latest, 0, range.start));
       const segments =
         startLine && before !== '' && !before.endsWith('\n') ? ['\n', ...given] : given;
-      return this.#insert(
+      const inserted = this.#insert(
         space ? withSpaces(this.#latest, range, segments) : segments,
         range,
         event,
         reason,
       );
+      // The insert rewrote the text an input method composes.
+      if (inserted && this.#composing) this.#stale = this.#caret();
+      return inserted;
     },
     undo: () => this.#applyStep('history-undo'),
     redo: () => this.#applyStep('history-redo'),
@@ -1150,8 +1180,15 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       this.#cleared = true;
       this.#recall = undefined;
     },
-    submit: (event) => this.options.onSubmit?.(this.#latest, {event}),
-    getValue: () => this.#latest,
+    submit: (event) => {
+      if (!this.options.editable) return;
+      this.takeComposed();
+      this.options.onSubmit?.(this.#latest, {event});
+    },
+    getValue: () =>
+      this.#composing && !this.#stale && this.#view
+        ? normalize(this.#view.read(), this.#rename)
+        : this.#latest,
     attach: (files) => {
       if (files.length) this.#attach(files, this.#fileCaret(), {reason: 'api'});
     },
@@ -1204,18 +1241,29 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
   }
 
   /**
+   * Commits the text an input method composes, which goes on composing, so sending has it. A value
+   * from outside before `compositionend`, such as a reset after sending, replaces it then.
+   */
+  takeComposed = (): void => {
+    const view = this.#view;
+    if (!this.#composing || this.#stale || !view) return;
+    this.#commit(view.read(), view.selection(), 'input-change', undefined, {deferred: true});
+  };
+
+  /**
    * Commits pending IME text, as one step of its own, also before an edit that may land beside it;
    * or shows the value from outside that came meanwhile.
    */
   #endComposition(): void {
     if (!this.#composing) return;
     this.#composing = false;
-    if (!this.#stale) {
+    const stale = this.#stale;
+    if (!stale) {
       this.#readBack(undefined);
       return;
     }
-    this.#stale = false;
-    this.#render(caretAt(valueLength(this.#latest)));
+    this.#stale = undefined;
+    this.#render(stale);
   }
 
   /** `details.insert` refuses once the text changed: `at` is an offset into what `onAttach` saw. */
@@ -1283,8 +1331,9 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     const onInput = (event: Event) => {
       const input = event instanceof InputEvent ? event : undefined;
       // IME text is read back at `compositionend`. Listeners still get each update, for
-      // suggestions.
-      if (this.#composing || input?.isComposing) {
+      // suggestions. An input method may go on composing after `#endComposition`.
+      if (input?.isComposing) this.#composing = true;
+      if (this.#composing) {
         this.#emit();
         return;
       }

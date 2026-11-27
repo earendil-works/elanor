@@ -12,7 +12,7 @@ import {
   useValueChanged,
 } from '../utils/base-ui-internals.ts';
 import {fieldValidityMapping} from '../utils/field-validity.ts';
-import {useMergedRef} from '../utils/refs.ts';
+import {useMergedRef, useStableRef} from '../utils/refs.ts';
 import {
   useComposerMeta,
   useComposerSettings,
@@ -77,6 +77,9 @@ export function ComposerPrompt({
   const {labelId, getDescriptionProps} = useLabelableContext();
   const id = useLabelableId({id: idProp});
   const control = useRef<HTMLDivElement>(null);
+  // A new ref, such as an inline callback, would otherwise bind the editor again: its chips'
+  // content would mount anew and a composition in progress would be lost.
+  const forwarded = useStableRef(ref);
   const popup = useStoreSelector(meta.popup, (state) => state);
 
   const editable = !disabled && !readOnly;
@@ -93,7 +96,7 @@ export function ComposerPrompt({
   const element = useRender({
     defaultTagName: 'div',
     render,
-    ref: ref ? [ref, meta.editor.bind, control] : [meta.editor.bind, control],
+    ref: [forwarded, meta.editor.bind, control],
     state: {empty, disabled, readOnly, valid, touched, dirty, filled, focused},
     stateAttributesMapping: fieldValidityMapping,
     props: mergeProps<'div'>(
@@ -171,6 +174,9 @@ function FormValue({
   const {clearErrors} = useFormContext();
   const fieldName = field.name ?? name;
   const ref = useMergedRef<HTMLElement>(meta.formValue, field.validation.inputRef);
+  // A form reset isn't validated, as a native input's isn't: after a submit, an empty reset would
+  // show the required error at once.
+  const resetText = useRef<string | undefined>(undefined);
 
   useRegisterFieldControl(control, id, text, () => text, !disabled, name);
   const {setFilled} = field;
@@ -178,13 +184,17 @@ function FormValue({
   useValueChanged(text, () => {
     clearErrors(fieldName);
     field.setDirty(text !== (field.validityData.initialValue ?? ''));
-    field.validation.change(text);
+    field.validation.change(text, text === resetText.current);
+    resetText.current = undefined;
   });
   useEffect(() => {
     const owner = meta.formValue.current?.form;
     if (!owner) return;
-    owner.addEventListener('reset', meta.reset);
-    return () => owner.removeEventListener('reset', meta.reset);
+    const reset = (event: Event) => {
+      resetText.current = meta.reset(event);
+    };
+    owner.addEventListener('reset', reset);
+    return () => owner.removeEventListener('reset', reset);
   }, [meta, form]);
 
   return (

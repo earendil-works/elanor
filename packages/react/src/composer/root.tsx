@@ -67,7 +67,10 @@ export interface ComposerRootProps<T extends ComposerChip = ComposerChip> {
   readonly getChipSelectedMessage?: ((chip: T, key: 'Backspace' | 'Delete') => string) | undefined;
   /** Names the draft shown, so each draft keeps its own undo history. */
   readonly historyKey?: string | undefined;
-  /** Called by the submit shortcut, `Composer.Submit`, the Panel's form and `submit()`. */
+  /**
+   * Called by the submit shortcut, `Composer.Submit`, the Panel's form and `submit()`, never while
+   * disabled or read-only.
+   */
   readonly onSubmit?:
     | ((value: ComposerValue<T>, details: ComposerSubmitDetails) => void)
     | undefined;
@@ -142,6 +145,13 @@ export function ComposerRoot<T extends ComposerChip = ComposerChip>({
     getChipDescription,
     onSubmit,
     submitShortcut,
+    // Enter checks the form's constraints as its Submit button does, keeping its key event for
+    // `onSubmit`.
+    // Without `onSubmit`, `requestSubmit` validates once more and finds nothing new.
+    reportValidity: () => {
+      const form = meta.formValue.current?.form;
+      return !form || form.noValidate || form.reportValidity();
+    },
     editable: !disabled && !readOnly,
     onAttach,
     getPastedValue,
@@ -157,9 +167,18 @@ export function ComposerRoot<T extends ComposerChip = ComposerChip>({
       editor: created,
       actions: created.actions,
       formValue: {current: null},
+      // The form reads the textarea before React renders the commit.
+      fillFormValue: () => {
+        created.takeComposed();
+        const input = context.formValue.current;
+        if (input) input.value = latest.current.options.toText(created.getValue());
+      },
       pick: (files, event) => created.pick(files, event),
       takesSubmit: () => latest.current.options.onSubmit !== undefined,
-      reset: (event) => created.reset(latest.current.defaultValue, event),
+      reset: (event) => {
+        const {defaultValue: value, options} = latest.current;
+        return created.reset(value, event) ? options.toText(value) : undefined;
+      },
       handOff: (element) => {
         if (!element) return undefined;
         if (performance.now() - handedOffAt < HAND_OFF_MS) {
@@ -195,7 +214,16 @@ export function ComposerRoot<T extends ComposerChip = ComposerChip>({
       // found when submitting: the prompt may mount later, or its `form` change. Outside a form
       // there is nothing to submit, and the shortcut adds a line.
       get onSubmit() {
-        return submit ?? (owner() ? () => owner()?.requestSubmit() : undefined);
+        const form = owner();
+        return (
+          submit ??
+          (form
+            ? () => {
+                meta.fillFormValue();
+                form.requestSubmit();
+              }
+            : undefined)
+        );
       },
     });
     editor.show(value, historyKey);

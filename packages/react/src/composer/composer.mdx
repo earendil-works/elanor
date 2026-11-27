@@ -59,7 +59,7 @@ The containers take any number of children, and an empty one takes no room. Pane
 
 ## Sending
 
-Enter and Alt+Enter call Root's `onSubmit`, and so does Submit. The details carry the event, so Alt+Enter can do something else, such as queue a follow-up. Shift+Enter adds a line. Set `submitShortcut="mod-enter"` to send with Cmd+Enter or Ctrl+Enter instead; then Enter adds a line. Nothing is sent while an input method is composing, or while [suggestion](#suggestions) items show, where Enter picks one. The composer doesn't check whether the prompt is empty: Submit stays enabled, and you decide, for example with `empty` from `Composer.useStatus()`. Some Android keyboards don't report which key was pressed, so there Enter adds a line and Submit sends.
+Enter and Alt+Enter call Root's `onSubmit`, and so does Submit. The details carry the event, so Alt+Enter can do something else, such as queue a follow-up. Shift+Enter adds a line. Set `submitShortcut="mod-enter"` to send with Cmd+Enter or Ctrl+Enter instead; then Enter adds a line. Enter sends nothing while an input method is composing, or while [suggestion](#suggestions) items show, where Enter picks one; Submit and `submit()` send the word being composed too. In a form, Enter first checks the browser's constraints, such as `required`; `submit()` doesn't. Enter doesn't run a Field's `validate` function, so check the text in `onSubmit` too. The composer doesn't check whether the prompt is empty: Submit stays enabled, and you decide, for example with `empty` from `Composer.useStatus()`. Some Android keyboards don't report which key was pressed, so there Enter adds a line and Submit sends.
 
 The example checks the message in `onSubmit`, then clears the prompt and its undo history:
 
@@ -508,6 +508,6 @@ When the value comes from a store, subscribe in a small component that renders R
 
 ## Disabled and read-only
 
-`disabled` on Root disables the prompt, Attach and Submit. `readOnly` keeps the text focusable and copyable but not editable, and doesn't raise a phone's keyboard. Panel, InputGroup and Prompt render `data-disabled`, `data-readonly` and `data-empty`, for your own styles.
+`disabled` on Root disables the prompt, Attach and Submit. `readOnly` keeps the text focusable and copyable but not editable, and doesn't raise a phone's keyboard. Either way nothing is sent: Submit is disabled, and neither Enter nor `submit()` calls `onSubmit` or submits the form. Panel, InputGroup and Prompt render `data-disabled`, `data-readonly` and `data-empty`, for your own styles.
 
 <Demo example="./examples/disabled.tsx" />
