@@ -161,7 +161,7 @@ export interface EditorBinding {
   /**
    * A React ref callback for the editable element. While a chip is armed for removal, the element
    * has `data-chip-armed` and the chip's host keeps `data-selected`. While chips are dragged, their
-   * hosts have `data-dragging`.
+   * hosts have `data-dragging`. While an input method composes, the element has `data-composing`.
    */
   bind(element: HTMLElement | null): (() => void) | undefined;
   /**
