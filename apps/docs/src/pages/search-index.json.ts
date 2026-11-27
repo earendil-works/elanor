@@ -19,17 +19,27 @@ import {defaultTokenBrand, tokenAreaHref, tokenAreas} from '../lib/token-pages.t
  * the other pages by their introductions.
  */
 
-/** Markdown as plain text: no code blocks, demos, or markup. */
+/**
+ * Markdown as plain text: no code blocks, demos, or markup. Code spans keep their text, such as
+ * the `>` of `render={<form />}`.
+ */
 function plainText(markdown: string): string {
-  return markdown
-    .replace(/^```[\s\S]*?^```$/gm, ' ')
-    .replace(demoBlock, ' ')
-    .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
-    .replace(/`|\*\*?/g, '')
-    .replace(/[|>#]/g, ' ')
-    .replace(/^\s*-{3,}\s*$/gm, ' ')
-    .replace(/\s+/g, ' ')
-    .trim();
+  return (
+    markdown
+      .replace(/^```[\s\S]*?^```$/gm, ' ')
+      .replace(demoBlock, ' ')
+      .replace(/^[ \t]*(?:#{1,6}|>|[-*+]|\d+\.)[ \t]+/gm, '')
+      // Rules and the rows under table headings.
+      .replace(/^[ \t|:-]*-{3,}[ \t|:-]*$/gm, ' ')
+      .replace(/!?\[([^\]]*)\]\([^)]*\)/g, '$1')
+      .split(/(`[^`\n]*`)/)
+      .map((text, index) =>
+        index % 2 ? text.slice(1, -1) : text.replace(/\*\*?/g, '').replace(/\|/g, ' '),
+      )
+      .join('')
+      .replace(/\s+/g, ' ')
+      .trim()
+  );
 }
 
 function excerpt(text: string, length = 200): string {
@@ -102,22 +112,27 @@ async function componentRecords(): Promise<DocsSearchRecord[]> {
     const url = `/components/${entry.id}/`;
     records.push(...markdownRecords(body, url, pageTitle, groupTitle, componentDescription(entry)));
 
-    const parts = orderedApi(entry.id, body);
-    if (parts.length > 0) {
-      const names = parts.map((part) => part.name).join(', ');
+    const api = orderedApi(entry.id, body);
+    if (api.parts.length > 0 || api.functions.length > 0) {
+      const names = [...api.parts, ...api.functions].map((item) => item.name).join(', ');
       records.push({
         id: `${url}#api`,
         url: `${url}#api`,
         title: 'API',
         pageTitle,
         groupTitle,
-        text: parts
-          .flatMap((part) => [
+        text: [
+          ...api.parts.flatMap((part) => [
             part.name,
             part.description ?? '',
             ...part.props.map((prop) => `${prop.name} ${prop.description ?? ''}`),
-          ])
-          .join(' '),
+          ]),
+          ...api.functions.flatMap((item) => [
+            item.name,
+            'description' in item ? (item.description ?? '') : '',
+          ]),
+          ...api.types.map((type) => type.name),
+        ].join(' '),
         excerpt: excerpt(names),
       });
     }

@@ -6,8 +6,9 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "check": "pnpm run lint && pnpm run check:wording && pnpm run check:types",
+    "check": "pnpm run lint && pnpm run check:wording && pnpm run check:examples && pnpm run check:types",
     "check:wording": "node scripts/check-wording.ts",
+    "check:examples": "node scripts/check-examples.ts",
     "check:prepare": "pnpm --filter @earendil-works/elanor-icons-boiled-react... --filter @earendil-works/elanor-code-themes run build",
     "check:types": "pnpm run check:prepare && astro check",
     "lint": "pnpm run lint:oxlint && pnpm run lint:stylelint",

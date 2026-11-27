@@ -5,7 +5,7 @@ import ts from 'typescript';
 
 import {pascalName} from './component-name.ts';
 
-/** Props reference for the public React components, read from their TypeScript types. */
+/** API reference for the public React components and functions, read from their TypeScript types. */
 
 export interface ApiProp {
   readonly name: string;
@@ -23,11 +23,47 @@ export interface ApiPart {
   /** Props declared by Elanor. Inherited props are summarized by `baseUi` and `element`. */
   readonly props: readonly ApiProp[];
   /** The Base UI part the props come from, if any. */
-  readonly baseUi?: {readonly name: string; readonly url: string} | undefined;
+  readonly baseUi?: BaseUiLink | undefined;
   /** Default HTML element as inline Markdown, such as `` `<div>` ``. */
   readonly element?: string | undefined;
+  /** Accepts React's HTML attributes, without a `baseUi` link that documents them. */
+  readonly attributes: boolean;
+  /** Accepts `ref`, without a `baseUi` link that documents it. */
+  readonly ref: boolean;
   /** Accepts Base UI's `render` prop without a `baseUi` link that documents it. */
   readonly render: boolean;
+}
+
+export interface BaseUiLink {
+  readonly name: string;
+  readonly url: string;
+}
+
+/**
+ * An exported function, such as `Composer.useActions`: Elanor's with its signature, or one
+ * Base UI documents, such as `Popover.createHandle`.
+ */
+export type ApiFunction =
+  | {
+      readonly name: string;
+      /** As TypeScript, such as `function useStatus(): ComposerStatus;`. */
+      readonly signature: string;
+      readonly description?: string | undefined;
+    }
+  | {readonly name: string; readonly baseUi: BaseUiLink};
+
+/** An Elanor type that a function takes or returns. */
+export interface ApiType {
+  readonly name: string;
+  /** The declaration with its JSDoc, as in the source. */
+  readonly declaration: string;
+}
+
+export interface ComponentApi {
+  readonly parts: readonly ApiPart[];
+  readonly functions: readonly ApiFunction[];
+  /** The types the functions use, and the types those use, in the order they come up. */
+  readonly types: readonly ApiType[];
 }
 
 // Read through the docs package's dependency link, as in packages.ts.
@@ -53,16 +89,18 @@ const elements: Record<string, string> = {
   HTMLUListElement: 'ul',
 };
 
-let cache: Map<string, ApiPart[]> | undefined;
+let cache: Map<string, ComponentApi> | undefined;
 let baseUiRoot: string | undefined;
 
-/** Parts exported from the component directory `page`, such as `button`. */
-export function componentApi(page: string): ApiPart[] {
+const noApi: ComponentApi = {parts: [], functions: [], types: []};
+
+/** What the component directory `page`, such as `button`, exports. */
+export function componentApi(page: string): ComponentApi {
   cache ??= readApi();
-  return cache.get(page) ?? [];
+  return cache.get(page) ?? noApi;
 }
 
-function readApi(): Map<string, ApiPart[]> {
+function readApi(): Map<string, ComponentApi> {
   const config = ts.getParsedCommandLineOfConfigFile(`${packageRoot}tsconfig.json`, undefined, {
     ...ts.sys,
     onUnRecoverableConfigFileDiagnostic: (diagnostic) => {
@@ -78,9 +116,30 @@ function readApi(): Map<string, ApiPart[]> {
     .find((file) => file.fileName.includes('/@base-ui/react/'));
   baseUiRoot = baseUiFile?.fileName.replace(/(\/@base-ui\/react\/).*$/, '$1');
   const index = program.getSourceFile(entry);
-  if (!index) throw new Error(`Cannot read ${entry}.`);
+  const indexSymbol = index && checker.getSymbolAtLocation(index);
+  if (!index || !indexSymbol) throw new Error(`Cannot read ${entry}.`);
+  const publicTypes = new Set(
+    checker
+      .getExportsOfModule(indexSymbol)
+      .map((symbol) => resolveAlias(checker, symbol))
+      .filter((symbol) => symbol.flags & ts.SymbolFlags.Type),
+  );
 
-  const pages = new Map<string, ApiPart[]>();
+  const pages = new Map<string, {parts: ApiPart[]; functions: ApiFunction[]; uses: ts.Node[]}>();
+  // Capitalized exports are components; other functions are hooks and helpers.
+  const read = (page: string, name: string, exported: ts.Symbol) => {
+    const entries = pages.get(page) ?? {parts: [], functions: [], uses: []};
+    pages.set(page, entries);
+    if (/^[A-Z]/.test(name.split('.').at(-1) ?? '')) {
+      const part = readPart(checker, name, exported);
+      if (part) entries.parts.push(part);
+      return;
+    }
+    const found = readFunction(checker, name, resolveAlias(checker, exported));
+    if (!found) return;
+    entries.functions.push(found.api);
+    if (found.node) entries.uses.push(found.node);
+  };
   for (const statement of index.statements) {
     if (!ts.isExportDeclaration(statement) || statement.isTypeOnly) continue;
     const specifier = statement.moduleSpecifier;
@@ -88,27 +147,124 @@ function readApi(): Map<string, ApiPart[]> {
     const page = specifier.text.split('/')[1];
     const clause = statement.exportClause;
     if (!page || !clause) continue;
-    const parts = pages.get(page) ?? [];
-    pages.set(page, parts);
 
     if (ts.isNamespaceExport(clause)) {
       const namespace = checker.getSymbolAtLocation(clause.name);
       const module = namespace && resolveAlias(checker, namespace);
       if (!module) continue;
       for (const member of checker.getExportsOfModule(module)) {
-        const part = readPart(checker, `${clause.name.text}.${member.name}`, member);
-        if (part) parts.push(part);
+        read(page, `${clause.name.text}.${member.name}`, member);
       }
     } else {
       for (const element of clause.elements) {
         if (element.isTypeOnly) continue;
         const symbol = checker.getSymbolAtLocation(element.name);
-        const part = symbol && readPart(checker, element.name.text, symbol);
-        if (part) parts.push(part);
+        if (symbol) read(page, element.name.text, symbol);
       }
     }
   }
-  return pages;
+  return new Map(
+    [...pages].map(([page, {parts, functions, uses}]) => [
+      page,
+      {parts, functions, types: usedTypes(checker, uses, publicTypes)},
+    ]),
+  );
+}
+
+/**
+ * A function's API, and the declaration whose types it exposes when Elanor writes one: a function
+ * declaration or an arrow function in a constant. A function re-exported from Base UI, such as
+ * `createHandle`, links to Base UI's documentation; any other shows the signature TypeScript
+ * infers.
+ */
+function readFunction(
+  checker: ts.TypeChecker,
+  name: string,
+  symbol: ts.Symbol,
+): {readonly api: ApiFunction; readonly node: ts.SignatureDeclaration | undefined} | undefined {
+  const declaration = symbol.valueDeclaration;
+  if (!declaration) return;
+  const call = checker.getTypeOfSymbolAtLocation(symbol, declaration).getCallSignatures()[0];
+  if (!call) return;
+  const initializer = ts.isVariableDeclaration(declaration) ? declaration.initializer : undefined;
+  const node =
+    ts.isFunctionDeclaration(declaration) && declaration.body
+      ? declaration
+      : initializer && (ts.isArrowFunction(initializer) || ts.isFunctionExpression(initializer))
+        ? initializer
+        : undefined;
+  const shortName = name.split('.').at(-1) ?? name;
+  const reference = !node && initializer ? baseUiReference(checker, initializer) : undefined;
+  const baseUi = reference && baseUiLink(reference.link.split('/')[0] ?? '', shortName);
+  if (baseUi) return {api: {name, baseUi}, node: undefined};
+  const text = (item: ts.Node) => item.getText().replace(/\s+/g, ' ');
+  const typeParameters = node?.typeParameters
+    ? `<${node.typeParameters.map(text).join(', ')}>`
+    : '';
+  const parameters = node?.parameters.map(text);
+  const returns = node?.type
+    ? text(node.type)
+    : checker.typeToString(call.getReturnType(), declaration, typeFlags);
+  const head = `function ${shortName}${typeParameters}`;
+  const oneLine = parameters
+    ? `${head}(${parameters.join(', ')}): ${returns};`
+    : `${head}${checker.signatureToString(call, declaration, typeFlags)};`;
+  const signature =
+    oneLine.length <= 80 || !parameters?.length
+      ? oneLine
+      : `${head}(\n${parameters.map((parameter) => `  ${parameter},\n`).join('')}): ${returns};`;
+  return {
+    api: {
+      name,
+      signature,
+      description: isOwn(declaration) ? jsDocText(declaration) : undefined,
+    },
+    node,
+  };
+}
+
+/**
+ * Elanor's public types that `nodes` name, then the ones those name, in the order they come up,
+ * such as `ComposerActions` and then the `ComposerInsertOptions` of its `insert`.
+ */
+function usedTypes(
+  checker: ts.TypeChecker,
+  nodes: readonly ts.Node[],
+  publicTypes: ReadonlySet<ts.Symbol>,
+): ApiType[] {
+  const found: ts.Symbol[] = [];
+  const visit = (node: ts.Node): void => {
+    // A function's body names types it doesn't expose.
+    if (ts.isBlock(node)) return;
+    const name = ts.isTypeReferenceNode(node)
+      ? node.typeName
+      : ts.isExpressionWithTypeArguments(node)
+        ? node.expression
+        : undefined;
+    const reference = name && checker.getSymbolAtLocation(name);
+    const symbol = reference && resolveAlias(checker, reference);
+    if (symbol && publicTypes.has(symbol) && !found.includes(symbol)) {
+      const declarations = (symbol.declarations ?? []).filter(isOwn);
+      if (declarations.length > 0) {
+        found.push(symbol);
+        declarations.forEach(visit);
+      }
+    }
+    ts.forEachChild(node, visit);
+  };
+  nodes.forEach(visit);
+  return found.map((symbol) => ({
+    name: symbol.name,
+    declaration: (symbol.declarations ?? [])
+      .filter(isOwn)
+      .map((node) =>
+        [...ts.getJSDocCommentsAndTags(node).filter(ts.isJSDoc), node]
+          .map((item) => item.getText())
+          .join('\n')
+          .replace(/^export /m, ''),
+      )
+      .join('\n'),
+  }));
 }
 
 function resolveAlias(checker: ts.TypeChecker, symbol: ts.Symbol): ts.Symbol {
@@ -118,7 +274,6 @@ function resolveAlias(checker: ts.TypeChecker, symbol: ts.Symbol): ts.Symbol {
 const isOwn = (node: ts.Node) => node.getSourceFile().fileName.startsWith(sourceRoot);
 
 function readPart(checker: ts.TypeChecker, name: string, exported: ts.Symbol): ApiPart | undefined {
-  if (!/^[A-Z]/.test(name.split('.').pop() ?? '')) return;
   const symbol = resolveAlias(checker, exported);
   const declaration = symbol.valueDeclaration ?? symbol.declarations?.[0];
   if (!declaration) return;
@@ -132,9 +287,15 @@ function readPart(checker: ts.TypeChecker, name: string, exported: ts.Symbol): A
   const props: ApiProp[] = [];
   const baseUiParts = new Map<string, number>();
   let element: string | undefined;
+  let ref = false;
+  let attributes = false;
   for (const prop of propsType.getProperties()) {
     const declarations = prop.declarations ?? [];
-    if (prop.name === 'ref') element = refElement(checker, prop);
+    if (prop.name === 'ref') {
+      ref = true;
+      element = refElement(checker, prop);
+    }
+    attributes ||= declarations.some(isHtmlAttribute);
     if (omittedProps.has(prop.name)) continue;
     const own = declarations.find(isOwn);
     if (own) {
@@ -144,7 +305,7 @@ function readPart(checker: ts.TypeChecker, name: string, exported: ts.Symbol): A
     // List inherited props only when Elanor changes their default.
     const elanorDefault = defaults.get(prop.name);
     const [inherited] = declarations;
-    if (elanorDefault && inherited && changesDefault(inherited, elanorDefault)) {
+    if (elanorDefault && inherited && changesDefault(inherited, elanorDefault.getText())) {
       props.push(readProp(checker, prop, inherited, elanorDefault));
     }
     for (const node of declarations) {
@@ -167,7 +328,7 @@ function readPart(checker: ts.TypeChecker, name: string, exported: ts.Symbol): A
       : references.find((item) => item.declared === mostCommon[0]);
   const linked = reference && (hasSection(reference.link) ? reference.link : reference.declared);
   const baseUiSource = (linked ?? mostCommon?.[0])?.split('/');
-  const component = baseUiSource?.[0] ?? fileImports.find((module) => !baseUiUtilities.has(module));
+  const component = baseUiSource?.[0] ?? fileImports.find((module) => baseUiLink(module));
   // Parts typed only with Base UI's shared props still match a same-named Base UI part, unless
   // the name is the component's own, which its whole page documents.
   const sameName = kebabName(name.split('.').at(-1) ?? '');
@@ -178,15 +339,9 @@ function readPart(checker: ts.TypeChecker, name: string, exported: ts.Symbol): A
       : undefined);
   const declaredInBaseUi = /@base-ui\/react\//.test(declaration.getSourceFile().fileName);
   const usesBaseUi = declaredInBaseUi || baseUiParts.size > 0 || hasBaseUiProps(propsType);
-
   const baseUi =
     usesBaseUi && component
-      ? {
-          name: [pascalName(component), baseUiPart && pascalName(baseUiPart)]
-            .filter(Boolean)
-            .join('.'),
-          url: `https://base-ui.com/react/components/${component}${baseUiPart ? `#${baseUiPart.replaceAll('-', '')}` : ''}`,
-        }
+      ? baseUiLink(component, baseUiPart && pascalName(baseUiPart))
       : undefined;
 
   return {
@@ -195,9 +350,17 @@ function readPart(checker: ts.TypeChecker, name: string, exported: ts.Symbol): A
     props,
     baseUi,
     element: jsxElement(implementation) ?? element,
+    attributes: !baseUi && attributes,
+    ref: !baseUi && ref,
     render: !baseUi && hasBaseUiRender(propsType),
   };
 }
+
+/** True for a prop React declares for every element, such as `id` or `onClick`. */
+const isHtmlAttribute = (node: ts.Node) =>
+  /\/@types\/react\//.test(node.getSourceFile().fileName) &&
+  ts.isInterfaceDeclaration(node.parent) &&
+  /^(?:DOM|Aria|HTML)Attributes$/.test(node.parent.name.text);
 
 /** The Base UI component, and part if any, that declares `node`, such as `menu/root`. */
 function baseUiLocation(node: ts.Node): string | undefined {
@@ -240,20 +403,45 @@ function readProp(
   checker: ts.TypeChecker,
   prop: ts.Symbol,
   declaration: ts.Declaration,
-  destructured: string | undefined,
+  destructured: ts.Expression | undefined,
 ): ApiProp {
   // Read docs from the given declaration only; intersections would merge Elanor's and Base UI's.
   // Inherited docs can be long, so keep their first sentence.
   const docs = jsDocText(declaration);
   const description = isOwn(declaration) ? docs : docs?.replace(/(?<=\.)\s[\s\S]*$/, '');
-  const tagged = ts.getJSDocTags(declaration).find((tag) => tag.tagName.text === 'default');
+  const tag = ts.getJSDocTags(declaration).find((item) => item.tagName.text === 'default');
+  const tagged = tag && ts.getTextOfJSDocComment(tag.comment);
+  // An inherited tag names the default Elanor replaces.
+  const defaultValue = destructured
+    ? (defaultText(checker, destructured) ?? (isOwn(declaration) ? tagged : undefined))
+    : tagged;
   return {
     name: prop.name,
     type: formatType(checker, checker.getTypeOfSymbol(prop), declaration),
     required: !(prop.flags & ts.SymbolFlags.Optional),
-    defaultValue: destructured ?? (tagged && ts.getTextOfJSDocComment(tagged.comment)),
+    defaultValue,
     description,
   };
+}
+
+/**
+ * A destructured default as you'd write it, rather than the name of a constant in the
+ * implementation: the constant's value, `<a />` for a render function that returns an `<a>`, or
+ * nothing for a function with nothing to show, such as one that returns `''`.
+ */
+function defaultText(checker: ts.TypeChecker, initializer: ts.Expression): string | undefined {
+  if (!ts.isIdentifier(initializer)) return initializer.getText();
+  const symbol = checker.getSymbolAtLocation(initializer);
+  const declaration = symbol && resolveAlias(checker, symbol).valueDeclaration;
+  const value =
+    declaration && ts.isVariableDeclaration(declaration) ? declaration.initializer : undefined;
+  if (!value) return;
+  if (ts.isArrowFunction(value) || ts.isFunctionExpression(value)) {
+    const tag = ts.isBlock(value.body) ? undefined : outermostTag(value.body);
+    const element = tag && lowercase(tag.getText());
+    return element && `<${element} />`;
+  }
+  return defaultText(checker, value);
 }
 
 function changesDefault(inherited: ts.Declaration, elanorDefault: string): boolean {
@@ -341,14 +529,14 @@ function formatUnion(checker: ts.TypeChecker, members: readonly ts.Type[]): stri
 
 function destructuredDefaults(
   implementation: ts.FunctionDeclaration | undefined,
-): Map<string, string> {
-  const defaults = new Map<string, string>();
+): Map<string, ts.Expression> {
+  const defaults = new Map<string, ts.Expression>();
   const pattern = implementation?.parameters[0]?.name;
   if (!pattern || !ts.isObjectBindingPattern(pattern)) return defaults;
   for (const element of pattern.elements) {
     const key = element.propertyName ?? element.name;
     if (element.initializer && (ts.isIdentifier(key) || ts.isStringLiteral(key))) {
-      defaults.set(key.text, element.initializer.getText());
+      defaults.set(key.text, element.initializer);
     }
   }
   return defaults;
@@ -407,7 +595,9 @@ function baseUiReferences(checker: ts.TypeChecker, declaration: ts.Declaration):
       ts.isPropertyAccessExpression(tagName) ? tagName.name : tagName,
     );
     const component = symbol && resolveAlias(checker, symbol).valueDeclaration;
-    return component && isOwn(component) && ts.isFunctionDeclaration(component)
+    return component &&
+      isOwn(component) &&
+      (ts.isFunctionDeclaration(component) || ts.isVariableDeclaration(component))
       ? baseUiReferences(checker, component)
       : [];
   });
@@ -442,6 +632,27 @@ function hasSection(location: string): boolean {
   const [component, part] = location.split('/');
   const page = component ? baseUiPage(component) : undefined;
   return page !== undefined && (!part || page.includes(`\n### ${pascalName(part)}\n`));
+}
+
+/**
+ * The link to Base UI's documentation of `component`, such as `menu`, and of its `section`, such
+ * as `Positioner` or `createHandle`. A component without a page of its own, such as
+ * `radio-group`, links to its section of the page it's named after, `radio`.
+ */
+function baseUiLink(component: string, section?: string): BaseUiLink | undefined {
+  const parent = component.replace(/-[a-z]+$/, '');
+  const page =
+    baseUiPage(component) !== undefined
+      ? component
+      : baseUiPage(parent)?.includes(`\n### ${pascalName(component)}\n`)
+        ? parent
+        : undefined;
+  if (!page) return;
+  const anchor = page === component ? section : pascalName(component);
+  return {
+    name: [pascalName(component), section].filter(Boolean).join('.'),
+    url: `https://base-ui.com/react/components/${page}${anchor ? `#${anchor.toLowerCase()}` : ''}`,
+  };
 }
 
 const baseUiPages = new Map<string, string | undefined>();
@@ -487,23 +698,55 @@ function outermostTag(node: ts.Node): ts.JsxTagNameExpression | undefined {
 
 const lowercase = (tag: string) => (/^[a-z][\w-]*$/.test(tag) ? tag : undefined);
 
-/** Parts in the order the page body first mentions them; unmentioned parts follow. */
-export function orderedApi(page: string, body: string): ApiPart[] {
-  const position = (part: ApiPart) => {
-    const index = body.search(new RegExp(`<${part.name.replace('.', '\\.')}\\b`));
-    return index === -1 ? Number.POSITIVE_INFINITY : index;
+/**
+ * The API in the order the page body first mentions it: parts as JSX, such as `<Composer.Root`,
+ * and functions by name, such as `Composer.useActions`. Unmentioned ones follow.
+ */
+export function orderedApi(page: string, body: string): ComponentApi {
+  const api = componentApi(page);
+  const ordered = <Item extends {readonly name: string}>(
+    items: readonly Item[],
+    prefix: string,
+  ) => {
+    const position = (item: Item) => {
+      const index = body.search(new RegExp(`${prefix}${item.name.replace('.', '\\.')}\\b`));
+      return index === -1 ? Number.POSITIVE_INFINITY : index;
+    };
+    return items
+      .map((item, index) => ({item, index}))
+      .sort((a, b) => position(a.item) - position(b.item) || a.index - b.index)
+      .map(({item}) => item);
   };
-  return componentApi(page)
-    .map((part, index) => ({part, index}))
-    .sort((a, b) => position(a.part) - position(b.part) || a.index - b.index)
-    .map(({part}) => part);
+  return {...api, parts: ordered(api.parts, '<'), functions: ordered(api.functions, '')};
 }
 
-/** One sentence, in Markdown, describing what a part renders and accepts beyond its own props. */
-export function partSummary(part: ApiPart): string {
+/** The sentence, in Markdown, for a function Elanor re-exports from Base UI. */
+export const functionSummary = (link: BaseUiLink): string =>
+  `Re-exports Base UI's [\`${link.name}\`](${link.url}).`;
+
+/** The page's types as one block of TypeScript. */
+export const typeDeclarations = (api: ComponentApi): string =>
+  api.types.map((type) => type.declaration).join('\n\n');
+
+/**
+ * One sentence, in Markdown, describing what a part renders and accepts beyond its own props, if
+ * anything: a part that renders no element, such as `Composer.Root`, gets none.
+ */
+export function partSummary(part: ApiPart): string | undefined {
   const verb = part.props.length ? 'Also accepts' : 'Accepts';
   if (part.baseUi) return `${verb} Base UI [\`${part.baseUi.name}\`](${part.baseUi.url}) props.`;
-  const extras = part.render ? 'HTML attributes, `ref`, and `render`' : 'HTML attributes and `ref`';
-  if (part.element) return `Renders ${part.element}. ${verb} its ${extras}.`;
-  return `${verb} ${extras}.`;
+  const extras = [
+    ...(part.attributes ? ['HTML attributes'] : []),
+    ...(part.ref ? ['`ref`'] : []),
+    ...(part.render ? ['`render`'] : []),
+  ];
+  const accepts =
+    extras.length < 3
+      ? extras.join(' and ')
+      : `${extras.slice(0, -1).join(', ')}, and ${extras.at(-1)}`;
+  const sentences = [
+    part.element && `Renders ${part.element}.`,
+    accepts && `${verb}${part.element ? ' its' : ''} ${accepts}.`,
+  ].filter(Boolean);
+  return sentences.length ? sentences.join(' ') : undefined;
 }
