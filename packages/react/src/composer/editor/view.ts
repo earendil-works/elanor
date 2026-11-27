@@ -51,7 +51,16 @@ function layout<T extends ComposerChip>(value: ComposerValue<T>): Layout<T> {
   return nodes;
 }
 
-const realLength = (text: string): number => text.replaceAll(ZERO_WIDTH_SPACE, '').length;
+/** The length before `end` without zero-width spaces, found by search: a copy costs every key. */
+function realLength(text: string, end = text.length): number {
+  let length = end;
+  let at = text.indexOf(ZERO_WIDTH_SPACE);
+  while (at !== -1 && at < end) {
+    length -= 1;
+    at = text.indexOf(ZERO_WIDTH_SPACE, at + 1);
+  }
+  return length;
+}
 
 const isHost = (node: Node | null | undefined): node is HTMLElement =>
   node instanceof HTMLElement && node.hasAttribute(HOST);
@@ -82,6 +91,8 @@ export class EditorView<T extends ComposerChip> {
   readonly #hosts = new Map<string, Host<T>>();
   /** How many hosts the last render showed. */
   #shown = 0;
+  /** Text nodes' lengths while their data stays the same: each offset adds up the nodes before it. */
+  readonly #lengths = new WeakMap<Text, {readonly data: string; readonly length: number}>();
 
   constructor(element: HTMLElement, describe: (chip: T) => string, onHosts: () => void) {
     this.#element = element;
@@ -217,7 +228,7 @@ export class EditorView<T extends ComposerChip> {
   }
 
   #lengthOf(node: Node): number {
-    if (node instanceof Text) return realLength(node.data);
+    if (node instanceof Text) return this.#textLength(node);
     if (!(node instanceof HTMLElement)) return 0;
     if (node.hasAttribute(HOST)) return 1;
     if (this.#heightOnly(node)) return 0;
@@ -225,6 +236,15 @@ export class EditorView<T extends ComposerChip> {
     let total = 0;
     for (const child of node.childNodes) total += this.#lengthOf(child);
     return total;
+  }
+
+  #textLength(node: Text): number {
+    const {data} = node;
+    const known = this.#lengths.get(node);
+    if (known?.data === data) return known.length;
+    const length = realLength(data);
+    this.#lengths.set(node, {data, length});
+    return length;
   }
 
   #startOf(node: Node): number {
@@ -246,7 +266,7 @@ export class EditorView<T extends ComposerChip> {
   offsetAt(node: Node, offset: number, after = false): number {
     const host = this.#hostOf(node);
     if (host) return this.#startOf(host) + (after || (host === node && offset > 0) ? 1 : 0);
-    if (node instanceof Text) return this.#startOf(node) + realLength(node.data.slice(0, offset));
+    if (node instanceof Text) return this.#startOf(node) + realLength(node.data, offset);
     let total = node === this.#element ? 0 : this.#startOf(node);
     for (let index = 0; index < offset && index < node.childNodes.length; index += 1) {
       const child = node.childNodes[index];
@@ -304,12 +324,17 @@ export class EditorView<T extends ComposerChip> {
     let remaining = offset;
     for (const child of this.#element.childNodes) {
       if (child instanceof Text) {
-        const length = realLength(child.data);
+        const length = this.#textLength(child);
         if (remaining <= length) {
           let index = child.data.startsWith(ZERO_WIDTH_SPACE) && child.data.length > 1 ? 1 : 0;
-          for (let counted = 0; counted < remaining; index += 1)
-            if (child.data[index] !== ZERO_WIDTH_SPACE) counted += 1;
-          return [child, index];
+          // Skips the zero-width spaces before the point.
+          let space = child.data.indexOf(ZERO_WIDTH_SPACE, index);
+          while (space !== -1 && space - index < remaining) {
+            remaining -= space - index;
+            index = space + 1;
+            space = child.data.indexOf(ZERO_WIDTH_SPACE, index);
+          }
+          return [child, index + remaining];
         }
         remaining -= length;
       } else remaining -= this.#lengthOf(child);
