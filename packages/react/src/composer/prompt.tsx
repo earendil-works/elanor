@@ -12,7 +12,7 @@ import {
   useValueChanged,
 } from '../utils/base-ui-internals.ts';
 import {fieldValidityMapping} from '../utils/field-validity.ts';
-import {useMergedRef} from '../utils/refs.ts';
+import {useMergedRef, useStableRef} from '../utils/refs.ts';
 import {
   useComposerMeta,
   useComposerSettings,
@@ -77,6 +77,9 @@ export function ComposerPrompt({
   const {labelId, getDescriptionProps} = useLabelableContext();
   const id = useLabelableId({id: idProp});
   const control = useRef<HTMLDivElement>(null);
+  // A new ref, such as an inline callback, would otherwise bind the editor again: its chips'
+  // content would mount anew and a composition in progress would be lost.
+  const forwarded = useStableRef(ref);
   const popup = useStoreSelector(meta.popup, (state) => state);
 
   const editable = !disabled && !readOnly;
@@ -93,7 +96,7 @@ export function ComposerPrompt({
   const element = useRender({
     defaultTagName: 'div',
     render,
-    ref: ref ? [ref, meta.editor.bind, control] : [meta.editor.bind, control],
+    ref: [forwarded, meta.editor.bind, control],
     state: {empty, disabled, readOnly, valid, touched, dirty, filled, focused},
     stateAttributesMapping: fieldValidityMapping,
     props: mergeProps<'div'>(
