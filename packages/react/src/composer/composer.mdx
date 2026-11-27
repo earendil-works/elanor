@@ -8,7 +8,7 @@ The input where a person writes a chat message: the prompt with chips, buttons i
 
 <Demo example="./examples/demo.tsx" />
 
-The example is a conversation view with a whole composer: suggestions for files and commands, chips, uploads, a drop zone, recall of sent messages, and a footer. The sections below quote it; a section has its own example only where the whole one can't show it, such as a narrow composer.
+The example is a whole composer: suggestions for files and commands, chips, uploads, a drop zone, recall of sent messages, and a footer. The sections below quote it; a section has its own example only where the whole one can't show it, such as a narrow composer.
 
 ## Usage
 
@@ -110,7 +110,7 @@ function SendOrStop({replying, onStop}: SendOrStopProps) {
 - Text that comes with pasted or dropped files, usually their names, isn't inserted. A chip dragged within the prompt moves to where it is dropped, and never reaches `onAttach`.
 - File drops need an `InputGroup`: a Prompt outside one ignores dropped files. While files are dragged over it, InputGroup renders `data-drag-over`: style a file drag over the input group, or know a drop would land. A drop zone outside the composer, such as the whole conversation view, is yours: cancel `dragover` and `drop` there, and pass the files to `actions.attach()`. A drop on the input group bubbles to it too, so skip a `drop` whose `defaultPrevented` is set: the composer took it.
 
-The example's conversation view is such a drop zone: while files are dragged over it, it shows a scrim with a dashed outline and "Drop files to attach", under the pointer so a drop on the input group still reaches it.
+The view around the example's composer is such a drop zone: while files are dragged over it, it shows a scrim with a dashed outline and "Drop files to attach", under the pointer so a drop on the input group still reaches it.
 
 ```tsx from="./examples/hero/drop-zone.tsx"
 onDrop={(event) => {
@@ -374,7 +374,7 @@ The example's `@` searches files, with a request it cancels, and `/` filters com
 
 The composer doesn't keep the messages: store what was sent yourself, one list per conversation if you have several, and choose how many to keep. Switching `historyKey` ends a recall, and the message shown stays that draft. To handle other keys in `onKeyDown` too, call the handler from your own; it skips keys you called `preventDefault()` on. For an ArrowUp of your own, such as editing the last message, check `atEdge('up')` from `useActions()` instead, and skip the key while the suggestions list is open, which `event.currentTarget.hasAttribute('data-popup-open')` tells.
 
-In the example, ArrowUp brings back the conversation's messages:
+In the example, ArrowUp brings back the messages sent before:
 
 ```tsx from="./examples/demo.tsx"
 /** Inside Root, where `useRecall` finds the prompt. */
@@ -463,7 +463,7 @@ Use the `composer` container to change the footer at widths of your own, such as
 
 ## Alignment
 
-By default the frame lines up with the content around it. `--composer-hang` hangs Panel out of its container by its value. Set it to `--composer-text-inset`, the distance from the frame's edge to the text, to line up the prompt's and the footer's text with the content around it instead, as the example does with its messages in a wide window.
+By default the frame lines up with the content around it. `--composer-hang` hangs Panel out of its container by its value. Set it to `--composer-text-inset`, the distance from the frame's edge to the text, to line up the prompt's and the footer's text with the content around it instead, as the example does in a wide window.
 
 Set it in a class on `Composer.Panel` itself: the inset is set on Panel, so a wrapper can't read it. Hang the frame only where there's room, `--composer-text-inset` at each side, such as inside `@media (min-width: …)` or a parent's container query; Panel is the `composer` container itself, so `@container composer` can't style it. A composer rendered by code you don't control can only be hung if that code passes your `className` through.
 
