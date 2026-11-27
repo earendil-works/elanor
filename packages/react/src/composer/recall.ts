@@ -1,10 +1,8 @@
 import {useCallback, type KeyboardEvent} from 'react';
 
 import {useComposerMeta} from './context.ts';
+import type {ComposerRecallFrom} from './editor/editor.ts';
 import type {ComposerChip, ComposerValue} from './editor/model.ts';
-
-/** `first-line`: ArrowUp recalls from anywhere on the first line. `empty`: only from an empty prompt. */
-export type ComposerRecallFrom = 'first-line' | 'empty';
 
 export interface ComposerRecallOptions {
   /** Where ArrowUp starts recalling; once it has, it goes on from the message shown. */
