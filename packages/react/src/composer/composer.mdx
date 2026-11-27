@@ -213,7 +213,7 @@ export const chipDeletion = (chip: MessageChip) =>
 
 ### Chip tooltips
 
-The prompt doesn't show a chip's text on hover; wrap the chip in a [Tooltip](/components/tooltip/) in `renderChip`, with `Tooltip.Trigger render={<Chip.Root />}`, to say where it is or why its upload failed. Tooltips open for a pointer only, so on a touch screen say why an upload failed in a notice too. The example gives a file chip its path, a command its description, a failed upload its error, and a pasted text its first lines. Its `getChipDescription` says the path and the description too, so screen readers hear them. Root reads `getChipDescription` when it draws a chip, so put state that changes, such as an upload's error, in the chip as visually hidden text, as the example does:
+The prompt doesn't show a chip's text on hover; wrap the chip in a [Tooltip](/components/tooltip/) in `renderChip`, with `Tooltip.Trigger render={<Chip.Root />}`, to say where it is or why its upload failed. Tooltips open for a pointer only, so on a touch screen say why an upload failed in a notice too. The example gives a file chip its path, a command its description, a failed upload its error, and a pasted text its first lines. Its `getChipDescription` says the path and the description too, so screen readers hear them. Root reads `getChipDescription` when it draws a chip, so put text that changes, such as an upload's error, in the chip's content as visually hidden text, as the example does:
 
 ```tsx from="./examples/hero/chips.tsx"
 function TooltipChip({tooltip, semantic = 'neutral', children}: TooltipChipProps) {
