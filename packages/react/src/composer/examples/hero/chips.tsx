@@ -1,8 +1,13 @@
-import {ContentPasteIcon, DescriptionIcon, TerminalIcon} from '@earendil-works/elanor-icons-react';
+import {
+  ContentPasteIcon,
+  DescriptionIcon,
+  TerminalIcon,
+  UploadIcon,
+} from '@earendil-works/elanor-icons-react';
 import {Chip, Composer, Tooltip, type ComposerValue} from '@earendil-works/elanor-react';
 import type {ReactNode} from 'react';
 
-import {UploadChip} from './uploads.tsx';
+import {uploadError, useUpload} from './uploads.tsx';
 
 import styles from '../composer.module.css';
 
@@ -55,23 +60,33 @@ export const getPastedValue = (text: string): Message => {
 export const chipDeletion = (chip: MessageChip) =>
   chip.kind === 'paste' ? 'select' : chip.kind === 'file' ? 'revert' : 'whole';
 
+// What the tooltips show, for screen readers too: the tooltips open for a pointer only.
 export const describeChip = (chip: MessageChip) => {
   switch (chip.kind) {
     case 'file':
-    case 'upload':
-      return 'file';
+      return `file, ${chip.path}`;
     case 'command':
-      return 'command';
+      return `command, ${chip.description}`;
+    case 'upload': {
+      const error = uploadError(chip.uploadId);
+      return error ? `file, ${error}` : 'file';
+    }
     case 'paste':
       return 'pasted text';
   }
 };
 
+interface TooltipChipProps {
+  readonly tooltip: ReactNode;
+  readonly semantic?: 'neutral' | 'negative';
+  readonly children: ReactNode;
+}
+
 /** A chip with a tooltip, for a pointer: the prompt shows no chip's text on hover. */
-function TooltipChip({tooltip, children}: {tooltip: ReactNode; children: ReactNode}) {
+function TooltipChip({tooltip, semantic = 'neutral', children}: TooltipChipProps) {
   return (
     <Tooltip.Root>
-      <Tooltip.Trigger render={<Chip.Root variant="soft" density="compact" />}>
+      <Tooltip.Trigger render={<Chip.Root variant="soft" density="compact" semantic={semantic} />}>
         {children}
       </Tooltip.Trigger>
       <Tooltip.Portal>
@@ -80,6 +95,33 @@ function TooltipChip({tooltip, children}: {tooltip: ReactNode; children: ReactNo
         </Tooltip.Positioner>
       </Tooltip.Portal>
     </Tooltip.Root>
+  );
+}
+
+/** Renders again only when its own upload changes, such as a progress tick. */
+function UploadChip({chip}: {chip: Extract<MessageChip, {kind: 'upload'}>}) {
+  const upload = useUpload(chip.uploadId);
+  const content = (
+    <>
+      <Chip.Icon>
+        <UploadIcon />
+      </Chip.Icon>
+      <Chip.Label>Upload</Chip.Label>
+      <Chip.Separator />
+      <Chip.Label>{chip.label}</Chip.Label>
+      {upload?.state === 'uploading' ? (
+        <Chip.Progress value={upload.progress} aria-label={`Uploading ${chip.label}`} />
+      ) : null}
+    </>
+  );
+  return upload?.state === 'failed' ? (
+    <TooltipChip tooltip={upload.error} semantic="negative">
+      {content}
+    </TooltipChip>
+  ) : (
+    <Chip.Root variant="soft" density="compact">
+      {content}
+    </Chip.Root>
   );
 }
 

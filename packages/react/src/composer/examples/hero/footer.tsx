@@ -34,6 +34,7 @@ export function ModelPicker() {
 
 /** The context used and the cost so far, at the footer's end. */
 export function Figures() {
+  // Demo only: fixed figures; show the context your model used and the conversation's cost.
   return (
     <Stack direction="row" gap="medium" className={styles.figures}>
       <Meter.Root value={42} aria-label="Context used" className={styles.meter}>

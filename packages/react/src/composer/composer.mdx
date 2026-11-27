@@ -84,18 +84,23 @@ Prompt's `onKeyDown` runs before the composer handles a key; call `preventDefaul
 
 ## Stop
 
-`Stop` is a button for stopping a reply: stop it in `onClick`. The composer doesn't know whether a reply is running, so render `Submit` or `Stop` yourself. `Composer.useStatus()` gives `empty`, `disabled` and `readOnly`, so you can offer Stop only while nothing new is written. Give each its own `key`: a press meant for Stop then never sends. When the one with the keyboard focus goes, the other takes it. The example shows Stop while a reply runs:
+`Stop` is a button for stopping a reply: stop it in `onClick`. The composer doesn't know whether a reply is running, so render `Submit` or `Stop` yourself. `Composer.useStatus()` gives `empty`, `disabled` and `readOnly`, so you can offer Stop only while nothing new is written. Give each its own `key`: a press meant for Stop then never sends. When the one with the keyboard focus goes, the other takes it. The example shows Stop while a reply runs and the prompt is empty; once a person writes, Send comes back, and Enter on the empty prompt sends nothing, since `onSubmit` skips an empty message:
 
 ```tsx from="./examples/demo.tsx"
-<Stack direction="row" gap="xSmall" align="center">
-  <DictateButton />
-  {replying ? <Composer.Stop key="stop" onClick={stop} /> : <SendButton key="send" />}
-</Stack>
+/** Stop while a reply runs and nothing new is written, so a press meant for Stop never sends. */
+function SendOrStop({replying, onStop}: SendOrStopProps) {
+  const {empty} = Composer.useStatus();
+  return replying && empty ? (
+    <Composer.Stop key="stop" onClick={onStop} />
+  ) : (
+    <SendButton key="send" />
+  );
+}
 ```
 
 ## Files
 
-`Attach` opens the file picker; set `accept` and `multiple` on it, and `capture` to offer the camera on phones. Root's `onAttach` receives the picked files, and files pasted on the prompt or dropped on the field, with a `reason` of `picker`, `paste` or `drop`. Files are chips in the text, where they are mentioned: in `onAttach`, pass one chip per file, drawn as `Upload › name`, to `details.insert`. `details.insert` always puts a space around the chips where the text needs one. `actions.insert` inserts exactly what you pass; set `space: true` for an insert a person made, as the examples do for a suggestion pick.
+`Attach` opens the file picker; set `accept` and `multiple` on it, and `capture` to offer the camera on phones. Root's `onAttach` receives the picked files, and files pasted on the prompt or dropped on the field, with a `reason` of `picker`, `paste` or `drop`. Files are chips in the text, where they are mentioned: in `onAttach`, pass one chip per file, drawn as `Upload › name`, to `details.insert`. `details.insert` always puts a space around the chips where the text needs one. `actions.insert` inserts exactly what you pass; set `space: true` for an insert a person made, as the example does for a suggestion pick.
 
 - `details.insert` puts them at `details.at`. Files go in at the caret, after any selected text, or at the end if the prompt was never focused; dropped files go there wherever on the field they are dropped. A paste replaces the selection. After `details.insert`, the caret collapses after the chips.
 - They are one undo step, with the paste's or drop's reason and event in `onValueChange`'s details.
@@ -145,11 +150,32 @@ onAttach={(files, details) => {
 }}
 ```
 
-Its upload chip reads its progress from that store and draws it with `Chip.Progress`; a progress tick renders only that chip. Its Send button is disabled until every file in the text is uploaded, and `onSubmit` checks as well, since Enter sends without Submit:
+Its upload chip reads its progress from that store and draws it with `Chip.Progress`; a progress tick renders only that chip. A file whose name starts with "fail" fails halfway: its chip turns negative, its tooltip and its description say why, and so does `UploadErrors` in `Header`, for a touch screen. Removing a chip cancels its upload, and Undo starts it again, since `onValueChange` passes every value's upload ids to `syncUploads`:
 
 ```tsx from="./examples/hero/uploads.tsx"
-/** Disabled until every file in the text is uploaded. */
-export function SendButton() {
+export function syncUploads(uploadIds: readonly string[]) {
+  for (const uploadId of requests.keys()) {
+    if (uploadIds.includes(uploadId)) continue;
+    clearInterval(requests.get(uploadId));
+    requests.delete(uploadId);
+    uploads.delete(uploadId);
+    notify();
+  }
+  for (const uploadId of uploadIds) {
+    const file = files.get(uploadId);
+    if (file && !uploads.has(uploadId)) startUpload(uploadId, file);
+  }
+}
+```
+
+Its Send button is disabled until every file in the text is uploaded, and `onSubmit` checks as well, since Enter sends without Submit:
+
+```tsx from="./examples/hero/uploads.tsx"
+/**
+ * Disabled until every file in the text is uploaded. Memoized: its parent renders again when the
+ * prompt empties or fills, and the button needn't.
+ */
+export const SendButton = memo(function SendButton() {
   // Compared by `sameIds`, so typing doesn't render the button again.
   const uploadIds = Composer.useValue(uploadIdsOf, sameIds);
   const waiting = useSyncExternalStore(
@@ -158,19 +184,19 @@ export function SendButton() {
     () => false,
   );
   return <Composer.Submit disabled={waiting} />;
-}
+});
 ```
 
 ## Chips
 
-The value is a list of text and chips, each chip at least `{id, label}`. Draw a chip's content with [Chip](/components/chip/), `variant="soft"` and `density="compact"`, in Root's `renderChip`: a `Chip.Icon` and a `Chip.Label` for its place, `Chip.Separator`, and a `Chip.Label` for its name. It is 20px tall in the prompt's 24px line and at most three quarters of the text's width; the name takes the ellipsis. `getChipDescription` tells screen readers what a chip is. `renderChip`, `chipDeletion` and `getChipDescription` take the chip, so each chip can differ.
+The value is a list of text and chips, each chip at least `{id, label}`. Draw a chip's content with [Chip](/components/chip/), `variant="soft"` and `density="compact"`, in Root's `renderChip`: a `Chip.Icon` and a `Chip.Label` for its place, `Chip.Separator`, and a `Chip.Label` for its name, as the example's `Upload › build-log.png` does. It is 20px tall in the prompt's 24px line and at most three quarters of the text's width; the name takes the ellipsis. `getChipDescription` tells screen readers what a chip is. `renderChip`, `chipDeletion` and `getChipDescription` take the chip, so each chip can differ.
 
-Keep `renderChip` stable, at module scope or with `useCallback`: the chips draw again when it changes. The undo history keeps the chips as they were, so keep state that changes, such as an upload's progress or its failure, out of the chip. Give the chip an id of yours, such as `uploadId`, not its `id`: a copy gets a new `id`. Read the live state by it in `renderChip`, from a component that subscribes to it. To cancel an upload or start it again, compare the chips in `onValueChange`'s value with your uploads: Undo brings a removed chip back.
+Keep `renderChip` stable, at module scope or with `useCallback`: the chips draw again when it changes. The undo history keeps the chips as they were, so keep state that changes, such as an upload's progress or its failure, out of the chip. Give the chip an id of yours, such as `uploadId`, not its `id`: a copy gets a new `id`. Read the live state by it in `renderChip`, from a component that subscribes to it. To cancel an upload or start it again, compare the chips in `onValueChange`'s value with your uploads, as [Uploads](#uploads) shows: Undo brings a removed chip back.
 
 In the prompt a chip is one character, and it goes as text does:
 
 - Left or Right beside a chip selects it, and a second press moves the caret past it. Shift and an arrow extend the selection over it. A press or a tap on a chip in the focused prompt selects it; a tap beside it places the caret.
-- Backspace and Delete remove a selected chip. Beside the caret, Backspace removes a chip whole by default; set `chipDeletion` to `select` to select it first, or to `revert` to turn it back into its `toText` text: Backspace beside `devbox › build.mjs` gives `@devbox:scripts/build.mjs`, with the caret at its end, where [suggestions](#suggestions) open on it.
+- Backspace and Delete remove a selected chip. Beside the caret, Backspace removes a chip whole by default; set `chipDeletion` to `select` to select it first, or to `revert` to turn it back into its `toText` text: Backspace beside the example's `build.mjs` gives `@scripts/build.mjs`, with the caret at its end, where [suggestions](#suggestions) open on it.
 - A mouse or a pen drags a chip to another place in the text; it stays faint where it was until it is dropped. A finger doesn't drag: cut and paste move a chip there.
 - Copied text is the `toText` text. Pasted back into the same prompt, its chips come back; after a cut, as the same chips.
 
@@ -187,13 +213,13 @@ export const chipDeletion = (chip: MessageChip) =>
 
 ### Chip tooltips
 
-The prompt doesn't show a chip's text on hover; wrap the chip in a [Tooltip](/components/tooltip/) in `renderChip`, with `Tooltip.Trigger render={<Chip.Root />}`, to say where it is or why its upload failed. Tooltips open for a pointer only, so on a touch screen say why an upload failed in a notice too. The example gives a file chip its path, a command its description, and a pasted text its first lines:
+The prompt doesn't show a chip's text on hover; wrap the chip in a [Tooltip](/components/tooltip/) in `renderChip`, with `Tooltip.Trigger render={<Chip.Root />}`, to say where it is or why its upload failed. Tooltips open for a pointer only, so on a touch screen say why an upload failed in a notice too. The example gives a file chip its path, a command its description, a failed upload its error, and a pasted text its first lines. Its `getChipDescription` says the same, but for the pasted lines, so screen readers hear it too:
 
 ```tsx from="./examples/hero/chips.tsx"
-function TooltipChip({tooltip, children}: {tooltip: ReactNode; children: ReactNode}) {
+function TooltipChip({tooltip, semantic = 'neutral', children}: TooltipChipProps) {
   return (
     <Tooltip.Root>
-      <Tooltip.Trigger render={<Chip.Root variant="soft" density="compact" />}>
+      <Tooltip.Trigger render={<Chip.Root variant="soft" density="compact" semantic={semantic} />}>
         {children}
       </Tooltip.Trigger>
       <Tooltip.Portal>
@@ -204,6 +230,24 @@ function TooltipChip({tooltip, children}: {tooltip: ReactNode; children: ReactNo
     </Tooltip.Root>
   );
 }
+```
+
+```tsx from="./examples/hero/chips.tsx"
+// What the tooltips show, for screen readers too: the tooltips open for a pointer only.
+export const describeChip = (chip: MessageChip) => {
+  switch (chip.kind) {
+    case 'file':
+      return `file, ${chip.path}`;
+    case 'command':
+      return `command, ${chip.description}`;
+    case 'upload': {
+      const error = uploadError(chip.uploadId);
+      return error ? `file, ${error}` : 'file';
+    }
+    case 'paste':
+      return 'pasted text';
+  }
+};
 ```
 
 ## Long pastes
@@ -220,19 +264,27 @@ export const getPastedValue = (text: string): Message => {
 
 ## Actions
 
-`Composer.useActions()` gives the composer's actions to any part inside Root, such as a dictation button that inserts its text: `insert`, `focus`, `blur`, `submit`, `attach`, `undo`, `redo`, `clearHistory`, `getValue` and `atEdge`, which tells whether the caret is on the first or the last line, for keys of your own. `insert` goes where the caret was, also while the prompt isn't focused. The object never changes, so reading it doesn't render your part again. Root's `actionsRef` gets the same object, for code outside Root. The example's Dictate button inserts its text where the caret was, and its drop zone passes files to `attach()`:
+`Composer.useActions()` gives the composer's actions to any part inside Root, such as a dictation button that inserts its text: `insert`, `focus`, `blur`, `submit`, `attach`, `undo`, `redo`, `clearHistory`, `getValue` and `atEdge`, which tells whether the caret is on the first or the last line, for keys of your own. `insert` goes where the caret was, also while the prompt isn't focused. The object never changes, so reading it doesn't render your part again. Root's `actionsRef` gets the same object, for code outside Root. `space` adds spaces around chips only, so text needs its own: the example's Dictate button adds its sentence at the end, where it knows the text before it, with a space after a word or a chip. Its drop zone passes files to `attach()`.
 
 ```tsx from="./examples/demo.tsx"
+/** Whether a sentence added at the end needs a space first: after a word or a chip. */
+const endsInWord = (value: Message) => {
+  const last = value.at(-1);
+  return last !== undefined && (Composer.isChip(last) || /\S$/.test(last));
+};
+
 function DictateButton() {
-  const {insert, focus} = Composer.useActions<MessageChip>();
+  const {insert, focus, getValue} = Composer.useActions<MessageChip>();
   return (
     <IconButton
       density="default"
       aria-label="Dictate"
       onClick={() => {
-        // Demo only: a fixed sentence; insert the text your speech recognition hears.
-        insert('Summarize the open pull requests.', {space: true});
-        focus({at: 'caret'});
+        // Demo only: a fixed sentence; insert the text your speech recognition hears. It goes at
+        // the end, where the text before it is known: `space` spaces only around chips.
+        const sentence = 'Summarize the open pull requests.';
+        insert(endsInWord(getValue()) ? ` ${sentence}` : sentence, {at: 'end'});
+        focus({at: 'end'});
       }}
     >
       <MicIcon />
@@ -319,7 +371,7 @@ function MessagePrompt({messages}: {messages: readonly Message[]}) {
 
 ## Controls
 
-`Controls` lays out its children in a row, in DOM order, so the order on screen is the order of focus; it places nothing. Put spacing and placement on a wrapper, such as a [Stack](/components/stack/) with `gap="auto"` or `justify-content`. The example puts the Attach buttons at the start, and Dictate and Send at the end:
+`Controls` lays out its children in a row, in DOM order, so the order on screen is the order of focus; it places nothing. Put spacing and placement on a wrapper, such as a [Stack](/components/stack/) with `gap="auto"` or `justify-content`. The example puts the Attach buttons at the start, and Dictate and Send or Stop at the end:
 
 ```tsx from="./examples/demo.tsx"
 <Composer.Controls render={<Stack direction="row" gap="auto" align="center" />}>
@@ -336,18 +388,19 @@ function MessagePrompt({messages}: {messages: readonly Message[]}) {
   </Stack>
   <Stack direction="row" gap="xSmall" align="center">
     <DictateButton />
-    {replying ? <Composer.Stop key="stop" onClick={stop} /> : <SendButton key="send" />}
+    <SendOrStop replying={replying} onStop={stop} />
   </Stack>
 </Composer.Controls>
 ```
 
 ## Header
 
-Put notices, errors about the last message, and the message being replied to in `Header`. It stacks its children with a gap. Header is as wide as the frame and moves with the frame when Panel is hung; its content isn't aligned to the text inset. The example's Header warns about a key in the text and says why files were refused:
+Put notices, errors about the last message, and the message being replied to in `Header`. It stacks its children with a gap. Header is as wide as the frame and moves with the frame when Panel is hung; its content isn't aligned to the text inset. The example's Header warns about a key in the text, says why uploads failed, and says why files were refused:
 
 ```tsx from="./examples/demo.tsx"
 <Composer.Header>
   <SecretNotice />
+  <UploadErrors />
   {notice ? <Text role="alert">{notice}</Text> : null}
 </Composer.Header>
 ```
@@ -356,7 +409,7 @@ Put notices, errors about the last message, and the message being replied to in 
 
 Put your own controls and figures in `Footer`, such as a ghost [Dropdown](/components/dropdown/) trigger for the model and, at the end, a row of figures: a [Meter](/components/meter/) laid out inline for the context used, and `span`s for the rest. The row sets `margin-inline-start: auto` to sit at the end, and tertiary text on its own class, which the meter's value inherits; the controls keep their default size. Footer sets no text style, so these choices are yours.
 
-Without a hang, the footer's controls put their text 2px inside the frame, which suits ghost controls: their hover fill reaches past it. The example's footer holds a ghost model picker and the figures:
+Without a hang, the footer's controls put their text 2px inside the frame, which suits ghost controls: their hover fill reaches past it. With a hang, they put it on the hang, as in the example in a window 48rem wide or wider, where the model picker's text lines up with the prompt's. Its footer holds the ghost picker and the figures:
 
 ```tsx from="./examples/demo.tsx"
 <Composer.Footer>

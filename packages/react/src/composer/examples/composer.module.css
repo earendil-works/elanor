@@ -38,7 +38,7 @@
 }
 
 /* The camera button only where there's a touch screen; a mouse gets the file picker. */
-@media (pointer: fine) {
+@media not (any-pointer: coarse) {
   .camera {
     display: none;
   }

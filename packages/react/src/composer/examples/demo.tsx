@@ -21,7 +21,15 @@ import {
 import {DropZone} from './hero/drop-zone.tsx';
 import {Figures, ModelPicker} from './hero/footer.tsx';
 import {FileAndCommandSuggestions} from './hero/suggestions.tsx';
-import {pending, SendButton, startUpload, uploadIdsOf, uploadUrl} from './hero/uploads.tsx';
+import {
+  pending,
+  SendButton,
+  startUpload,
+  syncUploads,
+  UploadErrors,
+  uploadIdsOf,
+  uploadUrl,
+} from './hero/uploads.tsx';
 
 import styles from './composer.module.css';
 
@@ -62,7 +70,10 @@ function MessageComposer({onSend, onNotice, children}: MessageComposerProps) {
   return (
     <Composer.Root
       value={value}
-      onValueChange={setValue}
+      onValueChange={(next) => {
+        setValue(next);
+        syncUploads(uploadIdsOf(next));
+      }}
       actionsRef={actions}
       toText={toText}
       renderChip={renderChip}
@@ -112,7 +123,7 @@ function MessagePrompt({messages}: {messages: readonly Message[]}) {
   );
 }
 
-const secret = /\b(?:sk|ghp|xox[bp])-[A-Za-z0-9]{16,}/;
+const secret = /\b(?:sk-|ghp_|xox[bp]-)[A-Za-z0-9]{16,}/;
 const hasSecret = (value: Message) => secret.test(toText(value));
 
 function SecretNotice() {
@@ -121,20 +132,43 @@ function SecretNotice() {
   return found ? <Text role="alert">This looks like a key or a password.</Text> : null;
 }
 
+/** Whether a sentence added at the end needs a space first: after a word or a chip. */
+const endsInWord = (value: Message) => {
+  const last = value.at(-1);
+  return last !== undefined && (Composer.isChip(last) || /\S$/.test(last));
+};
+
 function DictateButton() {
-  const {insert, focus} = Composer.useActions<MessageChip>();
+  const {insert, focus, getValue} = Composer.useActions<MessageChip>();
   return (
     <IconButton
       density="default"
       aria-label="Dictate"
       onClick={() => {
-        // Demo only: a fixed sentence; insert the text your speech recognition hears.
-        insert('Summarize the open pull requests.', {space: true});
-        focus({at: 'caret'});
+        // Demo only: a fixed sentence; insert the text your speech recognition hears. It goes at
+        // the end, where the text before it is known: `space` spaces only around chips.
+        const sentence = 'Summarize the open pull requests.';
+        insert(endsInWord(getValue()) ? ` ${sentence}` : sentence, {at: 'end'});
+        focus({at: 'end'});
       }}
     >
       <MicIcon />
     </IconButton>
+  );
+}
+
+interface SendOrStopProps {
+  readonly replying: boolean;
+  readonly onStop: () => void;
+}
+
+/** Stop while a reply runs and nothing new is written, so a press meant for Stop never sends. */
+function SendOrStop({replying, onStop}: SendOrStopProps) {
+  const {empty} = Composer.useStatus();
+  return replying && empty ? (
+    <Composer.Stop key="stop" onClick={onStop} />
+  ) : (
+    <SendButton key="send" />
   );
 }
 
@@ -173,6 +207,7 @@ export default function ComposerDemo() {
         <Composer.Panel className={styles.textAligned}>
           <Composer.Header>
             <SecretNotice />
+            <UploadErrors />
             {notice ? <Text role="alert">{notice}</Text> : null}
           </Composer.Header>
           <Composer.Field>
@@ -191,7 +226,7 @@ export default function ComposerDemo() {
               </Stack>
               <Stack direction="row" gap="xSmall" align="center">
                 <DictateButton />
-                {replying ? <Composer.Stop key="stop" onClick={stop} /> : <SendButton key="send" />}
+                <SendOrStop replying={replying} onStop={stop} />
               </Stack>
             </Composer.Controls>
           </Composer.Field>
