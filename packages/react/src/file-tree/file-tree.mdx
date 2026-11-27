@@ -27,7 +27,7 @@ const renderItem = ({node}: FileTreeItemState) => (
 
 `items` is the nested data: each node has a unique `id` and a `name`, and a folder has `children`, even if empty. Keep the `items` reference stable between renders. Root calls its children once per visible row with the row's `node`, `level`, `isFolder`, `expanded`, and `current`; wrap the function in `useCallback`, because rows re-render when it changes. Name the tree with `aria-label`.
 
-`ItemIcon` shows a chevron and a folder icon on folders, and a file icon on files; pass an icon as its children to replace the folder or file icon. Each level indents by one icon width, with a guide line under the parent's chevron.
+`ItemIcon` shows a chevron and a folder icon on folders, and a file icon on files; pass an icon as its children to replace the folder or file icon. Each level indents by one icon width plus a small gap, with a guide line under the parent's chevron.
 
 ## Open folders
 
@@ -60,7 +60,7 @@ Right and Left swap in right-to-left layouts.
 
 ## Guide line
 
-Change the guide with `--file-tree-guide` on Root: an image one indent step wide (`semantic.dimension.size.xSmall` plus `semantic.dimension.borderWidth.default`) and one row tall, repeated once per level.
+Change the guide with `--file-tree-guide` on Root: an image one indent step wide (`semantic.dimension.size.xSmall` plus `semantic.dimension.borderWidth.default` plus `semantic.dimension.space.gap.xSmall`) and one row tall, repeated once per level. In right-to-left layouts the image is mirrored, so draw it for left to right.
 
 ```css
 .files {

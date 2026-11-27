@@ -422,5 +422,5 @@ export interface FileTreeItemLabelProps extends ComponentPropsWithRef<'span'> {}
 
 /** The name. Truncates with an ellipsis; indentation stays intact. */
 export function FileTreeItemLabel({className, ...props}: FileTreeItemLabelProps) {
-  return <span {...props} className={classes(styles.label, className)} />;
+  return <span dir="auto" {...props} className={classes(styles.label, className)} />;
 }
