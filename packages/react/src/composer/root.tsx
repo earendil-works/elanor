@@ -145,7 +145,8 @@ export function ComposerRoot<T extends ComposerChip = ComposerChip>({
     getChipDescription,
     onSubmit,
     submitShortcut,
-    // Enter validates the form as its Submit button does, keeping its key event for `onSubmit`.
+    // Enter checks the form's constraints as its Submit button does, keeping its key event for
+    // `onSubmit`.
     // Without `onSubmit`, `requestSubmit` validates once more and finds nothing new.
     reportValidity: () => {
       const form = meta.formValue.current?.form;
@@ -166,7 +167,7 @@ export function ComposerRoot<T extends ComposerChip = ComposerChip>({
       editor: created,
       actions: created.actions,
       formValue: {current: null},
-      // React renders the same text once the commit renders.
+      // The form reads the textarea before React renders the commit.
       fillFormValue: () => {
         created.takeComposed();
         const input = context.formValue.current;
