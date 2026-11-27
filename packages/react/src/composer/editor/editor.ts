@@ -1443,8 +1443,16 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       const id = this.#pressedChip;
       this.#pressedChip = undefined;
       const pressed = this.#chipOf(event.target);
-      if (id !== undefined && pressed?.chip.id === id)
-        this.#arm(pressed.chip, pressed.at + 1, 'Backspace');
+      if (pressed) {
+        if (pressed.chip.id === id) this.#arm(pressed.chip, pressed.at + 1, 'Backspace');
+        return;
+      }
+      // Chromium puts the caret before a chip for a click past it. A double click's second click
+      // selects a word, so it's left alone.
+      const current = view();
+      if (event.detail !== 1 || !current?.caretBesideHost()) return;
+      const offset = current.offsetAtPoint(event.clientX, event.clientY);
+      if (offset !== null) current.select(caretAt(offset));
     };
 
     const onCompositionStart = () => {

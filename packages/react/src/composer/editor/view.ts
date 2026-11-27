@@ -53,6 +53,9 @@ function layout<T extends ComposerChip>(value: ComposerValue<T>): Layout<T> {
 
 const realLength = (text: string): number => text.replaceAll(ZERO_WIDTH_SPACE, '').length;
 
+const isHost = (node: Node | null | undefined): node is HTMLElement =>
+  node instanceof HTMLElement && node.hasAttribute(HOST);
+
 /** Falls back to `caretRangeFromPoint`: older Chrome and Safari lack `caretPositionFromPoint`. */
 function caretFromPoint(x: number, y: number): [Node, number] | null {
   const position = document.caretPositionFromPoint?.(x, y);
@@ -253,11 +256,7 @@ export class EditorView<T extends ComposerChip> {
    */
   offsetAtPoint(x: number, y: number): number | null {
     const host = this.#hostOf(document.elementFromPoint(x, y));
-    if (host) {
-      const box = host.getBoundingClientRect();
-      const rtl = getComputedStyle(this.#element).direction === 'rtl';
-      return this.#startOf(host) + (x > box.left + box.width / 2 !== rtl ? 1 : 0);
-    }
+    if (host) return this.#sideAt(host, x);
     // The caret APIs give the nearest line, also for a point below the last.
     const style = getComputedStyle(this.#element);
     const bottom =
@@ -265,7 +264,31 @@ export class EditorView<T extends ComposerChip> {
       Number.parseFloat(style.borderBottomWidth) -
       Number.parseFloat(style.paddingBottom);
     const point = y > bottom ? null : caretFromPoint(x, y);
-    return point && this.#element.contains(point[0]) ? this.offsetAt(...point) : null;
+    if (!point || !this.#element.contains(point[0])) return null;
+    // Chromium gives a point inside a host for one beside it, such as after a final chip.
+    const beside = this.#hostOf(point[0]);
+    return beside ? this.#sideAt(beside, x) : this.offsetAt(...point);
+  }
+
+  #sideAt(host: HTMLElement, x: number): number {
+    const box = host.getBoundingClientRect();
+    const rtl = getComputedStyle(this.#element).direction === 'rtl';
+    return this.#startOf(host) + (x > box.left + box.width / 2 !== rtl ? 1 : 0);
+  }
+
+  /** Also true inside a host. Reads no layout: every click calls it. */
+  caretBesideHost(): boolean {
+    const selection = document.getSelection();
+    const node = selection?.isCollapsed ? selection.anchorNode : null;
+    if (!selection || !node || !this.#element.contains(node)) return false;
+    if (this.#hostOf(node)) return true;
+    const offset = selection.anchorOffset;
+    if (node instanceof Text)
+      return (
+        (isHost(node.nextSibling) && realLength(node.data.slice(offset)) === 0) ||
+        (isHost(node.previousSibling) && realLength(node.data.slice(0, offset)) === 0)
+      );
+    return isHost(node.childNodes[offset - 1]) || isHost(node.childNodes[offset]);
   }
 
   /**
