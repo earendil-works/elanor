@@ -23,6 +23,7 @@ const renderChip = (chip: FileChip) => (
   </Chip.Root>
 );
 
+// Demo only: earlier messages; load the conversation's sent messages from your store.
 const earlier: ComposerValue<FileChip>[] = [
   ['Why does the docs build fail on Node 24?'],
   [
