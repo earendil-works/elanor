@@ -167,10 +167,9 @@ export function findMatch(
   // Every trigger is searched as far back as the farthest reach, so the nearest one owns the
   // query: `#` in `@sam #tag x` ends `@`'s query, though `#` alone takes no spaces.
   const farthest = Math.min(start, ...reaching.map(({reach}) => reach));
-  let owner:
-    | {readonly character: string; readonly index: number; readonly reach: number}
-    | undefined;
-  for (const {character, position, reach} of reaching) {
+  let owner: ((typeof reaching)[number] & {readonly index: number}) | undefined;
+  for (const trigger of reaching) {
+    const {character, position} = trigger;
     // The backward scan stops after a trigger that is itself an ending character, such as `:`, so
     // the search starts one trigger length earlier.
     const from = Math.max(0, farthest - character.length);
@@ -183,7 +182,7 @@ export function findMatch(
       index = index > from ? text.lastIndexOf(folded, index - from - 1) + from : -1
     ) {
       if (!at(before, index, position)) continue;
-      if (!owner || index > owner.index) owner = {character, index, reach};
+      if (!owner || index > owner.index) owner = {...trigger, index};
       break;
     }
   }
