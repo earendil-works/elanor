@@ -16,7 +16,7 @@ export function demos(): Plugin {
       order: 'pre',
       filter: {id: /\.mdx$/},
       handler(code, id) {
-        assertExcerpts(code, id, id);
+        assertExcerpts(code, id);
         if (!code.includes('<Demo')) return;
         assertDemoSyntax(code, id);
         const imports: string[] = [];
