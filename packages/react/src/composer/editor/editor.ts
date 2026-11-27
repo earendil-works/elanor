@@ -110,7 +110,8 @@ export type ComposerInsertOptions = {
   /**
    * For an insert a person made: adds a space at either edge, and between two chips, where the
    * text needs one, as in `Hi` + `there` or `fail?` + a chip, but not after `(` or before `.`.
-   * Never next to a script written without spaces.
+   * Never next to a script written without spaces. Drops a space you pass where it would double
+   * or start the prompt.
    */
   readonly space?: boolean;
 } & (
