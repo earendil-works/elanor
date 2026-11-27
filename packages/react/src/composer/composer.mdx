@@ -91,7 +91,9 @@ function SendOrStop({replying, onStop}: SendOrStopProps) {
 
 ## Files
 
-Files picked with `Attach`, pasted on the prompt, or dropped on the input group go to Root's `onAttach`, with a `reason` of `picker`, `paste` or `drop`. Put them in the text as chips: pass one chip per file to `details.insert`, in `onAttach` or before the person edits again. Once the text has changed, it returns `false`; then use `actions.insert`, or drop the files.
+Files picked with `Attach`, pasted on the prompt, or dropped on the input group go to Root's `onAttach`, with a `reason` of `picker`, `paste` or `drop`.
+
+Put them in the text as chips: pass one chip per file to `details.insert`, in `onAttach` or before the person edits again. Once the text has changed, it returns `false`; then use `actions.insert`, or drop the files.
 
 - Set `accept`, `multiple={false}` and `capture` on Attach. Give a second Attach its own `aria-label`, such as "Take a photo".
 - File drops need an `InputGroup`: a Prompt outside one ignores dropped files. Style a file drag over it with `data-drag-over`.
@@ -184,8 +186,8 @@ The value is a list of strings and chips. A chip is your own object with at leas
 - Keep `renderChip` stable, at module scope or with `useCallback`: every chip renders again when it changes.
 - Keep state that changes, such as upload progress, out of the chip: undo keeps chips as they were. Read it in `renderChip` from a component that subscribes to your store.
 - Don't render `Chip.Remove`: a person removes a chip with Backspace or Delete.
-- Set `chipDeletion` per chip: `whole` (the default), `select` to select it before removing it, or `revert` to turn it back into its text.
-- Set `getChipDescription` to tell screen readers what a chip is. The prompt reads it only when it places a chip, so put text that changes without an edit, such as an upload's error, in the chip as visually hidden text.
+- Set `chipDeletion` for all chips or per chip: `whole` (the default), `select` to select it before removing it, or `revert` to turn it back into its text.
+- Set `getChipDescription` to tell screen readers what a chip is. The prompt reads it only when it places or selects a chip, so put text that changes without an edit, such as an upload's error, in the chip as visually hidden text.
 
 ```tsx from="./examples/hero/chips.tsx"
 const content = (
@@ -278,7 +280,7 @@ To render from the value, such as a warning or a token count, use `Composer.useV
 ## Suggestions
 
 1. Pass your triggers to `Composer.useSuggestionMatch(triggers)`, such as `@` and `/` with `position: 'start'`. Keep the array stable.
-2. Find items for the match and pass them to `Suggestions` as `results`, with the match they answer. The composer doesn't match, rank or load items: filter, sort and fetch them yourself, and cancel a request in `onOpenChange`.
+2. Find items for the match and pass them to `Suggestions` as `results={{match, items}}`, so it knows which query they answer. The composer doesn't match, rank or load items: filter, sort and fetch them yourself, and cancel a request in `onOpenChange`.
 3. In `onItemPick`, replace the match's range, such as with a chip through `insert`.
 4. Render each item as a `SuggestionItem` with its `index`, and name `SuggestionList` with `aria-label`.
 
@@ -375,7 +377,7 @@ By default the frame lines up with the content around it. To line up the text in
 
 ## In a field
 
-For a chat input, use Root's `onSubmit` instead. Inside a [Field](/components/field/), the prompt is the field's control:
+In a form, leave out Root's `onSubmit`: Enter and Submit then submit the form, which validates first. For a chat input, use `onSubmit`. Inside a [Field](/components/field/), the prompt is the field's control:
 
 - Render the label as `Field.Label nativeLabel={false} render={<span />}`: a native label can't focus the prompt.
 - Set `required` on Root, and `name` on Root or `Field.Root`. A form submits the `toText` text and resets to `defaultValue`.
