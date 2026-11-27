@@ -14,11 +14,7 @@ export type ComposerSuggestionTrigger = {
   readonly character: string;
   /** Defaults to `word-start`. */
   readonly position?: ComposerSuggestionPosition | undefined;
-  // Counts spaces, not words as vercel-labs/ui's `spaces` does: `1` allows `Mary Ann`.
-  /**
-   * How many single spaces the query may hold, a whole number such as `2` for `@Mary Ann Lee`, or
-   * `true` for any number. Defaults to `false`.
-   */
+  /** Single spaces the query may hold: a whole number, or `true` for any. Defaults to `false`. */
   readonly spaces?: boolean | number | undefined;
 };
 
@@ -117,21 +113,16 @@ function at(text: string, index: number, position: ComposerSuggestionPosition): 
 }
 
 /**
- * How far back from the caret a query holding a space reaches, its trigger included. Fits names of
- * several parts, such as `@María José García Fernández`, while a sentence typed after a trigger
- * stops being searched within about ten words; it also bounds the walk back.
+ * How far back a query with a space reaches, its trigger included: room for a name such as
+ * `@María José García Fernández`, short enough to stop searching a sentence and to bound the walk.
  */
 const SPACED_REACH = 64;
 
-/**
- * Where a query ending at the caret may start: the word start `start`, or an earlier word start
- * across up to `limit` single spaces, within `SPACED_REACH`.
- */
 function queryStart(before: string, start: number, limit: number): number {
   const floor = Math.max(0, before.length - SPACED_REACH);
   let reach = start;
   let gaps = 0;
-  // Two spaces in a row, or `. ` at the end of a sentence, end the query.
+  // `. ` ends a sentence, and file names don't contain it.
   while (
     gaps < limit &&
     before[reach - 1] === ' ' &&
@@ -148,10 +139,9 @@ function queryStart(before: string, start: number, limit: number): number {
 }
 
 /**
- * The trigger nearest the caret, at its position, in the word that ends at the caret, or across
- * single spaces for a trigger with `spaces`. `before` is the text before the caret, from
- * `offsetText`. Words end at chips and `WORD_END`; a query also ends at a closing bracket it didn't
- * open.
+ * The trigger nearest the caret at its position, in the word that ends at the caret or, with
+ * `spaces`, across single spaces. `before` is the text before the caret, from `offsetText`. Words
+ * end at chips and `WORD_END`; a query also ends at a closing bracket it didn't open.
  */
 export function findMatch(
   before: string,
@@ -164,8 +154,8 @@ export function findMatch(
     position,
     reach: queryStart(before, start, spaces === true ? Number.POSITIVE_INFINITY : spaces || 0),
   }));
-  // Every trigger is searched as far back as the farthest reach, so the nearest one owns the
-  // query: `#` in `@sam #tag x` ends `@`'s query, though `#` alone takes no spaces.
+  // Searching every trigger this far back lets the nearest own the query: `#` in `@sam #tag x`
+  // ends `@`'s, though `#` takes no spaces.
   const farthest = Math.min(start, ...reaching.map(({reach}) => reach));
   let owner: ((typeof reaching)[number] & {readonly index: number}) | undefined;
   for (const trigger of reaching) {
@@ -189,8 +179,8 @@ export function findMatch(
   if (!owner) return null;
   const {character, index, reach} = owner;
   const query = before.slice(index + character.length);
-  // Too many spaces for this trigger, a space right after it, as in `@ home`, or a closer end its
-  // query; an earlier trigger doesn't take it over.
+  // No earlier trigger takes over when the nearest one's query has more spaces than it allows,
+  // starts with one (`@ home`) or has an unopened closer.
   if (index < reach - character.length || query.startsWith(' ') || endsQuery(query)) return null;
   return {character, query, range: {start: index, end: before.length}};
 }
