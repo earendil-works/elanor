@@ -279,6 +279,8 @@ type Edit<T extends ComposerChip> = {
   readonly group: EditGroup | undefined;
   /** A step recorded before this edit's own, as a paste's text before what it became. */
   readonly prior: Step<T> | undefined;
+  /** The value and selection the edit started from. */
+  readonly before: Step<T>;
 };
 
 /** Per `historyKey`; the least recently shown is dropped first. */
@@ -329,6 +331,8 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
    */
   #revision = 0;
   #composing = false;
+  /** A value from outside came while an input method composed; the DOM shows it at the end. */
+  #stale = false;
   /**
    * The chip selected for removal, kept while the caret stays at `caret`. Only its information fill
    * shows it, with the caret collapsed: iOS draws a native range over a chip across the rest of the
@@ -397,6 +401,9 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     return () => {
       unbind();
       this.#armed = undefined;
+      // A prompt removed while an input method composed gets no `compositionend`.
+      this.#composing = false;
+      this.#stale = false;
       this.#element = undefined;
       this.#view = undefined;
       this.#hosts = [];
@@ -446,20 +453,21 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
    * an edit it didn't take replaced by its value. Another `historyKey` switches to that key's
    * history.
    * A value from outside, like a controlled reset after sending, is its own undo step; the value
-   * this editor sent, passed back, isn't.
+   * this editor sent, passed back, isn't, and puts the caret at the end. While an input method
+   * composes, a value from outside waits for `compositionend`, then replaces the text composed:
+   * rewriting that text breaks the input method.
    */
   show(given: ComposerValue<T>, historyKey: string): void {
     const value = this.#normalizeGiven(given);
     if (historyKey !== this.#historyKey) this.#switchHistory(historyKey, value);
     const edit = this.#edit;
     this.#edit = undefined;
-    // The controlling component took the pending edit: it enters the history now, also the one
-    // after `clearHistory` when no value from outside came between.
-    if (edit && value === edit.value) {
+    // The controlling component took the pending edit, maybe as a copy: it enters the history
+    // now, also the one after `clearHistory` when no value from outside came between.
+    if (edit && sameContent(value, edit.value)) {
       this.#cleared = false;
       if (edit.prior) this.#history.record(edit.prior);
       this.#history.record({value, selection: edit.selection}, edit.group);
-      return;
     }
     // Nothing new, such as a render for something else.
     if (value === this.#latest) return;
@@ -468,15 +476,26 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       this.#cleared = false;
       this.#history = new History<Step<T>>({value, selection: null});
       this.#histories.set(historyKey, this.#history);
-    } else if (!sameValue(value, this.#history.current().value)) {
+    } else if (!sameContent(value, this.#history.current().value)) {
       // A value from outside: a reset, a draft, or the controlling component's value in place of
       // an edit it didn't take. It's an undo step of its own.
       this.#history.record({value, selection: null});
     }
-    this.#armed = undefined;
-    if (!sameValue(value, this.#latest)) this.#revision += 1;
+    const previous = this.#latest;
     this.#latest = value;
-    this.#render(null);
+    // A copy, as from a parent that copies the value or its chips on every render, keeps the text
+    // and the caret, also an input method's.
+    if (sameContent(value, previous)) this.#view?.updateChips(value);
+    else {
+      this.#armed = undefined;
+      this.#revision += 1;
+      if (this.#composing) this.#stale = true;
+      else if (!edit) this.#render(caretAt(valueLength(value)));
+      // The controlling component ignored the edit, or changed it, as by clamping its length.
+      else if (sameContent(value, edit.before.value))
+        this.#render(edit.before.selection ?? edit.selection);
+      else this.#render(edit.selection);
+    }
     this.#emitValue();
   }
 
@@ -502,7 +521,9 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
 
   #render(selection: SavedSelection): void {
     this.#view?.render(this.#latest);
-    if (selection && this.#focused) this.#view?.select(this.#clamp(selection));
+    if (!selection || !this.#focused) return;
+    this.#selection = this.#clamp(selection);
+    this.#view?.select(this.#selection);
   }
 
   #clamp({start, end}: ComposerTextRange): ComposerTextRange {
@@ -548,13 +569,15 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     this.options.onChange(value, details);
     if (details.isCanceled) {
       // A canceled edit the browser already made comes out of the DOM.
-      this.#render(this.#view?.selection() ?? null);
+      this.#render(this.#selection);
       return false;
     }
     this.#armed = undefined;
     this.#latest = value;
     this.#revision += 1;
-    this.#edit = record ? {value, selection, group, prior} : undefined;
+    this.#edit = record
+      ? {value, selection, group, prior, before: {value: before, selection: this.#selection}}
+      : undefined;
     if (selection) this.#selection = selection;
     this.#lastEnd = group && selection ? selection.end : -1;
     this.#render(selection);
@@ -1180,11 +1203,19 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     return caretAt(this.#caret().end);
   }
 
-  /** Commits pending IME text, before an edit that may land beside it. */
+  /**
+   * Commits pending IME text, as one step of its own, also before an edit that may land beside it;
+   * or shows the value from outside that came meanwhile.
+   */
   #endComposition(): void {
     if (!this.#composing) return;
     this.#composing = false;
-    this.#readBack(undefined);
+    if (!this.#stale) {
+      this.#readBack(undefined);
+      return;
+    }
+    this.#stale = false;
+    this.#render(caretAt(valueLength(this.#latest)));
   }
 
   /** `details.insert` refuses once the text changed: `at` is an offset into what `onAttach` saw. */
@@ -1217,6 +1248,9 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
         this.#applyStep(type === 'historyUndo' ? 'history-undo' : 'history-redo', event);
         return;
       }
+      // Where the edit starts, also for a key right after an arrow, before `selectionchange`.
+      const range = view()?.selection();
+      if (range) this.#selection = range;
       // Also during IME composition: deleting a chip beside it is the editor's job.
       if (type.startsWith('delete')) {
         this.#delete(event);
@@ -1224,7 +1258,6 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       }
       // Composition is never cancelled: the input method owns it until it ends.
       if (type === 'insertCompositionText' || this.#composing) return;
-      const range = view()?.selection();
       if (!range) return;
       if (type === 'insertText' || type === 'insertReplacementText') {
         const text = event.data ?? event.dataTransfer?.getData('text/plain') ?? '';
@@ -1461,12 +1494,6 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       this.#composing = true;
     };
 
-    // The committed text is read back as one step of its own.
-    const onCompositionEnd = () => {
-      this.#composing = false;
-      this.#readBack(undefined);
-    };
-
     // A caret inside a chip's host moves to its edge, and the chips in the selection are marked.
     const onSelectionChange = () => {
       const selection = document.getSelection();
@@ -1496,7 +1523,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     const onBlur = () => {
       this.#focused = false;
       this.#pressing = false;
-      this.#composing = false;
+      this.#endComposition();
       this.#armed = undefined;
       this.#setSelected(new Set());
       this.#emit();
@@ -1527,7 +1554,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     on('pointerout', onPointerOut);
     on('click', onClick);
     on('compositionstart', onCompositionStart);
-    on('compositionend', onCompositionEnd);
+    on('compositionend', () => this.#endComposition());
     on('focus', onFocus);
     on('blur', onBlur);
     document.addEventListener('selectionchange', onSelectionChange);

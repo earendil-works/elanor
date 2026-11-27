@@ -51,7 +51,19 @@ function layout<T extends ComposerChip>(value: ComposerValue<T>): Layout<T> {
   return nodes;
 }
 
-const realLength = (text: string): number => text.replaceAll(ZERO_WIDTH_SPACE, '').length;
+/**
+ * The length before `end` without zero-width spaces. Counts them in place: a long prompt would copy
+ * its text several times a key.
+ */
+function realLength(text: string, end = text.length): number {
+  let length = end;
+  let at = text.indexOf(ZERO_WIDTH_SPACE);
+  while (at !== -1 && at < end) {
+    length -= 1;
+    at = text.indexOf(ZERO_WIDTH_SPACE, at + 1);
+  }
+  return length;
+}
 
 const isHost = (node: Node | null | undefined): node is HTMLElement =>
   node instanceof HTMLElement && node.hasAttribute(HOST);
@@ -82,6 +94,8 @@ export class EditorView<T extends ComposerChip> {
   readonly #hosts = new Map<string, Host<T>>();
   /** How many hosts the last render showed. */
   #shown = 0;
+  /** Text nodes' lengths while their data stays the same: each offset adds up the nodes before it. */
+  readonly #lengths = new WeakMap<Text, {readonly data: string; readonly length: number}>();
 
   constructor(element: HTMLElement, describe: (chip: T) => string, onHosts: () => void) {
     this.#element = element;
@@ -164,6 +178,11 @@ export class EditorView<T extends ComposerChip> {
     }
   }
 
+  /** Copies of the chips shown, for their hosts, while the text stays as it is. */
+  updateChips(value: ComposerValue<T>): void {
+    for (const segment of value) if (isChip(segment)) this.#hostFor(segment);
+  }
+
   /**
    * The value the DOM holds now: text without zero-width spaces, and a chip per known host.
    * Anything else, like a `<div>` a browser wrapped a line in, becomes its text, after a line
@@ -212,7 +231,7 @@ export class EditorView<T extends ComposerChip> {
   }
 
   #lengthOf(node: Node): number {
-    if (node instanceof Text) return realLength(node.data);
+    if (node instanceof Text) return this.#textLength(node);
     if (!(node instanceof HTMLElement)) return 0;
     if (node.hasAttribute(HOST)) return 1;
     if (this.#heightOnly(node)) return 0;
@@ -220,6 +239,15 @@ export class EditorView<T extends ComposerChip> {
     let total = 0;
     for (const child of node.childNodes) total += this.#lengthOf(child);
     return total;
+  }
+
+  #textLength(node: Text): number {
+    const {data} = node;
+    const known = this.#lengths.get(node);
+    if (known?.data === data) return known.length;
+    const length = realLength(data);
+    this.#lengths.set(node, {data, length});
+    return length;
   }
 
   #startOf(node: Node): number {
@@ -241,7 +269,7 @@ export class EditorView<T extends ComposerChip> {
   offsetAt(node: Node, offset: number, after = false): number {
     const host = this.#hostOf(node);
     if (host) return this.#startOf(host) + (after || (host === node && offset > 0) ? 1 : 0);
-    if (node instanceof Text) return this.#startOf(node) + realLength(node.data.slice(0, offset));
+    if (node instanceof Text) return this.#startOf(node) + realLength(node.data, offset);
     let total = node === this.#element ? 0 : this.#startOf(node);
     for (let index = 0; index < offset && index < node.childNodes.length; index += 1) {
       const child = node.childNodes[index];
@@ -285,8 +313,8 @@ export class EditorView<T extends ComposerChip> {
     const offset = selection.anchorOffset;
     if (node instanceof Text)
       return (
-        (isHost(node.nextSibling) && realLength(node.data.slice(offset)) === 0) ||
-        (isHost(node.previousSibling) && realLength(node.data.slice(0, offset)) === 0)
+        (isHost(node.nextSibling) && realLength(node.data) === realLength(node.data, offset)) ||
+        (isHost(node.previousSibling) && realLength(node.data, offset) === 0)
       );
     return isHost(node.childNodes[offset - 1]) || isHost(node.childNodes[offset]);
   }
@@ -297,17 +325,27 @@ export class EditorView<T extends ComposerChip> {
    */
   #pointAt(offset: number): [Node, number] {
     let remaining = offset;
-    for (const child of this.#element.childNodes) {
+    for (const [index, child] of this.#element.childNodes.entries()) {
       if (child instanceof Text) {
-        const length = realLength(child.data);
+        const length = this.#textLength(child);
         if (remaining <= length) {
-          let index = child.data.startsWith(ZERO_WIDTH_SPACE) && child.data.length > 1 ? 1 : 0;
-          for (let counted = 0; counted < remaining; index += 1)
-            if (child.data[index] !== ZERO_WIDTH_SPACE) counted += 1;
-          return [child, index];
+          let at = child.data.startsWith(ZERO_WIDTH_SPACE) && child.data.length > 1 ? 1 : 0;
+          // Skips the zero-width spaces before the point.
+          let space = child.data.indexOf(ZERO_WIDTH_SPACE, at);
+          while (space !== -1 && space - at < remaining) {
+            remaining -= space - at;
+            at = space + 1;
+            space = child.data.indexOf(ZERO_WIDTH_SPACE, at);
+          }
+          return [child, at + remaining];
         }
         remaining -= length;
-      } else remaining -= this.#lengthOf(child);
+        continue;
+      }
+      const length = this.#lengthOf(child);
+      // A host with no text before it, as a browser's edit can leave it: the point before it.
+      if (remaining < length) return [this.#element, index];
+      remaining -= length;
     }
     const last = this.#element.lastChild;
     const sentinel = last instanceof HTMLElement && last.hasAttribute(SENTINEL);
@@ -402,7 +440,9 @@ export class EditorView<T extends ComposerChip> {
     const [node, index] = this.#pointAt(offset);
     // A chip's point is in the text before its host, with only zero-width spaces after it.
     const host =
-      node instanceof Text && realLength(node.data.slice(index)) === 0 ? node.nextSibling : null;
+      node instanceof Text && realLength(node.data) === realLength(node.data, index)
+        ? node.nextSibling
+        : null;
     if (host instanceof HTMLElement && host.hasAttribute(HOST)) return host.getBoundingClientRect();
     const range = document.createRange();
     range.setStart(node, index);
