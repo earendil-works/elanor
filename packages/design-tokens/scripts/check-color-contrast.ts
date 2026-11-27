@@ -346,6 +346,15 @@ function createRules(paths: readonly string[]): ContrastRule[] {
       ]),
     },
     {
+      // Text and icons on a picture viewer's stage, or on a scrim over a picture.
+      category: 'text/on-media',
+      threshold: REQUIRED_TEXT_CONTRAST,
+      pairs: everyCombination(
+        [requirePath(pathSet, 'semantic.color.text.onMedia')],
+        [requirePath(pathSet, 'semantic.color.background.media')],
+      ),
+    },
+    {
       category: 'icon/page',
       threshold: REQUIRED_NON_TEXT_CONTRAST,
       pairs: everyCombination(
