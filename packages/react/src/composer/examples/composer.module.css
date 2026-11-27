@@ -117,17 +117,6 @@
   --composer-footer-inset: var(--semantic-dimension-space-control-padding-inline-small);
 }
 
-.narrow {
-  max-inline-size: var(--semantic-dimension-size-max-width-content-small);
-}
-
-/* Your own policy: in a narrow composer, the cache figure gives its room to the rest. */
-@container composer (inline-size <= 30rem) {
-  .cache {
-    display: none;
-  }
-}
-
 /* A lone Send at the row's end. */
 .end {
   justify-content: flex-end;

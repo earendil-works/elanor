@@ -8,7 +8,7 @@ The input where a person writes a chat message: the prompt with chips, buttons i
 
 <Demo example="./examples/demo.tsx" />
 
-The example is a whole composer: suggestions for files and commands, chips, uploads, a drop zone, recall of sent messages, and a footer. The sections below quote it; a section has its own example only where the whole one can't show it, such as a narrow composer.
+The example is a whole composer: suggestions for files and commands, chips, uploads, a drop zone, recall of sent messages, and a footer. The sections below quote it; a section has its own example only where the whole one can't show it, such as a disabled composer.
 
 ## Usage
 
@@ -47,7 +47,7 @@ const toText = (value: ComposerValue) => Composer.valueToText(value, (chip) => c
 ```
 
 - **Root** holds the prompt's value, its undo history and its settings. It renders no element: the other parts and the hooks work anywhere inside it, also outside Panel and in portals, and throw outside it. Its required `toText` gives the value as text; see [Chips](#chips).
-- **Panel** renders a `div` around the rows and fills its container's width. For a form, see [In a form](#in-a-form).
+- **Panel** renders a `div` around the rows and fills its container's width. For a form, see [In a field](#in-a-field).
 - **Header** is the row above the input group, for notices, errors, and the message being replied to.
 - **InputGroup** is the frame, which looks like one text input holding the prompt, with its chips, and the buttons. It has no focus ring; the caret shows the focus, and the input group keeps its fill while a person writes, darkening only under the pointer or a press. Pressing anything in it other than the text keeps the focus where it is, so a phone's keyboard stays up. InputGroup also works without a Panel.
 - **Prompt** is the text. `maxRows` sets how many lines it grows to before it scrolls (10 by default; at most 40% of the viewport, so it stays above a phone's keyboard). Name it with `aria-label` or a `Field.Label`. Keep `placeholder` to one short line: it doesn't wrap.
@@ -443,20 +443,6 @@ For filled controls, such as a default Dropdown trigger, set `--composer-footer-
 
 <Demo example="./examples/filled-footer.tsx" />
 
-### Your own breakpoints
-
-Use the `composer` container to change the footer at widths of your own, such as hiding the cache figure in a narrow composer, as the narrow example does. You could also let the footer wrap instead, with `flex-wrap: wrap`.
-
-```css from="./examples/composer.module.css"
-@container composer (inline-size <= 30rem) {
-  .cache {
-    display: none;
-  }
-}
-```
-
-<Demo example="./examples/narrow.tsx" />
-
 ## Alignment
 
 By default the frame lines up with the content around it. `--composer-hang` hangs Panel out of its container by its value. Set it to `--composer-text-inset`, the distance from the frame's edge to the text, to line up the prompt's and the footer's text with the content around it instead, as the example does in a wide window.
@@ -473,26 +459,9 @@ Set it in a class on `Composer.Panel` itself: the inset is set on Panel, so a wr
 
 ## In a field
 
-Inside a [Field](/components/field/), the prompt is the field's control: `Field.Label` names it, and the field's states and errors apply to it. Show an error with `Field.Error`: the composer doesn't mark validity on its own, but InputGroup and Prompt render the field's `data-valid` or `data-invalid` for your own styles. A native label can't focus the prompt, so render the label as `Field.Label nativeLabel={false} render={<span />}`; a click on it then focuses the prompt. Set `required` on Root, and `name` on Root or `Field.Root`: a form submits the `toText` text, and a form reset returns to `defaultValue`. Without `onSubmit`, Enter and Submit submit the form, which validates first.
+For a chat input, call Root's `onSubmit` instead, as the example does. Inside a [Field](/components/field/), the prompt is the field's control: `Field.Label` names it, and the field's states and errors apply to it. Show an error with `Field.Error`: the composer doesn't mark validity on its own, but InputGroup and Prompt render the field's `data-valid` or `data-invalid` for your own styles. A native label can't focus the prompt, so render the label as `Field.Label nativeLabel={false} render={<span />}`; a click on it then focuses the prompt. Set `required` on Root, and `name` on Root or `Field.Root`: a form submits the `toText` text, and a form reset returns to `defaultValue`. Without `onSubmit`, Enter and Submit submit the form, which validates first. To make the panel itself a form, pass `render={<form />}` to Panel; Submit then submits it and calls `onSubmit`.
 
 <Demo example="./examples/in-field.tsx" />
-
-## In a form
-
-Pass `render={<form />}` to Panel to make it a form. Submit then submits it, and its submit event calls Root's `onSubmit` with the event in the details; Enter calls it with the key event.
-
-```tsx
-<Composer.Root toText={toText} onSubmit={(message, {event}) => send(message, event)}>
-  <Composer.Panel render={<form />}>
-    <Composer.InputGroup>
-      <Composer.Prompt aria-label="Message" />
-      <Composer.Controls>
-        <Composer.Submit />
-      </Composer.Controls>
-    </Composer.InputGroup>
-  </Composer.Panel>
-</Composer.Root>
-```
 
 ## Your own state
 
