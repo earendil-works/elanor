@@ -53,6 +53,9 @@ function layout<T extends ComposerChip>(value: ComposerValue<T>): Layout<T> {
 
 const realLength = (text: string): number => text.replaceAll(ZERO_WIDTH_SPACE, '').length;
 
+const isHost = (node: Node | null | undefined): node is HTMLElement =>
+  node instanceof HTMLElement && node.hasAttribute(HOST);
+
 /** Falls back to `caretRangeFromPoint`: older Chrome and Safari lack `caretPositionFromPoint`. */
 function caretFromPoint(x: number, y: number): [Node, number] | null {
   const position = document.caretPositionFromPoint?.(x, y);
@@ -253,11 +256,7 @@ export class EditorView<T extends ComposerChip> {
    */
   offsetAtPoint(x: number, y: number): number | null {
     const host = this.#hostOf(document.elementFromPoint(x, y));
-    if (host) {
-      const box = host.getBoundingClientRect();
-      const rtl = getComputedStyle(this.#element).direction === 'rtl';
-      return this.#startOf(host) + (x > box.left + box.width / 2 !== rtl ? 1 : 0);
-    }
+    if (host) return this.#sideAt(host, x);
     // The caret APIs give the nearest line, also for a point below the last.
     const style = getComputedStyle(this.#element);
     const bottom =
@@ -265,7 +264,31 @@ export class EditorView<T extends ComposerChip> {
       Number.parseFloat(style.borderBottomWidth) -
       Number.parseFloat(style.paddingBottom);
     const point = y > bottom ? null : caretFromPoint(x, y);
-    return point && this.#element.contains(point[0]) ? this.offsetAt(...point) : null;
+    if (!point || !this.#element.contains(point[0])) return null;
+    // Chromium gives a point inside a host for one beside it, such as after a final chip.
+    const beside = this.#hostOf(point[0]);
+    return beside ? this.#sideAt(beside, x) : this.offsetAt(...point);
+  }
+
+  #sideAt(host: HTMLElement, x: number): number {
+    const box = host.getBoundingClientRect();
+    const rtl = getComputedStyle(this.#element).direction === 'rtl';
+    return this.#startOf(host) + (x > box.left + box.width / 2 !== rtl ? 1 : 0);
+  }
+
+  /** A caret beside or inside a host. Reads no layout: every click calls it. */
+  caretBesideHost(): boolean {
+    const selection = document.getSelection();
+    const node = selection?.isCollapsed ? selection.anchorNode : null;
+    if (!selection || !node || !this.#element.contains(node)) return false;
+    if (this.#hostOf(node)) return true;
+    const offset = selection.anchorOffset;
+    if (node instanceof Text)
+      return (
+        (isHost(node.nextSibling) && realLength(node.data.slice(offset)) === 0) ||
+        (isHost(node.previousSibling) && realLength(node.data.slice(0, offset)) === 0)
+      );
+    return isHost(node.childNodes[offset - 1]) || isHost(node.childNodes[offset]);
   }
 
   /**
@@ -330,9 +353,9 @@ export class EditorView<T extends ComposerChip> {
   }
 
   /**
-   * The caret's rectangle at an offset. A collapsed range in a non-empty text node measures in
-   * every engine; an empty line or a point next to a host measures zero, so the neighbouring
-   * character or host stands in, else the element's first line.
+   * The caret's rectangle at an offset, 1px wide toward the line's end. A collapsed range in a
+   * non-empty text node measures in every engine; an empty line or a point next to a host measures
+   * zero, so the neighbouring character or host stands in, else the element's first line.
    */
   rectAt(offset: number): Rect | null {
     if (!this.#element.isConnected) return null;
@@ -341,16 +364,19 @@ export class EditorView<T extends ComposerChip> {
     range.setStart(node, index);
     range.collapse(true);
     const rect = range.getBoundingClientRect();
-    if (rect.height) return {x: rect.x, y: rect.y, width: 0, height: rect.height};
     const style = getComputedStyle(this.#element);
     const rtl = style.direction === 'rtl';
-    // The caret stands after what precedes it: at its right, or at its left in right-to-left text.
-    const after = (box: DOMRect): Rect => ({
-      x: rtl ? box.left : box.right,
-      y: box.y,
-      width: 0,
-      height: box.height,
+    // Floating UI's `hide` counts a rect without width at the clip's edge as outside, as at the
+    // start of a prompt without padding. Toward the line's end, a start-aligned popup stays put.
+    const caret = (x: number, y: number, height: number): Rect => ({
+      x: rtl ? x - 1 : x,
+      y,
+      width: 1,
+      height,
     });
+    if (rect.height) return caret(rect.x, rect.y, rect.height);
+    // The caret stands after what precedes it: at its right, or at its left in right-to-left text.
+    const after = (box: DOMRect): Rect => caret(rtl ? box.left : box.right, box.y, box.height);
     if (node instanceof Text && index > 0) {
       range.setStart(node, index - 1);
       range.setEnd(node, index);
@@ -362,14 +388,13 @@ export class EditorView<T extends ComposerChip> {
       return after(previous.getBoundingClientRect());
     const box = this.#element.getBoundingClientRect();
     const px = (value: string): number => Number.parseFloat(value) || 0;
-    return {
-      x: rtl
+    return caret(
+      rtl
         ? box.right - px(style.borderRightWidth) - px(style.paddingRight)
         : box.left + px(style.borderLeftWidth) + px(style.paddingLeft),
-      y: box.top + px(style.borderTopWidth) + px(style.paddingTop),
-      width: 0,
-      height: px(style.lineHeight) || box.height,
-    };
+      box.top + px(style.borderTopWidth) + px(style.paddingTop),
+      px(style.lineHeight) || box.height,
+    );
   }
 
   /** The box of the character or chip at `offset`. */
