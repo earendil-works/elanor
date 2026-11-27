@@ -95,5 +95,12 @@ export function assertExcerpts(source: string, mdxPath: string): void {
 export function assertDemos(source: string, mdxPath: string): void {
   assertDemoSyntax(source, mdxPath);
   assertExcerpts(source, mdxPath);
-  for (const [, example = ''] of source.matchAll(demoBlock)) demoFiles(mdxPath, example);
+  for (const [, example = ''] of source.matchAll(demoBlock)) {
+    try {
+      demoFiles(mdxPath, example);
+    } catch (error) {
+      const reason = error instanceof Error ? error.message : String(error);
+      throw new Error(`${mdxPath}: the demo ${example}: ${reason}`, {cause: error});
+    }
+  }
 }

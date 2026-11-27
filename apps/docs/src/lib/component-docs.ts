@@ -2,7 +2,13 @@ import {resolve} from 'node:path';
 
 import type {CollectionEntry} from 'astro:content';
 
-import {functionSummary, orderedApi, partSummary, typeDeclarations} from './component-api.ts';
+import {
+  functionSummary,
+  listFormat,
+  orderedApi,
+  partSummary,
+  typeDeclarations,
+} from './component-api.ts';
 import {componentName} from './component-name.ts';
 import {assertDemoSyntax, demoBlock, demoFiles} from './demo-blocks.ts';
 import {firstParagraph} from './docs-wording.ts';
@@ -61,7 +67,7 @@ export function componentMarkdown(entry: Entry): string {
         const comment = language === 'css' ? `/* ${file.specifier} */` : `// ${file.specifier}`;
         return `\`\`\`${language}\n${comment}\n${file.code.trimEnd()}\n\`\`\``;
       });
-    const names = repeated.map((file) => `\`${file.specifier}\``).join(', ');
+    const names = listFormat.format(repeated.map((file) => `\`${file.specifier}\``));
     return [...fences, ...(names ? [`Uses ${names}, shown above.`] : [])].join('\n\n');
   });
 

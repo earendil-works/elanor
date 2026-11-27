@@ -198,10 +198,20 @@ function readFunction(
   const baseUi = reference && baseUiLink(reference.link.split('/')[0] ?? '', shortName);
   if (baseUi) return {api: {name, baseUi}, node: undefined};
   const text = (item: ts.Node) => item.getText().replace(/\s+/g, ' ');
+  // As a declaration, without the implementation's defaults: the JSDoc names those.
+  const parameter = (item: ts.ParameterDeclaration) => {
+    // A destructured parameter has no name of its own.
+    const parameterName = ts.isIdentifier(item.name) ? item.name.text : 'options';
+    const optional = item.questionToken || item.initializer ? '?' : '';
+    const type = item.type
+      ? text(item.type)
+      : checker.typeToString(checker.getTypeAtLocation(item), item, typeFlags);
+    return `${item.dotDotDotToken ? '...' : ''}${parameterName}${optional}: ${type}`;
+  };
   const typeParameters = node?.typeParameters
     ? `<${node.typeParameters.map(text).join(', ')}>`
     : '';
-  const parameters = node?.parameters.map(text);
+  const parameters = node?.parameters.map(parameter);
   const returns = node?.type
     ? text(node.type)
     : checker.typeToString(call.getReturnType(), declaration, typeFlags);
@@ -700,7 +710,7 @@ const lowercase = (tag: string) => (/^[a-z][\w-]*$/.test(tag) ? tag : undefined)
 
 /**
  * The API in the order the page body first mentions it: parts as JSX, such as `<Composer.Root`,
- * and functions by name, such as `Composer.useActions`. Unmentioned ones follow.
+ * and functions and types by name, such as `Composer.useActions`. Unmentioned ones follow.
  */
 export function orderedApi(page: string, body: string): ComponentApi {
   const api = componentApi(page);
@@ -717,8 +727,15 @@ export function orderedApi(page: string, body: string): ComponentApi {
       .sort((a, b) => position(a.item) - position(b.item) || a.index - b.index)
       .map(({item}) => item);
   };
-  return {...api, parts: ordered(api.parts, '<'), functions: ordered(api.functions, '')};
+  return {
+    parts: ordered(api.parts, '<'),
+    functions: ordered(api.functions, ''),
+    types: ordered(api.types, ''),
+  };
 }
+
+/** Joins words as a sentence does: `a`, `a and b`, `a, b, and c`. */
+export const listFormat = new Intl.ListFormat('en', {type: 'conjunction'});
 
 /** The sentence, in Markdown, for a function Elanor re-exports from Base UI. */
 export const functionSummary = (link: BaseUiLink): string =>
@@ -740,10 +757,7 @@ export function partSummary(part: ApiPart): string | undefined {
     ...(part.ref ? ['`ref`'] : []),
     ...(part.render ? ['`render`'] : []),
   ];
-  const accepts =
-    extras.length < 3
-      ? extras.join(' and ')
-      : `${extras.slice(0, -1).join(', ')}, and ${extras.at(-1)}`;
+  const accepts = listFormat.format(extras);
   const sentences = [
     part.element && `Renders ${part.element}.`,
     accepts && `${verb}${part.element ? ' its' : ''} ${accepts}.`,

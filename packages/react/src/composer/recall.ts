@@ -5,7 +5,10 @@ import type {ComposerRecallFrom} from './editor/editor.ts';
 import type {ComposerChip, ComposerValue} from './editor/model.ts';
 
 export interface ComposerRecallOptions {
-  /** Where ArrowUp starts recalling; once it has, it goes on from the message shown. */
+  /**
+   * Where ArrowUp starts recalling; once it has, it goes on from the message shown. Defaults to
+   * `first-line`.
+   */
   readonly from?: ComposerRecallFrom | undefined;
 }
 
