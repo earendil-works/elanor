@@ -4,8 +4,8 @@
 import {CHIP_CHARACTER, type ComposerTextRange} from './model.ts';
 
 /**
- * Where a trigger counts. `word-start`: after whitespace, an opening mark, a chip, an emoji, or a
- * Chinese or Japanese character, since those scripts are written without spaces.
+ * Where a trigger counts. `word-start`: after whitespace, an opening mark, `,`, `;`, `!` or `?`, a
+ * chip, an emoji, or a Chinese or Japanese character, since those scripts are written without spaces.
  */
 export type ComposerSuggestionPosition = 'start' | 'line-start' | 'word-start' | 'anywhere';
 
@@ -33,15 +33,35 @@ export type ComposerSuggestionMatch = {
 export const UNSPACED_SCRIPT = '\\p{scx=Han}\\p{scx=Hira}\\p{scx=Kana}\\p{scx=Bopo}\\uFF01-\\uFF65';
 
 const WORD_START = new RegExp(
-  `[\\s\\p{Ps}\\p{Pi}"'\`<${CHIP_CHARACTER}\\p{Extended_Pictographic}\\p{Emoji_Modifier}` +
+  `[\\s\\p{Ps}\\p{Pi}"'\`<,;!?${CHIP_CHARACTER}\\p{Extended_Pictographic}\\p{Emoji_Modifier}` +
     `\\p{Regional_Indicator}\\u20E3${UNSPACED_SCRIPT}]`,
   'u',
 );
 // End a query as whitespace does, such as `@sam,` at the comma; in text without spaces it would
 // otherwise run on through the sentence. Not `.`, `-`, `_`, `/`, `\`, `~`, `+`, `=`, `@`, `#` or
 // apostrophes: they occur in paths and names, such as `@~/a+b.ts` and `@O'Brien`, and a `.` may
-// end a sentence or start a file extension.
-const WORD_END = /[\s,;:!?)\]}"、。，．！？：；｡､」』）】〕〉》｣］｝〗〙〛]/u;
+// end a sentence or start a file extension. ASCII closing brackets end it in `endsQuery`.
+const WORD_END = /[\s,;:!?"、。，．！？：；｡､」』）】〕〉》｣］｝〗〙〛]/u;
+
+const OPENERS = '([{';
+const CLOSERS = ')]}';
+
+/**
+ * Whether a closing bracket ends `query`: one without an opener of its type before it, as in
+ * `(@sam)`, while `@app/(marketing)/page.tsx` stays one query. Each type counts on its own.
+ */
+function endsQuery(query: string): boolean {
+  const open = [0, 0, 0];
+  for (const character of query) {
+    const opener = OPENERS.indexOf(character);
+    if (opener >= 0) open[opener] = (open[opener] ?? 0) + 1;
+    const closer = CLOSERS.indexOf(character);
+    if (closer < 0) continue;
+    if (!open[closer]) return true;
+    open[closer] -= 1;
+  }
+  return false;
+}
 
 const VARIATION_SELECTOR = /[\uFE0E\uFE0F]/;
 
@@ -86,7 +106,8 @@ function at(text: string, index: number, position: ComposerSuggestionPosition): 
 
 /**
  * The last trigger in the word that ends at the caret. `before` is the text before the caret, from
- * `offsetText`. Words end at chips and `WORD_END`.
+ * `offsetText`. Words end at chips and `WORD_END`, and a query at a closing bracket without its
+ * opener.
  */
 export function findMatch(
   before: string,
@@ -96,7 +117,8 @@ export function findMatch(
   while (start > 0 && !endsWord(before[start - 1])) start -= 1;
   let found: ComposerSuggestionMatch | null = null;
   for (const {character, position = 'word-start'} of triggers) {
-    // A trigger such as `:` may end the word before; only its query can't hold one.
+    // The backward scan stops after a trigger that is itself an ending character, such as `:`, so
+    // the search starts one trigger length earlier.
     const from = Math.max(0, start - character.length);
     // The boundary check reads the text as typed; only the trigger's search is folded.
     const text = halfWidth(before.slice(from));
@@ -107,6 +129,8 @@ export function findMatch(
       index = index > from ? text.lastIndexOf(folded, index - from - 1) + from : -1
     ) {
       if (!at(before, index, position)) continue;
+      // The closer ends the last trigger's query; an earlier trigger doesn't take it over.
+      if (endsQuery(before.slice(index + character.length))) break;
       if (!found || index > found.range.start)
         found = {
           character,
