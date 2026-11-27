@@ -1148,22 +1148,21 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       {at = 'caret', startLine = false, reason = 'imperative-action', event, space = false} = {},
     ) => {
       if (!this.options.editable) return false;
-      this.takeComposed();
+      // The insert rewrites the text an input method composes, which ends its composition, often
+      // without `compositionend`.
+      this.#endComposition();
       const length = valueLength(this.#latest);
       const range = at === 'end' ? caretAt(length) : at === 'caret' ? this.#caret() : at;
       const given = typeof content === 'string' || 'id' in content ? [content] : content;
       const before = offsetText(sliceValue(this.#latest, 0, range.start));
       const segments =
         startLine && before !== '' && !before.endsWith('\n') ? ['\n', ...given] : given;
-      const inserted = this.#insert(
+      return this.#insert(
         space ? withSpaces(this.#latest, range, segments) : segments,
         range,
         event,
         reason,
       );
-      // The insert rewrote the text an input method composes.
-      if (inserted && this.#composing) this.#stale = this.#caret();
-      return inserted;
     },
     undo: () => this.#applyStep('history-undo'),
     redo: () => this.#applyStep('history-redo'),
