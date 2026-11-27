@@ -14,6 +14,8 @@ export type ComposerSuggestionTrigger = {
   readonly character: string;
   /** Defaults to `word-start`. */
   readonly position?: ComposerSuggestionPosition | undefined;
+  /** Single spaces the query may hold: `true` for any number; two in a row end it. */
+  readonly spaces?: boolean | number | undefined;
 };
 
 export type ComposerSuggestionMatch = {
@@ -111,9 +113,26 @@ function at(text: string, index: number, position: ComposerSuggestionPosition): 
 }
 
 /**
- * The last trigger in the word that ends at the caret. `before` is the text before the caret, from
- * `offsetText`. Words end at chips and `WORD_END`; a query also ends at a closing bracket it didn't
- * open.
+ * Where a query ending at the caret may start: the word start `start`, or an earlier word start
+ * across up to `limit` single spaces.
+ */
+function queryStart(before: string, start: number, limit: number): number {
+  let reach = start;
+  for (
+    let gaps = 0;
+    gaps < limit && before[reach - 1] === ' ' && before[reach - 2] !== ' ';
+    gaps += 1
+  ) {
+    reach -= 1;
+    while (reach > 0 && !endsWord(before[reach - 1])) reach -= 1;
+  }
+  return reach;
+}
+
+/**
+ * The last trigger in the word that ends at the caret, or across single spaces for a trigger with
+ * `spaces`. `before` is the text before the caret, from `offsetText`. Words end at chips and
+ * `WORD_END`; a query also ends at a closing bracket it didn't open.
  */
 export function findMatch(
   before: string,
@@ -122,10 +141,11 @@ export function findMatch(
   let start = before.length;
   while (start > 0 && !endsWord(before[start - 1])) start -= 1;
   let found: ComposerSuggestionMatch | null = null;
-  for (const {character, position = 'word-start'} of triggers) {
+  for (const {character, position = 'word-start', spaces = false} of triggers) {
+    const limit = spaces === true ? Number.POSITIVE_INFINITY : spaces || 0;
     // The backward scan stops after a trigger that is itself an ending character, such as `:`, so
     // the search starts one trigger length earlier.
-    const from = Math.max(0, start - character.length);
+    const from = Math.max(0, queryStart(before, start, limit) - character.length);
     // The boundary check reads the text as typed; only the trigger's search is folded.
     const text = halfWidth(before.slice(from));
     const folded = halfWidth(character);
@@ -135,14 +155,12 @@ export function findMatch(
       index = index > from ? text.lastIndexOf(folded, index - from - 1) + from : -1
     ) {
       if (!at(before, index, position)) continue;
-      // The closer ends the last trigger's query; an earlier trigger doesn't take it over.
-      if (endsQuery(before.slice(index + character.length))) break;
+      const query = before.slice(index + character.length);
+      // A space right after the trigger, as in `@ home`, or a closer ends the last trigger's
+      // query; an earlier trigger doesn't take it over.
+      if (query.startsWith(' ') || endsQuery(query)) break;
       if (!found || index > found.range.start)
-        found = {
-          character,
-          query: before.slice(index + character.length),
-          range: {start: index, end: before.length},
-        };
+        found = {character, query, range: {start: index, end: before.length}};
       break;
     }
   }
