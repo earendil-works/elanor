@@ -32,9 +32,15 @@ export type ComposerSuggestionMatch = {
  */
 export const UNSPACED_SCRIPT = '\\p{scx=Han}\\p{scx=Hira}\\p{scx=Kana}\\p{scx=Bopo}\\uFF01-\\uFF65';
 
+/**
+ * What a check by code point finds at either end of an emoji, as the body of a character class:
+ * the pictograph, a skin tone, a flag's regional indicator or tag, or a keycap's mark.
+ */
+export const EMOJI =
+  '\\p{Extended_Pictographic}\\p{Emoji_Modifier}\\p{Regional_Indicator}\\u20E3\\u{E0020}-\\u{E007F}';
+
 const WORD_START = new RegExp(
-  `[\\s\\p{Ps}\\p{Pi}"'\`<,;!?${CHIP_CHARACTER}\\p{Extended_Pictographic}\\p{Emoji_Modifier}` +
-    `\\p{Regional_Indicator}\\u20E3${UNSPACED_SCRIPT}]`,
+  `[\\s\\p{Ps}\\p{Pi}"'\`<,;!?${CHIP_CHARACTER}${EMOJI}${UNSPACED_SCRIPT}]`,
   'u',
 );
 // End a query as whitespace does, such as `@sam,` at the comma; in text without spaces it would

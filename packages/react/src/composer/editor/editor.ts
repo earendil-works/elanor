@@ -107,7 +107,12 @@ export type ComposerAttachDetails<T extends ComposerChip = ComposerChip> = Attac
 export type ComposerInsertOptions = {
   readonly at?: 'caret' | 'end' | ComposerTextRange;
   readonly startLine?: boolean;
-  /** Adds a space around chips where the text needs one, for an insert a person made. */
+  /**
+   * For an insert a person made: adds a space at either edge, and between two chips, where the
+   * text needs one, as in `Hi` + `there` or `fail?` + a chip, but not after `(` or before `.`.
+   * Never next to a script written without spaces. Drops a space you pass where it would double
+   * or start the prompt.
+   */
   readonly space?: boolean;
 } & (
   | {readonly reason?: 'imperative-action'; readonly event?: Event}
