@@ -780,12 +780,9 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     );
   }
 
-  /** Shows an undo or redo step without recording it. */
-  #applyStep(
-    event: Event | undefined,
-    step: Step<T> | undefined,
-    reason: 'history-undo' | 'history-redo',
-  ): void {
+  /** Shows the previous or next undo step without recording it. */
+  #applyStep(reason: 'history-undo' | 'history-redo', event?: Event): void {
+    const step = reason === 'history-undo' ? this.#history.undo() : this.#history.redo();
     if (!step) return;
     this.#armed = undefined;
     this.#commit(step.value, step.selection ?? caretAt(valueLength(step.value)), reason, event, {
@@ -894,12 +891,14 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     const key = event.key.toLowerCase();
     if (mod && !event.altKey && key === 'z') {
       event.preventDefault();
-      if (this.options.editable) (event.shiftKey ? this.actions.redo : this.actions.undo)();
+      if (this.options.editable) {
+        this.#applyStep(event.shiftKey ? 'history-redo' : 'history-undo', event);
+      }
       return;
     }
     if (!isApple() && event.ctrlKey && key === 'y') {
       event.preventDefault();
-      if (this.options.editable) this.actions.redo();
+      if (this.options.editable) this.#applyStep('history-redo', event);
       return;
     }
     // While a list at the caret is open, the keys it doesn't take edit the text: no chip is
@@ -1109,8 +1108,8 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
         reason,
       );
     },
-    undo: () => this.#applyStep(undefined, this.#history.undo(), 'history-undo'),
-    redo: () => this.#applyStep(undefined, this.#history.redo(), 'history-redo'),
+    undo: () => this.#applyStep('history-undo'),
+    redo: () => this.#applyStep('history-redo'),
     clearHistory: (historyKey = this.#historyKey) => {
       if (historyKey !== this.#historyKey) {
         this.#histories.delete(historyKey);
@@ -1211,8 +1210,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       }
       if (type === 'historyUndo' || type === 'historyRedo') {
         event.preventDefault();
-        if (type === 'historyUndo') this.actions.undo();
-        else this.actions.redo();
+        this.#applyStep(type === 'historyUndo' ? 'history-undo' : 'history-redo', event);
         return;
       }
       // Also during IME composition: deleting a chip beside it is the editor's job.
