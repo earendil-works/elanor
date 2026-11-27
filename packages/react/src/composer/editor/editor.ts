@@ -56,6 +56,9 @@ export type ComposerChangeReason =
   | 'imperative-action'
   | 'form-reset';
 
+/** `first-line`: ArrowUp recalls from anywhere on the first line. `empty`: only from an empty prompt. */
+export type ComposerRecallFrom = 'first-line' | 'empty';
+
 /** `cancel()` keeps the previous value. */
 export type ComposerChangeDetails<T extends ComposerChip = ComposerChip> = BaseUIChangeEventDetails<
   ComposerChangeReason,
@@ -196,7 +199,7 @@ export interface EditorBinding {
   recallKey(
     event: KeyboardEvent,
     messages: readonly ComposerValue<ComposerChip>[],
-    from: 'first-line' | 'empty',
+    from: ComposerRecallFrom,
   ): boolean;
   /**
    * Whether the text is a recalled message nobody changed since. Suggestions stay closed on it.
@@ -255,11 +258,12 @@ type Step<T extends ComposerChip> = {
   readonly selection: SavedSelection;
 };
 /**
- * A message recalled, as given and as shown, and the draft from before the first recall. It
- * shows while `shown` is the value.
+ * A message recalled, as given, where it was in the messages and as shown, and the draft from
+ * before the first recall. It shows while `shown` is the value.
  */
 type Recall<T extends ComposerChip> = {
   readonly message: ComposerValue<ComposerChip>;
+  readonly index: number;
   readonly shown: ComposerValue<T>;
   readonly draft: ComposerValue<T>;
 };
@@ -935,7 +939,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
   recallKey(
     event: KeyboardEvent,
     messages: readonly ComposerValue<ComposerChip>[],
-    from: 'first-line' | 'empty',
+    from: ComposerRecallFrom,
   ): boolean {
     const edge = event.key === 'ArrowUp' ? 'up' : event.key === 'ArrowDown' ? 'down' : undefined;
     if (
@@ -954,15 +958,14 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     if (!recall && (edge === 'down' || (from === 'empty' && valueLength(this.#latest) > 0)))
       return false;
     if (!this.actions.atEdge(edge)) return false;
-    // A message gone from `messages` starts the recall again from the newest.
-    const at = recall ? messages.lastIndexOf(recall.message) : -1;
+    const at = recall ? this.#indexOf(recall, messages) : -1;
     let index = at === -1 ? messages.length : at;
     let message: ComposerValue<ComposerChip> | undefined;
     do {
       index += edge === 'up' ? -1 : 1;
       message = messages[index];
     } while (message && this.#shows(message));
-    if (message) this.#showRecalled(message, recall?.draft ?? this.#latest, event);
+    if (message) this.#showRecalled(message, index, recall?.draft ?? this.#latest, event);
     else if (edge === 'down' && recall) this.#restoreDraft(recall, event);
     else return false;
     return true;
@@ -970,6 +973,21 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
 
   recalling(): boolean {
     return this.#recall !== undefined && sameValue(this.#recall.shown, this.#latest);
+  }
+
+  /**
+   * Where the message shown is in `messages`, which may have changed since: at the same index, by
+   * identity elsewhere, as in a list trimmed from the front, or by content, as in one built anew on
+   * every render. `-1` when it's gone, and the recall starts again from the newest.
+   */
+  #indexOf(recall: Recall<T>, messages: readonly ComposerValue<ComposerChip>[]): number {
+    if (messages[recall.index] === recall.message) return recall.index;
+    let at = messages.lastIndexOf(recall.message);
+    for (let index = messages.length - 1; at === -1 && index >= 0; index -= 1) {
+      const message = messages[index];
+      if (message && this.#shows(message)) at = index;
+    }
+    return at;
   }
 
   /** Chips by id: a message with chips is the text also when its chips are copies. */
@@ -981,6 +999,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
   /** The first recall is an undo step of its own; the next ones replace it. */
   #showRecalled(
     message: ComposerValue<ComposerChip>,
+    index: number,
     draft: ComposerValue<T>,
     event: KeyboardEvent,
   ): void {
@@ -989,7 +1008,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     const shown = this.#commit(given, caretAt(valueLength(given)), 'list-navigation', event, {
       group: 'recall',
     });
-    if (shown) this.#recall = {message, shown: this.#latest, draft};
+    if (shown) this.#recall = {message, index, shown: this.#latest, draft};
   }
 
   /**
@@ -1000,9 +1019,12 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     const onRecall = this.#history.current().value === recall.shown;
     const before = onRecall ? this.#history.previous() : undefined;
     const {draft} = recall;
-    const back = this.#commit(draft, caretAt(valueLength(draft)), 'list-navigation', event, {
-      record: !(before && sameValue(before.value, draft)),
-    });
+    // A draft equal to the message shown needs no change, but the recall still ends.
+    const back =
+      sameValue(draft, this.#latest) ||
+      this.#commit(draft, caretAt(valueLength(draft)), 'list-navigation', event, {
+        record: !(before && sameValue(before.value, draft)),
+      });
     if (!back) return;
     if (onRecall) this.#history.drop();
     this.#recall = undefined;
