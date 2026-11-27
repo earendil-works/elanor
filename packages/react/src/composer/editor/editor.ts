@@ -977,17 +977,21 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
 
   /**
    * Where the message shown is in `messages`, which may have changed since: at the same index, by
-   * identity elsewhere, as in a list trimmed from the front, or by content, as in one built anew on
-   * every render. `-1` when it's gone, and the recall starts again from the newest.
+   * identity elsewhere, as in a list trimmed from the front, or, in one built anew on every render,
+   * by content nearest the same index, earlier first, so a message sent twice stays apart from its
+   * copy. `-1` when it's gone, and the recall starts again from the newest.
    */
   #indexOf(recall: Recall<T>, messages: readonly ComposerValue<ComposerChip>[]): number {
     if (messages[recall.index] === recall.message) return recall.index;
-    let at = messages.lastIndexOf(recall.message);
-    for (let index = messages.length - 1; at === -1 && index >= 0; index -= 1) {
-      const message = messages[index];
-      if (message && this.#shows(message)) at = index;
+    const at = messages.lastIndexOf(recall.message);
+    if (at !== -1) return at;
+    for (let distance = 0; distance <= recall.index + messages.length; distance += 1) {
+      for (const index of [recall.index - distance, recall.index + distance]) {
+        const message = messages[index];
+        if (message && this.#shows(message)) return index;
+      }
     }
-    return at;
+    return -1;
   }
 
   /** Chips by id: a message with chips is the text also when its chips are copies. */
