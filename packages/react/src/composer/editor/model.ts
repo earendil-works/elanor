@@ -160,6 +160,17 @@ export const sameValue = <T extends ComposerChip>(
   b: ComposerValue<T>,
 ): boolean => a.length === b.length && a.every((segment, index) => segment === b[index]);
 
+/** Compares chips by id, so a value and one with copies of its chips are the same text. */
+export const sameContent = <T extends ComposerChip>(
+  a: ComposerValue<T>,
+  b: ComposerValue<T>,
+): boolean =>
+  a.length === b.length &&
+  a.every((segment, index) => {
+    const other = b[index];
+    return isChip(segment) ? isChip(other) && other.id === segment.id : segment === other;
+  });
+
 export const toText = <T extends ComposerChip>(
   value: ComposerValue<T>,
   chipToText: (chip: T) => string,

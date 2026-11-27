@@ -1,7 +1,7 @@
-import {useCallback, useRef, type KeyboardEvent} from 'react';
+import {useCallback, type KeyboardEvent} from 'react';
 
 import {useComposerMeta} from './context.ts';
-import {valueLength, type ComposerChip, type ComposerValue} from './editor/model.ts';
+import type {ComposerChip, ComposerValue} from './editor/model.ts';
 
 /** `first-line`: ArrowUp recalls from anywhere on the first line. `empty`: only from an empty prompt. */
 export type ComposerRecallFrom = 'first-line' | 'empty';
@@ -19,34 +19,14 @@ export interface ComposerRecallOptions {
  * Throws outside `Composer.Root`.
  */
 export function useRecall<T extends ComposerChip = ComposerChip>(
-  entries: readonly ComposerValue<T>[],
+  messages: readonly ComposerValue<T>[],
   {from = 'first-line'}: ComposerRecallOptions = {},
 ): (event: KeyboardEvent<HTMLElement>) => void {
   const {editor} = useComposerMeta('Composer.useRecall');
-  // The entry shown, while the editor is still recalling.
-  const shown = useRef(0);
   return useCallback(
     (event: KeyboardEvent<HTMLElement>) => {
-      const key = event.nativeEvent;
-      const edge = editor.recallEdge(key);
-      if (!edge) return;
-      const recalling = editor.recalling();
-      if (
-        !recalling &&
-        (edge === 'down' || (from === 'empty' && valueLength(editor.getValue()) > 0))
-      )
-        return;
-      let index = recalling ? Math.min(shown.current, entries.length) : entries.length;
-      let entry: ComposerValue<T> | undefined;
-      do {
-        index += edge === 'up' ? -1 : 1;
-        entry = entries[index];
-      } while (entry && editor.shows(entry));
-      if (!entry && edge === 'up') return;
-      event.preventDefault();
-      if (!entry) editor.recallDraft(key);
-      else if (editor.recall(entry, key)) shown.current = index;
+      if (editor.recallKey(event.nativeEvent, messages, from)) event.preventDefault();
     },
-    [editor, entries, from],
+    [editor, messages, from],
   );
 }

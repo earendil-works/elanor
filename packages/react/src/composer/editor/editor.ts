@@ -25,6 +25,7 @@ import {
   type ComposerValue,
   removedChips,
   replaceRange,
+  sameContent,
   sameValue,
   sliceValue,
   type ComposerTextRange,
@@ -139,11 +140,7 @@ export interface ComposerActions<T extends ComposerChip = ComposerChip> {
   getValue(): ComposerValue<T>;
   /** Calls `onAttach` (reason `api`) at the caret after selected text; ignores an empty list. */
   attach(files: File[]): void;
-  /**
-   * Whether the caret is on the first line (`up`) or the last (`down`) as the text wraps, with
-   * nothing selected, so that ArrowUp or ArrowDown has no line to move it to. `false` while the
-   * prompt isn't focused, a chip is selected or an input method composes.
-   */
+  /** Whether the focused caret, with nothing selected or composing, is on the first or last line. */
   atEdge(edge: 'up' | 'down'): boolean;
 }
 
@@ -191,24 +188,21 @@ export interface EditorBinding {
   subscribeValue(listener: () => void): () => void;
   getValue(): ComposerValue<ComposerChip>;
   /**
-   * The edge a plain ArrowUp or ArrowDown leaves the text at, for recalling messages: in an
-   * editable prompt, with no list at the caret open and nothing composing.
+   * For `useRecall`: a plain ArrowUp on the first line shows the message before the one shown, or
+   * the newest; a plain ArrowDown on the last line the one after, or the draft from before the
+   * recall. Skips messages equal to the text. Not in a prompt that isn't editable, with a list at
+   * the caret open or while composing. `true` when it took the key.
    */
-  recallEdge(event: KeyboardEvent): 'up' | 'down' | undefined;
+  recallKey(
+    event: KeyboardEvent,
+    messages: readonly ComposerValue<ComposerChip>[],
+    from: 'first-line' | 'empty',
+  ): boolean;
   /**
    * Whether the text is a recalled message nobody changed since. Suggestions stay closed on it.
    * Changes fire `subscribe`.
    */
   recalling(): boolean;
-  /** Whether the text is `value`, with its chips as the editor names them. */
-  shows(value: ComposerValue<ComposerChip>): boolean;
-  /**
-   * Shows a recalled message, with the caret at the end. The first is an undo step of its own,
-   * and the next ones replace it, so Undo gives back the text from before. `false` when refused.
-   */
-  recall(value: ComposerValue<ComposerChip>, event: KeyboardEvent): boolean;
-  /** Back to the text from before the recall, dropping its undo step. */
-  recallDraft(event: KeyboardEvent): void;
 }
 
 export interface EditorOptions<T extends ComposerChip> {
@@ -259,6 +253,15 @@ type ChipHost<T extends ComposerChip> = {readonly chip: T; readonly content: HTM
 type Step<T extends ComposerChip> = {
   readonly value: ComposerValue<T>;
   readonly selection: SavedSelection;
+};
+/**
+ * A message recalled, as given and as shown, and the draft from before the first recall. It
+ * shows while `shown` is the value.
+ */
+type Recall<T extends ComposerChip> = {
+  readonly message: ComposerValue<ComposerChip>;
+  readonly shown: ComposerValue<T>;
+  readonly draft: ComposerValue<T>;
 };
 type Edit<T extends ComposerChip> = {
   readonly value: ComposerValue<T>;
@@ -336,8 +339,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
   /** Pasting this copy back here restores its chips. */
   #clip: {readonly id: string; readonly value: ComposerValue<T>} | undefined;
   #keyHandler: ((event: KeyboardEvent) => boolean) | undefined;
-  /** The message the last recall showed, until another edit. */
-  #recalled: ComposerValue<T> | undefined;
+  #recall: Recall<T> | undefined;
   readonly #listeners = new Set<() => void>();
   readonly #valueListeners = new Set<() => void>();
   readonly #hostListeners = new Set<() => void>();
@@ -467,9 +469,9 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
 
   /** Takes up `historyKey`'s history where it was left, or starts one at `value`. */
   #switchHistory(historyKey: string, value: ComposerValue<T>): void {
-    // A recall there ends: back in that draft, the next recall is a step of its own.
+    // A recall there ends, and the message stays that draft.
     this.#history.seal();
-    this.#recalled = undefined;
+    this.#recall = undefined;
     this.#historyKey = historyKey;
     this.#history =
       this.#histories.get(historyKey) ?? new History<Step<T>>({value, selection: null});
@@ -538,7 +540,6 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     }
     this.#armed = undefined;
     this.#latest = value;
-    this.#recalled = group === 'recall' ? value : undefined;
     this.#revision += 1;
     this.#edit = record ? {value, selection, group, prior} : undefined;
     if (selection) this.#selection = selection;
@@ -931,7 +932,11 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
     return event.isComposing || this.#composing || event.keyCode === 229;
   }
 
-  recallEdge(event: KeyboardEvent): 'up' | 'down' | undefined {
+  recallKey(
+    event: KeyboardEvent,
+    messages: readonly ComposerValue<ComposerChip>[],
+    from: 'first-line' | 'empty',
+  ): boolean {
     const edge = event.key === 'ArrowUp' ? 'up' : event.key === 'ArrowDown' ? 'down' : undefined;
     if (
       !edge ||
@@ -944,37 +949,63 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       !this.options.editable ||
       this.#keyHandler
     )
-      return undefined;
-    return this.actions.atEdge(edge) ? edge : undefined;
+      return false;
+    const recall = this.recalling() ? this.#recall : undefined;
+    if (!recall && (edge === 'down' || (from === 'empty' && valueLength(this.#latest) > 0)))
+      return false;
+    if (!this.actions.atEdge(edge)) return false;
+    // A message gone from `messages` starts the recall again from the newest.
+    const at = recall ? messages.lastIndexOf(recall.message) : -1;
+    let index = at === -1 ? messages.length : at;
+    let message: ComposerValue<ComposerChip> | undefined;
+    do {
+      index += edge === 'up' ? -1 : 1;
+      message = messages[index];
+    } while (message && this.#shows(message));
+    if (message) this.#showRecalled(message, recall?.draft ?? this.#latest, event);
+    else if (edge === 'down' && recall) this.#restoreDraft(recall, event);
+    else return false;
+    return true;
   }
 
   recalling(): boolean {
-    return this.#recalled !== undefined && sameValue(this.#recalled, this.#latest);
+    return this.#recall !== undefined && sameValue(this.#recall.shown, this.#latest);
   }
 
-  shows(value: ComposerValue<ComposerChip>): boolean {
+  /** Chips by id: a message with chips is the text also when its chips are copies. */
+  #shows(message: ComposerValue<ComposerChip>): boolean {
     // SAFETY: as with `ComposerValue<T>` in the hooks, the caller names this editor's chip type.
-    return sameValue(this.#normalizeGiven(value as ComposerValue<T>), this.#latest);
+    return sameContent(this.#normalizeGiven(message as ComposerValue<T>), this.#latest);
   }
 
-  recall(value: ComposerValue<ComposerChip>, event: KeyboardEvent): boolean {
-    if (!this.options.editable) return false;
-    // SAFETY: as in `shows`.
-    const given = value as ComposerValue<T>;
-    return this.#commit(given, caretAt(valueLength(given)), 'list-navigation', event, {
+  /** The first recall is an undo step of its own; the next ones replace it. */
+  #showRecalled(
+    message: ComposerValue<ComposerChip>,
+    draft: ComposerValue<T>,
+    event: KeyboardEvent,
+  ): void {
+    // SAFETY: as in `#shows`.
+    const given = message as ComposerValue<T>;
+    const shown = this.#commit(given, caretAt(valueLength(given)), 'list-navigation', event, {
       group: 'recall',
     });
+    if (shown) this.#recall = {message, shown: this.#latest, draft};
   }
 
-  recallDraft(event: KeyboardEvent): void {
-    const draft = this.#history.previous();
-    if (!draft || !this.recalling()) return;
-    const back =
-      sameValue(draft.value, this.#latest) ||
-      this.#commit(draft.value, caretAt(valueLength(draft.value)), 'list-navigation', event, {
-        record: false,
-      });
-    if (back) this.#history.drop();
+  /**
+   * Shows the draft again. While the recall's undo step is the current one, it goes, and the draft
+   * is the step before it again; otherwise, after an undo and a redo, the draft is a new step.
+   */
+  #restoreDraft(recall: Recall<T>, event: KeyboardEvent): void {
+    const onRecall = this.#history.current().value === recall.shown;
+    const before = onRecall ? this.#history.previous() : undefined;
+    const {draft} = recall;
+    const back = this.#commit(draft, caretAt(valueLength(draft)), 'list-navigation', event, {
+      record: !(before && sameValue(before.value, draft)),
+    });
+    if (!back) return;
+    if (onRecall) this.#history.drop();
+    this.#recall = undefined;
   }
 
   /**
@@ -1060,7 +1091,7 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       this.#histories.set(historyKey, this.#history);
       this.#edit = undefined;
       this.#cleared = true;
-      this.#recalled = undefined;
+      this.#recall = undefined;
     },
     submit: (event) => this.options.onSubmit?.(this.#latest, {event}),
     getValue: () => this.#latest,
@@ -1077,21 +1108,25 @@ export class Editor<T extends ComposerChip> implements EditorBinding {
       const caret = range.start;
       if (edge === 'up') {
         if (text.slice(0, caret).includes('\n')) return false;
-        return caret === 0 || view.onSameLine(0, this.#charAtCaret(text, caret));
+        return caret === 0 || view.onSameLine(0, this.#charAtCaret(text, caret, 'up'));
       }
       if (text.includes('\n', caret)) return false;
       return (
-        caret === text.length || view.onSameLine(text.length - 1, this.#charAtCaret(text, caret))
+        caret === text.length ||
+        view.onSameLine(text.length - 1, this.#charAtCaret(text, caret, 'down'))
       );
     },
   };
 
   /**
-   * The character on the caret's line: the one after it, where the caret shows when the line wraps
-   * before it, else the one before it, at the end of a line.
+   * A character on the caret's line. Where a line wraps, the caret before its first character
+   * shows on either line, so each edge measures the character away from it: the one after the
+   * caret for `up`, the one before for `down`. A caret at a wrap then takes one press more:
+   * ArrowUp moves it to the line's start, ArrowDown to its end.
    */
-  #charAtCaret(text: string, caret: number): number {
-    return caret < text.length && text[caret] !== '\n' ? caret : caret - 1;
+  #charAtCaret(text: string, caret: number, edge: 'up' | 'down'): number {
+    if (edge === 'up') return caret < text.length && text[caret] !== '\n' ? caret : caret - 1;
+    return caret > 0 && text[caret - 1] !== '\n' ? caret - 1 : caret;
   }
 
   pick(files: File[], event: Event): void {
