@@ -338,6 +338,23 @@ function createRules(paths: readonly string[]): ContrastRule[] {
       ]),
     },
     {
+      // A conversation's sender names stand on a message's bubble, the secondary fill.
+      category: 'text/message-on-secondary-fill',
+      threshold: REQUIRED_TEXT_CONTRAST,
+      pairs: everyCombination(under(paths, 'semantic.color.text.message'), [
+        requirePath(pathSet, 'semantic.color.background.fill.secondary'),
+      ]),
+    },
+    {
+      // Text and icons on a picture viewer's stage, or on a scrim over a picture.
+      category: 'text/on-media',
+      threshold: REQUIRED_TEXT_CONTRAST,
+      pairs: everyCombination(
+        [requirePath(pathSet, 'semantic.color.text.onMedia')],
+        [requirePath(pathSet, 'semantic.color.background.media')],
+      ),
+    },
+    {
       category: 'icon/page',
       threshold: REQUIRED_NON_TEXT_CONTRAST,
       pairs: everyCombination(

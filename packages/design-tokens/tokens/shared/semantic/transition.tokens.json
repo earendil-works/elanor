@@ -3,7 +3,7 @@
   "semantic": {
     "transition": {
       "$type": "transition",
-      "$description": "Choose a transition by what changes. `feedback`, `fade`, `pulse`, and `stale` keep their timing when the reader prefers reduced motion; `movement` becomes instant. Only `stale` has a delay.",
+      "$description": "Choose a transition by what changes. `feedback`, `fade`, `pulse`, and `stale` keep their timing when the reader prefers reduced motion; `movement` becomes instant; `spin` is stopped by the component. Only `stale` has a delay.",
       "feedback": {
         "$value": {
           "duration": "{primitive.duration.150}",
@@ -44,6 +44,14 @@
           "timingFunction": "{primitive.cubicBezier.easeInOut.cubic}"
         },
         "$description": "Use for one half of a repeating opacity pulse that shows content is loading or work is going on, such as a skeleton or the label of a running step, between `opacity.visible` and `opacity.pulse`. Do not use for elements appearing or disappearing; use `fade`."
+      },
+      "spin": {
+        "$value": {
+          "duration": "{primitive.duration.2000}",
+          "delay": "{primitive.duration.0}",
+          "timingFunction": "{primitive.cubicBezier.linear}"
+        },
+        "$description": "Use for one turn of something that turns without end to show it is waiting, such as the hand of a message's clock while it is not sent. Stop it where the reader prefers reduced motion. Do not use for loading content; use `pulse`."
       },
       "stale": {
         "$value": {

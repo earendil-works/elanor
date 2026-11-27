@@ -27,6 +27,10 @@
         "cubic": {
           "$value": [0.65, 0, 0.35, 1]
         }
+      },
+      "linear": {
+        "$value": [0, 0, 1, 1],
+        "$description": "The CSS `linear` curve: an even pace, for movement that repeats without end."
       }
     }
   }
